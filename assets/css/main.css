@@ -2,6 +2,347 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 全局样式 */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  color: #374151;
+}
+
+/* 组件样式 */
+.btn {
+  @apply px-6 py-3 rounded-lg font-medium transition-all duration-200 inline-flex items-center justify-center gap-2;
+}
+
+.btn-primary {
+  @apply bg-blue-600 text-white hover:bg-blue-700 hover:shadow-lg;
+}
+
+.btn-secondary {
+  @apply bg-gray-100 text-gray-700 hover:bg-gray-200;
+}
+
+.btn-outline {
+  @apply border-2 border-current hover:bg-current hover:text-white;
+}
+
+.card {
+  @apply bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300;
+}
+
+.card-hover {
+  @apply transform hover:-translate-y-1;
+}
+
+.input {
+  @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+}
+
+.badge {
+  @apply px-3 py-1 rounded-full text-sm font-medium;
+}
+
+.badge-primary {
+  @apply bg-blue-100 text-blue-800;
+}
+
+.badge-success {
+  @apply bg-green-100 text-green-800;
+}
+
+.badge-warning {
+  @apply bg-yellow-100 text-yellow-800;
+}
+
+.badge-danger {
+  @apply bg-red-100 text-red-800;
+}
+
+/* 工具样式 */
+.gradient-bg {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.shadow-glow {
+  box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+}
+
+.text-glow {
+  text-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+}
+
+/* 动画效果 */
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+.animate-pulse-slow {
+  animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.hover-lift {
+  transition: transform 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-5px);
+}
+
+/* 渐变边框效果 */
+.gradient-border {
+  position: relative;
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  padding: 2px;
+  border-radius: 12px;
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  background: white;
+  border-radius: 10px;
+  z-index: -1;
+}
+
+/* 发光文字效果 */
+.glow-text {
+  color: transparent;
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  background-clip: text;
+  -webkit-background-clip: text;
+  text-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
+}
+
+/* 旋转渐变背景 */
+.rotating-gradient {
+  background: conic-gradient(from 0deg, #667eea, #764ba2, #667eea);
+  animation: rotate 10s linear infinite;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 卡片悬停增强效果 */
+.card-enhanced:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* 页面淡入动画 */
+.fade-in {
+  animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 响应式优化 */
+@media (max-width: 768px) {
+  .btn {
+    @apply px-4 py-2 text-sm;
+  }
+  
+  .card {
+    @apply mx-4;
+  }
+}
+
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+  .card {
+    @apply bg-gray-800 text-white;
+  }
+  
+  .input {
+    @apply bg-gray-700 border-gray-600 text-white;
+  }
+}
+
+/* 代码块样式优化 */
+.prose pre {
+  background-color: #ffffff !important;
+  color: #24292e !important;
+  @apply rounded-xl p-6 overflow-x-auto;
+  font-family: 'Consolas', 'Courier New', monospace;
+  line-height: 1.6;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e1e4e8;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.prose pre code {
+  background-color: transparent !important;
+  color: #24292e !important;
+  padding: 0;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.prose code {
+  @apply bg-gray-100 text-gray-800 px-2 py-1 rounded text-sm;
+  font-family: 'Consolas', 'Courier New', monospace;
+}
+
+.prose pre code {
+  background-color: transparent !important;
+  color: #24292e !important;
+  padding: 0;
+  font-weight: 400;
+}
+
+/* 代码高亮主题 */
+.prose pre[class*="language-"] {
+  background-color: #ffffff !important;
+  color: #24292e !important;
+  border: 1px solid #e1e4e8;
+}
+
+.prose .token.comment,
+.prose .token.prolog,
+.prose .token.doctype,
+.prose .token.cdata {
+  color: #6a737d !important;
+  font-style: italic;
+}
+
+.prose .token.punctuation {
+  color: #24292e !important;
+}
+
+.prose .token.property,
+.prose .token.tag,
+.prose .token.boolean,
+.prose .token.number,
+.prose .token.constant,
+.prose .token.symbol,
+.prose .token.deleted {
+  color: #005cc5 !important;
+  font-weight: 400;
+}
+
+.prose .token.selector,
+.prose .token.attr-name,
+.prose .token.string,
+.prose .token.char,
+.prose .token.builtin,
+.prose .token.inserted {
+  color: #032f62 !important;
+  font-weight: 400;
+}
+
+.prose .token.operator,
+.prose .token.entity,
+.prose .token.url,
+.prose .language-css .token.string,
+.prose .style .token.string {
+  color: #24292e !important;
+  font-weight: 400;
+}
+
+.prose .token.atrule,
+.prose .token.attr-value,
+.prose .token.keyword {
+  color: #d73a49 !important;
+  font-weight: 400;
+}
+
+.prose .token.function,
+.prose .token.class-name {
+  color: #6f42c1 !important;
+  font-weight: 400;
+}
+
+.prose .token.regex,
+.prose .token.important,
+.prose .token.variable {
+  color: #e36209 !important;
+  font-weight: 400;
+}
+
+/* 表格样式优化 */
+.prose table {
+  @apply border-collapse border border-gray-200 rounded-lg overflow-hidden shadow-sm;
+}
+
+.prose th {
+  @apply bg-gray-50 border border-gray-200 px-4 py-3 text-left font-semibold text-gray-900;
+}
+
+.prose td {
+  @apply border border-gray-200 px-4 py-3 text-gray-700;
+}
+
+.prose tbody tr:nth-child(even) {
+  @apply bg-gray-50;
+}
+
+/* 引用样式优化 */
+.prose blockquote {
+  @apply border-l-4 border-blue-500 bg-blue-50 pl-6 py-4 my-6 rounded-r-lg;
+  font-style: normal;
+}
+
+.prose blockquote p {
+  @apply text-blue-900 font-medium;
+}
+
+/* 列表样式优化 */
+.prose ul {
+  @apply list-none pl-0;
+}
+
+.prose ul li {
+  @apply relative pl-6 mb-2;
+}
+
+.prose ul li::before {
+  content: '•';
+  @apply absolute left-0 top-0 text-blue-500 font-bold;
+}
+
+.prose ol {
+  @apply list-none pl-0;
+  counter-reset: item;
+}
+
+.prose ol li {
+  @apply relative pl-8 mb-2;
+  counter-increment: item;
+}
+
+.prose ol li::before {
+  content: counter(item) '.';
+  @apply absolute left-0 top-0 text-blue-500 font-bold;
+}
+
 /* 全局基础样式 */
 @layer base {
   html {

@@ -16,6 +16,7 @@ yarn-error.log*
 .idea/
 
 # 忽略系统文件
+
 .DS_Store
 Thumbs.db
 
@@ -24,3 +25,4 @@ Thumbs.db
 
 # 打包生成 zip 资源（如果你用脚本生成）
 *.zip
+node_modules

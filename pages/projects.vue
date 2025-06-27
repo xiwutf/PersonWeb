@@ -3,11 +3,6 @@
     <!-- 页面头部 -->
     <section class="py-16 bg-gradient-to-r from-purple-600 to-pink-600 text-white">
       <div class="max-w-6xl mx-auto px-4 text-center">
-        <!-- 调试标识 -->
-        <div class="bg-red-500 text-white px-4 py-2 rounded mb-4 inline-block">
-          <strong>这是项目列表页面 (projects.vue)</strong>
-        </div>
-        
         <div class="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
           <span class="text-3xl">🧪</span>
         </div>
@@ -139,10 +134,11 @@
                 <!-- 操作按钮 -->
                 <div class="flex gap-3">
                   <NuxtLink
-                    :to="`/projects/${project.slug}`"
-                    class="flex-1 bg-purple-600 text-white px-4 py-3 rounded-xl hover:bg-purple-700 transition-colors text-center font-medium"
+                    :to="project._path.replace('/projects/', '/projects/')"
+                    class="flex-1 bg-purple-600 text-white px-4 py-3 rounded-xl hover:bg-purple-700 transition-colors text-center font-medium inline-flex items-center justify-center gap-2"
                   >
-                    📖 查看详情
+                    <i class="fas fa-book-open"></i>
+                    查看详情
                   </NuxtLink>
                   <a
                     v-if="project.demo_link"

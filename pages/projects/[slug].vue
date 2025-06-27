@@ -1,139 +1,145 @@
 <template>
-  <div class="container mx-auto px-4 py-8">
-    <div class="max-w-4xl mx-auto">
-      <!-- 调试信息 -->
-      <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
-        <p><strong>调试信息:</strong></p>
-        <p>当前路由: {{ $route.path }}</p>
-        <p>路由参数: {{ JSON.stringify($route.params) }}</p>
-        <p>当前slug: {{ slug }}</p>
-        <p>项目数据存在: {{ !!project }}</p>
-        <p>项目标题: {{ project?.title || '未找到' }}</p>
-        <p><strong>这是项目详情页面！</strong></p>
-      </div>
-      
+  <div class="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 py-8">
+    <div class="container mx-auto px-4 max-w-4xl">
       <!-- 面包屑导航 -->
-      <nav class="flex items-center space-x-2 text-sm text-gray-600 mb-6">
-        <NuxtLink to="/" class="hover:text-blue-600">首页</NuxtLink>
-        <span>/</span>
-        <NuxtLink to="/projects" class="hover:text-blue-600">项目展示</NuxtLink>
-        <span>/</span>
-        <span class="text-gray-800">{{ project?.title || '项目详情' }}</span>
+      <nav class="mb-8">
+        <div class="flex items-center space-x-2 text-sm text-gray-600">
+          <NuxtLink to="/" class="hover:text-purple-600 transition-colors">首页</NuxtLink>
+          <span>/</span>
+          <NuxtLink to="/projects" class="hover:text-purple-600 transition-colors">项目展示</NuxtLink>
+          <span>/</span>
+          <span class="text-gray-900">{{ project?.title || '加载中...' }}</span>
+        </div>
       </nav>
-      
+
       <!-- 返回按钮 -->
-      <NuxtLink
-        to="/projects"
-        class="inline-flex items-center text-blue-600 hover:text-blue-800 mb-6 font-medium bg-blue-50 px-4 py-2 rounded-lg transition-colors"
-      >
-        ← 返回项目列表
-      </NuxtLink>
-      
-            <!-- 项目内容 -->
-      <div v-if="project">
+      <div class="mb-6">
+        <NuxtLink
+          to="/projects"
+          class="inline-flex items-center px-4 py-2 bg-white/70 backdrop-blur-sm rounded-lg shadow-sm hover:shadow-md transition-all duration-200 text-purple-700 hover:text-purple-800 border border-purple-200"
+        >
+          <i class="fas fa-arrow-left mr-2"></i>
+          返回项目列表
+        </NuxtLink>
+      </div>
+
+      <!-- 项目内容 -->
+      <div v-if="project" class="space-y-8">
         <!-- 项目信息头部 -->
-      <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
-        <div class="flex flex-col lg:flex-row gap-8">
-          <div class="lg:w-1/3">
-            <div class="h-64 bg-gradient-to-br from-blue-400 to-purple-600 rounded-lg flex items-center justify-center">
-              <div class="text-center text-white">
-                <span class="text-4xl mb-2 block">🚀</span>
-                <p class="text-lg">{{ project.category }}</p>
+        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8">
+          <div class="flex flex-col lg:flex-row gap-8">
+            <div class="lg:w-1/3">
+              <div class="h-64 bg-gradient-to-br from-purple-400 to-pink-600 rounded-xl flex items-center justify-center">
+                <div class="text-center text-white">
+                  <span class="text-4xl mb-2 block">🚀</span>
+                  <p class="text-lg font-semibold">{{ project.category }}</p>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="lg:w-2/3">
-            <div class="flex items-center gap-3 mb-3">
-              <span
-                :class="[
-                  'px-3 py-1 rounded-full text-sm font-medium',
-                  project.status === '已上线' 
-                    ? 'bg-green-100 text-green-600' 
-                    : project.status === '开发中'
-                    ? 'bg-yellow-100 text-yellow-600'
-                    : project.status === '已完成'
-                    ? 'bg-blue-100 text-blue-600'
-                    : 'bg-gray-100 text-gray-600'
-                ]"
-              >
-                {{ project.status }}
-              </span>
-              <span class="text-gray-500">{{ formatDate(project.date) }}</span>
-            </div>
-            
-            <h1 class="text-3xl font-bold text-gray-800 mb-4">{{ project.title }}</h1>
-            <p class="text-gray-600 mb-6 text-lg">{{ project.description }}</p>
-            
-            <!-- 技术栈 -->
-            <div class="mb-6">
-              <h3 class="text-sm font-medium text-gray-700 mb-2">技术栈</h3>
-              <div class="flex flex-wrap gap-2">
+            <div class="lg:w-2/3">
+              <div class="flex items-center gap-3 mb-4">
                 <span
-                  v-for="tech in project.tech"
-                  :key="tech"
-                  class="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm"
+                  :class="[
+                    'px-3 py-1 rounded-full text-sm font-medium',
+                    project.status === '已上线' 
+                      ? 'bg-green-100 text-green-700' 
+                      : project.status === '开发中'
+                      ? 'bg-yellow-100 text-yellow-700'
+                      : project.status === '已完成'
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'bg-gray-100 text-gray-700'
+                  ]"
                 >
-                  {{ tech }}
+                  {{ project.status }}
                 </span>
+                <span class="text-gray-500">{{ formatDate(project.date) }}</span>
               </div>
-            </div>
-            
-            <!-- 链接按钮 -->
-            <div class="flex flex-wrap gap-4">
-              <a
-                v-if="project.demo_link"
-                :href="project.demo_link"
-                target="_blank"
-                class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium inline-flex items-center gap-2"
-              >
-                <span>🌐</span> 在线体验
-              </a>
-              <a
-                v-if="project.source_link"
-                :href="project.source_link"
-                target="_blank"
-                class="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors font-medium inline-flex items-center gap-2"
-              >
-                <span>📁</span> 源码查看
-              </a>
-              <button class="border border-blue-600 text-blue-600 px-6 py-3 rounded-lg hover:bg-blue-50 transition-colors font-medium">
-                联系作者
-              </button>
+              
+              <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ project.title }}</h1>
+              <p class="text-gray-600 mb-6 text-lg leading-relaxed">{{ project.description }}</p>
+              
+              <!-- 技术栈 -->
+              <div class="mb-6">
+                <h3 class="text-sm font-medium text-gray-700 mb-3">技术栈</h3>
+                <div class="flex flex-wrap gap-2">
+                  <span
+                    v-for="tech in project.tech"
+                    :key="tech"
+                    class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium"
+                  >
+                    {{ tech }}
+                  </span>
+                </div>
+              </div>
+              
+              <!-- 链接按钮 -->
+              <div class="flex flex-wrap gap-4">
+                <a
+                  v-if="project.demo_link"
+                  :href="project.demo_link"
+                  target="_blank"
+                  class="bg-purple-600 text-white px-6 py-3 rounded-xl hover:bg-purple-700 transition-colors font-medium inline-flex items-center gap-2"
+                >
+                  <i class="fas fa-external-link-alt"></i>
+                  在线体验
+                </a>
+                <a
+                  v-if="project.source_link"
+                  :href="project.source_link"
+                  target="_blank"
+                  class="border-2 border-purple-600 text-purple-600 px-6 py-3 rounded-xl hover:bg-purple-50 transition-colors font-medium inline-flex items-center gap-2"
+                >
+                  <i class="fab fa-github"></i>
+                  源码查看
+                </a>
+                <button class="border-2 border-gray-300 text-gray-700 px-6 py-3 rounded-xl hover:bg-gray-50 transition-colors font-medium inline-flex items-center gap-2">
+                  <i class="fas fa-envelope"></i>
+                  联系作者
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      
-      <!-- 详细内容 -->
-      <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-        <div class="p-8">
-          <ContentDoc :path="`/projects/${slug}`" class="prose prose-lg max-w-none" />
-        </div>
-      </div>
-      
-      <!-- 相关项目推荐 -->
-      <div v-if="relatedProjects?.length" class="mt-12">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">相关项目</h2>
-        <div class="grid md:grid-cols-2 gap-6">
-          <NuxtLink
-            v-for="related in relatedProjects"
-            :key="related._path"
-            :to="`/projects/${related.slug}`"
-            class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow block"
-          >
-            <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ related.title }}</h3>
-            <p class="text-gray-600 text-sm mb-3">{{ related.description }}</p>
-            <div class="flex items-center justify-between">
-              <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                {{ related.category }}
-              </span>
-              <span class="text-blue-600 text-sm">查看详情 →</span>
+        
+        <!-- 详细内容 -->
+        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden">
+          <div class="p-8">
+            <div class="prose prose-lg max-w-none">
+              <ContentDoc :path="project._path" />
             </div>
-          </NuxtLink>
+          </div>
+        </div>
+        
+        <!-- 相关项目推荐 -->
+        <div v-if="relatedProjects?.length" class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6">相关项目推荐</h2>
+          <div class="grid gap-6 md:grid-cols-2">
+            <NuxtLink
+              v-for="related in relatedProjects"
+              :key="related._path"
+              :to="related._path.replace('/projects/', '/projects/')"
+              class="group p-6 border border-gray-200 rounded-xl hover:border-purple-300 hover:shadow-lg transition-all duration-200"
+            >
+              <h3 class="font-semibold text-gray-900 group-hover:text-purple-700 mb-2">{{ related.title }}</h3>
+              <p class="text-gray-600 text-sm mb-3">{{ related.description }}</p>
+              <div class="flex items-center justify-between text-xs text-gray-500">
+                <span class="px-2 py-1 bg-gray-100 rounded-full">{{ related.category }}</span>
+                <span class="text-purple-600 group-hover:text-purple-700">查看详情 →</span>
+              </div>
+            </NuxtLink>
+          </div>
         </div>
       </div>
-      
-      </div> <!-- 关闭项目内容条件渲染 -->
+
+      <!-- 加载状态 -->
+      <div v-else class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 text-center">
+        <div class="animate-pulse">
+          <div class="h-8 bg-gray-200 rounded mb-4"></div>
+          <div class="h-4 bg-gray-200 rounded mb-2"></div>
+          <div class="h-4 bg-gray-200 rounded mb-2"></div>
+          <div class="h-4 bg-gray-200 rounded w-2/3"></div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -142,17 +148,10 @@
 const route = useRoute()
 const slug = route.params.slug
 
-// 调试信息
-console.log('当前路由参数:', route.params)
-console.log('slug值:', slug)
-
-// 获取具体项目数据
+// 获取具体项目数据 - 使用文件名匹配
 const { data: project } = await useAsyncData(`project-${slug}`, () =>
-  queryContent('/projects').where({ slug }).findOne()
+  queryContent('/projects').where({ _path: `/projects/${slug}` }).findOne()
 )
-
-// 调试项目数据
-console.log('项目数据:', project.value)
 
 // 如果找不到内容，返回404
 if (!project.value) {
@@ -165,7 +164,7 @@ if (!project.value) {
 // 获取相关项目（同类别的其他项目）
 const { data: relatedProjects } = await useAsyncData(`related-projects-${slug}`, () =>
   queryContent('/projects')
-    .where({ category: project.value.category, slug: { $ne: slug } })
+    .where({ category: project.value.category, _path: { $ne: project.value._path } })
     .limit(4)
     .find()
 )
@@ -190,58 +189,37 @@ useHead({
 </script>
 
 <style scoped>
-.container {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  background-attachment: fixed;
-}
-
-/* 优化内容样式 */
-:deep(.prose) {
-  @apply text-gray-700;
-}
-
-:deep(.prose h1) {
-  @apply text-2xl font-bold text-gray-800 mb-4;
-}
-
-:deep(.prose h2) {
-  @apply text-xl font-semibold text-gray-800 mb-3 mt-6;
-}
-
-:deep(.prose h3) {
-  @apply text-lg font-medium text-gray-800 mb-2 mt-4;
-}
-
-:deep(.prose p) {
-  @apply mb-4;
-}
-
-:deep(.prose ul) {
-  @apply list-disc pl-6 mb-4;
-}
-
-:deep(.prose ol) {
-  @apply list-decimal pl-6 mb-4;
-}
-
-:deep(.prose li) {
-  @apply mb-1;
-}
-
-:deep(.prose blockquote) {
-  @apply border-l-4 border-blue-500 pl-4 italic text-gray-600;
-}
-
-:deep(.prose img) {
-  @apply rounded-lg shadow-md;
+/* 优化代码块背景 */
+:deep(.prose pre) {
+  @apply bg-gray-900 text-gray-100;
+  border-radius: 12px;
+  padding: 1.5rem;
+  overflow-x: auto;
 }
 
 :deep(.prose code) {
-  @apply bg-gray-100 px-2 py-1 rounded text-sm;
+  @apply bg-gray-100 text-gray-800 px-1 py-0.5 rounded text-sm;
 }
 
-:deep(.prose pre) {
-  @apply bg-gray-900 text-white p-4 rounded-lg overflow-x-auto;
+:deep(.prose pre code) {
+  @apply bg-transparent text-gray-100 px-0 py-0;
+}
+
+/* 优化表格样式 */
+:deep(.prose table) {
+  @apply border-collapse border border-gray-200 rounded-lg overflow-hidden;
+}
+
+:deep(.prose th) {
+  @apply bg-gray-50 border border-gray-200 px-4 py-2;
+}
+
+:deep(.prose td) {
+  @apply border border-gray-200 px-4 py-2;
+}
+
+/* 优化引用样式 */
+:deep(.prose blockquote) {
+  @apply border-l-4 border-purple-500 bg-purple-50 pl-4 py-2 my-4 rounded-r-lg;
 }
 </style> 
