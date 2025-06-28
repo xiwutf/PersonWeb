@@ -134,7 +134,7 @@
                 <!-- 操作按钮 -->
                 <div class="flex gap-3">
                   <NuxtLink
-                    :to="project._path.replace('/projects/', '/projects/')"
+                    :to="`/projects/detail-${project.slug || project._path.split('/').pop()}`"
                     class="flex-1 bg-purple-600 text-white px-4 py-3 rounded-xl hover:bg-purple-700 transition-colors text-center font-medium inline-flex items-center justify-center gap-2"
                   >
                     <i class="fas fa-book-open"></i>
@@ -201,12 +201,7 @@ const { data: projects, pending, error } = await useAsyncData('projects', () =>
   queryContent('/projects').sort({ date: -1 }).find()
 )
 
-// 调试信息
-if (process.client) {
-  console.log('项目数据:', projects.value)
-  console.log('加载状态:', pending.value)
-  console.log('错误信息:', error.value)
-}
+
 
 // 分类筛选状态
 const selectedCategory = ref('all')

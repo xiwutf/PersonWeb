@@ -86,7 +86,7 @@
               <div class="px-6 pb-6">
                 <div class="flex space-x-3">
                   <NuxtLink
-                    :to="`/tools/${tool.slug}`"
+                    :to="`/tools/detail-${tool.slug || tool._path.split('/').pop()}`"
                     class="flex-1 bg-gray-100 text-gray-800 px-4 py-3 rounded-xl hover:bg-gray-200 transition-colors text-center font-medium"
                   >
                     查看详情

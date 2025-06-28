@@ -1,6 +1,7 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 py-8">
     <div class="container mx-auto px-4 max-w-4xl">
+
       <!-- 面包屑导航 -->
       <nav class="mb-8">
         <div class="flex items-center space-x-2 text-sm text-gray-600">
@@ -92,10 +93,6 @@
                   <i class="fab fa-github"></i>
                   源码查看
                 </a>
-                <button class="border-2 border-gray-300 text-gray-700 px-6 py-3 rounded-xl hover:bg-gray-50 transition-colors font-medium inline-flex items-center gap-2">
-                  <i class="fas fa-envelope"></i>
-                  联系作者
-                </button>
               </div>
             </div>
           </div>
@@ -117,7 +114,7 @@
             <NuxtLink
               v-for="related in relatedProjects"
               :key="related._path"
-              :to="related._path.replace('/projects/', '/projects/')"
+              :to="`/projects/detail-${related.slug || related._path.split('/').pop()}`"
               class="group p-6 border border-gray-200 rounded-xl hover:border-purple-300 hover:shadow-lg transition-all duration-200"
             >
               <h3 class="font-semibold text-gray-900 group-hover:text-purple-700 mb-2">{{ related.title }}</h3>
@@ -131,8 +128,13 @@
         </div>
       </div>
 
-      <!-- 加载状态 -->
+      <!-- 无数据状态 -->
       <div v-else class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 text-center">
+        <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
+          <strong>警告:</strong> 没有找到项目数据！<br>
+          当前 slug: {{ $route.params.slug }}<br>
+          查询错误: {{ error }}
+        </div>
         <div class="animate-pulse">
           <div class="h-8 bg-gray-200 rounded mb-4"></div>
           <div class="h-4 bg-gray-200 rounded mb-2"></div>
@@ -148,23 +150,20 @@
 const route = useRoute()
 const slug = route.params.slug
 
-// 获取具体项目数据 - 使用文件名匹配
-const { data: project } = await useAsyncData(`project-${slug}`, () =>
-  queryContent('/projects').where({ _path: `/projects/${slug}` }).findOne()
+// 获取具体项目数据
+const { data: project, error } = await useAsyncData(`project-${slug}`, () =>
+  queryContent('/projects').where({
+    $or: [
+      { _path: `/projects/${slug}` },
+      { slug: slug }
+    ]
+  }).findOne()
 )
-
-// 如果找不到内容，返回404
-if (!project.value) {
-  throw createError({
-    statusCode: 404,
-    statusMessage: '项目不存在'
-  })
-}
 
 // 获取相关项目（同类别的其他项目）
 const { data: relatedProjects } = await useAsyncData(`related-projects-${slug}`, () =>
   queryContent('/projects')
-    .where({ category: project.value.category, _path: { $ne: project.value._path } })
+    .where({ category: project.value?.category, _path: { $ne: project.value?._path } })
     .limit(4)
     .find()
 )
@@ -180,10 +179,9 @@ const formatDate = (dateString) => {
 
 // 设置页面标题和SEO
 useHead({
-  title: `${project.value.title} - 项目展示 - 溪午听风`,
+  title: `${project.value?.title || '项目详情'} - 项目展示 - 溪午听风`,
   meta: [
-    { name: 'description', content: project.value.description },
-    { name: 'keywords', content: project.value.tech?.join(', ') }
+    { name: 'description', content: project.value?.description || '项目详情页面' },
   ]
 })
 </script>
@@ -199,27 +197,5 @@ useHead({
 
 :deep(.prose code) {
   @apply bg-gray-100 text-gray-800 px-1 py-0.5 rounded text-sm;
-}
-
-:deep(.prose pre code) {
-  @apply bg-transparent text-gray-100 px-0 py-0;
-}
-
-/* 优化表格样式 */
-:deep(.prose table) {
-  @apply border-collapse border border-gray-200 rounded-lg overflow-hidden;
-}
-
-:deep(.prose th) {
-  @apply bg-gray-50 border border-gray-200 px-4 py-2;
-}
-
-:deep(.prose td) {
-  @apply border border-gray-200 px-4 py-2;
-}
-
-/* 优化引用样式 */
-:deep(.prose blockquote) {
-  @apply border-l-4 border-purple-500 bg-purple-50 pl-4 py-2 my-4 rounded-r-lg;
 }
 </style> 
