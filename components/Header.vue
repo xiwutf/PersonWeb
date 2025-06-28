@@ -32,6 +32,18 @@
               class="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 rounded-full"
             ></div>
           </NuxtLink>
+          
+          <!-- 搜索按钮 -->
+          <NuxtLink
+            to="/search"
+            class="flex items-center justify-center w-10 h-10 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all duration-200"
+            :class="{ 'text-blue-600 bg-blue-50': $route.path === '/search' }"
+            title="搜索"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </NuxtLink>
         </nav>
 
         <!-- 移动端菜单按钮 -->
@@ -61,6 +73,17 @@
           >
             <span class="text-lg">{{ item.icon }}</span>
             <span class="font-medium">{{ item.title }}</span>
+          </NuxtLink>
+          
+          <!-- 移动端搜索 -->
+          <NuxtLink
+            to="/search"
+            @click="closeMobileMenu"
+            class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
+            :class="{ 'text-blue-600 bg-blue-50': $route.path === '/search' }"
+          >
+            <span class="text-lg">🔍</span>
+            <span class="font-medium">搜索</span>
           </NuxtLink>
         </nav>
       </div>

@@ -17,6 +17,53 @@
     <section class="py-20">
       <div class="max-w-6xl mx-auto px-4">
 
+      <!-- 搜索功能 -->
+      <div class="max-w-2xl mx-auto mb-12">
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <div class="flex items-center gap-4">
+            <div class="flex-1 relative">
+              <input
+                v-model="searchKeyword"
+                type="text"
+                placeholder="搜索文章标题、内容、标签..."
+                class="w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              >
+              <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+              </div>
+            </div>
+            <button
+              v-if="searchKeyword"
+              @click="clearSearch"
+              class="px-4 py-3 text-gray-500 hover:text-gray-700 transition-colors"
+              title="清空搜索"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+          
+          <!-- 搜索提示信息 -->
+          <div v-if="searchKeyword" class="mt-3 flex items-center justify-between text-sm">
+            <span class="text-gray-600">
+              🔍 搜索 "<strong>{{ searchKeyword }}</strong>" 找到 {{ filteredPosts.length }} 篇文章
+            </span>
+            <button
+              @click="clearAllFilters"
+              class="text-blue-600 hover:text-blue-800 transition-colors flex items-center gap-1"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+              清空筛选
+            </button>
+          </div>
+        </div>
+      </div>
+
       <!-- 分类导航 -->
       <div class="flex flex-wrap justify-center gap-4 mb-12">
         <button
@@ -32,7 +79,13 @@
       <!-- 分类统计 -->
       <div class="text-center mb-8">
         <p class="text-gray-600">
-          <span v-if="selectedCategory === '全部文章'">
+          <span v-if="searchKeyword && selectedCategory === '全部文章'">
+            搜索结果：{{ filteredPosts.length }} 篇文章
+          </span>
+          <span v-else-if="searchKeyword">
+            在 {{ selectedCategory }} 中搜索到 {{ filteredPosts.length }} 篇文章
+          </span>
+          <span v-else-if="selectedCategory === '全部文章'">
             共 {{ filteredPosts.length }} 篇文章
           </span>
           <span v-else>
@@ -187,6 +240,9 @@ const { data: allPosts } = await useAsyncData('blog-posts', () =>
 // 当前选中的分类
 const selectedCategory = ref('全部文章')
 
+// 搜索关键词
+const searchKeyword = ref('')
+
 // 获取所有可用的分类
 const categories = computed(() => {
   if (!allPosts.value) return ['全部文章']
@@ -195,15 +251,34 @@ const categories = computed(() => {
   return ['全部文章', ...Array.from(categorySet)]
 })
 
-// 根据选中分类过滤文章
+// 根据选中分类和搜索关键词过滤文章
 const filteredPosts = computed(() => {
   if (!allPosts.value) return []
   
-  if (selectedCategory.value === '全部文章') {
-    return allPosts.value
+  let posts = allPosts.value
+  
+  // 分类过滤
+  if (selectedCategory.value !== '全部文章') {
+    posts = posts.filter(post => post.category === selectedCategory.value)
   }
   
-  return allPosts.value.filter(post => post.category === selectedCategory.value)
+  // 搜索过滤
+  if (searchKeyword.value.trim()) {
+    const keyword = searchKeyword.value.toLowerCase()
+    posts = posts.filter(post => {
+      const searchFields = [
+        post.title,
+        post.description,
+        post.category,
+        post.author,
+        ...(post.tags || [])
+      ].join(' ').toLowerCase()
+      
+      return searchFields.includes(keyword)
+    })
+  }
+  
+  return posts
 })
 
 // 格式化日期
@@ -229,6 +304,17 @@ const getCategoryIcon = (category) => {
 // 切换分类
 const selectCategory = (category) => {
   selectedCategory.value = category
+}
+
+// 清空搜索
+const clearSearch = () => {
+  searchKeyword.value = ''
+}
+
+// 清空所有过滤条件
+const clearAllFilters = () => {
+  selectedCategory.value = '全部文章'
+  searchKeyword.value = ''
 }
 
 // 获取分类按钮样式
