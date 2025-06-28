@@ -19,31 +19,46 @@
 
       <!-- 分类导航 -->
       <div class="flex flex-wrap justify-center gap-4 mb-12">
-        <button class="px-6 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors">
-          全部文章
-        </button>
-        <button class="px-6 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-colors">
-          技术文章
-        </button>
-        <button class="px-6 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-colors">
-          项目总结
-        </button>
-        <button class="px-6 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-colors">
-          理财笔记
-        </button>
-        <button class="px-6 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-colors">
-          生活随笔
+        <button
+          v-for="category in categories"
+          :key="category"
+          @click="selectCategory(category)"
+          :class="getCategoryButtonClass(category)"
+        >
+          {{ category }}
         </button>
       </div>
 
-      <!-- 最新文章 -->
+      <!-- 分类统计 -->
+      <div class="text-center mb-8">
+        <p class="text-gray-600">
+          <span v-if="selectedCategory === '全部文章'">
+            共 {{ filteredPosts.length }} 篇文章
+          </span>
+          <span v-else>
+            {{ selectedCategory }} 分类下共 {{ filteredPosts.length }} 篇文章
+          </span>
+        </p>
+      </div>
+
+      <!-- 文章列表 -->
       <section class="mb-12">
         <h2 class="text-2xl font-semibold text-gray-800 mb-6 border-b-2 border-blue-500 pb-2">
-          最新文章
+          <span v-if="selectedCategory === '全部文章'">最新文章</span>
+          <span v-else>{{ selectedCategory }}</span>
         </h2>
-        <div class="space-y-6">
+        
+        <!-- 没有文章时的提示 -->
+        <div v-if="filteredPosts.length === 0" class="text-center py-12">
+          <div class="text-6xl mb-4">📝</div>
+          <h3 class="text-xl font-semibold text-gray-700 mb-2">暂无文章</h3>
+          <p class="text-gray-500">该分类下还没有发布文章，敬请期待...</p>
+        </div>
+        
+        <!-- 文章列表 -->
+        <div v-else class="space-y-6">
           <article
-            v-for="post in posts"
+            v-for="post in filteredPosts"
             :key="post._path"
             class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
           >
@@ -100,26 +115,51 @@
         <h2 class="text-2xl font-semibold text-gray-800 mb-6 border-b-2 border-gray-300 pb-2">
           文章归档
         </h2>
-        <div class="grid md:grid-cols-2 gap-6">
+        <div class="grid md:grid-cols-3 gap-6">
+          <!-- 分类统计 -->
           <div class="bg-white rounded-lg shadow-md p-6">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">按时间归档</h3>
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">📂 按分类</h3>
             <ul class="space-y-2">
-              <li><a href="#" class="text-blue-600 hover:text-blue-800">2024年1月 (5篇)</a></li>
-              <li><a href="#" class="text-blue-600 hover:text-blue-800">2023年12月 (8篇)</a></li>
-              <li><a href="#" class="text-blue-600 hover:text-blue-800">2023年11月 (6篇)</a></li>
-              <li><a href="#" class="text-blue-600 hover:text-blue-800">2023年10月 (12篇)</a></li>
+              <li v-for="(count, category) in categoryStats" :key="category">
+                <button 
+                  @click="selectCategory(category)"
+                  class="text-left w-full text-blue-600 hover:text-blue-800 transition-colors"
+                  :class="{ 'font-semibold': selectedCategory === category }"
+                >
+                  {{ category }} ({{ count }}篇)
+                </button>
+              </li>
             </ul>
           </div>
           
+          <!-- 时间归档 -->
           <div class="bg-white rounded-lg shadow-md p-6">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">热门标签</h3>
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">📅 按时间</h3>
+            <ul class="space-y-2">
+              <li v-for="archive in timeArchives" :key="archive.period">
+                <span class="text-gray-700">{{ archive.period }} ({{ archive.count }}篇)</span>
+              </li>
+              <li v-if="timeArchives.length === 0" class="text-gray-500 text-sm">
+                暂无文章
+              </li>
+            </ul>
+          </div>
+          
+          <!-- 热门标签 -->
+          <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">🏷️ 热门标签</h3>
             <div class="flex flex-wrap gap-2">
-              <span class="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm cursor-pointer hover:bg-blue-200">Vue.js</span>
-              <span class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-sm cursor-pointer hover:bg-green-200">Nuxt</span>
-              <span class="px-3 py-1 bg-purple-100 text-purple-600 rounded-full text-sm cursor-pointer hover:bg-purple-200">JavaScript</span>
-              <span class="px-3 py-1 bg-red-100 text-red-600 rounded-full text-sm cursor-pointer hover:bg-red-200">Revit</span>
-              <span class="px-3 py-1 bg-yellow-100 text-yellow-600 rounded-full text-sm cursor-pointer hover:bg-yellow-200">理财</span>
-              <span class="px-3 py-1 bg-indigo-100 text-indigo-600 rounded-full text-sm cursor-pointer hover:bg-indigo-200">项目管理</span>
+              <span 
+                v-for="tagInfo in popularTags" 
+                :key="tagInfo.tag"
+                class="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm cursor-pointer hover:bg-blue-200 transition-colors"
+                :title="`${tagInfo.count} 篇文章`"
+              >
+                {{ tagInfo.tag }}
+              </span>
+              <span v-if="popularTags.length === 0" class="text-gray-500 text-sm">
+                暂无标签
+              </span>
             </div>
           </div>
         </div>
@@ -137,10 +177,34 @@
 </template>
 
 <script setup>
+import { ref, computed } from 'vue'
+
 // 使用 @nuxt/content 查询博客数据
-const { data: posts } = await useAsyncData('blog-posts', () =>
+const { data: allPosts } = await useAsyncData('blog-posts', () =>
   queryContent('/blog').sort({ date: -1 }).find()
 )
+
+// 当前选中的分类
+const selectedCategory = ref('全部文章')
+
+// 获取所有可用的分类
+const categories = computed(() => {
+  if (!allPosts.value) return ['全部文章']
+  
+  const categorySet = new Set(allPosts.value.map(post => post.category))
+  return ['全部文章', ...Array.from(categorySet)]
+})
+
+// 根据选中分类过滤文章
+const filteredPosts = computed(() => {
+  if (!allPosts.value) return []
+  
+  if (selectedCategory.value === '全部文章') {
+    return allPosts.value
+  }
+  
+  return allPosts.value.filter(post => post.category === selectedCategory.value)
+})
 
 // 格式化日期
 const formatDate = (dateString) => {
@@ -161,6 +225,73 @@ const getCategoryIcon = (category) => {
   }
   return icons[category] || '📄'
 }
+
+// 切换分类
+const selectCategory = (category) => {
+  selectedCategory.value = category
+}
+
+// 获取分类按钮样式
+const getCategoryButtonClass = (category) => {
+  const baseClass = 'px-6 py-2 rounded-full transition-colors'
+  if (category === selectedCategory.value) {
+    return `${baseClass} bg-blue-500 text-white`
+  }
+  return `${baseClass} bg-gray-200 text-gray-700 hover:bg-gray-300`
+}
+
+// 计算分类统计
+const categoryStats = computed(() => {
+  if (!allPosts.value) return {}
+  
+  const stats = {}
+  allPosts.value.forEach(post => {
+    const category = post.category
+    if (!stats[category]) {
+      stats[category] = 0
+    }
+    stats[category]++
+  })
+  return stats
+})
+
+// 计算时间归档
+const timeArchives = computed(() => {
+  if (!allPosts.value) return []
+  
+  const archives = {}
+  allPosts.value.forEach(post => {
+    const date = new Date(post.date)
+    const yearMonth = `${date.getFullYear()}年${date.getMonth() + 1}月`
+    if (!archives[yearMonth]) {
+      archives[yearMonth] = 0
+    }
+    archives[yearMonth]++
+  })
+  
+  return Object.entries(archives)
+    .map(([period, count]) => ({ period, count }))
+    .sort((a, b) => b.period.localeCompare(a.period))
+})
+
+// 计算热门标签
+const popularTags = computed(() => {
+  if (!allPosts.value) return []
+  
+  const tagCounts = {}
+  allPosts.value.forEach(post => {
+    if (post.tags) {
+      post.tags.forEach(tag => {
+        tagCounts[tag] = (tagCounts[tag] || 0) + 1
+      })
+    }
+  })
+  
+  return Object.entries(tagCounts)
+    .map(([tag, count]) => ({ tag, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 10)
+})
 
 // 设置页面标题
 useHead({
@@ -199,5 +330,25 @@ article {
 
 article:hover {
   transform: translateY(-5px);
+}
+
+/* 分类按钮动画效果 */
+button {
+  position: relative;
+  overflow: hidden;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* 选中状态的分类按钮增强效果 */
+.bg-blue-500 {
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.bg-blue-500:hover {
+  background-color: rgb(37, 99, 235);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
 }
 </style> 

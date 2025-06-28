@@ -11,8 +11,8 @@
       <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-12">
         <div class="md:flex">
           <div class="md:w-1/3 bg-gradient-to-br from-blue-500 to-purple-600 p-8 text-white text-center">
-            <div class="w-32 h-32 bg-white rounded-full mx-auto mb-4 flex items-center justify-center">
-              <span class="text-4xl text-blue-600">👨‍💻</span>
+            <div class="w-32 h-32 bg-white rounded-full mx-auto mb-4 overflow-hidden border-2 border-blue-200">
+              <img src="/images/avatar.jpg" alt="溪午听风头像" class="w-full h-full object-cover" />
             </div>
             <h2 class="text-2xl font-bold mb-2">溪午听风</h2>
             <p class="text-blue-100">全栈开发者 & Revit插件专家</p>
@@ -101,18 +101,28 @@
           <h3 class="text-xl font-semibold text-gray-800 mb-6 border-b-2 border-green-500 pb-2">
             📱 扫码关注
           </h3>
-          <div class="grid grid-cols-2 gap-4">
+          <div class="flex justify-center">
+            <!-- 微信二维码 -->
             <div class="text-center">
-              <div class="w-32 h-32 bg-gray-200 rounded-lg mx-auto mb-2 flex items-center justify-center">
-                <span class="text-gray-500 text-sm">微信二维码</span>
+              <div class="w-40 h-40 bg-white rounded-lg mx-auto mb-3 overflow-hidden border border-gray-200 shadow-sm">
+                <img src="/images/wechat-qr.png" alt="微信二维码" class="w-full h-full object-cover" />
               </div>
-              <p class="text-sm text-gray-600">微信</p>
+              <div class="flex items-center justify-center gap-2 mb-2">
+                <span class="text-green-500">💬</span>
+                <p class="text-sm font-medium text-gray-700">微信扫码加好友</p>
+              </div>
+              <p class="text-xs text-gray-500">LinXi-5152</p>
             </div>
+          </div>
+          
+          <!-- 公众号敬请期待 -->
+          <div class="mt-6 pt-4 border-t border-gray-100">
             <div class="text-center">
-              <div class="w-32 h-32 bg-gray-200 rounded-lg mx-auto mb-2 flex items-center justify-center">
-                <span class="text-gray-500 text-sm">公众号二维码</span>
+              <div class="w-16 h-16 bg-gray-100 rounded-lg mx-auto mb-2 flex items-center justify-center">
+                <span class="text-gray-400 text-2xl">📱</span>
               </div>
-              <p class="text-sm text-gray-600">公众号</p>
+              <p class="text-sm text-gray-400">公众号敬请期待</p>
+              <p class="text-xs text-gray-300 mt-1">技术分享与经验交流</p>
             </div>
           </div>
         </div>

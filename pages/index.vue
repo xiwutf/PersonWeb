@@ -13,8 +13,8 @@
       <div class="relative max-w-6xl mx-auto px-4 py-20 sm:py-32">
               <!-- 头部介绍 -->
         <div class="text-center">
-          <div class="w-32 h-32 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full mx-auto mb-8 flex items-center justify-center shadow-xl">
-            <span class="text-white text-4xl font-bold">XF</span>
+          <div class="w-32 h-32 rounded-full mx-auto mb-8 shadow-xl overflow-hidden border-4 border-white">
+            <img src="/images/avatar.jpg" alt="溪午听风头像" class="w-full h-full object-cover" />
           </div>
           <h1 class="text-5xl lg:text-7xl font-bold text-gray-800 mb-6">
             你好，我是 <span class="text-gradient bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">溪午听风</span>

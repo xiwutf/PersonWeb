@@ -4,8 +4,8 @@
       <div class="flex justify-between items-center h-16">
         <!-- Logo 区域 -->
         <NuxtLink to="/" class="flex items-center space-x-3 group">
-          <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow">
-            <span class="text-white text-lg font-bold">XF</span>
+          <div class="w-10 h-10 rounded-lg overflow-hidden shadow-sm group-hover:shadow-md transition-shadow border border-gray-200">
+            <img src="/images/avatar.jpg" alt="溪午听风" class="w-full h-full object-cover" />
           </div>
           <div class="hidden sm:block">
             <span class="text-xl font-bold text-gray-800">溪午听风</span>
