@@ -3,7 +3,7 @@ title: 恋爱魔方小程序
 tech: [Spring Boot, 微信小程序, MySQL, Redis]
 description: 一个面向大学生的兴趣交友平台，通过魔方互动游戏增进感情
 demo_link: https://example.com/demo
-source_link: https://github.com/溪午听风/love-cube
+source_link: https://github.com/Lijing327/LOVE
 cover: /images/projects/love-cube.png
 slug: love-cube
 date: 2023-12-15

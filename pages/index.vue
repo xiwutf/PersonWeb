@@ -20,11 +20,11 @@
             你好，我是 <span class="text-gradient bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">溪午听风</span>
           </h1>
           <div class="text-2xl lg:text-3xl text-gray-600 mb-6 font-medium">
-            全栈开发者 · Revit插件专家 · 技术博主
+            全栈开发者 · AI应用开发者 · 嵌入式开发者 · Revit插件专家 · 技术博主
           </div>
           <p class="text-xl text-gray-500 max-w-3xl mx-auto mb-8 leading-relaxed">
             <span class="block mb-2">🚀 开发让生活更高效，代码就是我的魔方</span>
-            专注于Web开发、Revit插件开发和移动端应用开发，用技术解决实际问题，分享知识与经验
+            专注于Web开发、AI应用开发、Revit插件开发和移动端应用开发，用技术解决实际问题，分享知识与经验
           </p>
           
           <!-- 快速导航按钮 -->
@@ -90,14 +90,14 @@
             </div>
             <div class="space-y-4">
               <div class="border-l-4 border-purple-500 pl-4 py-2">
+                <h4 class="font-semibold text-gray-800">SmartAssistantAgent</h4>
+                <p class="text-sm text-gray-600 mt-1">基于LangChain的AI智能助手系统，支持多工具集成</p>
+                <span class="inline-block mt-2 px-3 py-1 bg-cyan-100 text-cyan-800 text-xs rounded-full">AI项目</span>
+              </div>
+              <div class="border-l-4 border-purple-300 pl-4 py-2">
                 <h4 class="font-semibold text-gray-800">恋爱魔方小程序</h4>
                 <p class="text-sm text-gray-600 mt-1">创新的交友互动平台，重新定义社交体验</p>
                 <span class="inline-block mt-2 px-3 py-1 bg-green-100 text-green-800 text-xs rounded-full">已上线</span>
-              </div>
-              <div class="border-l-4 border-purple-300 pl-4 py-2">
-                <h4 class="font-semibold text-gray-800">智能理财助手</h4>
-                <p class="text-sm text-gray-600 mt-1">个性化理财规划工具，助力财富增长</p>
-                <span class="inline-block mt-2 px-3 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">开发中</span>
               </div>
             </div>
             <NuxtLink to="/projects" class="inline-flex items-center mt-6 text-purple-600 hover:text-purple-800 font-medium group">
@@ -118,14 +118,14 @@
             </div>
             <div class="space-y-4">
               <div class="border-l-4 border-green-500 pl-4 py-2">
-                <h4 class="font-semibold text-gray-800">Nuxt 3 项目实战</h4>
-                <p class="text-sm text-gray-600 mt-1">从零搭建现代化个人网站的完整指南</p>
-                <span class="inline-block mt-2 px-3 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">技术教程</span>
+                <h4 class="font-semibold text-gray-800">AI Agent 开发实战</h4>
+                <p class="text-sm text-gray-600 mt-1">从零构建智能助手，LangChain框架使用指南</p>
+                <span class="inline-block mt-2 px-3 py-1 bg-cyan-100 text-cyan-800 text-xs rounded-full">AI技术</span>
               </div>
               <div class="border-l-4 border-green-300 pl-4 py-2">
-                <h4 class="font-semibold text-gray-800">程序员理财指南</h4>
-                <p class="text-sm text-gray-600 mt-1">技术人的投资思考与实战经验分享</p>
-                <span class="inline-block mt-2 px-3 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">理财心得</span>
+                <h4 class="font-semibold text-gray-800">LLM集成最佳实践</h4>
+                <p class="text-sm text-gray-600 mt-1">大语言模型落地应用的经验分享</p>
+                <span class="inline-block mt-2 px-3 py-1 bg-cyan-100 text-cyan-800 text-xs rounded-full">AI技术</span>
               </div>
             </div>
             <NuxtLink to="/blog" class="inline-flex items-center mt-6 text-green-600 hover:text-green-800 font-medium group">

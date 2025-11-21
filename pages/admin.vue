@@ -138,7 +138,12 @@
                     {{ item.type === 'tool' ? '工具' : item.type === 'project' ? '项目' : '博客' }}
                   </span>
                 </td>
-                <td class="py-3 px-4 font-medium">{{ item.title }}</td>
+                <td class="py-3 px-4">
+                  <div>
+                    <p class="font-medium">{{ item.title }}</p>
+                    <p class="text-xs text-gray-500 mt-1">{{ item.filePath }}</p>
+                  </div>
+                </td>
                 <td class="py-3 px-4">
                   <span :class="item.published ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'" 
                         class="px-2 py-1 rounded text-xs">
@@ -147,13 +152,45 @@
                 </td>
                 <td class="py-3 px-4 text-gray-600 text-sm">{{ item.updated }}</td>
                 <td class="py-3 px-4">
-                  <button @click="editContent(item)" class="text-blue-600 hover:text-blue-800 text-sm">
-                    编辑
-                  </button>
+                  <div class="flex gap-2">
+                    <button @click="editContent(item)" class="text-blue-600 hover:text-blue-800 text-sm">
+                      查看
+                    </button>
+                    <button @click="copyFilePath(item)" class="text-gray-600 hover:text-gray-800 text-sm" title="复制文件路径">
+                      📋
+                    </button>
+                  </div>
                 </td>
               </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- 内容更新提示 -->
+      <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 rounded-r-lg">
+        <div class="flex items-start">
+          <div class="flex-shrink-0">
+            <span class="text-2xl">💡</span>
+          </div>
+          <div class="ml-3 flex-1">
+            <h3 class="text-sm font-semibold text-blue-800 mb-1">如何更新内容？</h3>
+            <p class="text-sm text-blue-700 mb-2">
+              所有内容通过 Markdown 文件管理。编辑 <code class="bg-blue-100 px-1 rounded">content/</code> 目录下的文件即可更新。
+            </p>
+            <div class="text-xs text-blue-600 space-y-1">
+              <p>📝 <strong>博客文章：</strong> <code>content/blog/</code></p>
+              <p>🔧 <strong>工具插件：</strong> <code>content/tools/</code></p>
+              <p>🧪 <strong>项目展示：</strong> <code>content/projects/</code></p>
+            </div>
+            <a 
+              href="/内容更新指南.md" 
+              target="_blank"
+              class="inline-flex items-center mt-2 text-sm text-blue-600 hover:text-blue-800 font-medium"
+            >
+              查看详细更新指南 →
+            </a>
+          </div>
         </div>
       </div>
 
@@ -166,9 +203,10 @@
             <button @click="navigateToToolsManagement" class="w-full text-left p-3 rounded-lg hover:bg-gray-50 transition-colors">
               <div class="flex items-center">
                 <span class="text-lg mr-3">🔧</span>
-                <div>
+                <div class="flex-1">
                   <p class="font-medium">管理工具</p>
                   <p class="text-sm text-gray-600">添加、编辑或删除插件工具</p>
+                  <p class="text-xs text-gray-500 mt-1">文件位置：content/tools/</p>
                 </div>
                 <span class="ml-auto text-gray-400">→</span>
               </div>
@@ -177,9 +215,10 @@
             <button @click="navigateToProjectsManagement" class="w-full text-left p-3 rounded-lg hover:bg-gray-50 transition-colors">
               <div class="flex items-center">
                 <span class="text-lg mr-3">🧪</span>
-                <div>
+                <div class="flex-1">
                   <p class="font-medium">管理项目</p>
                   <p class="text-sm text-gray-600">更新项目信息和状态</p>
+                  <p class="text-xs text-gray-500 mt-1">文件位置：content/projects/</p>
                 </div>
                 <span class="ml-auto text-gray-400">→</span>
               </div>
@@ -188,13 +227,24 @@
             <button @click="navigateToBlogManagement" class="w-full text-left p-3 rounded-lg hover:bg-gray-50 transition-colors">
               <div class="flex items-center">
                 <span class="text-lg mr-3">📝</span>
-                <div>
+                <div class="flex-1">
                   <p class="font-medium">管理博客</p>
                   <p class="text-sm text-gray-600">发布新文章或编辑现有文章</p>
+                  <p class="text-xs text-gray-500 mt-1">文件位置：content/blog/</p>
                 </div>
                 <span class="ml-auto text-gray-400">→</span>
               </div>
             </button>
+          </div>
+          
+          <!-- 快速操作提示 -->
+          <div class="mt-4 pt-4 border-t border-gray-200">
+            <p class="text-xs text-gray-500 mb-2">💡 快速操作：</p>
+            <div class="text-xs text-gray-600 space-y-1">
+              <p>1. 编辑 Markdown 文件（使用 VS Code 等编辑器）</p>
+              <p>2. 本地预览：<code class="bg-gray-100 px-1 rounded">npm run dev</code></p>
+              <p>3. 构建部署：<code class="bg-gray-100 px-1 rounded">npm run build</code></p>
+            </div>
           </div>
         </div>
 
@@ -375,12 +425,14 @@ const loadRecentContent = async () => {
     
     if (tools) {
       tools.forEach(tool => {
+        const fileName = tool._path?.split('/').pop() || 'unknown.md'
         allContent.push({
           id: `tool-${tool._path}`,
           type: 'tool',
           title: tool.title || '未命名工具',
           published: true,
-          updated: tool.updatedAt || '最近'
+          updated: tool.updatedAt || tool.date || '最近',
+          filePath: `content/tools/${fileName}`
         })
       })
     }
@@ -392,12 +444,14 @@ const loadRecentContent = async () => {
     
     if (projects) {
       projects.forEach(project => {
+        const fileName = project._path?.split('/').pop() || 'unknown.md'
         allContent.push({
           id: `project-${project._path}`,
           type: 'project',
           title: project.title || '未命名项目',
           published: true,
-          updated: project.updatedAt || '最近'
+          updated: project.updatedAt || project.date || '最近',
+          filePath: `content/projects/${fileName}`
         })
       })
     }
@@ -409,12 +463,14 @@ const loadRecentContent = async () => {
     
     if (posts) {
       posts.forEach(post => {
+        const fileName = post._path?.split('/').pop() || 'unknown.md'
         allContent.push({
           id: `blog-${post._path}`,
           type: 'blog',
           title: post.title || '未命名文章',
           published: true,
-          updated: post.updatedAt || '最近'
+          updated: post.updatedAt || post.date || '最近',
+          filePath: `content/blog/${fileName}`
         })
       })
     }
@@ -565,16 +621,50 @@ const closeModal = () => {
   modalContent.value = ''
 }
 
+// 复制文件路径
+const copyFilePath = (item) => {
+  const filePath = item.filePath || `content/${item.type === 'tool' ? 'tools' : item.type === 'project' ? 'projects' : 'blog'}/${item.title}.md`
+  
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(filePath).then(() => {
+      showNotification(`已复制：${filePath}`)
+    }).catch(() => {
+      fallbackCopyText(filePath)
+    })
+  } else {
+    fallbackCopyText(filePath)
+  }
+}
+
+// 备用复制方法
+const fallbackCopyText = (text) => {
+  const textArea = document.createElement('textarea')
+  textArea.value = text
+  textArea.style.position = 'fixed'
+  textArea.style.opacity = '0'
+  document.body.appendChild(textArea)
+  textArea.select()
+  try {
+    document.execCommand('copy')
+    showNotification(`已复制：${text}`)
+  } catch (err) {
+    showNotification('复制失败，请手动复制')
+  }
+  document.body.removeChild(textArea)
+}
+
 // 显示通知
 const showNotification = (message) => {
   // 简单的通知实现
   const notification = document.createElement('div')
-  notification.className = 'fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50'
+  notification.className = 'fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50 max-w-md'
   notification.textContent = message
   document.body.appendChild(notification)
   
   setTimeout(() => {
-    document.body.removeChild(notification)
+    if (document.body.contains(notification)) {
+      document.body.removeChild(notification)
+    }
   }, 3000)
 }
 </script> 

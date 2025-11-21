@@ -207,9 +207,9 @@ npm run preview
 
 ## 📧 联系方式
 
-- **邮箱**：contact@溪午听风.com
-- **网站**：https://溪午听风.com
-- **GitHub**：https://github.com/溪午听风
+- **邮箱**：255106739@qq.com
+- **微信**：LinXi-5152
+- **GitHub**：https://github.com/Lijing327
 
 ## 📄 许可证
 

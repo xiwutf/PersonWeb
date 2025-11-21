@@ -20,8 +20,16 @@
           <div class="md:w-2/3 p-8">
             <h3 class="text-2xl font-semibold text-gray-800 mb-4">个人简介</h3>
             <p class="text-gray-600 mb-4">
-              你好！我是溪午听风，一名热爱技术的全栈开发者。专注于Web开发、Revit插件开发和移动端应用开发。
+              你好！我是溪午听风，一名热爱技术的全栈开发者。专注于Web开发、AI应用开发、Revit插件开发、移动端应用开发以及嵌入式系统开发。
               拥有丰富的项目经验，致力于用技术解决实际问题，提升工作效率。
+            </p>
+            <p class="text-gray-600 mb-4">
+              近年来，我深入探索AI领域，专注于大语言模型（LLM）应用开发，使用LangChain框架构建智能Agent系统。
+              在AI Agent开发、LLM集成、知识库构建等方面积累了丰富经验。
+            </p>
+            <p class="text-gray-600 mb-6">
+              同时，我也具备扎实的嵌入式开发能力，熟悉C/C++编程、STM32开发、Arduino平台等。
+              在单片机应用、传感器集成、物联网设备开发等方面有实际项目经验。
             </p>
             <p class="text-gray-600 mb-6">
               除了技术开发，我还热衷于分享知识和经验，通过博客记录技术心得、项目总结和生活感悟。
@@ -40,6 +48,14 @@
                 <span class="px-3 py-1 bg-indigo-100 text-indigo-600 rounded-full text-sm">C#</span>
                 <span class="px-3 py-1 bg-pink-100 text-pink-600 rounded-full text-sm">微信小程序</span>
                 <span class="px-3 py-1 bg-teal-100 text-teal-600 rounded-full text-sm">MongoDB</span>
+                <span class="px-3 py-1 bg-cyan-100 text-cyan-600 rounded-full text-sm">Python</span>
+                <span class="px-3 py-1 bg-orange-100 text-orange-600 rounded-full text-sm">AI/LLM</span>
+                <span class="px-3 py-1 bg-rose-100 text-rose-600 rounded-full text-sm">LangChain</span>
+                <span class="px-3 py-1 bg-emerald-100 text-emerald-600 rounded-full text-sm">机器学习</span>
+                <span class="px-3 py-1 bg-amber-100 text-amber-600 rounded-full text-sm">C/C++</span>
+                <span class="px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-sm">嵌入式开发</span>
+                <span class="px-3 py-1 bg-violet-100 text-violet-600 rounded-full text-sm">STM32</span>
+                <span class="px-3 py-1 bg-fuchsia-100 text-fuchsia-600 rounded-full text-sm">Arduino</span>
               </div>
             </div>
           </div>
@@ -80,7 +96,7 @@
               </div>
               <div>
                 <p class="text-sm text-gray-500">GitHub</p>
-                <a href="#" class="text-blue-600 hover:text-blue-800">github.com/Lijing327</a>
+                <a href="https://github.com/Lijing327" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800">github.com/Lijing327</a>
               </div>
             </div>
             
@@ -150,6 +166,11 @@
               <p class="text-sm text-gray-600">知识分享 | 2023年至今</p>
               <p class="text-sm text-gray-500 mt-1">分享技术心得、项目经验和理财知识，持续输出高质量内容</p>
             </div>
+            <div class="border-l-4 border-cyan-500 pl-4">
+              <h4 class="font-semibold text-gray-800">SmartAssistantAgent</h4>
+              <p class="text-sm text-gray-600">AI项目 | 2024年</p>
+              <p class="text-sm text-gray-500 mt-1">基于LangChain的智能助手系统，支持多工具集成和知识库检索</p>
+            </div>
           </div>
         </div>
 
@@ -172,6 +193,16 @@
               <h4 class="font-semibold text-gray-800">插件开发</h4>
               <p class="text-sm text-gray-600">2年+ 经验</p>
               <p class="text-sm text-gray-500 mt-1">Revit API开发，C#编程，专业软件二次开发</p>
+            </div>
+            <div class="border-l-4 border-cyan-500 pl-4">
+              <h4 class="font-semibold text-gray-800">AI应用开发</h4>
+              <p class="text-sm text-gray-600">1年+ 经验</p>
+              <p class="text-sm text-gray-500 mt-1">LLM集成、AI Agent开发、LangChain框架、知识库构建</p>
+            </div>
+            <div class="border-l-4 border-amber-500 pl-4">
+              <h4 class="font-semibold text-gray-800">嵌入式开发</h4>
+              <p class="text-sm text-gray-600">2年+ 经验</p>
+              <p class="text-sm text-gray-500 mt-1">STM32、Arduino、C/C++编程、传感器应用、物联网开发</p>
             </div>
           </div>
         </div>

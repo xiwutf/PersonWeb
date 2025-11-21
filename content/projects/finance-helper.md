@@ -3,7 +3,7 @@ title: 智能理财助手小程序
 tech: [微信小程序, Node.js, Express, MySQL]
 description: 为年轻人量身定制的理财规划工具，提供个性化投资建议和财务管理功能
 demo_link: https://example.com/demo2
-source_link: https://github.com/溪午听风/finance-helper
+source_link: https://github.com/Lijing327
 cover: /images/projects/finance-helper.png
 slug: finance-helper
 date: 2024-01-10

@@ -99,7 +99,7 @@ const contactInfo = [
     type: 'github',
     icon: '🐙',
     label: 'GitHub',
-    link: 'https://github.com/溪午听风'
+    link: 'https://github.com/Lijing327'
   }
 ]
 </script> 
