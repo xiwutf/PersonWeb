@@ -1,43 +1,37 @@
 <template>
-  <header class="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-16">
+  <header class="fixed top-4 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8">
+    <div class="glass max-w-6xl mx-auto rounded-2xl transition-all duration-300">
+      <div class="flex justify-between items-center h-16 px-4">
         <!-- Logo 区域 -->
         <NuxtLink to="/" class="flex items-center space-x-3 group">
-          <div class="w-10 h-10 rounded-lg overflow-hidden shadow-sm group-hover:shadow-md transition-shadow border border-gray-200">
+          <div class="w-10 h-10 rounded-lg overflow-hidden shadow-sm group-hover:shadow-md transition-all duration-300 border border-gray-200 group-hover:scale-105">
             <img src="/images/avatar.jpg" alt="溪午听风" class="w-full h-full object-cover" />
           </div>
           <div class="hidden sm:block">
-            <span class="text-xl font-bold text-gray-800">溪午听风</span>
-            <p class="text-xs text-gray-500 -mt-1">开发让生活更高效</p>
+            <span class="text-xl font-bold text-gray-800 font-['Outfit']">溪午听风</span>
           </div>
         </NuxtLink>
 
         <!-- 桌面端导航菜单 -->
-        <nav class="hidden md:flex items-center space-x-8">
+        <nav class="hidden md:flex items-center space-x-2">
           <NuxtLink
             v-for="item in navigationItems"
             :key="item.path"
             :to="item.path"
-            class="relative text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200 py-2 px-1"
-            :class="{ 'text-blue-600': $route.path === item.path }"
+            class="relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 hover:bg-gray-100/50 hover:text-blue-600"
+            :class="{ 'bg-blue-50 text-blue-600 shadow-sm': $route.path === item.path, 'text-gray-600': $route.path !== item.path }"
           >
-            <span class="flex items-center space-x-1">
-              <span class="text-sm">{{ item.icon }}</span>
+            <span class="flex items-center space-x-1.5">
+              <span>{{ item.icon }}</span>
               <span>{{ item.title }}</span>
             </span>
-            <!-- 活跃状态下划线 -->
-            <div
-              v-if="$route.path === item.path"
-              class="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 rounded-full"
-            ></div>
           </NuxtLink>
           
           <!-- 搜索按钮 -->
           <NuxtLink
             to="/search"
-            class="flex items-center justify-center w-10 h-10 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all duration-200"
-            :class="{ 'text-blue-600 bg-blue-50': $route.path === '/search' }"
+            class="flex items-center justify-center w-10 h-10 rounded-xl text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-300 ml-2"
+            :class="{ 'text-blue-600 bg-blue-50 shadow-sm': $route.path === '/search' }"
             title="搜索"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -49,9 +43,9 @@
         <!-- 移动端菜单按钮 -->
         <button
           @click="toggleMobileMenu"
-          class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+          class="md:hidden p-2 rounded-xl hover:bg-gray-100 transition-colors"
         >
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
           </svg>
         </button>
@@ -59,17 +53,17 @@
 
       <!-- 移动端菜单 -->
       <div
-        v-if="isMobileMenuOpen"
-        class="md:hidden py-4 border-t border-gray-200 bg-white"
+        v-show="isMobileMenuOpen"
+        class="md:hidden border-t border-gray-100"
       >
-        <nav class="space-y-2">
+        <nav class="p-2 space-y-1">
           <NuxtLink
             v-for="item in navigationItems"
             :key="item.path"
             :to="item.path"
             @click="closeMobileMenu"
-            class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
-            :class="{ 'text-blue-600 bg-blue-50': $route.path === item.path }"
+            class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200"
+            :class="{ 'bg-blue-50 text-blue-600': $route.path === item.path, 'text-gray-600 hover:bg-gray-50': $route.path !== item.path }"
           >
             <span class="text-lg">{{ item.icon }}</span>
             <span class="font-medium">{{ item.title }}</span>
@@ -79,8 +73,8 @@
           <NuxtLink
             to="/search"
             @click="closeMobileMenu"
-            class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
-            :class="{ 'text-blue-600 bg-blue-50': $route.path === '/search' }"
+            class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200"
+            :class="{ 'bg-blue-50 text-blue-600': $route.path === '/search', 'text-gray-600 hover:bg-gray-50': $route.path !== '/search' }"
           >
             <span class="text-lg">🔍</span>
             <span class="font-medium">搜索</span>
@@ -135,4 +129,4 @@ const toggleMobileMenu = () => {
 const closeMobileMenu = () => {
   isMobileMenuOpen.value = false
 }
-</script> 
+</script>
