@@ -1,0 +1,39 @@
+name: Deploy Website
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 1. 拉取代码
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      # 2. 安装 Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      # 3. 安装依赖
+      - name: Install dependencies
+        run: npm install
+      
+      # 4. 构建 Nuxt 静态站点
+      - name: Build static site
+        run: npm run generate
+
+      # 5. 同步 dist/ 到服务器 /var/www/html/
+      - name: Deploy to server
+        uses: easingthemes/ssh-deploy@v5.0.3
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          ARGS: "-avz --delete"
+          SOURCE: "dist/"
+          TARGET: "/var/www/html/"
