@@ -20,7 +20,7 @@
           <div class="md:w-2/3 p-8">
             <h3 class="text-2xl font-semibold text-gray-800 mb-4">个人简介</h3>
             <p class="text-gray-600 mb-4">
-              你好！我是溪午听风，一名热爱技术的全栈开发者。专注于Web开发、AI应用开发、Revit插件开发、移动端应用开发以及嵌入式系统开发。
+              你好！我是溪午听风，一名热爱技术的全栈开发者。专注于Web开发、AI应用开发、Revit插件开发、移动端应用开发。
               拥有丰富的项目经验，致力于用技术解决实际问题，提升工作效率。
             </p>
             <p class="text-gray-600 mb-4">
