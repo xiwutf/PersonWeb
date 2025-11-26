@@ -117,6 +117,11 @@ const navigationItems = [
     icon: '📝'
   },
   {
+    title: 'AI 实验室',
+    path: '/ai',
+    icon: '🔮'
+  },
+  {
     title: '生活随笔',
     path: '/life',
     icon: '☕'
@@ -127,11 +132,6 @@ const navigationItems = [
     icon: '👤'
   }
 ]
-
-// 切换移动端菜单
-const toggleMobileMenu = () => {
-  isMobileMenuOpen.value = !isMobileMenuOpen.value
-}
 
 // 关闭移动端菜单
 const closeMobileMenu = () => {

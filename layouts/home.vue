@@ -3,8 +3,8 @@
     <!-- 头部导航 -->
     <Header />
     
-    <!-- 主要内容区域 -->
-    <main class="flex-1 pt-24">
+    <!-- 主要内容区域 (无顶部内边距，用于沉浸式 Hero) -->
+    <main class="flex-1">
       <slot />
     </main>
     
@@ -14,12 +14,9 @@
 </template>
 
 <script setup>
-// 导入组件（Nuxt 3 会自动导入 components 目录下的组件）
-
 // 记录访问量
 onMounted(async () => {
   try {
-    // 使用 localStorage 防止重复计数（简单的防刷机制）
     const lastVisit = localStorage.getItem('lastVisit')
     const today = new Date().toISOString().split('T')[0]
     

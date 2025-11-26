@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex flex-col">
+  <div class="min-h-screen flex flex-col bg-[#050505] text-white">
     <!-- 头部导航 -->
     <Header />
     
@@ -14,12 +14,9 @@
 </template>
 
 <script setup>
-// 导入组件（Nuxt 3 会自动导入 components 目录下的组件）
-
-// 记录访问量
+// 记录访问量逻辑 (与 default 布局保持一致)
 onMounted(async () => {
   try {
-    // 使用 localStorage 防止重复计数（简单的防刷机制）
     const lastVisit = localStorage.getItem('lastVisit')
     const today = new Date().toISOString().split('T')[0]
     

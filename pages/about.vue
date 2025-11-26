@@ -1,251 +1,272 @@
 <template>
-  <div class="container mx-auto px-4 py-8">
-    <div class="max-w-4xl mx-auto">
-      <!-- 页面标题 -->
-      <div class="text-center mb-12">
-        <h1 class="text-4xl font-bold text-gray-800 mb-4">👤 关于我</h1>
-        <p class="text-xl text-gray-600">了解更多关于溪午听风的信息</p>
-      </div>
+  <div class="min-h-screen bg-[#0f172a] text-slate-200 relative overflow-hidden font-['Outfit']">
+    <!-- 全局背景噪点 -->
+    <div class="fixed inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none z-50"
+         style="background-image: url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E&quot;);">
+    </div>
 
-      <!-- 个人介绍卡片 -->
-      <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-12">
-        <div class="md:flex">
-          <div class="md:w-1/3 bg-gradient-to-br from-blue-500 to-purple-600 p-8 text-white text-center">
-            <div class="w-32 h-32 bg-white rounded-full mx-auto mb-4 overflow-hidden border-2 border-blue-200">
-              <img src="/images/avatar.jpg" alt="溪午听风头像" class="w-full h-full object-cover" />
-            </div>
-            <h2 class="text-2xl font-bold mb-2">溪午听风</h2>
-            <p class="text-blue-100">全栈开发者 & Revit插件专家</p>
+    <!-- 动态背景光斑 -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-blue-600/10 rounded-full blur-[120px] animate-pulse mix-blend-screen"></div>
+      <div class="absolute bottom-0 right-0 w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[120px] animate-blob mix-blend-screen"></div>
+      <div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-emerald-600/10 rounded-full blur-[120px] animate-blob animation-delay-2000 mix-blend-screen"></div>
+    </div>
+
+    <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      
+      <!-- 个人资料 Hero 区域 -->
+      <div class="flex flex-col items-center text-center mb-24">
+        <div class="relative mb-8 group">
+          <!-- 动态光环 -->
+          <div class="absolute -inset-4 bg-gradient-to-r from-blue-500 via-purple-500 to-emerald-500 rounded-full opacity-75 blur-lg group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
+          <div class="relative w-40 h-40 rounded-full overflow-hidden border-4 border-slate-800 shadow-2xl">
+            <img src="/images/avatar.jpg" alt="溪午听风" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700" />
           </div>
-          <div class="md:w-2/3 p-8">
-            <h3 class="text-2xl font-semibold text-gray-800 mb-4">个人简介</h3>
-            <p class="text-gray-600 mb-4">
-              你好！我是溪午听风，一名热爱技术的全栈开发者。专注于Web开发、AI应用开发、Revit插件开发、移动端应用开发。
-              拥有丰富的项目经验，致力于用技术解决实际问题，提升工作效率。
-            </p>
-            <p class="text-gray-600 mb-4">
-              近年来，我深入探索AI领域，专注于大语言模型（LLM）应用开发，使用LangChain框架构建智能Agent系统。
-              在AI Agent开发、LLM集成、知识库构建等方面积累了丰富经验。
-            </p>
-            <p class="text-gray-600 mb-6">
-              同时，我也具备扎实的嵌入式开发能力，熟悉C/C++编程、STM32开发、Arduino平台等。
-              在单片机应用、传感器集成、物联网设备开发等方面有实际项目经验。
-            </p>
-            <p class="text-gray-600 mb-6">
-              除了技术开发，我还热衷于分享知识和经验，通过博客记录技术心得、项目总结和生活感悟。
-              同时对理财投资也有一定的研究和实践经验。
-            </p>
-            
-            <!-- 技能标签 -->
-            <div class="mb-6">
-              <h4 class="text-lg font-semibold text-gray-800 mb-3">技能专长</h4>
-              <div class="flex flex-wrap gap-2">
-                <span class="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">Vue.js</span>
-                <span class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-sm">Nuxt.js</span>
-                <span class="px-3 py-1 bg-yellow-100 text-yellow-600 rounded-full text-sm">JavaScript</span>
-                <span class="px-3 py-1 bg-purple-100 text-purple-600 rounded-full text-sm">Node.js</span>
-                <span class="px-3 py-1 bg-red-100 text-red-600 rounded-full text-sm">Revit API</span>
-                <span class="px-3 py-1 bg-indigo-100 text-indigo-600 rounded-full text-sm">C#</span>
-                <span class="px-3 py-1 bg-pink-100 text-pink-600 rounded-full text-sm">微信小程序</span>
-                <span class="px-3 py-1 bg-teal-100 text-teal-600 rounded-full text-sm">MongoDB</span>
-                <span class="px-3 py-1 bg-cyan-100 text-cyan-600 rounded-full text-sm">Python</span>
-                <span class="px-3 py-1 bg-orange-100 text-orange-600 rounded-full text-sm">AI/LLM</span>
-                <span class="px-3 py-1 bg-rose-100 text-rose-600 rounded-full text-sm">LangChain</span>
-                <span class="px-3 py-1 bg-emerald-100 text-emerald-600 rounded-full text-sm">机器学习</span>
-                <span class="px-3 py-1 bg-amber-100 text-amber-600 rounded-full text-sm">C/C++</span>
-                <span class="px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-sm">嵌入式开发</span>
-                <span class="px-3 py-1 bg-violet-100 text-violet-600 rounded-full text-sm">STM32</span>
-                <span class="px-3 py-1 bg-fuchsia-100 text-fuchsia-600 rounded-full text-sm">Arduino</span>
-              </div>
-            </div>
+          <div class="absolute bottom-2 right-2 w-8 h-8 bg-emerald-500 rounded-full border-4 border-slate-900 flex items-center justify-center" title="Online">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
           </div>
+        </div>
+        
+        <h1 class="text-5xl md:text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-200 via-white to-purple-200 tracking-tight">
+          溪午听风
+        </h1>
+        <p class="text-xl text-blue-400 font-medium mb-6">全栈开发者 & AI 探索者</p>
+        <p class="max-w-2xl text-slate-400 leading-relaxed text-lg">
+          热爱技术，痴迷代码。在数字世界中构建未来，在算法海洋里寻找真理。<br>
+          专注于 Web 全栈、AI Agent 开发与 Revit 二次开发。
+        </p>
+        
+        <!-- 社交链接 -->
+        <div class="flex gap-4 mt-8">
+          <a v-for="social in socialLinks" :key="social.name" :href="social.link" target="_blank" 
+             class="w-12 h-12 rounded-full bg-slate-800/50 backdrop-blur-md border border-white/10 flex items-center justify-center text-slate-400 hover:bg-white hover:text-slate-900 hover:scale-110 transition-all duration-300 group">
+            <i :class="social.icon" class="text-xl"></i>
+          </a>
         </div>
       </div>
 
-      <!-- 联系方式 -->
-      <div class="grid md:grid-cols-2 gap-8 mb-12">
-        <!-- 联系信息 -->
-        <div class="bg-white rounded-lg shadow-md p-6">
-          <h3 class="text-xl font-semibold text-gray-800 mb-6 border-b-2 border-blue-500 pb-2">
-            📬 联系方式
-          </h3>
-          <div class="space-y-4">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <span class="text-blue-600">📧</span>
-              </div>
-              <div>
-                <p class="text-sm text-gray-500">邮箱</p>
-                <p class="text-gray-800">255106739@qq.com</p>
-              </div>
+      <!-- 技能矩阵 -->
+      <div class="mb-24">
+        <h2 class="text-3xl font-bold text-center mb-12 flex items-center justify-center gap-3">
+          <span class="text-blue-500">⚡</span> 技能矩阵
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div v-for="category in skillCategories" :key="category.name" 
+               class="bg-slate-800/30 backdrop-blur-md border border-white/5 rounded-2xl p-6 hover:bg-slate-800/50 transition-all duration-500 hover:border-blue-500/30 group">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br mb-4 flex items-center justify-center text-2xl shadow-lg" :class="category.bgClass">
+              {{ category.icon }}
             </div>
-            
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                <span class="text-green-600">💬</span>
-              </div>
-              <div>
-                <p class="text-sm text-gray-500">微信</p>
-                <p class="text-gray-800">LinXi-5152</p>
-              </div>
-            </div>
-            
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                <span class="text-gray-600">🐙</span>
-              </div>
-              <div>
-                <p class="text-sm text-gray-500">GitHub</p>
-                <a href="https://github.com/Lijing327" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800">github.com/Lijing327</a>
-              </div>
-            </div>
-            
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <span class="text-blue-600">💼</span>
-              </div>
-              <div>
-                <p class="text-sm text-gray-500">QQ</p>
-                <a href="#" class="text-blue-600 hover:text-blue-800">255106739</a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 二维码区域 -->
-        <div class="bg-white rounded-lg shadow-md p-6">
-          <h3 class="text-xl font-semibold text-gray-800 mb-6 border-b-2 border-green-500 pb-2">
-            📱 扫码关注
-          </h3>
-          <div class="flex justify-center">
-            <!-- 微信二维码 -->
-            <div class="text-center">
-              <div class="w-40 h-40 bg-white rounded-lg mx-auto mb-3 overflow-hidden border border-gray-200 shadow-sm">
-                <img src="/images/wechat-qr.png" alt="微信二维码" class="w-full h-full object-cover" />
-              </div>
-              <div class="flex items-center justify-center gap-2 mb-2">
-                <span class="text-green-500">💬</span>
-                <p class="text-sm font-medium text-gray-700">微信扫码加好友</p>
-              </div>
-              <p class="text-xs text-gray-500">LinXi-5152</p>
-            </div>
-          </div>
-          
-          <!-- 公众号敬请期待 -->
-          <div class="mt-6 pt-4 border-t border-gray-100">
-            <div class="text-center">
-              <div class="w-16 h-16 bg-gray-100 rounded-lg mx-auto mb-2 flex items-center justify-center">
-                <span class="text-gray-400 text-2xl">📱</span>
-              </div>
-              <p class="text-sm text-gray-400">公众号敬请期待</p>
-              <p class="text-xs text-gray-300 mt-1">技术分享与经验交流</p>
+            <h3 class="text-xl font-bold text-slate-200 mb-4">{{ category.name }}</h3>
+            <div class="flex flex-wrap gap-2">
+              <span v-for="skill in category.skills" :key="skill" 
+                    class="px-2 py-1 bg-slate-700/50 text-slate-300 text-xs rounded border border-white/5 group-hover:border-white/10 transition-colors">
+                {{ skill }}
+              </span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- 项目成就和技术经验 -->
-      <div class="grid md:grid-cols-2 gap-8 mb-12">
-        <div class="bg-white rounded-lg shadow-md p-6">
-          <h3 class="text-xl font-semibold text-gray-800 mb-6 border-b-2 border-purple-500 pb-2">
-            🚀 项目成就
-          </h3>
-          <div class="space-y-4">
-            <div class="border-l-4 border-blue-500 pl-4">
-              <h4 class="font-semibold text-gray-800">恋爱魔方小程序</h4>
-              <p class="text-sm text-gray-600">个人项目 | 2024年</p>
-              <p class="text-sm text-gray-500 mt-1">累计用户5000+，日活跃用户800+，好评率98%的情侣互动小程序</p>
-            </div>
-            <div class="border-l-4 border-green-500 pl-4">
-              <h4 class="font-semibold text-gray-800">Revit插件工具集</h4>
-              <p class="text-sm text-gray-600">商业产品 | 2023-2024年</p>
-              <p class="text-sm text-gray-500 mt-1">开发多款Revit插件，累计销售1000+份，帮助建筑师提升工作效率</p>
-            </div>
-            <div class="border-l-4 border-orange-500 pl-4">
-              <h4 class="font-semibold text-gray-800">个人技术博客</h4>
-              <p class="text-sm text-gray-600">知识分享 | 2023年至今</p>
-              <p class="text-sm text-gray-500 mt-1">分享技术心得、项目经验和理财知识，持续输出高质量内容</p>
-            </div>
-            <div class="border-l-4 border-cyan-500 pl-4">
-              <h4 class="font-semibold text-gray-800">SmartAssistantAgent</h4>
-              <p class="text-sm text-gray-600">AI项目 | 2024年</p>
-              <p class="text-sm text-gray-500 mt-1">基于LangChain的智能助手系统，支持多工具集成和知识库检索</p>
+      <!-- 经历与成就 -->
+      <div class="grid md:grid-cols-2 gap-12 mb-24">
+        <!-- 左侧：项目成就 -->
+        <div>
+          <h2 class="text-2xl font-bold mb-8 flex items-center gap-3">
+            <span class="text-purple-500">🚀</span> 项目成就
+          </h2>
+          <div class="space-y-6">
+            <div v-for="(item, index) in achievements" :key="index" 
+                 class="relative pl-8 border-l-2 border-slate-700 hover:border-purple-500 transition-colors duration-300 group">
+              <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-slate-900 border-2 border-slate-600 group-hover:border-purple-500 transition-colors"></div>
+              <h3 class="text-lg font-bold text-slate-200 group-hover:text-purple-400 transition-colors">{{ item.title }}</h3>
+              <p class="text-sm text-purple-400/80 mb-2">{{ item.type }} | {{ item.year }}</p>
+              <p class="text-slate-400 text-sm leading-relaxed">{{ item.desc }}</p>
             </div>
           </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow-md p-6">
-          <h3 class="text-xl font-semibold text-gray-800 mb-6 border-b-2 border-orange-500 pb-2">
-            💡 技术经验
-          </h3>
-          <div class="space-y-4">
-            <div class="border-l-4 border-blue-500 pl-4">
-              <h4 class="font-semibold text-gray-800">全栈开发</h4>
-              <p class="text-sm text-gray-600">3年+ 经验</p>
-              <p class="text-sm text-gray-500 mt-1">熟练掌握Vue.js、Nuxt.js、Node.js等现代Web开发技术栈</p>
-            </div>
-            <div class="border-l-4 border-green-500 pl-4">
-              <h4 class="font-semibold text-gray-800">移动端开发</h4>
-              <p class="text-sm text-gray-600">2年+ 经验</p>
-              <p class="text-sm text-gray-500 mt-1">微信小程序开发，具备完整的产品设计和开发能力</p>
-            </div>
-            <div class="border-l-4 border-purple-500 pl-4">
-              <h4 class="font-semibold text-gray-800">插件开发</h4>
-              <p class="text-sm text-gray-600">2年+ 经验</p>
-              <p class="text-sm text-gray-500 mt-1">Revit API开发，C#编程，专业软件二次开发</p>
-            </div>
-            <div class="border-l-4 border-cyan-500 pl-4">
-              <h4 class="font-semibold text-gray-800">AI应用开发</h4>
-              <p class="text-sm text-gray-600">1年+ 经验</p>
-              <p class="text-sm text-gray-500 mt-1">LLM集成、AI Agent开发、LangChain框架、知识库构建</p>
-            </div>
-            <div class="border-l-4 border-amber-500 pl-4">
-              <h4 class="font-semibold text-gray-800">嵌入式开发</h4>
-              <p class="text-sm text-gray-600">2年+ 经验</p>
-              <p class="text-sm text-gray-500 mt-1">STM32、Arduino、C/C++编程、传感器应用、物联网开发</p>
+        <!-- 右侧：技术历程 -->
+        <div>
+          <h2 class="text-2xl font-bold mb-8 flex items-center gap-3">
+            <span class="text-emerald-500">💡</span> 技术历程
+          </h2>
+          <div class="space-y-6">
+            <div v-for="(item, index) in experience" :key="index" 
+                 class="relative pl-8 border-l-2 border-slate-700 hover:border-emerald-500 transition-colors duration-300 group">
+              <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-slate-900 border-2 border-slate-600 group-hover:border-emerald-500 transition-colors"></div>
+              <h3 class="text-lg font-bold text-slate-200 group-hover:text-emerald-400 transition-colors">{{ item.title }}</h3>
+              <p class="text-sm text-emerald-400/80 mb-2">{{ item.duration }}</p>
+              <p class="text-slate-400 text-sm leading-relaxed">{{ item.desc }}</p>
             </div>
           </div>
         </div>
       </div>
 
       <!-- 兴趣爱好 -->
-      <div class="bg-white rounded-lg shadow-md p-6 mb-12">
-        <h3 class="text-xl font-semibold text-gray-800 mb-6 border-b-2 border-pink-500 pb-2">
-          🎯 兴趣爱好
-        </h3>
-        <div class="grid md:grid-cols-4 gap-4">
-          <div class="text-center p-4 rounded-lg bg-blue-50 hover:bg-blue-100 transition-colors">
-            <span class="text-2xl mb-2 block">💻</span>
-            <p class="text-sm text-gray-700">编程开发</p>
-          </div>
-          <div class="text-center p-4 rounded-lg bg-green-50 hover:bg-green-100 transition-colors">
-            <span class="text-2xl mb-2 block">📚</span>
-            <p class="text-sm text-gray-700">技术学习</p>
-          </div>
-          <div class="text-center p-4 rounded-lg bg-purple-50 hover:bg-purple-100 transition-colors">
-            <span class="text-2xl mb-2 block">💰</span>
-            <p class="text-sm text-gray-700">投资理财</p>
-          </div>
-          <div class="text-center p-4 rounded-lg bg-orange-50 hover:bg-orange-100 transition-colors">
-            <span class="text-2xl mb-2 block">✈️</span>
-            <p class="text-sm text-gray-700">旅行摄影</p>
+      <div class="mb-24">
+        <h2 class="text-3xl font-bold text-center mb-12 flex items-center justify-center gap-3">
+          <span class="text-pink-500">🎯</span> 兴趣爱好
+        </h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div v-for="hobby in hobbies" :key="hobby.name" 
+               class="bg-slate-800/30 backdrop-blur-md border border-white/5 rounded-2xl p-6 text-center hover:bg-slate-800/50 hover:-translate-y-1 transition-all duration-300">
+            <div class="text-4xl mb-3">{{ hobby.icon }}</div>
+            <div class="font-medium text-slate-300">{{ hobby.name }}</div>
           </div>
         </div>
       </div>
 
-      <!-- 返回首页链接 -->
-      <div class="text-center">
-        <NuxtLink to="/" class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium">
-          ← 返回首页
-        </NuxtLink>
+      <!-- 联系方式 -->
+      <div class="bg-gradient-to-r from-blue-900/40 to-purple-900/40 backdrop-blur-md border border-white/10 rounded-3xl p-8 md:p-12 text-center relative overflow-hidden">
+        <div class="relative z-10">
+          <h2 class="text-3xl font-bold mb-8">保持联系</h2>
+          <div class="grid md:grid-cols-2 gap-8 max-w-2xl mx-auto">
+            <div class="bg-slate-900/50 rounded-xl p-6 flex items-center gap-4 hover:bg-slate-800/50 transition-colors">
+              <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center text-2xl">💬</div>
+              <div class="text-left">
+                <div class="text-xs text-slate-400 uppercase tracking-wider">WeChat</div>
+                <div class="text-lg font-mono text-green-400">LinXi-5152</div>
+              </div>
+            </div>
+            <div class="bg-slate-900/50 rounded-xl p-6 flex items-center gap-4 hover:bg-slate-800/50 transition-colors">
+              <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center text-2xl">📧</div>
+              <div class="text-left">
+                <div class="text-xs text-slate-400 uppercase tracking-wider">Email</div>
+                <div class="text-lg font-mono text-blue-400">255106739@qq.com</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 二维码 -->
+          <div class="mt-8 pt-8 border-t border-white/5 flex flex-col items-center">
+             <div class="w-32 h-32 bg-white p-2 rounded-xl mb-4">
+                <img src="/images/wechat-qr.png" alt="微信二维码" class="w-full h-full object-cover" />
+             </div>
+             <p class="text-sm text-slate-400">扫码加好友，请注明来意</p>
+          </div>
+        </div>
       </div>
+
     </div>
   </div>
 </template>
 
+<script setup>
+const socialLinks = [
+  { name: 'GitHub', icon: 'fab fa-github', link: 'https://github.com/Lijing327' },
+  { name: 'Email', icon: 'fas fa-envelope', link: 'mailto:255106739@qq.com' },
+  { name: 'Bilibili', icon: 'fas fa-play-circle', link: '#' }
+]
+
+const skillCategories = [
+  {
+    name: 'Web 全栈',
+    icon: '💻',
+    bgClass: 'from-blue-500/20 to-cyan-500/20 text-blue-400',
+    skills: ['Vue.js', 'Nuxt.js', 'Node.js', 'TypeScript', 'Tailwind CSS', 'MongoDB']
+  },
+  {
+    name: 'AI & LLM',
+    icon: '🧠',
+    bgClass: 'from-purple-500/20 to-pink-500/20 text-purple-400',
+    skills: ['LangChain', 'OpenAI API', 'RAG', 'Agent Design', 'Python', 'Prompt Engineering']
+  },
+  {
+    name: 'Revit 开发',
+    icon: '🏗️',
+    bgClass: 'from-orange-500/20 to-red-500/20 text-orange-400',
+    skills: ['Revit API', 'C#', '.NET', 'WPF', 'BIM', '自动化插件']
+  },
+  {
+    name: '嵌入式 & IoT',
+    icon: '🔌',
+    bgClass: 'from-emerald-500/20 to-teal-500/20 text-emerald-400',
+    skills: ['C/C++', 'STM32', 'Arduino', 'ESP32', '传感器应用', '物联网协议']
+  }
+]
+
+const achievements = [
+  {
+    title: 'SmartAssistantAgent',
+    type: 'AI 项目',
+    year: '2024',
+    desc: '基于 LangChain 的智能助手系统，支持多工具集成和知识库检索，实现复杂的任务自动化。'
+  },
+  {
+    title: '恋爱魔方小程序',
+    type: '个人项目',
+    year: '2024',
+    desc: '累计用户 5000+，日活跃用户 800+，好评率 98% 的情侣互动小程序，提供独特的情感连接体验。'
+  },
+  {
+    title: 'Revit 插件工具集',
+    type: '商业产品',
+    year: '2023-2024',
+    desc: '开发多款 Revit 插件，累计销售 1000+ 份，帮助建筑师自动化繁琐流程，显著提升工作效率。'
+  }
+]
+
+const experience = [
+  {
+    title: '全栈开发',
+    duration: '3年+ 经验',
+    desc: '深耕现代 Web 技术栈，具备从前端交互到后端架构的完整开发能力，注重用户体验与代码质量。'
+  },
+  {
+    title: '移动端开发',
+    duration: '2年+ 经验',
+    desc: '专注于微信小程序生态，具备完整的产品设计、开发与运营能力，打造过数款受欢迎的小程序产品。'
+  },
+  {
+    title: 'AI 应用开发',
+    duration: '1年+ 经验',
+    desc: '紧跟 AI 浪潮，深入研究 LLM 应用落地，在 Agent 开发、知识库构建等方面积累了实战经验。'
+  }
+]
+
+const hobbies = [
+  { name: '编程开发', icon: '💻' },
+  { name: '技术学习', icon: '📚' },
+  { name: '投资理财', icon: '💰' },
+  { name: '旅行摄影', icon: '📸' }
+]
+
+useHead({
+  title: '关于我 - 溪午听风',
+  meta: [
+    { name: 'description', content: '全栈开发者 & AI 探索者' }
+  ]
+})
+</script>
+
 <style scoped>
-.container {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+.animate-blob {
+  animation: blob 7s infinite;
 }
-</style> 
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+@keyframes blob {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-tilt {
+  animation: tilt 10s infinite linear;
+}
+@keyframes tilt {
+  0%, 50%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(1deg); }
+  75% { transform: rotate(-1deg); }
+}
+</style>

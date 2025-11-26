@@ -1,168 +1,274 @@
 <template>
-  <div class="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+  <div class="min-h-screen bg-slate-50 overflow-x-hidden selection:bg-blue-500/30">
+    <!-- 全局噪点纹理 -->
+    <div class="fixed inset-0 pointer-events-none opacity-[0.03] z-50 mix-blend-overlay" style="background-image: url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E&quot;);"></div>
+
     <!-- Hero Banner -->
-    <section class="relative overflow-hidden">
-      <!-- 背景装饰 -->
-      <div class="absolute inset-0">
-        <div class="absolute top-10 left-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob"></div>
-        <div class="absolute top-0 right-4 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
-        <div class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
+    <section class="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-[#0f172a]">
+      <!-- 动态背景装饰 -->
+      <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-600/20 rounded-full mix-blend-screen filter blur-[100px] animate-blob"></div>
+        <div class="absolute top-[20%] right-[-10%] w-[40%] h-[40%] bg-purple-600/20 rounded-full mix-blend-screen filter blur-[100px] animate-blob animation-delay-2000"></div>
+        <div class="absolute bottom-[-10%] left-[20%] w-[40%] h-[40%] bg-cyan-600/20 rounded-full mix-blend-screen filter blur-[100px] animate-blob animation-delay-4000"></div>
+        
+        <!-- 网格背景 -->
+        <div class="absolute inset-0 bg-[url('/images/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))] opacity-20"></div>
       </div>
       
       <!-- 主要内容 -->
-      <div class="relative max-w-6xl mx-auto px-4 py-20 sm:py-32">
-              <!-- 头部介绍 -->
-        <div class="text-center">
-          <div class="w-32 h-32 rounded-full mx-auto mb-8 shadow-xl overflow-hidden border-4 border-white">
-            <img src="/images/avatar.jpg" alt="溪午听风头像" class="w-full h-full object-cover" />
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+          <!-- 左侧文本 -->
+          <div class="text-center lg:text-left space-y-8" data-aos="fade-right">
+            <div class="inline-flex items-center px-4 py-2 bg-white/5 backdrop-blur-md rounded-full border border-white/10 mb-4 animate-float hover:bg-white/10 transition-colors cursor-default">
+              <span class="flex h-2 w-2 relative mr-3">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              </span>
+              <span class="text-blue-200 font-medium text-sm">欢迎来到我的数字花园</span>
+            </div>
+            
+            <h1 class="text-5xl lg:text-7xl font-bold text-white tracking-tight leading-tight">
+              你好，我是 <br/>
+              <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 animate-gradient-x">溪午听风</span>
+            </h1>
+            
+            <!-- 轮播文字 -->
+            <div class="h-12 text-2xl lg:text-3xl text-slate-400 font-medium flex items-center justify-center lg:justify-start overflow-hidden">
+              <span class="mr-3">我是</span>
+              <div class="relative h-full w-64 text-left">
+                <transition-group name="slide-up" tag="div" class="absolute top-0 left-0 w-full">
+                  <span v-if="currentRoleIndex === 0" key="0" class="block text-blue-400 font-bold">全栈开发者</span>
+                  <span v-if="currentRoleIndex === 1" key="1" class="block text-purple-400 font-bold">AI应用探索者</span>
+                  <span v-if="currentRoleIndex === 2" key="2" class="block text-cyan-400 font-bold">Revit插件专家</span>
+                  <span v-if="currentRoleIndex === 3" key="3" class="block text-orange-400 font-bold">终身学习者</span>
+                </transition-group>
+              </div>
+            </div>
+            
+            <p class="text-lg text-slate-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+              专注于构建高效、优雅的数字体验。无论是复杂的企业级应用，还是有趣的创意小工具，我都乐在其中。
+            </p>
+            
+            <div class="flex flex-wrap justify-center lg:justify-start gap-4 pt-4">
+              <NuxtLink to="/projects" class="relative inline-flex group">
+                <div class="absolute transition-all duration-1000 opacity-70 -inset-px bg-gradient-to-r from-[#44BCFF] via-[#FF44EC] to-[#FF675E] rounded-xl blur-lg group-hover:opacity-100 group-hover:-inset-1 group-hover:duration-200 animate-tilt"></div>
+                <button class="relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-200 bg-slate-900 font-pj rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900">
+                  浏览项目
+                  <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                </button>
+              </NuxtLink>
+              
+              <NuxtLink to="/about" class="inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-slate-300 transition-all duration-200 bg-transparent border border-slate-700 rounded-xl hover:bg-slate-800 hover:text-white hover:border-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900">
+                关于我
+              </NuxtLink>
+            </div>
           </div>
-          <h1 class="text-5xl lg:text-7xl font-bold text-gray-800 mb-6">
-            你好，我是 <span class="text-gradient bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">溪午听风</span>
-          </h1>
-          <div class="text-2xl lg:text-3xl text-gray-600 mb-6 font-medium">
-            全栈开发者 · AI应用开发者 · 嵌入式开发者 · Revit插件专家 · 技术博主
-          </div>
-          <p class="text-xl text-gray-500 max-w-3xl mx-auto mb-8 leading-relaxed">
-            <span class="block mb-2">🚀 开发让生活更高效，代码就是我的魔方</span>
-            专注于Web开发、AI应用开发、Revit插件开发和移动端应用开发，用技术解决实际问题，分享知识与经验
-          </p>
           
-          <!-- 快速导航按钮 -->
-          <div class="flex flex-wrap justify-center gap-4 mt-12">
-            <NuxtLink
-              v-for="item in quickNavItems"
-              :key="item.path"
-              :to="item.path"
-              class="group inline-flex items-center px-6 py-3 bg-white/80 backdrop-blur-sm rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-200"
-            >
-              <span class="text-2xl mr-3 group-hover:scale-110 transition-transform">{{ item.icon }}</span>
-              <span class="font-semibold text-gray-700 group-hover:text-gray-900">{{ item.title }}</span>
-            </NuxtLink>
+          <!-- 右侧视觉元素 -->
+          <div class="relative hidden lg:block" data-aos="fade-left">
+            <div class="relative w-full max-w-sm mx-auto aspect-square">
+              <!-- 光晕背景 -->
+              <div class="absolute inset-0 bg-gradient-to-tr from-blue-500 to-purple-500 rounded-[2rem] rotate-6 opacity-30 blur-2xl animate-pulse"></div>
+              
+              <TiltCard class="w-full h-full">
+                <div class="w-full h-full bg-slate-800/50 rounded-[2rem] shadow-2xl overflow-hidden border border-white/10 backdrop-blur-xl relative group">
+                  <img src="/images/avatar.jpg" alt="Avatar" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent"></div>
+                  
+                  <!-- 悬浮标签 -->
+                  <div class="absolute bottom-6 left-6 right-6 p-4 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 shadow-lg">
+                    <div class="flex items-center justify-between">
+                      <div>
+                        <h3 class="font-bold text-white">全栈开发者</h3>
+                        <p class="text-xs text-slate-300">Vue / Nuxt / Node.js</p>
+                      </div>
+                      <div class="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center text-blue-400 border border-blue-500/30">
+                        <i class="fas fa-code"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </TiltCard>
+              
+              <!-- 装饰性悬浮卡片 -->
+              <div class="absolute -right-8 top-12 p-3 bg-slate-800/80 backdrop-blur-md rounded-xl shadow-xl border border-white/10 animate-float-delayed w-40 z-20">
+                <div class="flex items-center gap-2 mb-1">
+                  <div class="w-6 h-6 bg-green-500/20 rounded-md flex items-center justify-center text-green-400 text-xs border border-green-500/30">
+                    <i class="fas fa-check"></i>
+                  </div>
+                  <span class="font-semibold text-xs text-slate-200">项目已上线</span>
+                </div>
+                <div class="w-full bg-slate-700 rounded-full h-1">
+                  <div class="bg-green-500 h-1 rounded-full w-full shadow-[0_0_10px_rgba(34,197,94,0.5)]"></div>
+                </div>
+              </div>
+              
+              <div class="absolute -left-6 bottom-24 p-3 bg-slate-800/80 backdrop-blur-md rounded-xl shadow-xl border border-white/10 animate-float w-36 z-20">
+                <div class="flex items-center gap-2">
+                  <div class="w-6 h-6 bg-purple-500/20 rounded-md flex items-center justify-center text-purple-400 text-xs border border-purple-500/30">
+                    <i class="fas fa-magic"></i>
+                  </div>
+                  <div>
+                    <div class="font-semibold text-xs text-slate-200">AI 驱动</div>
+                    <div class="text-[10px] text-slate-400">智能助手</div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 最新内容展示 -->
-    <section class="py-20 bg-white">
-      <div class="max-w-6xl mx-auto px-4">
-        <div class="text-center mb-16">
-          <h2 class="text-4xl font-bold text-gray-800 mb-4">最新内容</h2>
-          <p class="text-xl text-gray-600">探索我的最新作品与技术分享</p>
         </div>
         
-        <div class="grid lg:grid-cols-3 gap-8">
-          <!-- 最新工具 -->
-          <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-8 border border-gray-100">
-            <div class="flex items-center mb-6">
-              <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mr-4">
-                <span class="text-2xl">🔧</span>
-              </div>
-              <h3 class="text-xl font-bold text-gray-800">最新工具</h3>
+        <!-- 滚动提示 -->
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 cursor-pointer group" @click="scrollToContent">
+          <div class="flex flex-col items-center gap-2">
+            <span class="text-xs text-slate-500 uppercase tracking-widest group-hover:text-blue-400 transition-colors">Scroll</span>
+            <div class="w-5 h-8 border-2 border-slate-600 rounded-full flex justify-center p-1 group-hover:border-blue-400 transition-colors">
+              <div class="w-1 h-2 bg-slate-500 rounded-full animate-scroll-down group-hover:bg-blue-400"></div>
             </div>
-            <div class="space-y-4">
-              <div class="border-l-4 border-blue-500 pl-4 py-2">
-                <h4 class="font-semibold text-gray-800">批量族加载器</h4>
-                <p class="text-sm text-gray-600 mt-1">快速批量加载Revit族文件，提升工作效率</p>
-                <span class="inline-block mt-2 px-3 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">¥19.9</span>
-              </div>
-              <div class="border-l-4 border-blue-300 pl-4 py-2">
-                <h4 class="font-semibold text-gray-800">智能标注助手</h4>
-                <p class="text-sm text-gray-600 mt-1">自动化标注生成工具，精准高效</p>
-                <span class="inline-block mt-2 px-3 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">¥29.9</span>
-              </div>
-            </div>
-            <NuxtLink to="/tools" class="inline-flex items-center mt-6 text-blue-600 hover:text-blue-800 font-medium group">
-              查看全部工具
-              <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-              </svg>
-            </NuxtLink>
-          </div>
-
-          <!-- 最新项目 -->
-          <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-8 border border-gray-100">
-            <div class="flex items-center mb-6">
-              <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mr-4">
-                <span class="text-2xl">🧪</span>
-              </div>
-              <h3 class="text-xl font-bold text-gray-800">最新项目</h3>
-            </div>
-            <div class="space-y-4">
-              <div class="border-l-4 border-purple-500 pl-4 py-2">
-                <h4 class="font-semibold text-gray-800">SmartAssistantAgent</h4>
-                <p class="text-sm text-gray-600 mt-1">基于LangChain的AI智能助手系统，支持多工具集成</p>
-                <span class="inline-block mt-2 px-3 py-1 bg-cyan-100 text-cyan-800 text-xs rounded-full">AI项目</span>
-              </div>
-              <div class="border-l-4 border-purple-300 pl-4 py-2">
-                <h4 class="font-semibold text-gray-800">恋爱魔方小程序</h4>
-                <p class="text-sm text-gray-600 mt-1">创新的交友互动平台，重新定义社交体验</p>
-                <span class="inline-block mt-2 px-3 py-1 bg-green-100 text-green-800 text-xs rounded-full">已上线</span>
-              </div>
-            </div>
-            <NuxtLink to="/projects" class="inline-flex items-center mt-6 text-purple-600 hover:text-purple-800 font-medium group">
-              查看全部项目
-              <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-              </svg>
-            </NuxtLink>
-          </div>
-
-          <!-- 最新博客 -->
-          <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-8 border border-gray-100">
-            <div class="flex items-center mb-6">
-              <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mr-4">
-                <span class="text-2xl">📝</span>
-              </div>
-              <h3 class="text-xl font-bold text-gray-800">最新博客</h3>
-            </div>
-            <div class="space-y-4">
-              <div class="border-l-4 border-green-500 pl-4 py-2">
-                <h4 class="font-semibold text-gray-800">AI Agent 开发实战</h4>
-                <p class="text-sm text-gray-600 mt-1">从零构建智能助手，LangChain框架使用指南</p>
-                <span class="inline-block mt-2 px-3 py-1 bg-cyan-100 text-cyan-800 text-xs rounded-full">AI技术</span>
-              </div>
-              <div class="border-l-4 border-green-300 pl-4 py-2">
-                <h4 class="font-semibold text-gray-800">LLM集成最佳实践</h4>
-                <p class="text-sm text-gray-600 mt-1">大语言模型落地应用的经验分享</p>
-                <span class="inline-block mt-2 px-3 py-1 bg-cyan-100 text-cyan-800 text-xs rounded-full">AI技术</span>
-              </div>
-            </div>
-            <NuxtLink to="/blog" class="inline-flex items-center mt-6 text-green-600 hover:text-green-800 font-medium group">
-              查看全部文章
-              <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-              </svg>
-            </NuxtLink>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- CTA 区域 -->
-    <section class="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
-      <div class="max-w-4xl mx-auto px-4 text-center">
-        <h2 class="text-3xl sm:text-4xl font-bold text-white mb-6">
-          让我们一起创造更高效的解决方案
-        </h2>
-        <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-          无论是定制化插件开发、项目合作还是技术咨询，我都乐意与您交流探讨
-        </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <NuxtLink
-            to="/about"
-            class="inline-flex items-center px-8 py-4 bg-white text-blue-600 rounded-xl font-semibold hover:bg-gray-50 transition-colors shadow-lg"
-          >
-            <span class="mr-2">👋</span>
-            了解更多关于我
-          </NuxtLink>
-          <a
-            href="mailto:contact@溪午听风.com"
-            class="inline-flex items-center px-8 py-4 border-2 border-white text-white rounded-xl font-semibold hover:bg-white hover:text-blue-600 transition-colors"
-          >
-            <span class="mr-2">📧</span>
-            联系合作
-          </a>
+    <!-- Bento Grid 内容展示 -->
+    <section id="content" class="py-24 bg-slate-50 relative">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16" data-aos="fade-up">
+          <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">探索我的世界</h2>
+          <p class="text-lg text-slate-600">这里有代码、有思考、也有生活</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 auto-rows-[minmax(200px,auto)]">
+          <!-- 1. 最新博客 (大卡片) -->
+          <div class="md:col-span-2 lg:col-span-2 row-span-2" data-aos="fade-up">
+            <TiltCard class="h-full">
+              <div class="group relative h-full overflow-hidden rounded-3xl shadow-lg bg-white p-8 flex flex-col justify-between border border-slate-100 hover:border-blue-200 transition-all duration-300">
+                <!-- 渐变背景 -->
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                <div class="relative z-10">
+                  <div class="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm mb-4 font-medium">
+                    <i class="fas fa-pen-fancy mr-2"></i> 最新博客
+                  </div>
+                  <h3 class="text-3xl font-bold text-slate-900 mb-2 group-hover:text-blue-700 transition-colors">技术探索与分享</h3>
+                  <p class="text-slate-600 line-clamp-2">记录学习过程中的点滴，分享解决问题的思路与方案。</p>
+                </div>
+                
+                <div class="mt-8 space-y-3 relative z-10">
+                  <NuxtLink to="/blog" class="block p-4 bg-white rounded-xl shadow-sm border border-slate-100 hover:shadow-md hover:border-blue-200 transition-all group/item">
+                    <div class="flex justify-between items-start">
+                      <div class="font-semibold text-slate-800 group-hover/item:text-blue-600 transition-colors truncate pr-4">AI Agent 开发实战：从零构建智能助手</div>
+                      <i class="fas fa-arrow-right text-slate-300 group-hover/item:text-blue-500 transform group-hover/item:translate-x-1 transition-all"></i>
+                    </div>
+                    <div class="text-xs text-slate-500 mt-1">2024-05-20 · 深度好文</div>
+                  </NuxtLink>
+                  <NuxtLink to="/blog" class="block p-4 bg-white rounded-xl shadow-sm border border-slate-100 hover:shadow-md hover:border-blue-200 transition-all group/item">
+                    <div class="flex justify-between items-start">
+                      <div class="font-semibold text-slate-800 group-hover/item:text-blue-600 transition-colors truncate pr-4">Linux 服务器运维指南</div>
+                      <i class="fas fa-arrow-right text-slate-300 group-hover/item:text-blue-500 transform group-hover/item:translate-x-1 transition-all"></i>
+                    </div>
+                    <div class="text-xs text-slate-500 mt-1">2024-05-18 · 实用教程</div>
+                  </NuxtLink>
+                </div>
+              </div>
+            </TiltCard>
+          </div>
+
+          <!-- 2. 工具箱 -->
+          <div class="md:col-span-1 lg:col-span-1 row-span-1" data-aos="fade-up" data-aos-delay="100">
+            <TiltCard class="h-full">
+              <div class="h-full bg-white rounded-3xl shadow-lg p-6 border border-slate-100 group hover:border-blue-200 hover:shadow-xl transition-all duration-300 flex flex-col relative overflow-hidden">
+                <div class="absolute -right-6 -top-6 w-24 h-24 bg-blue-50 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
+                
+                <div class="relative z-10 flex flex-col h-full">
+                  <div class="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 text-2xl mb-4 group-hover:rotate-12 transition-transform shadow-sm">
+                    <i class="fas fa-tools"></i>
+                  </div>
+                  <h3 class="text-xl font-bold text-slate-800 mb-2">效率工具</h3>
+                  <p class="text-sm text-slate-500 mb-4 flex-grow">Revit插件与自动化脚本，提升工作效率。</p>
+                  <NuxtLink to="/tools" class="text-blue-600 font-medium text-sm hover:underline flex items-center mt-auto group/link">
+                    查看工具库 <i class="fas fa-arrow-right ml-1 text-xs group-hover/link:translate-x-1 transition-transform"></i>
+                  </NuxtLink>
+                </div>
+              </div>
+            </TiltCard>
+          </div>
+
+          <!-- 3. 项目展示 -->
+          <div class="md:col-span-1 lg:col-span-1 row-span-1" data-aos="fade-up" data-aos-delay="200">
+            <TiltCard class="h-full">
+              <div class="h-full bg-slate-900 rounded-3xl shadow-lg p-6 text-white overflow-hidden relative group flex flex-col border border-slate-800 hover:border-purple-500/50 transition-colors">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-purple-500/20 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-purple-500/30 transition-colors"></div>
+                <div class="absolute bottom-0 left-0 w-24 h-24 bg-blue-500/10 rounded-full blur-xl -ml-10 -mb-10 group-hover:bg-blue-500/20 transition-colors"></div>
+                
+                <div class="relative z-10 flex flex-col h-full">
+                  <div class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-purple-300 text-2xl mb-4 group-hover:scale-110 transition-transform backdrop-blur-sm border border-white/10">
+                    <i class="fas fa-project-diagram"></i>
+                  </div>
+                  <h3 class="text-xl font-bold mb-2">精选项目</h3>
+                  <p class="text-sm text-slate-400 mb-4 flex-grow">实战项目与开源贡献，探索技术边界。</p>
+                  <NuxtLink to="/projects" class="text-purple-300 font-medium text-sm hover:text-purple-200 flex items-center mt-auto group/link">
+                    浏览作品集 <i class="fas fa-arrow-right ml-1 text-xs group-hover/link:translate-x-1 transition-transform"></i>
+                  </NuxtLink>
+                </div>
+              </div>
+            </TiltCard>
+          </div>
+
+          <!-- 4. 生活随笔 -->
+          <div class="md:col-span-2 lg:col-span-2 row-span-1" data-aos="fade-up" data-aos-delay="300">
+            <TiltCard class="h-full">
+              <div class="h-full bg-gradient-to-r from-orange-50 to-amber-50 rounded-3xl shadow-lg p-6 border border-orange-100 flex flex-col md:flex-row items-center gap-6 group hover:shadow-xl transition-all duration-300">
+                <div class="flex-1">
+                  <div class="w-12 h-12 bg-orange-100 rounded-2xl flex items-center justify-center text-orange-600 text-2xl mb-4 shadow-sm group-hover:scale-110 transition-transform">
+                    <i class="fas fa-coffee"></i>
+                  </div>
+                  <h3 class="text-xl font-bold text-slate-800 mb-2">生活随笔</h3>
+                  <p class="text-sm text-slate-500 mb-4">代码之外的诗与远方，记录生活中的美好瞬间。</p>
+                  <NuxtLink to="/life" class="inline-flex items-center px-5 py-2.5 bg-orange-500 text-white rounded-xl text-sm font-medium hover:bg-orange-600 transition-all shadow-lg shadow-orange-500/30 hover:shadow-orange-500/40 hover:-translate-y-0.5">
+                    进入生活专栏
+                  </NuxtLink>
+                </div>
+                <div class="w-full md:w-1/2 space-y-3">
+                   <div class="p-3 bg-white rounded-xl shadow-sm border border-orange-100/50 flex items-center gap-3 hover:shadow-md transition-shadow cursor-pointer">
+                      <div class="w-12 h-12 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden">
+                         <img src="/images/blog/thermal-circulation.png" class="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500" alt="cover">
+                      </div>
+                      <div>
+                        <div class="text-[10px] text-orange-500 font-bold uppercase tracking-wider mb-0.5">最近更新</div>
+                        <div class="font-medium text-slate-700 text-sm line-clamp-1 group-hover:text-orange-600 transition-colors">地理科普：一文读懂热力环流</div>
+                      </div>
+                   </div>
+                </div>
+              </div>
+            </TiltCard>
+          </div>
+
+          <!-- 5. 关于我 -->
+          <div class="md:col-span-2 lg:col-span-2 row-span-1" data-aos="fade-up" data-aos-delay="400">
+            <TiltCard class="h-full">
+              <div class="h-full bg-white rounded-3xl shadow-lg p-8 border border-slate-100 flex flex-col justify-center items-center text-center gap-4 group hover:border-blue-200 transition-colors relative overflow-hidden">
+                <div class="absolute inset-0 bg-slate-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                
+                <div class="relative z-10">
+                  <h3 class="text-2xl font-bold text-slate-800 mb-2">想要了解更多？</h3>
+                  <p class="text-slate-600 text-sm max-w-md mx-auto">无论是技术交流、项目合作，还是交个朋友，都随时欢迎。</p>
+                </div>
+                <div class="flex gap-4 mt-2 relative z-10">
+                  <a href="https://github.com" target="_blank" class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-700 hover:bg-slate-900 hover:text-white transition-all duration-300 hover:-translate-y-1">
+                    <i class="fab fa-github"></i>
+                  </a>
+                  <a href="mailto:contact@example.com" class="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-300 hover:-translate-y-1">
+                    <i class="fas fa-envelope"></i>
+                  </a>
+                  <NuxtLink to="/about" class="px-6 py-2 bg-slate-900 text-white rounded-full text-sm font-medium hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20 hover:shadow-slate-900/40 hover:-translate-y-1">
+                    查看详细介绍
+                  </NuxtLink>
+                </div>
+              </div>
+            </TiltCard>
+          </div>
         </div>
       </div>
     </section>
@@ -170,64 +276,95 @@
 </template>
 
 <script setup>
-// 快速导航项配置
-const quickNavItems = [
-  {
-    title: '插件工具',
-    path: '/tools',
-    icon: '🔧'
-  },
-  {
-    title: '项目展示',
-    path: '/projects',
-    icon: '🧪'
-  },
-  {
-    title: '技术博客',
-    path: '/blog',
-    icon: '📝'
-  },
-  {
-    title: '关于我',
-    path: '/about',
-    icon: '👤'
-  }
-]
+import { ref, onMounted, onUnmounted } from 'vue'
 
-// 设置页面标题和SEO
+// 轮播文字逻辑
+const currentRoleIndex = ref(0)
+let roleInterval = null
+
+const startRoleRotation = () => {
+  roleInterval = setInterval(() => {
+    currentRoleIndex.value = (currentRoleIndex.value + 1) % 4
+  }, 3000) // 每3秒切换一次
+}
+
+// 滚动功能
+const scrollToContent = () => {
+  const contentSection = document.getElementById('content')
+  if (contentSection) {
+    contentSection.scrollIntoView({ behavior: 'smooth' })
+  }
+}
+
+// 简单的滚动动画观察器 (模拟 AOS)
+let observer = null
+
+onMounted(() => {
+  startRoleRotation()
+
+  // 设置 Intersection Observer
+  observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('aos-animate')
+      }
+    })
+  }, { threshold: 0.1 })
+
+  document.querySelectorAll('[data-aos]').forEach(el => {
+    observer.observe(el)
+  })
+})
+
+onUnmounted(() => {
+  if (roleInterval) clearInterval(roleInterval)
+  if (observer) observer.disconnect()
+})
+
+definePageMeta({
+  layout: 'home'
+})
+
 useHead({
-  title: '溪午听风 - 全栈开发者与Revit插件专家',
+  title: '溪午听风 - 数字花园',
   meta: [
-    { name: 'description', content: '溪午听风个人网站，专注于Web开发、Revit插件开发和移动端应用开发，分享技术心得与项目经验' },
-    { name: 'keywords', content: '溪午听风, 全栈开发, Revit插件, 技术博客, 个人网站, 前端开发, 后端开发' }
+    { name: 'description', content: '溪午听风的个人网站，分享技术、生活与思考。' }
   ]
 })
 </script>
 
 <style scoped>
-.text-gradient {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* 流动的blob动画 */
+/* 动画关键帧定义 */
 @keyframes blob {
-  0% {
-    transform: translate(0px, 0px) scale(1);
-  }
-  33% {
-    transform: translate(30px, -50px) scale(1.1);
-  }
-  66% {
-    transform: translate(-20px, 20px) scale(0.9);
-  }
-  100% {
-    transform: translate(0px, 0px) scale(1);
-  }
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0px, 0px) scale(1); }
 }
 
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes scroll-down {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(6px); opacity: 0; }
+}
+
+@keyframes gradient-x {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes tilt {
+  0%, 50%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(0.5deg); }
+  75% { transform: rotate(-0.5deg); }
+}
+
+/* 实用类 */
 .animate-blob {
   animation: blob 7s infinite;
 }
@@ -240,29 +377,65 @@ useHead({
   animation-delay: 4s;
 }
 
-/* 页面淡入动画 */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.animate-float {
+  animation: float 3s ease-in-out infinite;
 }
 
-/* 让整个页面有淡入效果 */
-section {
-  animation: fadeInUp 0.8s ease-out;
+.animate-float-delayed {
+  animation: float 3s ease-in-out 1.5s infinite;
 }
 
-/* 为不同section添加延迟 */
-section:nth-child(2) {
-  animation-delay: 0.2s;
+.animate-scroll-down {
+  animation: scroll-down 1.5s infinite;
 }
 
-section:nth-child(3) {
-  animation-delay: 0.4s;
+.animate-gradient-x {
+  background-size: 200% 200%;
+  animation: gradient-x 3s ease infinite;
+}
+
+.animate-tilt {
+  animation: tilt 10s infinite linear;
+}
+
+/* 文字轮播动画 */
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition: all 0.5s ease;
+}
+
+.slide-up-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.slide-up-leave-to {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+/* AOS 初始状态 */
+[data-aos] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+[data-aos].aos-animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+[data-aos="fade-right"] {
+  transform: translateX(-20px);
+}
+
+[data-aos="fade-left"] {
+  transform: translateX(20px);
+}
+
+[data-aos].aos-animate[data-aos="fade-right"],
+[data-aos].aos-animate[data-aos="fade-left"] {
+  transform: translateX(0);
 }
 </style>
