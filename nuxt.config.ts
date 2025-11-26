@@ -5,14 +5,14 @@ export default defineNuxtConfig({
     '@nuxt/content',
     '@nuxtjs/tailwindcss'
   ],
-  
+
   // Content 模块配置
   // @ts-ignore
   content: {
     highlight: {
       theme: {
-        default: 'github-light',
-        dark: 'github-dark'
+        default: 'dracula',
+        dark: 'dracula'
       },
       langs: [
         'javascript',
@@ -47,7 +47,7 @@ export default defineNuxtConfig({
       }
     }
   },
-  
+
   // 应用配置
   app: {
     head: {
@@ -55,9 +55,9 @@ export default defineNuxtConfig({
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { 
-          name: 'description', 
-          content: '溪午听风的个人网站，展示插件工具、项目作品和技术博客。开发让生活更高效，代码就是我的魔方。' 
+        {
+          name: 'description',
+          content: '溪午听风的个人网站，展示插件工具、项目作品和技术博客。开发让生活更高效，代码就是我的魔方。'
         },
         { name: 'keywords', content: 'Revit插件,小程序开发,前端开发,技术博客,个人网站' },
         { name: 'author', content: '溪午听风' }
@@ -68,11 +68,11 @@ export default defineNuxtConfig({
       ]
     }
   },
-  
+
   // CSS 配置
   css: [
     '~/assets/css/main.css'
   ],
-  
+
   compatibilityDate: '2024-04-03'
 })

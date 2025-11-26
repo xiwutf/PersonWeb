@@ -31,6 +31,10 @@
             <span class="px-2 py-1 bg-emerald-100 rounded-full">{{ post.category }}</span>
             <span>{{ formatDate(post.date) }}</span>
             <span>{{ post.author }}</span>
+            <span v-if="views > 0" class="flex items-center ml-2 text-gray-500">
+              <i class="fas fa-eye mr-1"></i>
+              {{ views }} 次阅读
+            </span>
           </div>
           <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ post.title }}</h1>
           <p class="text-lg text-gray-600 leading-relaxed">{{ post.description }}</p>
@@ -144,6 +148,29 @@ useHead({
     { name: 'author', content: post.value.author }
   ]
 })
+
+// 浏览量逻辑
+const views = ref(0)
+
+onMounted(async () => {
+  try {
+    // 增加浏览量并获取最新值
+    const res = await $fetch('/api/views', {
+      method: 'POST',
+      body: { slug: slugString }
+    })
+    views.value = res.views
+  } catch (e) {
+    console.error('Failed to update views', e)
+    // 如果失败，尝试仅获取当前浏览量
+    try {
+      const res = await $fetch(`/api/views?slug=${slugString}`)
+      views.value = res.views
+    } catch (e2) {
+      console.error('Failed to fetch views', e2)
+    }
+  }
+})
 </script>
 
 <style scoped>
@@ -228,4 +255,4 @@ useHead({
 :deep(.prose strong) {
   @apply font-semibold text-gray-900;
 }
-</style> 
+</style>
