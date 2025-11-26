@@ -55,6 +55,11 @@
         <div class="prose prose-lg max-w-none">
           <ContentDoc :path="post._path" />
         </div>
+
+        <!-- 评论区 -->
+        <div class="mt-12 pt-8 border-t border-gray-200">
+          <GiscusComments :identifier="post._path" :title="post.title" />
+        </div>
       </div>
 
       <!-- 加载状态 -->

@@ -69,7 +69,11 @@
           <p class="text-slate-500 text-sm">
             © {{ currentYear }} 溪午听风. All rights reserved.
           </p>
-          <div class="flex items-center space-x-6 mt-4 md:mt-0">
+          <div class="flex items-center space-x-4">
+            <span class="text-slate-500 text-sm flex items-center" v-if="stats">
+              <span class="mr-3">今日访问: {{ stats.todayVisits }}</span>
+              <span>总访问量: {{ stats.totalVisits }}</span>
+            </span>
             <span class="text-slate-500 text-sm flex items-center">
               Built with <span class="text-red-500 mx-1">❤</span> & Nuxt 3
             </span>
@@ -114,4 +118,7 @@ const contactInfo = [
     link: 'https://github.com/Lijing327'
   }
 ]
+
+// 统计数据
+const { data: stats } = await useFetch('/api/stats')
 </script>

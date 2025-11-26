@@ -126,6 +126,9 @@
             </NuxtLink>
           </div>
         </div>
+
+        <!-- 评论区 -->
+        <GiscusComments :identifier="project._path" :title="project.title" />
       </div>
 
       <!-- 无数据状态 -->
@@ -198,4 +201,4 @@ useHead({
 :deep(.prose code) {
   @apply bg-gray-100 text-gray-800 px-1 py-0.5 rounded text-sm;
 }
-</style> 
+</style>

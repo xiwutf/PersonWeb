@@ -38,6 +38,9 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
           </NuxtLink>
+
+          <!-- 主题切换 -->
+          <ThemeToggle />
         </nav>
 
         <!-- 移动端菜单按钮 -->
@@ -112,6 +115,11 @@ const navigationItems = [
     title: '技术博客',
     path: '/blog',
     icon: '📝'
+  },
+  {
+    title: '生活随笔',
+    path: '/life',
+    icon: '☕'
   },
   {
     title: '关于我',
