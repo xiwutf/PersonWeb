@@ -137,4 +137,9 @@ const navigationItems = [
 const closeMobileMenu = () => {
   isMobileMenuOpen.value = false
 }
+
+// 切换移动端菜单
+const toggleMobileMenu = () => {
+  isMobileMenuOpen.value = !isMobileMenuOpen.value
+}
 </script>
