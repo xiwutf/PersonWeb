@@ -207,9 +207,16 @@ const wealthChartData = computed(() => {
 
 onMounted(async () => {
   try {
-    const res = await api.get<any[]>('/admin/metrics')
+    const res = await api.get<any[]>('/Metrics')
     // Sort by date ascending for charts
     metrics.value = res.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    
+    // Format dates for display if needed, but charts use slice(5)
+    // Ensure date is string like YYYY-MM-DD for slice to work expectedly or handle ISO
+    metrics.value = metrics.value.map(m => ({
+        ...m,
+        date: m.date.split('T')[0]
+    }))
     
     if (metrics.value.length > 0) {
       latest.value = metrics.value[metrics.value.length - 1]

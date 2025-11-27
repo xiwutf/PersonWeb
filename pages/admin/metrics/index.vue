@@ -111,12 +111,16 @@ const sortedMetrics = computed(() => {
 
 const fetchMetrics = async () => {
   try {
-    const res = await api.get<any[]>('/admin/metrics')
-    metrics.value = res
+    const res = await api.get<any[]>('/Metrics')
+    // Format date to YYYY-MM-DD
+    metrics.value = res.map(m => ({
+      ...m,
+      date: m.date.split('T')[0]
+    }))
     
     // 如果今天有数据，自动填充
     const today = new Date().toISOString().split('T')[0]
-    const todayData = res.find(m => m.date === today)
+    const todayData = metrics.value.find(m => m.date === today)
     if (todayData) {
       form.value = { ...todayData }
     }
@@ -128,7 +132,7 @@ const fetchMetrics = async () => {
 const handleSave = async () => {
   saving.value = true
   try {
-    await api.post('/admin/metrics', form.value)
+    await api.post('/Metrics', form.value)
     await fetchMetrics()
     alert('保存成功')
   } catch (e: any) {

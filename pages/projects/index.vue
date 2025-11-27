@@ -107,10 +107,18 @@ const chartOptions = {
 
 const fetchProjects = async () => {
   try {
-    const res = await api.get<any[]>('/projects')
+    const res = await api.get<any[]>('/Projects') // Use PascalCase controller name just in case, though usually case insensitive
     console.log('API Response:', res)
     debugData.value = JSON.stringify(res)
-    projects.value = res
+    
+    // Process projects to match frontend expectations
+    projects.value = res.map(p => ({
+      ...p,
+      // Handle TechStack: if string, split by comma; if array, keep it; else empty array
+      techStack: typeof p.techStack === 'string' 
+        ? p.techStack.split(',').map((t: string) => t.trim()) 
+        : (Array.isArray(p.techStack) ? p.techStack : [])
+    }))
     
     // 异步加载 GitHub 数据
     loadGithubStats()

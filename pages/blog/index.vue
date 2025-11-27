@@ -176,10 +176,25 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 
-// 使用 @nuxt/content 查询博客数据
-const { data: allPosts } = await useAsyncData('blog-posts', () =>
-  queryContent('/blog').sort({ date: -1 }).find()
-)
+const api = useApi()
+
+// 使用 .NET API 查询博客数据
+const { data: allPosts } = await useAsyncData('blog-posts', async () => {
+  const res = await api.get<any>('/Articles', {
+    params: {
+      page: 1,
+      pageSize: 100 // Get all for now to support client-side filtering
+    }
+  })
+  // Map .NET response to frontend format
+  return res.list.map((article: any) => ({
+    ...article,
+    _path: `/blog/${article.slug || article.id}`, // Use slug if available
+    date: article.publishTime || article.createdAt,
+    category: article.categoryName || '未分类',
+    tags: article.tags ? article.tags.split(',') : []
+  }))
+})
 
 // 当前选中的分类
 const selectedCategory = ref('全部文章')
@@ -221,6 +236,7 @@ const filteredPosts = computed(() => {
 
 // 格式化日期
 const formatDate = (dateString) => {
+  if (!dateString) return ''
   return new Date(dateString).toLocaleDateString('zh-CN', {
     year: 'numeric',
     month: 'long',
@@ -255,6 +271,7 @@ const timeArchives = computed(() => {
   if (!allPosts.value) return []
   const archives = {}
   allPosts.value.forEach(post => {
+    if (!post.date) return
     const date = new Date(post.date)
     const yearMonth = `${date.getFullYear()}年${date.getMonth() + 1}月`
     archives[yearMonth] = (archives[yearMonth] || 0) + 1

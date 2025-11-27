@@ -104,9 +104,13 @@ const isEdit = computed(() => !!route.params.id)
 const fetchProject = async (id: string) => {
   loading.value = true
   try {
-    const res = await api.get<any>(`/admin/projects?id=${id}`)
-    form.value = res
-    techStackInput.value = res.techStack?.join(', ') || ''
+    const res = await api.get<any>(`/Projects/${id}`)
+    form.value = {
+      ...res,
+      contentMd: res.content // Map Content to contentMd
+    }
+    // Handle TechStack string from API
+    techStackInput.value = res.techStack || ''
   } catch (e) {
     console.error(e)
     alert('加载失败')
@@ -146,17 +150,19 @@ const handleSave = async () => {
   saving.value = true
   try {
     // 处理技术栈
-    const techStack = techStackInput.value.split(/[,，]/).map(s => s.trim()).filter(s => s)
+    const techStackArray = techStackInput.value.split(/[,，]/).map(s => s.trim()).filter(s => s)
+    const techStackString = techStackArray.join(',')
     
     const payload = {
       ...form.value,
-      techStack
+      techStack: techStackString,
+      content: form.value.contentMd // Map contentMd to Content
     }
     
     if (isEdit.value) {
-      await api.put('/admin/projects', payload)
+      await api.put(`/Projects/${form.value.id}`, payload)
     } else {
-      await api.post('/admin/projects', payload)
+      await api.post('/Projects', payload)
     }
     alert('保存成功')
     router.push('/admin/projects')

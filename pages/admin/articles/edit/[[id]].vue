@@ -19,6 +19,11 @@
           <input v-model="form.title" type="text" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" placeholder="输入标题" />
         </div>
 
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">URL Slug</label>
+          <input v-model="form.slug" type="text" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" placeholder="article-slug-url" />
+        </div>
+
         <div class="grid grid-cols-2 gap-6">
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">分类</label>
@@ -122,7 +127,7 @@ const togglePreview = () => {
 
 const fetchCategories = async () => {
   try {
-    const res = await api.get<any[]>('/admin/categories')
+    const res = await api.get<any[]>('/Categories')
     categories.value = res
   } catch (e) {
     console.error('Failed to fetch categories', e)
@@ -133,7 +138,7 @@ const fetchCategories = async () => {
 const fetchArticle = async (id: string) => {
   loading.value = true
   try {
-    const res = await api.get<any>(`/admin/articles?id=${id}`)
+    const res = await api.get<any>(`/Articles/${id}`)
     form.value = {
       ...res,
       categoryId: res.categoryId || 0,
@@ -182,11 +187,9 @@ const handleSave = async (status: number) => {
       status
     }
     
-    if (isEdit.value) {
-      await api.put('/admin/articles', payload)
-    } else {
-      await api.post('/admin/articles', payload)
-    }
+    // .NET API uses POST for both create and update (SaveArticle)
+    await api.post('/Articles', payload)
+
     alert('保存成功')
     router.push('/admin/articles')
   } catch (e: any) {

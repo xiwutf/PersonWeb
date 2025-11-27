@@ -97,6 +97,27 @@ public class ArticlesController : ControllerBase
     }
 
     /// <summary>
+    /// 根据 Slug 获取文章详情
+    /// </summary>
+    /// <param name="slug"></param>
+    /// <returns></returns>
+    [HttpGet("slug/{slug}")]
+    public async Task<ActionResult<ApiResponse<Article>>> GetArticleBySlug(string slug)
+    {
+        var article = await _context.Articles
+            .Include(a => a.Category)
+            .Include(a => a.Tags)
+            .FirstOrDefaultAsync(a => a.Slug == slug);
+
+        if (article == null)
+        {
+            return Ok(ApiResponse<Article>.Error("文章不存在", 404));
+        }
+        
+        return Ok(ApiResponse<Article>.Success(article));
+    }
+
+    /// <summary>
     /// 创建/更新文章
     /// </summary>
     /// <param name="article"></param>

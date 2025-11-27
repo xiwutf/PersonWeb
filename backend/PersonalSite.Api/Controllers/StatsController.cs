@@ -62,13 +62,19 @@ public class StatsController : ControllerBase
             })
             .ToListAsync();
 
+        // 6. 统计数量
+        var articleCount = await _context.Articles.CountAsync();
+        var projectCount = await _context.Projects.CountAsync();
+
         return Ok(ApiResponse.Success(new 
         {
             TotalVisits = totalVisits,
             UniqueVisitors = uniqueVisitors,
             TodayVisits = todayVisits,
             TopPaths = topPaths,
-            RecentVisits = recentVisits
+            RecentVisits = recentVisits,
+            ArticleCount = articleCount,
+            ProjectCount = projectCount
         }));
     }
 }

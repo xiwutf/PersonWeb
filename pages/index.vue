@@ -155,25 +155,28 @@
                   <p class="text-slate-600 line-clamp-2">记录学习过程中的点滴，分享解决问题的思路与方案。</p>
                 </div>
                 
-                <div class="mt-8 space-y-3 relative z-10">
-                  <NuxtLink to="/blog" class="block p-4 bg-white rounded-xl shadow-sm border border-slate-100 hover:shadow-md hover:border-blue-200 transition-all group/item">
-                    <div class="flex justify-between items-start">
-                      <div class="font-semibold text-slate-800 group-hover/item:text-blue-600 transition-colors truncate pr-4">AI Agent 开发实战：从零构建智能助手</div>
-                      <i class="fas fa-arrow-right text-slate-300 group-hover/item:text-blue-500 transform group-hover/item:translate-x-1 transition-all"></i>
+                  <div class="mt-8 space-y-3 relative z-10">
+                    <div v-if="latestPosts && latestPosts.length > 0">
+                      <NuxtLink 
+                        v-for="post in latestPosts" 
+                        :key="post.id" 
+                        :to="`/blog/${post.slug || post.id}`" 
+                        class="block p-4 bg-white rounded-xl shadow-sm border border-slate-100 hover:shadow-md hover:border-blue-200 transition-all group/item mb-3"
+                      >
+                        <div class="flex justify-between items-start">
+                          <div class="font-semibold text-slate-800 group-hover/item:text-blue-600 transition-colors truncate pr-4">{{ post.title }}</div>
+                          <i class="fas fa-arrow-right text-slate-300 group-hover/item:text-blue-500 transform group-hover/item:translate-x-1 transition-all"></i>
+                        </div>
+                        <div class="text-xs text-slate-500 mt-1">{{ formatDate(post.publishTime || post.createdAt) }} · {{ post.categoryName || '未分类' }}</div>
+                      </NuxtLink>
                     </div>
-                    <div class="text-xs text-slate-500 mt-1">2024-05-20 · 深度好文</div>
-                  </NuxtLink>
-                  <NuxtLink to="/blog" class="block p-4 bg-white rounded-xl shadow-sm border border-slate-100 hover:shadow-md hover:border-blue-200 transition-all group/item">
-                    <div class="flex justify-between items-start">
-                      <div class="font-semibold text-slate-800 group-hover/item:text-blue-600 transition-colors truncate pr-4">Linux 服务器运维指南</div>
-                      <i class="fas fa-arrow-right text-slate-300 group-hover/item:text-blue-500 transform group-hover/item:translate-x-1 transition-all"></i>
+                    <div v-else class="text-center text-slate-500 py-4">
+                      暂无最新文章
                     </div>
-                    <div class="text-xs text-slate-500 mt-1">2024-05-18 · 实用教程</div>
-                  </NuxtLink>
+                  </div>
                 </div>
-              </div>
-            </TiltCard>
-          </div>
+              </TiltCard>
+            </div>
 
           <!-- 2. 工具箱 -->
           <div class="md:col-span-1 lg:col-span-1 row-span-1" data-aos="fade-up" data-aos-delay="100">
@@ -278,6 +281,29 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 
+const api = useApi()
+const latestPosts = ref<any[]>([])
+
+// Fetch latest posts
+const fetchLatestPosts = async () => {
+  try {
+    const res = await api.get<any>('/Articles', {
+      params: {
+        page: 1,
+        pageSize: 2
+      }
+    })
+    latestPosts.value = res.list
+  } catch (e) {
+    console.error('Failed to fetch latest posts', e)
+  }
+}
+
+const formatDate = (dateStr: string) => {
+  if (!dateStr) return ''
+  return new Date(dateStr).toLocaleDateString('zh-CN')
+}
+
 // 轮播文字逻辑
 const currentRoleIndex = ref(0)
 let roleInterval = null
@@ -300,6 +326,7 @@ const scrollToContent = () => {
 let observer = null
 
 onMounted(() => {
+  fetchLatestPosts()
   startRoleRotation()
 
   // 设置 Intersection Observer

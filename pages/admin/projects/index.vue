@@ -42,7 +42,7 @@
               <span v-else>-</span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-              {{ new Date(item.date).toLocaleDateString() }}
+              {{ new Date(item.createdAt).toLocaleDateString() }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
               <NuxtLink :to="`/admin/projects/edit/${item.id}`" class="text-blue-600 hover:text-blue-900 dark:hover:text-blue-400 mr-4">编辑</NuxtLink>
@@ -71,7 +71,7 @@ const projects = ref<any[]>([])
 
 const fetchProjects = async () => {
   try {
-    const res = await api.get<any[]>('/admin/projects')
+    const res = await api.get<any[]>('/Projects')
     projects.value = res
   } catch (e) {
     console.error('Failed to fetch projects', e)
@@ -82,7 +82,7 @@ const handleDelete = async (id: string) => {
   if (!confirm('确定要删除这个项目吗？')) return
   
   try {
-    await api.delete(`/admin/projects?id=${id}`)
+    await api.del(`/Projects/${id}`)
     await fetchProjects()
   } catch (e: any) {
     alert(e.message || '删除失败')

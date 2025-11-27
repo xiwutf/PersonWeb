@@ -12,7 +12,7 @@
         <div class="text-3xl font-bold text-blue-600 dark:text-blue-400">{{ stats.articleCount || '-' }}</div>
       </div>
       <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-        <div class="text-gray-500 dark:text-gray-400 text-sm mb-2">总工具数</div>
+        <div class="text-gray-500 dark:text-gray-400 text-sm mb-2">总项目数</div>
         <div class="text-3xl font-bold text-purple-600 dark:text-purple-400">{{ stats.toolCount || '-' }}</div>
       </div>
       <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
@@ -54,10 +54,10 @@ const fetchStats = async () => {
     // 这里暂时复用 /api/stats 接口，或者后续创建专门的 dashboard 接口
     // 目前 /api/stats 返回的是访问统计，文章数可能需要另外获取
     // 为了演示，先只对接访问统计
-    const res = await api.get<any>('/admin/stats')
+    const res = await api.get<any>('/Stats')
     stats.value.todayVisits = res.todayVisits
     stats.value.articleCount = res.articleCount
-    stats.value.toolCount = res.toolCount
+    stats.value.toolCount = res.projectCount // Map ProjectCount to toolCount for now
   } catch (e) {
     console.error('Failed to fetch stats', e)
   }
