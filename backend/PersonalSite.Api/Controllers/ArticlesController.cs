@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PersonalSite.Api.Data;
 using PersonalSite.Api.Models;
+using System.Security.Claims;
 
 namespace PersonalSite.Api.Controllers;
 
@@ -24,13 +25,15 @@ public class ArticlesController : ControllerBase
     /// <param name="pageSize">每页数量</param>
     /// <param name="status">状态筛选 (0-草稿 1-已发布 2-下线)</param>
     /// <param name="categoryId">分类ID筛选</param>
+    /// <param name="keyword">关键词搜索</param>
     /// <returns></returns>
     [HttpGet]
-    public async Task<IActionResult> GetArticles(
+    public async Task<ActionResult<ApiResponse<object>>> GetArticles(
         [FromQuery] int page = 1, 
         [FromQuery] int pageSize = 10,
         [FromQuery] sbyte? status = null,
-        [FromQuery] long? categoryId = null)
+        [FromQuery] long? categoryId = null,
+        [FromQuery] string? keyword = null)
     {
         var query = _context.Articles.AsQueryable();
 
@@ -42,6 +45,11 @@ public class ArticlesController : ControllerBase
         if (categoryId.HasValue)
         {
             query = query.Where(a => a.CategoryId == categoryId.Value);
+        }
+
+        if (!string.IsNullOrEmpty(keyword))
+        {
+            query = query.Where(a => a.Title.Contains(keyword) || (a.Summary != null && a.Summary.Contains(keyword)));
         }
 
         var total = await query.CountAsync();
@@ -57,14 +65,14 @@ public class ArticlesController : ControllerBase
                 a.Slug,
                 a.Summary,
                 a.CoverUrl,
-                // a.ViewCount, // 数据库中无此字段
                 a.Status,
                 a.CreatedAt,
+                a.PublishTime,
                 CategoryName = a.Category != null ? a.Category.Name : null
             })
             .ToListAsync();
 
-        return Ok(new { Total = total, Items = articles });
+        return Ok(ApiResponse.Success(new { Total = total, List = articles }));
     }
 
     /// <summary>
@@ -73,7 +81,7 @@ public class ArticlesController : ControllerBase
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetArticle(long id)
+    public async Task<ActionResult<ApiResponse<Article>>> GetArticle(long id)
     {
         var article = await _context.Articles
             .Include(a => a.Category)
@@ -82,86 +90,66 @@ public class ArticlesController : ControllerBase
 
         if (article == null)
         {
-            return NotFound();
+            return Ok(ApiResponse<Article>.Error("文章不存在", 404));
         }
-
-        // 增加浏览量逻辑需要调整，因为数据库没有 ViewCount 字段
-        // 可以考虑记录到 pv_uv_daily 表，或者忽略
         
-        return Ok(article);
+        return Ok(ApiResponse<Article>.Success(article));
     }
 
     /// <summary>
-    /// 创建文章
+    /// 创建/更新文章
     /// </summary>
     /// <param name="article"></param>
     /// <returns></returns>
     [HttpPost]
-    // [Authorize] 
-    public async Task<IActionResult> CreateArticle([FromBody] Article article)
+    [Authorize] 
+    public async Task<ActionResult<ApiResponse>> SaveArticle([FromBody] Article article)
     {
-        if (!ModelState.IsValid)
+        // 如果 ID 为 0，则为新建
+        if (article.Id == 0)
         {
-            return BadRequest(ModelState);
+             article.CreatedAt = DateTime.Now;
+             article.UpdatedAt = DateTime.Now;
+             
+             // 自动填充发布时间
+             if (article.Status == 1 && article.PublishTime == null)
+             {
+                 article.PublishTime = DateTime.Now;
+             }
+
+             // 设置作者
+             var userId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+             if (userId > 0) article.AuthorId = userId;
+
+             _context.Articles.Add(article);
+             await _context.SaveChangesAsync();
+             return Ok(ApiResponse.Success(new { id = article.Id }, "创建成功"));
         }
-
-        article.CreatedAt = DateTime.Now;
-        article.UpdatedAt = DateTime.Now;
-
-        _context.Articles.Add(article);
-        await _context.SaveChangesAsync();
-
-        return CreatedAtAction(nameof(GetArticle), new { id = article.Id }, article);
-    }
-
-    /// <summary>
-    /// 更新文章
-    /// </summary>
-    /// <param name="id"></param>
-    /// <param name="article"></param>
-    /// <returns></returns>
-    [HttpPut("{id}")]
-    // [Authorize]
-    public async Task<IActionResult> UpdateArticle(long id, [FromBody] Article article)
-    {
-        if (id != article.Id)
+        else
         {
-            return BadRequest();
-        }
+            // 更新
+            var existing = await _context.Articles.FindAsync(article.Id);
+            if (existing == null) return Ok(ApiResponse.Error("文章不存在", 404));
 
-        var existingArticle = await _context.Articles.FindAsync(id);
-        if (existingArticle == null)
-        {
-            return NotFound();
-        }
+            existing.Title = article.Title;
+            existing.Slug = article.Slug;
+            existing.Summary = article.Summary;
+            existing.ContentMd = article.ContentMd;
+            existing.ContentHtml = article.ContentHtml;
+            existing.CoverUrl = article.CoverUrl;
+            existing.CategoryId = article.CategoryId;
+            existing.UpdatedAt = DateTime.Now;
 
-        existingArticle.Title = article.Title;
-        existingArticle.Slug = article.Slug;
-        existingArticle.Summary = article.Summary;
-        existingArticle.ContentMd = article.ContentMd;
-        existingArticle.ContentHtml = article.ContentHtml;
-        existingArticle.CoverUrl = article.CoverUrl;
-        existingArticle.Status = article.Status;
-        existingArticle.CategoryId = article.CategoryId;
-        existingArticle.UpdatedAt = DateTime.Now;
+            // 状态变更逻辑
+            if (existing.Status != 1 && article.Status == 1 && existing.PublishTime == null)
+            {
+                existing.PublishTime = DateTime.Now;
+            }
+            existing.Status = article.Status;
 
-        try
-        {
             await _context.SaveChangesAsync();
+            return Ok(ApiResponse.Success(null, "更新成功"));
         }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!_context.Articles.Any(e => e.Id == id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
-        }
-
-        return NoContent();
     }
 
     /// <summary>
@@ -170,18 +158,18 @@ public class ArticlesController : ControllerBase
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpDelete("{id}")]
-    // [Authorize]
-    public async Task<IActionResult> DeleteArticle(long id)
+    [Authorize]
+    public async Task<ActionResult<ApiResponse>> DeleteArticle(long id)
     {
         var article = await _context.Articles.FindAsync(id);
         if (article == null)
         {
-            return NotFound();
+            return Ok(ApiResponse.Error("文章不存在", 404));
         }
 
         _context.Articles.Remove(article);
         await _context.SaveChangesAsync();
 
-        return NoContent();
+        return Ok(ApiResponse.Success(null, "删除成功"));
     }
 }
