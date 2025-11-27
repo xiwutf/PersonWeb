@@ -14,6 +14,7 @@ public class CategoriesController : ControllerBase
 {
     private readonly AppDbContext _context;
 
+
     public CategoriesController(AppDbContext context)
     {
         _context = context;
