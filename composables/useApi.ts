@@ -1,4 +1,10 @@
-// 简单的 API 客户端封装
+// 统一 API 响应接口
+interface ApiResponse<T> {
+    code: number
+    message: string
+    data: T
+}
+
 export const useApi = () => {
     const config = useRuntimeConfig()
     const baseUrl = config.public.apiBase
@@ -6,19 +12,36 @@ export const useApi = () => {
     // 通用请求处理
     const request = async <T>(url: string, options: any = {}) => {
         try {
-            // 这里可以处理 token 自动携带等逻辑
-            // const token = useCookie('admin_token')
-            // if (token.value) {
-            //   options.headers = { ...options.headers, Authorization: `Bearer ${token.value}` }
-            // }
+            // 自动携带 Token
+            if (process.client) {
+                const token = localStorage.getItem('admin_token')
+                if (token) {
+                    options.headers = {
+                        ...options.headers,
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            }
 
-            return await $fetch<T>(url, {
+            const response = await $fetch<ApiResponse<T>>(url, {
                 baseURL: baseUrl,
                 ...options
             })
-        } catch (error) {
+
             // 统一错误处理
+            if (response.code !== 0) {
+                throw new Error(response.message || '请求失败')
+            }
+
+            return response.data
+        } catch (error: any) {
             console.error('API Error:', error)
+            // 如果是 401，跳转登录
+            if (error.response?.status === 401 && process.client) {
+                localStorage.removeItem('admin_token')
+                localStorage.removeItem('admin_user')
+                navigateTo('/admin/login')
+            }
             throw error
         }
     }

@@ -39,3 +39,4 @@ obj/
 *.suo
 *.userprefs
 appsettings.Development.json
+.env

@@ -52,27 +52,36 @@ const password = ref('')
 const error = ref('')
 const loading = ref(false)
 const router = useRouter()
+const api = useApi()
 
 const handleLogin = async () => {
+  if (!username.value || !password.value) {
+    error.value = '请输入用户名和密码'
+    return
+  }
+
   loading.value = true
   error.value = ''
   
-  // 模拟登录请求
-  setTimeout(() => {
-    if (username.value === 'admin' && password.value === '123456') {
-      // 登录成功，设置 Token
-      if (process.client) {
-        localStorage.setItem('admin_token', 'mock-token-123456')
-      }
-      router.push('/admin')
-    } else {
-      error.value = '用户名或密码错误'
+  try {
+    const res = await api.post<any>('/auth/login', { 
+      username: username.value, 
+      password: password.value 
+    })
+
+    // 登录成功
+    if (process.client) {
+      localStorage.setItem('admin_token', res.token)
+      localStorage.setItem('admin_user', JSON.stringify({
+        username: res.username,
+        role: res.role
+      }))
     }
+    router.push('/admin')
+  } catch (e: any) {
+    error.value = e.message || '登录失败，请检查用户名或密码'
+  } finally {
     loading.value = false
-  }, 1000)
-  
-  // 实际项目中调用 API:
-  // const api = useApi()
-  // const res = await api.post('/auth/login', { username, password })
+  }
 }
 </script>
