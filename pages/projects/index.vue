@@ -9,6 +9,14 @@
       <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
     </div>
 
+    <!-- Debug Info -->
+    <div v-if="error" class="bg-red-100 text-red-700 p-4 rounded mb-8">
+      Error: {{ error }}
+    </div>
+    <div v-if="projects.length === 0 && !loading" class="text-center text-gray-500">
+      No projects found. API Response: {{ debugData }}
+    </div>
+
     <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       <div v-for="project in projects" :key="project.id" class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col">
         <!-- 封面图 -->
@@ -71,6 +79,8 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 const api = useApi()
 const projects = ref<any[]>([])
 const loading = ref(true)
+const error = ref('')
+const debugData = ref('')
 
 // 图表配置
 const chartOptions = {
@@ -98,12 +108,15 @@ const chartOptions = {
 const fetchProjects = async () => {
   try {
     const res = await api.get<any[]>('/projects')
+    console.log('API Response:', res)
+    debugData.value = JSON.stringify(res)
     projects.value = res
     
     // 异步加载 GitHub 数据
     loadGithubStats()
-  } catch (e) {
+  } catch (e: any) {
     console.error('Failed to fetch projects', e)
+    error.value = e.message || 'Failed to load projects'
   } finally {
     loading.value = false
   }
