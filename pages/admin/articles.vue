@@ -74,6 +74,8 @@ const total = ref(0)
 const fetchArticles = async () => {
   loading.value = true
   try {
+    console.log('[Articles] Fetching articles, page:', page.value, 'keyword:', keyword.value)
+    
     const res = await api.get<any>('/Articles', {
       params: {
         page: page.value,
@@ -82,22 +84,45 @@ const fetchArticles = async () => {
       }
     })
     
-    console.log('Articles API Response:', res)
+    console.log('[Articles] API Response (raw):', JSON.stringify(res, null, 2))
+    console.log('[Articles] API Response type:', typeof res)
+    console.log('[Articles] Is Array?', Array.isArray(res))
+    console.log('[Articles] Has List?', res?.List !== undefined)
+    console.log('[Articles] Has list?', res?.list !== undefined)
+    console.log('[Articles] Has Total?', res?.Total !== undefined)
+    console.log('[Articles] Has total?', res?.total !== undefined)
     
     // .NET API returns { Total: int, List: [] } (注意大小写)
     // useApi 已经处理了响应格式，直接返回 data
     if (res) {
-      articles.value = res.List ?? res.list ?? []
-      total.value = res.Total ?? res.total ?? 0
-      console.log('Parsed articles:', articles.value.length, 'Total:', total.value)
+      // 检查是否是直接返回的数组（不应该发生，但以防万一）
+      if (Array.isArray(res)) {
+        console.warn('[Articles] API returned array directly, not object with List/Total')
+        articles.value = res
+        total.value = res.length
+      } else if (res.List !== undefined || res.list !== undefined) {
+        // 标准格式：{ Total: int, List: [] }
+        articles.value = res.List ?? res.list ?? []
+        total.value = res.Total ?? res.total ?? 0
+        console.log('[Articles] Parsed successfully:', articles.value.length, 'articles, Total:', total.value)
+      } else {
+        // 可能是其他格式
+        console.warn('[Articles] Unexpected response format:', Object.keys(res))
+        articles.value = []
+        total.value = 0
+      }
     } else {
-      console.warn('Articles API returned empty response')
+      console.warn('[Articles] API returned null/undefined')
       articles.value = []
       total.value = 0
     }
   } catch (e: any) {
-    console.error('Failed to fetch articles:', e)
-    console.error('Error details:', e.response, e.message)
+    console.error('[Articles] Failed to fetch articles:', e)
+    console.error('[Articles] Error type:', typeof e)
+    console.error('[Articles] Error message:', e.message)
+    console.error('[Articles] Error response:', e.response)
+    console.error('[Articles] Error status:', e.status)
+    console.error('[Articles] Error statusCode:', e.statusCode)
     articles.value = []
     total.value = 0
   } finally {

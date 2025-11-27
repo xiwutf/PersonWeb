@@ -106,10 +106,16 @@ const form = ref({
 const fetchTools = async () => {
   try {
     // Nuxt server API，使用 /api/ 前缀
+    // 注意：在生产环境静态生成后，Nuxt Server API 可能不可用
+    // 如果失败，可能需要使用后端 API 或确保 Nuxt Server API 在生产环境中可用
     const res = await api.get<any[]>('/api/admin/tools')
-    tools.value = res
-  } catch (e) {
-    console.error(e)
+    console.log('Tools API Response:', res)
+    tools.value = Array.isArray(res) ? res : []
+    console.log('Tools loaded:', tools.value.length)
+  } catch (e: any) {
+    console.error('Failed to fetch tools:', e)
+    console.error('Error details:', e.response, e.message)
+    tools.value = []
   }
 }
 

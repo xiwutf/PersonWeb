@@ -52,10 +52,33 @@ export const useApi = () => {
 
             // 判断是否为 Nuxt server API（以 /api/ 开头）
             // Nuxt server API 应该直接调用，不添加后端 baseURL
+            // 注意：在生产环境静态生成后，Nuxt Server API 可能不可用
             const isNuxtServerAPI = url.startsWith('/api/')
             
+            // 如果是 Nuxt Server API，直接使用相对路径，不添加 baseURL
+            // 在生产环境静态生成后，这些路由可能不存在，需要确保部署时包含 server 功能
+            // 或者使用 SSR 模式（nuxt build）而不是静态生成（nuxt generate）
+            let finalBaseURL: string | undefined = undefined
+            
+            if (isNuxtServerAPI) {
+                // Nuxt Server API：使用相对路径，不添加 baseURL
+                finalBaseURL = undefined
+            } else {
+                // 后端 API：添加 baseURL
+                finalBaseURL = baseUrl
+            }
+            
+            if (process.env.NODE_ENV === 'development') {
+                console.log(`[useApi] ${options.method || 'GET'} ${url}`, {
+                    isNuxtServerAPI,
+                    baseURL: finalBaseURL,
+                    originalBaseUrl: baseUrl,
+                    finalUrl: finalBaseURL ? `${finalBaseURL}${url}` : url
+                })
+            }
+            
             const response = await $fetch<ApiResponse<T>>(url, {
-                baseURL: isNuxtServerAPI ? undefined : baseUrl,
+                baseURL: finalBaseURL,
                 ...options
             })
 

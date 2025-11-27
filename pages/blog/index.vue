@@ -187,12 +187,14 @@ const { data: allPosts } = await useAsyncData('blog-posts', async () => {
     }
   })
   // Map .NET response to frontend format
-  return res.list.map((article: any) => ({
+  // 注意：res 已经是 useApi 处理后的 data，格式为 { Total: int, List: [] }
+  const articles = res.List ?? res.list ?? []
+  return articles.map((article: any) => ({
     ...article,
     _path: `/blog/${article.slug || article.id}`, // Use slug if available
     date: article.publishTime || article.createdAt,
     category: article.categoryName || '未分类',
-    tags: article.tags ? article.tags.split(',') : []
+    tags: article.tags ? (Array.isArray(article.tags) ? article.tags : article.tags.split(',')) : []
   }))
 })
 

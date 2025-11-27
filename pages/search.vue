@@ -280,9 +280,31 @@ const popularSearchTags = [
 ]
 
 // 使用 useAsyncData 加载所有数据
-const { data: blogPosts } = await useAsyncData('search-blog', () =>
-  queryContent('/blog').sort({ date: -1 }).find()
-)
+// 从数据库读取文章（不再使用 Markdown 文件）
+const api = useApi()
+const { data: blogPosts } = await useAsyncData('search-blog', async () => {
+  try {
+    const res = await api.get<any>('/Articles', {
+      params: {
+        page: 1,
+        pageSize: 100
+      }
+    })
+    // 转换为搜索页面需要的格式
+    const articles = res.List ?? res.list ?? []
+    return articles.map((article: any) => ({
+      _path: `/blog/${article.slug || article.id}`,
+      title: article.title,
+      description: article.summary || '',
+      date: article.publishTime || article.createdAt,
+      category: article.categoryName || '未分类',
+      tags: article.tags ? (Array.isArray(article.tags) ? article.tags : article.tags.split(',')) : []
+    }))
+  } catch (e) {
+    console.error('Failed to fetch articles for search:', e)
+    return []
+  }
+})
 
 const { data: projects } = await useAsyncData('search-projects', () =>
   queryContent('/projects').sort({ date: -1 }).find()
