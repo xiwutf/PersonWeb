@@ -9,7 +9,7 @@ export default defineNuxtConfig({
   // 运行时配置
   runtimeConfig: {
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'https://api.xifg.com.cn'
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || '/api'
     }
   },
 
