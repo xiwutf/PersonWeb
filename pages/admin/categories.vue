@@ -95,7 +95,7 @@ const form = ref({
 
 const fetchCategories = async () => {
   try {
-    const res = await api.get<any[]>('/categories')
+    const res = await api.get<any[]>('/admin/categories')
     categories.value = res
   } catch (e) {
     console.error(e)
@@ -118,9 +118,9 @@ const handleSave = async () => {
   
   try {
     if (isEdit.value) {
-      await api.put(`/categories/${form.value.id}`, form.value)
+      await api.put('/admin/categories', form.value)
     } else {
-      await api.post('/categories', form.value)
+      await api.post('/admin/categories', form.value)
     }
     showModal.value = false
     fetchCategories()
@@ -133,7 +133,7 @@ const handleDelete = async (item: any) => {
   if (!confirm(`确定要删除分类 "${item.name}" 吗？`)) return
   
   try {
-    await api.del(`/categories/${item.id}`)
+    await api.del(`/admin/categories?id=${item.id}`)
     fetchCategories()
   } catch (e: any) {
     alert(e.message || '删除失败')

@@ -54,11 +54,10 @@ const fetchStats = async () => {
     // 这里暂时复用 /api/stats 接口，或者后续创建专门的 dashboard 接口
     // 目前 /api/stats 返回的是访问统计，文章数可能需要另外获取
     // 为了演示，先只对接访问统计
-    const res = await api.get<any>('/stats')
+    const res = await api.get<any>('/admin/stats')
     stats.value.todayVisits = res.todayVisits
-    // 文章数和工具数暂时模拟或需要新接口
-    stats.value.articleCount = 12 // TODO: 从 API 获取
-    stats.value.toolCount = 5     // TODO: 从 API 获取
+    stats.value.articleCount = res.articleCount
+    stats.value.toolCount = res.toolCount
   } catch (e) {
     console.error('Failed to fetch stats', e)
   }

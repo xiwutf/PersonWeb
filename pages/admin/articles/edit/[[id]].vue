@@ -88,7 +88,7 @@ const isEdit = computed(() => !!route.params.id)
 
 const fetchCategories = async () => {
   try {
-    const res = await api.get<any[]>('/categories')
+    const res = await api.get<any[]>('/admin/categories')
     categories.value = res
   } catch (e) {
     console.error('Failed to fetch categories', e)
@@ -99,7 +99,7 @@ const fetchCategories = async () => {
 const fetchArticle = async (id: string) => {
   loading.value = true
   try {
-    const res = await api.get<any>(`/articles/${id}`)
+    const res = await api.get<any>(`/admin/articles?id=${id}`)
     form.value = {
       ...res,
       categoryId: res.categoryId || 0,
@@ -148,7 +148,11 @@ const handleSave = async (status: number) => {
       status
     }
     
-    await api.post('/articles', payload)
+    if (isEdit.value) {
+      await api.put('/admin/articles', payload)
+    } else {
+      await api.post('/admin/articles', payload)
+    }
     alert('保存成功')
     router.push('/admin/articles')
   } catch (e: any) {

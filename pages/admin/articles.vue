@@ -74,15 +74,21 @@ const total = ref(0)
 const fetchArticles = async () => {
   loading.value = true
   try {
-    const res = await api.get<any>('/articles', {
+    const res = await api.get<any[]>('/admin/articles', {
       params: {
-        page: page.value,
-        pageSize: 10,
         keyword: keyword.value
       }
     })
-    articles.value = res.list
-    total.value = res.total
+    // Simple client-side filtering and pagination for now since API returns all
+    let filtered = res
+    if (keyword.value) {
+      const k = keyword.value.toLowerCase()
+      filtered = res.filter(a => a.title.toLowerCase().includes(k))
+    }
+    total.value = filtered.length
+    // Slice for pagination
+    const start = (page.value - 1) * 10
+    articles.value = filtered.slice(start, start + 10)
   } catch (e) {
     console.error(e)
   } finally {
@@ -94,7 +100,7 @@ const handleDelete = async (id: number) => {
   if (!confirm('确定要删除这篇文章吗？')) return
   
   try {
-    await api.del(`/articles/${id}`)
+    await api.del(`/admin/articles?id=${id}`)
     fetchArticles() // 刷新列表
   } catch (e: any) {
     alert(e.message || '删除失败')
