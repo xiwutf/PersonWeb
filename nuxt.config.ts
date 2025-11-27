@@ -10,9 +10,10 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       // API 基础路径，通过环境变量配置
-      // 开发环境: .env 文件中的 NUXT_PUBLIC_API_BASE
-      // 生产环境: .env.production 文件中的 NUXT_PUBLIC_API_BASE
-      // 或通过部署时设置环境变量
+      // 注意：客户端会根据当前域名自动判断使用哪个 API
+      // - localhost/127.0.0.1: 自动使用 http://localhost:5234/api
+      // - xifg.com.cn: 自动使用 https://api.xifg.com.cn/api
+      // 环境变量仅作为服务端渲染时的默认值
       apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:5234/api'
     }
   },

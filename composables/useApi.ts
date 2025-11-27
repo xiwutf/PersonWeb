@@ -7,13 +7,40 @@ interface ApiResponse<T> {
 
 export const useApi = () => {
     const config = useRuntimeConfig()
-    const baseUrl = config.public.apiBase
+    
+    /**
+     * 根据当前环境自动获取 API 基础路径
+     * - 本地开发（localhost/127.0.0.1）: 使用本地 API
+     * - 生产环境（xifg.com.cn）: 使用生产 API
+     */
+    const getApiBaseUrl = (): string => {
+        // 客户端运行时，根据当前域名自动判断
+        if (typeof window !== 'undefined') {
+            const hostname = window.location.hostname
+            
+            // 本地开发环境
+            if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '0.0.0.0') {
+                return 'http://localhost:5234/api'
+            }
+            
+            // 生产环境（xifg.com.cn 域名）
+            if (hostname.includes('xifg.com.cn')) {
+                return 'https://api.xifg.com.cn/api'
+            }
+        }
+        
+        // 服务端渲染或其他情况，使用环境变量配置
+        return config.public.apiBase
+    }
+    
+    // 动态获取 API 基础路径
+    const baseUrl = getApiBaseUrl()
 
     // 通用请求处理
     const request = async <T>(url: string, options: any = {}) => {
         try {
             // 自动携带 Token
-            if (process.client) {
+            if (typeof window !== 'undefined') {
                 const token = localStorage.getItem('admin_token')
                 if (token) {
                     options.headers = {
@@ -41,7 +68,7 @@ export const useApi = () => {
         } catch (error: any) {
             console.error('API Error:', error)
             // 如果是 401，跳转登录
-            if (error.response?.status === 401 && process.client) {
+            if (error.response?.status === 401 && typeof window !== 'undefined') {
                 localStorage.removeItem('admin_token')
                 localStorage.removeItem('admin_user')
                 navigateTo('/admin/login')
@@ -74,6 +101,7 @@ export const useApi = () => {
         get,
         post,
         put,
-        del
+        del,
+        baseUrl // 暴露 baseUrl 用于调试
     }
 }

@@ -69,7 +69,7 @@ const formatKey = (key: string | number) => {
 const fetchConfigs = async () => {
   loading.value = true
   try {
-    const res = await api.get<Record<string, string>>('/admin/config')
+    const res = await api.get<Record<string, string>>('/Config')
     configs.value = res
   } catch (e) {
     console.error(e)
@@ -81,7 +81,8 @@ const fetchConfigs = async () => {
 const saveConfig = async (key: string) => {
   savingKey.value = key
   try {
-    await api.post('/admin/config', { [key]: configs.value[key] })
+    // 后端 API 使用 PUT /Config/{key}，body 为 { value: string }
+    await api.put(`/Config/${key}`, { value: configs.value[key] })
     // alert('保存成功') 
   } catch (e: any) {
     alert(e.message || '保存失败')
