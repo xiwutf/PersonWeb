@@ -29,11 +29,15 @@ export const useApi = () => {
             })
 
             // 统一错误处理
-            if (response.code !== 0) {
+            // 兼容两种格式：
+            // 1. 标准格式 { code: 0, data: ... }
+            // 2. 直接返回数据 (code 为 undefined)
+            if (response.code !== undefined && response.code !== 0) {
                 throw new Error(response.message || '请求失败')
             }
 
-            return response.data
+            // 如果是标准格式，返回 data；否则直接返回 response
+            return response.code === 0 ? response.data : response
         } catch (error: any) {
             console.error('API Error:', error)
             // 如果是 401，跳转登录
