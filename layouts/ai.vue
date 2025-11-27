@@ -14,15 +14,24 @@
 </template>
 
 <script setup>
-// 记录访问量逻辑 (与 default 布局保持一致)
+const route = useRoute()
+const api = useApi()
+
+// 记录访问量
 onMounted(async () => {
   try {
-    const lastVisit = localStorage.getItem('lastVisit')
-    const today = new Date().toISOString().split('T')[0]
+    // 获取或生成 Visitor ID
+    let visitorId = localStorage.getItem('visitor_id')
     
-    if (lastVisit !== today) {
-      await $fetch('/api/stats', { method: 'POST' })
-      localStorage.setItem('lastVisit', today)
+    // 调用统计 API
+    const res = await api.post('/tracking/visit', { 
+      visitorId,
+      path: route.path 
+    })
+
+    // 保存 Visitor ID (如果是新生成的)
+    if (res && res.visitorId && res.visitorId !== visitorId) {
+      localStorage.setItem('visitor_id', res.visitorId)
     }
   } catch (e) {
     console.error('Failed to update stats', e)
