@@ -60,7 +60,7 @@
 <script setup lang="ts">
 definePageMeta({
   layout: 'admin',
-  middleware: 'auth'
+  middleware: 'admin-auth'
 })
 
 const router = useRouter()
