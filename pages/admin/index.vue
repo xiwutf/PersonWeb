@@ -1,72 +1,80 @@
 <template>
-  <div class="container mx-auto px-4 py-8">
-    <div class="flex justify-between items-center mb-8">
-      <h1 class="text-3xl font-bold text-gray-800 dark:text-white">Content Management</h1>
-      <NuxtLink to="/admin/edit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
-        Create New
-      </NuxtLink>
-    </div>
+  <div class="min-h-screen bg-gray-100 flex">
+    <!-- 侧边栏 -->
+    <aside class="w-64 bg-slate-800 text-white flex flex-col">
+      <div class="p-6 text-xl font-bold border-b border-slate-700">
+        管理后台
+      </div>
+      <nav class="flex-1 p-4 space-y-2">
+        <NuxtLink to="/admin" class="block px-4 py-2 rounded hover:bg-slate-700" :class="{ 'bg-slate-700': route.path === '/admin' }">
+          📊 仪表盘
+        </NuxtLink>
+        <NuxtLink to="/admin/articles" class="block px-4 py-2 rounded hover:bg-slate-700" :class="{ 'bg-slate-700': route.path.startsWith('/admin/articles') }">
+          📝 文章管理
+        </NuxtLink>
+        <NuxtLink to="/admin/tools" class="block px-4 py-2 rounded hover:bg-slate-700" :class="{ 'bg-slate-700': route.path.startsWith('/admin/tools') }">
+          🛠️ 工具管理
+        </NuxtLink>
+      </nav>
+      <div class="p-4 border-t border-slate-700">
+        <button @click="logout" class="w-full px-4 py-2 text-left hover:bg-slate-700 rounded text-red-300">
+          🚪 退出登录
+        </button>
+      </div>
+    </aside>
 
-    <div class="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg">
-      <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-        <li v-for="file in files" :key="file.path" class="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700">
-          <div class="flex items-center justify-between">
-            <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-blue-600 dark:text-blue-400 truncate">
-                {{ file.name }}
-              </p>
-              <p class="text-xs text-gray-500 dark:text-gray-400">
-                {{ file.path }}
-              </p>
-            </div>
-            <div class="flex space-x-4">
-              <NuxtLink 
-                :to="`/admin/edit?filename=${file.path}`"
-                class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300"
-              >
-                Edit
-              </NuxtLink>
-              <button 
-                @click="deleteFile(file.path)"
-                class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </li>
-      </ul>
-    </div>
+    <!-- 主内容区 -->
+    <main class="flex-1 p-8 overflow-y-auto">
+      <header class="flex justify-between items-center mb-8">
+        <h1 class="text-2xl font-bold text-gray-800">仪表盘</h1>
+        <div class="text-gray-600">欢迎回来，Admin</div>
+      </header>
+
+      <!-- 统计卡片 -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <div class="text-gray-500 text-sm mb-2">总文章数</div>
+          <div class="text-3xl font-bold text-blue-600">12</div>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <div class="text-gray-500 text-sm mb-2">总工具数</div>
+          <div class="text-3xl font-bold text-purple-600">5</div>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <div class="text-gray-500 text-sm mb-2">今日访问</div>
+          <div class="text-3xl font-bold text-green-600">128</div>
+        </div>
+      </div>
+
+      <!-- 快捷操作 -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h2 class="text-lg font-bold mb-4">快捷操作</h2>
+        <div class="flex gap-4">
+          <NuxtLink to="/admin/article-edit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+            + 发布新文章
+          </NuxtLink>
+          <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200">
+            刷新缓存
+          </button>
+        </div>
+      </div>
+    </main>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 definePageMeta({
-  middleware: 'auth'
+  layout: false,
+  middleware: 'admin-auth'
 })
 
-const files = ref([])
+const route = useRoute()
+const router = useRouter()
 
-const fetchFiles = async () => {
-  try {
-    files.value = await $fetch('/api/admin/articles')
-  } catch (e) {
-    console.error('Failed to fetch files', e)
+const logout = () => {
+  if (process.client) {
+    localStorage.removeItem('admin_token')
+    router.push('/admin/login')
   }
 }
-
-const deleteFile = async (filename) => {
-  if (!confirm(`Are you sure you want to delete ${filename}?`)) return
-  
-  try {
-    await $fetch(`/api/admin/articles?filename=${filename}`, {
-      method: 'DELETE'
-    })
-    await fetchFiles()
-  } catch (e) {
-    alert('Failed to delete file')
-  }
-}
-
-onMounted(fetchFiles)
 </script>

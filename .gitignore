@@ -26,3 +26,7 @@ Thumbs.db
 # 打包生成 zip 资源（如果你用脚本生成）
 *.zip
 node_modules
+
+# 忽略服务器数据文件
+server/data/*.json
+!server/data/.keep

@@ -1,0 +1,44 @@
+name: Deploy Frontend to Aliyun OSS
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate static site
+        run: npm run generate
+
+      - name: Install ossutil
+        run: |
+          wget https://gosspublic.alicdn.com/ossutil/1.7.16/ossutil64
+          chmod 755 ossutil64
+          mv ossutil64 /usr/local/bin/ossutil
+
+      - name: Configure ossutil
+        env:
+          OSS_ENDPOINT: ${{ secrets.OSS_ENDPOINT }}
+          OSS_ACCESS_KEY_ID: ${{ secrets.OSS_AK }}
+          OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_SK }}
+        run: |
+          ossutil config -e $OSS_ENDPOINT -i $OSS_ACCESS_KEY_ID -k $OSS_ACCESS_KEY_SECRET -L CH
+
+      - name: Upload to OSS
+        run: |
+          ossutil cp -r .output/public/ oss://xifg-site-frontend/ -f

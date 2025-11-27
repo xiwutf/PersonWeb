@@ -6,6 +6,13 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss'
   ],
 
+  // 运行时配置
+  runtimeConfig: {
+    public: {
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'https://api.xifg.com.cn'
+    }
+  },
+
   // Content 模块配置
   // @ts-ignore
   content: {

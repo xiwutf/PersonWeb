@@ -1,25 +1,25 @@
 <template>
   <header class="fixed top-4 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8">
-    <div class="glass max-w-6xl mx-auto rounded-2xl transition-all duration-300">
+    <div class="glass max-w-7xl mx-auto rounded-2xl transition-all duration-300">
       <div class="flex justify-between items-center h-16 px-4">
         <!-- Logo 区域 -->
-        <NuxtLink to="/" class="flex items-center space-x-3 group">
+        <NuxtLink to="/" class="flex items-center space-x-3 group shrink-0">
           <div class="w-10 h-10 rounded-lg overflow-hidden shadow-sm group-hover:shadow-md transition-all duration-300 border border-gray-200 group-hover:scale-105">
             <img src="/images/avatar.jpg" alt="溪午听风" class="w-full h-full object-cover" />
           </div>
-          <div class="hidden sm:block">
+          <div class="hidden lg:block">
             <span class="text-xl font-bold text-gray-800 font-['Outfit']">溪午听风</span>
           </div>
         </NuxtLink>
 
         <!-- 桌面端导航菜单 -->
-        <nav class="hidden md:flex items-center space-x-2">
+        <nav class="hidden md:flex items-center space-x-1">
           <NuxtLink
             v-for="item in navigationItems"
             :key="item.path"
             :to="item.path"
-            class="relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 hover:bg-gray-100/50 hover:text-blue-600"
-            :class="{ 'bg-blue-50 text-blue-600 shadow-sm': $route.path === item.path, 'text-gray-600': $route.path !== item.path }"
+            class="relative px-3 py-2 rounded-xl text-sm font-medium transition-all duration-300 hover:bg-gray-100/50 hover:text-primary-600 whitespace-nowrap"
+            :class="{ 'bg-primary-50 text-primary-600 shadow-sm': $route.path === item.path, 'text-gray-600': $route.path !== item.path }"
           >
             <span class="flex items-center space-x-1.5">
               <span>{{ item.icon }}</span>
@@ -30,8 +30,8 @@
           <!-- 搜索按钮 -->
           <NuxtLink
             to="/search"
-            class="flex items-center justify-center w-10 h-10 rounded-xl text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-300 ml-2"
-            :class="{ 'text-blue-600 bg-blue-50 shadow-sm': $route.path === '/search' }"
+            class="flex items-center justify-center w-9 h-9 rounded-xl text-gray-600 hover:text-primary-600 hover:bg-primary-50 transition-all duration-300 ml-1"
+            :class="{ 'text-primary-600 bg-primary-50 shadow-sm': $route.path === '/search' }"
             title="搜索"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -40,7 +40,9 @@
           </NuxtLink>
 
           <!-- 主题切换 -->
-          <ThemeToggle />
+          <div class="ml-1">
+            <ThemeToggle />
+          </div>
         </nav>
 
         <!-- 移动端菜单按钮 -->
@@ -66,7 +68,7 @@
             :to="item.path"
             @click="closeMobileMenu"
             class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200"
-            :class="{ 'bg-blue-50 text-blue-600': $route.path === item.path, 'text-gray-600 hover:bg-gray-50': $route.path !== item.path }"
+            :class="{ 'bg-primary-50 text-primary-600': $route.path === item.path, 'text-gray-600 hover:bg-gray-50': $route.path !== item.path }"
           >
             <span class="text-lg">{{ item.icon }}</span>
             <span class="font-medium">{{ item.title }}</span>
@@ -77,7 +79,7 @@
             to="/search"
             @click="closeMobileMenu"
             class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200"
-            :class="{ 'bg-blue-50 text-blue-600': $route.path === '/search', 'text-gray-600 hover:bg-gray-50': $route.path !== '/search' }"
+            :class="{ 'bg-primary-50 text-primary-600': $route.path === '/search', 'text-gray-600 hover:bg-gray-50': $route.path !== '/search' }"
           >
             <span class="text-lg">🔍</span>
             <span class="font-medium">搜索</span>
@@ -125,6 +127,11 @@ const navigationItems = [
     title: '生活随笔',
     path: '/life',
     icon: '☕'
+  },
+  {
+    title: '英语学习',
+    path: '/english',
+    icon: '📚'
   },
   {
     title: '关于我',
