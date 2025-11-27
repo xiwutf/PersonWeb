@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
     <div class="flex flex-col lg:flex-row gap-6">
       <!-- 搜索框 -->
@@ -80,7 +80,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 
 const props = defineProps({

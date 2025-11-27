@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="bg-gradient-to-br from-indigo-50 to-purple-50 min-h-screen">
     <!-- 页面头部 -->
     <section class="py-16 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
@@ -258,7 +258,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from 'vue'
 
 // 搜索状态

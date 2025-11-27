@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="min-h-screen bg-[#050505] text-white selection:bg-cyan-500/30 font-sans">
     <!-- 背景特效 -->
     <div class="fixed inset-0 pointer-events-none">
@@ -119,7 +119,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const { data: agents } = await useAsyncData('agents', () => queryContent('/ai/agents').find())
 const { data: workflows } = await useAsyncData('workflows', () => queryContent('/ai/workflows').find())
 
@@ -140,3 +140,4 @@ useHead({
   animation-delay: 2s;
 }
 </style>
+

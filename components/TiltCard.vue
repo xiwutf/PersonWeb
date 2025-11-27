@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div
     ref="cardRef"
     class="tilt-card relative transition-all duration-200 ease-out transform-style-3d"
@@ -15,7 +15,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from 'vue'
 
 const cardRef = ref(null)
@@ -57,3 +57,4 @@ const cardStyle = computed(() => {
   transform-style: preserve-3d;
 }
 </style>
+

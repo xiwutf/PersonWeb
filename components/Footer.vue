@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <footer class="relative bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white overflow-hidden">
     <!-- 动态背景装饰 -->
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
@@ -75,7 +75,7 @@
   </footer>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const currentYear = new Date().getFullYear()
 
 const quickLinks = [

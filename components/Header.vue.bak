@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <header class="fixed top-4 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8">
     <div class="glass max-w-7xl mx-auto rounded-2xl transition-all duration-300">
       <div class="flex justify-between items-center h-16 px-4">
@@ -12,7 +12,7 @@
           </div>
         </NuxtLink>
 
-        <!-- 桌面端导航菜单 -->
+        <!-- 桌面端导航菜�?-->
         <nav class="hidden md:flex items-center space-x-1">
           <NuxtLink
             v-for="item in navigationItems"
@@ -45,7 +45,7 @@
           </div>
         </nav>
 
-        <!-- 移动端菜单按钮 -->
+        <!-- 移动端菜单按�?-->
         <button
           @click="toggleMobileMenu"
           class="md:hidden p-2 rounded-xl hover:bg-gray-100 transition-colors"
@@ -56,7 +56,7 @@
         </button>
       </div>
 
-      <!-- 移动端菜单 -->
+      <!-- 移动端菜�?-->
       <div
         v-show="isMobileMenuOpen"
         class="md:hidden border-t border-gray-100"
@@ -74,7 +74,7 @@
             <span class="font-medium">{{ item.title }}</span>
           </NuxtLink>
           
-          <!-- 移动端搜索 -->
+          <!-- 移动端搜�?-->
           <NuxtLink
             to="/search"
             @click="closeMobileMenu"
@@ -93,10 +93,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-// 移动端菜单状态
+// 移动端菜单状�?
 const isMobileMenuOpen = ref(false)
 
-// 导航项配置
+// 导航项配�?
 const navigationItems = [
   {
     title: '首页',
@@ -114,19 +114,19 @@ const navigationItems = [
     icon: '🧪'
   },
   {
-    title: '技术博客',
+    title: '技术博�?,
     path: '/blog',
     icon: '📝'
   },
   {
-    title: 'AI 实验室',
+    title: 'AI 实验�?,
     path: '/ai',
     icon: '🔮'
   },
   {
     title: '生活随笔',
     path: '/life',
-    icon: '☕'
+    icon: '�?
   },
   {
     title: '英语学习',
@@ -134,18 +134,18 @@ const navigationItems = [
     icon: '📚'
   },
   {
-    title: '关于我',
+    title: '关于�?,
     path: '/about',
     icon: '👤'
   }
 ]
 
-// 关闭移动端菜单
+// 关闭移动端菜�?
 const closeMobileMenu = () => {
   isMobileMenuOpen.value = false
 }
 
-// 切换移动端菜单
+// 切换移动端菜�?
 const toggleMobileMenu = () => {
   isMobileMenuOpen.value = !isMobileMenuOpen.value
 }

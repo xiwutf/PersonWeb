@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="mt-12 pt-8 border-t border-gray-200">
     <div class="mb-6">
       <h3 class="text-2xl font-bold text-gray-800 mb-2">💬 评论讨论</h3>
@@ -16,7 +16,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 defineProps({
   identifier: {
     type: String,

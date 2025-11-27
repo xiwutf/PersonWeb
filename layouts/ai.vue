@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="min-h-screen flex flex-col bg-[#050505] text-white">
     <!-- 头部导航 -->
     <Header />
@@ -13,7 +13,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const route = useRoute()
 const api = useApi()
 
@@ -38,3 +38,4 @@ onMounted(async () => {
   }
 })
 </script>
+

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="min-h-screen bg-[#fdfbf7] py-8">
     <div class="container mx-auto px-4 max-w-3xl">
       <!-- 顶部导航 -->
@@ -54,7 +54,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const route = useRoute()
 const slug = route.params.slug
 
@@ -96,3 +96,4 @@ useHead({
   font-family: "Merriweather", "Georgia", serif;
 }
 </style>
+

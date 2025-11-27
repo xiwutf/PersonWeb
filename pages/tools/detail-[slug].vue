@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 py-8">
     <div class="container mx-auto px-4 max-w-4xl">
       <!-- 面包屑导航 -->
@@ -109,7 +109,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const route = useRoute()
 const slug = route.params.slug
 

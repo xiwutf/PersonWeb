@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <button
     @click="toggleTheme"
     class="p-2 rounded-xl transition-all duration-300 hover:bg-gray-100 dark:hover:bg-slate-800"
@@ -9,7 +9,7 @@
   </button>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 
 const isDark = ref(false)
@@ -36,3 +36,4 @@ const toggleTheme = () => {
   }
 }
 </script>
+

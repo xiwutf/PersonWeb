@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="min-h-screen bg-[#050505] text-white selection:bg-cyan-500/30 font-sans pt-20">
     <!-- 顶部导航栏 -->
     <div class="fixed top-0 left-0 w-full z-50 bg-[#050505]/80 backdrop-blur-md border-b border-slate-800">
@@ -107,7 +107,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const route = useRoute()
 const type = route.params.type // 'agents' or 'workflows'
 const slug = route.params.slug
@@ -138,3 +138,4 @@ useHead({
   border-radius: 2px;
 }
 </style>
+

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="min-h-screen bg-[#0f172a] text-slate-200 relative overflow-hidden font-['Outfit']">
     <!-- 全局背景噪点 -->
     <div class="fixed inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none z-50"
@@ -151,7 +151,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const socialLinks = [
   { name: 'GitHub', icon: 'fab fa-github', link: 'https://github.com/Lijing327' },
   { name: 'Email', icon: 'fas fa-envelope', link: 'mailto:255106739@qq.com' },

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="glass-card p-6 h-full flex flex-col relative overflow-hidden">
     <div class="absolute -right-4 -top-4 w-24 h-24 bg-yellow-400/20 rounded-full blur-2xl"></div>
     
@@ -46,7 +46,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 
 const options = ['Permanent', 'Short-lived', 'Beautiful', 'Dangerous']
@@ -76,3 +76,4 @@ const nextQuestion = () => {
   to { opacity: 1; transform: translateY(0); }
 }
 </style>
+

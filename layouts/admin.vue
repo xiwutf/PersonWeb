@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="min-h-screen bg-gray-100 flex">
     <!-- 侧边栏 -->
     <aside class="w-64 bg-slate-800 text-white flex flex-col fixed h-full left-0 top-0 z-10">
@@ -64,3 +64,4 @@ const logout = () => {
   }
 }
 </script>
+

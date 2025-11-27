@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="glass-card p-6 h-full flex flex-col">
     <div class="flex justify-between items-center mb-6">
       <h3 class="text-lg font-bold text-gray-800 font-['Outfit']">Study Streak</h3>
@@ -43,7 +43,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const weekDays = [
   { name: 'M', completed: true, minutes: 45 },
   { name: 'T', completed: true, minutes: 30 },
@@ -56,3 +56,4 @@ const weekDays = [
 
 const isToday = (index) => index === 4 // Mocking Friday as today
 </script>
+

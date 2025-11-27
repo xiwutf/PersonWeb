@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="min-h-screen bg-gray-100">
     <!-- 未登录状态 - 登录表单 -->
     <div v-if="!isAuthenticated" class="flex items-center justify-center min-h-screen">
@@ -307,7 +307,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 
 // 页面标题

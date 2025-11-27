@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="container mx-auto px-4 py-8 h-[calc(100vh-64px)] flex flex-col">
     <div class="flex-1 bg-white rounded-xl shadow-lg overflow-hidden flex flex-col border border-gray-200">
       <!-- 聊天头部 -->
@@ -98,3 +98,4 @@ const sendMessage = async () => {
   // const response = await api.post('/chat', { message: question })
 }
 </script>
+

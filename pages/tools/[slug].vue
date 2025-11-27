@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="container mx-auto px-4 py-8">
     <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
       <div class="md:flex">
@@ -48,3 +48,4 @@ const route = useRoute()
 
 // TODO: 调用 API 获取工具详情
 </script>
+

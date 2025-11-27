@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-mesh">
     <div class="max-w-7xl mx-auto">
       <!-- Header Section -->
@@ -59,7 +59,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import DailyWord from '~/components/english/DailyWord.vue'
 import StreakTracker from '~/components/english/StreakTracker.vue'
 import QuickQuiz from '~/components/english/QuickQuiz.vue'
@@ -71,3 +71,4 @@ useHead({
   ]
 })
 </script>
+

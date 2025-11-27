@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="container mx-auto px-4 py-8">
     <div class="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-8">
       <!-- 这是一个占位页面，用于展示博客详情结构 -->
@@ -36,3 +36,4 @@ const route = useRoute()
 //   api.get(`/posts/${route.params.id}`)
 // )
 </script>
+

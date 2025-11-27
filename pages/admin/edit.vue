@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="container mx-auto px-4 py-8 h-screen flex flex-col">
     <div class="flex justify-between items-center mb-4">
       <h1 class="text-2xl font-bold text-gray-800 dark:text-white">
@@ -39,7 +39,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 definePageMeta({
   middleware: 'admin-auth'
 })
@@ -85,3 +85,4 @@ const save = async () => {
   }
 }
 </script>
+

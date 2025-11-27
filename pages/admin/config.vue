@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">站点配置</h1>
 
@@ -102,3 +102,4 @@ onMounted(() => {
   fetchConfigs()
 })
 </script>
+

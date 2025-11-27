@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="min-h-screen flex items-center justify-center bg-gray-100">
     <div class="max-w-md w-full bg-white rounded-lg shadow-md p-8">
       <h2 class="text-2xl font-bold text-center text-gray-800 mb-8">后台管理系统登录</h2>
@@ -85,3 +85,4 @@ const handleLogin = async () => {
   }
 }
 </script>
+

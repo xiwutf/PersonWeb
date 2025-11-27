@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="glass-card p-6 h-full flex flex-col relative overflow-hidden group">
     <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
       <span class="text-8xl">📅</span>
@@ -47,7 +47,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 
 const isLearned = ref(false)
@@ -56,3 +56,4 @@ const markLearned = () => {
   isLearned.value = !isLearned.value
 }
 </script>
+

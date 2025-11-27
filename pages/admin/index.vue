@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <header class="flex justify-between items-center mb-8">
       <h1 class="text-2xl font-bold text-gray-800 dark:text-white">仪表盘</h1>
@@ -68,3 +68,4 @@ onMounted(() => {
   fetchStats()
 })
 </script>
+

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="min-h-screen bg-[#0f172a] text-slate-200 relative overflow-hidden font-['Outfit']">
     <!-- 全局背景噪点 -->
     <div class="fixed inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none z-50"
@@ -99,7 +99,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 // 使用 @nuxt/content 查询生活随笔数据
 const { data: posts } = await useAsyncData('life-posts', () =>
   queryContent('/life').sort({ date: -1 }).find()
@@ -154,3 +154,4 @@ useHead({
   50% { transform: translateY(-5px); }
 }
 </style>
+
