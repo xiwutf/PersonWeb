@@ -2,7 +2,7 @@ name: Deploy Website
 
 on:
   push:
-    branches: [ master ]
+    branches: [ disabled-workflow ] # Temporarily disabled
 
 jobs:
   build-and-deploy:
