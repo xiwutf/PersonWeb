@@ -11,24 +11,6 @@ const pool = mysql.createPool({
     queueLimit: 0
 })
 
-// Initialize database table
-export const initDB = async () => {
-    try {
-        const connection = await pool.getConnection()
-        await connection.query(`
-      CREATE TABLE IF NOT EXISTS visit_logs (
-        id VARCHAR(36) PRIMARY KEY,
-        visitor_id VARCHAR(36) NOT NULL,
-        ip VARCHAR(45),
-        user_agent TEXT,
-        path VARCHAR(255),
-        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-      )
-    `)
-        connection.release()
-    } catch (error) {
-        console.error('Database initialization failed:', error)
-    }
-}
-
+// 数据库连接池
+// 注意：数据库表结构需要手动维护，不会自动创建
 export const db = pool

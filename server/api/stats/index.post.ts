@@ -1,9 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
 
 export default defineEventHandler(async (event) => {
-    // Initialize DB table (lazy init)
-    await initDB()
-
     // 1. 获取或创建 Visitor ID
     let visitorId = getCookie(event, 'visitor_id')
 
