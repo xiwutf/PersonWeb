@@ -12,7 +12,12 @@ if (!fs.existsSync(metricsFile)) {
     fs.writeFileSync(metricsFile, '[]')
 }
 
+import { checkAuth } from '../../utils/auth'
+
 export default defineEventHandler(async (event) => {
+    // Check authentication
+    checkAuth(event)
+
     const method = event.node.req.method
 
     // GET: 获取所有数据

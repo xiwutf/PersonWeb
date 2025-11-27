@@ -3,15 +3,11 @@ import path from 'node:path'
 
 const categoriesFile = path.resolve(process.cwd(), 'server/data/categories.json')
 
+import { checkAuth } from '../../utils/auth'
+
 export default defineEventHandler(async (event) => {
     // Check authentication
-    const cookies = parseCookies(event)
-    if (cookies.admin_auth !== 'true') {
-        throw createError({
-            statusCode: 401,
-            statusMessage: 'Unauthorized'
-        })
-    }
+    checkAuth(event)
 
     const method = event.method
 

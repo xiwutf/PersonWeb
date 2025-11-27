@@ -16,7 +16,12 @@ export default defineEventHandler(async (event) => {
             httpOnly: false, // Allow client-side access for middleware checks
             path: '/'
         })
-        return { success: true }
+        return {
+            success: true,
+            token: 'admin_token_placeholder', // Dummy token for frontend useApi
+            username: 'admin',
+            role: 'admin'
+        }
     }
 
     throw createError({

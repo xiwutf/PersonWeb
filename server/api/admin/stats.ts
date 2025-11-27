@@ -5,15 +5,11 @@ const contentDir = path.resolve(process.cwd(), 'content')
 const toolsDir = path.resolve(process.cwd(), 'content/tools') // Assuming tools are in content/tools
 const statsFile = path.resolve(process.cwd(), 'server/data/stats.json')
 
+import { checkAuth } from '../../utils/auth'
+
 export default defineEventHandler(async (event) => {
     // Check authentication
-    const cookies = parseCookies(event)
-    if (cookies.admin_auth !== 'true') {
-        throw createError({
-            statusCode: 401,
-            statusMessage: 'Unauthorized'
-        })
-    }
+    checkAuth(event)
 
     // Helper to count files recursively
     const countFiles = (dir: string, extension: string = '.md'): number => {

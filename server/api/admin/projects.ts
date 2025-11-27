@@ -11,7 +11,12 @@ if (!fs.existsSync(projectsDir)) {
     fs.mkdirSync(projectsDir, { recursive: true })
 }
 
+import { checkAuth } from '../../utils/auth'
+
 export default defineEventHandler(async (event) => {
+    // Check authentication
+    checkAuth(event)
+
     const method = event.node.req.method
 
     // GET: 获取项目列表或单个项目
