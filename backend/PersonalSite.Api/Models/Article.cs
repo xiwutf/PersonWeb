@@ -65,12 +65,6 @@ public class Article
     
     public List<Tag> Tags { get; set; } = new();
     
-    // 辅助属性：浏览量（数据库中没有这个字段，可能是遗漏或者设计变更，暂时保留属性但不映射，或者如果用户之前的代码有用到，需要确认。
-    // 用户给的 SQL 里没有 view_count。
-    // 之前的代码有 ViewCount。
-    // 既然用户给了明确的 SQL，我应该遵循 SQL。
-    // 但是 ArticlesController 用到了 ViewCount。
-    // 我会添加 [NotMapped] 或者暂时移除它，并在 Controller 中注释掉相关代码，或者询问用户。
-    // 鉴于用户说 "修改当前代码字段"，我应该严格匹配 SQL。
-    // 所以 ViewCount 应该移除。
+    [Column("view_count")]
+    public int ViewCount { get; set; } = 0;
 }

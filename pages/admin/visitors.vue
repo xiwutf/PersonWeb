@@ -3,7 +3,7 @@
     <div class="max-w-7xl mx-auto">
       <div class="flex justify-between items-center mb-8">
         <h1 class="text-3xl font-bold text-gray-900 font-['Outfit']">Visitor Dashboard</h1>
-        <button @click="refresh" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+        <button @click="fetchData" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
           Refresh Data
         </button>
       </div>
@@ -12,15 +12,15 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
           <div class="text-sm font-medium text-gray-500 mb-1">Total Visits</div>
-          <div class="text-3xl font-bold text-gray-900">{{ data?.stats.totalVisits || 0 }}</div>
+          <div class="text-3xl font-bold text-gray-900">{{ data?.totalVisits || 0 }}</div>
         </div>
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
           <div class="text-sm font-medium text-gray-500 mb-1">Unique Visitors</div>
-          <div class="text-3xl font-bold text-blue-600">{{ data?.stats.uniqueVisitors || 0 }}</div>
+          <div class="text-3xl font-bold text-blue-600">{{ data?.uniqueVisitors || 0 }}</div>
         </div>
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
           <div class="text-sm font-medium text-gray-500 mb-1">Today's Visits</div>
-          <div class="text-3xl font-bold text-green-600">{{ data?.stats.todayVisits || 0 }}</div>
+          <div class="text-3xl font-bold text-green-600">{{ data?.todayVisits || 0 }}</div>
         </div>
       </div>
 
@@ -82,10 +82,24 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 definePageMeta({
-  layout: false
+  layout: false,
+  middleware: 'admin-auth'
 })
 
-const { data, refresh } = await useFetch('/api/admin/visits')
+const api = useApi()
+const data = ref<any>(null)
+
+const fetchData = async () => {
+  try {
+    data.value = await api.get('/stats')
+  } catch (e) {
+    console.error('Failed to fetch stats', e)
+  }
+}
+
+onMounted(() => {
+  fetchData()
+})
 </script>

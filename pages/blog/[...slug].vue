@@ -148,40 +148,6 @@ const formatDate = (dateString) => {
 useHead({
   title: `${post.value.title} - 技术博客 - 溪午听风`,
   meta: [
-    { name: 'description', content: post.value.description },
-    { name: 'keywords', content: post.value.tags?.join(', ') },
-    { name: 'author', content: post.value.author }
-  ]
-})
-
-// 浏览量逻辑
-const views = ref(0)
-
-onMounted(async () => {
-  try {
-    // 增加浏览量并获取最新值
-    const res = await $fetch('/api/views', {
-      method: 'POST',
-      body: { slug: slugString }
-    })
-    views.value = res.views
-  } catch (e) {
-    console.error('Failed to update views', e)
-    // 如果失败，尝试仅获取当前浏览量
-    try {
-      const res = await $fetch(`/api/views?slug=${slugString}`)
-      views.value = res.views
-    } catch (e2) {
-      console.error('Failed to fetch views', e2)
-    }
-  }
-})
-</script>
-
-<style scoped>
-.container {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
 }
 
 /* 优化文章内容样式 */

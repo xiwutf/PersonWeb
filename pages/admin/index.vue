@@ -9,15 +9,15 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
       <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
         <div class="text-gray-500 dark:text-gray-400 text-sm mb-2">总文章数</div>
-        <div class="text-3xl font-bold text-blue-600 dark:text-blue-400">12</div>
+        <div class="text-3xl font-bold text-blue-600 dark:text-blue-400">{{ stats.articleCount || '-' }}</div>
       </div>
       <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
         <div class="text-gray-500 dark:text-gray-400 text-sm mb-2">总工具数</div>
-        <div class="text-3xl font-bold text-purple-600 dark:text-purple-400">5</div>
+        <div class="text-3xl font-bold text-purple-600 dark:text-purple-400">{{ stats.toolCount || '-' }}</div>
       </div>
       <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
         <div class="text-gray-500 dark:text-gray-400 text-sm mb-2">今日访问</div>
-        <div class="text-3xl font-bold text-green-600 dark:text-green-400">128</div>
+        <div class="text-3xl font-bold text-green-600 dark:text-green-400">{{ stats.todayVisits || '-' }}</div>
       </div>
     </div>
 
@@ -40,5 +40,31 @@
 definePageMeta({
   layout: 'admin',
   middleware: 'auth'
+})
+
+const api = useApi()
+const stats = ref({
+  articleCount: 0,
+  toolCount: 0,
+  todayVisits: 0
+})
+
+const fetchStats = async () => {
+  try {
+    // 这里暂时复用 /api/stats 接口，或者后续创建专门的 dashboard 接口
+    // 目前 /api/stats 返回的是访问统计，文章数可能需要另外获取
+    // 为了演示，先只对接访问统计
+    const res = await api.get<any>('/stats')
+    stats.value.todayVisits = res.todayVisits
+    // 文章数和工具数暂时模拟或需要新接口
+    stats.value.articleCount = 12 // TODO: 从 API 获取
+    stats.value.toolCount = 5     // TODO: 从 API 获取
+  } catch (e) {
+    console.error('Failed to fetch stats', e)
+  }
+}
+
+onMounted(() => {
+  fetchStats()
 })
 </script>

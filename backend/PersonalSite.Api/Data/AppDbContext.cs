@@ -17,6 +17,8 @@ public class AppDbContext : DbContext
     public DbSet<SiteConfig> SiteConfigs { get; set; }
     public DbSet<OperationLog> OperationLogs { get; set; }
     public DbSet<PvUvDaily> PvUvDailies { get; set; }
+    public DbSet<VisitLog> VisitLogs { get; set; }
+    public DbSet<PageStat> PageStats { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -7,6 +7,15 @@
     <main class="flex-1 pt-24">
       <slot />
     </main>
+<template>
+  <div class="min-h-screen flex flex-col">
+    <!-- 头部导航 -->
+    <Header />
+    
+    <!-- 主要内容区域 -->
+    <main class="flex-1 pt-24">
+      <slot />
+    </main>
     
     <!-- 页脚 -->
     <Footer />
@@ -18,6 +27,8 @@
 
 // 使用主题组合式函数
 const { updateTheme } = useTheme()
+const route = useRoute()
+const api = useApi()
 
 // 记录访问量
 onMounted(async () => {
@@ -25,8 +36,19 @@ onMounted(async () => {
     // 初始化主题
     updateTheme()
 
-    // 调用统计 API (由服务器处理去重和记录逻辑)
-    await $fetch('/api/stats', { method: 'POST' })
+    // 获取或生成 Visitor ID
+    let visitorId = localStorage.getItem('visitor_id')
+    
+    // 调用统计 API
+    const res = await api.post('/tracking/visit', { 
+      visitorId,
+      path: route.path 
+    })
+
+    // 保存 Visitor ID (如果是新生成的)
+    if (res && res.visitorId && res.visitorId !== visitorId) {
+      localStorage.setItem('visitor_id', res.visitorId)
+    }
   } catch (e) {
     console.error('Failed to update stats', e)
   }
