@@ -41,3 +41,6 @@ obj/
 *.userprefs
 appsettings.Development.json
 .env
+.env.production
+.env.local
+.env.*.local
