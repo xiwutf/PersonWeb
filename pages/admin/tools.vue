@@ -105,7 +105,8 @@ const form = ref({
 
 const fetchTools = async () => {
   try {
-    const res = await api.get<any[]>('/admin/tools')
+    // Nuxt server API，使用 /api/ 前缀
+    const res = await api.get<any[]>('/api/admin/tools')
     tools.value = res
   } catch (e) {
     console.error(e)
@@ -127,10 +128,11 @@ const handleSave = async () => {
   if (!form.value.title) return alert('请输入工具名称')
   
   try {
+    // Nuxt server API，使用 /api/ 前缀
     if (isEdit.value) {
-      await api.put('/admin/tools', form.value)
+      await api.put('/api/admin/tools', form.value)
     } else {
-      await api.post('/admin/tools', form.value)
+      await api.post('/api/admin/tools', form.value)
     }
     showModal.value = false
     fetchTools()
@@ -143,7 +145,8 @@ const handleDelete = async (item: any) => {
   if (!confirm(`确定要删除工具 "${item.title}" 吗？`)) return
   
   try {
-    await api.del(`/admin/tools?filename=${item.path}`)
+    // Nuxt server API，使用 /api/ 前缀
+    await api.del(`/api/admin/tools?filename=${item.path}`)
     fetchTools()
   } catch (e: any) {
     alert(e.message || '删除失败')

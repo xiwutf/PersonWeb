@@ -50,8 +50,12 @@ export const useApi = () => {
                 }
             }
 
+            // 判断是否为 Nuxt server API（以 /api/ 开头）
+            // Nuxt server API 应该直接调用，不添加后端 baseURL
+            const isNuxtServerAPI = url.startsWith('/api/')
+            
             const response = await $fetch<ApiResponse<T>>(url, {
-                baseURL: baseUrl,
+                baseURL: isNuxtServerAPI ? undefined : baseUrl,
                 ...options
             })
 

@@ -51,15 +51,18 @@ const stats = ref({
 
 const fetchStats = async () => {
   try {
-    // 这里暂时复用 /api/stats 接口，或者后续创建专门的 dashboard 接口
-    // 目前 /api/stats 返回的是访问统计，文章数可能需要另外获取
-    // 为了演示，先只对接访问统计
+    // 后端 Stats API 返回格式: { code: 0, data: { TotalVisits, TodayVisits, ArticleCount, ProjectCount, ... } }
     const res = await api.get<any>('/Stats')
-    stats.value.todayVisits = res.todayVisits
-    stats.value.articleCount = res.articleCount
-    stats.value.toolCount = res.projectCount // Map ProjectCount to toolCount for now
-  } catch (e) {
+    // useApi 已经处理了响应格式，直接返回 data
+    stats.value.todayVisits = res?.TodayVisits || 0
+    stats.value.articleCount = res?.ArticleCount || 0
+    stats.value.toolCount = res?.ProjectCount || 0
+  } catch (e: any) {
     console.error('Failed to fetch stats', e)
+    // 如果 API 返回错误，使用默认值
+    stats.value.todayVisits = 0
+    stats.value.articleCount = 0
+    stats.value.toolCount = 0
   }
 }
 
