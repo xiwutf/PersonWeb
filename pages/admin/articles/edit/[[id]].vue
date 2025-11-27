@@ -2,9 +2,14 @@
   <div>
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-bold text-gray-800 dark:text-white">编辑文章</h1>
-      <NuxtLink to="/admin/articles" class="text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200">
-        取消
-      </NuxtLink>
+      <div class="flex gap-4">
+        <button @click="togglePreview" class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
+          {{ showPreview ? '隐藏预览' : '显示预览' }}
+        </button>
+        <NuxtLink to="/admin/articles" class="px-4 py-2 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200">
+          取消
+        </NuxtLink>
+      </div>
     </div>
 
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
@@ -39,12 +44,28 @@
           <textarea v-model="form.summary" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 h-20 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" placeholder="文章简短描述..."></textarea>
         </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">内容 (Markdown)</label>
-          <textarea v-model="form.contentMd" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 h-96 font-mono bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" placeholder="# Hello World..."></textarea>
+        <!-- 编辑器区域 -->
+        <div class="flex flex-col lg:flex-row gap-6 h-[600px]">
+          <!-- 编辑区 -->
+          <div :class="showPreview ? 'w-full lg:w-1/2' : 'w-full'" class="flex flex-col">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">内容 (Markdown)</label>
+            <textarea 
+              v-model="form.contentMd" 
+              class="w-full flex-1 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 font-mono bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+              placeholder="# Hello World..."
+            ></textarea>
+          </div>
+
+          <!-- 预览区 -->
+          <div v-if="showPreview" class="w-full lg:w-1/2 flex flex-col">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">实时预览</label>
+            <div class="flex-1 border border-gray-200 dark:border-gray-700 rounded px-4 py-4 bg-gray-50 dark:bg-gray-900/50 overflow-y-auto">
+              <div class="prose dark:prose-invert max-w-none" v-html="renderedContent"></div>
+            </div>
+          </div>
         </div>
 
-        <div class="flex justify-end gap-4">
+        <div class="flex justify-end gap-4 pt-4 border-t border-gray-100 dark:border-gray-700">
           <button @click="handleSave(0)" type="button" class="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700" :disabled="saving">
             存草稿
           </button>
@@ -58,6 +79,8 @@
 </template>
 
 <script setup lang="ts">
+import MarkdownIt from 'markdown-it'
+
 definePageMeta({
   layout: 'admin',
   middleware: 'admin-auth'
@@ -66,9 +89,11 @@ definePageMeta({
 const router = useRouter()
 const route = useRoute()
 const api = useApi()
+const md = new MarkdownIt()
 
 const loading = ref(false)
 const saving = ref(false)
+const showPreview = ref(true)
 const fileInput = ref<HTMLInputElement | null>(null)
 const categories = ref<any[]>([])
 
@@ -85,6 +110,15 @@ const form = ref({
 })
 
 const isEdit = computed(() => !!route.params.id)
+
+// 实时渲染 Markdown
+const renderedContent = computed(() => {
+  return md.render(form.value.contentMd || '')
+})
+
+const togglePreview = () => {
+  showPreview.value = !showPreview.value
+}
 
 const fetchCategories = async () => {
   try {

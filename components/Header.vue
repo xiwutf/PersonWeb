@@ -137,6 +137,11 @@ const navigationItems = [
     title: '关于我',
     path: '/about',
     icon: '👤'
+  },
+  {
+    title: '仪表盘',
+    path: '/dashboard',
+    icon: '⚡'
   }
 ]
 
