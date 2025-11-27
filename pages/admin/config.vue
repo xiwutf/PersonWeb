@@ -70,9 +70,18 @@ const fetchConfigs = async () => {
   loading.value = true
   try {
     const res = await api.get<Record<string, string>>('/Config')
-    configs.value = res
-  } catch (e) {
-    console.error(e)
+    console.log('Config API Response:', res)
+    console.log('Config keys:', res ? Object.keys(res) : [])
+    if (res && typeof res === 'object') {
+      configs.value = res
+    } else {
+      console.warn('Config API returned invalid response')
+      configs.value = {}
+    }
+  } catch (e: any) {
+    console.error('Failed to fetch config:', e)
+    console.error('Error details:', e.response, e.message)
+    configs.value = {}
   } finally {
     loading.value = false
   }

@@ -52,14 +52,22 @@ const stats = ref({
 const fetchStats = async () => {
   try {
     // 后端 Stats API 返回格式: { code: 0, data: { TotalVisits, TodayVisits, ArticleCount, ProjectCount, ... } }
+    // 注意：Stats API 需要 [Authorize]，确保已登录
     const res = await api.get<any>('/Stats')
     // useApi 已经处理了响应格式，直接返回 data
-    stats.value.todayVisits = res?.TodayVisits || 0
-    stats.value.articleCount = res?.ArticleCount || 0
-    stats.value.toolCount = res?.ProjectCount || 0
+    if (res) {
+      stats.value.todayVisits = res.TodayVisits ?? res.todayVisits ?? 0
+      stats.value.articleCount = res.ArticleCount ?? res.articleCount ?? 0
+      stats.value.toolCount = res.ProjectCount ?? res.projectCount ?? 0
+    } else {
+      // 如果返回空，使用默认值
+      stats.value.todayVisits = 0
+      stats.value.articleCount = 0
+      stats.value.toolCount = 0
+    }
   } catch (e: any) {
-    console.error('Failed to fetch stats', e)
-    // 如果 API 返回错误，使用默认值
+    console.error('Failed to fetch stats:', e)
+    // 如果 API 返回错误（如 500），使用默认值，不阻塞页面显示
     stats.value.todayVisits = 0
     stats.value.articleCount = 0
     stats.value.toolCount = 0

@@ -95,10 +95,17 @@ const form = ref({
 
 const fetchCategories = async () => {
   try {
+    // 后端返回格式: { code: 0, data: List<Category> }
+    // useApi 已经处理了响应格式，直接返回 data (即 List<Category>)
     const res = await api.get<any[]>('/Categories')
-    categories.value = res
-  } catch (e) {
-    console.error(e)
+    console.log('Categories API Response:', res)
+    console.log('Is Array:', Array.isArray(res), 'Length:', Array.isArray(res) ? res.length : 'N/A')
+    categories.value = Array.isArray(res) ? res : []
+    console.log('Categories loaded:', categories.value.length)
+  } catch (e: any) {
+    console.error('Failed to fetch categories:', e)
+    console.error('Error details:', e.response, e.message)
+    categories.value = []
   }
 }
 

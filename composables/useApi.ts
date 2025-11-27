@@ -68,9 +68,16 @@ export const useApi = () => {
             }
 
             // 如果是标准格式，返回 data；否则直接返回 response
-            return response.code === 0 ? response.data : response
+            const result = response.code === 0 ? response.data : response
+            // 调试日志（开发环境）
+            if (process.env.NODE_ENV === 'development') {
+                console.log(`[API] ${options.method || 'GET'} ${url}:`, result)
+            }
+            return result
         } catch (error: any) {
             console.error('API Error:', error)
+            console.error('API Error URL:', url)
+            console.error('API Error Response:', error.response)
             // 如果是 401，跳转登录
             if (error.response?.status === 401 && typeof window !== 'undefined') {
                 localStorage.removeItem('admin_token')

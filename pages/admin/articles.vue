@@ -82,11 +82,24 @@ const fetchArticles = async () => {
       }
     })
     
-    // .NET API returns { total: int, list: [] }
-    articles.value = res.list
-    total.value = res.total
-  } catch (e) {
-    console.error(e)
+    console.log('Articles API Response:', res)
+    
+    // .NET API returns { Total: int, List: [] } (注意大小写)
+    // useApi 已经处理了响应格式，直接返回 data
+    if (res) {
+      articles.value = res.List ?? res.list ?? []
+      total.value = res.Total ?? res.total ?? 0
+      console.log('Parsed articles:', articles.value.length, 'Total:', total.value)
+    } else {
+      console.warn('Articles API returned empty response')
+      articles.value = []
+      total.value = 0
+    }
+  } catch (e: any) {
+    console.error('Failed to fetch articles:', e)
+    console.error('Error details:', e.response, e.message)
+    articles.value = []
+    total.value = 0
   } finally {
     loading.value = false
   }

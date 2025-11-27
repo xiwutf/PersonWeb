@@ -71,10 +71,13 @@ const projects = ref<any[]>([])
 
 const fetchProjects = async () => {
   try {
+    // 后端返回格式: { code: 0, data: List<Project> }
+    // useApi 已经处理了响应格式，直接返回 data (即 List<Project>)
     const res = await api.get<any[]>('/Projects')
-    projects.value = res
-  } catch (e) {
-    console.error('Failed to fetch projects', e)
+    projects.value = Array.isArray(res) ? res : []
+  } catch (e: any) {
+    console.error('Failed to fetch projects:', e)
+    projects.value = []
   }
 }
 
