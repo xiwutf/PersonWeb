@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PersonalSite.Api.Data;
 using PersonalSite.Api.Models;
+using PersonalSite.Api.Models.Dto;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -138,7 +139,7 @@ public class ApiKeyController : ControllerBase
     /// 获取用户的API Keys
     /// </summary>
     [HttpPost("list")]
-    public async Task<ActionResult<ApiResponse<object>>> GetApiKeys([FromBody] UserIdRequest request)
+    public async Task<ActionResult<ApiResponse<object>>> GetApiKeys([FromBody] ApiUserIdRequest request)
     {
         try
         {
@@ -230,7 +231,7 @@ public class ApiKeyController : ControllerBase
     /// 删除API Key
     /// </summary>
     [HttpDelete("{id}")]
-    public async Task<ActionResult<ApiResponse>> DeleteApiKey(long id, [FromBody] UserIdRequest request)
+    public async Task<ActionResult<ApiResponse>> DeleteApiKey(long id, [FromBody] ApiUserIdRequest request)
     {
         try
         {
@@ -291,10 +292,6 @@ public class GenerateApiKeyRequest
     public DateTime? ExpiresAt { get; set; }
 }
 
-public class UserIdRequest
-{
-    public long UserId { get; set; }
-}
 
 public class ApiStatsRequest
 {

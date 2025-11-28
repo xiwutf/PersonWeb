@@ -604,10 +604,7 @@ public class PurchaseRequest
     public string? PaymentMethod { get; set; }
 }
 
-public class UserIdRequest
-{
-    public string UserId { get; set; } = string.Empty;
-}
+// 使用统一的请求模型（已在 CommonRequests.cs 中定义）
 
 public class UsageRequest
 {
