@@ -1,43 +1,43 @@
 ﻿<template>
   <div class="space-y-6">
-    <div class="flex justify-between items-center">
-      <h1 class="text-2xl font-bold text-gray-800 dark:text-white">分类管理</h1>
-      <button @click="openModal()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+    <div class="page-header">
+      <h1 class="page-title">分类管理</h1>
+      <button @click="openModal()" class="btn-primary">
         <i class="fas fa-plus mr-2"></i>新建分类
       </button>
     </div>
 
     <!-- 分类列表 -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
-      <table class="w-full text-left">
-        <thead class="bg-gray-50 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400">
+    <div class="table-container">
+      <table class="table">
+        <thead class="table-header">
           <tr>
-            <th class="px-6 py-4 font-medium">名称</th>
-            <th class="px-6 py-4 font-medium">别名 (Slug)</th>
-            <th class="px-6 py-4 font-medium">排序</th>
-            <th class="px-6 py-4 font-medium">创建时间</th>
-            <th class="px-6 py-4 font-medium text-right">操作</th>
+            <th class="table-header-cell">名称</th>
+            <th class="table-header-cell">别名 (Slug)</th>
+            <th class="table-header-cell">排序</th>
+            <th class="table-header-cell">创建时间</th>
+            <th class="table-header-cell text-right">操作</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-          <tr v-for="item in categories" :key="item.id" class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
-            <td class="px-6 py-4 text-gray-800 dark:text-gray-200 font-medium">{{ item.name }}</td>
-            <td class="px-6 py-4 text-gray-500 dark:text-gray-400">{{ item.slug || '-' }}</td>
-            <td class="px-6 py-4 text-gray-500 dark:text-gray-400">{{ item.sort }}</td>
-            <td class="px-6 py-4 text-gray-500 dark:text-gray-400 text-sm">
+        <tbody class="table-body">
+          <tr v-for="item in categories" :key="item.id" class="table-row">
+            <td class="table-cell font-medium">{{ item.name }}</td>
+            <td class="table-cell">{{ item.slug || '-' }}</td>
+            <td class="table-cell">{{ item.sort }}</td>
+            <td class="table-cell text-sm">
               {{ new Date(item.createdAt).toLocaleDateString() }}
             </td>
-            <td class="px-6 py-4 text-right space-x-2">
-              <button @click="openModal(item)" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+            <td class="table-cell text-right space-x-2">
+              <button @click="openModal(item)" class="btn-link btn-link--blue">
                 编辑
               </button>
-              <button @click="handleDelete(item)" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
+              <button @click="handleDelete(item)" class="btn-link btn-link--red">
                 删除
               </button>
             </td>
           </tr>
           <tr v-if="categories.length === 0">
-            <td colspan="5" class="px-6 py-12 text-center text-gray-400">
+            <td colspan="5" class="table-cell text-center empty-state">
               暂无分类数据
             </td>
           </tr>
@@ -46,30 +46,32 @@
     </div>
 
     <!-- 编辑/新建弹窗 -->
-    <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-md p-6 space-y-4">
-        <h3 class="text-xl font-bold text-gray-800 dark:text-white">
-          {{ isEdit ? '编辑分类' : '新建分类' }}
-        </h3>
+    <div v-if="showModal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">
+            {{ isEdit ? '编辑分类' : '新建分类' }}
+          </h3>
+        </div>
         
-        <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">名称</label>
-            <input v-model="form.name" type="text" class="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all" placeholder="例如：前端开发">
+        <div class="modal-body space-y-4">
+          <div class="form-group">
+            <label class="form-label">名称</label>
+            <input v-model="form.name" type="text" class="form-input" placeholder="例如：前端开发">
           </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">别名 (Slug)</label>
-            <input v-model="form.slug" type="text" class="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all" placeholder="例如：frontend">
+          <div class="form-group">
+            <label class="form-label">别名 (Slug)</label>
+            <input v-model="form.slug" type="text" class="form-input" placeholder="例如：frontend">
           </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">排序 (越小越靠前)</label>
-            <input v-model.number="form.sort" type="number" class="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+          <div class="form-group">
+            <label class="form-label">排序 (越小越靠前)</label>
+            <input v-model.number="form.sort" type="number" class="form-input">
           </div>
         </div>
 
-        <div class="flex justify-end space-x-3 pt-4">
-          <button @click="showModal = false" class="px-4 py-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">取消</button>
-          <button @click="handleSave" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">保存</button>
+        <div class="modal-footer">
+          <button @click="showModal = false" class="btn-secondary">取消</button>
+          <button @click="handleSave" class="btn-primary">保存</button>
         </div>
       </div>
     </div>

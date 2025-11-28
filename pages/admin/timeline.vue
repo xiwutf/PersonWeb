@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold text-gray-800 dark:text-white">成长轨迹管理</h1>
-      <button @click="showCreateModal = true" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+    <div class="page-header">
+      <h1 class="page-title">成长轨迹管理</h1>
+      <button @click="showCreateModal = true" class="btn-primary">
         + 新建事件
       </button>
     </div>
@@ -12,7 +12,7 @@
       <div
         v-for="event in events"
         :key="event.id"
-        class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6"
+        class="card p-6"
       >
         <div class="flex items-start justify-between">
           <div class="flex items-start gap-4">
@@ -25,7 +25,7 @@
             <div>
               <div class="flex items-center gap-2 mb-1">
                 <span class="text-lg font-bold text-gray-800 dark:text-white">{{ event.title }}</span>
-                <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded text-sm">
+                <span class="badge badge-blue">
                   {{ event.year }}
                 </span>
               </div>
@@ -33,50 +33,46 @@
             </div>
           </div>
           <div class="flex gap-2">
-            <button @click="editEvent(event)" class="text-blue-600 hover:text-blue-800">编辑</button>
-            <button @click="deleteEvent(event.id)" class="text-red-600 hover:text-red-800">删除</button>
+            <button @click="editEvent(event)" class="btn-link btn-link--blue">编辑</button>
+            <button @click="deleteEvent(event.id)" class="btn-link btn-link--red">删除</button>
           </div>
         </div>
       </div>
     </div>
 
     <!-- 创建/编辑模态框 -->
-    <div v-if="showCreateModal || editingEvent" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-md m-4">
-        <div class="p-6">
-          <h2 class="text-xl font-bold mb-4">{{ editingEvent ? '编辑' : '新建' }}时间线事件</h2>
-          
-          <div class="space-y-4">
-            <div>
-              <label class="block text-sm font-medium mb-1">年份</label>
-              <input v-model.number="form.year" type="number" class="w-full border rounded px-3 py-2" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium mb-1">标题</label>
-              <input v-model="form.title" type="text" class="w-full border rounded px-3 py-2" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium mb-1">描述</label>
-              <textarea v-model="form.description" rows="3" class="w-full border rounded px-3 py-2"></textarea>
-            </div>
-            <div>
-              <label class="block text-sm font-medium mb-1">图标（emoji）</label>
-              <input v-model="form.icon" type="text" class="w-full border rounded px-3 py-2" placeholder="例如: 🚀" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium mb-1">颜色</label>
-              <input v-model="form.color" type="color" class="w-full h-10 border rounded" />
-            </div>
+    <div v-if="showCreateModal || editingEvent" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">{{ editingEvent ? '编辑' : '新建' }}时间线事件</h2>
+        </div>
+        
+        <div class="modal-body space-y-4">
+          <div class="form-group">
+            <label class="form-label">年份</label>
+            <input v-model.number="form.year" type="number" class="form-input" />
           </div>
+          <div class="form-group">
+            <label class="form-label">标题</label>
+            <input v-model="form.title" type="text" class="form-input" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">描述</label>
+            <textarea v-model="form.description" rows="3" class="form-textarea"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">图标（emoji）</label>
+            <input v-model="form.icon" type="text" class="form-input" placeholder="例如: 🚀" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">颜色</label>
+            <input v-model="form.color" type="color" class="w-full h-10 border rounded" />
+          </div>
+        </div>
 
-          <div class="flex gap-2 mt-6">
-            <button @click="saveEvent" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-              保存
-            </button>
-            <button @click="cancelEdit" class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">
-              取消
-            </button>
-          </div>
+        <div class="modal-footer">
+          <button @click="saveEvent" class="btn-primary">保存</button>
+          <button @click="cancelEdit" class="btn-secondary">取消</button>
         </div>
       </div>
     </div>

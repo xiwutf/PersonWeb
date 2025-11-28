@@ -1,23 +1,23 @@
 ﻿<template>
   <div>
-    <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">站点配置</h1>
+    <h1 class="page-title mb-6">站点配置</h1>
 
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 max-w-2xl">
-      <div v-if="loading" class="text-center py-8 text-gray-500 dark:text-gray-400">加载中...</div>
+    <div class="card p-6 max-w-2xl">
+      <div v-if="loading" class="text-center py-8 loading">加载中...</div>
       
       <form v-else class="space-y-6" @submit.prevent>
-        <div v-for="(value, key) in configs" :key="key">
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ formatKey(key) }} ({{ key }})</label>
+        <div v-for="(value, key) in configs" :key="key" class="form-group">
+          <label class="form-label">{{ formatKey(key) }} ({{ key }})</label>
           <div class="flex gap-2">
             <input 
               v-model="configs[key]" 
               type="text" 
-              class="flex-1 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
+              class="form-input flex-1"
               :disabled="savingKey === key"
             />
             <button 
               @click="saveConfig(key as string)" 
-              class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+              class="btn-primary disabled:opacity-50"
               :disabled="savingKey === key"
             >
               {{ savingKey === key ? '保存中' : '保存' }}
@@ -29,9 +29,9 @@
         <div class="pt-6 border-t border-gray-100 dark:border-gray-700">
           <h3 class="text-sm font-bold text-gray-900 dark:text-white mb-4">添加配置</h3>
           <div class="flex gap-2">
-            <input v-model="newKey" type="text" placeholder="Key (e.g. site_title)" class="flex-1 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
-            <input v-model="newValue" type="text" placeholder="Value" class="flex-1 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
-            <button @click="addConfig" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">添加</button>
+            <input v-model="newKey" type="text" placeholder="Key (e.g. site_title)" class="form-input flex-1" />
+            <input v-model="newValue" type="text" placeholder="Value" class="form-input flex-1" />
+            <button @click="addConfig" class="btn-success">添加</button>
           </div>
         </div>
       </form>

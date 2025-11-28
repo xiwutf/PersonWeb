@@ -1,40 +1,40 @@
 <template>
   <div>
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold text-gray-800 dark:text-white">知识库管理</h1>
-      <button @click="showCreateModal = true" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+    <div class="page-header">
+      <h1 class="page-title">知识库管理</h1>
+      <button @click="showCreateModal = true" class="btn-primary">
         + 新建条目
       </button>
     </div>
 
     <!-- 列表 -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-      <table class="w-full text-left">
-        <thead class="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700">
+    <div class="table-container">
+      <table class="table">
+        <thead class="table-header">
           <tr>
-            <th class="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">标题</th>
-            <th class="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">分类</th>
-            <th class="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">标签</th>
-            <th class="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">查看数</th>
-            <th class="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">更新时间</th>
-            <th class="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">操作</th>
+            <th class="table-header-cell">标题</th>
+            <th class="table-header-cell">分类</th>
+            <th class="table-header-cell">标签</th>
+            <th class="table-header-cell">查看数</th>
+            <th class="table-header-cell">更新时间</th>
+            <th class="table-header-cell">操作</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-          <tr v-for="item in list" :key="item.id" class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
-            <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ item.title }}</td>
-            <td class="px-6 py-4 text-gray-500 dark:text-gray-400">{{ item.category || '-' }}</td>
-            <td class="px-6 py-4 text-gray-500 dark:text-gray-400 text-sm">
-              <span v-for="tag in parseTags(item.tags)" :key="tag" class="mr-1 px-2 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-xs">
+        <tbody class="table-body">
+          <tr v-for="item in list" :key="item.id" class="table-row">
+            <td class="table-cell">{{ item.title }}</td>
+            <td class="table-cell">{{ item.category || '-' }}</td>
+            <td class="table-cell text-sm">
+              <span v-for="tag in parseTags(item.tags)" :key="tag" class="mr-1 badge badge-gray">
                 {{ tag }}
               </span>
             </td>
-            <td class="px-6 py-4 text-gray-500 dark:text-gray-400">{{ item.viewCount }}</td>
-            <td class="px-6 py-4 text-gray-500 dark:text-gray-400 text-sm">{{ formatDate(item.updatedAt) }}</td>
-            <td class="px-6 py-4">
+            <td class="table-cell">{{ item.viewCount }}</td>
+            <td class="table-cell text-sm">{{ formatDate(item.updatedAt) }}</td>
+            <td class="table-cell">
               <div class="flex gap-2">
-                <button @click="editItem(item)" class="text-blue-600 hover:text-blue-800">编辑</button>
-                <button @click="deleteItem(item.id)" class="text-red-600 hover:text-red-800">删除</button>
+                <button @click="editItem(item)" class="btn-link btn-link--blue">编辑</button>
+                <button @click="deleteItem(item.id)" class="btn-link btn-link--red">删除</button>
               </div>
             </td>
           </tr>
@@ -43,43 +43,39 @@
     </div>
 
     <!-- 创建/编辑模态框 -->
-    <div v-if="showCreateModal || editingItem" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl m-4 max-h-[90vh] overflow-y-auto">
-        <div class="p-6">
-          <h2 class="text-xl font-bold mb-4">{{ editingItem ? '编辑' : '新建' }}知识库条目</h2>
-          
-          <div class="space-y-4">
-            <div>
-              <label class="block text-sm font-medium mb-1">标题</label>
-              <input v-model="form.title" type="text" class="w-full border rounded px-3 py-2" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium mb-1">分类</label>
-              <select v-model="form.category" class="w-full border rounded px-3 py-2">
-                <option value="">选择分类</option>
-                <option value="开发笔记">开发笔记</option>
-                <option value="踩坑记录">踩坑记录</option>
-                <option value="想法灵感">想法灵感</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-sm font-medium mb-1">标签（逗号分隔）</label>
-              <input v-model="form.tags" type="text" class="w-full border rounded px-3 py-2" placeholder="例如: Vue, Nuxt, 前端" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium mb-1">内容（Markdown）</label>
-              <textarea v-model="form.content" rows="10" class="w-full border rounded px-3 py-2"></textarea>
-            </div>
+    <div v-if="showCreateModal || editingItem" class="modal-overlay">
+      <div class="modal-content-lg">
+        <div class="modal-header">
+          <h2 class="modal-title">{{ editingItem ? '编辑' : '新建' }}知识库条目</h2>
+        </div>
+        
+        <div class="modal-body space-y-4">
+          <div class="form-group">
+            <label class="form-label">标题</label>
+            <input v-model="form.title" type="text" class="form-input" />
           </div>
+          <div class="form-group">
+            <label class="form-label">分类</label>
+            <select v-model="form.category" class="form-select">
+              <option value="">选择分类</option>
+              <option value="开发笔记">开发笔记</option>
+              <option value="踩坑记录">踩坑记录</option>
+              <option value="想法灵感">想法灵感</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">标签（逗号分隔）</label>
+            <input v-model="form.tags" type="text" class="form-input" placeholder="例如: Vue, Nuxt, 前端" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">内容（Markdown）</label>
+            <textarea v-model="form.content" rows="10" class="form-textarea"></textarea>
+          </div>
+        </div>
 
-          <div class="flex gap-2 mt-6">
-            <button @click="saveItem" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-              保存
-            </button>
-            <button @click="cancelEdit" class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">
-              取消
-            </button>
-          </div>
+        <div class="modal-footer">
+          <button @click="saveItem" class="btn-primary">保存</button>
+          <button @click="cancelEdit" class="btn-secondary">取消</button>
         </div>
       </div>
     </div>

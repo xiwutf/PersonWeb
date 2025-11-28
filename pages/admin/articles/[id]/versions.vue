@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div class="flex justify-between items-center mb-6">
+    <div class="page-header">
       <div>
-        <h1 class="text-2xl font-bold text-gray-800 dark:text-white">文章版本历史</h1>
+        <h1 class="page-title">文章版本历史</h1>
         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ articleTitle }}</p>
       </div>
-      <NuxtLink :to="`/admin/articles/edit/${articleId}`" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition">
+      <NuxtLink :to="`/admin/articles/edit/${articleId}`" class="btn-secondary">
         返回编辑
       </NuxtLink>
     </div>
@@ -14,8 +14,8 @@
       <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
     </div>
 
-    <div v-else-if="versions.length === 0" class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-8 text-center">
-      <p class="text-gray-500 dark:text-gray-400">暂无版本历史</p>
+    <div v-else-if="versions.length === 0" class="card p-8 text-center">
+      <p class="empty-state">暂无版本历史</p>
     </div>
 
     <div v-else class="space-y-4">
@@ -23,23 +23,23 @@
       <div
         v-for="version in versions"
         :key="version.id"
-        class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow"
+        class="card-hover p-6"
       >
         <div class="flex items-start justify-between">
           <div class="flex-1">
             <div class="flex items-center gap-3 mb-2">
-              <span class="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm font-semibold">
+              <span class="badge badge-blue rounded-full px-3 py-1 text-sm font-semibold">
                 v{{ version.version }}
               </span>
               <span
                 v-if="version.status === 1"
-                class="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded text-xs"
+                class="badge badge-green"
               >
                 当前版本
               </span>
               <span
                 v-else
-                class="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded text-xs"
+                class="badge badge-gray"
               >
                 历史版本
               </span>
@@ -52,14 +52,14 @@
           <div class="flex gap-2">
             <button
               @click="viewVersion(version.id)"
-              class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+              class="btn-primary"
             >
               查看
             </button>
             <button
               v-if="version.status !== 1"
               @click="restoreVersion(version.id)"
-              class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+              class="btn-success"
             >
               恢复
             </button>
@@ -71,12 +71,12 @@
     <!-- 版本对比对话框 -->
     <div
       v-if="showCompare"
-      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      class="modal-overlay"
       @click.self="showCompare = false"
     >
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-        <div class="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white">版本对比</h2>
+      <div class="modal-content-lg flex flex-col">
+        <div class="modal-header">
+          <h2 class="modal-title">版本对比</h2>
           <button
             @click="showCompare = false"
             class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
@@ -93,15 +93,13 @@
             <div class="flex gap-2 mb-4">
               <button
                 @click="viewMode = 'split'"
-                :class="viewMode === 'split' ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'"
-                class="px-4 py-2 rounded transition"
+                :class="viewMode === 'split' ? 'btn-primary' : 'btn-secondary'"
               >
                 并排对比
               </button>
               <button
                 @click="viewMode = 'diff'"
-                :class="viewMode === 'diff' ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'"
-                class="px-4 py-2 rounded transition"
+                :class="viewMode === 'diff' ? 'btn-primary' : 'btn-secondary'"
               >
                 Diff 对比
               </button>
@@ -113,7 +111,7 @@
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                   当前版本 (v{{ currentVersion.version }})
                 </h3>
-                <div class="prose dark:prose-invert max-w-none border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-900">
+                <div class="prose dark:prose-invert max-w-none card p-4">
                   <div v-html="currentVersion.contentHtml || ''"></div>
                 </div>
               </div>
@@ -121,14 +119,14 @@
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                   历史版本 (v{{ selectedVersion.version }})
                 </h3>
-                <div class="prose dark:prose-invert max-w-none border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-900">
+                <div class="prose dark:prose-invert max-w-none card p-4">
                   <div v-html="selectedVersion.contentHtml || ''"></div>
                 </div>
               </div>
             </div>
 
             <!-- Diff 对比模式 -->
-            <div v-else class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-900">
+            <div v-else class="card p-4">
               <div class="mb-4 flex items-center gap-4">
                 <div class="flex items-center gap-2">
                   <span class="w-4 h-4 bg-red-200 dark:bg-red-900 inline-block"></span>

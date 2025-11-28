@@ -1,46 +1,46 @@
 <template>
   <div>
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold text-gray-800 dark:text-white">编辑文章</h1>
+    <div class="page-header">
+      <h1 class="page-title">编辑文章</h1>
       <div class="flex gap-2">
-        <NuxtLink :to="`/admin/articles/${route.params.id}/versions`" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition">
+        <NuxtLink :to="`/admin/articles/${route.params.id}/versions`" class="btn-secondary">
           版本历史
         </NuxtLink>
-        <NuxtLink to="/admin/articles" class="px-4 py-2 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200">
+        <NuxtLink to="/admin/articles" class="btn-secondary">
           取消
         </NuxtLink>
       </div>
     </div>
 
-    <div v-if="loading" class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 text-center">
-      <p class="text-gray-500 dark:text-gray-400">加载中...</p>
+    <div v-if="loading" class="card p-6 text-center">
+      <p class="loading">加载中...</p>
     </div>
 
-    <div v-else class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+    <div v-else class="card p-6">
       <form class="space-y-6" @submit.prevent>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">文章标题 <span class="text-red-500">*</span></label>
+        <div class="form-group">
+          <label class="form-label">文章标题 <span class="text-red-500">*</span></label>
           <input 
             v-model="form.title" 
             type="text" 
-            class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" 
+            class="form-input" 
             placeholder="输入标题" 
           />
         </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">URL Slug</label>
+        <div class="form-group">
+          <label class="form-label">URL Slug</label>
           <div class="flex gap-2">
             <input 
               v-model="form.slug" 
               type="text" 
-              class="flex-1 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" 
+              class="form-input flex-1" 
               placeholder="article-slug-url" 
             />
             <button 
               @click="generateSlugFromTitle" 
               type="button" 
-              class="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm whitespace-nowrap"
+              class="btn-secondary whitespace-nowrap"
             >
               自动生成
             </button>
@@ -48,33 +48,33 @@
         </div>
 
         <div class="grid grid-cols-2 gap-6">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">分类</label>
-            <select v-model="form.categoryId" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+          <div class="form-group">
+            <label class="form-label">分类</label>
+            <select v-model="form.categoryId" class="form-select">
               <option :value="0">无分类</option>
               <option v-for="cat in categories" :key="cat.id" :value="cat.id">
                 {{ cat.name }}
               </option>
             </select>
           </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">封面图</label>
+          <div class="form-group">
+            <label class="form-label">封面图</label>
             <div class="flex gap-2">
-              <input v-model="form.coverUrl" type="text" class="flex-1 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" placeholder="输入 URL 或上传" />
-              <button @click="triggerUpload" type="button" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300">上传</button>
+              <input v-model="form.coverUrl" type="text" class="form-input flex-1" placeholder="输入 URL 或上传" />
+              <button @click="triggerUpload" type="button" class="btn-secondary">上传</button>
               <input ref="fileInput" type="file" class="hidden" accept="image/*" @change="handleUpload" />
             </div>
           </div>
         </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">摘要</label>
-          <textarea v-model="form.summary" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 h-20 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" placeholder="文章简短描述..."></textarea>
+        <div class="form-group">
+          <label class="form-label">摘要</label>
+          <textarea v-model="form.summary" class="form-textarea h-20" placeholder="文章简短描述..."></textarea>
         </div>
 
         <!-- 编辑器区域 -->
         <div class="flex flex-col">
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">内容 (Markdown)</label>
+          <label class="form-label mb-2">内容 (Markdown)</label>
           <MarkdownEditor 
             v-model="form.contentMd" 
             placeholder="开始编写你的文章内容...支持 Markdown 语法，可直接粘贴图片自动上传"
@@ -83,10 +83,10 @@
         </div>
 
         <div class="flex justify-end gap-4 pt-4 border-t border-gray-100 dark:border-gray-700">
-          <button @click="handleSave(0)" type="button" class="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700" :disabled="saving">
+          <button @click="handleSave(0)" type="button" class="btn-secondary" :disabled="saving">
             存草稿
           </button>
-          <button @click="handleSave(1)" type="button" class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" :disabled="saving">
+          <button @click="handleSave(1)" type="button" class="btn-primary" :disabled="saving">
             {{ saving ? '保存中...' : '发布文章' }}
           </button>
         </div>
