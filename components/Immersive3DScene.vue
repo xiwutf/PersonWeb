@@ -72,16 +72,42 @@ const navigationItems = [
   { icon: '👤', label: '关于', path: '/about' }
 ]
 
+// 创建渐变背景纹理
+const createGradientTexture = () => {
+  const canvas = document.createElement('canvas')
+  canvas.width = 256
+  canvas.height = 256
+  const context = canvas.getContext('2d')
+  
+  if (!context) {
+    return new THREE.Color(0x1a1a2e)
+  }
+
+  // 创建从深蓝到紫色的渐变
+  const gradient = context.createLinearGradient(0, 0, 0, 256)
+  gradient.addColorStop(0, '#0f172a') // 深蓝
+  gradient.addColorStop(0.5, '#1e1b4b') // 中蓝紫
+  gradient.addColorStop(1, '#312e81') // 深紫
+
+  context.fillStyle = gradient
+  context.fillRect(0, 0, 256, 256)
+
+  const texture = new THREE.CanvasTexture(canvas)
+  texture.needsUpdate = true
+  return texture
+}
+
 const initScene = () => {
   // 移动端不初始化 3D 场景
   if (isMobile.value || !canvasRef.value || !containerRef.value) return
 
   try {
-    // 创建场景
+    // 创建场景 - 使用渐变背景替代纯色
     scene = new THREE.Scene()
-    // 使用渐变背景色（深蓝到紫色）
-    scene.background = new THREE.Color(0x1e293b) // slate-800
-    scene.fog = new THREE.Fog(0x1e293b, 15, 60)
+    // 使用更柔和的深蓝紫色渐变背景
+    const gradientTexture = createGradientTexture()
+    scene.background = gradientTexture
+    scene.fog = new THREE.Fog(0x1a1a2e, 15, 60)
 
     // 创建相机
     const width = containerRef.value.clientWidth

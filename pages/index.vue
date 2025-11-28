@@ -6,20 +6,23 @@
     <div class="fixed inset-0 pointer-events-none opacity-[0.03] z-50 mix-blend-overlay" style="background-image: url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E&quot;);"></div>
 
     <!-- Hero Banner with Immersive 3D -->
-    <section class="relative min-h-[100vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900">
-      <!-- 渐变网格背景 -->
-      <div class="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] opacity-40"></div>
-      
-      <!-- 动态光效 -->
-      <div class="absolute inset-0 overflow-hidden pointer-events-none z-[1]">
-        <div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/30 rounded-full mix-blend-screen filter blur-[120px] animate-blob"></div>
-        <div class="absolute top-1/3 right-1/4 w-96 h-96 bg-purple-500/30 rounded-full mix-blend-screen filter blur-[120px] animate-blob animation-delay-2000"></div>
-        <div class="absolute bottom-0 left-1/2 w-96 h-96 bg-cyan-500/20 rounded-full mix-blend-screen filter blur-[120px] animate-blob animation-delay-4000"></div>
-      </div>
+    <section class="relative min-h-[100vh] flex items-center justify-center overflow-hidden bg-[#0f172a]">
+      <!-- 流体背景 -->
+      <FluidBackground :intensity="0.3" color="#3b82f6" :interactive="true" />
       
       <!-- 沉浸式3D背景（移动端自动禁用） -->
-      <div class="absolute inset-0 z-0 opacity-30">
+      <div class="absolute inset-0 z-0">
         <Immersive3DScene :show-hint="false" :scroll-enabled="true" />
+      </div>
+      
+      <!-- 动态背景装饰 -->
+      <div class="absolute inset-0 overflow-hidden pointer-events-none z-[1]">
+        <div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-600/20 rounded-full mix-blend-screen filter blur-[100px] animate-blob"></div>
+        <div class="absolute top-[20%] right-[-10%] w-[40%] h-[40%] bg-purple-600/20 rounded-full mix-blend-screen filter blur-[100px] animate-blob animation-delay-2000"></div>
+        <div class="absolute bottom-[-10%] left-[20%] w-[40%] h-[40%] bg-cyan-600/20 rounded-full mix-blend-screen filter blur-[100px] animate-blob animation-delay-4000"></div>
+        
+        <!-- 网格背景 -->
+        <div class="absolute inset-0 bg-[url('/images/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))] opacity-20"></div>
       </div>
       
       <!-- 主要内容 -->
@@ -78,40 +81,34 @@
               <!-- 光晕背景 -->
               <div class="absolute inset-0 bg-gradient-to-tr from-blue-500 to-purple-500 rounded-[2rem] rotate-6 opacity-30 blur-2xl animate-pulse"></div>
               
-              <GlassCard class="w-full h-full rounded-[2rem] overflow-hidden bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border-2 border-white/20 shadow-2xl">
-                <div class="w-full h-full relative flex flex-col items-center justify-center p-6">
-                  <!-- 头像区域 -->
-                  <div class="relative w-48 h-48 mb-6 rounded-full overflow-hidden border-4 border-white/30 shadow-xl">
-                    <ParticleAvatar
-                      :image-url="'/images/avatar.jpg'"
-                      :text="'溪午听风'"
-                      :subtitle="'全栈开发者'"
-                      :particle-count="2000"
-                      :interactive="true"
-                      class="w-full h-full"
-                    />
-                  </div>
+              <GlassCard class="w-full h-full rounded-[2rem] overflow-hidden">
+                <div class="w-full h-full relative">
+                  <ParticleAvatar
+                    :image-url="'/images/avatar.jpg'"
+                    :text="'溪午听风'"
+                    :subtitle="'全栈开发者'"
+                    :particle-count="2000"
+                    :interactive="true"
+                    class="w-full h-full"
+                  />
                   
-                  <!-- 信息卡片 -->
-                  <div class="w-full p-5 bg-white/15 backdrop-blur-md rounded-2xl border border-white/25 shadow-xl">
-                    <div class="text-center mb-4">
-                      <h3 class="text-xl font-bold text-white mb-1">溪午听风</h3>
-                      <p class="text-sm text-slate-300 mb-3">全栈开发者</p>
+                  <!-- 悬浮标签 - 个人信息展示 -->
+                  <div class="absolute bottom-6 left-6 right-6 p-4 bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-md rounded-xl border-2 border-white/30 shadow-2xl z-20">
+                    <div class="flex items-center justify-between mb-2">
+                      <div class="flex-1">
+                        <h3 class="font-bold text-white text-lg mb-1">溪午听风</h3>
+                        <p class="text-xs text-slate-200 font-medium">全栈开发者</p>
+                      </div>
+                      <div class="w-12 h-12 bg-gradient-to-br from-blue-500/30 to-purple-500/30 rounded-full flex items-center justify-center text-blue-300 text-lg border-2 border-white/30 shadow-lg">
+                        <i class="fas fa-code"></i>
+                      </div>
                     </div>
-                    
-                    <!-- 技能标签 -->
-                    <div class="flex flex-wrap gap-2 justify-center mb-4">
-                      <span class="px-3 py-1 bg-blue-500/30 text-blue-200 rounded-full text-xs font-medium border border-blue-400/30">Vue</span>
-                      <span class="px-3 py-1 bg-purple-500/30 text-purple-200 rounded-full text-xs font-medium border border-purple-400/30">Nuxt</span>
-                      <span class="px-3 py-1 bg-cyan-500/30 text-cyan-200 rounded-full text-xs font-medium border border-cyan-400/30">Node.js</span>
-                    </div>
-                    
-                    <!-- 状态指示 -->
-                    <div class="flex items-center justify-center gap-2 text-xs text-slate-300">
-                      <span class="flex items-center gap-1">
-                        <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                        在线
-                      </span>
+                    <div class="pt-2 border-t border-white/20">
+                      <div class="flex items-center gap-2 text-xs text-slate-200">
+                        <span class="px-2 py-1 bg-blue-500/20 rounded text-blue-200 border border-blue-400/30">Vue</span>
+                        <span class="px-2 py-1 bg-green-500/20 rounded text-green-200 border border-green-400/30">Nuxt</span>
+                        <span class="px-2 py-1 bg-yellow-500/20 rounded text-yellow-200 border border-yellow-400/30">Node.js</span>
+                      </div>
                     </div>
                   </div>
                 </div>
