@@ -27,13 +27,15 @@ public class SearchController : ControllerBase
     /// <param name="type">搜索类型：all/articles/projects/knowledge</param>
     /// <param name="page">页码</param>
     /// <param name="pageSize">每页数量</param>
+    /// <param name="sort">排序方式：relevance（相关性）/time（时间）</param>
     /// <returns></returns>
     [HttpGet]
     public async Task<ActionResult<ApiResponse<object>>> Search(
         [FromQuery] string keyword,
         [FromQuery] string type = "all",
         [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20)
+        [FromQuery] int pageSize = 20,
+        [FromQuery] string sort = "relevance")
     {
         if (string.IsNullOrWhiteSpace(keyword))
         {
@@ -64,8 +66,17 @@ public class SearchController : ControllerBase
                            (a.ContentMd != null && a.ContentMd.Contains(keyword)));
 
             var articleTotal = await articleQuery.CountAsync();
-            var articles = await articleQuery
-                .OrderByDescending(a => a.CreatedAt)
+            
+            // 根据排序方式排序
+            IQueryable<Article> sortedArticleQuery = sort == "time" 
+                ? articleQuery.OrderByDescending(a => a.CreatedAt)
+                : articleQuery.OrderByDescending(a => 
+                    (a.Title.Contains(keyword) ? 3 : 0) + 
+                    (a.Summary != null && a.Summary.Contains(keyword) ? 2 : 0) + 
+                    (a.ContentMd != null && a.ContentMd.Contains(keyword) ? 1 : 0))
+                    .ThenByDescending(a => a.CreatedAt);
+            
+            var articles = await sortedArticleQuery
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .Include(a => a.Category)
@@ -95,8 +106,17 @@ public class SearchController : ControllerBase
                            (p.Content != null && p.Content.Contains(keyword)));
 
             var projectTotal = await projectQuery.CountAsync();
-            var projects = await projectQuery
-                .OrderByDescending(p => p.CreatedAt)
+            
+            // 根据排序方式排序
+            IQueryable<Project> sortedProjectQuery = sort == "time"
+                ? projectQuery.OrderByDescending(p => p.CreatedAt)
+                : projectQuery.OrderByDescending(p =>
+                    (p.Title.Contains(keyword) ? 3 : 0) +
+                    (p.Description != null && p.Description.Contains(keyword) ? 2 : 0) +
+                    (p.Content != null && p.Content.Contains(keyword) ? 1 : 0))
+                    .ThenByDescending(p => p.CreatedAt);
+            
+            var projects = await sortedProjectQuery
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .Select(p => new SearchResultItem
@@ -124,8 +144,16 @@ public class SearchController : ControllerBase
                            (k.Content != null && k.Content.Contains(keyword)));
 
             var knowledgeTotal = await knowledgeQuery.CountAsync();
-            var knowledgeBases = await knowledgeQuery
-                .OrderByDescending(k => k.CreatedAt)
+            
+            // 根据排序方式排序
+            IQueryable<KnowledgeBase> sortedKnowledgeQuery = sort == "time"
+                ? knowledgeQuery.OrderByDescending(k => k.CreatedAt)
+                : knowledgeQuery.OrderByDescending(k =>
+                    (k.Title.Contains(keyword) ? 2 : 0) +
+                    (k.Content != null && k.Content.Contains(keyword) ? 1 : 0))
+                    .ThenByDescending(k => k.CreatedAt);
+            
+            var knowledgeBases = await sortedKnowledgeQuery
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .Select(k => new SearchResultItem

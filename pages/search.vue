@@ -29,11 +29,74 @@
                   class="w-full px-6 py-4 pl-14 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                   @keyup.enter="performSearch"
                   @input="handleInput"
+                  @focus="showSuggestions = true"
+                  @blur="handleBlur"
+                  @keydown.down.prevent="navigateSuggestions(1)"
+                  @keydown.up.prevent="navigateSuggestions(-1)"
                 >
                 <div class="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400">
                   <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                   </svg>
+                </div>
+                
+                <!-- 搜索建议下拉框 -->
+                <div
+                  v-if="showSuggestions && (searchSuggestions.length > 0 || searchHistory.length > 0)"
+                  class="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-200 max-h-80 overflow-y-auto z-50"
+                >
+                  <!-- 搜索历史 -->
+                  <div v-if="searchHistory.length > 0 && !searchQuery" class="p-2">
+                    <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase">搜索历史</div>
+                    <button
+                      v-for="(item, index) in searchHistory"
+                      :key="index"
+                      @click="selectSuggestion(item)"
+                      class="w-full px-4 py-2 text-left hover:bg-gray-100 rounded-lg flex items-center justify-between group"
+                    >
+                      <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span class="text-gray-700">{{ item }}</span>
+                      </div>
+                      <button
+                        @click.stop="removeFromHistory(item)"
+                        class="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500"
+                      >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                      </button>
+                    </button>
+                    <div class="px-3 py-2 border-t border-gray-100">
+                      <button
+                        @click="clearHistory"
+                        class="text-xs text-gray-500 hover:text-gray-700"
+                      >
+                        清空历史
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <!-- 搜索建议 -->
+                  <div v-if="searchSuggestions.length > 0" class="p-2">
+                    <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase">搜索建议</div>
+                    <button
+                      v-for="(suggestion, index) in searchSuggestions"
+                      :key="index"
+                      @click="selectSuggestion(suggestion)"
+                      :class="[
+                        'w-full px-4 py-2 text-left hover:bg-gray-100 rounded-lg flex items-center gap-2',
+                        selectedSuggestionIndex === index ? 'bg-indigo-50' : ''
+                      ]"
+                    >
+                      <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                      </svg>
+                      <span class="text-gray-700" v-html="highlightText(suggestion, searchQuery)"></span>
+                    </button>
+                  </div>
                 </div>
               </div>
               <button
@@ -45,17 +108,32 @@
               </button>
             </div>
             
-            <!-- 搜索类型选择 -->
-            <div class="flex flex-wrap gap-3">
-              <button
-                v-for="type in searchTypes"
-                :key="type.key"
-                @click="selectedType = type.key; performSearch()"
-                :class="getTypeButtonClass(type.key)"
-              >
-                <span class="mr-2">{{ type.icon }}</span>
-                {{ type.label }}
-              </button>
+            <!-- 搜索类型和排序选择 -->
+            <div class="flex flex-wrap items-center gap-4">
+              <div class="flex flex-wrap gap-3">
+                <button
+                  v-for="type in searchTypes"
+                  :key="type.key"
+                  @click="selectedType = type.key; performSearch()"
+                  :class="getTypeButtonClass(type.key)"
+                >
+                  <span class="mr-2">{{ type.icon }}</span>
+                  {{ type.label }}
+                </button>
+              </div>
+              
+              <!-- 排序选择 -->
+              <div class="flex items-center gap-2 ml-auto">
+                <span class="text-sm text-gray-600">排序：</span>
+                <select
+                  v-model="sortBy"
+                  @change="performSearch"
+                  class="px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                >
+                  <option value="relevance">相关性</option>
+                  <option value="time">时间</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
@@ -265,9 +343,14 @@ import { useErrorHandler } from '~/composables/useErrorHandler'
 // 搜索状态
 const searchQuery = ref('')
 const selectedType = ref('all')
+const sortBy = ref('relevance')
 const hasSearched = ref(false)
 const loading = ref(false)
 const searchResults = ref<SearchResults | null>(null)
+const showSuggestions = ref(false)
+const searchSuggestions = ref<string[]>([])
+const selectedSuggestionIndex = ref(-1)
+const searchHistory = ref<string[]>([])
 
 // 搜索类型配置
 const searchTypes = [
@@ -294,6 +377,10 @@ const performSearch = async () => {
     return
   }
 
+  // 保存搜索历史
+  saveSearchHistory(searchQuery.value.trim())
+  showSuggestions.value = false
+
   loading.value = true
   hasSearched.value = true
 
@@ -309,7 +396,8 @@ const performSearch = async () => {
         keyword: searchQuery.value.trim(),
         type: backendType,
         page: 1,
-        pageSize: 20
+        pageSize: 20,
+        sort: sortBy.value
       }
     })
 
@@ -329,18 +417,127 @@ const performSearch = async () => {
   }
 }
 
-// 输入处理（防抖）
+// 加载搜索历史
+const loadSearchHistory = () => {
+  if (process.client) {
+    const history = localStorage.getItem('search_history')
+    if (history) {
+      try {
+        searchHistory.value = JSON.parse(history).slice(0, 10) // 最多保存10条
+      } catch {
+        searchHistory.value = []
+      }
+    }
+  }
+}
+
+// 保存搜索历史
+const saveSearchHistory = (keyword: string) => {
+  if (process.client && keyword.trim()) {
+    const history = searchHistory.value.filter(h => h !== keyword)
+    history.unshift(keyword)
+    searchHistory.value = history.slice(0, 10) // 最多保存10条
+    localStorage.setItem('search_history', JSON.stringify(searchHistory.value))
+  }
+}
+
+// 从历史中移除
+const removeFromHistory = (keyword: string) => {
+  searchHistory.value = searchHistory.value.filter(h => h !== keyword)
+  if (process.client) {
+    localStorage.setItem('search_history', JSON.stringify(searchHistory.value))
+  }
+}
+
+// 清空历史
+const clearHistory = () => {
+  searchHistory.value = []
+  if (process.client) {
+    localStorage.removeItem('search_history')
+  }
+}
+
+// 输入处理（防抖 + 搜索建议）
 let searchTimeout: NodeJS.Timeout | null = null
+let suggestionTimeout: NodeJS.Timeout | null = null
+
 const handleInput = () => {
   if (searchTimeout) {
     clearTimeout(searchTimeout)
   }
-  // 可以在这里实现实时搜索（防抖）
-  // searchTimeout = setTimeout(() => {
-  //   if (searchQuery.value.trim()) {
-  //     performSearch()
-  //   }
-  // }, 500)
+  
+  // 获取搜索建议
+  if (suggestionTimeout) {
+    clearTimeout(suggestionTimeout)
+  }
+  
+  suggestionTimeout = setTimeout(() => {
+    fetchSuggestions()
+  }, 300)
+  
+  showSuggestions.value = true
+}
+
+// 获取搜索建议
+const fetchSuggestions = async () => {
+  if (!searchQuery.value.trim() || searchQuery.value.length < 2) {
+    searchSuggestions.value = []
+    return
+  }
+
+  try {
+    // 从热门标签和历史记录中筛选建议
+    const allSuggestions = [
+      ...popularSearchTags,
+      ...searchHistory.value
+    ].filter(tag => 
+      tag.toLowerCase().includes(searchQuery.value.toLowerCase()) &&
+      tag !== searchQuery.value
+    )
+    
+    // 去重并限制数量
+    searchSuggestions.value = [...new Set(allSuggestions)].slice(0, 5)
+  } catch (error) {
+    searchSuggestions.value = []
+  }
+}
+
+// 选择建议
+const selectSuggestion = (suggestion: string) => {
+  searchQuery.value = suggestion
+  showSuggestions.value = false
+  performSearch()
+}
+
+// 导航建议（键盘上下键）
+const navigateSuggestions = (direction: number) => {
+  const suggestions = searchSuggestions.value.length > 0 
+    ? searchSuggestions.value 
+    : searchHistory.value
+  
+  if (suggestions.length === 0) return
+  
+  selectedSuggestionIndex.value += direction
+  
+  if (selectedSuggestionIndex.value < 0) {
+    selectedSuggestionIndex.value = suggestions.length - 1
+  } else if (selectedSuggestionIndex.value >= suggestions.length) {
+    selectedSuggestionIndex.value = 0
+  }
+  
+  // 按 Enter 键时选择
+  if (direction === 0 && selectedSuggestionIndex.value >= 0) {
+    selectSuggestion(suggestions[selectedSuggestionIndex.value])
+  }
+}
+
+// 处理失焦
+const handleBlur = () => {
+  // 延迟隐藏，以便点击建议时能触发
+  setTimeout(() => {
+    showSuggestions.value = false
+    selectedSuggestionIndex.value = -1
+  }, 200)
 }
 
 // 快速搜索
@@ -358,12 +555,21 @@ const getTypeButtonClass = (type: string) => {
   return `${baseClass} bg-gray-100 text-gray-600 hover:bg-gray-200`
 }
 
-// 高亮文本
+// 高亮文本（支持多个关键词）
 const highlightText = (text: string, keyword: string): string => {
   if (!text || !keyword) return text
   
-  const regex = new RegExp(`(${keyword})`, 'gi')
-  return text.replace(regex, '<mark class="bg-yellow-200 px-1 rounded">$1</mark>')
+  // 转义特殊字符
+  const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  
+  // 支持多个关键词（空格分隔）
+  const keywords = escapedKeyword.split(/\s+/).filter(k => k.length > 0)
+  
+  if (keywords.length === 0) return text
+  
+  // 创建匹配所有关键词的正则
+  const regex = new RegExp(`(${keywords.join('|')})`, 'gi')
+  return text.replace(regex, '<mark class="bg-yellow-200 dark:bg-yellow-800 px-1 rounded">$1</mark>')
 }
 
 // 格式化日期
@@ -381,6 +587,19 @@ useHead({
   meta: [
     { name: 'description', content: '搜索博客文章、项目作品、知识库等所有内容' }
   ]
+})
+
+// 初始化
+onMounted(() => {
+  loadSearchHistory()
+  
+  // 从 URL 参数中获取搜索关键词
+  const route = useRoute()
+  if (route.query.q || route.query.keyword) {
+    const keyword = (route.query.q || route.query.keyword) as string
+    searchQuery.value = keyword
+    performSearch()
+  }
 })
 </script>
 
