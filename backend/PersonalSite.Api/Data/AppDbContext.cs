@@ -67,6 +67,23 @@ public class AppDbContext : DbContext
     public DbSet<ToolCollectionItem> ToolCollectionItems { get; set; }
     public DbSet<ToolReview> ToolReviews { get; set; }
     public DbSet<ToolAnalytics> ToolAnalytics { get; set; }
+    
+    // 商业化功能表
+    public DbSet<ThemeStore> ThemeStores { get; set; }
+    public DbSet<ThemeFile> ThemeFiles { get; set; }
+    public DbSet<ThemePurchase> ThemePurchases { get; set; }
+    public DbSet<ApiUser> ApiUsers { get; set; }
+    public DbSet<ApiKey> ApiKeys { get; set; }
+    public DbSet<ApiCall> ApiCalls { get; set; }
+    public DbSet<ApiBilling> ApiBillings { get; set; }
+    public DbSet<MembershipType> MembershipTypes { get; set; }
+    public DbSet<UserMembership> UserMemberships { get; set; }
+    public DbSet<PaidContent> PaidContents { get; set; }
+    public DbSet<ContentPurchase> ContentPurchases { get; set; }
+    public DbSet<UserPage> UserPages { get; set; }
+    public DbSet<PageComponent> PageComponents { get; set; }
+    public DbSet<ComponentLibrary> ComponentLibraries { get; set; }
+    public DbSet<PageTemplate> PageTemplates { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
