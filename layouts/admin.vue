@@ -70,6 +70,11 @@
           错误日志
         </NuxtLink>
         
+        <NuxtLink to="/admin/friend-links" class="flex items-center px-4 py-2 rounded hover:bg-slate-700 transition-colors" active-class="bg-blue-600 hover:bg-blue-600">
+          <i class="fas fa-link w-6 text-center mr-2"></i>
+          友情链接
+        </NuxtLink>
+        
         <NuxtLink to="/admin/config" class="flex items-center px-4 py-2 rounded hover:bg-slate-700 transition-colors" active-class="bg-blue-600 hover:bg-blue-600">
           <i class="fas fa-cog w-6 text-center mr-2"></i>
           站点配置

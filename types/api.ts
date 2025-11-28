@@ -219,6 +219,29 @@ export interface SearchResults {
   knowledgeBases: SearchResultItem[]
 }
 
+// ==================== 友情链接相关 ====================
+
+export interface FriendLink {
+  id: number
+  name: string
+  url: string
+  description?: string
+  logoUrl?: string
+  sortOrder: number
+  status: number
+  createdAt: string
+  updatedAt: string
+}
+
+export interface FriendLinkRequest {
+  name: string
+  url: string
+  description?: string
+  logoUrl?: string
+  sortOrder?: number
+  status?: number
+}
+
 // ==================== API 响应格式 ====================
 
 export interface ApiResponse<T = any> {

@@ -29,6 +29,7 @@ public class AppDbContext : DbContext
     public DbSet<Investment> Investments { get; set; }
     public DbSet<InvestmentTransaction> InvestmentTransactions { get; set; }
     public DbSet<ErrorLog> ErrorLogs { get; set; }
+    public DbSet<FriendLink> FriendLinks { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

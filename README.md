@@ -205,6 +205,21 @@ npm run build
 npm run preview
 ```
 
+## 📚 项目文档
+
+项目文档已分类整理到 `docs/` 目录，包括：
+
+- 📋 [功能开发文档](./docs/features/) - 功能状态、开发日志、优化计划
+- 🔧 [改进与优化文档](./docs/improvements/) - 改进计划、升级记录
+- ⚙️ [配置文档](./docs/config/) - API 配置、环境配置
+- 🏗️ [架构文档](./docs/architecture/) - 系统架构说明
+- 🚀 [部署文档](./docs/deployment/) - 部署指南、启动说明
+- 🐛 [故障排除文档](./docs/troubleshooting/) - 问题排查、Bug 修复
+- 📊 [代码质量文档](./docs/quality/) - 代码质量报告
+- 📝 [迁移文档](./docs/migration/) - 数据迁移指南
+
+详细文档索引请查看 [文档目录](./docs/README.md)
+
 ## 📧 联系方式
 
 - **邮箱**：255106739@qq.com
