@@ -3,7 +3,8 @@
     v-for="(bubble, index) in activeBubbles"
     :key="bubble.id"
     class="visitor-bubble"
-    :style="getBubbleStyle(bubble, index)"
+    :class="`bubble-index-${index}`"
+    :style="getBubbleDynamicStyle(bubble, index)"
   >
     <div class="bubble-avatar">
       <img v-if="bubble.avatarUrl" :src="bubble.avatarUrl" :alt="bubble.displayText || '访客'" />
@@ -63,8 +64,8 @@ const createBubble = (visitorId: string, location?: string) => {
   }, 10000)
 }
 
-// 获取气泡样式
-const getBubbleStyle = (bubble: Bubble, index: number) => {
+// 获取气泡动态样式（仅保留必须动态计算的属性）
+const getBubbleDynamicStyle = (bubble: Bubble, index: number) => {
   const startX = 80 + Math.random() * 15 // 80-95%
   const startY = 10 + Math.random() * 20 // 10-30%
   const endY = startY + 30 + Math.random() * 40 // 向下移动

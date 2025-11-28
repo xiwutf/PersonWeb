@@ -5,7 +5,7 @@
       v-for="footprint in footprints"
       :key="footprint.id"
       class="footprint-item"
-      :style="getFootprintStyle(footprint)"
+      :style="getFootprintDynamicStyle(footprint)"
       :title="footprint.message || `${footprint.location || '访客'}的足迹`"
     >
       <span class="footprint-emoji">{{ footprint.emoji }}</span>
@@ -18,60 +18,60 @@
     <button
       v-if="!hasLeftFootprint"
       @click="showFootprintModal = true"
-      class="footprint-button"
+      class="visitor-button-circle visitor-button-circle-blue footprint-button"
       title="留下你的足迹"
     >
       <i class="fas fa-map-marker-alt"></i>
     </button>
 
     <!-- 足迹弹窗 -->
-    <div v-if="showFootprintModal" class="footprint-modal-overlay" @click="showFootprintModal = false">
-      <div class="footprint-modal" @click.stop>
-        <div class="modal-header">
+    <div v-if="showFootprintModal" class="visitor-modal-overlay" @click="showFootprintModal = false">
+      <div class="visitor-modal" @click.stop>
+        <div class="visitor-modal-header">
           <h3>留下你的足迹</h3>
-          <button @click="showFootprintModal = false" class="modal-close">
+          <button @click="showFootprintModal = false" class="visitor-modal-close">
             <i class="fas fa-times"></i>
           </button>
         </div>
 
-        <div class="modal-body">
-          <div class="form-group">
-            <label>选择一个表情或图标</label>
-            <div class="emoji-grid">
+        <div class="visitor-modal-body">
+          <div class="visitor-form-group">
+            <label class="visitor-form-label">选择一个表情或图标</label>
+            <div class="visitor-emoji-grid">
               <button
                 v-for="emoji in emojiOptions"
                 :key="emoji"
                 @click="selectedEmoji = emoji"
-                :class="['emoji-option', { 'emoji-option-selected': selectedEmoji === emoji }]"
+                :class="['visitor-emoji-option', { 'visitor-emoji-option-selected': selectedEmoji === emoji }]"
               >
                 {{ emoji }}
               </button>
             </div>
           </div>
 
-          <div class="form-group">
-            <label>留言（可选）</label>
+          <div class="visitor-form-group">
+            <label class="visitor-form-label">留言（可选）</label>
             <input
               v-model="footprintMessage"
               type="text"
-              class="form-input"
+              class="visitor-form-input"
               placeholder="说点什么..."
               maxlength="50"
             />
           </div>
 
-          <div class="form-group">
-            <label>位置（可选）</label>
+          <div class="visitor-form-group">
+            <label class="visitor-form-label">位置（可选）</label>
             <input
               v-model="footprintLocation"
               type="text"
-              class="form-input"
+              class="visitor-form-input"
               placeholder="如：杭州"
               maxlength="20"
             />
           </div>
 
-          <button @click="leaveFootprint" class="submit-button" :disabled="!selectedEmoji || submitting">
+          <button @click="leaveFootprint" class="visitor-button-primary" :disabled="!selectedEmoji || submitting">
             {{ submitting ? '提交中...' : '留下足迹' }}
           </button>
         </div>
@@ -171,8 +171,8 @@ const leaveFootprint = async () => {
   }
 }
 
-// 获取足迹样式
-const getFootprintStyle = (footprint: Footprint) => {
+// 获取足迹动态样式（仅保留必须动态计算的属性）
+const getFootprintDynamicStyle = (footprint: Footprint) => {
   return {
     left: footprint.xPosition ? `${footprint.xPosition}%` : `${Math.random() * 80 + 10}%`,
     top: footprint.yPosition ? `${footprint.yPosition}%` : `${Math.random() * 80 + 10}%`,
@@ -285,150 +285,11 @@ onMounted(() => {
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
 }
 
-.footprint-modal-overlay {
+.footprint-button {
   position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  pointer-events: auto;
-}
-
-.footprint-modal {
-  background: rgba(30, 41, 59, 0.95);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1rem;
-  width: 90%;
-  max-width: 500px;
-  max-height: 90vh;
-  overflow-y: auto;
-  pointer-events: auto;
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.modal-header h3 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: white;
-}
-
-.modal-close {
-  width: 2rem;
-  height: 2rem;
-  border-radius: 0.25rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 1.25rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal-close:hover {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-}
-
-.modal-body {
-  padding: 1.5rem;
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-group label {
-  display: block;
-  font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 0.75rem;
-  font-weight: 500;
-}
-
-.emoji-grid {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 0.5rem;
-}
-
-.emoji-option {
-  aspect-ratio: 1;
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.5rem;
-  background: rgba(255, 255, 255, 0.05);
-  font-size: 1.5rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.emoji-option:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: scale(1.1);
-}
-
-.emoji-option-selected {
-  background: rgba(59, 130, 246, 0.3);
-  border-color: rgba(59, 130, 246, 0.6);
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-}
-
-.form-input {
-  width: 100%;
-  padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.5rem;
-  color: white;
-  font-size: 0.875rem;
-  transition: all 0.2s ease;
-}
-
-.form-input:focus {
-  outline: none;
-  border-color: rgba(59, 130, 246, 0.5);
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.submit-button {
-  width: 100%;
-  padding: 0.75rem;
-  background: rgba(59, 130, 246, 0.9);
-  border: none;
-  border-radius: 0.5rem;
-  color: white;
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.submit-button:hover:not(:disabled) {
-  background: rgba(59, 130, 246, 1);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-}
-
-.submit-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 100;
 }
 
 @keyframes footprint-appear {

@@ -5,7 +5,9 @@
       v-for="(danmaku, index) in activeDanmakus"
       :key="danmaku.id"
       class="danmaku-item"
-      :style="getDanmakuStyle(danmaku, index)"
+      :data-danmaku-id="danmaku.id"
+      :class="getDanmakuClass(danmaku, index)"
+      :style="getDanmakuDynamicStyle(danmaku, index)"
     >
       <span v-if="danmaku.emoji" class="danmaku-emoji">{{ danmaku.emoji }}</span>
       <span class="danmaku-content">{{ danmaku.content }}</span>
@@ -78,14 +80,18 @@ const startDanmakuAnimation = () => {
   })
 }
 
-// 获取弹幕样式
-const getDanmakuStyle = (danmaku: Danmaku, index: number) => {
-  const top = 10 + (index % 5) * 15 // 5行弹幕
+// 获取弹幕类名
+const getDanmakuClass = (danmaku: Danmaku, index: number) => {
+  const row = index % 5
+  return `danmaku-row-${row}`
+}
+
+// 获取弹幕动态样式（仅保留必须动态计算的属性）
+const getDanmakuDynamicStyle = (danmaku: Danmaku, index: number) => {
   const duration = 15 + Math.random() * 10 // 15-25秒
   const color = danmaku.color || getRandomColor(danmaku.messageType)
 
   return {
-    top: `${top}%`,
     color: color,
     animationDuration: `${duration}s`,
     animationDelay: `${Math.random() * 2}s`
@@ -153,6 +159,12 @@ onMounted(() => {
   gap: 0.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
+
+.danmaku-row-0 { top: 10%; }
+.danmaku-row-1 { top: 25%; }
+.danmaku-row-2 { top: 40%; }
+.danmaku-row-3 { top: 55%; }
+.danmaku-row-4 { top: 70%; }
 
 .danmaku-emoji {
   font-size: 1rem;
