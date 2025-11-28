@@ -315,20 +315,20 @@ onUnmounted(() => {
 <style scoped>
 .theme-switcher {
   position: fixed;
-  bottom: 18rem;
-  right: 2rem;
+  bottom: 4rem; /* 在AI助手按钮上方，间距2rem */
+  right: 0.5rem; /* 与AI助手按钮右对齐 */
   z-index: 1000;
 }
 
 .theme-switcher-button {
-  width: 3.5rem;
-  height: 3.5rem;
+  width: 2.5rem; /* 缩小尺寸 */
+  height: 2.5rem;
   border-radius: 50%;
   background: rgba(59, 130, 246, 0.9);
   backdrop-filter: blur(10px);
   border: 2px solid rgba(255, 255, 255, 0.3);
   color: white;
-  font-size: 1.25rem;
+  font-size: 1rem; /* 缩小图标 */
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
@@ -357,7 +357,7 @@ onUnmounted(() => {
 
 .theme-switcher-panel {
   position: fixed;
-  bottom: 22rem;
+  bottom: 8rem; /* 调整面板位置，适应按钮新位置 */
   right: 2rem;
   width: 90vw;
   max-width: 600px;

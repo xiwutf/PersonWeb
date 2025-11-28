@@ -34,9 +34,10 @@
       <div class="drawer-header">
         <h3 class="drawer-title">访客中心</h3>
         <button
-          @click="closeDrawer"
+          @click.stop="closeDrawer"
           class="drawer-close-btn"
           aria-label="关闭"
+          type="button"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -77,7 +78,11 @@ const toggleDrawer = () => {
   isOpen.value = !isOpen.value
 }
 
-const closeDrawer = () => {
+const closeDrawer = (event?: Event) => {
+  if (event) {
+    event.preventDefault()
+    event.stopPropagation()
+  }
   isOpen.value = false
 }
 
@@ -157,6 +162,9 @@ onMounted(() => {
   justify-content: space-between;
   padding: 1.25rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  z-index: 10;
+  flex-shrink: 0;
 }
 
 .drawer-title {
@@ -178,11 +186,19 @@ onMounted(() => {
   border-radius: 0.5rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  position: relative;
+  z-index: 10;
+  pointer-events: auto;
+  flex-shrink: 0;
 }
 
 .drawer-close-btn:hover {
   color: white;
   background: rgba(255, 255, 255, 0.2);
+}
+
+.drawer-close-btn:active {
+  transform: scale(0.95);
 }
 
 /* 抽屉内容 */

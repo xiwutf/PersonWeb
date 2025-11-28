@@ -4,19 +4,20 @@
     <button
       v-if="!isOpen"
       @click="toggleWall"
-      class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 flex items-center justify-center group"
+      class="time-capsule-trigger"
       aria-label="打开时间胶囊墙"
     >
-      <svg class="w-7 h-7 text-white group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
+      <span>时间胶囊墙</span>
     </button>
 
     <!-- 时间胶囊墙 -->
     <Transition name="slide-up">
       <div
         v-if="isOpen"
-        class="w-80 h-[500px] bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 flex flex-col overflow-hidden"
+        class="time-capsule-panel"
       >
         <!-- 头部 -->
         <div class="bg-gradient-to-r from-purple-500 to-pink-600 p-4 flex items-center justify-between">
@@ -204,6 +205,51 @@ const formatDate = (dateStr: string) => {
 </script>
 
 <style scoped>
+.time-capsule-container {
+  position: relative;
+  width: 100%;
+}
+
+.time-capsule-trigger {
+  width: 100%;
+  height: 3rem;
+  background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+  border: none;
+  border-radius: 0.5rem;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(168, 85, 247, 0.3);
+}
+
+.time-capsule-trigger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.5);
+}
+
+.time-capsule-trigger svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.time-capsule-panel {
+  width: 100%;
+  max-height: 400px;
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin-top: 1rem;
+}
+
 .slide-up-enter-active,
 .slide-up-leave-active {
   transition: all 0.3s ease;

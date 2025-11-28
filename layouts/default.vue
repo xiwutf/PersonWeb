@@ -20,19 +20,15 @@
     <!-- 页脚 -->
     <Footer />
     
-    <!-- AI 智能助手 -->
+    <!-- AI 智能助手（独立，不放入抽屉） -->
     <AIAssistant />
-    
-    <!-- 时间胶囊墙 -->
-    <TimeCapsuleWall />
     
     <!-- 访客互动功能 -->
     <VisitorDanmakuWall />
     <VisitorBubble />
-    <VisitorFootprintMap />
     <VisitorInteractionPanel />
     
-    <!-- 访客互动式玩法 -->
+    <!-- 访客互动式玩法（包含在抽屉中） -->
     <VisitorBehaviorListener />
     <VisitorSidebarDrawer />
     <VisitorTriggerEffects />

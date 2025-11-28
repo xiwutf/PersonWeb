@@ -197,6 +197,9 @@ onMounted(() => {
 
 <style scoped>
 .footprint-map-container {
+  position: relative;
+  width: 100%;
+  min-height: 200px;
   position: fixed;
   inset: 0;
   pointer-events: none;
@@ -258,38 +261,29 @@ onMounted(() => {
 }
 
 .footprint-button {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  width: 3.5rem;
-  height: 3.5rem;
-  border-radius: 50%;
+  position: relative;
+  width: 100%;
+  height: 3rem;
+  border-radius: 0.5rem;
   background: rgba(59, 130, 246, 0.9);
   backdrop-filter: blur(10px);
   border: 2px solid rgba(255, 255, 255, 0.3);
   color: white;
-  font-size: 1.25rem;
+  font-size: 1rem;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
   pointer-events: auto;
-  z-index: 100;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 1rem;
 }
 
 .footprint-button:hover {
   background: rgba(59, 130, 246, 1);
-  transform: scale(1.1);
+  transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
-}
-
-.footprint-button {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  z-index: 100;
 }
 
 @keyframes footprint-appear {
