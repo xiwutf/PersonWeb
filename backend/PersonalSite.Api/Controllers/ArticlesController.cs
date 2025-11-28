@@ -126,50 +126,86 @@ public class ArticlesController : ControllerBase
     [Authorize] 
     public async Task<ActionResult<ApiResponse>> SaveArticle([FromBody] Article article)
     {
-        // 如果 ID 为 0，则为新建
-        if (article.Id == 0)
+        try
         {
-             article.CreatedAt = DateTime.Now;
-             article.UpdatedAt = DateTime.Now;
-             
-             // 自动填充发布时间
-             if (article.Status == 1 && article.PublishTime == null)
-             {
-                 article.PublishTime = DateTime.Now;
-             }
-
-             // 设置作者
-             var userId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
-             if (userId > 0) article.AuthorId = userId;
-
-             _context.Articles.Add(article);
-             await _context.SaveChangesAsync();
-             return Ok(ApiResponse.Success(new { id = article.Id }, "创建成功"));
-        }
-        else
-        {
-            // 更新
-            var existing = await _context.Articles.FindAsync(article.Id);
-            if (existing == null) return Ok(ApiResponse.Error("文章不存在", 404));
-
-            existing.Title = article.Title;
-            existing.Slug = article.Slug;
-            existing.Summary = article.Summary;
-            existing.ContentMd = article.ContentMd;
-            existing.ContentHtml = article.ContentHtml;
-            existing.CoverUrl = article.CoverUrl;
-            existing.CategoryId = article.CategoryId;
-            existing.UpdatedAt = DateTime.Now;
-
-            // 状态变更逻辑
-            if (existing.Status != 1 && article.Status == 1 && existing.PublishTime == null)
+            // 如果 ID 为 0，则为新建
+            if (article.Id == 0)
             {
-                existing.PublishTime = DateTime.Now;
-            }
-            existing.Status = article.Status;
+                // 检查 Slug 是否重复（如果提供了 Slug）
+                if (!string.IsNullOrEmpty(article.Slug))
+                {
+                    var slugExists = await _context.Articles.AnyAsync(a => a.Slug == article.Slug);
+                    if (slugExists)
+                    {
+                        return Ok(ApiResponse.Error($"URL Slug '{article.Slug}' 已存在，请使用其他值", 400));
+                    }
+                }
 
-            await _context.SaveChangesAsync();
-            return Ok(ApiResponse.Success(null, "更新成功"));
+                article.CreatedAt = DateTime.Now;
+                article.UpdatedAt = DateTime.Now;
+                
+                // 自动填充发布时间
+                if (article.Status == 1 && article.PublishTime == null)
+                {
+                    article.PublishTime = DateTime.Now;
+                }
+
+                // 设置作者
+                var userId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+                if (userId > 0) article.AuthorId = userId;
+
+                _context.Articles.Add(article);
+                await _context.SaveChangesAsync();
+                return Ok(ApiResponse.Success(new { id = article.Id }, "创建成功"));
+            }
+            else
+            {
+                // 更新
+                var existing = await _context.Articles.FindAsync(article.Id);
+                if (existing == null) return Ok(ApiResponse.Error("文章不存在", 404));
+
+                // 检查 Slug 是否重复（如果 Slug 有变化）
+                if (!string.IsNullOrEmpty(article.Slug) && existing.Slug != article.Slug)
+                {
+                    var slugExists = await _context.Articles.AnyAsync(a => a.Slug == article.Slug && a.Id != article.Id);
+                    if (slugExists)
+                    {
+                        return Ok(ApiResponse.Error($"URL Slug '{article.Slug}' 已存在，请使用其他值", 400));
+                    }
+                }
+
+                existing.Title = article.Title;
+                existing.Slug = article.Slug;
+                existing.Summary = article.Summary;
+                existing.ContentMd = article.ContentMd;
+                existing.ContentHtml = article.ContentHtml;
+                existing.CoverUrl = article.CoverUrl;
+                existing.CategoryId = article.CategoryId;
+                existing.UpdatedAt = DateTime.Now;
+
+                // 状态变更逻辑
+                if (existing.Status != 1 && article.Status == 1 && existing.PublishTime == null)
+                {
+                    existing.PublishTime = DateTime.Now;
+                }
+                existing.Status = article.Status;
+
+                await _context.SaveChangesAsync();
+                return Ok(ApiResponse.Success(null, "更新成功"));
+            }
+        }
+        catch (DbUpdateException ex)
+        {
+            // 处理数据库约束错误（如唯一索引冲突）
+            if (ex.InnerException != null && ex.InnerException.Message.Contains("Duplicate entry"))
+            {
+                return Ok(ApiResponse.Error("URL Slug 已存在，请使用其他值", 400));
+            }
+            return Ok(ApiResponse.Error($"保存失败: {ex.Message}", 500));
+        }
+        catch (Exception ex)
+        {
+            return Ok(ApiResponse.Error($"保存失败: {ex.Message}", 500));
         }
     }
 

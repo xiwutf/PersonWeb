@@ -1,10 +1,10 @@
-﻿<template>
+<template>
   <div>
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-bold text-gray-800 dark:text-white">文章管理</h1>
-      <NuxtLink to="/admin/articles/edit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+      <button @click="handleNewArticle" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
         + 新增文章
-      </NuxtLink>
+      </button>
     </div>
 
     <!-- 搜索栏 -->
@@ -63,6 +63,7 @@ definePageMeta({
 })
 
 const router = useRouter()
+const route = useRoute()
 const api = useApi()
 
 const articles = ref<any[]>([])
@@ -144,6 +145,15 @@ const handleDelete = async (id: number) => {
 const formatDate = (dateStr: string) => {
   if (!dateStr) return '-'
   return new Date(dateStr).toLocaleDateString()
+}
+
+// 新增文章
+const handleNewArticle = () => {
+  console.log('[Articles] Current route:', route.path)
+  console.log('[Articles] Navigating to /admin/articles/edit')
+  
+  // 直接使用 window.location 进行硬跳转，确保页面刷新
+  window.location.href = '/admin/articles/edit'
 }
 
 // 初始加载
