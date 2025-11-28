@@ -1,0 +1,214 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using PersonalSite.Api.Data;
+using PersonalSite.Api.Models;
+using System.Net;
+
+namespace PersonalSite.Api.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class AnalyticsController : ControllerBase
+{
+    private readonly AppDbContext _context;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    public AnalyticsController(AppDbContext context, IHttpContextAccessor httpContextAccessor)
+    {
+        _context = context;
+        _httpContextAccessor = httpContextAccessor;
+    }
+
+    /// <summary>
+    /// 记录访问（增强版）
+    /// </summary>
+    [HttpPost("track")]
+    public async Task<ActionResult<ApiResponse<object>>> Track([FromBody] TrackRequest request)
+    {
+        var ip = _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
+        var userAgent = Request.Headers["User-Agent"].ToString();
+        var referrer = Request.Headers["Referer"].ToString();
+
+        // 解析设备信息
+        var deviceInfo = ParseDeviceInfo(userAgent);
+
+        // 查找或创建访客会话
+        var analytics = await _context.VisitorAnalytics
+            .Where(v => v.VisitorId == request.VisitorId && v.IsOnline)
+            .OrderByDescending(v => v.UpdatedAt)
+            .FirstOrDefaultAsync();
+
+        if (analytics == null)
+        {
+            analytics = new VisitorAnalytics
+            {
+                VisitorId = request.VisitorId,
+                Ip = ip,
+                Referrer = referrer,
+                DeviceType = deviceInfo.DeviceType,
+                Browser = deviceInfo.Browser,
+                Os = deviceInfo.Os,
+                Path = request.Path,
+                SessionStart = DateTime.Now,
+                IsOnline = true
+            };
+            _context.VisitorAnalytics.Add(analytics);
+        }
+        else
+        {
+            analytics.PageViews++;
+            analytics.UpdatedAt = DateTime.Now;
+            analytics.IsOnline = true;
+            if (analytics.Path != request.Path)
+            {
+                analytics.Path = request.Path;
+            }
+        }
+
+        await _context.SaveChangesAsync();
+
+        return Ok(ApiResponse.Success(new { SessionId = analytics.Id }));
+    }
+
+    /// <summary>
+    /// 获取统计数据（管理员）
+    /// </summary>
+    [HttpGet("stats")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<object>>> GetStats()
+    {
+        var today = DateTime.Today;
+        var yesterday = today.AddDays(-1);
+
+        // 今日访问量
+        var todayPv = await _context.VisitorAnalytics
+            .Where(v => v.SessionStart >= today)
+            .SumAsync(v => v.PageViews);
+
+        var todayUv = await _context.VisitorAnalytics
+            .Where(v => v.SessionStart >= today)
+            .Select(v => v.VisitorId)
+            .Distinct()
+            .CountAsync();
+
+        // 昨日访问量
+        var yesterdayPv = await _context.VisitorAnalytics
+            .Where(v => v.SessionStart >= yesterday && v.SessionStart < today)
+            .SumAsync(v => v.PageViews);
+
+        var yesterdayUv = await _context.VisitorAnalytics
+            .Where(v => v.SessionStart >= yesterday && v.SessionStart < today)
+            .Select(v => v.VisitorId)
+            .Distinct()
+            .CountAsync();
+
+        // 在线人数（最近5分钟）
+        var onlineCount = await _context.VisitorAnalytics
+            .Where(v => v.IsOnline && v.UpdatedAt >= DateTime.Now.AddMinutes(-5))
+            .Select(v => v.VisitorId)
+            .Distinct()
+            .CountAsync();
+
+        // 热门文章（通过路径统计）
+        var topArticles = await _context.VisitorAnalytics
+            .Where(v => v.Path != null && v.Path.StartsWith("/blog/"))
+            .GroupBy(v => v.Path)
+            .Select(g => new { Path = g.Key, Views = g.Sum(v => v.PageViews) })
+            .OrderByDescending(x => x.Views)
+            .Take(10)
+            .ToListAsync();
+
+        // 访问区域统计
+        var regionStats = await _context.VisitorAnalytics
+            .Where(v => v.Country != null)
+            .GroupBy(v => v.Country)
+            .Select(g => new { Country = g.Key, Count = g.Count() })
+            .OrderByDescending(x => x.Count)
+            .Take(10)
+            .ToListAsync();
+
+        // 搜索来源
+        var searchSources = await _context.VisitorAnalytics
+            .Where(v => !string.IsNullOrEmpty(v.SearchKeyword))
+            .GroupBy(v => v.SearchKeyword)
+            .Select(g => new { Keyword = g.Key, Count = g.Count() })
+            .OrderByDescending(x => x.Count)
+            .Take(10)
+            .ToListAsync();
+
+        return Ok(ApiResponse.Success(new
+        {
+            Today = new { Pv = todayPv, Uv = todayUv },
+            Yesterday = new { Pv = yesterdayPv, Uv = yesterdayUv },
+            OnlineCount = onlineCount,
+            TopArticles = topArticles,
+            RegionStats = regionStats,
+            SearchSources = searchSources
+        }));
+    }
+
+    private (string DeviceType, string Browser, string Os) ParseDeviceInfo(string userAgent)
+    {
+        var deviceType = "desktop";
+        var browser = "unknown";
+        var os = "unknown";
+
+        if (userAgent.Contains("Mobile") || userAgent.Contains("Android"))
+        {
+            deviceType = "mobile";
+        }
+        else if (userAgent.Contains("Tablet") || userAgent.Contains("iPad"))
+        {
+            deviceType = "tablet";
+        }
+
+        if (userAgent.Contains("Chrome"))
+        {
+            browser = "Chrome";
+        }
+        else if (userAgent.Contains("Firefox"))
+        {
+            browser = "Firefox";
+        }
+        else if (userAgent.Contains("Safari"))
+        {
+            browser = "Safari";
+        }
+        else if (userAgent.Contains("Edge"))
+        {
+            browser = "Edge";
+        }
+
+        if (userAgent.Contains("Windows"))
+        {
+            os = "Windows";
+        }
+        else if (userAgent.Contains("Mac"))
+        {
+            os = "macOS";
+        }
+        else if (userAgent.Contains("Linux"))
+        {
+            os = "Linux";
+        }
+        else if (userAgent.Contains("Android"))
+        {
+            os = "Android";
+        }
+        else if (userAgent.Contains("iOS"))
+        {
+            os = "iOS";
+        }
+
+        return (deviceType, browser, os);
+    }
+}
+
+public class TrackRequest
+{
+    public string VisitorId { get; set; } = string.Empty;
+    public string? Path { get; set; }
+    public string? SearchKeyword { get; set; }
+}
+

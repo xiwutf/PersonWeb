@@ -28,6 +28,36 @@
           工具管理
         </NuxtLink>
 
+        <NuxtLink to="/admin/time-capsules" class="flex items-center px-4 py-2 rounded hover:bg-slate-700 transition-colors" active-class="bg-blue-600 hover:bg-blue-600">
+          <i class="fas fa-clock w-6 text-center mr-2"></i>
+          时间胶囊
+        </NuxtLink>
+
+        <NuxtLink to="/admin/knowledge" class="flex items-center px-4 py-2 rounded hover:bg-slate-700 transition-colors" active-class="bg-blue-600 hover:bg-blue-600">
+          <i class="fas fa-book w-6 text-center mr-2"></i>
+          知识库
+        </NuxtLink>
+
+        <NuxtLink to="/admin/timeline" class="flex items-center px-4 py-2 rounded hover:bg-slate-700 transition-colors" active-class="bg-blue-600 hover:bg-blue-600">
+          <i class="fas fa-history w-6 text-center mr-2"></i>
+          时间线
+        </NuxtLink>
+
+        <NuxtLink to="/admin/analytics" class="flex items-center px-4 py-2 rounded hover:bg-slate-700 transition-colors" active-class="bg-blue-600 hover:bg-blue-600">
+          <i class="fas fa-chart-bar w-6 text-center mr-2"></i>
+          访客分析
+        </NuxtLink>
+
+        <NuxtLink to="/admin/recommendations" class="flex items-center px-4 py-2 rounded hover:bg-slate-700 transition-colors" active-class="bg-blue-600 hover:bg-blue-600">
+          <i class="fas fa-brain w-6 text-center mr-2"></i>
+          AI 推荐
+        </NuxtLink>
+
+        <NuxtLink to="/admin/investment" class="flex items-center px-4 py-2 rounded hover:bg-slate-700 transition-colors" active-class="bg-blue-600 hover:bg-blue-600">
+          <i class="fas fa-chart-line w-6 text-center mr-2"></i>
+          投资仪表盘
+        </NuxtLink>
+
         <div class="text-xs text-slate-400 px-4 mt-4 mb-2 uppercase font-semibold">系统设置</div>
         
         <NuxtLink to="/admin/config" class="flex items-center px-4 py-2 rounded hover:bg-slate-700 transition-colors" active-class="bg-blue-600 hover:bg-blue-600">

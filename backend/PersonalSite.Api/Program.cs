@@ -45,6 +45,8 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHttpClient(); // 添加 HttpClient 支持
+builder.Services.AddHttpContextAccessor(); // 添加 HttpContextAccessor 支持
 
 // 4. 配置 Swagger
 builder.Services.AddSwaggerGen(c =>

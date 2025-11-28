@@ -21,6 +21,13 @@ public class AppDbContext : DbContext
     public DbSet<PageStat> PageStats { get; set; }
     public DbSet<Project> Projects { get; set; }
     public DbSet<Metric> Metrics { get; set; }
+    public DbSet<TimeCapsule> TimeCapsules { get; set; }
+    public DbSet<KnowledgeBase> KnowledgeBases { get; set; }
+    public DbSet<TimelineEvent> TimelineEvents { get; set; }
+    public DbSet<VisitorAnalytics> VisitorAnalytics { get; set; }
+    public DbSet<UserBehavior> UserBehaviors { get; set; }
+    public DbSet<Investment> Investments { get; set; }
+    public DbSet<InvestmentTransaction> InvestmentTransactions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -131,6 +131,42 @@
       </div>
     </section>
 
+    <!-- 成长轨迹时间线 -->
+    <Timeline />
+
+    <!-- 3D 互动场景 -->
+    <section class="py-16 bg-gradient-to-b from-[#0f172a] to-slate-900 relative overflow-hidden">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl lg:text-4xl font-bold text-white mb-4">互动探索</h2>
+          <p class="text-lg text-slate-400">点击 3D 对象，探索不同内容</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- 地球 - 跳转到博客 -->
+          <div class="bg-slate-800/50 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:border-blue-500/50 transition-all">
+            <h3 class="text-white font-bold mb-4 text-center">🌍 博客文章</h3>
+            <Scene3D type="earth" :show-hint="false" height="300px" />
+            <p class="text-slate-400 text-sm text-center mt-4">点击地球查看技术博客</p>
+          </div>
+          
+          <!-- 飞船 - 跳转到项目 -->
+          <div class="bg-slate-800/50 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:border-purple-500/50 transition-all">
+            <h3 class="text-white font-bold mb-4 text-center">🚀 项目作品</h3>
+            <Scene3D type="spaceship" :show-hint="false" height="300px" />
+            <p class="text-slate-400 text-sm text-center mt-4">点击飞船查看项目作品</p>
+          </div>
+          
+          <!-- 数据星球 - 跳转到仪表盘 -->
+          <div class="bg-slate-800/50 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:border-green-500/50 transition-all">
+            <h3 class="text-white font-bold mb-4 text-center">💎 数据仪表盘</h3>
+            <Scene3D type="datasphere" :show-hint="false" height="300px" />
+            <p class="text-slate-400 text-sm text-center mt-4">点击数据星球查看数据</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Bento Grid 内容展示 -->
     <section id="content" class="py-24 bg-slate-50 relative">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

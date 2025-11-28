@@ -95,13 +95,42 @@ const scrollTo = (id: string) => {
 const fetchArticle = async () => {
   loading.value = true
   try {
-    const slug = route.params.id as string
-    // Try fetch by slug
-    const res = await api.get<any>(`/Articles/slug/${slug}`)
+    const idOrSlug = route.params.id as string
+    console.log('[Blog] Fetching article with id/slug:', idOrSlug)
+    
+    let res: any = null
+    
+    // 判断是数字 ID 还是 slug
+    const isNumeric = /^\d+$/.test(idOrSlug)
+    
+    if (isNumeric) {
+      // 如果是数字，直接通过 ID 获取
+      console.log('[Blog] Detected numeric ID, fetching by ID')
+      res = await api.get<any>(`/Articles/${idOrSlug}`)
+      console.log('[Blog] Found article by ID:', res?.title)
+    } else {
+      // 如果是字符串，先尝试通过 slug 获取
+      console.log('[Blog] Detected slug, fetching by slug')
+      try {
+        res = await api.get<any>(`/Articles/slug/${idOrSlug}`)
+        console.log('[Blog] Found article by slug:', res?.title)
+      } catch (slugError) {
+        // 如果 slug 获取失败，尝试通过 ID 获取（可能是字符串格式的 ID）
+        console.log('[Blog] Slug fetch failed, trying by ID as fallback')
+        try {
+          res = await api.get<any>(`/Articles/${idOrSlug}`)
+          console.log('[Blog] Found article by ID (fallback):', res?.title)
+        } catch (idError) {
+          console.error('[Blog] Failed to fetch article by both slug and ID')
+          throw idError
+        }
+      }
+    }
+    
     article.value = res
     
     // Render Markdown
-    if (res.contentMd) {
+    if (res && res.contentMd) {
       // Custom renderer to add IDs to headers for TOC
       const tokens = md.parse(res.contentMd, {})
       
