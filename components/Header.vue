@@ -52,7 +52,8 @@
         <!-- 移动端菜单按钮 -->
         <button
           @click="toggleMobileMenu"
-          class="md:hidden p-2 rounded-xl hover:bg-gray-100 transition-colors"
+          class="md:hidden p-2 rounded-xl hover:bg-gray-100 active:bg-gray-200 transition-colors touch-target"
+          aria-label="打开菜单"
         >
           <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -63,7 +64,7 @@
       <!-- 移动端菜单 -->
       <div
         v-show="isMobileMenuOpen"
-        class="md:hidden border-t border-gray-100"
+        class="md:hidden border-t border-gray-100 max-h-[calc(100vh-4rem)] overflow-y-auto smooth-scroll"
       >
         <nav class="p-2 space-y-1">
           <NuxtLink
@@ -71,7 +72,7 @@
             :key="item.path"
             :to="item.path"
             @click="closeMobileMenu"
-            class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200"
+            class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 touch-target active:bg-gray-100"
             :class="{ 'bg-primary-50 text-primary-600': $route.path === item.path, 'text-gray-600 hover:bg-gray-50': $route.path !== item.path }"
           >
             <span class="text-lg">{{ item.icon }}</span>

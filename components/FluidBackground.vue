@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 
 const props = withDefaults(defineProps<{
   intensity?: number
@@ -14,6 +14,10 @@ const props = withDefaults(defineProps<{
   color: '#3b82f6',
   interactive: true
 })
+
+// 移动端降低强度
+const { isMobile } = useDevice()
+const actualIntensity = computed(() => isMobile.value ? props.intensity * 0.3 : props.intensity)
 
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 let animationId: number | null = null
@@ -166,7 +170,7 @@ const render = () => {
       const density = Math.min(1, Math.max(0, grid[i][j] * props.intensity))
       
       if (density > 0.01) {
-        const alpha = density * 0.3
+        const alpha = density * 0.3 * actualIntensity.value
         const x = (j - 1) * cellSize
         const y = (i - 1) * cellSize
         

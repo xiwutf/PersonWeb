@@ -1,20 +1,26 @@
 <template>
   <div ref="containerRef" class="absolute inset-0 w-full h-full overflow-hidden">
-    <canvas ref="canvasRef" class="w-full h-full" />
+    <!-- 3D 场景（移动端禁用） -->
+    <canvas v-if="shouldRender3D" ref="canvasRef" class="w-full h-full" />
     
-    <!-- 交互提示 -->
-    <div v-if="showHint" class="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-6 py-3 rounded-full text-sm backdrop-blur-md z-20 border border-white/20 pointer-events-none">
+    <!-- 移动端简化背景 -->
+    <div v-else class="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <div class="absolute inset-0 bg-[url('/images/grid.svg')] bg-center opacity-10"></div>
+    </div>
+    
+    <!-- 交互提示（仅桌面端显示） -->
+    <div v-if="showHint && shouldRender3D" class="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-6 py-3 rounded-full text-sm backdrop-blur-md z-20 border border-white/20 pointer-events-none">
       <span class="mr-2">🖱️</span>
       滚动页面或拖动鼠标探索 3D 世界
     </div>
 
-    <!-- 导航标签 -->
-    <div class="absolute top-8 left-8 z-20 space-y-3 pointer-events-auto">
+    <!-- 导航标签（移动端优化） -->
+    <div class="absolute top-4 sm:top-8 left-4 sm:left-8 z-20 space-y-2 sm:space-y-3 pointer-events-auto">
       <button
         v-for="(item, index) in navigationItems"
         :key="index"
         @click="navigateTo(item.path)"
-        class="block px-4 py-2 bg-black/50 backdrop-blur-md text-white rounded-lg hover:bg-black/70 transition-all border border-white/20 hover:border-blue-400/50 hover:scale-105 cursor-pointer"
+        class="block px-3 sm:px-4 py-2 sm:py-2 bg-black/50 backdrop-blur-md text-white rounded-lg hover:bg-black/70 active:bg-black/80 transition-all border border-white/20 hover:border-blue-400/50 hover:scale-105 active:scale-95 cursor-pointer text-sm sm:text-base min-h-[44px] flex items-center justify-center"
         :class="{ 'bg-blue-500/50 border-blue-400': currentPath === item.path }"
       >
         <span class="mr-2">{{ item.icon }}</span>
@@ -25,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick, computed } from 'vue'
 import * as THREE from 'three'
 
 const props = withDefaults(defineProps<{
@@ -35,6 +41,10 @@ const props = withDefaults(defineProps<{
   showHint: true,
   scrollEnabled: true
 })
+
+// 检测移动端
+const { isMobile } = useDevice()
+const shouldRender3D = computed(() => !isMobile.value)
 
 const containerRef = ref<HTMLDivElement | null>(null)
 const canvasRef = ref<HTMLCanvasElement | null>(null)
@@ -63,7 +73,8 @@ const navigationItems = [
 ]
 
 const initScene = () => {
-  if (!canvasRef.value || !containerRef.value) return
+  // 移动端不初始化 3D 场景
+  if (isMobile.value || !canvasRef.value || !containerRef.value) return
 
   try {
     // 创建场景
@@ -321,6 +332,9 @@ const navigateTo = (path: string) => {
 }
 
 onMounted(() => {
+  // 移动端不初始化 3D 场景
+  if (isMobile.value) return
+  
   nextTick(() => {
     if (typeof window !== 'undefined' && containerRef.value && canvasRef.value) {
       initScene()

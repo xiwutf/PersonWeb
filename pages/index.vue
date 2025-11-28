@@ -8,7 +8,7 @@
       <!-- 流体背景 -->
       <FluidBackground :intensity="0.3" color="#3b82f6" :interactive="true" />
       
-      <!-- 沉浸式3D背景 -->
+      <!-- 沉浸式3D背景（移动端自动禁用） -->
       <div class="absolute inset-0 z-0">
         <Immersive3DScene :show-hint="false" :scroll-enabled="true" />
       </div>
@@ -36,13 +36,13 @@
               <span class="text-blue-200 font-medium text-sm">欢迎来到我的数字花园</span>
             </div>
             
-            <h1 class="text-5xl lg:text-7xl font-bold text-white tracking-tight leading-tight">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white tracking-tight leading-tight">
               你好，我是 <br/>
               <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 animate-gradient-x">溪午听风</span>
             </h1>
             
             <!-- 轮播文字 -->
-            <div class="h-12 text-2xl lg:text-3xl text-slate-400 font-medium flex items-center justify-center lg:justify-start overflow-hidden">
+            <div class="h-10 sm:h-12 text-xl sm:text-2xl lg:text-3xl text-slate-400 font-medium flex items-center justify-center lg:justify-start overflow-hidden">
               <span class="mr-3">我是</span>
               <div class="relative h-full w-64 text-left">
                 <transition-group name="slide-up" tag="div" class="absolute top-0 left-0 w-full">
@@ -54,26 +54,26 @@
               </div>
             </div>
             
-            <p class="text-lg text-slate-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+            <p class="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed px-4 sm:px-0">
               专注于构建高效、优雅的数字体验。无论是复杂的企业级应用，还是有趣的创意小工具，我都乐在其中。
             </p>
             
-            <div class="flex flex-wrap justify-center lg:justify-start gap-4 pt-4">
-              <NuxtLink to="/projects" class="relative inline-flex group">
+            <div class="flex flex-wrap justify-center lg:justify-start gap-3 sm:gap-4 pt-4 px-4 sm:px-0">
+              <NuxtLink to="/projects" class="relative inline-flex group touch-target">
                 <div class="absolute transition-all duration-1000 opacity-70 -inset-px bg-gradient-to-r from-[#44BCFF] via-[#FF44EC] to-[#FF675E] rounded-xl blur-lg group-hover:opacity-100 group-hover:-inset-1 group-hover:duration-200 animate-tilt"></div>
-                <button class="relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-200 bg-slate-900 font-pj rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900">
+                <button class="relative inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-bold text-white transition-all duration-200 bg-slate-900 font-pj rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 min-h-[44px]">
                   浏览项目
                   <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
                 </button>
               </NuxtLink>
               
-              <NuxtLink to="/about" class="inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-slate-300 transition-all duration-200 bg-transparent border border-slate-700 rounded-xl hover:bg-slate-800 hover:text-white hover:border-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900">
+              <NuxtLink to="/about" class="inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-bold text-slate-300 transition-all duration-200 bg-transparent border border-slate-700 rounded-xl hover:bg-slate-800 hover:text-white hover:border-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 min-h-[44px] touch-target">
                 关于我
               </NuxtLink>
             </div>
           </div>
           
-          <!-- 右侧视觉元素 - 3D粒子头像 -->
+          <!-- 右侧视觉元素 - 3D粒子头像（移动端隐藏） -->
           <div class="relative hidden lg:block" data-aos="fade-left">
             <div class="relative w-full max-w-sm mx-auto aspect-square">
               <!-- 光晕背景 -->

@@ -1,10 +1,10 @@
 ﻿<template>
   <div class="relative min-h-screen">
-    <!-- 3D 旋转空间视图切换 -->
-    <div class="fixed top-20 right-4 z-20">
+    <!-- 3D 旋转空间视图切换（移动端隐藏） -->
+    <div class="fixed top-20 right-4 z-20 hidden md:block">
       <button
         @click="viewMode = viewMode === 'grid' ? '3d' : 'grid'"
-        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-lg backdrop-blur-md"
+        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 transition shadow-lg backdrop-blur-md touch-target"
       >
         {{ viewMode === 'grid' ? '🌐 3D视图' : '📋 列表视图' }}
       </button>
