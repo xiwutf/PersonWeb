@@ -131,8 +131,27 @@
               <!-- 主卡片 - 使用更现代的毛玻璃效果 -->
               <div :class="styles.mainCard">
                 <div class="w-full h-full relative">
-                  <!-- 粒子头像 - 降低可见度 -->
-                  <div class="w-full h-full opacity-40 hover:opacity-60 transition-opacity duration-300">
+                  <!-- 上方头像 - 红框位置，默认小尺寸，悬停放大 -->
+                  <div class="absolute top-0 left-0 right-0 flex items-start justify-center pt-6 sm:pt-8 z-10">
+                    <div class="relative group cursor-pointer">
+                      <!-- 渐变边框光晕效果 - 悬停时增强 -->
+                      <div class="absolute -inset-2 group-hover:-inset-3 bg-gradient-to-r from-purple-500 via-blue-500 to-teal-500 rounded-2xl opacity-40 group-hover:opacity-80 blur-lg group-hover:blur-xl transition-all duration-500"></div>
+                      <!-- 头像容器 - 默认小尺寸，悬停时放大 -->
+                      <div class="relative w-24 h-32 sm:w-28 sm:h-36 group-hover:w-40 group-hover:h-52 sm:group-hover:w-48 sm:group-hover:h-64 rounded-xl group-hover:rounded-2xl overflow-hidden border-2 border-white/40 group-hover:border-white/60 shadow-lg group-hover:shadow-2xl backdrop-blur-sm bg-white/10 transition-all duration-500 ease-out">
+                        <img 
+                          src="/images/avatar.jpg" 
+                          alt="溪午听风" 
+                          class="w-full h-full object-cover object-top transform group-hover:scale-110 transition-transform duration-500"
+                          @error="(e) => { (e.target as HTMLImageElement).style.display = 'none' }"
+                        />
+                        <!-- 底部渐变遮罩 -->
+                        <div class="absolute bottom-0 left-0 right-0 h-12 group-hover:h-16 bg-gradient-to-t from-black/60 group-hover:from-black/70 to-transparent transition-all duration-500"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 粒子背景 - 降低可见度作为背景 -->
+                  <div class="w-full h-full opacity-20 hover:opacity-30 transition-opacity duration-300 absolute inset-0">
                     <ParticleAvatar
                       :image-url="'/images/avatar.jpg'"
                       :text="'溪午听风'"
@@ -286,27 +305,32 @@
               <div
                 class="h-full bg-white rounded-3xl shadow-md p-6 border border-slate-200 group hover:border-blue-200 hover:shadow-xl transition-all duration-300 flex flex-col relative overflow-hidden"
               >
+                <!-- 渐变背景效果 -->
                 <div
-                  class="absolute -right-6 -top-6 w-20 h-20 bg-blue-50 rounded-full group-hover:scale-150 transition-transform duration-500"
+                  class="absolute inset-0 bg-gradient-to-br from-blue-50 via-sky-50 to-indigo-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                 ></div>
 
                 <div class="relative z-10 flex flex-col h-full">
                   <div
-                    class="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 text-xl mb-4 group-hover:rotate-6 transition-transform shadow-sm"
+                    class="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs sm:text-sm mb-4 font-medium"
                   >
-                    <i class="fas fa-tools"></i>
+                    <i class="fas fa-tools mr-2"></i> 效率工具
                   </div>
-                  <h3 class="text-lg sm:text-xl font-bold text-slate-800 mb-2">效率工具</h3>
-                  <p class="text-sm text-slate-500 mb-4 flex-grow">
+                  <h3
+                    class="text-2xl sm:text-3xl font-bold text-slate-900 mb-2 group-hover:text-blue-700 transition-colors"
+                  >
+                    效率工具
+                  </h3>
+                  <p class="text-slate-600 text-sm sm:text-base mb-4 flex-grow">
                     Revit 插件与自动化脚本，让日常工作更顺滑高效。
                   </p>
                   <NuxtLink
                     to="/tools"
-                    class="text-blue-600 font-medium text-xs sm:text-sm hover:underline flex items-center mt-auto group/link"
+                    class="inline-flex items-center text-blue-600 font-medium text-xs sm:text-sm hover:text-blue-700 mt-auto group/link"
                   >
                     查看工具库
                     <i
-                      class="fas fa-arrow-right ml-1 text-xs group-hover/link:translate-x-1 transition-transform"
+                      class="fas fa-arrow-right ml-2 text-xs group-hover/link:translate-x-1 transition-transform"
                     ></i>
                   </NuxtLink>
                 </div>
@@ -318,32 +342,34 @@
           <div class="md:col-span-1 lg:col-span-1 row-span-1" data-aos="fade-up" data-aos-delay="160">
             <TiltCard class="h-full">
               <div
-                class="h-full bg-slate-900 rounded-3xl shadow-md p-6 text-white overflow-hidden relative group flex flex-col border border-slate-800 hover:border-purple-500/60 hover:shadow-xl transition-all"
+                class="h-full bg-white rounded-3xl shadow-md p-6 border border-slate-200 group hover:border-purple-200 hover:shadow-xl transition-all duration-300 flex flex-col relative overflow-hidden"
               >
+                <!-- 渐变背景效果 -->
                 <div
-                  class="absolute top-0 right-0 w-28 h-28 bg-purple-500/25 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-purple-500/35 transition-colors"
-                ></div>
-                <div
-                  class="absolute bottom-0 left-0 w-24 h-24 bg-blue-500/20 rounded-full blur-xl -ml-10 -mb-10 group-hover:bg-blue-500/30 transition-colors"
+                  class="absolute inset-0 bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                 ></div>
 
                 <div class="relative z-10 flex flex-col h-full">
                   <div
-                    class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-purple-200 text-xl mb-4 backdrop-blur-sm border border-white/10 group-hover:scale-110 transition-transform"
+                    class="inline-flex items-center px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs sm:text-sm mb-4 font-medium"
                   >
-                    <i class="fas fa-project-diagram"></i>
+                    <i class="fas fa-project-diagram mr-2"></i> 精选项目
                   </div>
-                  <h3 class="text-lg sm:text-xl font-bold mb-2">精选项目</h3>
-                  <p class="text-sm text-slate-300 mb-4 flex-grow">
+                  <h3
+                    class="text-2xl sm:text-3xl font-bold text-slate-900 mb-2 group-hover:text-purple-700 transition-colors"
+                  >
+                    精选项目
+                  </h3>
+                  <p class="text-slate-600 text-sm sm:text-base mb-4 flex-grow">
                     实战项目与开源尝试，持续拓展技术边界。
                   </p>
                   <NuxtLink
                     to="/projects"
-                    class="text-purple-200 font-medium text-xs sm:text-sm hover:text-purple-100 flex items-center mt-auto group/link"
+                    class="inline-flex items-center text-purple-600 font-medium text-xs sm:text-sm hover:text-purple-700 mt-auto group/link"
                   >
                     浏览作品集
                     <i
-                      class="fas fa-arrow-right ml-1 text-xs group-hover/link:translate-x-1 transition-transform"
+                      class="fas fa-arrow-right ml-2 text-xs group-hover/link:translate-x-1 transition-transform"
                     ></i>
                   </NuxtLink>
                 </div>
@@ -355,27 +381,35 @@
           <div class="md:col-span-1 lg:col-span-1 row-span-1" data-aos="fade-up" data-aos-delay="200">
             <TiltCard class="h-full">
               <div
-                class="h-full bg-slate-950 text-white rounded-3xl shadow-md p-6 relative overflow-hidden border border-slate-800 hover:border-cyan-400/70 hover:shadow-cyan-500/30 transition-all flex flex-col"
+                class="h-full bg-white rounded-3xl shadow-md p-6 border border-slate-200 group hover:border-cyan-200 hover:shadow-xl transition-all duration-300 flex flex-col relative overflow-hidden"
               >
-                <div class="absolute -top-10 -right-10 w-32 h-32 bg-cyan-500/20 rounded-full blur-2xl"></div>
-                <div class="absolute bottom-0 left-0 w-24 h-24 bg-blue-500/15 rounded-full blur-xl -ml-8 -mb-8"></div>
+                <!-- 渐变背景效果 -->
+                <div
+                  class="absolute inset-0 bg-gradient-to-br from-cyan-50 via-blue-50 to-indigo-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                ></div>
 
                 <div class="relative z-10 flex flex-col h-full">
                   <div
-                    class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-cyan-300 text-xl mb-4 border border-white/10"
+                    class="inline-flex items-center px-3 py-1 bg-cyan-100 text-cyan-700 rounded-full text-xs sm:text-sm mb-4 font-medium"
                   >
-                    <i class="fas fa-flask"></i>
+                    <i class="fas fa-flask mr-2"></i> AI 实验室
                   </div>
-                  <h3 class="text-lg sm:text-xl font-bold mb-2">AI 实验室</h3>
-                  <p class="text-sm text-slate-300 mb-4 flex-grow">
+                  <h3
+                    class="text-2xl sm:text-3xl font-bold text-slate-900 mb-2 group-hover:text-cyan-700 transition-colors"
+                  >
+                    AI 实验室
+                  </h3>
+                  <p class="text-slate-600 text-sm sm:text-base mb-4 flex-grow">
                     3D 场景、AI 小实验与互动体验的集合地。
                   </p>
                   <NuxtLink
                     to="/lab"
-                    class="inline-flex items-center text-xs sm:text-sm font-medium text-cyan-300 hover:text-cyan-100 mt-auto group"
+                    class="inline-flex items-center text-cyan-600 font-medium text-xs sm:text-sm hover:text-cyan-700 mt-auto group/link"
                   >
                     进入实验室
-                    <i class="fas fa-arrow-right ml-1 text-xs group-hover:translate-x-1 transition-transform"></i>
+                    <i
+                      class="fas fa-arrow-right ml-2 text-xs group-hover/link:translate-x-1 transition-transform"
+                    ></i>
                   </NuxtLink>
                 </div>
               </div>
@@ -386,23 +420,35 @@
           <div class="md:col-span-2 lg:col-span-2 row-span-1" data-aos="fade-up" data-aos-delay="240">
             <TiltCard class="h-full">
               <div
-                class="h-full bg-gradient-to-r from-orange-50 via-amber-50 to-rose-50 rounded-3xl shadow-md p-6 border border-orange-100 flex flex-col md:flex-row items-center gap-6 group hover:shadow-xl transition-all duration-300"
+                class="h-full bg-white rounded-3xl shadow-md p-6 border border-slate-200 group hover:border-orange-200 hover:shadow-xl transition-all duration-300 flex flex-col md:flex-row items-center gap-6 relative overflow-hidden"
               >
-                <div class="flex-1">
+                <!-- 渐变背景效果 -->
+                <div
+                  class="absolute inset-0 bg-gradient-to-br from-orange-50 via-amber-50 to-rose-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                ></div>
+
+                <div class="flex-1 relative z-10">
                   <div
-                    class="w-12 h-12 bg-orange-100 rounded-2xl flex items-center justify-center text-orange-600 text-xl mb-4 shadow-sm group-hover:scale-110 transition-transform"
+                    class="inline-flex items-center px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs sm:text-sm mb-4 font-medium"
                   >
-                    <i class="fas fa-coffee"></i>
+                    <i class="fas fa-coffee mr-2"></i> 生活随笔
                   </div>
-                  <h3 class="text-lg sm:text-xl font-bold text-slate-800 mb-2">生活随笔</h3>
-                  <p class="text-sm text-slate-600 mb-4">
+                  <h3
+                    class="text-2xl sm:text-3xl font-bold text-slate-900 mb-2 group-hover:text-orange-700 transition-colors"
+                  >
+                    生活随笔
+                  </h3>
+                  <p class="text-slate-600 text-sm sm:text-base mb-4">
                     记录代码之外的风景，用文字和图片保存一些温度。
                   </p>
                   <NuxtLink
                     to="/life"
-                    class="inline-flex items-center px-5 py-2.5 bg-orange-500 text-white rounded-xl text-sm font-medium hover:bg-orange-600 transition-all shadow-lg shadow-orange-500/30 hover:shadow-orange-500/40 hover:-translate-y-0.5"
+                    class="inline-flex items-center text-orange-600 font-medium text-xs sm:text-sm hover:text-orange-700 group/link"
                   >
                     进入生活专栏
+                    <i
+                      class="fas fa-arrow-right ml-2 text-xs group-hover/link:translate-x-1 transition-transform"
+                    ></i>
                   </NuxtLink>
                 </div>
                 <div class="w-full md:w-1/2 space-y-3">

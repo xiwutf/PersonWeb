@@ -101,7 +101,8 @@ export default defineNuxtConfig({
 
   // CSS 配置
   css: [
-    '~/assets/css/main.css'
+    '~/assets/css/main.css',
+    '~/assets/css/themes.css'
   ],
 
   compatibilityDate: '2024-04-03'

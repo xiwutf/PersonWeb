@@ -87,6 +87,17 @@
             </div>
             <i class="fas fa-chevron-right card-arrow"></i>
           </NuxtLink>
+
+          <NuxtLink to="/admin/settings/themes" class="settings-card">
+            <div class="card-icon">
+              <i class="fas fa-paint-brush"></i>
+            </div>
+            <div class="card-content">
+              <h3 class="card-title">主题风格管理</h3>
+              <p class="card-desc">管理网站主题风格和动态背景效果</p>
+            </div>
+            <i class="fas fa-chevron-right card-arrow"></i>
+          </NuxtLink>
         </div>
       </div>
 

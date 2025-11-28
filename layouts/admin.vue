@@ -197,6 +197,15 @@
           </NuxtLink>
           
           <NuxtLink 
+            to="/admin/settings/themes" 
+            class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
+            :class="{ 'admin-sidebar-link-active': route.path === '/admin/settings/themes' }"
+          >
+            <i class="fas fa-paint-brush w-6 text-center mr-2 text-sm"></i>
+            <span class="text-sm">主题风格管理</span>
+          </NuxtLink>
+          
+          <NuxtLink 
             to="/admin/error-logs" 
             class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
             :class="{ 'admin-sidebar-link-active': route.path === '/admin/error-logs' }"

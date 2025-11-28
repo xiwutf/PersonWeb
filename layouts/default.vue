@@ -1,10 +1,13 @@
 ﻿<template>
   <div class="min-h-screen flex flex-col relative">
-    <!-- 动态粒子背景 -->
-    <ParticleBackground />
+    <!-- 动态背景效果（根据主题切换） -->
+    <BackgroundEffects :effect="currentBackground" :config="backgroundConfig" />
     
     <!-- 鼠标轨迹特效 -->
     <MouseTrail />
+    
+    <!-- 风格切换面板 -->
+    <ThemeSwitcher />
     
     <!-- 头部导航 -->
     <Header />
@@ -36,7 +39,11 @@ const { updateTheme } = useTheme()
 const route = useRoute()
 const api = useApi()
 
-// 记录访问量
+// 当前背景效果
+const currentBackground = ref<string>('particles')
+const backgroundConfig = ref<Record<string, any>>({})
+
+// 监听主题和背景切换事件
 onMounted(async () => {
   try {
     // 初始化主题
@@ -55,8 +62,23 @@ onMounted(async () => {
     if (res && res.visitorId && res.visitorId !== visitorId) {
       localStorage.setItem('visitor_id', res.visitorId)
     }
+
+    // 加载用户主题偏好
+    try {
+      const preference = await api.post('/Theme/preference', { visitorId: visitorId || 'anonymous' })
+      if (preference) {
+        currentBackground.value = preference.backgroundEffectCode || 'particles'
+      }
+    } catch (e) {
+      console.warn('加载主题偏好失败', e)
+    }
   } catch (e) {
     console.error('Failed to update stats', e)
   }
+
+  // 监听背景切换事件
+  window.addEventListener('background-changed', ((e: CustomEvent) => {
+    currentBackground.value = e.detail.background
+  }) as EventListener)
 })
 </script>

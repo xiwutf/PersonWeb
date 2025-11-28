@@ -43,6 +43,10 @@ public class AppDbContext : DbContext
     public DbSet<StyleCategory> StyleCategories { get; set; }
     public DbSet<StyleDefinition> StyleDefinitions { get; set; }
     public DbSet<StyleUsage> StyleUsages { get; set; }
+    public DbSet<ThemeStyle> ThemeStyles { get; set; }
+    public DbSet<BackgroundEffect> BackgroundEffects { get; set; }
+    public DbSet<ThemeSetting> ThemeSettings { get; set; }
+    public DbSet<UserThemePreference> UserThemePreferences { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
