@@ -77,13 +77,17 @@
 </template>
 
 <script setup lang="ts">
+import type { Category } from '~/types/api'
+import { useNotification } from '~/composables/useToast'
+import { useErrorHandler } from '~/composables/useErrorHandler'
+
 definePageMeta({
   layout: 'admin',
   middleware: 'admin-auth'
 })
 
 const api = useApi()
-const categories = ref<any[]>([])
+const categories = ref<Category[]>([])
 const showModal = ref(false)
 const isEdit = ref(false)
 const form = ref({
@@ -97,19 +101,17 @@ const fetchCategories = async () => {
   try {
     // 后端返回格式: { code: 0, data: List<Category> }
     // useApi 已经处理了响应格式，直接返回 data (即 List<Category>)
-    const res = await api.get<any[]>('/Categories')
-    console.log('Categories API Response:', res)
-    console.log('Is Array:', Array.isArray(res), 'Length:', Array.isArray(res) ? res.length : 'N/A')
+    const res = await api.get<Category[]>('/Categories')
     categories.value = Array.isArray(res) ? res : []
-    console.log('Categories loaded:', categories.value.length)
-  } catch (e: any) {
-    console.error('Failed to fetch categories:', e)
-    console.error('Error details:', e.response, e.message)
+  } catch (e: unknown) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Failed to fetch categories:', e)
+    }
     categories.value = []
   }
 }
 
-const openModal = (item?: any) => {
+const openModal = (item?: Category) => {
   if (item) {
     isEdit.value = true
     form.value = { ...item }
@@ -121,7 +123,13 @@ const openModal = (item?: any) => {
 }
 
 const handleSave = async () => {
-  if (!form.value.name) return alert('请输入分类名称')
+  const { warning, success } = useNotification()
+  const { handleError } = useErrorHandler()
+  
+  if (!form.value.name) {
+    warning('请输入分类名称')
+    return
+  }
   
   try {
     if (isEdit.value) {
@@ -129,21 +137,26 @@ const handleSave = async () => {
     } else {
       await api.post('/Categories', form.value)
     }
+    success('保存成功')
     showModal.value = false
     fetchCategories()
-  } catch (e: any) {
-    alert(e.message || '保存失败')
+  } catch (e: unknown) {
+    handleError(e, '保存失败')
   }
 }
 
-const handleDelete = async (item: any) => {
+const handleDelete = async (item: Category) => {
   if (!confirm(`确定要删除分类 "${item.name}" 吗？`)) return
+  
+  const { success } = useNotification()
+  const { handleError } = useErrorHandler()
   
   try {
     await api.del(`/Categories/${item.id}`)
+    success('删除成功')
     fetchCategories()
-  } catch (e: any) {
-    alert(e.message || '删除失败')
+  } catch (e: unknown) {
+    handleError(e, '删除失败')
   }
 }
 

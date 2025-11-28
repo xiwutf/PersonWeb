@@ -2,15 +2,19 @@
   <header class="fixed top-4 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8">
     <div class="glass max-w-7xl mx-auto rounded-2xl transition-all duration-300">
       <div class="flex justify-between items-center h-16 px-4">
-        <!-- Logo 区域 -->
-        <NuxtLink to="/" class="flex items-center space-x-3 group shrink-0">
-          <div class="w-10 h-10 rounded-lg overflow-hidden shadow-sm group-hover:shadow-md transition-all duration-300 border border-gray-200 group-hover:scale-105">
+        <!-- Logo 区域 - 添加隐秘后台入口 -->
+        <div class="flex items-center space-x-3 group shrink-0">
+          <div 
+            @click="handleLogoClick"
+            class="w-10 h-10 rounded-lg overflow-hidden shadow-sm group-hover:shadow-md transition-all duration-300 border border-gray-200 group-hover:scale-105 cursor-pointer"
+            title=""
+          >
             <img src="/images/avatar.jpg" alt="溪午听风" class="w-full h-full object-cover" />
           </div>
-          <div class="hidden lg:block">
+          <NuxtLink to="/" class="hidden lg:block">
             <span class="text-xl font-bold text-gray-800 font-['Outfit']">溪午听风</span>
-          </div>
-        </NuxtLink>
+          </NuxtLink>
+        </div>
 
         <!-- 桌面端导航菜单 -->
         <nav class="hidden md:flex items-center space-x-1">
@@ -93,8 +97,62 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
+const router = useRouter()
+
 // 移动端菜单状态
 const isMobileMenuOpen = ref(false)
+
+// 隐秘后台入口 - Logo 点击计数
+let logoClickCount = 0
+let logoClickTimer: NodeJS.Timeout | null = null
+const SECRET_CLICKS = 5 // 需要点击5次
+const SECRET_TIMEOUT = 3000 // 3秒内完成
+
+const handleLogoClick = (e: MouseEvent) => {
+  // 如果点击的是链接部分，不处理
+  if ((e.target as HTMLElement).closest('a')) {
+    return
+  }
+  
+  logoClickCount++
+  
+  // 清除之前的定时器
+  if (logoClickTimer) {
+    clearTimeout(logoClickTimer)
+  }
+  
+  // 如果达到指定次数，跳转到后台
+  if (logoClickCount >= SECRET_CLICKS) {
+    router.push('/admin/login')
+    logoClickCount = 0
+    return
+  }
+  
+  // 设置定时器，超时重置计数
+  logoClickTimer = setTimeout(() => {
+    logoClickCount = 0
+  }, SECRET_TIMEOUT)
+}
+
+// 键盘快捷键：Ctrl+Shift+A 或 Ctrl+K
+onMounted(() => {
+  const handleKeyPress = (e: KeyboardEvent) => {
+    // Ctrl+Shift+A 或 Ctrl+K
+    if ((e.ctrlKey && e.shiftKey && e.key === 'A') || (e.ctrlKey && e.key === 'k')) {
+      e.preventDefault()
+      router.push('/admin/login')
+    }
+  }
+  
+  window.addEventListener('keydown', handleKeyPress)
+  
+  onUnmounted(() => {
+    window.removeEventListener('keydown', handleKeyPress)
+    if (logoClickTimer) {
+      clearTimeout(logoClickTimer)
+    }
+  })
+})
 
 // 导航项配置
 const navigationItems = [

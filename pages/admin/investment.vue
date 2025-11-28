@@ -148,6 +148,10 @@
 </template>
 
 <script setup lang="ts">
+import type { Investment, InvestmentRequest } from '~/types/api'
+import { useNotification } from '~/composables/useToast'
+import { useErrorHandler } from '~/composables/useErrorHandler'
+
 definePageMeta({
   layout: 'admin',
   middleware: 'admin-auth'
@@ -155,10 +159,15 @@ definePageMeta({
 
 const api = useApi()
 
-const investments = ref<any[]>([])
-const stats = ref<any>({})
+const investments = ref<Investment[]>([])
+const stats = ref<{
+  TotalCost?: number
+  TotalMarketValue?: number
+  TotalProfitLoss?: number
+  TotalProfitRate?: number
+}>({})
 const showCreateModal = ref(false)
-const editingItem = ref<any>(null)
+const editingItem = ref<Investment | null>(null)
 const form = ref({
   code: '',
   name: '',
@@ -170,34 +179,44 @@ const form = ref({
 
 const fetchList = async () => {
   try {
-    const res = await api.get<any>('/Investment')
+    const res = await api.get<Investment[] | { List: Investment[] }>('/Investment')
     if (Array.isArray(res)) {
       investments.value = res
-    } else if (res && res.List) {
+    } else if (res && 'List' in res) {
       investments.value = res.List
     }
 
     // 获取统计数据
-    const statsRes = await api.get<any>('/Investment/stats')
+    const statsRes = await api.get<{
+      TotalCost: number
+      TotalMarketValue: number
+      TotalProfitLoss: number
+      TotalProfitRate: number
+    }>('/Investment/stats')
     if (statsRes) {
       stats.value = statsRes
     }
-  } catch (e) {
-    console.error('Failed to fetch investments:', e)
+  } catch (e: unknown) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Failed to fetch investments:', e)
+    }
   }
 }
 
 const refreshPrices = async () => {
+  const { success } = useNotification()
+  const { handleError } = useErrorHandler()
+  
   try {
     await api.post('/Investment/refresh-prices')
-    alert('价格刷新成功')
+    success('价格刷新成功')
     fetchList()
-  } catch (e: any) {
-    alert(e.message || '刷新失败')
+  } catch (e: unknown) {
+    handleError(e, '刷新失败')
   }
 }
 
-const editItem = (item: any) => {
+const editItem = (item: Investment) => {
   editingItem.value = item
   form.value = {
     code: item.code,
@@ -209,35 +228,52 @@ const editItem = (item: any) => {
   }
 }
 
-const addTransaction = (item: any) => {
+const addTransaction = (item: Investment) => {
   // TODO: 实现交易记录功能
-  alert('交易功能开发中...')
+  const { info } = useNotification()
+  info('交易功能开发中...')
 }
 
 const saveItem = async () => {
+  const { success } = useNotification()
+  const { handleError } = useErrorHandler()
+  
   try {
+    const payload: InvestmentRequest = {
+      code: form.value.code,
+      name: form.value.name,
+      type: form.value.type,
+      quantity: form.value.quantity,
+      costPrice: form.value.costPrice,
+      notes: form.value.notes || undefined
+    }
+    
     if (editingItem.value) {
-      await api.put(`/Investment/${editingItem.value.id}`, form.value)
+      await api.put(`/Investment/${editingItem.value.id}`, payload)
     } else {
-      await api.post('/Investment', form.value)
+      await api.post('/Investment', payload)
     }
 
-    alert('保存成功')
+    success('保存成功')
     cancelEdit()
     fetchList()
-  } catch (e: any) {
-    alert(e.message || '保存失败')
+  } catch (e: unknown) {
+    handleError(e, '保存失败')
   }
 }
 
 const deleteItem = async (id: number) => {
   if (!confirm('确定要删除吗？')) return
+  
+  const { success } = useNotification()
+  const { handleError } = useErrorHandler()
+  
   try {
     await api.delete(`/Investment/${id}`)
-    alert('删除成功')
+    success('删除成功')
     fetchList()
-  } catch (e: any) {
-    alert(e.message || '删除失败')
+  } catch (e: unknown) {
+    handleError(e, '删除失败')
   }
 }
 

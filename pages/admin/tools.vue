@@ -85,13 +85,25 @@
 </template>
 
 <script setup lang="ts">
+interface Tool {
+  path: string
+  title: string
+  slug?: string
+  icon?: string
+  url: string
+  description: string
+}
+
+import { useNotification } from '~/composables/useToast'
+import { useErrorHandler } from '~/composables/useErrorHandler'
+
 definePageMeta({
   layout: 'admin',
   middleware: 'admin-auth'
 })
 
 const api = useApi()
-const tools = ref<any[]>([])
+const tools = ref<Tool[]>([])
 const showModal = ref(false)
 const isEdit = ref(false)
 const form = ref({
@@ -108,18 +120,17 @@ const fetchTools = async () => {
     // Nuxt server API，使用 /api/ 前缀
     // 注意：在生产环境静态生成后，Nuxt Server API 可能不可用
     // 如果失败，可能需要使用后端 API 或确保 Nuxt Server API 在生产环境中可用
-    const res = await api.get<any[]>('/api/admin/tools')
-    console.log('Tools API Response:', res)
+    const res = await api.get<Tool[]>('/api/admin/tools')
     tools.value = Array.isArray(res) ? res : []
-    console.log('Tools loaded:', tools.value.length)
-  } catch (e: any) {
-    console.error('Failed to fetch tools:', e)
-    console.error('Error details:', e.response, e.message)
+  } catch (e: unknown) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Failed to fetch tools:', e)
+    }
     tools.value = []
   }
 }
 
-const openModal = (item?: any) => {
+const openModal = (item?: Tool) => {
   if (item) {
     isEdit.value = true
     form.value = { ...item }
@@ -131,7 +142,13 @@ const openModal = (item?: any) => {
 }
 
 const handleSave = async () => {
-  if (!form.value.title) return alert('请输入工具名称')
+  const { warning, success } = useNotification()
+  const { handleError } = useErrorHandler()
+  
+  if (!form.value.title) {
+    warning('请输入工具名称')
+    return
+  }
   
   try {
     // Nuxt server API，使用 /api/ 前缀
@@ -140,22 +157,27 @@ const handleSave = async () => {
     } else {
       await api.post('/api/admin/tools', form.value)
     }
+    success('保存成功')
     showModal.value = false
     fetchTools()
-  } catch (e: any) {
-    alert(e.message || '保存失败')
+  } catch (e: unknown) {
+    handleError(e, '保存失败')
   }
 }
 
-const handleDelete = async (item: any) => {
+const handleDelete = async (item: Tool) => {
   if (!confirm(`确定要删除工具 "${item.title}" 吗？`)) return
+  
+  const { success } = useNotification()
+  const { handleError } = useErrorHandler()
   
   try {
     // Nuxt server API，使用 /api/ 前缀
     await api.del(`/api/admin/tools?filename=${item.path}`)
+    success('删除成功')
     fetchTools()
-  } catch (e: any) {
-    alert(e.message || '删除失败')
+  } catch (e: unknown) {
+    handleError(e, '删除失败')
   }
 }
 

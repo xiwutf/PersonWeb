@@ -117,12 +117,12 @@ export const useApi = () => {
     }
 
     // POST 请求
-    const post = <T>(url: string, body: any, options = {}) => {
+    const post = <T>(url: string, body: unknown, options = {}) => {
         return request<T>(url, { method: 'POST', body, ...options })
     }
 
     // PUT 请求
-    const put = <T>(url: string, body: any, options = {}) => {
+    const put = <T>(url: string, body: unknown, options = {}) => {
         return request<T>(url, { method: 'PUT', body, ...options })
     }
 
@@ -131,11 +131,15 @@ export const useApi = () => {
         return request<T>(url, { method: 'DELETE', ...options })
     }
 
+    // DELETE 别名（更符合常见命名习惯）
+    const deleteMethod = del
+
     return {
         get,
         post,
         put,
         del,
+        delete: deleteMethod, // 添加 delete 方法作为 del 的别名
         baseUrl // 暴露 baseUrl 用于调试
     }
 }

@@ -57,6 +57,10 @@
 </template>
 
 <script setup lang="ts">
+import type { Article, ArticleListResponse } from '~/types/api'
+import { useNotification } from '~/composables/useToast'
+import { useErrorHandler } from '~/composables/useErrorHandler'
+
 definePageMeta({
   layout: 'admin',
   middleware: 'admin-auth'
@@ -66,7 +70,7 @@ const router = useRouter()
 const route = useRoute()
 const api = useApi()
 
-const articles = ref<any[]>([])
+const articles = ref<Article[]>([])
 const loading = ref(false)
 const keyword = ref('')
 const page = ref(1)
@@ -75,9 +79,7 @@ const total = ref(0)
 const fetchArticles = async () => {
   loading.value = true
   try {
-    console.log('[Articles] Fetching articles, page:', page.value, 'keyword:', keyword.value)
-    
-    const res = await api.get<any>('/Articles', {
+    const res = await api.get<ArticleListResponse>('/Articles', {
       params: {
         page: page.value,
         pageSize: 10,
@@ -85,45 +87,26 @@ const fetchArticles = async () => {
       }
     })
     
-    console.log('[Articles] API Response (raw):', JSON.stringify(res, null, 2))
-    console.log('[Articles] API Response type:', typeof res)
-    console.log('[Articles] Is Array?', Array.isArray(res))
-    console.log('[Articles] Has List?', res?.List !== undefined)
-    console.log('[Articles] Has list?', res?.list !== undefined)
-    console.log('[Articles] Has Total?', res?.Total !== undefined)
-    console.log('[Articles] Has total?', res?.total !== undefined)
-    
-    // .NET API returns { Total: int, List: [] } (注意大小写)
-    // useApi 已经处理了响应格式，直接返回 data
+    // .NET API returns { Total: int, List: [] }
     if (res) {
-      // 检查是否是直接返回的数组（不应该发生，但以防万一）
       if (Array.isArray(res)) {
-        console.warn('[Articles] API returned array directly, not object with List/Total')
         articles.value = res
         total.value = res.length
       } else if (res.List !== undefined || res.list !== undefined) {
-        // 标准格式：{ Total: int, List: [] }
         articles.value = res.List ?? res.list ?? []
         total.value = res.Total ?? res.total ?? 0
-        console.log('[Articles] Parsed successfully:', articles.value.length, 'articles, Total:', total.value)
       } else {
-        // 可能是其他格式
-        console.warn('[Articles] Unexpected response format:', Object.keys(res))
         articles.value = []
         total.value = 0
       }
     } else {
-      console.warn('[Articles] API returned null/undefined')
       articles.value = []
       total.value = 0
     }
-  } catch (e: any) {
-    console.error('[Articles] Failed to fetch articles:', e)
-    console.error('[Articles] Error type:', typeof e)
-    console.error('[Articles] Error message:', e.message)
-    console.error('[Articles] Error response:', e.response)
-    console.error('[Articles] Error status:', e.status)
-    console.error('[Articles] Error statusCode:', e.statusCode)
+  } catch (e: unknown) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error('[Articles] Failed to fetch articles:', e)
+    }
     articles.value = []
     total.value = 0
   } finally {
@@ -134,11 +117,15 @@ const fetchArticles = async () => {
 const handleDelete = async (id: number) => {
   if (!confirm('确定要删除这篇文章吗？')) return
   
+  const { success } = useNotification()
+  const { handleError } = useErrorHandler()
+  
   try {
     await api.del(`/Articles/${id}`)
+    success('删除成功')
     fetchArticles() // 刷新列表
-  } catch (e: any) {
-    alert(e.message || '删除失败')
+  } catch (e: unknown) {
+    handleError(e, '删除失败')
   }
 }
 
@@ -149,9 +136,6 @@ const formatDate = (dateStr: string) => {
 
 // 新增文章
 const handleNewArticle = () => {
-  console.log('[Articles] Current route:', route.path)
-  console.log('[Articles] Navigating to /admin/articles/edit')
-  
   // 直接使用 window.location 进行硬跳转，确保页面刷新
   window.location.href = '/admin/articles/edit'
 }

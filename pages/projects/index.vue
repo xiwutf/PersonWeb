@@ -18,7 +18,7 @@
     </div>
 
     <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <div v-for="project in projects" :key="project.id" class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col">
+      <NuxtLink v-for="project in projects" :key="project.id" :to="`/projects/${project.id}`" class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col">
         <!-- 封面图 -->
         <div class="h-48 overflow-hidden relative group">
           <img :src="project.coverUrl || 'https://placehold.co/600x400'" :alt="project.title" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" />
@@ -34,9 +34,15 @@
         <div class="p-6 flex-1 flex flex-col">
           <div class="flex justify-between items-start mb-4">
             <h3 class="text-xl font-bold text-gray-900 dark:text-white">{{ project.title }}</h3>
-            <span class="px-2 py-1 text-xs font-semibold rounded bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-              {{ project.status }}
-            </span>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-1 text-xs font-semibold rounded bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                {{ project.status }}
+              </span>
+              <span class="px-2 py-1 text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                <i class="fas fa-eye"></i>
+                {{ project.viewCount || 0 }}
+              </span>
+            </div>
           </div>
           
           <p class="text-gray-600 dark:text-gray-400 mb-4 flex-1">{{ project.description }}</p>
@@ -56,7 +62,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </NuxtLink>
     </div>
   </div>
 </template>

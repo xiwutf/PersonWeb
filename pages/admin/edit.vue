@@ -40,6 +40,9 @@
 </template>
 
 <script setup lang="ts">
+import { useNotification } from '~/composables/useToast'
+import { useErrorHandler } from '~/composables/useErrorHandler'
+
 definePageMeta({
   middleware: 'admin-auth'
 })
@@ -54,19 +57,27 @@ const isEditing = computed(() => !!route.query.filename)
 
 onMounted(async () => {
   if (isEditing.value) {
-    filename.value = route.query.filename
+    filename.value = route.query.filename as string
+    const { handleError } = useErrorHandler()
+    
     try {
-      const res = await $fetch(`/api/admin/articles?action=read&filename=${filename.value}`)
+      const res = await $fetch<{ content: string }>(`/api/admin/articles?action=read&filename=${filename.value}`)
       content.value = res.content
-    } catch (e) {
-      alert('Failed to load file')
+    } catch (e: unknown) {
+      handleError(e, '加载文件失败')
       router.push('/admin')
     }
   }
 })
 
 const save = async () => {
-  if (!filename.value) return alert('Filename is required')
+  const { warning, success } = useNotification()
+  const { handleError } = useErrorHandler()
+  
+  if (!filename.value) {
+    warning('文件名不能为空')
+    return
+  }
   
   saving.value = true
   try {
@@ -77,9 +88,10 @@ const save = async () => {
         content: content.value
       }
     })
+    success('保存成功')
     router.push('/admin')
-  } catch (e) {
-    alert(e.data?.statusMessage || 'Failed to save')
+  } catch (e: unknown) {
+    handleError(e, '保存失败')
   } finally {
     saving.value = false
   }

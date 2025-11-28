@@ -1,5 +1,11 @@
 ﻿<template>
-  <div class="min-h-screen flex flex-col">
+  <div class="min-h-screen flex flex-col relative">
+    <!-- 动态粒子背景 -->
+    <ParticleBackground />
+    
+    <!-- 鼠标轨迹特效 -->
+    <MouseTrail />
+    
     <!-- 头部导航 -->
     <Header />
     
@@ -10,6 +16,15 @@
     
     <!-- 页脚 -->
     <Footer />
+    
+    <!-- AI 智能助手 -->
+    <AIAssistant />
+    
+    <!-- 时间胶囊墙 -->
+    <TimeCapsuleWall />
+    
+    <!-- 隐秘的后台入口 -->
+    <SecretAdminAccess />
   </div>
 </template>
 

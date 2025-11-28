@@ -311,6 +311,18 @@
         </div>
       </div>
     </section>
+
+    <!-- 时间胶囊墙展示区域 -->
+    <section class="py-24 bg-gradient-to-b from-slate-50 to-white relative">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16" data-aos="fade-up">
+          <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">时间胶囊墙</h2>
+          <p class="text-lg text-slate-600">访客留下的足迹与祝福</p>
+        </div>
+        
+        <TimeCapsuleDisplay />
+      </div>
+    </section>
   </div>
 </template>
 

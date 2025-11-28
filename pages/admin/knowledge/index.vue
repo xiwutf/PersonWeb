@@ -87,6 +87,10 @@
 </template>
 
 <script setup lang="ts">
+import type { KnowledgeBase, KnowledgeBaseRequest } from '~/types/api'
+import { useNotification } from '~/composables/useToast'
+import { useErrorHandler } from '~/composables/useErrorHandler'
+
 definePageMeta({
   layout: 'admin',
   middleware: 'admin-auth'
@@ -94,9 +98,9 @@ definePageMeta({
 
 const api = useApi()
 
-const list = ref<any[]>([])
+const list = ref<KnowledgeBase[]>([])
 const showCreateModal = ref(false)
-const editingItem = ref<any>(null)
+const editingItem = ref<KnowledgeBase | null>(null)
 const form = ref({
   title: '',
   content: '',
@@ -106,16 +110,18 @@ const form = ref({
 
 const fetchList = async () => {
   try {
-    const res = await api.get<any>('/KnowledgeBase', { params: { page: 1, pageSize: 100 } })
+    const res = await api.get<{ Total: number; List: KnowledgeBase[] }>('/KnowledgeBase', { params: { page: 1, pageSize: 100 } })
     if (res && res.List) {
       list.value = res.List
     }
   } catch (e) {
-    console.error('Failed to fetch knowledge base:', e)
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Failed to fetch knowledge base:', e)
+    }
   }
 }
 
-const editItem = (item: any) => {
+const editItem = (item: KnowledgeBase) => {
   editingItem.value = item
   form.value = {
     title: item.title,
@@ -126,18 +132,21 @@ const editItem = (item: any) => {
 }
 
 const saveItem = async () => {
+  const { warning, success } = useNotification()
+  const { handleError } = useErrorHandler()
+  
   try {
     if (!form.value.title || !form.value.title.trim()) {
-      alert('请输入标题')
+      warning('请输入标题')
       return
     }
 
     const tagsArray = form.value.tags ? form.value.tags.split(',').map((t: string) => t.trim()).filter((t: string) => t) : []
-    const payload = {
+    const payload: KnowledgeBaseRequest = {
       title: form.value.title.trim(),
-      content: form.value.content || null,
-      category: form.value.category || null,
-      tags: tagsArray.length > 0 ? JSON.stringify(tagsArray) : null
+      content: form.value.content || undefined,
+      category: form.value.category || undefined,
+      tags: tagsArray.length > 0 ? JSON.stringify(tagsArray) : undefined
     }
 
     if (editingItem.value) {
@@ -146,23 +155,26 @@ const saveItem = async () => {
       await api.post('/KnowledgeBase', payload)
     }
 
-    alert('保存成功')
+    success('保存成功')
     cancelEdit()
     fetchList()
-  } catch (e: any) {
-    console.error('Save error:', e)
-    alert(e.message || e.data?.message || '保存失败，请检查后端日志')
+  } catch (e: unknown) {
+    handleError(e, '保存失败，请检查后端日志')
   }
 }
 
 const deleteItem = async (id: number) => {
   if (!confirm('确定要删除吗？')) return
+  
+  const { success } = useNotification()
+  const { handleError } = useErrorHandler()
+  
   try {
     await api.delete(`/KnowledgeBase/${id}`)
-    alert('删除成功')
+    success('删除成功')
     fetchList()
-  } catch (e: any) {
-    alert(e.message || '删除失败')
+  } catch (e: unknown) {
+    handleError(e, '删除失败')
   }
 }
 

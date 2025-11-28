@@ -87,13 +87,25 @@
 </template>
 
 <script setup lang="ts">
+interface Metric {
+  date: string
+  steps: number
+  sleep: number
+  weight: number
+  netWorth: number
+  energy: number
+}
+
+import { useNotification } from '~/composables/useToast'
+import { useErrorHandler } from '~/composables/useErrorHandler'
+
 definePageMeta({
   layout: 'admin',
   middleware: 'admin-auth'
 })
 
 const api = useApi()
-const metrics = ref<any[]>([])
+const metrics = ref<Metric[]>([])
 const saving = ref(false)
 
 const form = ref({
@@ -111,7 +123,7 @@ const sortedMetrics = computed(() => {
 
 const fetchMetrics = async () => {
   try {
-    const res = await api.get<any[]>('/Metrics')
+    const res = await api.get<Metric[]>('/Metrics')
     // Format date to YYYY-MM-DD
     metrics.value = res.map(m => ({
       ...m,
@@ -124,25 +136,30 @@ const fetchMetrics = async () => {
     if (todayData) {
       form.value = { ...todayData }
     }
-  } catch (e) {
-    console.error('Failed to fetch metrics', e)
+  } catch (e: unknown) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Failed to fetch metrics', e)
+    }
   }
 }
 
 const handleSave = async () => {
   saving.value = true
+  const { success } = useNotification()
+  const { handleError } = useErrorHandler()
+  
   try {
     await api.post('/Metrics', form.value)
     await fetchMetrics()
-    alert('保存成功')
-  } catch (e: any) {
-    alert(e.message || '保存失败')
+    success('保存成功')
+  } catch (e: unknown) {
+    handleError(e, '保存失败')
   } finally {
     saving.value = false
   }
 }
 
-const editRecord = (item: any) => {
+const editRecord = (item: Metric) => {
   form.value = { ...item }
 }
 

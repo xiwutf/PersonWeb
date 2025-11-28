@@ -40,6 +40,9 @@
 </template>
 
 <script setup lang="ts">
+import { useNotification } from '~/composables/useToast'
+import { useErrorHandler } from '~/composables/useErrorHandler'
+
 definePageMeta({
   layout: 'admin',
   middleware: 'admin-auth'
@@ -70,17 +73,15 @@ const fetchConfigs = async () => {
   loading.value = true
   try {
     const res = await api.get<Record<string, string>>('/Config')
-    console.log('Config API Response:', res)
-    console.log('Config keys:', res ? Object.keys(res) : [])
     if (res && typeof res === 'object') {
       configs.value = res
     } else {
-      console.warn('Config API returned invalid response')
       configs.value = {}
     }
-  } catch (e: any) {
-    console.error('Failed to fetch config:', e)
-    console.error('Error details:', e.response, e.message)
+  } catch (e: unknown) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Failed to fetch config:', e)
+    }
     configs.value = {}
   } finally {
     loading.value = false
@@ -89,12 +90,15 @@ const fetchConfigs = async () => {
 
 const saveConfig = async (key: string) => {
   savingKey.value = key
+  const { success } = useNotification()
+  const { handleError } = useErrorHandler()
+  
   try {
     // 后端 API 使用 PUT /Config/{key}，body 为 { value: string }
     await api.put(`/Config/${key}`, { value: configs.value[key] })
-    // alert('保存成功') 
-  } catch (e: any) {
-    alert(e.message || '保存失败')
+    success('保存成功')
+  } catch (e: unknown) {
+    handleError(e, '保存失败')
   } finally {
     savingKey.value = null
   }

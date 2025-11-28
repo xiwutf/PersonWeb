@@ -13,6 +13,7 @@
           <tr>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">项目名称</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">状态</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">访问量</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">GitHub</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">创建日期</th>
             <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">操作</th>
@@ -38,6 +39,12 @@
               </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+              <div class="flex items-center gap-1">
+                <i class="fas fa-eye text-gray-400"></i>
+                <span>{{ item.viewCount || 0 }}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
               <a v-if="item.githubUrl" :href="item.githubUrl" target="_blank" class="text-blue-600 hover:underline">Repo</a>
               <span v-else>-</span>
             </td>
@@ -50,7 +57,7 @@
             </td>
           </tr>
           <tr v-if="projects.length === 0">
-            <td colspan="5" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+            <td colspan="6" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
               暂无项目
             </td>
           </tr>
@@ -61,22 +68,28 @@
 </template>
 
 <script setup lang="ts">
+import type { Project } from '~/types/api'
+import { useNotification } from '~/composables/useToast'
+import { useErrorHandler } from '~/composables/useErrorHandler'
+
 definePageMeta({
   layout: 'admin',
   middleware: 'admin-auth'
 })
 
 const api = useApi()
-const projects = ref<any[]>([])
+const projects = ref<Project[]>([])
 
 const fetchProjects = async () => {
   try {
     // 后端返回格式: { code: 0, data: List<Project> }
     // useApi 已经处理了响应格式，直接返回 data (即 List<Project>)
-    const res = await api.get<any[]>('/Projects')
+    const res = await api.get<Project[]>('/Projects')
     projects.value = Array.isArray(res) ? res : []
-  } catch (e: any) {
-    console.error('Failed to fetch projects:', e)
+  } catch (e: unknown) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Failed to fetch projects:', e)
+    }
     projects.value = []
   }
 }
@@ -84,11 +97,15 @@ const fetchProjects = async () => {
 const handleDelete = async (id: string) => {
   if (!confirm('确定要删除这个项目吗？')) return
   
+  const { success } = useNotification()
+  const { handleError } = useErrorHandler()
+  
   try {
     await api.del(`/Projects/${id}`)
+    success('删除成功')
     await fetchProjects()
-  } catch (e: any) {
-    alert(e.message || '删除失败')
+  } catch (e: unknown) {
+    handleError(e, '删除失败')
   }
 }
 

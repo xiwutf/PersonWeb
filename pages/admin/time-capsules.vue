@@ -90,6 +90,10 @@
 </template>
 
 <script setup lang="ts">
+import type { TimeCapsule, TimeCapsuleListResponse } from '~/types/api'
+import { useNotification } from '~/composables/useToast'
+import { useErrorHandler } from '~/composables/useErrorHandler'
+
 definePageMeta({
   layout: 'admin',
   middleware: 'admin-auth'
@@ -97,7 +101,7 @@ definePageMeta({
 
 const api = useApi()
 
-const capsules = ref<any[]>([])
+const capsules = ref<TimeCapsule[]>([])
 const loading = ref(false)
 const statusFilter = ref('')
 const stats = ref({
@@ -109,33 +113,96 @@ const stats = ref({
 const fetchCapsules = async () => {
   loading.value = true
   try {
-    const endpoint = statusFilter.value ? '/TimeCapsule/pending' : '/TimeCapsule/pending'
-    const res = await api.get<any>(endpoint, {
-      params: {
-        page: 1,
-        pageSize: 100
-      }
-    })
+    // 根据筛选条件选择不同的 API
+    let endpoint = '/TimeCapsule/all' // 默认获取全部
+    let params: Record<string, unknown> = {
+      page: 1,
+      pageSize: 100
+    }
+    
+    if (statusFilter.value === '1') {
+      // 已展示的 - 使用公开 API
+      endpoint = '/TimeCapsule'
+    } else if (statusFilter.value === '2') {
+      // 已拒绝的 - 使用全部列表 API，筛选状态为 2
+      endpoint = '/TimeCapsule/all'
+      params.status = 2
+    } else if (statusFilter.value === '0') {
+      // 待审核的
+      endpoint = '/TimeCapsule/pending'
+    } else if (statusFilter.value === '') {
+      // 全部状态 - 使用全部列表 API，不传 status 参数
+      endpoint = '/TimeCapsule/all'
+    }
+    
+    const res = await api.get<TimeCapsuleListResponse>(endpoint, { params })
 
-    if (res && res.List) {
-      capsules.value = res.List
-    } else if (Array.isArray(res)) {
-      capsules.value = res
+    // 兼容大小写：后端返回的是 list（小写），但类型定义可能是 List（大写）
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[TimeCapsules] API Response:', res)
+      console.log('[TimeCapsules] Has List?', !!(res as any)?.List)
+      console.log('[TimeCapsules] Has list?', !!(res as any)?.list)
+      console.log('[TimeCapsules] Is Array?', Array.isArray(res))
+    }
+
+    if (res) {
+      if (res.List) {
+        capsules.value = res.List
+      } else if ((res as any).list) {
+        capsules.value = (res as any).list
+      } else if (Array.isArray(res)) {
+        capsules.value = res
+      } else {
+        capsules.value = []
+      }
     } else {
       capsules.value = []
     }
 
-    // 更新统计
-    updateStats()
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[TimeCapsules] Final capsules count:', capsules.value.length)
+    }
+
+    // 更新统计（从服务器获取准确的统计数据）
+    await fetchStats()
   } catch (e) {
-    console.error('Failed to fetch capsules:', e)
+    // 静默失败
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Failed to fetch capsules:', e)
+    }
     capsules.value = []
   } finally {
     loading.value = false
   }
 }
 
+const fetchStats = async () => {
+  try {
+    const res = await api.get<{
+      Pending: number
+      Approved: number
+      Rejected: number
+      Total: number
+    }>('/TimeCapsule/stats')
+    
+    if (res) {
+      stats.value = {
+        pending: res.Pending,
+        approved: res.Approved,
+        rejected: res.Rejected
+      }
+    }
+  } catch (e) {
+    // 如果统计接口失败，使用本地计算（降级方案）
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Failed to fetch stats:', e)
+    }
+    updateStats()
+  }
+}
+
 const updateStats = () => {
+  // 降级方案：基于当前加载的数据计算统计
   stats.value = {
     pending: capsules.value.filter(c => c.status === 0).length,
     approved: capsules.value.filter(c => c.status === 1).length,
@@ -148,10 +215,12 @@ const approveCapsule = async (id: number) => {
 
   try {
     await api.post(`/TimeCapsule/${id}/approve`)
-    alert('已通过审核')
-    fetchCapsules()
-  } catch (e: any) {
-    alert(e.message || '操作失败')
+    const { success } = useNotification()
+    success('已通过审核')
+    await fetchCapsules() // 刷新列表和统计
+  } catch (e: unknown) {
+    const { handleError } = useErrorHandler()
+    handleError(e, '操作失败')
   }
 }
 
@@ -160,10 +229,12 @@ const rejectCapsule = async (id: number) => {
 
   try {
     await api.post(`/TimeCapsule/${id}/reject`)
-    alert('已拒绝')
-    fetchCapsules()
-  } catch (e: any) {
-    alert(e.message || '操作失败')
+    const { success } = useNotification()
+    success('已拒绝')
+    await fetchCapsules() // 刷新列表和统计
+  } catch (e: unknown) {
+    const { handleError } = useErrorHandler()
+    handleError(e, '操作失败')
   }
 }
 

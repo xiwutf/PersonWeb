@@ -32,7 +32,41 @@ public class ProjectsController : ControllerBase
     {
         var project = await _context.Projects.FindAsync(id);
         if (project == null) return NotFound();
+        
+        // 增加访问量（不等待保存，异步处理）
+        project.ViewCount++;
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                // 静默失败，不影响响应
+            }
+        });
+        
         return Ok(ApiResponse<Project>.Success(project));
+    }
+
+    /// <summary>
+    /// 记录项目访问（用于前端统计）
+    /// </summary>
+    [HttpPost("{id}/view")]
+    public async Task<ActionResult<ApiResponse<object>>> RecordView(Guid id)
+    {
+        var project = await _context.Projects.FindAsync(id);
+        if (project == null)
+        {
+            return Ok(ApiResponse.Error("项目不存在", 404));
+        }
+
+        project.ViewCount++;
+        project.UpdatedAt = DateTime.Now;
+        await _context.SaveChangesAsync();
+
+        return Ok(ApiResponse.Success(new { ViewCount = project.ViewCount }));
     }
 
     [HttpPost]

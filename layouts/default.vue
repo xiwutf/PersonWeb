@@ -22,6 +22,9 @@
     
     <!-- 时间胶囊墙 -->
     <TimeCapsuleWall />
+    
+    <!-- 隐秘的后台入口 -->
+    <SecretAdminAccess />
   </div>
 </template>
 

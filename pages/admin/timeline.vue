@@ -84,6 +84,10 @@
 </template>
 
 <script setup lang="ts">
+import type { TimelineEvent, TimelineEventRequest } from '~/types/api'
+import { useNotification } from '~/composables/useToast'
+import { useErrorHandler } from '~/composables/useErrorHandler'
+
 definePageMeta({
   layout: 'admin',
   middleware: 'admin-auth'
@@ -91,9 +95,9 @@ definePageMeta({
 
 const api = useApi()
 
-const events = ref<any[]>([])
+const events = ref<TimelineEvent[]>([])
 const showCreateModal = ref(false)
-const editingEvent = ref<any>(null)
+const editingEvent = ref<TimelineEvent | null>(null)
 const form = ref({
   year: new Date().getFullYear(),
   title: '',
@@ -104,18 +108,20 @@ const form = ref({
 
 const fetchEvents = async () => {
   try {
-    const res = await api.get<any>('/Timeline')
+    const res = await api.get<TimelineEvent[] | { List: TimelineEvent[] }>('/Timeline')
     if (Array.isArray(res)) {
       events.value = res
-    } else if (res && res.List) {
+    } else if (res && 'List' in res) {
       events.value = res.List
     }
   } catch (e) {
-    console.error('Failed to fetch timeline:', e)
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Failed to fetch timeline:', e)
+    }
   }
 }
 
-const editEvent = (event: any) => {
+const editEvent = (event: TimelineEvent) => {
   editingEvent.value = event
   form.value = {
     year: event.year,
@@ -127,29 +133,44 @@ const editEvent = (event: any) => {
 }
 
 const saveEvent = async () => {
+  const { success } = useNotification()
+  const { handleError } = useErrorHandler()
+  
   try {
+    const payload: TimelineEventRequest = {
+      year: form.value.year,
+      title: form.value.title,
+      description: form.value.description || undefined,
+      icon: form.value.icon || undefined,
+      color: form.value.color || undefined
+    }
+    
     if (editingEvent.value) {
-      await api.put(`/Timeline/${editingEvent.value.id}`, form.value)
+      await api.put(`/Timeline/${editingEvent.value.id}`, payload)
     } else {
-      await api.post('/Timeline', form.value)
+      await api.post('/Timeline', payload)
     }
 
-    alert('保存成功')
+    success('保存成功')
     cancelEdit()
     fetchEvents()
-  } catch (e: any) {
-    alert(e.message || '保存失败')
+  } catch (e: unknown) {
+    handleError(e, '保存失败')
   }
 }
 
 const deleteEvent = async (id: number) => {
   if (!confirm('确定要删除吗？')) return
+  
+  const { success } = useNotification()
+  const { handleError } = useErrorHandler()
+  
   try {
     await api.delete(`/Timeline/${id}`)
-    alert('删除成功')
+    success('删除成功')
     fetchEvents()
-  } catch (e: any) {
-    alert(e.message || '删除失败')
+  } catch (e: unknown) {
+    handleError(e, '删除失败')
   }
 }
 

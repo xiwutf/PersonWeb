@@ -89,8 +89,13 @@
 </template>
 
 <script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
+import type { TimeCapsule, TimeCapsuleListResponse } from '~/types/api'
+import { useNotification } from '~/composables/useToast'
+import { useErrorHandler } from '~/composables/useErrorHandler'
+
 const isOpen = ref(false)
-const capsules = ref<any[]>([])
+const capsules = ref<TimeCapsule[]>([])
 const loading = ref(false)
 const submitting = ref(false)
 const capsuleContent = ref('')
@@ -98,6 +103,19 @@ const visitorName = ref('')
 const capsulesRef = ref<HTMLDivElement | null>(null)
 
 const api = useApi()
+
+// 监听打开事件（从首页按钮触发）
+onMounted(() => {
+  window.addEventListener('openTimeCapsuleWall', () => {
+    if (!isOpen.value) {
+      toggleWall()
+    }
+  })
+})
+
+onUnmounted(() => {
+  window.removeEventListener('openTimeCapsuleWall', () => {})
+})
 
 const toggleWall = () => {
   isOpen.value = !isOpen.value
@@ -109,22 +127,32 @@ const toggleWall = () => {
 const fetchCapsules = async () => {
   loading.value = true
   try {
-    const res = await api.get<any>('/TimeCapsule', {
+    const res = await api.get<TimeCapsuleListResponse>('/TimeCapsule', {
       params: {
         page: 1,
         pageSize: 20
       }
     })
     
-    if (res && res.List) {
-      capsules.value = res.List
-    } else if (Array.isArray(res)) {
-      capsules.value = res
+    // 兼容大小写：后端返回的是 list（小写），但类型定义可能是 List（大写）
+    if (res) {
+      if (res.List) {
+        capsules.value = res.List
+      } else if ((res as any).list) {
+        capsules.value = (res as any).list
+      } else if (Array.isArray(res)) {
+        capsules.value = res
+      } else {
+        capsules.value = []
+      }
     } else {
       capsules.value = []
     }
   } catch (e) {
-    console.error('Failed to fetch capsules:', e)
+    // 静默失败，不影响用户体验
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Failed to fetch capsules:', e)
+    }
     capsules.value = []
   } finally {
     loading.value = false
@@ -144,15 +172,16 @@ const submitCapsule = async () => {
       visitorName: visitorName.value.trim() || undefined
     })
 
-    alert('时间胶囊已投递！等待审核后会在墙上展示。')
+    const { success } = useNotification()
+    success('时间胶囊已投递！等待审核后会在墙上展示。')
     capsuleContent.value = ''
     visitorName.value = ''
     
     // 刷新列表
     await fetchCapsules()
-  } catch (e: any) {
-    console.error('Failed to submit capsule:', e)
-    alert(e.message || '提交失败，请稍后重试')
+  } catch (e: unknown) {
+    const { handleError } = useErrorHandler()
+    handleError(e, '提交失败，请稍后重试')
   } finally {
     submitting.value = false
   }

@@ -71,6 +71,10 @@
 </template>
 
 <script setup lang="ts">
+import type { Project, ProjectRequest } from '~/types/api'
+import { useNotification } from '~/composables/useToast'
+import { useErrorHandler } from '~/composables/useErrorHandler'
+
 definePageMeta({
   layout: 'admin',
   middleware: 'admin-auth'
@@ -103,17 +107,19 @@ const isEdit = computed(() => !!route.params.id)
 // 加载详情
 const fetchProject = async (id: string) => {
   loading.value = true
+  const { error } = useNotification()
+  const { handleError } = useErrorHandler()
+  
   try {
-    const res = await api.get<any>(`/Projects/${id}`)
+    const res = await api.get<Project>(`/Projects/${id}`)
     form.value = {
       ...res,
-      contentMd: res.content // Map Content to contentMd
+      contentMd: res.content || '' // Map Content to contentMd
     }
     // Handle TechStack string from API
-    techStackInput.value = res.techStack || ''
-  } catch (e) {
-    console.error(e)
-    alert('加载失败')
+    techStackInput.value = typeof res.techStack === 'string' ? res.techStack : (Array.isArray(res.techStack) ? res.techStack.join(',') : '')
+  } catch (e: unknown) {
+    handleError(e, '加载失败')
     router.push('/admin/projects')
   } finally {
     loading.value = false
@@ -132,18 +138,25 @@ const handleUpload = async (event: Event) => {
   const formData = new FormData()
   formData.append('file', file)
 
+  const { success } = useNotification()
+  const { handleError } = useErrorHandler()
+
   try {
-    const res = await api.post<any>('/media/upload', formData)
+    const res = await api.post<{ url: string }>('/media/upload', formData)
     form.value.coverUrl = res.url
-  } catch (e: any) {
-    alert(e.message || '上传失败')
+    success('上传成功')
+  } catch (e: unknown) {
+    handleError(e, '上传失败')
   }
 }
 
 // 保存
 const handleSave = async () => {
+  const { warning, success } = useNotification()
+  const { handleError } = useErrorHandler()
+  
   if (!form.value.title) {
-    alert('请输入项目名称')
+    warning('请输入项目名称')
     return
   }
 
@@ -153,10 +166,15 @@ const handleSave = async () => {
     const techStackArray = techStackInput.value.split(/[,，]/).map(s => s.trim()).filter(s => s)
     const techStackString = techStackArray.join(',')
     
-    const payload = {
-      ...form.value,
+    const payload: ProjectRequest = {
+      title: form.value.title,
+      description: form.value.description,
+      coverUrl: form.value.coverUrl || undefined,
+      demoUrl: form.value.demoUrl || undefined,
+      githubUrl: form.value.githubUrl || undefined,
+      status: form.value.status,
       techStack: techStackString,
-      content: form.value.contentMd // Map contentMd to Content
+      content: form.value.contentMd || undefined
     }
     
     if (isEdit.value) {
@@ -164,10 +182,10 @@ const handleSave = async () => {
     } else {
       await api.post('/Projects', payload)
     }
-    alert('保存成功')
+    success('保存成功')
     router.push('/admin/projects')
-  } catch (e: any) {
-    alert(e.message || '保存失败')
+  } catch (e: unknown) {
+    handleError(e, '保存失败')
   } finally {
     saving.value = false
   }

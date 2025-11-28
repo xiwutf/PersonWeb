@@ -25,9 +25,10 @@ public class TimeCapsuleController : ControllerBase
     {
         try
         {
+            // 确保字段映射正确（支持小写字段名）
             var capsule = new TimeCapsule
             {
-                Content = request.Content,
+                Content = request.Content ?? string.Empty,
                 VisitorId = request.VisitorId,
                 VisitorName = request.VisitorName,
                 Status = 0, // 0: 待审核
@@ -87,6 +88,61 @@ public class TimeCapsuleController : ControllerBase
             .ToListAsync();
 
         return Ok(ApiResponse.Success(new { Total = total, List = list }));
+    }
+
+    /// <summary>
+    /// 获取所有时间胶囊（管理员，支持按状态筛选）
+    /// </summary>
+    [HttpGet("all")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<object>>> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 20, [FromQuery] sbyte? status = null)
+    {
+        var query = _context.TimeCapsules.AsQueryable();
+        
+        // 如果指定了状态，则筛选
+        if (status.HasValue)
+        {
+            query = query.Where(t => t.Status == status.Value);
+        }
+
+        var total = await query.CountAsync();
+        var list = await query
+            .OrderByDescending(t => t.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(t => new
+            {
+                t.Id,
+                t.Content,
+                t.VisitorId,
+                t.VisitorName,
+                t.Status,
+                t.CreatedAt,
+                t.UpdatedAt
+            })
+            .ToListAsync();
+
+        return Ok(ApiResponse.Success(new { Total = total, List = list }));
+    }
+
+    /// <summary>
+    /// 获取时间胶囊统计数据（管理员）
+    /// </summary>
+    [HttpGet("stats")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<object>>> GetStats()
+    {
+        var pending = await _context.TimeCapsules.CountAsync(t => t.Status == 0);
+        var approved = await _context.TimeCapsules.CountAsync(t => t.Status == 1);
+        var rejected = await _context.TimeCapsules.CountAsync(t => t.Status == 2);
+
+        return Ok(ApiResponse.Success(new
+        {
+            Pending = pending,
+            Approved = approved,
+            Rejected = rejected,
+            Total = pending + approved + rejected
+        }));
     }
 
     /// <summary>

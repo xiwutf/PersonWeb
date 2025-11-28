@@ -29,6 +29,8 @@ public class Project
 
     public string? Content { get; set; } // Markdown content
 
+    public int ViewCount { get; set; } = 0; // 访问量统计
+
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime UpdatedAt { get; set; } = DateTime.Now;
 }

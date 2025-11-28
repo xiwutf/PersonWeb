@@ -7,14 +7,9 @@
     
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-bold text-gray-800 dark:text-white">新增文章</h1>
-      <div class="flex gap-4">
-        <button @click="togglePreview" class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
-          {{ showPreview ? '隐藏预览' : '显示预览' }}
-        </button>
-        <NuxtLink to="/admin/articles" class="px-4 py-2 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200">
-          取消
-        </NuxtLink>
-      </div>
+      <NuxtLink to="/admin/articles" class="px-4 py-2 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200">
+        取消
+      </NuxtLink>
     </div>
 
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
@@ -75,24 +70,13 @@
         </div>
 
         <!-- 编辑器区域 -->
-        <div class="flex flex-col lg:flex-row gap-6 h-[600px]">
-          <!-- 编辑区 -->
-          <div :class="showPreview ? 'w-full lg:w-1/2' : 'w-full'" class="flex flex-col">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">内容 (Markdown)</label>
-            <textarea 
-              v-model="form.contentMd" 
-              class="w-full flex-1 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 font-mono bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
-              placeholder="# Hello World..."
-            ></textarea>
-          </div>
-
-          <!-- 预览区 -->
-          <div v-if="showPreview" class="w-full lg:w-1/2 flex flex-col">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">实时预览</label>
-            <div class="flex-1 border border-gray-200 dark:border-gray-700 rounded px-4 py-4 bg-gray-50 dark:bg-gray-900/50 overflow-y-auto">
-              <div class="prose dark:prose-invert max-w-none" v-html="renderedContent"></div>
-            </div>
-          </div>
+        <div class="flex flex-col">
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">内容 (Markdown)</label>
+          <MarkdownEditor 
+            v-model="form.contentMd" 
+            placeholder="开始编写你的文章内容...支持 Markdown 语法，可直接粘贴图片自动上传"
+            height="600px"
+          />
         </div>
 
         <div class="flex justify-end gap-4 pt-4 border-t border-gray-100 dark:border-gray-700">
@@ -109,7 +93,9 @@
 </template>
 
 <script setup lang="ts">
-import MarkdownIt from 'markdown-it'
+import type { ArticleRequest, Category } from '~/types/api'
+import { useNotification } from '~/composables/useToast'
+import { useErrorHandler } from '~/composables/useErrorHandler'
 
 definePageMeta({
   layout: 'admin',
@@ -118,12 +104,10 @@ definePageMeta({
 
 const router = useRouter()
 const api = useApi()
-const md = new MarkdownIt()
 
 const saving = ref(false)
-const showPreview = ref(true)
 const fileInput = ref<HTMLInputElement | null>(null)
-const categories = ref<any[]>([])
+const categories = ref<Category[]>([])
 
 const form = ref({
   id: 0,
@@ -137,15 +121,6 @@ const form = ref({
   tags: [] as string[]
 })
 
-// 实时渲染 Markdown
-const renderedContent = computed(() => {
-  return md.render(form.value.contentMd || '')
-})
-
-const togglePreview = () => {
-  showPreview.value = !showPreview.value
-}
-
 const fetchCategories = async () => {
   try {
     const res = await api.get<any[]>('/Categories')
@@ -158,7 +133,8 @@ const fetchCategories = async () => {
 // 自动生成 Slug（从标题）
 const generateSlugFromTitle = () => {
   if (!form.value.title) {
-    alert('请先输入标题')
+    const { warning } = useNotification()
+    warning('请先输入标题')
     return
   }
   
@@ -199,15 +175,17 @@ const handleUpload = async (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.[0]
   if (!file) return
 
+  const { warning } = useNotification()
+  
   // 验证文件类型
   if (!file.type.startsWith('image/')) {
-    alert('请选择图片文件')
+    warning('请选择图片文件')
     return
   }
 
   // 验证文件大小（限制 5MB）
   if (file.size > 5 * 1024 * 1024) {
-    alert('图片大小不能超过 5MB')
+    warning('图片大小不能超过 5MB')
     return
   }
 
@@ -216,24 +194,28 @@ const handleUpload = async (event: Event) => {
 
   try {
     // 注意：API 路径是 /Media/upload（大写 M）
-    const res = await api.post<any>('/Media/upload', formData)
+    const res = await api.post<{ url: string }>('/Media/upload', formData)
     if (res && res.url) {
       form.value.coverUrl = res.url
-      alert('上传成功')
+      const { success } = useNotification()
+      success('上传成功')
     } else {
-      alert('上传失败：未返回有效 URL')
+      const { error } = useNotification()
+      error('上传失败：未返回有效 URL')
     }
-  } catch (e: any) {
-    console.error('Upload error:', e)
-    alert(e.message || '上传失败，请检查网络连接或稍后重试')
+  } catch (e: unknown) {
+    const { handleError } = useErrorHandler()
+    handleError(e, '上传失败，请检查网络连接或稍后重试')
   }
 }
 
 // 保存文章
 const handleSave = async (status: number) => {
+  const { warning } = useNotification()
+  
   // 验证必填字段
   if (!form.value.title || !form.value.title.trim()) {
-    alert('请输入文章标题')
+    warning('请输入文章标题')
     return
   }
 
@@ -245,7 +227,7 @@ const handleSave = async (status: number) => {
   // 验证 slug 格式（只能包含小写字母、数字和连字符，且不能以连字符开头或结尾）
   const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
   if (form.value.slug && !slugPattern.test(form.value.slug)) {
-    alert('URL Slug 格式不正确：只能包含小写字母、数字和连字符，且不能以连字符开头或结尾')
+    warning('URL Slug 格式不正确：只能包含小写字母、数字和连字符，且不能以连字符开头或结尾')
     return
   }
 
@@ -267,27 +249,20 @@ const handleSave = async (status: number) => {
     // .NET API uses POST for both create and update (SaveArticle)
     const res = await api.post('/Articles', payload)
     
-    alert(status === 1 ? '文章发布成功' : '草稿保存成功')
+    const { success } = useNotification()
+    success(status === 1 ? '文章发布成功' : '草稿保存成功')
     router.push('/admin/articles')
-  } catch (e: any) {
-    console.error('Save error:', e)
-    const errorMessage = e.message || e.response?.data?.message || '保存失败，请稍后重试'
-    alert(errorMessage)
+  } catch (e: unknown) {
+    const { handleError } = useErrorHandler()
+    handleError(e, '保存失败，请稍后重试')
   } finally {
     saving.value = false
   }
 }
 
 onMounted(async () => {
-  const currentRoute = useRoute()
-  console.log('[ArticleEdit] Page mounted!')
-  console.log('[ArticleEdit] Route path:', currentRoute.path)
-  console.log('[ArticleEdit] Route name:', currentRoute.name)
-  console.log('[ArticleEdit] Full route:', currentRoute)
-  
   // 加载分类列表
   await fetchCategories()
-  console.log('[ArticleEdit] Categories loaded:', categories.value.length)
   
   // 初始化表单
   form.value = {
@@ -301,8 +276,6 @@ onMounted(async () => {
     status: 0,
     tags: []
   }
-  
-  console.log('[ArticleEdit] Form initialized')
 })
 </script>
 
