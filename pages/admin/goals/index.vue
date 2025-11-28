@@ -212,7 +212,7 @@ definePageMeta({
 })
 
 const api = useApi()
-const toast = useToast()
+const toast = useNotification()
 
 const goals = ref<Goal[]>([])
 const stats = ref<GoalStats | null>(null)

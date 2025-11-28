@@ -183,7 +183,7 @@ definePageMeta({
 })
 
 const api = useApi()
-const toast = useToast()
+const toast = useNotification()
 
 const tasks = ref<Task[]>([])
 const stats = ref<TaskStats | null>(null)
@@ -219,10 +219,14 @@ const fetchTasks = async () => {
     const res = await api.get('/Tasks', { params })
     if (res?.data?.Items) {
       tasks.value = res.data.Items
+    } else if (Array.isArray(res?.data)) {
+      // 兼容直接返回数组的情况
+      tasks.value = res.data
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('获取任务列表失败:', error)
-    toast.error('获取任务列表失败')
+    const errorMsg = error?.response?.data?.message || error?.data?.message || error?.message || '获取任务列表失败'
+    toast.error(errorMsg)
   } finally {
     loading.value = false
   }
@@ -234,16 +238,39 @@ const fetchStats = async () => {
     if (res?.data) {
       stats.value = res.data
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('获取统计失败:', error)
+    // 统计失败不影响主功能，只记录错误
   }
 }
 
 const saveTask = async () => {
   try {
-    const data = {
-      ...taskForm.value,
-      dueDate: taskForm.value.dueDate ? new Date(taskForm.value.dueDate).toISOString() : null
+    // 处理日期：datetime-local 输入格式为 YYYY-MM-DDTHH:mm，需要转换为 ISO 字符串
+    let dueDateISO: string | null = null
+    if (taskForm.value.dueDate) {
+      try {
+        // datetime-local 格式：YYYY-MM-DDTHH:mm
+        // 转换为 Date 对象，然后转换为 ISO 字符串
+        const date = new Date(taskForm.value.dueDate)
+        if (!isNaN(date.getTime())) {
+          dueDateISO = date.toISOString()
+        }
+      } catch (e) {
+        console.error('日期转换失败:', e)
+        dueDateISO = null
+      }
+    }
+
+    const data: any = {
+      title: taskForm.value.title,
+      description: taskForm.value.description || null,
+      status: taskForm.value.status,
+      priority: taskForm.value.priority,
+      category: taskForm.value.category || null,
+      tags: taskForm.value.tags || null,
+      dueDate: dueDateISO,
+      progress: taskForm.value.progress || 0
     }
 
     if (editingTask.value) {
@@ -257,14 +284,33 @@ const saveTask = async () => {
     closeModal()
     fetchTasks()
     fetchStats()
-  } catch (error) {
+  } catch (error: any) {
     console.error('保存任务失败:', error)
-    toast.error('保存任务失败')
+    const errorMsg = error?.response?.data?.message || error?.data?.message || error?.message || '保存任务失败'
+    toast.error(errorMsg)
   }
 }
 
 const editTask = (task: Task) => {
   editingTask.value = task
+  // 处理日期格式：datetime-local 需要 YYYY-MM-DDTHH:mm 格式
+  let dueDateFormatted = ''
+  if (task.dueDate) {
+    try {
+      const date = new Date(task.dueDate)
+      // 转换为本地时间，格式化为 YYYY-MM-DDTHH:mm
+      const year = date.getFullYear()
+      const month = String(date.getMonth() + 1).padStart(2, '0')
+      const day = String(date.getDate()).padStart(2, '0')
+      const hours = String(date.getHours()).padStart(2, '0')
+      const minutes = String(date.getMinutes()).padStart(2, '0')
+      dueDateFormatted = `${year}-${month}-${day}T${hours}:${minutes}`
+    } catch (e) {
+      console.error('日期格式化失败:', e)
+      dueDateFormatted = ''
+    }
+  }
+  
   taskForm.value = {
     title: task.title,
     description: task.description || '',
@@ -272,7 +318,7 @@ const editTask = (task: Task) => {
     priority: task.priority,
     category: task.category || '',
     tags: task.tags || '',
-    dueDate: task.dueDate ? new Date(task.dueDate).toISOString().slice(0, 16) : '',
+    dueDate: dueDateFormatted,
     progress: task.progress
   }
 }
@@ -281,13 +327,14 @@ const deleteTask = async (id: number) => {
   if (!confirm('确定要删除这个任务吗？')) return
 
   try {
-    await api.delete(`/Tasks/${id}`)
+    await api.del(`/Tasks/${id}`)
     toast.success('任务删除成功')
     fetchTasks()
     fetchStats()
-  } catch (error) {
+  } catch (error: any) {
     console.error('删除任务失败:', error)
-    toast.error('删除任务失败')
+    const errorMsg = error?.response?.data?.message || error?.data?.message || error?.message || '删除任务失败'
+    toast.error(errorMsg)
   }
 }
 

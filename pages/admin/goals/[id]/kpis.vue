@@ -203,7 +203,7 @@ definePageMeta({
 
 const route = useRoute()
 const api = useApi()
-const toast = useToast()
+const toast = useNotification()
 
 const goalId = computed(() => parseInt(route.params.id as string))
 const goal = ref<Goal | null>(null)

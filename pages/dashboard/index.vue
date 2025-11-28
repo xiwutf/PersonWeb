@@ -161,29 +161,28 @@
           <h3 class="text-lg font-bold text-gray-800 dark:text-white">今日任务</h3>
           <button @click="fetchTodayTasks" class="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400">刷新</button>
         </div>
-          <div v-if="todayTasksLoading" class="text-center text-gray-500 py-8">加载中...</div>
-          <div v-else-if="todayTasks.length === 0" class="text-center text-gray-500 py-8">暂无任务</div>
-          <div v-else class="space-y-3 max-h-64 overflow-y-auto">
-            <div v-for="task in todayTasks" :key="task.id" class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-              <div class="flex items-start justify-between">
-                <div class="flex-1">
-                  <div class="flex items-center gap-2 mb-1">
-                    <h4 class="font-medium text-gray-800 dark:text-white">{{ task.title }}</h4>
-                    <span :class="getStatusClass(task.status)" class="px-2 py-0.5 rounded text-xs">
-                      {{ getStatusText(task.status) }}
-                    </span>
-                  </div>
-                  <div class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
-                    <span>进度: {{ task.progress }}%</span>
-                    <span v-if="task.dueDate">截止: {{ formatTaskDate(task.dueDate) }}</span>
-                  </div>
-                  <div class="mt-2 w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5">
-                    <div 
-                      :class="getProgressColor(task.progress)"
-                      class="h-1.5 rounded-full transition-all duration-300"
-                      :style="{ width: task.progress + '%' }"
-                    ></div>
-                  </div>
+        <div v-if="todayTasksLoading" class="text-center text-gray-500 py-8">加载中...</div>
+        <div v-else-if="todayTasks.length === 0" class="text-center text-gray-500 py-8">暂无任务</div>
+        <div v-else class="space-y-3 max-h-64 overflow-y-auto">
+          <div v-for="task in todayTasks" :key="task.id" class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <div class="flex items-start justify-between">
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <h4 class="font-medium text-gray-800 dark:text-white">{{ task.title }}</h4>
+                  <span :class="getStatusClass(task.status)" class="px-2 py-0.5 rounded text-xs">
+                    {{ getStatusText(task.status) }}
+                  </span>
+                </div>
+                <div class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+                  <span>进度: {{ task.progress }}%</span>
+                  <span v-if="task.dueDate">截止: {{ formatTaskDate(task.dueDate) }}</span>
+                </div>
+                <div class="mt-2 w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5">
+                  <div 
+                    :class="getProgressColor(task.progress)"
+                    class="h-1.5 rounded-full transition-all duration-300"
+                    :style="{ width: task.progress + '%' }"
+                  ></div>
                 </div>
               </div>
             </div>
@@ -208,22 +207,22 @@
         <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
           <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-6">Repository Stats</h3>
           <div v-if="githubStats" class="space-y-4">
-            <div class="grid grid-cols-2 gap-4">
-              <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-800 rounded-xl p-4">
-                <div class="text-sm text-gray-600 dark:text-gray-300 mb-1">Stars</div>
-                <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ githubStats.stars || 0 }}</div>
+            <div class="stat-grid">
+              <div class="stat-card stat-card--blue">
+                <div class="stat-label">Stars</div>
+                <div class="stat-value">{{ githubStats.stars || 0 }}</div>
               </div>
-              <div class="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900 dark:to-green-800 rounded-xl p-4">
-                <div class="text-sm text-gray-600 dark:text-gray-300 mb-1">Forks</div>
-                <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ githubStats.forks || 0 }}</div>
+              <div class="stat-card stat-card--green">
+                <div class="stat-label">Forks</div>
+                <div class="stat-value">{{ githubStats.forks || 0 }}</div>
               </div>
-              <div class="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900 dark:to-purple-800 rounded-xl p-4">
-                <div class="text-sm text-gray-600 dark:text-gray-300 mb-1">Watchers</div>
-                <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ githubStats.watchers || 0 }}</div>
+              <div class="stat-card stat-card--purple">
+                <div class="stat-label">Watchers</div>
+                <div class="stat-value">{{ githubStats.watchers || 0 }}</div>
               </div>
-              <div class="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900 dark:to-orange-800 rounded-xl p-4">
-                <div class="text-sm text-gray-600 dark:text-gray-300 mb-1">Size</div>
-                <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ formatSize(githubStats.size || 0) }}</div>
+              <div class="stat-card stat-card--orange">
+                <div class="stat-label">Size</div>
+                <div class="stat-value">{{ formatSize(githubStats.size || 0) }}</div>
               </div>
             </div>
           </div>

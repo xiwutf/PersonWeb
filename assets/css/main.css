@@ -5,6 +5,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 导入组件样式 */
+@import './components.css';
+
 @layer base {
   :root {
     /* Default Theme (Home) - Blue/Purple */
@@ -194,7 +197,6 @@
 }
 
 @layer components {
-
   /* Glassmorphism Utilities */
   .glass {
     @apply bg-white/70 backdrop-blur-lg border border-white/20 shadow-xl;

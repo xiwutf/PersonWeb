@@ -1,49 +1,49 @@
 <template>
   <div>
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold text-gray-800 dark:text-white">用户管理</h1>
-      <button @click="showCreateModal = true" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+    <div class="page-header">
+      <h1 class="page-title">用户管理</h1>
+      <button @click="showCreateModal = true" class="btn-primary">
         + 新建用户
       </button>
     </div>
 
     <!-- 用户列表 -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-      <div v-if="loading" class="p-8 text-center text-gray-500 dark:text-gray-400">加载中...</div>
-      <div v-else-if="users.length === 0" class="p-8 text-center text-gray-500 dark:text-gray-400">暂无用户</div>
-      <table v-else class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-        <thead class="bg-gray-50 dark:bg-gray-900">
+    <div class="card overflow-hidden">
+      <div v-if="loading" class="loading">加载中...</div>
+      <div v-else-if="users.length === 0" class="empty-state">暂无用户</div>
+      <table v-else class="table">
+        <thead class="table-header">
           <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">ID</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">用户名</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">邮箱</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">角色</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">状态</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">最后登录</th>
-            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">操作</th>
+            <th class="table-header-cell">ID</th>
+            <th class="table-header-cell">用户名</th>
+            <th class="table-header-cell">邮箱</th>
+            <th class="table-header-cell">角色</th>
+            <th class="table-header-cell">状态</th>
+            <th class="table-header-cell">最后登录</th>
+            <th class="table-header-cell text-right">操作</th>
           </tr>
         </thead>
-        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-          <tr v-for="user in users" :key="user.id" class="hover:bg-gray-50 dark:hover:bg-gray-700">
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ user.id }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{{ user.username }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ user.email || '-' }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-              <span :class="getRoleClass(user.role)" class="px-2 py-1 rounded text-xs font-medium">
+        <tbody class="table-body">
+          <tr v-for="user in users" :key="user.id" class="table-row">
+            <td class="table-cell">{{ user.id }}</td>
+            <td class="table-cell font-medium">{{ user.username }}</td>
+            <td class="table-cell text-gray-500 dark:text-gray-400">{{ user.email || '-' }}</td>
+            <td class="table-cell">
+              <span :class="getRoleClass(user.role)" class="badge">
                 {{ user.role }}
               </span>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm">
-              <span :class="user.status === 1 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'" class="px-2 py-1 rounded text-xs font-medium">
+            <td class="table-cell">
+              <span :class="user.status === 1 ? 'badge-green' : 'badge-red'" class="badge">
                 {{ user.status === 1 ? '启用' : '禁用' }}
               </span>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+            <td class="table-cell text-gray-500 dark:text-gray-400">
               {{ user.lastLoginTime ? formatDate(user.lastLoginTime) : '从未登录' }}
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-              <button @click="editUser(user)" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-4">编辑</button>
-              <button @click="deleteUser(user.id)" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">删除</button>
+            <td class="table-cell text-right">
+              <button @click="editUser(user)" class="btn-link btn-link--blue">编辑</button>
+              <button @click="deleteUser(user.id)" class="btn-link btn-link--red">删除</button>
             </td>
           </tr>
         </tbody>
@@ -51,47 +51,47 @@
     </div>
 
     <!-- 创建/编辑用户模态框 -->
-    <div v-if="showCreateModal || editingUser" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" @click.self="closeModal">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4">
-        <div class="p-6">
-          <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-4">
+    <div v-if="showCreateModal || editingUser" class="modal-overlay" @click.self="closeModal">
+      <div class="modal-content max-w-md">
+        <div class="modal-body">
+          <h2 class="modal-title mb-4">
             {{ editingUser ? '编辑用户' : '新建用户' }}
           </h2>
           <form @submit.prevent="saveUser" class="space-y-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">用户名 *</label>
-              <input v-model="userForm.username" type="text" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
+            <div class="form-group">
+              <label class="form-label">用户名 *</label>
+              <input v-model="userForm.username" type="text" required class="form-input" />
             </div>
-            <div v-if="!editingUser">
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">密码 *</label>
-              <input v-model="userForm.password" type="password" :required="!editingUser" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
+            <div v-if="!editingUser" class="form-group">
+              <label class="form-label">密码 *</label>
+              <input v-model="userForm.password" type="password" required class="form-input" />
             </div>
-            <div v-else>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">新密码（留空不修改）</label>
-              <input v-model="userForm.password" type="password" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
+            <div v-else class="form-group">
+              <label class="form-label">新密码（留空不修改）</label>
+              <input v-model="userForm.password" type="password" class="form-input" />
             </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">邮箱</label>
-              <input v-model="userForm.email" type="email" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
+            <div class="form-group">
+              <label class="form-label">邮箱</label>
+              <input v-model="userForm.email" type="email" class="form-input" />
             </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">角色</label>
-              <select v-model="userForm.role" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+            <div class="form-group">
+              <label class="form-label">角色</label>
+              <select v-model="userForm.role" class="form-select">
                 <option value="admin">管理员</option>
                 <option value="editor">编辑</option>
                 <option value="viewer">查看者</option>
               </select>
             </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">状态</label>
-              <select v-model.number="userForm.status" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+            <div class="form-group">
+              <label class="form-label">状态</label>
+              <select v-model.number="userForm.status" class="form-select">
                 <option :value="1">启用</option>
                 <option :value="0">禁用</option>
               </select>
             </div>
-            <div class="flex justify-end gap-3 pt-4">
-              <button type="button" @click="closeModal" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">取消</button>
-              <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">保存</button>
+            <div class="modal-footer">
+              <button type="button" @click="closeModal" class="btn-secondary">取消</button>
+              <button type="submit" class="btn-primary">保存</button>
             </div>
           </form>
         </div>
@@ -116,7 +116,7 @@ definePageMeta({
 })
 
 const api = useApi()
-const toast = useToast()
+const toast = useNotification()
 
 const users = ref<User[]>([])
 const loading = ref(false)
