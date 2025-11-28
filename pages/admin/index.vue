@@ -1,163 +1,161 @@
 ﻿<template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+  <div class="admin-dashboard">
     <!-- 背景装饰 -->
-    <div class="fixed inset-0 overflow-hidden pointer-events-none">
-      <div class="absolute top-0 right-0 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl"></div>
-      <div class="absolute bottom-0 left-0 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl"></div>
+    <div class="dashboard-bg-decoration">
+      <div class="bg-decoration-item bg-decoration-blue"></div>
+      <div class="bg-decoration-item bg-decoration-purple"></div>
     </div>
 
-    <div class="relative z-10">
+    <div class="dashboard-content">
       <!-- 头部 -->
-      <header class="mb-8">
-        <div class="flex justify-between items-center">
-          <div>
-            <h1 class="text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent mb-2">
-              仪表盘
-            </h1>
-            <p class="text-gray-600 dark:text-gray-400 flex items-center gap-2">
-              <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+      <header class="dashboard-header">
+        <div class="header-content">
+          <div class="header-left">
+            <h1 class="dashboard-title">仪表盘</h1>
+            <p class="dashboard-subtitle">
+              <span class="status-dot"></span>
               欢迎回来，Admin
             </p>
           </div>
-          <div class="text-right">
-            <div class="text-sm text-gray-500 dark:text-gray-400">当前时间</div>
-            <div class="text-lg font-semibold text-gray-800 dark:text-white">{{ currentTime }}</div>
+          <div class="header-right">
+            <div class="time-label">当前时间</div>
+            <div class="time-value">{{ currentTime }}</div>
           </div>
         </div>
       </header>
 
-      <!-- 统计卡片 - 美化版 -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <!-- 统计卡片 -->
+      <div class="stats-grid">
         <!-- 文章数卡片 -->
-        <div class="group relative bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden">
-          <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500"></div>
-          <div class="relative z-10">
-            <div class="flex items-center justify-between mb-4">
-              <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
-                <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="stat-card stat-card-blue">
+          <div class="stat-card-decoration stat-card-decoration-blue"></div>
+          <div class="stat-card-content">
+            <div class="stat-card-header">
+              <div class="stat-card-icon stat-card-icon-blue">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
-              <div class="text-xs text-gray-500 dark:text-gray-400">总文章数</div>
+              <div class="stat-card-label">总文章数</div>
             </div>
-            <div class="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-1">{{ stats.articleCount || 0 }}</div>
-            <div class="text-sm text-gray-500 dark:text-gray-400">篇已发布</div>
+            <div class="stat-card-value stat-card-value-blue">{{ stats.articleCount || 0 }}</div>
+            <div class="stat-card-desc">篇已发布</div>
           </div>
         </div>
 
         <!-- 项目数卡片 -->
-        <div class="group relative bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden">
-          <div class="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500"></div>
-          <div class="relative z-10">
-            <div class="flex items-center justify-between mb-4">
-              <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center">
-                <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="stat-card stat-card-purple">
+          <div class="stat-card-decoration stat-card-decoration-purple"></div>
+          <div class="stat-card-content">
+            <div class="stat-card-header">
+              <div class="stat-card-icon stat-card-icon-purple">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                 </svg>
               </div>
-              <div class="text-xs text-gray-500 dark:text-gray-400">总项目数</div>
+              <div class="stat-card-label">总项目数</div>
             </div>
-            <div class="text-4xl font-bold text-purple-600 dark:text-purple-400 mb-1">{{ stats.toolCount || 0 }}</div>
-            <div class="text-sm text-gray-500 dark:text-gray-400">个项目</div>
+            <div class="stat-card-value stat-card-value-purple">{{ stats.toolCount || 0 }}</div>
+            <div class="stat-card-desc">个项目</div>
           </div>
         </div>
 
         <!-- 访问数卡片 -->
-        <div class="group relative bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden">
-          <div class="absolute top-0 right-0 w-32 h-32 bg-green-500/10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500"></div>
-          <div class="relative z-10">
-            <div class="flex items-center justify-between mb-4">
-              <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
-                <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="stat-card stat-card-green">
+          <div class="stat-card-decoration stat-card-decoration-green"></div>
+          <div class="stat-card-content">
+            <div class="stat-card-header">
+              <div class="stat-card-icon stat-card-icon-green">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
               </div>
-              <div class="text-xs text-gray-500 dark:text-gray-400">今日访问</div>
+              <div class="stat-card-label">今日访问</div>
             </div>
-            <div class="text-4xl font-bold text-green-600 dark:text-green-400 mb-1">{{ stats.todayVisits || 0 }}</div>
-            <div class="text-sm text-gray-500 dark:text-gray-400">次访问</div>
+            <div class="stat-card-value stat-card-value-green">{{ stats.todayVisits || 0 }}</div>
+            <div class="stat-card-desc">次访问</div>
           </div>
         </div>
       </div>
 
-      <!-- 快捷操作 - 美化版 -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6">
-          <h2 class="text-xl font-bold mb-6 text-gray-800 dark:text-white flex items-center gap-2">
-            <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <!-- 快捷操作 -->
+      <div class="actions-grid">
+        <div class="action-section">
+          <h2 class="section-title">
+            <svg class="section-title-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
             快捷操作
           </h2>
-          <div class="grid grid-cols-2 gap-4">
-            <NuxtLink to="/admin/articles/edit" class="group relative overflow-hidden bg-gradient-to-br from-blue-500 to-blue-600 text-white p-4 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1">
-              <div class="relative z-10">
-                <div class="text-2xl mb-2">✍️</div>
-                <div class="font-semibold">发布新文章</div>
-                <div class="text-xs text-blue-100 mt-1">快速创建</div>
+          <div class="action-buttons-grid">
+            <NuxtLink to="/admin/articles/edit" class="action-button action-button-blue">
+              <div class="action-button-content">
+                <div class="action-button-icon">✍️</div>
+                <div class="action-button-title">发布新文章</div>
+                <div class="action-button-subtitle">快速创建</div>
               </div>
-              <div class="absolute inset-0 bg-white/20 transform scale-0 group-hover:scale-100 transition-transform duration-300"></div>
+              <div class="action-button-overlay"></div>
             </NuxtLink>
             
-            <NuxtLink to="/admin/knowledge" class="group relative overflow-hidden bg-gradient-to-br from-purple-500 to-purple-600 text-white p-4 rounded-xl hover:from-purple-600 hover:to-purple-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1">
-              <div class="relative z-10">
-                <div class="text-2xl mb-2">📚</div>
-                <div class="font-semibold">知识库</div>
-                <div class="text-xs text-purple-100 mt-1">管理笔记</div>
+            <NuxtLink to="/admin/knowledge" class="action-button action-button-purple">
+              <div class="action-button-content">
+                <div class="action-button-icon">📚</div>
+                <div class="action-button-title">知识库</div>
+                <div class="action-button-subtitle">管理笔记</div>
               </div>
-              <div class="absolute inset-0 bg-white/20 transform scale-0 group-hover:scale-100 transition-transform duration-300"></div>
+              <div class="action-button-overlay"></div>
             </NuxtLink>
             
-            <NuxtLink to="/admin/analytics" class="group relative overflow-hidden bg-gradient-to-br from-green-500 to-green-600 text-white p-4 rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1">
-              <div class="relative z-10">
-                <div class="text-2xl mb-2">📊</div>
-                <div class="font-semibold">访客分析</div>
-                <div class="text-xs text-green-100 mt-1">查看数据</div>
+            <NuxtLink to="/admin/analytics" class="action-button action-button-green">
+              <div class="action-button-content">
+                <div class="action-button-icon">📊</div>
+                <div class="action-button-title">访客分析</div>
+                <div class="action-button-subtitle">查看数据</div>
               </div>
-              <div class="absolute inset-0 bg-white/20 transform scale-0 group-hover:scale-100 transition-transform duration-300"></div>
+              <div class="action-button-overlay"></div>
             </NuxtLink>
             
-            <NuxtLink to="/admin/investment" class="group relative overflow-hidden bg-gradient-to-br from-orange-500 to-orange-600 text-white p-4 rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-1">
-              <div class="relative z-10">
-                <div class="text-2xl mb-2">📈</div>
-                <div class="font-semibold">投资仪表盘</div>
-                <div class="text-xs text-orange-100 mt-1">查看收益</div>
+            <NuxtLink to="/admin/investment" class="action-button action-button-orange">
+              <div class="action-button-content">
+                <div class="action-button-icon">📈</div>
+                <div class="action-button-title">投资仪表盘</div>
+                <div class="action-button-subtitle">查看收益</div>
               </div>
-              <div class="absolute inset-0 bg-white/20 transform scale-0 group-hover:scale-100 transition-transform duration-300"></div>
+              <div class="action-button-overlay"></div>
             </NuxtLink>
           </div>
         </div>
 
         <!-- 最近活动 -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6">
-          <h2 class="text-xl font-bold mb-6 text-gray-800 dark:text-white flex items-center gap-2">
-            <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="action-section">
+          <h2 class="section-title">
+            <svg class="section-title-icon section-title-icon-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             最近活动
           </h2>
-          <div class="space-y-4">
-            <div class="flex items-center gap-4 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-              <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
-                <span class="text-blue-600 dark:text-blue-400">📝</span>
+          <div class="activity-list">
+            <div class="activity-item">
+              <div class="activity-icon activity-icon-blue">
+                <span>📝</span>
               </div>
-              <div class="flex-1">
-                <div class="font-medium text-gray-800 dark:text-white">文章管理</div>
-                <div class="text-sm text-gray-500 dark:text-gray-400">管理你的文章内容</div>
+              <div class="activity-content">
+                <div class="activity-title">文章管理</div>
+                <div class="activity-desc">管理你的文章内容</div>
               </div>
-              <NuxtLink to="/admin/articles" class="text-blue-600 dark:text-blue-400 hover:underline text-sm">查看 →</NuxtLink>
+              <NuxtLink to="/admin/articles" class="activity-link activity-link-blue">查看 →</NuxtLink>
             </div>
             
-            <div class="flex items-center gap-4 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-              <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
-                <span class="text-purple-600 dark:text-purple-400">⏰</span>
+            <div class="activity-item">
+              <div class="activity-icon activity-icon-purple">
+                <span>⏰</span>
               </div>
-              <div class="flex-1">
-                <div class="font-medium text-gray-800 dark:text-white">时间胶囊</div>
-                <div class="text-sm text-gray-500 dark:text-gray-400">审核访客留言</div>
+              <div class="activity-content">
+                <div class="activity-title">时间胶囊</div>
+                <div class="activity-desc">审核访客留言</div>
               </div>
-              <NuxtLink to="/admin/time-capsules" class="text-purple-600 dark:text-purple-400 hover:underline text-sm">查看 →</NuxtLink>
+              <NuxtLink to="/admin/time-capsules" class="activity-link activity-link-purple">查看 →</NuxtLink>
             </div>
           </div>
         </div>
@@ -224,4 +222,442 @@ onMounted(() => {
   setInterval(updateTime, 1000)
 })
 </script>
+
+<style scoped>
+/* 仪表盘容器 */
+.admin-dashboard {
+  min-height: 100vh;
+}
+
+/* 背景装饰 */
+.dashboard-bg-decoration {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bg-decoration-item {
+  position: absolute;
+  width: 24rem;
+  height: 24rem;
+  border-radius: 9999px;
+  filter: blur(3rem);
+}
+
+.bg-decoration-blue {
+  top: 0;
+  right: 0;
+  background-color: rgba(59, 130, 246, 0.03);
+}
+
+.bg-decoration-purple {
+  bottom: 0;
+  left: 0;
+  background-color: rgba(168, 85, 247, 0.03);
+}
+
+/* 内容区域 */
+.dashboard-content {
+  position: relative;
+  z-index: 10;
+}
+
+/* 头部样式 */
+.dashboard-header {
+  margin-bottom: 2rem;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-left {
+  flex: 1;
+}
+
+.dashboard-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #f3f4f6;
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-subtitle {
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: #86efac;
+  border-radius: 9999px;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.header-right {
+  text-align: right;
+}
+
+.time-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.time-value {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+/* 统计卡片网格 */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* 统计卡片 */
+.stat-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(4px);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  transition: all 0.3s;
+}
+
+.stat-card:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.stat-card-decoration {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 8rem;
+  height: 8rem;
+  border-radius: 9999px;
+  margin-right: -4rem;
+  margin-top: -4rem;
+  transition: transform 0.5s;
+}
+
+.stat-card:hover .stat-card-decoration {
+  transform: scale(1.5);
+}
+
+.stat-card-decoration-blue {
+  background-color: rgba(59, 130, 246, 0.05);
+}
+
+.stat-card-decoration-purple {
+  background-color: rgba(168, 85, 247, 0.05);
+}
+
+.stat-card-decoration-green {
+  background-color: rgba(34, 197, 94, 0.05);
+}
+
+.stat-card-content {
+  position: relative;
+  z-index: 10;
+}
+
+.stat-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.stat-card-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-card-icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.stat-card-icon-blue {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #60a5fa;
+}
+
+.stat-card-icon-purple {
+  background-color: rgba(168, 85, 247, 0.1);
+  color: #a78bfa;
+}
+
+.stat-card-icon-green {
+  background-color: rgba(34, 197, 94, 0.1);
+  color: #86efac;
+}
+
+.stat-card-label {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.stat-card-value {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.stat-card-value-blue {
+  color: #60a5fa;
+}
+
+.stat-card-value-purple {
+  color: #a78bfa;
+}
+
+.stat-card-value-green {
+  color: #86efac;
+}
+
+.stat-card-desc {
+  font-size: 0.875rem;
+  color: #9ca3af;
+}
+
+/* 操作区域网格 */
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .actions-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* 操作区域 */
+.action-section {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(4px);
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #e5e7eb;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.section-title-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #60a5fa;
+}
+
+.section-title-icon-purple {
+  color: #a78bfa;
+}
+
+/* 操作按钮网格 */
+.action-buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+/* 操作按钮 */
+.action-button {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--button-color-start), var(--button-color-end));
+  color: white;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  transition: all 0.3s;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  text-decoration: none;
+}
+
+.action-button:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transform: translateY(-0.25rem);
+}
+
+.action-button-blue {
+  --button-color-start: #3b82f6;
+  --button-color-end: #2563eb;
+}
+
+.action-button-blue:hover {
+  --button-color-start: #2563eb;
+  --button-color-end: #1d4ed8;
+}
+
+.action-button-purple {
+  --button-color-start: #a855f7;
+  --button-color-end: #9333ea;
+}
+
+.action-button-purple:hover {
+  --button-color-start: #9333ea;
+  --button-color-end: #7e22ce;
+}
+
+.action-button-green {
+  --button-color-start: #22c55e;
+  --button-color-end: #16a34a;
+}
+
+.action-button-green:hover {
+  --button-color-start: #16a34a;
+  --button-color-end: #15803d;
+}
+
+.action-button-orange {
+  --button-color-start: #f97316;
+  --button-color-end: #ea580c;
+}
+
+.action-button-orange:hover {
+  --button-color-start: #ea580c;
+  --button-color-end: #c2410c;
+}
+
+.action-button-content {
+  position: relative;
+  z-index: 10;
+}
+
+.action-button-icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.action-button-title {
+  font-weight: 600;
+}
+
+.action-button-subtitle {
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  opacity: 0.9;
+}
+
+.action-button-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(0);
+  transition: transform 0.3s;
+}
+
+.action-button:hover .action-button-overlay {
+  transform: scale(1);
+}
+
+/* 活动列表 */
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.activity-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.activity-icon-blue {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #60a5fa;
+}
+
+.activity-icon-purple {
+  background-color: rgba(168, 85, 247, 0.1);
+  color: #a78bfa;
+}
+
+.activity-content {
+  flex: 1;
+}
+
+.activity-title {
+  font-weight: 500;
+  color: #e5e7eb;
+}
+
+.activity-desc {
+  font-size: 0.875rem;
+  color: #9ca3af;
+}
+
+.activity-link {
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.activity-link:hover {
+  text-decoration: underline;
+}
+
+.activity-link-blue {
+  color: #60a5fa;
+}
+
+.activity-link-blue:hover {
+  color: #93c5fd;
+}
+
+.activity-link-purple {
+  color: #a78bfa;
+}
+
+.activity-link-purple:hover {
+  color: #c4b5fd;
+}
+</style>
 

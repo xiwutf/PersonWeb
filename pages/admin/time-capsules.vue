@@ -1,28 +1,28 @@
 <template>
-  <div>
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold text-gray-800 dark:text-white">时间胶囊管理</h1>
+  <div class="time-capsules-page">
+    <div class="page-header">
+      <h1 class="page-title">时间胶囊管理</h1>
     </div>
 
     <!-- 统计信息 -->
-    <div class="grid grid-cols-3 gap-4 mb-6">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
-        <div class="text-sm text-gray-500 dark:text-gray-400">待审核</div>
-        <div class="text-2xl font-bold text-orange-600 dark:text-orange-400">{{ stats.pending }}</div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">待审核</div>
+        <div class="stat-value stat-value-orange">{{ stats.pending }}</div>
       </div>
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
-        <div class="text-sm text-gray-500 dark:text-gray-400">已展示</div>
-        <div class="text-2xl font-bold text-green-600 dark:text-green-400">{{ stats.approved }}</div>
+      <div class="stat-card">
+        <div class="stat-label">已展示</div>
+        <div class="stat-value stat-value-green">{{ stats.approved }}</div>
       </div>
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
-        <div class="text-sm text-gray-500 dark:text-gray-400">已拒绝</div>
-        <div class="text-2xl font-bold text-red-600 dark:text-red-400">{{ stats.rejected }}</div>
+      <div class="stat-card">
+        <div class="stat-label">已拒绝</div>
+        <div class="stat-value stat-value-red">{{ stats.rejected }}</div>
       </div>
     </div>
 
     <!-- 筛选 -->
-    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-6 flex gap-4">
-      <select v-model="statusFilter" @change="fetchCapsules" class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+    <div class="filter-bar">
+      <select v-model="statusFilter" @change="fetchCapsules" class="filter-select">
         <option value="">全部状态</option>
         <option value="0">待审核</option>
         <option value="1">已展示</option>
@@ -31,54 +31,61 @@
     </div>
 
     <!-- 胶囊列表 -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-      <table class="w-full text-left">
-        <thead class="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700">
+    <div class="table-container">
+      <table class="data-table">
+        <thead class="table-header">
           <tr>
-            <th class="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">内容</th>
-            <th class="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">访客</th>
-            <th class="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">提交时间</th>
-            <th class="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">状态</th>
-            <th class="px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">操作</th>
+            <th class="table-header-cell">内容</th>
+            <th class="table-header-cell">访客</th>
+            <th class="table-header-cell">提交时间</th>
+            <th class="table-header-cell">状态</th>
+            <th class="table-header-cell">操作</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+        <tbody class="table-body">
           <tr v-if="loading">
-            <td colspan="5" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">加载中...</td>
+            <td colspan="5" class="table-cell table-cell-center">加载中...</td>
           </tr>
           <tr v-else-if="capsules.length === 0">
-            <td colspan="5" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">暂无时间胶囊</td>
+            <td colspan="5" class="table-cell table-cell-center">暂无时间胶囊</td>
           </tr>
-          <tr v-for="capsule in capsules" :key="capsule.id" class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
-            <td class="px-6 py-4 text-gray-800 dark:text-gray-200 max-w-md">
-              <p class="line-clamp-2">{{ capsule.content }}</p>
+          <tr v-for="capsule in capsules" :key="capsule.id" class="table-row">
+            <td class="table-cell table-cell-content">
+              <p class="content-text">{{ capsule.content }}</p>
             </td>
-            <td class="px-6 py-4 text-gray-500 dark:text-gray-400 text-sm">
+            <td class="table-cell table-cell-secondary">
               {{ capsule.visitorName || '匿名' }}
             </td>
-            <td class="px-6 py-4 text-gray-500 dark:text-gray-400 text-sm">
+            <td class="table-cell table-cell-secondary">
               {{ formatDate(capsule.createdAt) }}
             </td>
-            <td class="px-6 py-4">
-              <span :class="getStatusClass(capsule.status)" class="px-2 py-1 rounded text-xs">
+            <td class="table-cell">
+              <span :class="getStatusClass(capsule.status)" class="status-badge">
                 {{ getStatusText(capsule.status) }}
               </span>
             </td>
-            <td class="px-6 py-4">
-              <div class="flex gap-2">
+            <td class="table-cell">
+              <div class="action-buttons">
                 <button
                   v-if="capsule.status === 0"
                   @click="approveCapsule(capsule.id)"
-                  class="text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300"
+                  class="action-button action-button-approve"
                 >
                   通过
                 </button>
                 <button
                   v-if="capsule.status === 0"
                   @click="rejectCapsule(capsule.id)"
-                  class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
+                  class="action-button action-button-reject"
                 >
                   拒绝
+                </button>
+                <button
+                  @click="deleteCapsule(capsule.id)"
+                  class="action-button action-button-delete"
+                  title="删除"
+                >
+                  <i class="fas fa-trash"></i>
                 </button>
               </div>
             </td>
@@ -238,6 +245,32 @@ const rejectCapsule = async (id: number) => {
   }
 }
 
+const deleteCapsule = async (id: number) => {
+  if (!confirm('确定要删除这个时间胶囊吗？删除后无法恢复。')) return
+
+  const { success } = useNotification()
+  const { handleError } = useErrorHandler()
+
+  try {
+    // 确保使用正确的路径格式
+    const response = await api.del(`/TimeCapsule/${id}`)
+    
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[Delete] Response:', response)
+    }
+    
+    success('删除成功')
+    await fetchCapsules() // 刷新列表和统计
+  } catch (e: any) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error('[Delete] Error:', e)
+      console.error('[Delete] Error URL:', e?.url || e?.request?.url)
+      console.error('[Delete] Error Status:', e?.status || e?.response?.status)
+    }
+    handleError(e, '删除失败')
+  }
+}
+
 const getStatusText = (status: number) => {
   const statusMap: Record<number, string> = {
     0: '待审核',
@@ -249,11 +282,11 @@ const getStatusText = (status: number) => {
 
 const getStatusClass = (status: number) => {
   const classMap: Record<number, string> = {
-    0: 'bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300',
-    1: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300',
-    2: 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
+    0: 'bg-orange-500/20 text-orange-300 border border-orange-500/30',
+    1: 'bg-green-500/20 text-green-300 border border-green-500/30',
+    2: 'bg-red-500/20 text-red-300 border border-red-500/30'
   }
-  return classMap[status] || 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300'
+  return classMap[status] || 'bg-gray-500/20 text-gray-300 border border-gray-500/30'
 }
 
 const formatDate = (dateStr: string) => {
@@ -265,4 +298,207 @@ onMounted(() => {
   fetchCapsules()
 })
 </script>
+
+<style scoped>
+/* 页面容器 */
+.time-capsules-page {
+  width: 100%;
+}
+
+/* 页面头部 */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #e5e7eb;
+}
+
+/* 统计网格 */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* 统计卡片 */
+.stat-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(4px);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: #9ca3af;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.stat-value-orange {
+  color: #fb923c;
+}
+
+.stat-value-green {
+  color: #86efac;
+}
+
+.stat-value-red {
+  color: #fca5a5;
+}
+
+/* 筛选栏 */
+.filter-bar {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(4px);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 1.5rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.filter-select {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  color: #e5e7eb;
+  outline: none;
+}
+
+.filter-select:focus {
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* 表格容器 */
+.table-container {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(4px);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.data-table {
+  width: 100%;
+  text-align: left;
+}
+
+.table-header {
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.table-header-cell {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #9ca3af;
+}
+
+.table-body {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.table-row {
+  transition: background-color 0.2s;
+}
+
+.table-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.table-cell {
+  padding: 1rem 1.5rem;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.table-cell-center {
+  text-align: center;
+  color: #9ca3af;
+}
+
+.table-cell-content {
+  color: #e5e7eb;
+  max-width: 28rem;
+}
+
+.content-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.table-cell-secondary {
+  color: #9ca3af;
+  font-size: 0.875rem;
+}
+
+/* 状态徽章 */
+.status-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  border: 1px solid;
+}
+
+/* 操作按钮 */
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.action-button {
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.action-button-approve {
+  color: #86efac;
+}
+
+.action-button-approve:hover {
+  color: #bbf7d0;
+}
+
+.action-button-reject {
+  color: #fca5a5;
+}
+
+.action-button-reject:hover {
+  color: #fecaca;
+}
+
+.action-button-delete {
+  color: #fca5a5;
+  margin-left: 0.5rem;
+}
+
+.action-button-delete:hover {
+  color: #fecaca;
+}
+</style>
 

@@ -186,6 +186,26 @@ public class TimeCapsuleController : ControllerBase
 
         return Ok(ApiResponse.Success(null, "已拒绝"));
     }
+
+    /// <summary>
+    /// 删除时间胶囊（管理员）
+    /// </summary>
+    [HttpDelete("{id}")]
+    [Authorize]
+    [ActionName("Delete")]
+    public async Task<ActionResult<ApiResponse>> Delete(long id)
+    {
+        var capsule = await _context.TimeCapsules.FindAsync(id);
+        if (capsule == null)
+        {
+            return Ok(ApiResponse.Error("时间胶囊不存在", 404));
+        }
+
+        _context.TimeCapsules.Remove(capsule);
+        await _context.SaveChangesAsync();
+
+        return Ok(ApiResponse.Success(null, "删除成功"));
+    }
 }
 
 public class TimeCapsuleRequest

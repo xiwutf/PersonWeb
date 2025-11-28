@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="articles-page">
     <div class="page-header">
       <h1 class="page-title">文章管理</h1>
       <button @click="handleNewArticle" class="btn-primary">
@@ -8,14 +8,20 @@
     </div>
 
     <!-- 搜索栏 -->
-    <div class="filter-bar mb-6">
-      <input v-model="keyword" @keyup.enter="fetchArticles" type="text" placeholder="搜索文章标题..." class="form-input flex-1" />
+    <div class="filter-bar">
+      <input 
+        v-model="keyword" 
+        @keyup.enter="fetchArticles" 
+        type="text" 
+        placeholder="搜索文章标题..." 
+        class="search-input" 
+      />
       <button @click="fetchArticles" class="btn-secondary">搜索</button>
     </div>
 
     <!-- 文章列表表格 -->
     <div class="table-container">
-      <table class="table">
+      <table class="data-table">
         <thead class="table-header">
           <tr>
             <th class="table-header-cell">标题</th>
@@ -27,10 +33,10 @@
         </thead>
         <tbody class="table-body">
           <tr v-if="loading">
-            <td colspan="5" class="table-cell text-center loading">加载中...</td>
+            <td colspan="5" class="table-cell table-cell-center table-cell-loading">加载中...</td>
           </tr>
           <tr v-else-if="articles.length === 0">
-            <td colspan="5" class="table-cell text-center empty-state">暂无文章</td>
+            <td colspan="5" class="table-cell table-cell-center table-cell-empty">暂无文章</td>
           </tr>
           <tr v-for="article in articles" :key="article.id" class="table-row">
             <td class="table-cell">{{ article.title }}</td>
@@ -44,9 +50,9 @@
               </span>
             </td>
             <td class="table-cell">
-              <div class="flex gap-2">
-                <NuxtLink :to="`/admin/articles/edit/${article.id}`" class="btn-link btn-link--blue">编辑</NuxtLink>
-                <button @click="handleDelete(article.id)" class="btn-link btn-link--red">删除</button>
+              <div class="action-buttons">
+                <NuxtLink :to="`/admin/articles/edit/${article.id}`" class="action-link action-link-blue">编辑</NuxtLink>
+                <button @click="handleDelete(article.id)" class="action-link action-link-red">删除</button>
               </div>
             </td>
           </tr>
@@ -145,4 +151,76 @@ onMounted(() => {
   fetchArticles()
 })
 </script>
+
+<style scoped>
+/* 页面容器 */
+.articles-page {
+  width: 100%;
+}
+
+/* 搜索栏 */
+.filter-bar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.search-input {
+  flex: 1;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  color: #e5e7eb;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: rgba(229, 231, 235, 0.5);
+}
+
+.search-input:focus {
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* 操作按钮组 */
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.action-link {
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  padding: 0;
+}
+
+.action-link-blue {
+  color: #60a5fa;
+}
+
+.action-link-blue:hover {
+  color: #93c5fd;
+}
+
+.action-link-red {
+  color: #fca5a5;
+}
+
+.action-link-red:hover {
+  color: #fecaca;
+}
+
+/* 表格单元格状态 */
+.table-cell-loading,
+.table-cell-empty {
+  color: #9ca3af;
+}
+</style>
 

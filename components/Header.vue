@@ -18,12 +18,13 @@
 
         <!-- 桌面端导航菜单 -->
         <nav class="hidden md:flex items-center space-x-1">
+          <!-- 主要导航项 -->
           <NuxtLink
-            v-for="item in navigationItems"
+            v-for="item in mainNavigationItems"
             :key="item.path"
             :to="item.path"
             class="relative px-3 py-2 rounded-xl text-sm font-medium transition-all duration-300 hover:bg-gray-100/50 hover:text-primary-600 whitespace-nowrap"
-            :class="{ 'bg-primary-50 text-primary-600 shadow-sm': $route.path === item.path, 'text-gray-600': $route.path !== item.path }"
+            :class="{ 'bg-primary-50 text-primary-600 shadow-sm': route.path === item.path, 'text-gray-600': route.path !== item.path }"
           >
             <span class="flex items-center space-x-1.5">
               <span>{{ item.icon }}</span>
@@ -31,11 +32,43 @@
             </span>
           </NuxtLink>
           
+          <!-- 更多菜单下拉 -->
+          <div class="relative group">
+            <button
+              class="relative px-3 py-2 rounded-xl text-sm font-medium transition-all duration-300 hover:bg-gray-100/50 hover:text-primary-600 whitespace-nowrap text-gray-600"
+              :class="{ 'bg-primary-50 text-primary-600 shadow-sm': isMoreMenuActive }"
+            >
+              <span class="flex items-center space-x-1.5">
+                <span>⋯</span>
+                <span>更多</span>
+                <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </span>
+            </button>
+            
+            <!-- 下拉菜单 -->
+            <div class="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+              <div class="py-2">
+                <NuxtLink
+                  v-for="item in moreNavigationItems"
+                  :key="item.path"
+                  :to="item.path"
+                  class="flex items-center space-x-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary-600 transition-colors"
+                  :class="{ 'bg-primary-50 text-primary-600': route.path === item.path }"
+                >
+                  <span class="text-base">{{ item.icon }}</span>
+                  <span>{{ item.title }}</span>
+                </NuxtLink>
+              </div>
+            </div>
+          </div>
+          
           <!-- 搜索按钮 -->
           <NuxtLink
             to="/search"
             class="flex items-center justify-center w-9 h-9 rounded-xl text-gray-600 hover:text-primary-600 hover:bg-primary-50 transition-all duration-300 ml-1"
-            :class="{ 'text-primary-600 bg-primary-50 shadow-sm': $route.path === '/search' }"
+            :class="{ 'text-primary-600 bg-primary-50 shadow-sm': route.path === '/search' }"
             title="搜索"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -73,7 +106,7 @@
             :to="item.path"
             @click="closeMobileMenu"
             class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 touch-target active:bg-gray-100"
-            :class="{ 'bg-primary-50 text-primary-600': $route.path === item.path, 'text-gray-600 hover:bg-gray-50': $route.path !== item.path }"
+            :class="{ 'bg-primary-50 text-primary-600': route.path === item.path, 'text-gray-600 hover:bg-gray-50': route.path !== item.path }"
           >
             <span class="text-lg">{{ item.icon }}</span>
             <span class="font-medium">{{ item.title }}</span>
@@ -84,7 +117,7 @@
             to="/search"
             @click="closeMobileMenu"
             class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200"
-            :class="{ 'bg-primary-50 text-primary-600': $route.path === '/search', 'text-gray-600 hover:bg-gray-50': $route.path !== '/search' }"
+            :class="{ 'bg-primary-50 text-primary-600': route.path === '/search', 'text-gray-600 hover:bg-gray-50': route.path !== '/search' }"
           >
             <span class="text-lg">🔍</span>
             <span class="font-medium">搜索</span>
@@ -96,9 +129,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 const router = useRouter()
+const route = useRoute()
 
 // 移动端菜单状态
 const isMobileMenuOpen = ref(false)
@@ -155,8 +189,8 @@ onMounted(() => {
   })
 })
 
-// 导航项配置
-const navigationItems = [
+// 主要导航项（显示在顶部）
+const mainNavigationItems = [
   {
     title: '首页',
     path: '/',
@@ -181,7 +215,11 @@ const navigationItems = [
     title: 'AI 实验室',
     path: '/ai',
     icon: '🔮'
-  },
+  }
+]
+
+// 更多菜单项（合并到下拉菜单）
+const moreNavigationItems = [
   {
     title: '生活随笔',
     path: '/life',
@@ -193,9 +231,9 @@ const navigationItems = [
     icon: '📚'
   },
   {
-    title: '关于我',
-    path: '/about',
-    icon: '👤'
+    title: '技能树',
+    path: '/skills',
+    icon: '🌳'
   },
   {
     title: '仪表盘',
@@ -203,16 +241,24 @@ const navigationItems = [
     icon: '⚡'
   },
   {
-    title: '技能树',
-    path: '/skills',
-    icon: '🌳'
-  },
-  {
     title: '小游戏',
     path: '/game',
     icon: '🎮'
+  },
+  {
+    title: '关于我',
+    path: '/about',
+    icon: '👤'
   }
 ]
+
+// 所有导航项（用于移动端菜单）
+const navigationItems = [...mainNavigationItems, ...moreNavigationItems]
+
+// 检查"更多"菜单是否包含当前路由
+const isMoreMenuActive = computed(() => {
+  return moreNavigationItems.some(item => route.path === item.path)
+})
 
 // 关闭移动端菜单
 const closeMobileMenu = () => {

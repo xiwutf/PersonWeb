@@ -1,7 +1,7 @@
 ﻿<template>
   <div 
-    class="min-h-screen bg-gray-100 flex admin-layout"
-    :style="inlineStyle"
+    class="min-h-screen flex admin-layout"
+    :style="layoutStyle"
   >
     <!-- 侧边栏 -->
     <aside 
@@ -156,28 +156,20 @@ const sidebarStyle = computed(() => {
   }
 })
 
-// 主内容区样式
-const mainContentStyle = computed(() => {
+// 布局样式（使用侧边栏背景色）
+const layoutStyle = computed(() => {
   const vars = cssVariables.value
-  const config = styleConfig.value
-  
-  // 如果配置了背景渐变，使用渐变
-  if (config.background?.type === 'gradient' && config.background.colors) {
-    return {
-      background: `linear-gradient(135deg, ${config.background.colors.join(', ')})`,
-      minHeight: '100vh'
-    }
-  } else if (config.background?.color) {
-    return {
-      backgroundColor: config.background.color,
-      minHeight: '100vh'
-    }
-  }
-  
-  // 默认使用与侧边栏协调的深色背景
   return {
     backgroundColor: vars['--admin-sidebar-bg'] || '#1e293b',
-    background: `linear-gradient(135deg, ${vars['--admin-sidebar-bg'] || '#1e293b'}, ${vars['--admin-sidebar-bg'] || '#1e293b'}dd)`,
+    minHeight: '100vh'
+  }
+})
+
+// 主内容区样式（使用侧边栏背景色）
+const mainContentStyle = computed(() => {
+  const vars = cssVariables.value
+  return {
+    backgroundColor: vars['--admin-sidebar-bg'] || '#1e293b',
     minHeight: '100vh'
   }
 })
@@ -223,10 +215,10 @@ const logout = () => {
   color: #ffffff !important;
 }
 
-/* 主内容区背景 */
+/* 主内容区背景 - 使用侧边栏背景色 */
 .admin-main {
-  background: var(--admin-bg-gradient, #1e293b);
-  color: #ffffff;
+  background: var(--admin-sidebar-bg, #1e293b) !important;
+  color: #e5e7eb; /* 柔和的浅灰色文字 */
 }
 
 /* 如果配置了网格背景 */
