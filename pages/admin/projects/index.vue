@@ -3,51 +3,109 @@
     <div class="page-header">
       <h1 class="page-title">项目管理</h1>
       <div class="header-actions">
-        <NuxtLink to="/admin/projects/stats">
-          <n-button type="success" secondary>
-            <template #icon>
-              <i class="fas fa-chart-bar"></i>
-            </template>
-            访问统计
-          </n-button>
-        </NuxtLink>
-        <NuxtLink to="/admin/projects/edit">
-          <n-button type="primary">
-            <template #icon>
-              <i class="fas fa-plus"></i>
-            </template>
-            新建项目
-          </n-button>
-        </NuxtLink>
+        <n-button type="success" secondary @click="() => router.push('/admin/projects/stats')">
+          <template #icon>
+            <i class="fas fa-chart-bar"></i>
+          </template>
+          访问统计
+        </n-button>
+        <n-button type="primary" @click="() => router.push('/admin/projects/edit')">
+          <template #icon>
+            <i class="fas fa-plus"></i>
+          </template>
+          新建项目
+        </n-button>
       </div>
     </div>
 
-    <ClientOnly>
-      <n-card>
-        <n-data-table
-          :columns="columns"
-          :data="projects"
-          :loading="loading"
-          :bordered="false"
-        />
-      </n-card>
-      <template #fallback>
-        <n-card>
-          <div style="padding: 20px; text-align: center; color: #9ca3af;">
-            加载中...
-          </div>
-        </n-card>
-      </template>
-    </ClientOnly>
+    <div class="table-container">
+      <div v-if="loading" class="table-loading">
+        加载中...
+      </div>
+      <div v-else-if="projects.length === 0" class="table-empty">
+        暂无项目
+      </div>
+      <table v-else class="data-table">
+        <thead class="table-header">
+          <tr>
+            <th>项目名称</th>
+            <th>状态</th>
+            <th>访问量</th>
+            <th>GitHub</th>
+            <th>创建日期</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody class="table-body">
+          <tr v-for="project in projects" :key="project.id" class="table-row">
+            <td class="table-cell">
+              <div class="project-info">
+                <img 
+                  :src="project.coverUrl || 'https://placehold.co/100'" 
+                  :alt="project.title"
+                  class="project-avatar"
+                />
+                <div class="project-details">
+                  <div class="project-title">{{ project.title }}</div>
+                  <div class="project-desc">{{ project.description?.substring(0, 30) + '...' || '-' }}</div>
+                </div>
+              </div>
+            </td>
+            <td class="table-cell">
+              <span 
+                class="tag"
+                :class="project.status === 'Active' ? 'tag-success' : 'tag-default'"
+              >
+                {{ project.status }}
+              </span>
+            </td>
+            <td class="table-cell">
+              <div class="view-count">
+                <i class="fas fa-eye"></i>
+                <span>{{ project.viewCount || 0 }}</span>
+              </div>
+            </td>
+            <td class="table-cell">
+              <a 
+                v-if="project.githubUrl" 
+                :href="project.githubUrl" 
+                target="_blank"
+                class="btn-link btn-link-blue"
+              >
+                Repo
+              </a>
+              <span v-else class="text-muted">-</span>
+            </td>
+            <td class="table-cell">
+              {{ new Date(project.createdAt).toLocaleDateString() }}
+            </td>
+            <td class="table-cell">
+              <div class="action-buttons">
+                <button 
+                  @click="router.push(`/admin/projects/edit/${project.id}`)" 
+                  class="btn-link btn-link-blue"
+                >
+                  编辑
+                </button>
+                <button 
+                  @click="handleDelete(project.id)" 
+                  class="btn-link btn-link-red"
+                >
+                  删除
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { h } from 'vue'
-import { NButton, NCard, NDataTable, NTag, NPopconfirm, NAvatar } from 'naive-ui'
-import type { DataTableColumns } from 'naive-ui'
+import { NButton } from 'naive-ui'
 import type { Project } from '~/types/api'
-import { useMessage } from 'naive-ui'
+import { useSafeMessage } from '~/composables/useNaiveUI'
 import { useErrorHandler } from '~/composables/useErrorHandler'
 
 definePageMeta({
@@ -55,117 +113,15 @@ definePageMeta({
   middleware: 'admin-auth'
 })
 
+const router = useRouter()
 const api = useApi()
 const { handleError } = useErrorHandler()
 
-// 只在客户端使用 Naive UI 的 composables
-const message = process.client ? useMessage() : { success: () => {}, error: () => {}, warning: () => {}, info: () => {}, loading: () => {} }
+// 使用安全的 Naive UI composables，避免 provider 未挂载时的错误
+const message = useSafeMessage()
 
 const projects = ref<Project[]>([])
 const loading = ref(false)
-
-// 表格列定义
-const columns: DataTableColumns<Project> = [
-  {
-    title: '项目名称',
-    key: 'title',
-    width: 300,
-    render(row) {
-      return h('div', { class: 'project-info' }, [
-        h(NAvatar, {
-          src: row.coverUrl || 'https://placehold.co/100',
-          size: 40,
-          round: true,
-          style: { marginRight: '12px' }
-        }),
-        h('div', { class: 'project-details' }, [
-          h('div', { class: 'project-title' }, row.title),
-          h('div', { class: 'project-desc' }, row.description?.substring(0, 30) + '...' || '-')
-        ])
-      ])
-    }
-  },
-  {
-    title: '状态',
-    key: 'status',
-    width: 100,
-    render(row) {
-      return h(NTag, {
-        type: row.status === 'Active' ? 'success' : 'default',
-        size: 'small'
-      }, {
-        default: () => row.status
-      })
-    }
-  },
-  {
-    title: '访问量',
-    key: 'viewCount',
-    width: 120,
-    render(row) {
-      return h('div', { class: 'view-count' }, [
-        h('i', { class: 'fas fa-eye', style: { marginRight: '4px', color: '#9ca3af' } }),
-        h('span', row.viewCount || 0)
-      ])
-    }
-  },
-  {
-    title: 'GitHub',
-    key: 'githubUrl',
-    width: 100,
-    render(row) {
-      if (row.githubUrl) {
-        return h('a', {
-          href: row.githubUrl,
-          target: '_blank',
-          style: { color: '#60a5fa', textDecoration: 'none' }
-        }, 'Repo')
-      }
-      return '-'
-    }
-  },
-  {
-    title: '创建日期',
-    key: 'createdAt',
-    width: 150,
-    render(row) {
-      return new Date(row.createdAt).toLocaleDateString()
-    }
-  },
-  {
-    title: '操作',
-    key: 'actions',
-    width: 150,
-    render(row) {
-      return h('div', { class: 'action-buttons' }, [
-        h(NuxtLink, {
-          to: `/admin/projects/edit/${row.id}`,
-          style: { marginRight: '8px' }
-        }, {
-          default: () => h(NButton, {
-            size: 'small',
-            type: 'primary',
-            quaternary: true
-          }, {
-            default: () => '编辑'
-          })
-        }),
-        h(NPopconfirm, {
-          onPositiveClick: () => handleDelete(row.id)
-        }, {
-          trigger: () => h(NButton, {
-            size: 'small',
-            type: 'error',
-            quaternary: true
-          }, {
-            default: () => '删除'
-          }),
-          default: () => '确定要删除这个项目吗？'
-        })
-      ])
-    }
-  }
-]
 
 const fetchProjects = async () => {
   loading.value = true
@@ -179,16 +135,29 @@ const fetchProjects = async () => {
       console.error('Failed to fetch projects:', e)
     }
     projects.value = []
-    message.error('加载项目列表失败')
+    // 使用安全的 message 调用，避免阻塞
+    try {
+      message.error('加载项目列表失败')
+    } catch (msgError) {
+      // 如果 message 调用失败，不影响其他功能
+      console.warn('Message error:', msgError)
+    }
   } finally {
     loading.value = false
   }
 }
 
 const handleDelete = async (id: string) => {
+  if (!confirm('确定要删除这个项目吗？')) return
+  
   try {
     await api.del(`/Projects/${id}`)
-    message.success('删除成功')
+    // 使用安全的 message 调用
+    try {
+      message.success('删除成功')
+    } catch (msgError) {
+      console.warn('Message error:', msgError)
+    }
     await fetchProjects()
   } catch (e: unknown) {
     handleError(e, '删除失败')
@@ -211,9 +180,77 @@ onMounted(() => {
   align-items: center;
 }
 
+/* 表格容器 */
+.table-container {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.table-loading,
+.table-empty {
+  padding: 2rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* 数据表格 */
+.data-table {
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+}
+
+.table-header {
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.table-header th {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.table-body {
+  border-collapse: collapse;
+}
+
+.table-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background-color 0.2s ease;
+}
+
+.table-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-cell {
+  padding: 1rem 1.5rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* 项目信息 */
 .project-info {
   display: flex;
   align-items: center;
+}
+
+.project-avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  margin-right: 0.75rem;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.1);
 }
 
 .project-details {
@@ -223,24 +260,81 @@ onMounted(() => {
 .project-title {
   font-size: 0.875rem;
   font-weight: 500;
-  color: #e5e7eb;
+  color: rgba(255, 255, 255, 0.9);
   margin-bottom: 0.25rem;
 }
 
 .project-desc {
   font-size: 0.75rem;
-  color: #9ca3af;
+  color: rgba(255, 255, 255, 0.6);
 }
 
+/* 标签样式 - 提高文字对比度 */
+.tag {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.tag-success {
+  background: rgba(34, 197, 94, 0.3);
+  border: 1px solid rgba(34, 197, 94, 0.6);
+  color: #a7f3d0;
+}
+
+.tag-default {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* 访问量 */
 .view-count {
   display: flex;
   align-items: center;
-  color: #9ca3af;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.7);
 }
 
+.view-count i {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.text-muted {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* 操作按钮 */
 .action-buttons {
   display: flex;
   gap: 0.5rem;
   align-items: center;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  font-size: 0.875rem;
+}
+
+.btn-link-blue {
+  color: #60a5fa;
+}
+
+.btn-link-blue:hover {
+  color: #93c5fd;
+}
+
+.btn-link-red {
+  color: #f87171;
+}
+
+.btn-link-red:hover {
+  color: #fca5a5;
 }
 </style>

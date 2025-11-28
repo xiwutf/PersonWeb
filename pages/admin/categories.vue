@@ -11,23 +11,51 @@
     </div>
 
     <!-- 分类列表 -->
-    <ClientOnly>
-      <n-card>
-        <n-data-table
-          :columns="columns"
-          :data="categories"
-          :loading="loading"
-          :bordered="false"
-        />
-      </n-card>
-      <template #fallback>
-        <n-card>
-          <div style="padding: 20px; text-align: center; color: #9ca3af;">
-            加载中...
-          </div>
-        </n-card>
-      </template>
-    </ClientOnly>
+    <div class="table-container">
+      <div v-if="loading" class="table-loading">
+        加载中...
+      </div>
+      <div v-else-if="categories.length === 0" class="table-empty">
+        暂无分类
+      </div>
+      <table v-else class="data-table">
+        <thead class="table-header">
+          <tr>
+            <th>名称</th>
+            <th>别名 (Slug)</th>
+            <th>排序</th>
+            <th>创建时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody class="table-body">
+          <tr v-for="category in categories" :key="category.id" class="table-row">
+            <td class="table-cell">{{ category.name }}</td>
+            <td class="table-cell">{{ category.slug || '-' }}</td>
+            <td class="table-cell">{{ category.sort }}</td>
+            <td class="table-cell">
+              {{ new Date(category.createdAt).toLocaleDateString() }}
+            </td>
+            <td class="table-cell">
+              <div class="action-buttons">
+                <button 
+                  @click="openModal(category)" 
+                  class="btn-link btn-link-blue"
+                >
+                  编辑
+                </button>
+                <button 
+                  @click="handleDelete(category)" 
+                  class="btn-link btn-link-red"
+                >
+                  删除
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     <!-- 编辑/新建弹窗 -->
     <n-modal v-model:show="showModal" preset="card" :title="isEdit ? '编辑分类' : '新建分类'" style="width: 600px">
@@ -59,11 +87,9 @@
 </template>
 
 <script setup lang="ts">
-import { h } from 'vue'
-import { NButton, NCard, NDataTable, NModal, NForm, NFormItem, NInput, NInputNumber, NPopconfirm, type FormInst, type FormRules } from 'naive-ui'
-import type { DataTableColumns } from 'naive-ui'
+import { NButton, NModal, NForm, NFormItem, NInput, NInputNumber, type FormInst, type FormRules } from 'naive-ui'
 import type { Category } from '~/types/api'
-import { useMessage, useDialog } from 'naive-ui'
+import { useSafeMessage, useSafeDialog } from '~/composables/useNaiveUI'
 import { useErrorHandler } from '~/composables/useErrorHandler'
 
 definePageMeta({
@@ -74,9 +100,9 @@ definePageMeta({
 const api = useApi()
 const { handleError } = useErrorHandler()
 
-// 只在客户端使用 Naive UI 的 composables
-const message = process.client ? useMessage() : { success: () => {}, error: () => {}, warning: () => {}, info: () => {}, loading: () => {} }
-const dialog = process.client ? useDialog() : { warning: () => {}, error: () => {}, info: () => {}, success: () => {} }
+// 使用安全的 Naive UI composables，避免 provider 未挂载时的错误
+const message = useSafeMessage()
+const dialog = useSafeDialog()
 
 const categories = ref<Category[]>([])
 const loading = ref(false)
@@ -98,66 +124,6 @@ const rules: FormRules = {
     trigger: 'blur'
   }
 }
-
-// 表格列定义
-const columns: DataTableColumns<Category> = [
-  {
-    title: '名称',
-    key: 'name',
-    ellipsis: {
-      tooltip: true
-    }
-  },
-  {
-    title: '别名 (Slug)',
-    key: 'slug',
-    render(row) {
-      return row.slug || '-'
-    }
-  },
-  {
-    title: '排序',
-    key: 'sort',
-    width: 100
-  },
-  {
-    title: '创建时间',
-    key: 'createdAt',
-    width: 180,
-    render(row) {
-      return new Date(row.createdAt).toLocaleDateString()
-    }
-  },
-  {
-    title: '操作',
-    key: 'actions',
-    width: 150,
-    render(row) {
-      return h('div', { class: 'action-buttons' }, [
-        h(NButton, {
-          size: 'small',
-          type: 'primary',
-          quaternary: true,
-          onClick: () => openModal(row)
-        }, {
-          default: () => '编辑'
-        }),
-        h(NPopconfirm, {
-          onPositiveClick: () => handleDelete(row)
-        }, {
-          trigger: () => h(NButton, {
-            size: 'small',
-            type: 'error',
-            quaternary: true
-          }, {
-            default: () => '删除'
-          }),
-          default: () => `确定要删除分类 "${row.name}" 吗？`
-        })
-      ])
-    }
-  }
-]
 
 const fetchCategories = async () => {
   loading.value = true
@@ -214,6 +180,8 @@ const saveCategory = async () => {
 }
 
 const handleDelete = async (item: Category) => {
+  if (!confirm(`确定要删除分类 "${item.name}" 吗？`)) return
+  
   try {
     await api.del(`/Categories/${item.id}`)
     message.success('删除成功')
@@ -227,4 +195,96 @@ onMounted(() => {
   fetchCategories()
 })
 </script>
+
+<style scoped>
+/* 表格容器 */
+.table-container {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.table-loading,
+.table-empty {
+  padding: 2rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* 数据表格 */
+.data-table {
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+}
+
+.table-header {
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.table-header th {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.table-body {
+  border-collapse: collapse;
+}
+
+.table-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background-color 0.2s ease;
+}
+
+.table-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-cell {
+  padding: 1rem 1.5rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* 操作按钮 */
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  font-size: 0.875rem;
+}
+
+.btn-link-blue {
+  color: #60a5fa;
+}
+
+.btn-link-blue:hover {
+  color: #93c5fd;
+}
+
+.btn-link-red {
+  color: #f87171;
+}
+
+.btn-link-red:hover {
+  color: #fca5a5;
+}
+</style>
 

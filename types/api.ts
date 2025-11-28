@@ -268,6 +268,62 @@ export interface AdminModuleStyle {
   updatedAt: string
 }
 
+export interface StyleCategory {
+  id: number
+  name: string
+  code: string
+  description?: string
+  sort: number
+  createdAt: string
+  updatedAt: string
+}
+
+export interface StyleDefinition {
+  id: number
+  categoryId: number
+  name: string
+  code: string
+  cssClass: string
+  backgroundColor?: string
+  borderColor?: string
+  textColor?: string
+  fontSize?: string
+  fontWeight?: string
+  padding?: string
+  borderRadius?: string
+  borderWidth?: string
+  customCss?: string
+  description?: string
+  isActive: boolean
+  sort: number
+  createdAt: string
+  updatedAt: string
+}
+
+export interface StyleUsage {
+  id: number
+  styleId: number
+  pagePath: string
+  componentName?: string
+  usageCount: number
+  lastUsedAt?: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface StyleUsageStats {
+  styleId: number
+  styleCode: string
+  styleName: string
+  categoryName: string
+  totalUsage: number
+  pageCount: number
+  componentCount: number
+  pages: string[]
+  components: string[]
+  lastUsedAt?: string
+}
+
 // ==================== API 响应格式 ====================
 
 export interface ApiResponse<T = any> {

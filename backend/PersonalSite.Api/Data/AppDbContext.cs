@@ -40,6 +40,9 @@ public class AppDbContext : DbContext
     public DbSet<HomeStyle> HomeStyles { get; set; }
     public DbSet<AdminModuleStyle> AdminModuleStyles { get; set; }
     public DbSet<AdminGlobalStyle> AdminGlobalStyles { get; set; }
+    public DbSet<StyleCategory> StyleCategories { get; set; }
+    public DbSet<StyleDefinition> StyleDefinitions { get; set; }
+    public DbSet<StyleUsage> StyleUsages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

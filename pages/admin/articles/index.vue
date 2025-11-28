@@ -27,34 +27,118 @@
     </div>
 
     <!-- 文章列表表格 -->
-    <ClientOnly>
-      <n-card>
-        <n-data-table
-          :columns="columns"
-          :data="articles"
-          :loading="loading"
-          :pagination="pagination"
-          :bordered="false"
-          remote
-        />
-      </n-card>
-      <template #fallback>
-        <n-card>
-          <div style="padding: 20px; text-align: center; color: #9ca3af;">
-            加载中...
+    <div class="table-container">
+      <div v-if="loading" class="table-loading">
+        加载中...
+      </div>
+      <div v-else-if="articles.length === 0" class="table-empty">
+        暂无文章
+      </div>
+      <table v-else class="data-table">
+        <thead class="table-header">
+          <tr>
+            <th>标题</th>
+            <th>分类</th>
+            <th>发布时间</th>
+            <th>状态</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody class="table-body">
+          <tr v-for="article in articles" :key="article.id" class="table-row">
+            <td class="table-cell">{{ article.title }}</td>
+            <td class="table-cell">
+              <span class="tag tag-info">
+                {{ article.categoryName || '未分类' }}
+              </span>
+            </td>
+            <td class="table-cell">{{ formatDate(article.publishTime || article.createdAt) }}</td>
+            <td class="table-cell">
+              <span 
+                class="tag"
+                :class="article.status === 1 ? 'tag-success' : 'tag-default'"
+              >
+                {{ article.status === 1 ? '已发布' : '草稿' }}
+              </span>
+            </td>
+            <td class="table-cell">
+              <div class="action-buttons">
+                <button 
+                  @click="router.push(`/admin/articles/edit/${article.id}`)" 
+                  class="btn-link btn-link-blue"
+                >
+                  编辑
+                </button>
+                <button 
+                  @click="handleDelete(article.id)" 
+                  class="btn-link btn-link-red"
+                >
+                  删除
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <!-- 分页 -->
+      <div v-if="total > 0" class="table-pagination">
+        <div class="pagination-info">
+          共 {{ total }} 条记录
+        </div>
+        <div class="pagination-controls">
+          <select 
+            v-model="pageSize" 
+            @change="page = 1; fetchArticles()"
+            class="pagination-select"
+          >
+            <option :value="10">10/页</option>
+            <option :value="20">20/页</option>
+            <option :value="50">50/页</option>
+          </select>
+          <div class="pagination-buttons">
+            <button 
+              @click="page = 1; fetchArticles()"
+              :disabled="page === 1"
+              class="pagination-btn"
+            >
+              首页
+            </button>
+            <button 
+              @click="page--; fetchArticles()"
+              :disabled="page === 1"
+              class="pagination-btn"
+            >
+              上一页
+            </button>
+            <span class="pagination-page">
+              {{ page }} / {{ Math.ceil(total / pageSize) }}
+            </span>
+            <button 
+              @click="page++; fetchArticles()"
+              :disabled="page >= Math.ceil(total / pageSize)"
+              class="pagination-btn"
+            >
+              下一页
+            </button>
+            <button 
+              @click="page = Math.ceil(total / pageSize); fetchArticles()"
+              :disabled="page >= Math.ceil(total / pageSize)"
+              class="pagination-btn"
+            >
+              末页
+            </button>
           </div>
-        </n-card>
-      </template>
-    </ClientOnly>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { h } from 'vue'
-import { NButton, NInput, NCard, NDataTable, NTag, NPopconfirm } from 'naive-ui'
-import type { DataTableColumns } from 'naive-ui'
+import { NButton, NInput } from 'naive-ui'
 import type { Article, ArticleListResponse } from '~/types/api'
-import { useMessage, useDialog } from 'naive-ui'
+import { useSafeMessage, useSafeDialog } from '~/composables/useNaiveUI'
 import { useErrorHandler } from '~/composables/useErrorHandler'
 
 definePageMeta({
@@ -67,9 +151,9 @@ const route = useRoute()
 const api = useApi()
 const { handleError } = useErrorHandler()
 
-// 只在客户端使用 Naive UI 的 composables
-const message = process.client ? useMessage() : { success: () => {}, error: () => {}, warning: () => {}, info: () => {}, loading: () => {} }
-const dialog = process.client ? useDialog() : { warning: () => {}, error: () => {}, info: () => {}, success: () => {} }
+// 使用安全的 Naive UI composables，避免 provider 未挂载时的错误
+const message = useSafeMessage()
+const dialog = useSafeDialog()
 
 const articles = ref<Article[]>([])
 const loading = ref(false)
@@ -77,95 +161,6 @@ const keyword = ref('')
 const page = ref(1)
 const pageSize = ref(10)
 const total = ref(0)
-
-// 表格列定义
-const columns: DataTableColumns<Article> = [
-  {
-    title: '标题',
-    key: 'title',
-    ellipsis: {
-      tooltip: true
-    }
-  },
-  {
-    title: '分类',
-    key: 'categoryName',
-    width: 120,
-    render(row) {
-      return h(NTag, { type: 'info', size: 'small' }, {
-        default: () => row.categoryName || '未分类'
-      })
-    }
-  },
-  {
-    title: '发布时间',
-    key: 'publishTime',
-    width: 150,
-    render(row) {
-      return formatDate(row.publishTime || row.createdAt)
-    }
-  },
-  {
-    title: '状态',
-    key: 'status',
-    width: 100,
-    render(row) {
-      return h(NTag, {
-        type: row.status === 1 ? 'success' : 'default',
-        size: 'small'
-      }, {
-        default: () => row.status === 1 ? '已发布' : '草稿'
-      })
-    }
-  },
-  {
-    title: '操作',
-    key: 'actions',
-    width: 150,
-    render(row) {
-      return h('div', { class: 'action-buttons' }, [
-        h(NButton, {
-          size: 'small',
-          type: 'primary',
-          quaternary: true,
-          onClick: () => router.push(`/admin/articles/edit/${row.id}`)
-        }, {
-          default: () => '编辑'
-        }),
-        h(NPopconfirm, {
-          onPositiveClick: () => handleDelete(row.id)
-        }, {
-          trigger: () => h(NButton, {
-            size: 'small',
-            type: 'error',
-            quaternary: true
-          }, {
-            default: () => '删除'
-          }),
-          default: () => '确定要删除这篇文章吗？'
-        })
-      ])
-    }
-  }
-]
-
-// 分页配置
-const pagination = computed(() => ({
-  page: page.value,
-  pageSize: pageSize.value,
-  itemCount: total.value,
-  showSizePicker: true,
-  pageSizes: [10, 20, 50],
-  onChange: (p: number) => {
-    page.value = p
-    fetchArticles()
-  },
-  onUpdatePageSize: (size: number) => {
-    pageSize.value = size
-    page.value = 1
-    fetchArticles()
-  }
-}))
 
 const fetchArticles = async () => {
   loading.value = true
@@ -207,6 +202,8 @@ const fetchArticles = async () => {
 }
 
 const handleDelete = async (id: number) => {
+  if (!confirm('确定要删除这篇文章吗？')) return
+  
   try {
     await api.del(`/Articles/${id}`)
     message.success('删除成功')
@@ -246,11 +243,187 @@ onMounted(() => {
   margin-bottom: 1.5rem;
 }
 
-/* 操作按钮组 */
+/* 表格容器 */
+.table-container {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.table-loading,
+.table-empty {
+  padding: 2rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* 数据表格 */
+.data-table {
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+}
+
+.table-header {
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.table-header th {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.table-body {
+  border-collapse: collapse;
+}
+
+.table-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background-color 0.2s ease;
+}
+
+.table-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-cell {
+  padding: 1rem 1.5rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* 标签样式 - 提高文字对比度 */
+.tag {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.tag-info {
+  background: rgba(59, 130, 246, 0.3);
+  border: 1px solid rgba(59, 130, 246, 0.6);
+  color: #bfdbfe;
+}
+
+.tag-success {
+  background: rgba(34, 197, 94, 0.3);
+  border: 1px solid rgba(34, 197, 94, 0.6);
+  color: #a7f3d0;
+}
+
+.tag-default {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* 操作按钮 */
 .action-buttons {
   display: flex;
   gap: 0.5rem;
   align-items: center;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  font-size: 0.875rem;
+}
+
+.btn-link-blue {
+  color: #60a5fa;
+}
+
+.btn-link-blue:hover {
+  color: #93c5fd;
+}
+
+.btn-link-red {
+  color: #f87171;
+}
+
+.btn-link-red:hover {
+  color: #fca5a5;
+}
+
+/* 分页样式 */
+.table-pagination {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pagination-info {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pagination-select {
+  padding: 0.25rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.25rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.pagination-select:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.pagination-buttons {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.pagination-btn {
+  padding: 0.25rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.25rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-page {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.9);
 }
 </style>
 

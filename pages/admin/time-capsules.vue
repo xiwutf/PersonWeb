@@ -42,32 +42,77 @@
     </div>
 
     <!-- 胶囊列表 -->
-    <ClientOnly>
-      <n-card>
-        <n-data-table
-          :columns="columns"
-          :data="capsules"
-          :loading="loading"
-          :bordered="false"
-        />
-      </n-card>
-      <template #fallback>
-        <n-card>
-          <div style="padding: 20px; text-align: center; color: #9ca3af;">
-            加载中...
-          </div>
-        </n-card>
-      </template>
-    </ClientOnly>
+    <div class="table-container">
+      <div v-if="loading" class="table-loading">
+        加载中...
+      </div>
+      <div v-else-if="capsules.length === 0" class="table-empty">
+        暂无时间胶囊
+      </div>
+      <table v-else class="data-table">
+        <thead class="table-header">
+          <tr>
+            <th>内容</th>
+            <th>访客</th>
+            <th>提交时间</th>
+            <th>状态</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody class="table-body">
+          <tr v-for="capsule in capsules" :key="capsule.id" class="table-row">
+            <td class="table-cell table-cell-content">
+              <div class="content-text" :title="capsule.content">{{ capsule.content }}</div>
+            </td>
+            <td class="table-cell">{{ capsule.visitorName || '匿名' }}</td>
+            <td class="table-cell">{{ formatDate(capsule.createdAt) }}</td>
+            <td class="table-cell">
+              <span 
+                class="tag"
+                :class="{
+                  'tag-warning': capsule.status === 0,
+                  'tag-success': capsule.status === 1,
+                  'tag-error': capsule.status === 2
+                }"
+              >
+                {{ getStatusText(capsule.status) }}
+              </span>
+            </td>
+            <td class="table-cell">
+              <div class="action-buttons">
+                <template v-if="capsule.status === 0">
+                  <button 
+                    @click="approveCapsule(capsule.id)" 
+                    class="btn-link btn-link-green"
+                  >
+                    通过
+                  </button>
+                  <button 
+                    @click="rejectCapsule(capsule.id)" 
+                    class="btn-link btn-link-red"
+                  >
+                    拒绝
+                  </button>
+                </template>
+                <button 
+                  @click="deleteCapsule(capsule.id)" 
+                  class="btn-link btn-link-red"
+                >
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { h } from 'vue'
-import { NCard, NDataTable, NTag, NButton, NPopconfirm, NSelect, NGrid, NGi, NStatistic } from 'naive-ui'
-import type { DataTableColumns } from 'naive-ui'
+import { NSelect, NGrid, NGi, NStatistic } from 'naive-ui'
 import type { TimeCapsule, TimeCapsuleListResponse } from '~/types/api'
-import { useMessage, useDialog } from 'naive-ui'
+import { useSafeMessage } from '~/composables/useNaiveUI'
 import { useErrorHandler } from '~/composables/useErrorHandler'
 
 definePageMeta({
@@ -78,9 +123,8 @@ definePageMeta({
 const api = useApi()
 const { handleError } = useErrorHandler()
 
-// 只在客户端使用 Naive UI 的 composables
-const message = process.client ? useMessage() : { success: () => {}, error: () => {}, warning: () => {}, info: () => {}, loading: () => {} }
-const dialog = process.client ? useDialog() : { warning: () => {}, error: () => {}, info: () => {}, success: () => {} }
+// 使用安全的 Naive UI composables，避免 provider 未挂载时的错误
+const message = useSafeMessage()
 
 const capsules = ref<TimeCapsule[]>([])
 const loading = ref(false)
@@ -97,96 +141,6 @@ const statusOptions = [
   { label: '待审核', value: '0' },
   { label: '已展示', value: '1' },
   { label: '已拒绝', value: '2' }
-]
-
-// 表格列定义
-const columns: DataTableColumns<TimeCapsule> = [
-  {
-    title: '内容',
-    key: 'content',
-    ellipsis: {
-      tooltip: true
-    },
-    width: 300
-  },
-  {
-    title: '访客',
-    key: 'visitorName',
-    width: 120,
-    render(row) {
-      return row.visitorName || '匿名'
-    }
-  },
-  {
-    title: '提交时间',
-    key: 'createdAt',
-    width: 180,
-    render(row) {
-      return formatDate(row.createdAt)
-    }
-  },
-  {
-    title: '状态',
-    key: 'status',
-    width: 100,
-    render(row) {
-      const statusConfig = {
-        0: { type: 'warning' as const, text: '待审核' },
-        1: { type: 'success' as const, text: '已展示' },
-        2: { type: 'error' as const, text: '已拒绝' }
-      }
-      const config = statusConfig[row.status as keyof typeof statusConfig] || { type: 'default' as const, text: '未知' }
-      return h(NTag, { type: config.type, size: 'small' }, {
-        default: () => config.text
-      })
-    }
-  },
-  {
-    title: '操作',
-    key: 'actions',
-    width: 200,
-    render(row) {
-      const buttons = []
-      
-      if (row.status === 0) {
-        buttons.push(
-          h(NButton, {
-            size: 'small',
-            type: 'success',
-            quaternary: true,
-            onClick: () => approveCapsule(row.id)
-          }, {
-            default: () => '通过'
-          }),
-          h(NButton, {
-            size: 'small',
-            type: 'error',
-            quaternary: true,
-            onClick: () => rejectCapsule(row.id)
-          }, {
-            default: () => '拒绝'
-          })
-        )
-      }
-      
-      buttons.push(
-        h(NPopconfirm, {
-          onPositiveClick: () => deleteCapsule(row.id)
-        }, {
-          trigger: () => h(NButton, {
-            size: 'small',
-            type: 'error',
-            quaternary: true
-          }, {
-            default: () => h('i', { class: 'fas fa-trash' })
-          }),
-          default: () => '确定要删除这个时间胶囊吗？'
-        })
-      )
-      
-      return h('div', { class: 'action-buttons' }, buttons)
-    }
-  }
 ]
 
 const fetchCapsules = async () => {
@@ -291,42 +245,34 @@ const updateStats = () => {
 }
 
 const approveCapsule = async (id: number) => {
-  dialog.warning({
-    title: '确认通过',
-    content: '确定要通过这个时间胶囊吗？',
-    positiveText: '确定',
-    negativeText: '取消',
-    onPositiveClick: async () => {
-      try {
-        await api.post(`/TimeCapsule/${id}/approve`)
-        message.success('已通过审核')
-        await fetchCapsules() // 刷新列表和统计
-      } catch (e: unknown) {
-        handleError(e, '操作失败')
-      }
-    }
-  })
+  // 使用浏览器原生 confirm 作为降级方案
+  if (!confirm('确定要通过这个时间胶囊吗？')) return
+  
+  try {
+    await api.post(`/TimeCapsule/${id}/approve`)
+    message.success('已通过审核')
+    await fetchCapsules() // 刷新列表和统计
+  } catch (e: unknown) {
+    handleError(e, '操作失败')
+  }
 }
 
 const rejectCapsule = async (id: number) => {
-  dialog.warning({
-    title: '确认拒绝',
-    content: '确定要拒绝这个时间胶囊吗？',
-    positiveText: '确定',
-    negativeText: '取消',
-    onPositiveClick: async () => {
-      try {
-        await api.post(`/TimeCapsule/${id}/reject`)
-        message.success('已拒绝')
-        await fetchCapsules() // 刷新列表和统计
-      } catch (e: unknown) {
-        handleError(e, '操作失败')
-      }
-    }
-  })
+  // 使用浏览器原生 confirm 作为降级方案
+  if (!confirm('确定要拒绝这个时间胶囊吗？')) return
+  
+  try {
+    await api.post(`/TimeCapsule/${id}/reject`)
+    message.success('已拒绝')
+    await fetchCapsules() // 刷新列表和统计
+  } catch (e: unknown) {
+    handleError(e, '操作失败')
+  }
 }
 
 const deleteCapsule = async (id: number) => {
+  if (!confirm('确定要删除这个时间胶囊吗？')) return
+  
   try {
     await api.del(`/TimeCapsule/${id}`)
     message.success('删除成功')
@@ -377,11 +323,139 @@ onMounted(() => {
   margin-bottom: 1.5rem;
 }
 
-/* 操作按钮组 */
+/* 表格容器 */
+.table-container {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.table-loading,
+.table-empty {
+  padding: 2rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* 数据表格 */
+.data-table {
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+}
+
+.table-header {
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.table-header th {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.table-body {
+  border-collapse: collapse;
+}
+
+.table-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background-color 0.2s ease;
+}
+
+.table-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-cell {
+  padding: 1rem 1.5rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.table-cell-content {
+  max-width: 24rem;
+}
+
+.content-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 标签样式 - 提高文字对比度 */
+.tag {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.tag-warning {
+  background: rgba(251, 191, 36, 0.3);
+  border: 1px solid rgba(251, 191, 36, 0.6);
+  color: #fde68a;
+}
+
+.tag-success {
+  background: rgba(34, 197, 94, 0.3);
+  border: 1px solid rgba(34, 197, 94, 0.6);
+  color: #a7f3d0;
+}
+
+.tag-error {
+  background: rgba(239, 68, 68, 0.3);
+  border: 1px solid rgba(239, 68, 68, 0.6);
+  color: #fecaca;
+}
+
+/* 操作按钮 */
 .action-buttons {
   display: flex;
   gap: 0.5rem;
   align-items: center;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  font-size: 0.875rem;
+}
+
+.btn-link-blue {
+  color: #60a5fa;
+}
+
+.btn-link-blue:hover {
+  color: #93c5fd;
+}
+
+.btn-link-green {
+  color: #34d399;
+}
+
+.btn-link-green:hover {
+  color: #6ee7b7;
+}
+
+.btn-link-red {
+  color: #f87171;
+}
+
+.btn-link-red:hover {
+  color: #fca5a5;
 }
 </style>
 

@@ -93,7 +93,7 @@
 <script setup lang="ts">
 import { NButton, NCard, NTag, NPopconfirm, NModal, NForm, NFormItem, NInput, NInputNumber, NColorPicker, NEmpty, type FormInst, type FormRules } from 'naive-ui'
 import type { TimelineEvent, TimelineEventRequest } from '~/types/api'
-import { useMessage } from 'naive-ui'
+import { useSafeMessage } from '~/composables/useNaiveUI'
 import { useErrorHandler } from '~/composables/useErrorHandler'
 
 definePageMeta({
@@ -104,8 +104,8 @@ definePageMeta({
 const api = useApi()
 const { handleError } = useErrorHandler()
 
-// 只在客户端使用 Naive UI 的 composables
-const message = process.client ? useMessage() : { success: () => {}, error: () => {}, warning: () => {}, info: () => {}, loading: () => {} }
+// 使用安全的 Naive UI composables，避免 provider 未挂载时的错误
+const message = useSafeMessage()
 
 const events = ref<TimelineEvent[]>([])
 const loading = ref(false)
