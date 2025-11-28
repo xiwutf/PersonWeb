@@ -68,6 +68,16 @@
           技能树管理
         </NuxtLink>
 
+        <NuxtLink to="/admin/tasks" class="flex items-center px-4 py-2 rounded hover:bg-slate-700 transition-colors" active-class="bg-blue-600 hover:bg-blue-600">
+          <i class="fas fa-tasks w-6 text-center mr-2"></i>
+          任务管理
+        </NuxtLink>
+
+        <NuxtLink to="/admin/goals" class="flex items-center px-4 py-2 rounded hover:bg-slate-700 transition-colors" active-class="bg-blue-600 hover:bg-blue-600">
+          <i class="fas fa-bullseye w-6 text-center mr-2"></i>
+          年度目标
+        </NuxtLink>
+
         <div class="text-xs text-slate-400 px-4 mt-4 mb-2 uppercase font-semibold">系统设置</div>
         
         <NuxtLink to="/admin/error-logs" class="flex items-center px-4 py-2 rounded hover:bg-slate-700 transition-colors" active-class="bg-blue-600 hover:bg-blue-600">

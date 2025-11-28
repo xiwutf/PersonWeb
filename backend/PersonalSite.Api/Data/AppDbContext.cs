@@ -34,6 +34,9 @@ public class AppDbContext : DbContext
     public DbSet<Skill> Skills { get; set; }
     public DbSet<SkillRating> SkillRatings { get; set; }
     public DbSet<LearningLog> LearningLogs { get; set; }
+    public DbSet<TaskItem> Tasks { get; set; }
+    public DbSet<Goal> Goals { get; set; }
+    public DbSet<MonthlyKpi> MonthlyKpis { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

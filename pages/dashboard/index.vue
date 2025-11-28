@@ -93,6 +93,104 @@
         </div>
       </div>
 
+      <!-- 任务统计 -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <!-- 任务统计卡片 -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-bold text-gray-800 dark:text-white">任务统计</h3>
+            <NuxtLink to="/admin/tasks" class="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400">管理任务 →</NuxtLink>
+          </div>
+          <div v-if="taskStats" class="grid grid-cols-2 gap-4">
+            <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-900 dark:to-yellow-800 rounded-xl p-4">
+              <div class="text-sm text-gray-600 dark:text-gray-300 mb-1">待处理</div>
+              <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ taskStats.Pending || 0 }}</div>
+            </div>
+            <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-800 rounded-xl p-4">
+              <div class="text-sm text-gray-600 dark:text-gray-300 mb-1">进行中</div>
+              <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ taskStats.InProgress || 0 }}</div>
+            </div>
+            <div class="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900 dark:to-green-800 rounded-xl p-4">
+              <div class="text-sm text-gray-600 dark:text-gray-300 mb-1">已完成</div>
+              <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ taskStats.Completed || 0 }}</div>
+            </div>
+            <div class="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900 dark:to-red-800 rounded-xl p-4">
+              <div class="text-sm text-gray-600 dark:text-gray-300 mb-1">已逾期</div>
+              <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ taskStats.Overdue || 0 }}</div>
+            </div>
+          </div>
+          <div v-else class="text-center text-gray-500 py-8">加载中...</div>
+        </div>
+
+        <!-- 年度目标卡片 -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-bold text-gray-800 dark:text-white">年度目标</h3>
+            <NuxtLink to="/admin/goals" class="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400">管理目标 →</NuxtLink>
+          </div>
+          <div v-if="goalsLoading" class="text-center text-gray-500 py-8">加载中...</div>
+          <div v-else-if="activeGoals.length === 0" class="text-center text-gray-500 py-8">
+            <p class="mb-4">暂无年度目标</p>
+            <NuxtLink to="/admin/goals" class="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400">创建目标</NuxtLink>
+          </div>
+          <div v-else class="space-y-4 max-h-64 overflow-y-auto">
+            <div v-for="goal in activeGoals" :key="goal.id" class="p-4 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-xl border border-purple-100 dark:border-purple-800">
+              <div class="flex items-start justify-between mb-2">
+                <h4 class="font-semibold text-gray-800 dark:text-white text-sm">{{ goal.title }}</h4>
+                <span class="text-xs text-gray-500 dark:text-gray-400">{{ goal.year }}年</span>
+              </div>
+              <div v-if="goal.targetValue" class="text-xs text-gray-600 dark:text-gray-400 mb-2">
+                {{ goal.currentValue }}{{ goal.unit || '' }} / {{ goal.targetValue }}{{ goal.unit || '' }}
+              </div>
+              <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
+                <div 
+                  :class="getGoalProgressColor(goal.progress)"
+                  class="h-2 rounded-full transition-all duration-300"
+                  :style="{ width: Math.min(goal.progress, 100) + '%' }"
+                ></div>
+              </div>
+              <div class="text-xs text-gray-500 dark:text-gray-400 text-right">{{ goal.progress }}%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 今日任务列表 -->
+      <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 mb-8">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-lg font-bold text-gray-800 dark:text-white">今日任务</h3>
+          <button @click="fetchTodayTasks" class="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400">刷新</button>
+        </div>
+          <div v-if="todayTasksLoading" class="text-center text-gray-500 py-8">加载中...</div>
+          <div v-else-if="todayTasks.length === 0" class="text-center text-gray-500 py-8">暂无任务</div>
+          <div v-else class="space-y-3 max-h-64 overflow-y-auto">
+            <div v-for="task in todayTasks" :key="task.id" class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-1">
+                    <h4 class="font-medium text-gray-800 dark:text-white">{{ task.title }}</h4>
+                    <span :class="getStatusClass(task.status)" class="px-2 py-0.5 rounded text-xs">
+                      {{ getStatusText(task.status) }}
+                    </span>
+                  </div>
+                  <div class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+                    <span>进度: {{ task.progress }}%</span>
+                    <span v-if="task.dueDate">截止: {{ formatTaskDate(task.dueDate) }}</span>
+                  </div>
+                  <div class="mt-2 w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5">
+                    <div 
+                      :class="getProgressColor(task.progress)"
+                      class="h-1.5 rounded-full transition-all duration-300"
+                      :style="{ width: task.progress + '%' }"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- GitHub 代码统计 -->
       <div v-if="githubStats" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- 代码语言分布 -->
@@ -176,6 +274,11 @@ const latest = ref({
 })
 const githubLanguages = ref<any[]>([])
 const githubStats = ref<any>(null)
+const taskStats = ref<any>(null)
+const todayTasks = ref<any[]>([])
+const todayTasksLoading = ref(false)
+const activeGoals = ref<any[]>([])
+const goalsLoading = ref(false)
 
 // GitHub 仓库配置（可以从配置中心获取）
 const githubRepo = ref<string | null>(null)
@@ -336,6 +439,111 @@ const languageChartOptions = {
   }
 }
 
+// 加载任务统计
+const loadTaskStats = async () => {
+  try {
+    const res = await api.get('/Tasks/stats')
+    if (res?.data) {
+      taskStats.value = res.data
+    }
+  } catch (error) {
+    console.error('加载任务统计失败:', error)
+  }
+}
+
+// 加载年度目标
+const loadGoals = async () => {
+  goalsLoading.value = true
+  try {
+    const currentYear = new Date().getFullYear()
+    const res = await api.get('/Goals', {
+      params: {
+        year: currentYear,
+        status: 'active'
+      }
+    })
+    if (res?.data?.Items) {
+      activeGoals.value = res.data.Items.slice(0, 5) // 只显示前5个
+    }
+  } catch (error) {
+    console.error('加载年度目标失败:', error)
+  } finally {
+    goalsLoading.value = false
+  }
+}
+
+// 加载今日任务
+const fetchTodayTasks = async () => {
+  todayTasksLoading.value = true
+  try {
+    const today = new Date()
+    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+    const todayEnd = new Date(todayStart)
+    todayEnd.setDate(todayEnd.getDate() + 1)
+
+    const res = await api.get('/Tasks', {
+      params: {
+        page: 1,
+        pageSize: 10,
+        status: 'pending,in_progress'
+      }
+    })
+    
+    if (res?.data?.Items) {
+      // 筛选出今日任务（截止日期在今天或之前，且未完成）
+      todayTasks.value = res.data.Items.filter((task: any) => {
+        if (!task.dueDate) return false
+        const dueDate = new Date(task.dueDate)
+        return dueDate >= todayStart && dueDate < todayEnd && task.status !== 'completed'
+      }).slice(0, 5) // 只显示前5个
+    }
+  } catch (error) {
+    console.error('加载今日任务失败:', error)
+  } finally {
+    todayTasksLoading.value = false
+  }
+}
+
+const getStatusClass = (status: string) => {
+  const classes: Record<string, string> = {
+    pending: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300',
+    in_progress: 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300',
+    completed: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300',
+    cancelled: 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300'
+  }
+  return classes[status] || classes.pending
+}
+
+const getStatusText = (status: string) => {
+  const texts: Record<string, string> = {
+    pending: '待处理',
+    in_progress: '进行中',
+    completed: '已完成',
+    cancelled: '已取消'
+  }
+  return texts[status] || status
+}
+
+const getProgressColor = (progress: number) => {
+  if (progress === 100) return 'bg-green-500'
+  if (progress >= 50) return 'bg-blue-500'
+  if (progress >= 25) return 'bg-yellow-500'
+  return 'bg-gray-400'
+}
+
+const getGoalProgressColor = (progress: number) => {
+  if (progress === 100) return 'bg-gradient-to-r from-green-400 to-green-600'
+  if (progress >= 50) return 'bg-gradient-to-r from-blue-400 to-blue-600'
+  if (progress >= 25) return 'bg-gradient-to-r from-yellow-400 to-yellow-600'
+  return 'bg-gradient-to-r from-gray-400 to-gray-500'
+}
+
+const formatTaskDate = (date: string) => {
+  if (!date) return ''
+  const d = new Date(date)
+  return `${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`
+}
+
 // 加载 GitHub 统计数据
 const loadGithubStats = async () => {
   // 从配置或环境变量获取 GitHub 仓库
@@ -379,6 +587,13 @@ onMounted(async () => {
     if (metrics.value.length > 0) {
       latest.value = metrics.value[metrics.value.length - 1]
     }
+
+    // 加载任务统计和今日任务
+    await loadTaskStats()
+    await fetchTodayTasks()
+
+    // 加载年度目标
+    await loadGoals()
 
     // 加载 GitHub 统计数据
     await loadGithubStats()
