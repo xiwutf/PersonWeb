@@ -27,7 +27,7 @@ public class RecommendationController : ControllerBase
     /// 记录用户行为
     /// </summary>
     [HttpPost("behavior")]
-    public async Task<ActionResult<ApiResponse>> RecordBehavior([FromBody] BehaviorRequest request)
+    public async Task<ActionResult<ApiResponse>> RecordBehavior([FromBody] RecommendationBehaviorRequest request)
     {
         try
         {
@@ -192,7 +192,7 @@ public class RecommendationController : ControllerBase
     }
 }
 
-public class BehaviorRequest
+public class RecommendationBehaviorRequest
 {
     public string? UserId { get; set; }
     public string BehaviorType { get; set; } = string.Empty;

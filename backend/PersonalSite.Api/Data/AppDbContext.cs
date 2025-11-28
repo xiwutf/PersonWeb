@@ -58,6 +58,15 @@ public class AppDbContext : DbContext
     public DbSet<VisitorChallengeParticipant> VisitorChallengeParticipants { get; set; }
     public DbSet<VisitorAchievement> VisitorAchievements { get; set; }
     public DbSet<VisitorTriggerEvent> VisitorTriggerEvents { get; set; }
+    public DbSet<ToolCategory> ToolCategories { get; set; }
+    public DbSet<Tool> Tools { get; set; }
+    public DbSet<ToolPurchase> ToolPurchases { get; set; }
+    public DbSet<ToolUsage> ToolUsages { get; set; }
+    public DbSet<ToolApiKey> ToolApiKeys { get; set; }
+    public DbSet<ToolCollection> ToolCollections { get; set; }
+    public DbSet<ToolCollectionItem> ToolCollectionItems { get; set; }
+    public DbSet<ToolReview> ToolReviews { get; set; }
+    public DbSet<ToolAnalytics> ToolAnalytics { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

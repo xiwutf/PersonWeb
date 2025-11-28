@@ -87,9 +87,9 @@ public class InvestmentController : ControllerBase
 
             var investment = new Investment
             {
-                Code = request.Code,
-                Name = request.Name,
-                Type = request.Type,
+                Code = request.Code ?? string.Empty,
+                Name = request.Name ?? string.Empty, // 处理可能的 null 值
+                Type = request.Type ?? "stock",
                 Quantity = request.Quantity,
                 CostPrice = request.CostPrice,
                 CurrentPrice = currentPrice,

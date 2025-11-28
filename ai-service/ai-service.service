@@ -15,8 +15,8 @@ Environment="LOG_LEVEL=INFO"
 Environment="LOG_FILE=/srv/ai-service/logs/ai-service.log"
 
 # 启动命令（使用虚拟环境中的 Python）
-# 如果使用 Python 3.11，修改为：ExecStart=/srv/ai-service/venv/bin/uvicorn
-ExecStart=/srv/ai-service/venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8001
+# 确保工作目录正确，使用绝对路径
+ExecStart=/srv/ai-service/venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8001
 
 # 重启策略
 Restart=always

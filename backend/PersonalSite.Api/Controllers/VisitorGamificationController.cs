@@ -106,7 +106,7 @@ public class VisitorGamificationController : ControllerBase
     /// 记录访客行为并触发事件
     /// </summary>
     [HttpPost("behavior")]
-    public async Task<ActionResult<ApiResponse<object>>> RecordBehavior([FromBody] BehaviorRequest request)
+    public async Task<ActionResult<ApiResponse<object>>> RecordBehavior([FromBody] VisitorBehaviorRequest request)
     {
         try
         {
@@ -402,7 +402,7 @@ public class VisitorIdRequest
     public string VisitorId { get; set; } = string.Empty;
 }
 
-public class BehaviorRequest
+public class VisitorBehaviorRequest
 {
     public string VisitorId { get; set; } = string.Empty;
     public string BehaviorType { get; set; } = string.Empty;

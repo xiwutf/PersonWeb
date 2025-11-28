@@ -123,6 +123,28 @@
         </TransitionGroup>
       </div>
 
+      <!-- 快速导航 -->
+      <div class="mt-16 flex justify-center gap-4">
+        <NuxtLink
+          to="/tools/marketplace"
+          class="px-6 py-3 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white rounded-xl transition-all font-medium"
+        >
+          🛒 工具商城
+        </NuxtLink>
+        <NuxtLink
+          to="/tools/collections"
+          class="px-6 py-3 bg-slate-700/50 hover:bg-slate-600/50 text-slate-200 rounded-xl transition-all font-medium"
+        >
+          📦 工具合集
+        </NuxtLink>
+        <NuxtLink
+          to="/tools/my-tools"
+          class="px-6 py-3 bg-slate-700/50 hover:bg-slate-600/50 text-slate-200 rounded-xl transition-all font-medium"
+        >
+          🎒 我的工具
+        </NuxtLink>
+      </div>
+
       <!-- 底部CTA -->
       <div class="mt-24 text-center">
         <div class="bg-gradient-to-r from-orange-900/50 to-red-900/50 backdrop-blur-md border border-white/10 rounded-3xl p-10 md:p-16 relative overflow-hidden group">

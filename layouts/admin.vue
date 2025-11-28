@@ -116,6 +116,10 @@
           年度目标
         </NuxtLink>
 
+        <NuxtLink to="/admin/toolbox" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
+          <span class="mr-2">🛒</span>
+          <span>工具商城管理</span>
+        </NuxtLink>
         <NuxtLink to="/admin/skill-tree" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
           <i class="fas fa-sitemap w-6 text-center mr-2"></i>
           技能树管理
