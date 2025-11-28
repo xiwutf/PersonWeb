@@ -200,6 +200,16 @@ const navigationItems = [
     title: '仪表盘',
     path: '/dashboard',
     icon: '⚡'
+  },
+  {
+    title: '技能树',
+    path: '/skills',
+    icon: '🌳'
+  },
+  {
+    title: '小游戏',
+    path: '/game',
+    icon: '🎮'
   }
 ]
 

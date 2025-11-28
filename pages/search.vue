@@ -48,27 +48,31 @@
                   <!-- 搜索历史 -->
                   <div v-if="searchHistory.length > 0 && !searchQuery" class="p-2">
                     <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase">搜索历史</div>
-                    <button
+                    <div
                       v-for="(item, index) in searchHistory"
                       :key="index"
-                      @click="selectSuggestion(item)"
-                      class="w-full px-4 py-2 text-left hover:bg-gray-100 rounded-lg flex items-center justify-between group"
+                      class="w-full px-4 py-2 hover:bg-gray-100 rounded-lg flex items-center justify-between group cursor-pointer"
                     >
-                      <div class="flex items-center gap-2">
+                      <button
+                        @click="selectSuggestion(item)"
+                        class="flex-1 flex items-center gap-2 text-left"
+                      >
                         <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                         <span class="text-gray-700">{{ item }}</span>
-                      </div>
+                      </button>
                       <button
                         @click.stop="removeFromHistory(item)"
-                        class="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500"
+                        class="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 p-1 flex-shrink-0"
+                        type="button"
+                        aria-label="删除"
                       >
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                       </button>
-                    </button>
+                    </div>
                     <div class="px-3 py-2 border-t border-gray-100">
                       <button
                         @click="clearHistory"

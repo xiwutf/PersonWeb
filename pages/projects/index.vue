@@ -1,29 +1,44 @@
 ﻿<template>
-  <div class="container mx-auto px-4 py-12">
-    <div class="text-center mb-16">
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">项目展示</h1>
-      <p class="text-xl text-gray-600 dark:text-gray-400">探索我的开源项目和技术实验</p>
-    </div>
-
-    <div v-if="loading" class="text-center py-20">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-    </div>
-
-    <!-- 错误提示 -->
-    <div v-if="error" class="bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 p-4 rounded mb-8">
-      <p class="font-semibold">加载失败</p>
-      <p class="text-sm mt-1">{{ error }}</p>
-      <p v-if="debugData" class="text-xs mt-2 opacity-75">{{ debugData }}</p>
+  <div class="relative min-h-screen">
+    <!-- 3D 旋转空间视图切换 -->
+    <div class="fixed top-20 right-4 z-20">
+      <button
+        @click="viewMode = viewMode === 'grid' ? '3d' : 'grid'"
+        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-lg backdrop-blur-md"
+      >
+        {{ viewMode === 'grid' ? '🌐 3D视图' : '📋 列表视图' }}
+      </button>
     </div>
     
-    <!-- 无数据提示 -->
-    <div v-if="projects.length === 0 && !loading && !error" class="text-center py-20">
-      <div class="text-6xl mb-4">📦</div>
-      <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">暂无项目</h3>
-      <p class="text-gray-500 dark:text-gray-400">还没有添加任何项目，请先在后台管理中创建项目</p>
-    </div>
+    <!-- 3D 旋转空间 -->
+    <Project3DSpace v-if="viewMode === '3d' && !loading && projects.length > 0" :projects="projects" />
+    
+    <!-- 传统网格视图 -->
+    <div v-else class="container mx-auto px-4 py-12">
+      <div class="text-center mb-16">
+        <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">项目展示</h1>
+        <p class="text-xl text-gray-600 dark:text-gray-400">探索我的开源项目和技术实验</p>
+      </div>
 
-    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div v-if="loading" class="text-center py-20">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+      </div>
+
+      <!-- 错误提示 -->
+      <div v-if="error" class="bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 p-4 rounded mb-8">
+        <p class="font-semibold">加载失败</p>
+        <p class="text-sm mt-1">{{ error }}</p>
+        <p v-if="debugData" class="text-xs mt-2 opacity-75">{{ debugData }}</p>
+      </div>
+      
+      <!-- 无数据提示 -->
+      <div v-if="projects.length === 0 && !loading && !error" class="text-center py-20">
+        <div class="text-6xl mb-4">📦</div>
+        <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">暂无项目</h3>
+        <p class="text-gray-500 dark:text-gray-400">还没有添加任何项目，请先在后台管理中创建项目</p>
+      </div>
+
+      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       <NuxtLink v-for="project in projects" :key="project.id" :to="`/projects/${project.id}`" class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col">
         <!-- 封面图 -->
         <div class="h-48 overflow-hidden relative group">
@@ -75,6 +90,7 @@
           </div>
         </div>
       </NuxtLink>
+      </div>
     </div>
   </div>
 </template>
@@ -100,6 +116,7 @@ const projects = ref<Project[]>([])
 const loading = ref(true)
 const error = ref('')
 const debugData = ref('')
+const viewMode = ref<'grid' | '3d'>('grid')
 
 // 图表配置
 const chartOptions = {

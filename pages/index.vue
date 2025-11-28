@@ -3,10 +3,18 @@
     <!-- 全局噪点纹理 -->
     <div class="fixed inset-0 pointer-events-none opacity-[0.03] z-50 mix-blend-overlay" style="background-image: url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E&quot;);"></div>
 
-    <!-- Hero Banner -->
-    <section class="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-[#0f172a]">
+    <!-- Hero Banner with Immersive 3D -->
+    <section class="relative min-h-[100vh] flex items-center justify-center overflow-hidden bg-[#0f172a]">
+      <!-- 流体背景 -->
+      <FluidBackground :intensity="0.3" color="#3b82f6" :interactive="true" />
+      
+      <!-- 沉浸式3D背景 -->
+      <div class="absolute inset-0 z-0">
+        <Immersive3DScene :show-hint="false" :scroll-enabled="true" />
+      </div>
+      
       <!-- 动态背景装饰 -->
-      <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute inset-0 overflow-hidden pointer-events-none z-[1]">
         <div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-600/20 rounded-full mix-blend-screen filter blur-[100px] animate-blob"></div>
         <div class="absolute top-[20%] right-[-10%] w-[40%] h-[40%] bg-purple-600/20 rounded-full mix-blend-screen filter blur-[100px] animate-blob animation-delay-2000"></div>
         <div class="absolute bottom-[-10%] left-[20%] w-[40%] h-[40%] bg-cyan-600/20 rounded-full mix-blend-screen filter blur-[100px] animate-blob animation-delay-4000"></div>
@@ -65,19 +73,25 @@
             </div>
           </div>
           
-          <!-- 右侧视觉元素 -->
+          <!-- 右侧视觉元素 - 3D粒子头像 -->
           <div class="relative hidden lg:block" data-aos="fade-left">
             <div class="relative w-full max-w-sm mx-auto aspect-square">
               <!-- 光晕背景 -->
               <div class="absolute inset-0 bg-gradient-to-tr from-blue-500 to-purple-500 rounded-[2rem] rotate-6 opacity-30 blur-2xl animate-pulse"></div>
               
-              <TiltCard class="w-full h-full">
-                <div class="w-full h-full bg-slate-800/50 rounded-[2rem] shadow-2xl overflow-hidden border border-white/10 backdrop-blur-xl relative group">
-                  <img src="/images/avatar.jpg" alt="Avatar" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent"></div>
+              <GlassCard class="w-full h-full rounded-[2rem] overflow-hidden">
+                <div class="w-full h-full relative">
+                  <ParticleAvatar
+                    :image-url="'/images/avatar.jpg'"
+                    :text="'溪午听风'"
+                    :subtitle="'全栈开发者'"
+                    :particle-count="2000"
+                    :interactive="true"
+                    class="w-full h-full"
+                  />
                   
                   <!-- 悬浮标签 -->
-                  <div class="absolute bottom-6 left-6 right-6 p-4 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 shadow-lg">
+                  <div class="absolute bottom-6 left-6 right-6 p-4 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 shadow-lg z-20">
                     <div class="flex items-center justify-between">
                       <div>
                         <h3 class="font-bold text-white">全栈开发者</h3>
@@ -89,7 +103,7 @@
                     </div>
                   </div>
                 </div>
-              </TiltCard>
+              </GlassCard>
               
               <!-- 装饰性悬浮卡片 -->
               <div class="absolute -right-8 top-12 p-3 bg-slate-800/80 backdrop-blur-md rounded-xl shadow-xl border border-white/10 animate-float-delayed w-40 z-20">

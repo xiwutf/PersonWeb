@@ -63,6 +63,11 @@
           投资仪表盘
         </NuxtLink>
 
+        <NuxtLink to="/admin/skill-tree" class="flex items-center px-4 py-2 rounded hover:bg-slate-700 transition-colors" active-class="bg-blue-600 hover:bg-blue-600">
+          <i class="fas fa-sitemap w-6 text-center mr-2"></i>
+          技能树管理
+        </NuxtLink>
+
         <div class="text-xs text-slate-400 px-4 mt-4 mb-2 uppercase font-semibold">系统设置</div>
         
         <NuxtLink to="/admin/error-logs" class="flex items-center px-4 py-2 rounded hover:bg-slate-700 transition-colors" active-class="bg-blue-600 hover:bg-blue-600">

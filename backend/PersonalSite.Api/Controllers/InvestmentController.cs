@@ -255,6 +255,39 @@ public class InvestmentController : ControllerBase
     }
 
     /// <summary>
+    /// 删除投资记录
+    /// </summary>
+    [HttpDelete("{id}")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse>> Delete(long id)
+    {
+        try
+        {
+            var investment = await _context.Investments.FindAsync(id);
+            if (investment == null)
+            {
+                return Ok(ApiResponse.Error("未找到", 404));
+            }
+
+            // 删除关联的交易记录
+            var transactions = await _context.InvestmentTransactions
+                .Where(t => t.InvestmentId == id)
+                .ToListAsync();
+            _context.InvestmentTransactions.RemoveRange(transactions);
+
+            // 删除投资记录
+            _context.Investments.Remove(investment);
+            await _context.SaveChangesAsync();
+
+            return Ok(ApiResponse.Success(null, "删除成功"));
+        }
+        catch (Exception ex)
+        {
+            return Ok(ApiResponse.Error($"删除失败: {ex.Message}", 500));
+        }
+    }
+
+    /// <summary>
     /// 刷新所有价格
     /// </summary>
     [HttpPost("refresh-prices")]
