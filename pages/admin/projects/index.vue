@@ -22,19 +22,29 @@
       </div>
     </div>
 
-    <n-card>
-      <n-data-table
-        :columns="columns"
-        :data="projects"
-        :loading="loading"
-        :bordered="false"
-      />
-    </n-card>
+    <ClientOnly>
+      <n-card>
+        <n-data-table
+          :columns="columns"
+          :data="projects"
+          :loading="loading"
+          :bordered="false"
+        />
+      </n-card>
+      <template #fallback>
+        <n-card>
+          <div style="padding: 20px; text-align: center; color: #9ca3af;">
+            加载中...
+          </div>
+        </n-card>
+      </template>
+    </ClientOnly>
   </div>
 </template>
 
 <script setup lang="ts">
-import { NButton, NCard, NDataTable, NTag, NPopconfirm, NAvatar, h } from 'naive-ui'
+import { h } from 'vue'
+import { NButton, NCard, NDataTable, NTag, NPopconfirm, NAvatar } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
 import type { Project } from '~/types/api'
 import { useMessage } from 'naive-ui'
@@ -46,8 +56,10 @@ definePageMeta({
 })
 
 const api = useApi()
-const message = useMessage()
 const { handleError } = useErrorHandler()
+
+// 只在客户端使用 Naive UI 的 composables
+const message = process.client ? useMessage() : { success: () => {}, error: () => {}, warning: () => {}, info: () => {}, loading: () => {} }
 
 const projects = ref<Project[]>([])
 const loading = ref(false)

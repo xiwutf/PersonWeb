@@ -5,7 +5,7 @@
   >
     <!-- 侧边栏 -->
     <aside 
-      class="w-64 text-white flex flex-col fixed h-full left-0 top-0 z-10 admin-sidebar"
+      class="w-64 text-white flex flex-col fixed h-full left-0 top-0 z-50 admin-sidebar"
       :style="sidebarStyle"
     >
       <div class="p-6 text-xl font-bold border-b border-slate-700 flex items-center gap-2">
@@ -15,7 +15,7 @@
         <NuxtLink 
           to="/admin" 
           class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
-          :class="{ 'admin-sidebar-link-active': $route.path === '/admin' }"
+          :class="{ 'admin-sidebar-link-active': route.path === '/admin' }"
         >
           <i class="fas fa-chart-line w-6 text-center mr-2"></i>
           仪表盘
@@ -23,34 +23,55 @@
         
         <div class="text-xs text-slate-400 px-4 mt-4 mb-2 uppercase font-semibold">内容管理</div>
         
-        <NuxtLink 
-          to="/admin/articles" 
+        <a 
+          href="/admin/articles"
           class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
-          :class="{ 'admin-sidebar-link-active': $route.path.startsWith('/admin/articles') }"
+          :class="{ 'admin-sidebar-link-active': route.path.startsWith('/admin/articles') }"
+          @click.prevent="() => router.push('/admin/articles')"
         >
           <i class="fas fa-file-alt w-6 text-center mr-2"></i>
           文章管理
-        </NuxtLink>
+        </a>
         
-        <NuxtLink to="/admin/categories" class="flex items-center px-4 py-2 rounded hover:bg-slate-700 transition-colors" active-class="bg-blue-600 hover:bg-blue-600">
+        <a 
+          href="/admin/categories"
+          class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
+          :class="{ 'admin-sidebar-link-active': route.path === '/admin/categories' }"
+          @click.prevent="() => router.push('/admin/categories')"
+        >
           <i class="fas fa-folder w-6 text-center mr-2"></i>
           分类管理
-        </NuxtLink>
+        </a>
         
-        <NuxtLink to="/admin/projects" class="flex items-center px-4 py-2 rounded hover:bg-slate-700 transition-colors" active-class="bg-blue-600 hover:bg-blue-600">
+        <a 
+          href="/admin/projects"
+          class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
+          :class="{ 'admin-sidebar-link-active': route.path.startsWith('/admin/projects') }"
+          @click.prevent="() => router.push('/admin/projects')"
+        >
           <i class="fas fa-project-diagram w-6 text-center mr-2"></i>
           项目管理
-        </NuxtLink>
+        </a>
         
-        <NuxtLink to="/admin/tools" class="flex items-center px-4 py-2 rounded hover:bg-slate-700 transition-colors" active-class="bg-blue-600 hover:bg-blue-600">
+        <a 
+          href="/admin/tools"
+          class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
+          :class="{ 'admin-sidebar-link-active': route.path === '/admin/tools' }"
+          @click.prevent="() => router.push('/admin/tools')"
+        >
           <i class="fas fa-tools w-6 text-center mr-2"></i>
           工具管理
-        </NuxtLink>
+        </a>
 
-        <NuxtLink to="/admin/time-capsules" class="flex items-center px-4 py-2 rounded hover:bg-slate-700 transition-colors" active-class="bg-blue-600 hover:bg-blue-600">
+        <a 
+          href="/admin/time-capsules"
+          class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
+          :class="{ 'admin-sidebar-link-active': route.path === '/admin/time-capsules' }"
+          @click.prevent="() => router.push('/admin/time-capsules')"
+        >
           <i class="fas fa-clock w-6 text-center mr-2"></i>
           时间胶囊
-        </NuxtLink>
+        </a>
 
         <NuxtLink to="/admin/knowledge" class="flex items-center px-4 py-2 rounded hover:bg-slate-700 transition-colors" active-class="bg-blue-600 hover:bg-blue-600">
           <i class="fas fa-book w-6 text-center mr-2"></i>
@@ -135,17 +156,32 @@
 
     <!-- 主内容区 -->
     <main class="flex-1 ml-64 p-8 admin-main" :style="mainContentStyle">
-      <slot />
+      <n-message-provider v-if="isClient">
+        <n-dialog-provider>
+          <slot />
+        </n-dialog-provider>
+      </n-message-provider>
+      <template v-else>
+        <slot />
+      </template>
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted, computed, watch } from 'vue'
+import { NMessageProvider, NDialogProvider } from 'naive-ui'
 import { useAdminGlobalStyle } from '~/composables/useAdminStyle'
 
 const router = useRouter()
+const route = useRoute()
 const { globalStyle, styleConfig, cssVariables, inlineStyle, fetchGlobalStyle } = useAdminGlobalStyle()
+
+// 检查是否在客户端
+const isClient = ref(false)
+onMounted(() => {
+  isClient.value = true
+})
 
 // 侧边栏样式
 const sidebarStyle = computed(() => {
@@ -188,6 +224,14 @@ watch(cssVariables, (vars) => {
   }
 }, { immediate: true, deep: true })
 
+const handleLinkClick = (e: MouseEvent) => {
+  // 确保点击事件正常触发
+  if (process.env.NODE_ENV === 'development') {
+    console.log('Link clicked:', (e.currentTarget as HTMLElement)?.getAttribute('href'))
+  }
+  // 不阻止默认行为，让 NuxtLink 正常处理
+}
+
 const logout = () => {
   if (confirm('确定要退出登录吗？')) {
     if (process.client) {
@@ -204,6 +248,12 @@ const logout = () => {
 .admin-sidebar-link {
   color: var(--admin-sidebar-text, #ffffff);
   background-color: transparent;
+  cursor: pointer;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 1;
 }
 
 .admin-sidebar-link:hover {
@@ -213,6 +263,22 @@ const logout = () => {
 .admin-sidebar-link-active {
   background-color: var(--admin-sidebar-active-bg, #3b82f6) !important;
   color: #ffffff !important;
+}
+
+/* 确保链接可点击 */
+.admin-sidebar-link,
+.admin-sidebar-link * {
+  pointer-events: auto !important;
+  user-select: none;
+}
+
+/* 确保侧边栏本身可交互 */
+.admin-sidebar {
+  pointer-events: auto !important;
+}
+
+.admin-sidebar nav {
+  pointer-events: auto !important;
 }
 
 /* 主内容区背景 - 使用侧边栏背景色 */

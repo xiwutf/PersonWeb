@@ -11,14 +11,23 @@
     </div>
 
     <!-- 分类列表 -->
-    <n-card>
-      <n-data-table
-        :columns="columns"
-        :data="categories"
-        :loading="loading"
-        :bordered="false"
-      />
-    </n-card>
+    <ClientOnly>
+      <n-card>
+        <n-data-table
+          :columns="columns"
+          :data="categories"
+          :loading="loading"
+          :bordered="false"
+        />
+      </n-card>
+      <template #fallback>
+        <n-card>
+          <div style="padding: 20px; text-align: center; color: #9ca3af;">
+            加载中...
+          </div>
+        </n-card>
+      </template>
+    </ClientOnly>
 
     <!-- 编辑/新建弹窗 -->
     <n-modal v-model:show="showModal" preset="card" :title="isEdit ? '编辑分类' : '新建分类'" style="width: 600px">
@@ -50,7 +59,8 @@
 </template>
 
 <script setup lang="ts">
-import { NButton, NCard, NDataTable, NModal, NForm, NFormItem, NInput, NInputNumber, NPopconfirm, h, type FormInst, type FormRules } from 'naive-ui'
+import { h } from 'vue'
+import { NButton, NCard, NDataTable, NModal, NForm, NFormItem, NInput, NInputNumber, NPopconfirm, type FormInst, type FormRules } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
 import type { Category } from '~/types/api'
 import { useMessage, useDialog } from 'naive-ui'
@@ -62,9 +72,11 @@ definePageMeta({
 })
 
 const api = useApi()
-const message = useMessage()
-const dialog = useDialog()
 const { handleError } = useErrorHandler()
+
+// 只在客户端使用 Naive UI 的 composables
+const message = process.client ? useMessage() : { success: () => {}, error: () => {}, warning: () => {}, info: () => {}, loading: () => {} }
+const dialog = process.client ? useDialog() : { warning: () => {}, error: () => {}, info: () => {}, success: () => {} }
 
 const categories = ref<Category[]>([])
 const loading = ref(false)

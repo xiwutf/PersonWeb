@@ -102,8 +102,10 @@ definePageMeta({
 })
 
 const api = useApi()
-const message = useMessage()
 const { handleError } = useErrorHandler()
+
+// 只在客户端使用 Naive UI 的 composables
+const message = process.client ? useMessage() : { success: () => {}, error: () => {}, warning: () => {}, info: () => {}, loading: () => {} }
 
 const events = ref<TimelineEvent[]>([])
 const loading = ref(false)
