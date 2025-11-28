@@ -71,11 +71,23 @@ public class ProjectsController : ControllerBase
 
     [HttpPost]
     [Authorize]
-    public async Task<ActionResult<ApiResponse<Project>>> CreateProject(Project project)
+    public async Task<ActionResult<ApiResponse<Project>>> CreateProject([FromBody] ProjectRequest request)
     {
-        project.Id = Guid.NewGuid();
-        project.CreatedAt = DateTime.Now;
-        project.UpdatedAt = DateTime.Now;
+        var project = new Project
+        {
+            Id = Guid.NewGuid(),
+            Title = request.Title,
+            Description = request.Description,
+            CoverUrl = request.CoverUrl,
+            DemoUrl = request.DemoUrl,
+            GithubUrl = request.GithubUrl,
+            Status = request.Status,
+            TechStack = request.TechStack,
+            Content = request.Content,
+            ViewCount = 0,
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
+        };
         
         _context.Projects.Add(project);
         await _context.SaveChangesAsync();
@@ -85,21 +97,22 @@ public class ProjectsController : ControllerBase
 
     [HttpPut("{id}")]
     [Authorize]
-    public async Task<ActionResult<ApiResponse<Project>>> UpdateProject(Guid id, Project project)
+    public async Task<ActionResult<ApiResponse<Project>>> UpdateProject(Guid id, [FromBody] ProjectRequest request)
     {
-        if (id != project.Id) return BadRequest();
-
         var existing = await _context.Projects.FindAsync(id);
-        if (existing == null) return NotFound();
+        if (existing == null)
+        {
+            return Ok(ApiResponse<Project>.Error("项目不存在", 404));
+        }
 
-        existing.Title = project.Title;
-        existing.Description = project.Description;
-        existing.CoverUrl = project.CoverUrl;
-        existing.DemoUrl = project.DemoUrl;
-        existing.GithubUrl = project.GithubUrl;
-        existing.Status = project.Status;
-        existing.TechStack = project.TechStack;
-        existing.Content = project.Content;
+        existing.Title = request.Title;
+        existing.Description = request.Description;
+        existing.CoverUrl = request.CoverUrl;
+        existing.DemoUrl = request.DemoUrl;
+        existing.GithubUrl = request.GithubUrl;
+        existing.Status = request.Status;
+        existing.TechStack = request.TechStack;
+        existing.Content = request.Content;
         existing.UpdatedAt = DateTime.Now;
 
         await _context.SaveChangesAsync();

@@ -1,7 +1,9 @@
 <template>
   <div>
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold text-gray-800 dark:text-white">编辑项目</h1>
+      <h1 class="text-2xl font-bold text-gray-800 dark:text-white">
+        {{ isEdit ? '编辑项目' : '新建项目' }}
+      </h1>
       <NuxtLink to="/admin/projects" class="text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200">
         取消
       </NuxtLink>
@@ -155,8 +157,13 @@ const handleSave = async () => {
   const { warning, success } = useNotification()
   const { handleError } = useErrorHandler()
   
-  if (!form.value.title) {
+  if (!form.value.title || !form.value.title.trim()) {
     warning('请输入项目名称')
+    return
+  }
+
+  if (!form.value.description || !form.value.description.trim()) {
+    warning('请输入项目描述')
     return
   }
 
@@ -164,20 +171,20 @@ const handleSave = async () => {
   try {
     // 处理技术栈
     const techStackArray = techStackInput.value.split(/[,，]/).map(s => s.trim()).filter(s => s)
-    const techStackString = techStackArray.join(',')
+    const techStackString = techStackArray.length > 0 ? techStackArray.join(',') : undefined
     
     const payload: ProjectRequest = {
-      title: form.value.title,
-      description: form.value.description,
-      coverUrl: form.value.coverUrl || undefined,
-      demoUrl: form.value.demoUrl || undefined,
-      githubUrl: form.value.githubUrl || undefined,
+      title: form.value.title.trim(),
+      description: form.value.description.trim(),
+      coverUrl: form.value.coverUrl?.trim() || undefined,
+      demoUrl: form.value.demoUrl?.trim() || undefined,
+      githubUrl: form.value.githubUrl?.trim() || undefined,
       status: form.value.status,
       techStack: techStackString,
-      content: form.value.contentMd || undefined
+      content: form.value.contentMd?.trim() || undefined
     }
     
-    if (isEdit.value) {
+    if (isEdit.value && form.value.id) {
       await api.put(`/Projects/${form.value.id}`, payload)
     } else {
       await api.post('/Projects', payload)

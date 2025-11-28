@@ -197,6 +197,28 @@ export interface MediaUploadResponse {
   size?: number
 }
 
+// ==================== 搜索相关 ====================
+
+export interface SearchResultItem {
+  id: string
+  title: string
+  summary: string
+  content: string
+  type: 'article' | 'project' | 'knowledge'
+  url: string
+  createdAt: string
+  category?: string
+}
+
+export interface SearchResults {
+  keyword: string
+  type: string
+  total: number
+  articles: SearchResultItem[]
+  projects: SearchResultItem[]
+  knowledgeBases: SearchResultItem[]
+}
+
 // ==================== API 响应格式 ====================
 
 export interface ApiResponse<T = any> {

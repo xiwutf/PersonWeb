@@ -9,12 +9,18 @@
       <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
     </div>
 
-    <!-- Debug Info -->
-    <div v-if="error" class="bg-red-100 text-red-700 p-4 rounded mb-8">
-      Error: {{ error }}
+    <!-- 错误提示 -->
+    <div v-if="error" class="bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 p-4 rounded mb-8">
+      <p class="font-semibold">加载失败</p>
+      <p class="text-sm mt-1">{{ error }}</p>
+      <p v-if="debugData" class="text-xs mt-2 opacity-75">{{ debugData }}</p>
     </div>
-    <div v-if="projects.length === 0 && !loading" class="text-center text-gray-500">
-      No projects found. API Response: {{ debugData }}
+    
+    <!-- 无数据提示 -->
+    <div v-if="projects.length === 0 && !loading && !error" class="text-center py-20">
+      <div class="text-6xl mb-4">📦</div>
+      <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">暂无项目</h3>
+      <p class="text-gray-500 dark:text-gray-400">还没有添加任何项目，请先在后台管理中创建项目</p>
     </div>
 
     <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -78,12 +84,13 @@ import {
   LinearScale
 } from 'chart.js'
 import { Bar } from 'vue-chartjs'
+import type { Project } from '~/types/api'
 
 // 注册 Chart.js 组件
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 const api = useApi()
-const projects = ref<any[]>([])
+const projects = ref<Project[]>([])
 const loading = ref(true)
 const error = ref('')
 const debugData = ref('')
@@ -113,24 +120,34 @@ const chartOptions = {
 
 const fetchProjects = async () => {
   try {
-    const res = await api.get<any[]>('/Projects') // Use PascalCase controller name just in case, though usually case insensitive
-    console.log('API Response:', res)
+    loading.value = true
+    error.value = ''
+    
+    // 调用后端 API
+    const res = await api.get<Project[]>('/Projects')
     debugData.value = JSON.stringify(res)
     
-    // Process projects to match frontend expectations
-    projects.value = res.map(p => ({
-      ...p,
-      // Handle TechStack: if string, split by comma; if array, keep it; else empty array
-      techStack: typeof p.techStack === 'string' 
-        ? p.techStack.split(',').map((t: string) => t.trim()) 
-        : (Array.isArray(p.techStack) ? p.techStack : [])
-    }))
-    
-    // 异步加载 GitHub 数据
-    loadGithubStats()
+    // 处理响应数据
+    if (Array.isArray(res)) {
+      // Process projects to match frontend expectations
+      projects.value = res.map(p => ({
+        ...p,
+        // Handle TechStack: if string, split by comma; if array, keep it; else empty array
+        techStack: typeof p.techStack === 'string' 
+          ? p.techStack.split(',').map((t: string) => t.trim()).filter((t: string) => t) 
+          : (Array.isArray(p.techStack) ? p.techStack : [])
+      }))
+      
+      // 异步加载 GitHub 数据
+      loadGithubStats()
+    } else {
+      projects.value = []
+      error.value = 'API 返回格式错误'
+    }
   } catch (e: any) {
     console.error('Failed to fetch projects', e)
     error.value = e.message || 'Failed to load projects'
+    projects.value = []
   } finally {
     loading.value = false
   }
