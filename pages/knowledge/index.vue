@@ -8,8 +8,8 @@
       </div>
 
       <!-- 筛选栏 -->
-      <div class="bg-white rounded-lg shadow-sm p-4 mb-6 flex flex-wrap gap-4">
-        <select v-model="categoryFilter" @change="fetchList" class="border border-gray-300 rounded px-3 py-2">
+      <div class="filter-bar mb-6">
+        <select v-model="categoryFilter" @change="fetchList" class="form-select">
           <option value="">全部分类</option>
           <option value="开发笔记">开发笔记</option>
           <option value="踩坑记录">踩坑记录</option>
@@ -20,13 +20,13 @@
           v-model="searchKeyword"
           type="text"
           placeholder="搜索关键词..."
-          class="flex-1 min-w-[200px] border border-gray-300 rounded px-3 py-2"
+          class="form-input flex-1 min-w-[200px]"
           @keyup.enter="fetchList"
         />
 
         <button
           @click="fetchList"
-          class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          class="btn-primary"
         >
           搜索
         </button>
@@ -37,12 +37,12 @@
         <div
           v-for="item in knowledgeList"
           :key="item.id"
-          class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-6 cursor-pointer"
+          class="card-hover p-6 cursor-pointer"
           @click="viewDetail(item.id)"
         >
           <div class="flex items-start justify-between mb-3">
             <span
-              class="px-2 py-1 text-xs rounded"
+              class="badge"
               :class="getCategoryClass(item.category)"
             >
               {{ item.category || '未分类' }}
@@ -58,7 +58,7 @@
               <span
                 v-for="tag in parseTags(item.tags)"
                 :key="tag"
-                class="px-2 py-0.5 bg-gray-100 rounded text-xs"
+                class="badge badge-gray"
               >
                 {{ tag }}
               </span>
@@ -67,8 +67,8 @@
         </div>
       </div>
 
-      <div v-if="loading" class="text-center py-8 text-gray-500">加载中...</div>
-      <div v-if="!loading && knowledgeList.length === 0" class="text-center py-8 text-gray-500">
+      <div v-if="loading" class="text-center py-8 loading">加载中...</div>
+      <div v-if="!loading && knowledgeList.length === 0" class="text-center py-8 empty-state">
         暂无知识库内容
       </div>
     </div>
@@ -117,11 +117,11 @@ const viewDetail = (id: number) => {
 
 const getCategoryClass = (category: string) => {
   const classes: Record<string, string> = {
-    '开发笔记': 'bg-blue-100 text-blue-700',
-    '踩坑记录': 'bg-orange-100 text-orange-700',
-    '想法灵感': 'bg-purple-100 text-purple-700'
+    '开发笔记': 'badge-blue',
+    '踩坑记录': 'badge-yellow',
+    '想法灵感': 'badge-purple'
   }
-  return classes[category || ''] || 'bg-gray-100 text-gray-700'
+  return classes[category || ''] || 'badge-gray'
 }
 
 const parseTags = (tags: string) => {

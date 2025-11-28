@@ -19,14 +19,14 @@
         
         <!-- 搜索框 -->
         <div class="max-w-3xl mx-auto mb-12">
-          <div class="bg-white rounded-xl shadow-lg p-8">
+          <div class="card p-8">
             <div class="flex items-center gap-4 mb-6">
               <div class="flex-1 relative">
                 <input
                   v-model="searchQuery"
                   type="text"
                   placeholder="搜索文章、项目、知识库..."
-                  class="w-full px-6 py-4 pl-14 text-lg border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                  class="form-input w-full px-6 py-4 pl-14 text-lg focus:ring-2 focus:ring-indigo-500"
                   @keyup.enter="performSearch"
                   @input="handleInput"
                   @focus="showSuggestions = true"

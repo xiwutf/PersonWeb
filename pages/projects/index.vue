@@ -4,7 +4,7 @@
     <div class="fixed top-20 right-4 z-20 hidden md:block">
       <button
         @click="viewMode = viewMode === 'grid' ? '3d' : 'grid'"
-        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 transition shadow-lg backdrop-blur-md touch-target"
+        class="btn-primary shadow-lg backdrop-blur-md touch-target"
       >
         {{ viewMode === 'grid' ? '🌐 3D视图' : '📋 列表视图' }}
       </button>
@@ -25,7 +25,7 @@
       </div>
 
       <!-- 错误提示 -->
-      <div v-if="error" class="bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 p-4 rounded mb-8">
+      <div v-if="error" class="card p-4 mb-8 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300">
         <p class="font-semibold">加载失败</p>
         <p class="text-sm mt-1">{{ error }}</p>
         <p v-if="debugData" class="text-xs mt-2 opacity-75">{{ debugData }}</p>
@@ -39,7 +39,7 @@
       </div>
 
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <NuxtLink v-for="project in projects" :key="project.id" :to="`/projects/${project.id}`" class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col">
+      <NuxtLink v-for="project in projects" :key="project.id" :to="`/projects/${project.id}`" class="card overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col">
         <!-- 封面图 -->
         <div class="h-48 overflow-hidden relative group">
           <img :src="project.coverUrl || 'https://placehold.co/600x400'" :alt="project.title" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" />
@@ -56,7 +56,7 @@
           <div class="flex justify-between items-start mb-4">
             <h3 class="text-xl font-bold text-gray-900 dark:text-white">{{ project.title }}</h3>
             <div class="flex items-center gap-2">
-              <span class="px-2 py-1 text-xs font-semibold rounded bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+              <span class="badge badge-blue">
                 {{ project.status }}
               </span>
               <span class="px-2 py-1 text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">

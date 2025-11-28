@@ -16,13 +16,13 @@
       <!-- 技能树内容 -->
       <div v-else class="space-y-8">
         <!-- 雷达图 -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
+        <div class="card p-8">
           <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">技能雷达图</h2>
           <div class="flex gap-4 mb-4">
             <select
               v-model="selectedCategoryId"
               @change="updateRadarData"
-              class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
+              class="form-select"
             >
               <option :value="null">全部分类</option>
               <option v-for="cat in categories" :key="cat.id" :value="cat.id">
@@ -32,7 +32,7 @@
             <select
               v-model="timeRange"
               @change="updateRadarData"
-              class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
+              class="form-select"
             >
               <option value="current">当前评级</option>
               <option value="3months">3个月</option>
@@ -52,7 +52,7 @@
         <div
           v-for="category in skillTree"
           :key="category.id"
-          class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden"
+          class="card overflow-hidden"
         >
           <div
             class="p-6 border-b border-gray-200 dark:border-gray-700"

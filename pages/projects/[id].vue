@@ -5,7 +5,7 @@
       <div class="mb-6">
         <NuxtLink
           to="/projects"
-          class="inline-flex items-center px-4 py-2 bg-white rounded-lg shadow-sm hover:shadow-md transition-all text-slate-700 hover:text-slate-900 border border-slate-200"
+          class="btn-secondary inline-flex items-center"
         >
           <i class="fas fa-arrow-left mr-2"></i>
           返回项目列表
@@ -21,7 +21,7 @@
       <!-- 项目详情 -->
       <div v-else-if="project" class="space-y-8">
         <!-- 项目头部 -->
-        <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div class="card overflow-hidden">
           <div class="h-64 bg-gradient-to-br from-blue-500 to-purple-600 relative overflow-hidden">
             <img
               v-if="project.coverUrl"
@@ -75,7 +75,7 @@
                 v-if="project.demoUrl"
                 :href="project.demoUrl"
                 target="_blank"
-                class="bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors font-medium inline-flex items-center gap-2 shadow-lg shadow-blue-500/30"
+                class="btn-primary inline-flex items-center gap-2"
               >
                 <i class="fas fa-external-link-alt"></i>
                 在线体验
@@ -84,7 +84,7 @@
                 v-if="project.githubUrl"
                 :href="project.githubUrl"
                 target="_blank"
-                class="border-2 border-slate-600 text-slate-700 px-6 py-3 rounded-xl hover:bg-slate-50 transition-colors font-medium inline-flex items-center gap-2"
+                class="btn-secondary inline-flex items-center gap-2"
               >
                 <i class="fab fa-github"></i>
                 查看源码
@@ -94,7 +94,7 @@
         </div>
 
         <!-- 项目内容 -->
-        <div v-if="project.content" class="bg-white rounded-2xl shadow-lg p-8">
+        <div v-if="project.content" class="card p-8">
           <div class="prose prose-lg max-w-none">
             <ContentRenderer :value="markdownContent" />
           </div>
@@ -102,7 +102,7 @@
       </div>
 
       <!-- 错误状态 -->
-      <div v-else class="bg-white rounded-2xl shadow-lg p-8 text-center">
+      <div v-else class="card p-8 text-center">
         <div class="text-red-600 mb-4">
           <i class="fas fa-exclamation-triangle text-4xl"></i>
         </div>
@@ -110,7 +110,7 @@
         <p class="text-slate-600 mb-6">未找到该项目，可能已被删除或 ID 不正确。</p>
         <NuxtLink
           to="/projects"
-          class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
+          class="btn-primary inline-flex items-center"
         >
           返回项目列表
         </NuxtLink>

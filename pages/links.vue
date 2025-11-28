@@ -34,7 +34,7 @@
             :href="link.url"
             target="_blank"
             rel="noopener noreferrer"
-            class="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition-all duration-300 flex items-start gap-4 group"
+            class="card-hover p-6 flex items-start gap-4 group"
           >
             <!-- Logo -->
             <div class="flex-shrink-0">
