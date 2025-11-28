@@ -114,6 +114,23 @@ chmod +x scripts/setup-dev-env.sh
    - 前端：http://localhost:3000
    - API 文档：http://localhost:5234/swagger
 
+### 📱 移动端访问
+
+如果想在手机上测试：
+
+```bash
+# 启动移动端开发服务器
+npm run dev:mobile
+
+# 或使用脚本（会自动显示 IP 地址）
+.\scripts\dev-mobile.ps1  # Windows
+./scripts/dev-mobile.sh   # Linux/macOS
+```
+
+然后在手机浏览器访问：`http://你的电脑IP:3000`
+
+详细说明请查看 [移动端访问指南](./docs/deployment/MOBILE_ACCESS.md)
+
 ### 📚 详细文档
 
 - [快速开始指南](./docs/deployment/QUICK_START.md)

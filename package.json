@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "nuxt dev",
+    "dev:mobile": "nuxt dev --host 0.0.0.0",
     "dev:prod": "nuxt dev --dotenv .env.production",
     "build": "nuxt build",
     "build:prod": "nuxt build --dotenv .env.production",

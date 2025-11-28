@@ -89,6 +89,29 @@ npm run dev
 2. API 文档可以访问
 3. 数据库连接成功
 
+## 📱 移动端访问
+
+如果想在手机上测试：
+
+1. **启动移动端开发服务器**
+   ```bash
+   # Windows
+   .\scripts\dev-mobile.ps1
+   
+   # Linux/macOS
+   ./scripts/dev-mobile.sh
+   
+   # 或直接使用
+   npm run dev:mobile
+   ```
+
+2. **在手机上访问**
+   - 确保手机和电脑连接到同一个 WiFi
+   - 在手机浏览器输入：`http://你的电脑IP:3000`
+   - 例如：`http://192.168.1.100:3000`
+
+详细说明请查看 [移动端访问指南](./MOBILE_ACCESS.md)
+
 ## 📚 详细文档
 
 查看 [开发环境配置指南](./DEVELOPMENT_SETUP.md) 获取完整说明。

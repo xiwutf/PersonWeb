@@ -66,17 +66,30 @@ export default defineNuxtConfig({
       title: '溪午听风 - 个人开发者网站',
       meta: [
         { charset: 'utf-8' },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes' },
         {
           name: 'description',
           content: '溪午听风的个人网站，展示插件工具、项目作品和技术博客。开发让生活更高效，代码就是我的魔方。'
         },
         { name: 'keywords', content: 'Revit插件,小程序开发,前端开发,技术博客,个人网站' },
-        { name: 'author', content: '溪午听风' }
+        { name: 'author', content: '溪午听风' },
+        // 移动端优化
+        { name: 'theme-color', content: '#3b82f6' }, // 浏览器地址栏颜色
+        { name: 'apple-mobile-web-app-capable', content: 'yes' }, // iOS 全屏模式
+        { name: 'apple-mobile-web-app-status-bar-style', content: 'default' }, // iOS 状态栏样式：default/black/black-translucent
+        { name: 'apple-mobile-web-app-title', content: '溪午听风' }, // iOS 主屏幕标题
+        { name: 'mobile-web-app-capable', content: 'yes' }, // Android 全屏模式
+        { name: 'format-detection', content: 'telephone=no' }, // 禁用自动识别电话号码
       ],
       link: [
         { rel: 'icon', type: 'image/png', href: '/favicon.png' },
-        { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css' }
+        { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css' },
+        // iOS 主屏幕图标
+        { rel: 'apple-touch-icon', href: '/favicon.png' },
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/favicon.png' },
+        // Android Chrome 图标
+        { rel: 'icon', type: 'image/png', sizes: '192x192', href: '/favicon.png' },
+        { rel: 'icon', type: 'image/png', sizes: '512x512', href: '/favicon.png' },
       ]
     }
   },
