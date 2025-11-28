@@ -75,35 +75,32 @@ onUnmounted(() => {
 
 <style scoped>
 .visitor-level-display {
-  position: fixed;
-  top: 5rem;
-  right: 2rem;
-  z-index: 100;
+  position: relative; /* 改为相对定位，由父容器控制位置 */
   background: rgba(30, 41, 59, 0.95);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 1rem;
-  padding: 1rem;
-  min-width: 200px;
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  width: 100%;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .level-badge {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.75rem;
-  padding: 0.5rem;
+  gap: 0.375rem; /* 减小间距 */
+  margin-bottom: 0.5rem; /* 减小下边距 */
+  padding: 0.375rem; /* 减小内边距 */
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 0.5rem;
+  border-radius: 0.375rem;
 }
 
 .badge-icon {
-  font-size: 1.5rem;
+  font-size: 1.25rem; /* 减小图标大小 */
 }
 
 .badge-level {
-  font-size: 0.875rem;
+  font-size: 0.75rem; /* 减小字体大小 */
   font-weight: 600;
   color: white;
 }
@@ -113,9 +110,9 @@ onUnmounted(() => {
 }
 
 .level-title {
-  font-size: 0.875rem;
+  font-size: 0.75rem; /* 减小字体大小 */
   font-weight: 500;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.375rem; /* 减小下边距 */
   color: rgba(255, 255, 255, 0.9);
 }
 
@@ -141,7 +138,7 @@ onUnmounted(() => {
 }
 
 .progress-text {
-  font-size: 0.75rem;
+  font-size: 0.625rem; /* 减小字体大小 */
   color: rgba(255, 255, 255, 0.7);
   text-align: right;
 }

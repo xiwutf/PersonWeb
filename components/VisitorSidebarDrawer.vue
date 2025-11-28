@@ -1,0 +1,248 @@
+<template>
+  <!-- 抽屉触发按钮 -->
+  <button
+    @click="toggleDrawer"
+    class="visitor-drawer-trigger"
+    :class="{ 'drawer-open': isOpen }"
+    aria-label="打开访客功能"
+  >
+    <svg v-if="!isOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+    <svg v-else class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  </button>
+
+  <!-- 抽屉遮罩层 -->
+  <Transition name="fade">
+    <div
+      v-if="isOpen"
+      @click="closeDrawer"
+      class="visitor-drawer-overlay"
+    ></div>
+  </Transition>
+
+  <!-- 抽屉内容 -->
+  <Transition name="slide-left">
+    <div
+      v-if="isOpen"
+      class="visitor-drawer"
+      @click.stop
+    >
+      <!-- 抽屉头部 -->
+      <div class="drawer-header">
+        <h3 class="drawer-title">访客中心</h3>
+        <button
+          @click="closeDrawer"
+          class="drawer-close-btn"
+          aria-label="关闭"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- 抽屉内容区域 -->
+      <div class="drawer-content">
+        <!-- 访客等级显示 -->
+        <div class="drawer-section">
+          <VisitorLevelDisplay />
+        </div>
+
+        <!-- 挑战按钮 -->
+        <div class="drawer-section">
+          <VisitorChallengeButton />
+        </div>
+
+        <!-- 时间胶囊墙 -->
+        <div class="drawer-section">
+          <TimeCapsuleWall />
+        </div>
+
+        <!-- 访客足迹地图 -->
+        <div class="drawer-section">
+          <VisitorFootprintMap />
+        </div>
+      </div>
+    </div>
+  </Transition>
+</template>
+
+<script setup lang="ts">
+const isOpen = ref(false)
+
+const toggleDrawer = () => {
+  isOpen.value = !isOpen.value
+}
+
+const closeDrawer = () => {
+  isOpen.value = false
+}
+
+// 点击外部关闭
+onMounted(() => {
+  if (process.client) {
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isOpen.value) {
+        closeDrawer()
+      }
+    })
+  }
+})
+</script>
+
+<style scoped>
+/* 触发按钮 */
+.visitor-drawer-trigger {
+  position: fixed;
+  top: 5rem;
+  right: 2rem;
+  z-index: 45;
+  width: 3rem;
+  height: 3rem;
+  background: rgba(30, 41, 59, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.75rem;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.visitor-drawer-trigger:hover {
+  background: rgba(30, 41, 59, 1);
+  transform: scale(1.05);
+}
+
+.visitor-drawer-trigger.drawer-open {
+  background: rgba(59, 130, 246, 0.9);
+}
+
+/* 遮罩层 */
+.visitor-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+  z-index: 45;
+}
+
+/* 抽屉容器 */
+.visitor-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 320px;
+  max-width: 90vw;
+  background: rgba(30, 41, 59, 0.98);
+  backdrop-filter: blur(20px);
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 46;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.3);
+}
+
+/* 抽屉头部 */
+.drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.drawer-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: white;
+  margin: 0;
+}
+
+.drawer-close-btn {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.drawer-close-btn:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* 抽屉内容 */
+.drawer-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.drawer-section {
+  width: 100%;
+}
+
+/* 调整内部组件样式 */
+.drawer-section :deep(.visitor-level-display) {
+  position: relative;
+  top: auto;
+  right: auto;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+
+.drawer-section :deep(.challenge-button-container) {
+  position: relative;
+  bottom: auto;
+  right: auto;
+  width: 100%;
+}
+
+.drawer-section :deep(.challenge-button) {
+  width: 100%;
+  justify-content: center;
+}
+
+/* 过渡动画 */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.slide-left-enter-active,
+.slide-left-leave-active {
+  transition: transform 0.3s ease;
+}
+
+.slide-left-enter-from {
+  transform: translateX(100%);
+}
+
+.slide-left-leave-to {
+  transform: translateX(100%);
+}
+</style>
+

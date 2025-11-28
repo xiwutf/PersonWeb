@@ -34,8 +34,7 @@
     
     <!-- 访客互动式玩法 -->
     <VisitorBehaviorListener />
-    <VisitorLevelDisplay />
-    <VisitorChallengeButton />
+    <VisitorSidebarDrawer />
     <VisitorTriggerEffects />
     <FireworksEffect />
     

@@ -47,15 +47,7 @@
         <!-- 欢迎消息 -->
         <div v-if="messages.length === 0" class="space-y-2">
           <div class="bg-blue-500 text-white rounded-2xl rounded-tl-none p-4 max-w-[80%]">
-            <p class="text-sm">👋 你好！我是 AI 小智，你的智能助手。</p>
-            <p class="text-sm mt-2">我可以帮你：</p>
-            <ul class="text-sm mt-2 space-y-1 list-disc list-inside">
-              <li>了解溪午听风</li>
-              <li>搜索文章</li>
-              <li>推荐项目</li>
-              <li>回答问题</li>
-            </ul>
-            <p class="text-sm mt-2">试试问我："你是谁？" 或 "推荐一篇文章"</p>
+            <p class="text-sm">👋 你好！我是 AI 小智，有什么可以帮你的吗？</p>
           </div>
         </div>
 
@@ -147,10 +139,9 @@ const isLoading = ref(false)
 const messagesRef = ref<HTMLDivElement | null>(null)
 const statusText = ref('在线')
 
+// 简化快捷操作，只保留最核心的功能
 const quickActions = [
-  { text: '你是谁？' },
   { text: '推荐文章' },
-  { text: '推荐项目' },
   { text: '搜索文章' }
 ]
 

@@ -114,10 +114,8 @@ onMounted(() => {
 
 <style scoped>
 .challenge-button-container {
-  position: fixed;
-  bottom: 16rem;
-  right: 2rem;
-  z-index: 100;
+  position: relative; /* 改为相对定位，由父容器控制位置 */
+  width: 100%;
 }
 
 .challenge-button {
