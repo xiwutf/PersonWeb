@@ -75,7 +75,7 @@
       </div>
 
       <!-- 图表区域 -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <!-- 趋势图 -->
         <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
           <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-6">Health Trends</h3>
@@ -92,6 +92,48 @@
           </div>
         </div>
       </div>
+
+      <!-- GitHub 代码统计 -->
+      <div v-if="githubStats" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- 代码语言分布 -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+          <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-6">Code Languages</h3>
+          <div v-if="githubLanguages.length > 0" class="h-64">
+            <Doughnut :data="languageChartData" :options="languageChartOptions" />
+          </div>
+          <div v-else class="h-64 flex items-center justify-center text-gray-500">
+            暂无数据
+          </div>
+        </div>
+
+        <!-- GitHub 贡献统计 -->
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+          <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-6">Repository Stats</h3>
+          <div v-if="githubStats" class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-800 rounded-xl p-4">
+                <div class="text-sm text-gray-600 dark:text-gray-300 mb-1">Stars</div>
+                <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ githubStats.stars || 0 }}</div>
+              </div>
+              <div class="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900 dark:to-green-800 rounded-xl p-4">
+                <div class="text-sm text-gray-600 dark:text-gray-300 mb-1">Forks</div>
+                <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ githubStats.forks || 0 }}</div>
+              </div>
+              <div class="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900 dark:to-purple-800 rounded-xl p-4">
+                <div class="text-sm text-gray-600 dark:text-gray-300 mb-1">Watchers</div>
+                <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ githubStats.watchers || 0 }}</div>
+              </div>
+              <div class="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900 dark:to-orange-800 rounded-xl p-4">
+                <div class="text-sm text-gray-600 dark:text-gray-300 mb-1">Size</div>
+                <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ formatSize(githubStats.size || 0) }}</div>
+              </div>
+            </div>
+          </div>
+          <div v-else class="h-64 flex items-center justify-center text-gray-500">
+            暂无数据
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -103,18 +145,20 @@ import {
   LinearScale,
   PointElement,
   LineElement,
+  ArcElement,
   Title,
   Tooltip,
   Legend,
   Filler
 } from 'chart.js'
-import { Line } from 'vue-chartjs'
+import { Line, Doughnut } from 'vue-chartjs'
 
 ChartJS.register(
   CategoryScale,
   LinearScale,
   PointElement,
   LineElement,
+  ArcElement,
   Title,
   Tooltip,
   Legend,
@@ -130,6 +174,11 @@ const latest = ref({
   netWorth: 0,
   energy: 0
 })
+const githubLanguages = ref<any[]>([])
+const githubStats = ref<any>(null)
+
+// GitHub 仓库配置（可以从配置中心获取）
+const githubRepo = ref<string | null>(null)
 
 const chartOptions = {
   responsive: true,
@@ -205,6 +254,115 @@ const wealthChartData = computed(() => {
   }
 })
 
+// 格式化文件大小
+const formatSize = (kb: number): string => {
+  if (kb < 1024) return `${kb} KB`
+  if (kb < 1024 * 1024) return `${(kb / 1024).toFixed(1)} MB`
+  return `${(kb / (1024 * 1024)).toFixed(1)} GB`
+}
+
+// 语言图表数据
+const languageChartData = computed(() => {
+  if (githubLanguages.value.length === 0) {
+    return {
+      labels: [],
+      datasets: []
+    }
+  }
+
+  // 语言颜色映射
+  const languageColors: Record<string, string> = {
+    'JavaScript': '#f7df1e',
+    'TypeScript': '#3178c6',
+    'Python': '#3776ab',
+    'Java': '#ed8b00',
+    'C#': '#239120',
+    'C++': '#00599c',
+    'Go': '#00add8',
+    'Rust': '#000000',
+    'PHP': '#777bb4',
+    'Ruby': '#cc342d',
+    'Swift': '#fa7343',
+    'Kotlin': '#7f52ff',
+    'HTML': '#e34c26',
+    'CSS': '#1572b6',
+    'Vue': '#4fc08d',
+    'React': '#61dafb',
+    'Dart': '#0175c2',
+    'Shell': '#89e051',
+    'PowerShell': '#012456',
+    'SQL': '#336791',
+    'Markdown': '#083fa1'
+  }
+
+  const colors = githubLanguages.value.map((lang: any) => 
+    languageColors[lang.language] || '#6b7280'
+  )
+
+  return {
+    labels: githubLanguages.value.map((lang: any) => lang.language),
+    datasets: [{
+      label: '代码量',
+      data: githubLanguages.value.map((lang: any) => parseFloat(lang.percentage)),
+      backgroundColor: colors,
+      borderColor: colors.map(c => c + '80'),
+      borderWidth: 2
+    }]
+  }
+})
+
+const languageChartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: 'right' as const,
+      labels: {
+        color: '#9ca3af',
+        padding: 15,
+        font: { size: 12 }
+      }
+    },
+    tooltip: {
+      callbacks: {
+        label: (context: any) => {
+          const label = context.label || ''
+          const value = context.parsed || 0
+          const lang = githubLanguages.value[context.dataIndex]
+          return `${label}: ${value.toFixed(1)}% (${formatSize(lang.bytes / 1024)})`
+        }
+      }
+    }
+  }
+}
+
+// 加载 GitHub 统计数据
+const loadGithubStats = async () => {
+  // 从配置或环境变量获取 GitHub 仓库
+  // 这里先使用一个示例仓库，实际应该从配置中心获取
+  const defaultRepo = process.env.GITHUB_REPO || 'your-username/your-repo'
+  
+  if (!defaultRepo || defaultRepo === 'your-username/your-repo') {
+    return // 如果没有配置，跳过
+  }
+
+  try {
+    // 获取语言分布
+    const languages = await api.get<any[]>(`/github/stats?repo=${defaultRepo}&type=languages`)
+    if (languages && Array.isArray(languages)) {
+      githubLanguages.value = languages
+    }
+
+    // 获取仓库统计
+    const stats = await api.get<any>(`/github/stats?repo=${defaultRepo}&type=contributions`)
+    if (stats) {
+      githubStats.value = stats
+    }
+  } catch (e) {
+    console.error('Failed to load GitHub stats:', e)
+  }
+}
+
 onMounted(async () => {
   try {
     const res = await api.get<any[]>('/Metrics')
@@ -221,6 +379,9 @@ onMounted(async () => {
     if (metrics.value.length > 0) {
       latest.value = metrics.value[metrics.value.length - 1]
     }
+
+    // 加载 GitHub 统计数据
+    await loadGithubStats()
   } catch (e) {
     console.error(e)
   }

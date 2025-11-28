@@ -30,6 +30,10 @@ public class AppDbContext : DbContext
     public DbSet<InvestmentTransaction> InvestmentTransactions { get; set; }
     public DbSet<ErrorLog> ErrorLogs { get; set; }
     public DbSet<FriendLink> FriendLinks { get; set; }
+    public DbSet<SkillCategory> SkillCategories { get; set; }
+    public DbSet<Skill> Skills { get; set; }
+    public DbSet<SkillRating> SkillRatings { get; set; }
+    public DbSet<LearningLog> LearningLogs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
