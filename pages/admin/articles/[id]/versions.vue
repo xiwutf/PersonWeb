@@ -88,24 +88,58 @@
           <div v-if="compareLoading" class="text-center py-12">
             <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
           </div>
-          <div v-else-if="currentVersion && selectedVersion" class="grid grid-cols-2 gap-6">
-            <!-- 当前版本 -->
-            <div>
-              <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                当前版本 (v{{ currentVersion.version }})
-              </h3>
-              <div class="prose dark:prose-invert max-w-none">
-                <div v-html="currentVersion.contentHtml || ''"></div>
+          <div v-else-if="currentVersion && selectedVersion" class="space-y-4">
+            <!-- 切换显示模式 -->
+            <div class="flex gap-2 mb-4">
+              <button
+                @click="viewMode = 'split'"
+                :class="viewMode === 'split' ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'"
+                class="px-4 py-2 rounded transition"
+              >
+                并排对比
+              </button>
+              <button
+                @click="viewMode = 'diff'"
+                :class="viewMode === 'diff' ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'"
+                class="px-4 py-2 rounded transition"
+              >
+                Diff 对比
+              </button>
+            </div>
+
+            <!-- 并排对比模式 -->
+            <div v-if="viewMode === 'split'" class="grid grid-cols-2 gap-6">
+              <div>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                  当前版本 (v{{ currentVersion.version }})
+                </h3>
+                <div class="prose dark:prose-invert max-w-none border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-900">
+                  <div v-html="currentVersion.contentHtml || ''"></div>
+                </div>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                  历史版本 (v{{ selectedVersion.version }})
+                </h3>
+                <div class="prose dark:prose-invert max-w-none border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-900">
+                  <div v-html="selectedVersion.contentHtml || ''"></div>
+                </div>
               </div>
             </div>
-            <!-- 选中版本 -->
-            <div>
-              <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                历史版本 (v{{ selectedVersion.version }})
-              </h3>
-              <div class="prose dark:prose-invert max-w-none">
-                <div v-html="selectedVersion.contentHtml || ''"></div>
+
+            <!-- Diff 对比模式 -->
+            <div v-else class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-900">
+              <div class="mb-4 flex items-center gap-4">
+                <div class="flex items-center gap-2">
+                  <span class="w-4 h-4 bg-red-200 dark:bg-red-900 inline-block"></span>
+                  <span class="text-sm text-gray-600 dark:text-gray-400">删除的内容</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="w-4 h-4 bg-green-200 dark:bg-green-900 inline-block"></span>
+                  <span class="text-sm text-gray-600 dark:text-gray-400">新增的内容</span>
+                </div>
               </div>
+              <div class="diff-content prose dark:prose-invert max-w-none" v-html="diffHtml"></div>
             </div>
           </div>
         </div>
@@ -117,6 +151,7 @@
 <script setup lang="ts">
 import { useNotification } from '~/composables/useToast'
 import { useErrorHandler } from '~/composables/useErrorHandler'
+import { DiffMatchPatch } from 'diff-match-patch'
 
 definePageMeta({
   layout: 'admin',
@@ -136,6 +171,8 @@ const showCompare = ref(false)
 const compareLoading = ref(false)
 const currentVersion = ref<any>(null)
 const selectedVersion = ref<any>(null)
+const viewMode = ref<'split' | 'diff'>('split')
+const diffHtml = ref('')
 
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleString('zh-CN', {
@@ -167,6 +204,7 @@ const fetchVersions = async () => {
 const viewVersion = async (versionId: number) => {
   compareLoading.value = true
   showCompare.value = true
+  viewMode.value = 'split'
   
   try {
     // 获取当前版本
@@ -176,12 +214,50 @@ const viewVersion = async (versionId: number) => {
     // 获取选中版本
     const version = await api.get<any>(`/Articles/${articleId.value}/versions/${versionId}`)
     selectedVersion.value = version
+
+    // 生成 diff
+    generateDiff()
   } catch (e: unknown) {
     handleError(e, '获取版本内容失败')
     showCompare.value = false
   } finally {
     compareLoading.value = false
   }
+}
+
+// 生成 diff 显示
+const generateDiff = () => {
+  if (!currentVersion.value || !selectedVersion.value) return
+
+  const oldText = selectedVersion.value.contentMd || ''
+  const newText = currentVersion.value.contentMd || ''
+
+  const dmp = new DiffMatchPatch()
+  const diffs = dmp.diff_main(oldText, newText)
+  dmp.diff_cleanupSemantic(diffs)
+
+  // 将 diff 转换为 HTML
+  let html = ''
+  for (const [op, text] of diffs) {
+    const escapedText = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/\n/g, '<br>')
+    
+    if (op === -1) {
+      // 删除
+      html += `<span class="bg-red-200 dark:bg-red-900 text-red-900 dark:text-red-100 px-1 rounded">${escapedText}</span>`
+    } else if (op === 1) {
+      // 新增
+      html += `<span class="bg-green-200 dark:bg-green-900 text-green-900 dark:text-green-100 px-1 rounded">${escapedText}</span>`
+    } else {
+      // 相同
+      html += escapedText
+    }
+  }
+
+  diffHtml.value = html || '<p class="text-gray-500 dark:text-gray-400">两个版本内容相同</p>'
 }
 
 const restoreVersion = async (versionId: number) => {
@@ -204,6 +280,17 @@ onMounted(() => {
 <style scoped>
 :deep(.prose) {
   @apply text-sm;
+}
+
+.diff-content {
+  font-family: 'Courier New', monospace;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.diff-content :deep(span) {
+  display: inline;
 }
 </style>
 

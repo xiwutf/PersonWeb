@@ -60,8 +60,10 @@
                 <span
                   v-for="tech in techStackArray"
                   :key="tech"
-                  class="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-medium border border-blue-200"
+                  class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 shadow-sm hover:shadow-md"
+                  :class="getTechTagClass(tech)"
                 >
+                  <span class="mr-1.5">{{ getTechIcon(tech) }}</span>
                   {{ tech }}
                 </span>
               </div>
@@ -144,6 +146,66 @@ const techStackArray = computed(() => {
   }
   return []
 })
+
+// 获取技术栈标签样式
+const getTechTagClass = (tech: string) => {
+  const techLower = tech.toLowerCase()
+  
+  // 前端技术
+  if (techLower.includes('vue') || techLower.includes('react') || techLower.includes('angular') || techLower.includes('nuxt') || techLower.includes('next')) {
+    return 'bg-gradient-to-r from-blue-500 to-blue-600 text-white'
+  }
+  // JavaScript/TypeScript
+  if (techLower.includes('javascript') || techLower.includes('typescript') || techLower.includes('js') || techLower.includes('ts')) {
+    return 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900'
+  }
+  // Python
+  if (techLower.includes('python')) {
+    return 'bg-gradient-to-r from-blue-400 to-blue-500 text-white'
+  }
+  // Node.js
+  if (techLower.includes('node') || techLower.includes('express')) {
+    return 'bg-gradient-to-r from-green-500 to-green-600 text-white'
+  }
+  // 数据库
+  if (techLower.includes('mysql') || techLower.includes('postgresql') || techLower.includes('mongodb') || techLower.includes('redis')) {
+    return 'bg-gradient-to-r from-orange-500 to-orange-600 text-white'
+  }
+  // 框架
+  if (techLower.includes('spring') || techLower.includes('fastapi') || techLower.includes('django') || techLower.includes('flask')) {
+    return 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white'
+  }
+  // 小程序
+  if (techLower.includes('小程序') || techLower.includes('wechat') || techLower.includes('miniprogram')) {
+    return 'bg-gradient-to-r from-green-400 to-green-500 text-white'
+  }
+  // AI/ML
+  if (techLower.includes('ai') || techLower.includes('ml') || techLower.includes('langchain') || techLower.includes('openai')) {
+    return 'bg-gradient-to-r from-purple-500 to-purple-600 text-white'
+  }
+  // 默认样式
+  return 'bg-gradient-to-r from-gray-500 to-gray-600 text-white'
+}
+
+// 获取技术栈图标
+const getTechIcon = (tech: string) => {
+  const techLower = tech.toLowerCase()
+  
+  if (techLower.includes('vue')) return '⚡'
+  if (techLower.includes('react')) return '⚛️'
+  if (techLower.includes('python')) return '🐍'
+  if (techLower.includes('node')) return '🟢'
+  if (techLower.includes('mysql')) return '🗄️'
+  if (techLower.includes('redis')) return '🔴'
+  if (techLower.includes('小程序')) return '💬'
+  if (techLower.includes('ai') || techLower.includes('langchain')) return '🤖'
+  if (techLower.includes('spring')) return '🍃'
+  if (techLower.includes('docker')) return '🐳'
+  if (techLower.includes('kubernetes')) return '☸️'
+  if (techLower.includes('git')) return '📦'
+  
+  return '💻'
+}
 
 // 获取项目详情
 const fetchProject = async () => {

@@ -129,7 +129,17 @@ const trends = ref<any>(null)
 const loading = ref(true)
 
 const chartData = computed(() => {
-  if (!trends.value || !trends.value.trends) {
+  if (!trends.value) {
+    return {
+      labels: [],
+      datasets: []
+    }
+  }
+
+  // 后端返回的数据结构：{ Trends: [...] } 或 { trends: [...] }
+  const trendsData = trends.value.Trends || trends.value.trends || []
+  
+  if (trendsData.length === 0) {
     return {
       labels: [],
       datasets: []
@@ -137,11 +147,19 @@ const chartData = computed(() => {
   }
 
   return {
-    labels: trends.value.trends.map((t: any) => t.Date || t.date),
+    labels: trendsData.map((t: any) => {
+      const date = t.Date || t.date
+      // 如果是日期字符串，格式化为更友好的格式
+      if (typeof date === 'string') {
+        const d = new Date(date)
+        return d.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })
+      }
+      return date
+    }),
     datasets: [
       {
         label: '访问量',
-        data: trends.value.trends.map((t: any) => t.Views || t.views),
+        data: trendsData.map((t: any) => t.Views || t.views || 0),
         borderColor: 'rgb(59, 130, 246)',
         backgroundColor: 'rgba(59, 130, 246, 0.1)',
         tension: 0.4,

@@ -27,6 +27,31 @@
       </div>
     </div>
 
+    <!-- 统计图表 -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      <!-- 错误类型分布 -->
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h2 class="text-lg font-bold text-gray-800 dark:text-white mb-4">错误类型分布</h2>
+        <div v-if="stats.ByType && stats.ByType.length > 0" class="h-64">
+          <Doughnut :data="typeChartData" :options="typeChartOptions" />
+        </div>
+        <div v-else class="h-64 flex items-center justify-center text-gray-500 dark:text-gray-400">
+          暂无数据
+        </div>
+      </div>
+
+      <!-- 最近7天错误趋势 -->
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h2 class="text-lg font-bold text-gray-800 dark:text-white mb-4">最近7天错误趋势</h2>
+        <div v-if="stats.RecentErrors && stats.RecentErrors.length > 0" class="h-64">
+          <Line :data="trendChartData" :options="trendChartOptions" />
+        </div>
+        <div v-else class="h-64 flex items-center justify-center text-gray-500 dark:text-gray-400">
+          暂无数据
+        </div>
+      </div>
+    </div>
+
     <!-- 筛选器 -->
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-6">
       <div class="flex gap-4">
@@ -201,6 +226,29 @@
 <script setup lang="ts">
 import { useNotification } from '~/composables/useToast'
 import { useErrorHandler } from '~/composables/useErrorHandler'
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend
+} from 'chart.js'
+import { Line, Doughnut } from 'vue-chartjs'
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend
+)
 
 definePageMeta({
   layout: 'admin',
@@ -234,6 +282,104 @@ const formatDate = (dateString: string) => {
     hour: '2-digit',
     minute: '2-digit'
   })
+}
+
+// 错误类型分布图表数据
+const typeChartData = computed(() => {
+  if (!stats.value.ByType || stats.value.ByType.length === 0) {
+    return {
+      labels: [],
+      datasets: []
+    }
+  }
+
+  const colors = [
+    'rgba(239, 68, 68, 0.8)',   // red
+    'rgba(59, 130, 246, 0.8)',  // blue
+    'rgba(16, 185, 129, 0.8)',  // green
+    'rgba(245, 158, 11, 0.8)',  // yellow
+    'rgba(139, 92, 246, 0.8)',  // purple
+    'rgba(236, 72, 153, 0.8)',  // pink
+  ]
+
+  return {
+    labels: stats.value.ByType.map((item: any) => item.Type || item.type),
+    datasets: [{
+      label: '错误数量',
+      data: stats.value.ByType.map((item: any) => item.Count || item.count),
+      backgroundColor: colors.slice(0, stats.value.ByType.length),
+      borderColor: colors.slice(0, stats.value.ByType.length).map(c => c.replace('0.8', '1')),
+      borderWidth: 2
+    }]
+  }
+})
+
+const typeChartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: 'bottom' as const
+    },
+    tooltip: {
+      callbacks: {
+        label: (context: any) => {
+          const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0)
+          const value = context.parsed
+          const percentage = ((value / total) * 100).toFixed(1)
+          return `${context.label}: ${value} (${percentage}%)`
+        }
+      }
+    }
+  }
+}
+
+// 错误趋势图表数据
+const trendChartData = computed(() => {
+  if (!stats.value.RecentErrors || stats.value.RecentErrors.length === 0) {
+    return {
+      labels: [],
+      datasets: []
+    }
+  }
+
+  return {
+    labels: stats.value.RecentErrors.map((item: any) => {
+      const date = new Date(item.Date || item.date)
+      return date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })
+    }),
+    datasets: [{
+      label: '错误数量',
+      data: stats.value.RecentErrors.map((item: any) => item.Count || item.count),
+      borderColor: 'rgb(239, 68, 68)',
+      backgroundColor: 'rgba(239, 68, 68, 0.1)',
+      tension: 0.4,
+      fill: true
+    }]
+  }
+})
+
+const trendChartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      display: true,
+      position: 'top' as const
+    },
+    tooltip: {
+      mode: 'index' as const,
+      intersect: false
+    }
+  },
+  scales: {
+    y: {
+      beginAtZero: true,
+      ticks: {
+        stepSize: 1
+      }
+    }
+  }
 }
 
 const fetchErrorLogs = async () => {
