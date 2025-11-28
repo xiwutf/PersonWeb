@@ -1,5 +1,5 @@
 ﻿<template>
-  <div class="min-h-screen bg-slate-50 overflow-x-hidden selection:bg-blue-500/30">
+    <div :class="styles.container">
     <!-- 添加到主屏幕提示 -->
     <AddToHomeScreen />
 
@@ -10,11 +10,11 @@
     ></div>
 
     <!-- Hero Banner -->
-    <section class="relative min-h-[100vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-gray-950 via-slate-950 to-zinc-950 py-16 sm:py-20 md:py-24">
+    <section :class="styles.heroSection">
       <!-- 专业网格背景 -->
-      <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+      <div :class="styles.backgroundGrid">
         <!-- 清晰的网格线 -->
-        <div class="absolute inset-0 opacity-[0.03]">
+        <div :class="styles.gridPattern">
           <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
@@ -26,19 +26,17 @@
         </div>
         
         <!-- 极微妙的角落光晕（几乎不可见，仅增加深度感） -->
-        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-500/2 rounded-full blur-[120px]"></div>
-        <div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-slate-500/2 rounded-full blur-[120px]"></div>
+        <div :class="styles.cornerGlow('top-right')"></div>
+        <div :class="styles.cornerGlow('bottom-left')"></div>
       </div>
 
       <!-- 主内容 -->
-      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 w-full z-10">
-        <div class="grid lg:grid-cols-2 gap-16 lg:gap-20 xl:gap-24 items-center">
+      <div :class="styles.mainContent">
+        <div :class="styles.gridContainer">
           <!-- 左侧文案区 -->
-          <div class="text-center lg:text-left space-y-8" data-aos="fade-right">
+          <div :class="styles.leftContent" data-aos="fade-right">
             <!-- 顶部小标签 -->
-            <div
-              class="inline-flex items-center px-4 py-2 bg-white/5 backdrop-blur-md rounded-full border border-white/10 mb-2 animate-float hover:bg-white/10 transition-colors cursor-default"
-            >
+            <div :class="styles.welcomeTag">
               <span class="flex h-2 w-2 relative mr-3">
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
@@ -47,49 +45,43 @@
             </div>
 
             <!-- 主标题 -->
-            <h1
-              class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white tracking-tight leading-[1.1] mb-6"
-            >
+            <h1 :class="styles.mainTitle">
               你好，我是
-              <span
-                class="block mt-3 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-300 animate-gradient-x"
-              >
+              <span :class="styles.titleGradient">
                 溪午听风
               </span>
             </h1>
 
             <!-- 角色轮播 -->
-            <div
-              class="h-10 sm:h-12 md:h-14 text-xl sm:text-2xl lg:text-3xl text-slate-300 font-semibold flex items-center justify-center lg:justify-start overflow-hidden mb-6"
-            >
-              <span class="mr-3 sm:mr-4 text-slate-400">我是一名</span>
+            <div :class="styles.roleCarousel">
+              <span :class="styles.roleText">我是一名</span>
               <div class="relative h-full w-64 sm:w-72 text-left">
                 <transition-group name="slide-up" tag="div" class="absolute top-0 left-0 w-full">
                   <span
                     v-if="currentRoleIndex === 0"
                     key="0"
-                    class="block font-bold text-blue-300"
+                    :class="styles.roleItem(roleColors[0])"
                   >
                     全栈开发者
                   </span>
                   <span
                     v-if="currentRoleIndex === 1"
                     key="1"
-                    class="block font-bold text-purple-300"
+                    :class="styles.roleItem(roleColors[1])"
                   >
                     AI 应用探索者
                   </span>
                   <span
                     v-if="currentRoleIndex === 2"
                     key="2"
-                    class="block font-bold text-cyan-300"
+                    :class="styles.roleItem(roleColors[2])"
                   >
                     Revit 插件实践者
                   </span>
                   <span
                     v-if="currentRoleIndex === 3"
                     key="3"
-                    class="block font-bold text-orange-200"
+                    :class="styles.roleItem(roleColors[3])"
                   >
                     终身学习者
                   </span>
@@ -98,33 +90,25 @@
             </div>
 
             <!-- 简介文案 -->
-            <p
-              class="text-base sm:text-lg md:text-xl text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed mb-8"
-            >
+            <p :class="styles.description">
               专注构建高效、优雅的数字体验。
               无论是企业级业务系统、AI 驱动应用，还是有趣的小工具，我都致力于把复杂问题做得简单好用。
             </p>
 
             <!-- 个人标签 -->
-            <div
-              class="flex flex-wrap justify-center lg:justify-start gap-3 mb-8 text-sm sm:text-base text-slate-300"
-            >
-              <span class="px-4 py-2 rounded-full bg-white/5 border border-white/10 font-medium">前后端一体化</span>
-              <span class="px-4 py-2 rounded-full bg-white/5 border border-white/10 font-medium">AI 应用落地</span>
-              <span class="px-4 py-2 rounded-full bg-white/5 border border-white/10 font-medium">自动化效率提升</span>
+            <div :class="styles.tagsContainer">
+              <span :class="styles.tag">前后端一体化</span>
+              <span :class="styles.tag">AI 应用落地</span>
+              <span :class="styles.tag">自动化效率提升</span>
             </div>
 
             <!-- 按钮区 -->
-            <div
-              class="flex flex-wrap justify-center lg:justify-start gap-4 sm:gap-5"
-            >
+            <div :class="styles.buttonsContainer">
               <NuxtLink to="/projects" class="relative inline-flex group touch-target">
                 <div
                   class="absolute transition-all duration-700 opacity-70 -inset-px bg-gradient-to-r from-[#44BCFF] via-[#FF44EC] to-[#FF675E] rounded-xl blur-lg group-hover:opacity-100 group-hover:-inset-1 group-hover:duration-200 animate-tilt"
                 ></div>
-                <button
-                  class="relative inline-flex items-center justify-center px-8 sm:px-10 md:px-12 py-4 sm:py-4.5 md:py-5 text-base sm:text-lg md:text-xl font-bold text-white transition-all duration-200 bg-slate-950/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900/80 min-h-[48px]"
-                >
+                <button :class="styles.primaryButton">
                   浏览项目
                   <i
                     class="fas fa-arrow-right ml-3 group-hover:translate-x-1 transition-transform"
@@ -132,25 +116,20 @@
                 </button>
               </NuxtLink>
 
-              <NuxtLink
-                to="/about"
-                class="inline-flex items-center justify-center px-8 sm:px-10 md:px-12 py-4 sm:py-4.5 md:py-5 text-base sm:text-lg md:text-xl font-bold text-slate-200 transition-all duration-200 bg-white/5 border-2 border-slate-600/70 rounded-xl hover:bg-white/10 hover:border-slate-400/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900/80 min-h-[48px] touch-target"
-              >
+              <NuxtLink to="/about" :class="styles.secondaryButton">
                 关于我
               </NuxtLink>
             </div>
           </div>
 
           <!-- 右侧视觉区 -->
-          <div class="relative hidden lg:block" data-aos="fade-left">
-            <div class="relative w-full max-w-sm mx-auto aspect-square">
+          <div :class="styles.rightContent" data-aos="fade-left">
+            <div :class="styles.rightCard">
               <!-- 柔和渐变背景块 - 使用更中性的颜色 -->
-              <div
-                class="absolute inset-0 bg-gradient-to-tr from-slate-700/20 via-blue-900/20 to-slate-600/20 rounded-[2.1rem] rotate-6 opacity-40 blur-3xl"
-              ></div>
+              <div :class="styles.cardBg"></div>
 
               <!-- 主卡片 - 使用更现代的毛玻璃效果 -->
-              <div class="w-full h-full rounded-[2rem] overflow-hidden border border-white/20 backdrop-blur-2xl bg-gradient-to-br from-white/10 via-white/5 to-transparent shadow-2xl shadow-indigo-500/20">
+              <div :class="styles.mainCard">
                 <div class="w-full h-full relative">
                   <!-- 粒子头像 - 降低可见度 -->
                   <div class="w-full h-full opacity-40 hover:opacity-60 transition-opacity duration-300">
@@ -165,9 +144,7 @@
                   </div>
 
                   <!-- 底部信息条 - 重新设计为更融合的样式 -->
-                  <div
-                    class="absolute bottom-5 left-5 right-5 p-5 backdrop-blur-2xl rounded-2xl border border-white/20 bg-gradient-to-br from-white/15 via-white/10 to-white/5 shadow-2xl"
-                  >
+                  <div :class="styles.cardInfo">
                     <div class="flex items-center justify-between gap-3 mb-3">
                       <div class="flex-1">
                         <h3 class="font-bold text-white text-lg mb-1 drop-shadow-lg">溪午听风</h3>
@@ -204,42 +181,6 @@
                 </div>
               </div>
 
-              <!-- 悬浮卡片：项目进度 - 重新设计 -->
-              <div
-                class="absolute -right-6 top-12 p-4 backdrop-blur-2xl rounded-2xl border border-white/20 bg-gradient-to-br from-emerald-500/20 via-emerald-500/10 to-transparent shadow-2xl shadow-emerald-500/20 animate-float-delayed w-44 z-20"
-              >
-                <div class="flex items-center gap-2 mb-3">
-                  <div
-                    class="w-8 h-8 bg-emerald-500/40 backdrop-blur-sm rounded-lg flex items-center justify-center text-emerald-100 text-sm border border-emerald-400/50 shadow-lg"
-                  >
-                    <i class="fas fa-check"></i>
-                  </div>
-                  <span class="font-bold text-sm text-white drop-shadow-lg">个人站点已上线</span>
-                </div>
-                <div class="w-full bg-white/10 backdrop-blur-sm rounded-full h-2 overflow-hidden border border-white/20">
-                  <div
-                    class="bg-gradient-to-r from-emerald-400 to-emerald-500 h-2 rounded-full w-full shadow-[0_0_15px_rgba(74,222,128,0.8)]"
-                  ></div>
-                </div>
-                <p class="mt-2 text-[11px] text-slate-200/80 font-medium">持续迭代功能与体验</p>
-              </div>
-
-              <!-- 悬浮卡片：AI 驱动 - 重新设计 -->
-              <div
-                class="absolute -left-6 bottom-24 p-4 backdrop-blur-2xl rounded-2xl border border-white/20 bg-gradient-to-br from-purple-500/20 via-purple-500/10 to-transparent shadow-2xl shadow-purple-500/20 animate-float w-44 z-20"
-              >
-                <div class="flex items-center gap-3">
-                  <div
-                    class="w-8 h-8 bg-purple-500/40 backdrop-blur-sm rounded-lg flex items-center justify-center text-purple-100 text-sm border border-purple-400/50 shadow-lg"
-                  >
-                    <i class="fas fa-sparkles"></i>
-                  </div>
-                  <div>
-                    <div class="font-bold text-sm text-white drop-shadow-lg mb-0.5">AI 驱动体验</div>
-                    <div class="text-[11px] text-slate-200/80 font-medium">智能助手 · 智能工具</div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -577,6 +518,56 @@ const fetchLatestPosts = async () => {
 const formatDate = (dateStr: string) => {
   if (!dateStr) return ''
   return new Date(dateStr).toLocaleDateString('zh-CN')
+}
+
+// 样式类管理
+const styles = {
+  // 容器样式
+  container: 'min-h-screen bg-slate-50 overflow-x-hidden selection:bg-blue-500/30',
+  heroSection: 'relative min-h-[100vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-gray-950 via-slate-950 to-zinc-950 py-16 sm:py-20 md:py-24',
+  mainContent: 'relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 w-full z-10',
+  gridContainer: 'grid lg:grid-cols-2 gap-16 lg:gap-20 xl:gap-24 items-center',
+  
+  // 左侧文案区
+  leftContent: 'text-center lg:text-left space-y-8 relative z-30',
+  welcomeTag: 'inline-flex items-center px-4 py-2 bg-white/5 backdrop-blur-md rounded-full border border-white/10 mb-2 animate-float hover:bg-white/10 transition-colors cursor-default',
+  mainTitle: 'text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white tracking-tight leading-[1.1] mb-6',
+  titleGradient: 'block mt-3 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-300 animate-gradient-x',
+  roleCarousel: 'h-10 sm:h-12 md:h-14 text-xl sm:text-2xl lg:text-3xl text-slate-300 font-semibold flex items-center justify-center lg:justify-start overflow-hidden mb-6',
+  roleText: 'mr-3 sm:mr-4 text-slate-400',
+  roleItem: (color: string) => `block font-bold ${color}`,
+  description: 'text-base sm:text-lg md:text-xl text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed mb-8',
+  tagsContainer: 'flex flex-wrap justify-center lg:justify-start gap-3 mb-8 text-sm sm:text-base text-slate-300',
+  tag: 'px-4 py-2 rounded-full bg-white/5 border border-white/10 font-medium',
+  buttonsContainer: 'flex flex-wrap justify-center lg:justify-start gap-4 sm:gap-5',
+  primaryButton: 'relative inline-flex items-center justify-center px-8 sm:px-10 md:px-12 py-4 sm:py-4.5 md:py-5 text-base sm:text-lg md:text-xl font-bold text-white transition-all duration-200 bg-slate-950/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900/80 min-h-[48px]',
+  secondaryButton: 'inline-flex items-center justify-center px-8 sm:px-10 md:px-12 py-4 sm:py-4.5 md:py-5 text-base sm:text-lg md:text-xl font-bold text-slate-200 transition-all duration-200 bg-white/5 border-2 border-slate-600/70 rounded-xl hover:bg-white/10 hover:border-slate-400/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900/80 min-h-[48px] touch-target',
+  
+  // 右侧视觉区
+  rightContent: 'relative hidden lg:block z-0 overflow-visible',
+  rightCard: 'relative w-full max-w-sm mx-auto aspect-square overflow-visible',
+  cardBg: 'absolute inset-0 bg-gradient-to-tr from-slate-700/20 via-blue-900/20 to-slate-600/20 rounded-[2.1rem] rotate-6 opacity-40 blur-3xl',
+  mainCard: 'w-full h-full rounded-[2rem] overflow-hidden border border-white/20 backdrop-blur-2xl bg-gradient-to-br from-white/10 via-white/5 to-transparent shadow-2xl shadow-indigo-500/20',
+  cardInfo: 'absolute bottom-5 left-5 right-5 p-5 backdrop-blur-2xl rounded-2xl border border-white/20 bg-gradient-to-br from-white/15 via-white/10 to-white/5 shadow-2xl',
+  
+  // 背景样式
+  backgroundGrid: 'absolute inset-0 overflow-hidden pointer-events-none z-0',
+  gridPattern: 'absolute inset-0 opacity-[0.03]',
+  cornerGlow: (position: 'top-right' | 'bottom-left') => {
+    const positions = {
+      'top-right': 'absolute top-0 right-0 w-[600px] h-[600px] bg-blue-500/2 rounded-full blur-[120px]',
+      'bottom-left': 'absolute bottom-0 left-0 w-[600px] h-[600px] bg-slate-500/2 rounded-full blur-[120px]'
+    }
+    return positions[position]
+  }
+}
+
+// 角色颜色映射
+const roleColors = {
+  0: 'text-blue-300',
+  1: 'text-purple-300',
+  2: 'text-cyan-300',
+  3: 'text-orange-200'
 }
 
 // 轮播文字逻辑

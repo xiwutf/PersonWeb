@@ -259,4 +259,84 @@
   .btn-link--green {
     @apply text-sm font-medium transition-colors text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300;
   }
+
+  /* ========== 后台管理深色主题样式覆盖 ========== */
+  /* 确保所有文字在深色背景下可见 */
+  .admin-main {
+    color: #ffffff;
+  }
+
+  .admin-main .text-gray-600,
+  .admin-main .text-gray-500,
+  .admin-main .text-gray-400 {
+    color: rgba(255, 255, 255, 0.7) !important;
+  }
+
+  .admin-main .text-gray-700 {
+    color: rgba(255, 255, 255, 0.8) !important;
+  }
+
+  .admin-main .text-gray-800,
+  .admin-main .text-gray-900 {
+    color: #ffffff !important;
+  }
+
+  /* 白色背景改为半透明 */
+  .admin-main .bg-white {
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(10px);
+  }
+
+  /* 深色背景下的卡片 */
+  .admin-main .dark\:bg-gray-800 {
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(10px);
+  }
+
+  .admin-main .dark\:bg-gray-900 {
+    background: rgba(255, 255, 255, 0.03) !important;
+  }
+
+  /* 深色背景下的文字 */
+  .admin-main .dark\:text-white {
+    color: #ffffff !important;
+  }
+
+  .admin-main .dark\:text-gray-200 {
+    color: rgba(255, 255, 255, 0.9) !important;
+  }
+
+  .admin-main .dark\:text-gray-300 {
+    color: rgba(255, 255, 255, 0.8) !important;
+  }
+
+  .admin-main .dark\:text-gray-400 {
+    color: rgba(255, 255, 255, 0.7) !important;
+  }
+
+  /* 边框颜色 */
+  .admin-main .dark\:border-gray-600,
+  .admin-main .dark\:border-gray-700 {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+  }
+
+  /* 分割线 */
+  .admin-main .dark\:divide-gray-700 {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+  }
+
+  /* 悬停效果 */
+  .admin-main .dark\:hover\:bg-gray-700:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+  }
+
+  .admin-main .hover\:bg-gray-50:hover {
+    background: rgba(255, 255, 255, 0.05) !important;
+  }
+
+  /* 表格头部背景 */
+  .admin-main .bg-gray-50,
+  .admin-main .dark\:bg-gray-700\/50 {
+    background: rgba(255, 255, 255, 0.05) !important;
+  }
 }

@@ -114,6 +114,9 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: 'admin'
+})
 const api = useApi()
 const { success, error } = useNotification()
 

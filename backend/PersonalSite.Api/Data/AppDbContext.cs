@@ -38,6 +38,8 @@ public class AppDbContext : DbContext
     public DbSet<Goal> Goals { get; set; }
     public DbSet<MonthlyKpi> MonthlyKpis { get; set; }
     public DbSet<HomeStyle> HomeStyles { get; set; }
+    public DbSet<AdminModuleStyle> AdminModuleStyles { get; set; }
+    public DbSet<AdminGlobalStyle> AdminGlobalStyles { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

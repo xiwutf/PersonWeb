@@ -242,6 +242,32 @@ export interface FriendLinkRequest {
   status?: number
 }
 
+// ==================== 后台风格相关 ====================
+
+export interface AdminGlobalStyle {
+  id: number
+  styleKey: string
+  styleName: string
+  description?: string
+  styleConfig: string
+  previewImage?: string
+  enabled: boolean
+  isDefault: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface AdminModuleStyle {
+  id: number
+  moduleKey: string
+  moduleName: string
+  styleConfig: string
+  enabled: boolean
+  isDefault: boolean
+  createdAt: string
+  updatedAt: string
+}
+
 // ==================== API 响应格式 ====================
 
 export interface ApiResponse<T = any> {
