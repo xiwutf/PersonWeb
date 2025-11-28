@@ -1,0 +1,28 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "ConnectionStrings": {
+    "Default": "Server=localhost;Database=personal_site;User=root;Password=your_password;SslMode=None;"
+  },
+  "Jwt": {
+    "Key": "your-development-secret-key-here-min-32-chars",
+    "Issuer": "PersonalSite.Api",
+    "Audience": "PersonalSite.Web"
+  },
+  "AliyunOSS": {
+    "Endpoint": "your-oss-endpoint",
+    "AccessKeyId": "your-access-key-id",
+    "AccessKeySecret": "your-access-key-secret",
+    "BucketName": "your-bucket-name"
+  },
+  "DeepSeek": {
+    "ApiKey": "your-deepseek-api-key",
+    "ApiBaseUrl": "https://api.deepseek.com",
+    "Model": "deepseek-chat"
+  }
+}
+

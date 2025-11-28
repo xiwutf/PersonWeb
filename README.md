@@ -51,20 +51,74 @@
 ## 🚀 快速开始
 
 ### 环境要求
-- Node.js 18+
-- npm 或 yarn
+- **Node.js** 18+ 
+- **.NET SDK** 8.0+
+- **MySQL** 5.7+ 或 8.0+
+- **Git**
 
-### 安装依赖
-```bash
-npm install
+### 一键配置（推荐）
+
+**Windows:**
+```powershell
+.\scripts\setup-dev-env.ps1
 ```
 
-### 开发模式
+**Linux/macOS:**
 ```bash
-npm run dev
+chmod +x scripts/setup-dev-env.sh
+./scripts/setup-dev-env.sh
 ```
 
-访问 http://localhost:3000 查看网站
+### 手动配置
+
+1. **安装依赖**
+   ```bash
+   # 前端
+   npm install
+   
+   # 后端
+   cd backend/PersonalSite.Api
+   dotnet restore
+   ```
+
+2. **配置环境变量**
+   ```bash
+   # 复制模板文件
+   cp .env.example .env
+   # 编辑 .env 文件，设置 API 地址
+   ```
+
+3. **配置数据库**
+   - 编辑 `backend/PersonalSite.Api/appsettings.Development.json`
+   - 设置数据库连接字符串
+
+4. **创建数据库并执行脚本**
+   ```sql
+   CREATE DATABASE personal_site CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+   ```
+   ```bash
+   mysql -u root -p personal_site < database/all_tables.sql
+   ```
+
+5. **启动服务**
+   ```bash
+   # 终端1 - 后端
+   cd backend/PersonalSite.Api
+   dotnet run
+   
+   # 终端2 - 前端
+   npm run dev
+   ```
+
+6. **访问应用**
+   - 前端：http://localhost:3000
+   - API 文档：http://localhost:5234/swagger
+
+### 📚 详细文档
+
+- [快速开始指南](./docs/deployment/QUICK_START.md)
+- [开发环境配置指南](./docs/deployment/DEVELOPMENT_SETUP.md)
+- [后端启动指南](./docs/deployment/START_BACKEND.md)
 
 ### 构建生产版本
 ```bash
@@ -219,6 +273,16 @@ npm run preview
 - 📝 [迁移文档](./docs/migration/) - 数据迁移指南
 
 详细文档索引请查看 [文档目录](./docs/README.md)
+
+## 🆕 新电脑快速配置
+
+如果你在新电脑上配置开发环境，请按以下步骤：
+
+1. **查看快速开始指南**：[QUICK_START.md](./docs/deployment/QUICK_START.md)
+2. **运行一键配置脚本**：
+   - Windows: `.\scripts\setup-dev-env.ps1`
+   - Linux/macOS: `./scripts/setup-dev-env.sh`
+3. **按照检查清单验证**：[ENVIRONMENT_CHECKLIST.md](./docs/deployment/ENVIRONMENT_CHECKLIST.md)
 
 ## 📧 联系方式
 
