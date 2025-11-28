@@ -79,6 +79,10 @@ public class InvestmentController : ControllerBase
         try
         {
             // 获取实时价格
+            if (string.IsNullOrEmpty(request.Code) || string.IsNullOrEmpty(request.Type))
+            {
+                return Ok(ApiResponse.Error("代码和类型不能为空", 400));
+            }
             var currentPrice = await GetCurrentPrice(request.Code, request.Type);
 
             var investment = new Investment
@@ -199,7 +203,10 @@ public class InvestmentController : ControllerBase
             }
 
             // 更新当前价格和市值
-            investment.CurrentPrice = await GetCurrentPrice(investment.Code, investment.Type);
+            if (!string.IsNullOrEmpty(investment.Code) && !string.IsNullOrEmpty(investment.Type))
+            {
+                investment.CurrentPrice = await GetCurrentPrice(investment.Code, investment.Type);
+            }
             investment.MarketValue = investment.Quantity * investment.CurrentPrice;
             investment.ProfitLoss = investment.MarketValue - investment.TotalCost;
             investment.ProfitRate = investment.TotalCost > 0 
@@ -300,7 +307,10 @@ public class InvestmentController : ControllerBase
 
             foreach (var investment in investments)
             {
-                investment.CurrentPrice = await GetCurrentPrice(investment.Code, investment.Type);
+                if (!string.IsNullOrEmpty(investment.Code) && !string.IsNullOrEmpty(investment.Type))
+                {
+                    investment.CurrentPrice = await GetCurrentPrice(investment.Code, investment.Type);
+                }
                 investment.MarketValue = investment.Quantity * investment.CurrentPrice;
                 investment.ProfitLoss = investment.MarketValue - investment.TotalCost;
                 investment.ProfitRate = investment.TotalCost > 0 
@@ -322,7 +332,7 @@ public class InvestmentController : ControllerBase
     /// <summary>
     /// 获取实时价格（模拟，实际需要调用东方财富 API）
     /// </summary>
-    private async Task<decimal> GetCurrentPrice(string code, string type)
+    private async Task<decimal> GetCurrentPrice(string? code, string? type)
     {
         // TODO: 集成东方财富 API
         // 这里先返回一个模拟价格

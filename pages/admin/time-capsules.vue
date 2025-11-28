@@ -31,14 +31,24 @@
 
     <!-- 筛选 -->
     <div class="filter-bar">
-      <n-select
-        v-model:value="statusFilter"
-        placeholder="全部状态"
-        :options="statusOptions"
-        clearable
-        @update:value="fetchCapsules"
-        style="width: 200px"
-      />
+      <ClientOnly>
+        <n-select
+          v-model:value="statusFilter"
+          placeholder="全部状态"
+          :options="statusOptions"
+          clearable
+          @update:value="fetchCapsules"
+          style="width: 200px"
+        />
+        <template #fallback>
+          <select class="filter-select-fallback" @change="(e: any) => { statusFilter = e.target.value; fetchCapsules(); }">
+            <option value="">全部状态</option>
+            <option value="pending">待审核</option>
+            <option value="approved">已展示</option>
+            <option value="rejected">已拒绝</option>
+          </select>
+        </template>
+      </ClientOnly>
     </div>
 
     <!-- 胶囊列表 -->
@@ -117,7 +127,9 @@ import { useErrorHandler } from '~/composables/useErrorHandler'
 
 definePageMeta({
   layout: 'admin',
-  middleware: 'admin-auth'
+  middleware: 'admin-auth',
+  // 排除静态预渲染（admin 页面需要认证）
+  ssr: false
 })
 
 const api = useApi()
@@ -440,6 +452,21 @@ onMounted(() => {
 
 .btn-link-blue:hover {
   color: #93c5fd;
+}
+
+.filter-select-fallback {
+  width: 200px;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.25rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.875rem;
+}
+
+.filter-select-fallback:focus {
+  outline: none;
+  border-color: rgba(59, 130, 246, 0.5);
 }
 
 .btn-link-green {

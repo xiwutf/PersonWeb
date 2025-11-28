@@ -89,11 +89,12 @@ public class StyleManagementController : ControllerBase
 
         if (dto.Id > 0)
         {
-            style = await _context.StyleDefinitions.FindAsync(dto.Id);
-            if (style == null)
+            var foundStyle = await _context.StyleDefinitions.FindAsync(dto.Id);
+            if (foundStyle == null)
             {
                 return NotFound(ApiResponse<StyleDefinition>.Error("样式不存在", 404));
             }
+            style = foundStyle;
 
             // 检查代码是否被其他记录使用
             if (style.Code != dto.Code)

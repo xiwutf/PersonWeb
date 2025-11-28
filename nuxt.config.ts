@@ -105,5 +105,19 @@ export default defineNuxtConfig({
     '~/assets/css/themes.css'
   ],
 
+  // Nitro 配置（用于静态生成优化）
+  nitro: {
+    prerender: {
+      // 自动爬取链接，但排除 admin 页面
+      crawlLinks: true,
+      // 排除需要认证的 admin 页面
+      ignore: [
+        '/admin/**'
+      ],
+      // 忽略预渲染错误（admin 页面会失败，这是正常的）
+      failOnError: false
+    }
+  },
+
   compatibilityDate: '2024-04-03'
 })

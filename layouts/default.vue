@@ -26,6 +26,12 @@
     <!-- 时间胶囊墙 -->
     <TimeCapsuleWall />
     
+    <!-- 访客互动功能 -->
+    <VisitorDanmakuWall />
+    <VisitorBubble />
+    <VisitorFootprintMap />
+    <VisitorInteractionPanel />
+    
     <!-- 隐秘的后台入口 -->
     <SecretAdminAccess />
   </div>
@@ -51,16 +57,32 @@ onMounted(async () => {
 
     // 获取或生成 Visitor ID
     let visitorId = localStorage.getItem('visitor_id')
+    if (!visitorId) {
+      visitorId = `visitor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      localStorage.setItem('visitor_id', visitorId)
+      
+      // 触发新访客事件（用于显示气泡）
+      if (process.client) {
+        window.dispatchEvent(new CustomEvent('new-visitor', {
+          detail: { visitorId, location: null }
+        }))
+      }
+    }
     
     // 调用统计 API
-    const res = await api.post('/tracking/visit', { 
-      visitorId,
-      path: route.path 
-    })
+    try {
+      const res = await api.post('/tracking/visit', { 
+        visitorId,
+        path: route.path 
+      })
 
-    // 保存 Visitor ID (如果是新生成的)
-    if (res && res.visitorId && res.visitorId !== visitorId) {
-      localStorage.setItem('visitor_id', res.visitorId)
+      // 保存 Visitor ID (如果是新生成的)
+      if (res && res.visitorId && res.visitorId !== visitorId) {
+        localStorage.setItem('visitor_id', res.visitorId)
+        visitorId = res.visitorId
+      }
+    } catch (e) {
+      console.warn('统计API调用失败', e)
     }
 
     // 加载用户主题偏好

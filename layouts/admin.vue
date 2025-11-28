@@ -205,6 +205,24 @@
             <span class="text-sm">主题风格管理</span>
           </NuxtLink>
           
+        <NuxtLink 
+          to="/admin/settings/modules" 
+          class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
+          :class="{ 'admin-sidebar-link-active': route.path === '/admin/settings/modules' }"
+        >
+          <i class="fas fa-puzzle-piece w-6 text-center mr-2 text-sm"></i>
+          <span class="text-sm">模块管理</span>
+        </NuxtLink>
+        
+        <NuxtLink 
+          to="/admin/visitor-messages" 
+          class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
+          :class="{ 'admin-sidebar-link-active': route.path === '/admin/visitor-messages' }"
+        >
+          <i class="fas fa-comments w-6 text-center mr-2 text-sm"></i>
+          <span class="text-sm">访客留言</span>
+        </NuxtLink>
+          
           <NuxtLink 
             to="/admin/error-logs" 
             class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"

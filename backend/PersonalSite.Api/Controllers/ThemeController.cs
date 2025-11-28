@@ -178,11 +178,12 @@ public class ThemeController : ControllerBase
 
         if (dto.Id > 0)
         {
-            theme = await _context.ThemeStyles.FindAsync(dto.Id);
-            if (theme == null)
+            var foundTheme = await _context.ThemeStyles.FindAsync(dto.Id);
+            if (foundTheme == null)
             {
                 return NotFound(ApiResponse<ThemeStyle>.Error("主题不存在", 404));
             }
+            theme = foundTheme;
         }
         else
         {

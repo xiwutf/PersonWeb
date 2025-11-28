@@ -98,11 +98,12 @@ public class AdminStyleController : ControllerBase
 
         if (dto.Id > 0)
         {
-            style = await _context.AdminGlobalStyles.FindAsync(dto.Id);
-            if (style == null)
+            var foundStyle = await _context.AdminGlobalStyles.FindAsync(dto.Id);
+            if (foundStyle == null)
             {
                 return NotFound(ApiResponse<AdminGlobalStyle>.Error("风格不存在", 404));
             }
+            style = foundStyle;
 
             // 检查 styleKey 是否被其他记录使用
             if (style.StyleKey != dto.StyleKey)
@@ -215,11 +216,12 @@ public class AdminStyleController : ControllerBase
 
         if (dto.Id > 0)
         {
-            style = await _context.AdminModuleStyles.FindAsync(dto.Id);
-            if (style == null)
+            var foundStyle = await _context.AdminModuleStyles.FindAsync(dto.Id);
+            if (foundStyle == null)
             {
                 return NotFound(ApiResponse<AdminModuleStyle>.Error("风格不存在", 404));
             }
+            style = foundStyle;
 
             if (style.ModuleKey != dto.ModuleKey)
             {

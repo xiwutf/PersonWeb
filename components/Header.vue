@@ -189,75 +189,129 @@ onMounted(() => {
   })
 })
 
-// 主要导航项（显示在顶部）
-const mainNavigationItems = [
-  {
-    title: '首页',
-    path: '/',
-    icon: '🏠'
-  },
-  {
-    title: '插件工具',
-    path: '/tools',
-    icon: '🔧'
-  },
-  {
-    title: '项目展示',
-    path: '/projects',
-    icon: '🧪'
-  },
-  {
-    title: '技术博客',
-    path: '/blog',
-    icon: '📝'
-  },
-  {
-    title: 'AI 实验室',
-    path: '/ai',
-    icon: '🔮'
-  }
-]
+// 主要导航项（根据启用的模块动态生成）
+const mainNavigationItems = computed(() => {
+  const { isModuleEnabled } = useModuleSystem()
+  
+  const items = [
+    {
+      title: '首页',
+      path: '/',
+      icon: '🏠',
+      moduleKey: 'core'
+    }
+  ]
 
-// 更多菜单项（合并到下拉菜单）
-const moreNavigationItems = [
-  {
-    title: '生活随笔',
-    path: '/life',
-    icon: '☕'
-  },
-  {
-    title: '英语学习',
-    path: '/english',
-    icon: '📚'
-  },
-  {
-    title: '技能树',
-    path: '/skills',
-    icon: '🌳'
-  },
-  {
-    title: '仪表盘',
-    path: '/dashboard',
-    icon: '⚡'
-  },
-  {
-    title: '小游戏',
-    path: '/game',
-    icon: '🎮'
-  },
-  {
+  // 根据模块启用状态添加导航项
+  if (isModuleEnabled('tools')) {
+    items.push({
+      title: '插件工具',
+      path: '/tools',
+      icon: '🔧',
+      moduleKey: 'tools'
+    })
+  }
+
+  if (isModuleEnabled('projects')) {
+    items.push({
+      title: '项目展示',
+      path: '/projects',
+      icon: '🧪',
+      moduleKey: 'projects'
+    })
+  }
+
+  if (isModuleEnabled('blog')) {
+    items.push({
+      title: '技术博客',
+      path: '/blog',
+      icon: '📝',
+      moduleKey: 'blog'
+    })
+  }
+
+  if (isModuleEnabled('lab-3d')) {
+    items.push({
+      title: 'AI 实验室',
+      path: '/lab',
+      icon: '🔮',
+      moduleKey: 'lab-3d'
+    })
+  }
+
+  return items
+})
+
+// 更多菜单项（根据启用的模块动态生成）
+const moreNavigationItems = computed(() => {
+  const { isModuleEnabled } = useModuleSystem()
+  
+  const items: Array<{ title: string; path: string; icon: string; moduleKey?: string }> = []
+
+  if (isModuleEnabled('life')) {
+    items.push({
+      title: '生活随笔',
+      path: '/life',
+      icon: '☕',
+      moduleKey: 'life'
+    })
+  }
+
+  if (isModuleEnabled('english')) {
+    items.push({
+      title: '英语学习',
+      path: '/english',
+      icon: '📚',
+      moduleKey: 'english'
+    })
+  }
+
+  if (isModuleEnabled('skills')) {
+    items.push({
+      title: '技能树',
+      path: '/skills',
+      icon: '🌳',
+      moduleKey: 'skills'
+    })
+  }
+
+  if (isModuleEnabled('dashboard')) {
+    items.push({
+      title: '仪表盘',
+      path: '/dashboard',
+      icon: '⚡',
+      moduleKey: 'dashboard'
+    })
+  }
+
+  if (isModuleEnabled('game')) {
+    items.push({
+      title: '小游戏',
+      path: '/game',
+      icon: '🎮',
+      moduleKey: 'game'
+    })
+  }
+
+  // 关于我始终显示（核心功能）
+  items.push({
     title: '关于我',
     path: '/about',
-    icon: '👤'
-  }
-]
+    icon: '👤',
+    moduleKey: 'core'
+  })
+
+  return items
+})
 
 // 所有导航项（用于移动端菜单）
-const navigationItems = [...mainNavigationItems, ...moreNavigationItems]
+const navigationItems = computed(() => {
+  return [...mainNavigationItems.value, ...moreNavigationItems.value]
+})
 
 // 检查"更多"菜单是否包含当前路由
 const isMoreMenuActive = computed(() => {
-  return moreNavigationItems.some(item => route.path === item.path)
+  return moreNavigationItems.value.some(item => route.path === item.path)
 })
 
 // 关闭移动端菜单

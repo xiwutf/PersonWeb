@@ -1,5 +1,6 @@
 ﻿<template>
-  <div class="min-h-screen bg-[#0f172a] text-slate-200 relative overflow-hidden font-['Outfit']">
+  <ModuleGuard module-key="about">
+    <div class="min-h-screen bg-[#0f172a] text-slate-200 relative overflow-hidden font-['Outfit']">
     <!-- 全局背景噪点 -->
     <div class="fixed inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none z-50"
          style="background-image: url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E&quot;);">
@@ -148,10 +149,15 @@
       </div>
 
     </div>
-  </div>
+    </div>
+  </ModuleGuard>
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: 'default'
+})
+
 const socialLinks = [
   { name: 'GitHub', icon: 'fab fa-github', link: 'https://github.com/Lijing327' },
   { name: 'Email', icon: 'fas fa-envelope', link: 'mailto:255106739@qq.com' },

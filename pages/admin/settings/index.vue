@@ -98,6 +98,17 @@
             </div>
             <i class="fas fa-chevron-right card-arrow"></i>
           </NuxtLink>
+
+          <NuxtLink to="/admin/settings/modules" class="settings-card">
+            <div class="card-icon">
+              <i class="fas fa-puzzle-piece"></i>
+            </div>
+            <div class="card-content">
+              <h3 class="card-title">模块管理</h3>
+              <p class="card-desc">管理功能模块的启用/禁用，实现按需加载</p>
+            </div>
+            <i class="fas fa-chevron-right card-arrow"></i>
+          </NuxtLink>
         </div>
       </div>
 
@@ -115,6 +126,26 @@
             <div class="card-content">
               <h3 class="card-title">错误日志</h3>
               <p class="card-desc">查看和管理系统错误日志</p>
+            </div>
+            <i class="fas fa-chevron-right card-arrow"></i>
+          </NuxtLink>
+        </div>
+      </div>
+
+      <!-- 访客互动 -->
+      <div class="settings-section">
+        <h2 class="section-title">
+          <i class="fas fa-users mr-2"></i>
+          访客互动
+        </h2>
+        <div class="settings-cards">
+          <NuxtLink to="/admin/visitor-messages" class="settings-card">
+            <div class="card-icon">
+              <i class="fas fa-comments"></i>
+            </div>
+            <div class="card-content">
+              <h3 class="card-title">访客留言管理</h3>
+              <p class="card-desc">审核和管理访客发送的弹幕、留言、心情和祝福</p>
             </div>
             <i class="fas fa-chevron-right card-arrow"></i>
           </NuxtLink>

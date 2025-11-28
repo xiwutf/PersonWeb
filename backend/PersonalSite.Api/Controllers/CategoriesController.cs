@@ -84,6 +84,6 @@ public class CategoriesController : ControllerBase
         _context.Categories.Remove(category);
         await _context.SaveChangesAsync();
 
-        return Ok(ApiResponse<object>.Success(null));
+        return Ok(ApiResponse<object>.Success(new { }));
     }
 }

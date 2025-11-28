@@ -47,6 +47,11 @@ public class AppDbContext : DbContext
     public DbSet<BackgroundEffect> BackgroundEffects { get; set; }
     public DbSet<ThemeSetting> ThemeSettings { get; set; }
     public DbSet<UserThemePreference> UserThemePreferences { get; set; }
+    public DbSet<Module> Modules { get; set; }
+    public DbSet<ModuleConfig> ModuleConfigs { get; set; }
+    public DbSet<VisitorMessage> VisitorMessages { get; set; }
+    public DbSet<VisitorFootprint> VisitorFootprints { get; set; }
+    public DbSet<VisitorBubble> VisitorBubbles { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -78,5 +83,18 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Tag>()
             .HasIndex(t => t.Name)
             .IsUnique();
+            
+        // 配置 Module 和 ModuleConfig 的关系
+        // ModuleKey 作为替代键（Alternate Key）
+        modelBuilder.Entity<Module>()
+            .HasAlternateKey(m => m.ModuleKey);
+            
+        // 配置 ModuleConfig 使用 ModuleKey 作为外键
+        modelBuilder.Entity<ModuleConfig>()
+            .HasOne(mc => mc.Module)
+            .WithMany(m => m.ModuleConfigs)
+            .HasForeignKey(mc => mc.ModuleKey)
+            .HasPrincipalKey(m => m.ModuleKey)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

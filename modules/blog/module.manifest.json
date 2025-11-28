@@ -1,0 +1,51 @@
+{
+  "moduleKey": "blog",
+  "moduleName": "技术博客",
+  "version": "1.0.0",
+  "description": "技术文章和博客功能",
+  "author": "溪午听风",
+  "icon": "fas fa-blog",
+  "category": "content",
+  "dependencies": ["core"],
+  "routes": [
+    {
+      "path": "/blog",
+      "name": "blog-index",
+      "component": "pages/blog/index.vue"
+    },
+    {
+      "path": "/blog/[id]",
+      "name": "blog-detail",
+      "component": "pages/blog/[id].vue"
+    }
+  ],
+  "components": [
+    {
+      "name": "MarkdownEditor",
+      "path": "components/MarkdownEditor.vue",
+      "global": false
+    },
+    {
+      "name": "GiscusComments",
+      "path": "components/GiscusComments.vue",
+      "global": false
+    }
+  ],
+  "permissions": {
+    "read": "public",
+    "write": "admin"
+  },
+  "configSchema": {
+    "enableComments": {
+      "type": "boolean",
+      "default": true,
+      "description": "启用评论功能"
+    },
+    "postsPerPage": {
+      "type": "number",
+      "default": 10,
+      "description": "每页文章数量"
+    }
+  }
+}
+

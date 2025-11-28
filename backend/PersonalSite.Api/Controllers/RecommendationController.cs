@@ -97,7 +97,7 @@ public class RecommendationController : ControllerBase
                 .ToList(),
             ["favorite_tags"] = behaviors
                 .Where(b => !string.IsNullOrEmpty(b.Tags))
-                .SelectMany(b => b.Tags.Split(','))
+                .SelectMany(b => b.Tags!.Split(','))
                 .GroupBy(t => t.Trim())
                 .OrderByDescending(g => g.Count())
                 .Take(10)

@@ -25,10 +25,16 @@
                 在这里玩一玩有趣的 3D 场景和 AI 小实验。
               </span>
             </h1>
-            <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+            <p class="text-sm sm:text-base text-slate-300 leading-relaxed mb-4">
               每一个 3D 物体都代表一个入口：博客、项目、数据仪表盘……
               未来会逐步接入 AI 智能体、小工具和实验性功能。
             </p>
+            <div class="mt-4">
+              <NuxtLink to="/ai" class="inline-flex items-center text-blue-400 hover:text-blue-300 text-sm transition-colors">
+                <i class="fas fa-robot mr-2"></i>
+                查看 AI 工作台（智能体与工作流）→
+              </NuxtLink>
+            </div>
           </div>
 
           <div class="hidden lg:block">

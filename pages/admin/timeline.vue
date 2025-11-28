@@ -33,12 +33,17 @@
             <n-button size="small" type="primary" quaternary @click="editEvent(event)">
               编辑
             </n-button>
-            <n-popconfirm @positive-click="deleteEvent(event.id)">
-              <template #trigger>
-                <n-button size="small" type="error" quaternary>删除</n-button>
+            <ClientOnly>
+              <n-popconfirm @positive-click="deleteEvent(event.id)">
+                <template #trigger>
+                  <n-button size="small" type="error" quaternary>删除</n-button>
+                </template>
+                确定要删除吗？
+              </n-popconfirm>
+              <template #fallback>
+                <n-button size="small" type="error" quaternary @click="() => { if(confirm('确定要删除吗？')) deleteEvent(event.id) }">删除</n-button>
               </template>
-              确定要删除吗？
-            </n-popconfirm>
+            </ClientOnly>
           </div>
         </div>
       </n-card>

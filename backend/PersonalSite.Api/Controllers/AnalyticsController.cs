@@ -24,51 +24,63 @@ public class AnalyticsController : ControllerBase
     /// 记录访问（增强版）
     /// </summary>
     [HttpPost("track")]
-    public async Task<ActionResult<ApiResponse<object>>> Track([FromBody] TrackRequest request)
+    public async Task<ActionResult<ApiResponse<object>>> Track([FromBody] TrackRequest? request)
     {
-        var ip = _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
-        var userAgent = Request.Headers["User-Agent"].ToString();
-        var referrer = Request.Headers["Referer"].ToString();
-
-        // 解析设备信息
-        var deviceInfo = ParseDeviceInfo(userAgent);
-
-        // 查找或创建访客会话
-        var analytics = await _context.VisitorAnalytics
-            .Where(v => v.VisitorId == request.VisitorId && v.IsOnline)
-            .OrderByDescending(v => v.UpdatedAt)
-            .FirstOrDefaultAsync();
-
-        if (analytics == null)
+        try
         {
-            analytics = new VisitorAnalytics
+            if (request == null || string.IsNullOrEmpty(request.VisitorId))
             {
-                VisitorId = request.VisitorId,
-                Ip = ip,
-                Referrer = referrer,
-                DeviceType = deviceInfo.DeviceType,
-                Browser = deviceInfo.Browser,
-                Os = deviceInfo.Os,
-                Path = request.Path,
-                SessionStart = DateTime.Now,
-                IsOnline = true
-            };
-            _context.VisitorAnalytics.Add(analytics);
-        }
-        else
-        {
-            analytics.PageViews++;
-            analytics.UpdatedAt = DateTime.Now;
-            analytics.IsOnline = true;
-            if (analytics.Path != request.Path)
-            {
-                analytics.Path = request.Path;
+                return BadRequest(ApiResponse.Error("VisitorId is required", 400));
             }
+
+            var ip = _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
+            var userAgent = Request.Headers["User-Agent"].ToString();
+            var referrer = Request.Headers["Referer"].ToString();
+
+            // 解析设备信息
+            var deviceInfo = ParseDeviceInfo(userAgent);
+
+            // 查找或创建访客会话
+            var analytics = await _context.VisitorAnalytics
+                .Where(v => v.VisitorId == request.VisitorId && v.IsOnline)
+                .OrderByDescending(v => v.UpdatedAt)
+                .FirstOrDefaultAsync();
+
+            if (analytics == null)
+            {
+                analytics = new VisitorAnalytics
+                {
+                    VisitorId = request.VisitorId,
+                    Ip = ip,
+                    Referrer = referrer,
+                    DeviceType = deviceInfo.DeviceType,
+                    Browser = deviceInfo.Browser,
+                    Os = deviceInfo.Os,
+                    Path = request.Path,
+                    SessionStart = DateTime.Now,
+                    IsOnline = true
+                };
+                _context.VisitorAnalytics.Add(analytics);
+            }
+            else
+            {
+                analytics.PageViews++;
+                analytics.UpdatedAt = DateTime.Now;
+                analytics.IsOnline = true;
+                if (analytics.Path != request.Path)
+                {
+                    analytics.Path = request.Path;
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok(ApiResponse.Success(new { SessionId = analytics.Id }));
         }
-
-        await _context.SaveChangesAsync();
-
-        return Ok(ApiResponse.Success(new { SessionId = analytics.Id }));
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse.Error($"Track failed: {ex.Message}", 500));
+        }
     }
 
     /// <summary>

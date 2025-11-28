@@ -58,11 +58,12 @@ public class HomeStyleController : ControllerBase
         if (dto.Id > 0)
         {
             // 编辑
-            style = await _context.HomeStyles.FindAsync(dto.Id);
-            if (style == null)
+            var foundStyle = await _context.HomeStyles.FindAsync(dto.Id);
+            if (foundStyle == null)
             {
                 return NotFound(ApiResponse<HomeStyle>.Error("风格不存在", 404));
             }
+            style = foundStyle;
 
             // 检查 styleKey 是否被其他记录使用
             if (style.StyleKey != dto.StyleKey)
