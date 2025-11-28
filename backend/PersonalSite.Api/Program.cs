@@ -48,6 +48,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpClient(); // 添加 HttpClient 支持
 builder.Services.AddHttpContextAccessor(); // 添加 HttpContextAccessor 支持
 
+// 配置 AI Service 客户端
+builder.Services.Configure<PersonalSite.Api.Services.AiServiceOptions>(
+    builder.Configuration.GetSection("AiService"));
+builder.Services.AddHttpClient<PersonalSite.Api.Services.AiServiceClient>();
+
 // 4. 配置 Swagger
 builder.Services.AddSwaggerGen(c =>
 {

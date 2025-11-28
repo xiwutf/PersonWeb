@@ -83,8 +83,8 @@ const columns: DataTableColumns = [
 
 ## 📚 文档
 
-- [使用指南](./docs/config/NAIVE_UI_USAGE.md)
-- [组件库对比](./docs/config/UI_COMPONENT_LIBRARY.md)
+- [使用指南](./NAIVE_UI_USAGE.md)
+- [组件库对比](./UI_COMPONENT_LIBRARY.md)
 - [Naive UI 官方文档](https://www.naiveui.com/)
 
 ## 💡 提示

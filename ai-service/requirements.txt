@@ -1,0 +1,17 @@
+# FastAPI 相关
+fastapi>=0.104.1
+uvicorn[standard]>=0.24.0
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+
+# HTTP 客户端（用于调用外部 API）
+httpx>=0.25.0
+
+# 测试相关
+pytest>=7.4.3
+pytest-asyncio>=0.21.1
+httpx>=0.25.0
+
+# 其他工具
+python-dotenv>=1.0.0
+

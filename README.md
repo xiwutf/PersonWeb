@@ -290,9 +290,9 @@ npm run preview
 
 **在开始开发前，请务必阅读以下文档：**
 
-- **[开发规范文档](./docs/DEVELOPMENT_GUIDELINES.md)** ⭐ **必读** - 项目开发规范和要求，包括样式管理、代码组织、命名规范等
-- [模块系统文档](./README_MODULES.md) - 模块化系统说明
-- [Naive UI 使用指南](./README_NAIVE_UI.md) - UI 组件库使用说明
+- **[开发规范文档](./docs/development/DEVELOPMENT_GUIDELINES.md)** ⭐ **必读** - 项目开发规范和要求，包括样式管理、代码组织、命名规范等
+- [模块系统文档](./docs/architecture/README_MODULES.md) - 模块化系统说明
+- [Naive UI 使用指南](./docs/config/README_NAIVE_UI.md) - UI 组件库使用说明
 
 ### 📖 其他文档
 

@@ -1,0 +1,35 @@
+[Unit]
+Description=AI Service - FastAPI AI能力服务
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/srv/ai-service
+Environment="PATH=/usr/local/bin:/usr/bin:/bin"
+Environment="AI_INTERNAL_TOKEN=your-internal-token-here"
+Environment="OPENAI_API_KEY=your-openai-api-key"
+Environment="DEFAULT_MODEL_NAME=gpt-3.5-turbo"
+Environment="LOG_LEVEL=INFO"
+Environment="LOG_FILE=/srv/ai-service/logs/ai-service.log"
+
+# 启动命令（使用虚拟环境中的 Python）
+# 如果使用 Python 3.11，修改为：ExecStart=/srv/ai-service/venv/bin/uvicorn
+ExecStart=/srv/ai-service/venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8001
+
+# 重启策略
+Restart=always
+RestartSec=10
+
+# 资源限制（可选）
+LimitNOFILE=65535
+
+# 日志
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=ai-service
+
+[Install]
+WantedBy=multi-user.target
+
