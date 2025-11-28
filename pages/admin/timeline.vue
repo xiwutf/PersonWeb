@@ -47,7 +47,7 @@
 
     <!-- 创建/编辑模态框 -->
     <n-modal
-      v-model:show="showCreateModal || !!editingEvent"
+      v-model:show="isModalVisible"
       preset="card"
       :title="editingEvent ? '编辑时间线事件' : '新建时间线事件'"
       style="width: 600px"
@@ -116,6 +116,17 @@ const form = ref({
   description: '',
   icon: '⭐',
   color: '#3b82f6'
+})
+
+// 模态框显示状态（计算属性）
+const isModalVisible = computed({
+  get: () => showCreateModal.value || !!editingEvent.value,
+  set: (value: boolean) => {
+    if (!value) {
+      showCreateModal.value = false
+      editingEvent.value = null
+    }
+  }
 })
 
 // 表单验证规则
