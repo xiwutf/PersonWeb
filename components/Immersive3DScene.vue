@@ -79,8 +79,9 @@ const initScene = () => {
   try {
     // 创建场景
     scene = new THREE.Scene()
-    scene.background = new THREE.Color(0x0a0a0f)
-    scene.fog = new THREE.Fog(0x0a0a0f, 10, 50)
+    // 使用渐变背景色（深蓝到紫色）
+    scene.background = new THREE.Color(0x1e293b) // slate-800
+    scene.fog = new THREE.Fog(0x1e293b, 15, 60)
 
     // 创建相机
     const width = containerRef.value.clientWidth
