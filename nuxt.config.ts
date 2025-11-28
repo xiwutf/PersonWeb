@@ -6,6 +6,11 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss'
   ],
 
+  // 构建配置
+  build: {
+    transpile: ['naive-ui', 'vueuc', '@css-render/vue3-ssr']
+  },
+
   // 运行时配置
   runtimeConfig: {
     public: {

@@ -1,80 +1,43 @@
 <template>
-  <div>
+  <div class="projects-page">
     <div class="page-header">
       <h1 class="page-title">项目管理</h1>
-      <div class="flex gap-2">
-        <NuxtLink to="/admin/projects/stats" class="btn-success">
-          访问统计
+      <div class="header-actions">
+        <NuxtLink to="/admin/projects/stats">
+          <n-button type="success" secondary>
+            <template #icon>
+              <i class="fas fa-chart-bar"></i>
+            </template>
+            访问统计
+          </n-button>
         </NuxtLink>
-        <NuxtLink to="/admin/projects/edit" class="btn-primary">
-          新建项目
+        <NuxtLink to="/admin/projects/edit">
+          <n-button type="primary">
+            <template #icon>
+              <i class="fas fa-plus"></i>
+            </template>
+            新建项目
+          </n-button>
         </NuxtLink>
       </div>
     </div>
 
-    <div class="table-container">
-      <table class="table">
-        <thead class="table-header">
-          <tr>
-            <th class="table-header-cell">项目名称</th>
-            <th class="table-header-cell">状态</th>
-            <th class="table-header-cell">访问量</th>
-            <th class="table-header-cell">GitHub</th>
-            <th class="table-header-cell">创建日期</th>
-            <th class="table-header-cell text-right">操作</th>
-          </tr>
-        </thead>
-        <tbody class="table-body">
-          <tr v-for="item in projects" :key="item.id" class="table-row">
-            <td class="table-cell">
-              <div class="flex items-center">
-                <div class="h-10 w-10 flex-shrink-0">
-                  <img class="h-10 w-10 rounded object-cover" :src="item.coverUrl || 'https://placehold.co/100'" alt="" />
-                </div>
-                <div class="ml-4">
-                  <div class="text-sm font-medium text-gray-900 dark:text-white">{{ item.title }}</div>
-                  <div class="text-sm text-gray-500 dark:text-gray-400">{{ item.description?.substring(0, 20) }}...</div>
-                </div>
-              </div>
-            </td>
-            <td class="table-cell">
-              <span class="badge"
-                :class="item.status === 'Active' ? 'badge-green' : 'badge-gray'">
-                {{ item.status }}
-              </span>
-            </td>
-            <td class="table-cell">
-              <div class="flex items-center gap-1">
-                <i class="fas fa-eye text-gray-400"></i>
-                <span>{{ item.viewCount || 0 }}</span>
-              </div>
-            </td>
-            <td class="table-cell">
-              <a v-if="item.githubUrl" :href="item.githubUrl" target="_blank" class="btn-link btn-link--blue">Repo</a>
-              <span v-else>-</span>
-            </td>
-            <td class="table-cell">
-              {{ new Date(item.createdAt).toLocaleDateString() }}
-            </td>
-            <td class="table-cell text-right">
-              <NuxtLink :to="`/admin/projects/edit/${item.id}`" class="btn-link btn-link--blue mr-4">编辑</NuxtLink>
-              <button @click="handleDelete(item.id)" class="btn-link btn-link--red">删除</button>
-            </td>
-          </tr>
-          <tr v-if="projects.length === 0">
-            <td colspan="6" class="table-cell text-center empty-state">
-              暂无项目
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <n-card>
+      <n-data-table
+        :columns="columns"
+        :data="projects"
+        :loading="loading"
+        :bordered="false"
+      />
+    </n-card>
   </div>
 </template>
 
 <script setup lang="ts">
+import { NButton, NCard, NDataTable, NTag, NPopconfirm, NAvatar, h } from 'naive-ui'
+import type { DataTableColumns } from 'naive-ui'
 import type { Project } from '~/types/api'
-import { useNotification } from '~/composables/useToast'
+import { useMessage } from 'naive-ui'
 import { useErrorHandler } from '~/composables/useErrorHandler'
 
 definePageMeta({
@@ -83,9 +46,117 @@ definePageMeta({
 })
 
 const api = useApi()
+const message = useMessage()
+const { handleError } = useErrorHandler()
+
 const projects = ref<Project[]>([])
+const loading = ref(false)
+
+// 表格列定义
+const columns: DataTableColumns<Project> = [
+  {
+    title: '项目名称',
+    key: 'title',
+    width: 300,
+    render(row) {
+      return h('div', { class: 'project-info' }, [
+        h(NAvatar, {
+          src: row.coverUrl || 'https://placehold.co/100',
+          size: 40,
+          round: true,
+          style: { marginRight: '12px' }
+        }),
+        h('div', { class: 'project-details' }, [
+          h('div', { class: 'project-title' }, row.title),
+          h('div', { class: 'project-desc' }, row.description?.substring(0, 30) + '...' || '-')
+        ])
+      ])
+    }
+  },
+  {
+    title: '状态',
+    key: 'status',
+    width: 100,
+    render(row) {
+      return h(NTag, {
+        type: row.status === 'Active' ? 'success' : 'default',
+        size: 'small'
+      }, {
+        default: () => row.status
+      })
+    }
+  },
+  {
+    title: '访问量',
+    key: 'viewCount',
+    width: 120,
+    render(row) {
+      return h('div', { class: 'view-count' }, [
+        h('i', { class: 'fas fa-eye', style: { marginRight: '4px', color: '#9ca3af' } }),
+        h('span', row.viewCount || 0)
+      ])
+    }
+  },
+  {
+    title: 'GitHub',
+    key: 'githubUrl',
+    width: 100,
+    render(row) {
+      if (row.githubUrl) {
+        return h('a', {
+          href: row.githubUrl,
+          target: '_blank',
+          style: { color: '#60a5fa', textDecoration: 'none' }
+        }, 'Repo')
+      }
+      return '-'
+    }
+  },
+  {
+    title: '创建日期',
+    key: 'createdAt',
+    width: 150,
+    render(row) {
+      return new Date(row.createdAt).toLocaleDateString()
+    }
+  },
+  {
+    title: '操作',
+    key: 'actions',
+    width: 150,
+    render(row) {
+      return h('div', { class: 'action-buttons' }, [
+        h(NuxtLink, {
+          to: `/admin/projects/edit/${row.id}`,
+          style: { marginRight: '8px' }
+        }, {
+          default: () => h(NButton, {
+            size: 'small',
+            type: 'primary',
+            quaternary: true
+          }, {
+            default: () => '编辑'
+          })
+        }),
+        h(NPopconfirm, {
+          onPositiveClick: () => handleDelete(row.id)
+        }, {
+          trigger: () => h(NButton, {
+            size: 'small',
+            type: 'error',
+            quaternary: true
+          }, {
+            default: () => '删除'
+          }),
+          default: () => '确定要删除这个项目吗？'
+        })
+      ])
+    }
+  }
+]
 
 const fetchProjects = async () => {
+  loading.value = true
   try {
     // 后端返回格式: { code: 0, data: List<Project> }
     // useApi 已经处理了响应格式，直接返回 data (即 List<Project>)
@@ -96,18 +167,16 @@ const fetchProjects = async () => {
       console.error('Failed to fetch projects:', e)
     }
     projects.value = []
+    message.error('加载项目列表失败')
+  } finally {
+    loading.value = false
   }
 }
 
 const handleDelete = async (id: string) => {
-  if (!confirm('确定要删除这个项目吗？')) return
-  
-  const { success } = useNotification()
-  const { handleError } = useErrorHandler()
-  
   try {
     await api.del(`/Projects/${id}`)
-    success('删除成功')
+    message.success('删除成功')
     await fetchProjects()
   } catch (e: unknown) {
     handleError(e, '删除失败')
@@ -118,3 +187,48 @@ onMounted(() => {
   fetchProjects()
 })
 </script>
+
+<style scoped>
+.projects-page {
+  width: 100%;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.project-info {
+  display: flex;
+  align-items: center;
+}
+
+.project-details {
+  flex: 1;
+}
+
+.project-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #e5e7eb;
+  margin-bottom: 0.25rem;
+}
+
+.project-desc {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.view-count {
+  display: flex;
+  align-items: center;
+  color: #9ca3af;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+</style>

@@ -1,86 +1,59 @@
 ﻿<template>
-  <div class="space-y-6">
+  <div class="categories-page">
     <div class="page-header">
       <h1 class="page-title">分类管理</h1>
-      <button @click="openModal()" class="btn-primary">
-        <i class="fas fa-plus mr-2"></i>新建分类
-      </button>
+      <n-button type="primary" @click="openModal()">
+        <template #icon>
+          <i class="fas fa-plus"></i>
+        </template>
+        新建分类
+      </n-button>
     </div>
 
     <!-- 分类列表 -->
-    <div class="table-container">
-      <table class="table">
-        <thead class="table-header">
-          <tr>
-            <th class="table-header-cell">名称</th>
-            <th class="table-header-cell">别名 (Slug)</th>
-            <th class="table-header-cell">排序</th>
-            <th class="table-header-cell">创建时间</th>
-            <th class="table-header-cell text-right">操作</th>
-          </tr>
-        </thead>
-        <tbody class="table-body">
-          <tr v-for="item in categories" :key="item.id" class="table-row">
-            <td class="table-cell font-medium">{{ item.name }}</td>
-            <td class="table-cell">{{ item.slug || '-' }}</td>
-            <td class="table-cell">{{ item.sort }}</td>
-            <td class="table-cell text-sm">
-              {{ new Date(item.createdAt).toLocaleDateString() }}
-            </td>
-            <td class="table-cell text-right space-x-2">
-              <button @click="openModal(item)" class="btn-link btn-link--blue">
-                编辑
-              </button>
-              <button @click="handleDelete(item)" class="btn-link btn-link--red">
-                删除
-              </button>
-            </td>
-          </tr>
-          <tr v-if="categories.length === 0">
-            <td colspan="5" class="table-cell text-center empty-state">
-              暂无分类数据
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <n-card>
+      <n-data-table
+        :columns="columns"
+        :data="categories"
+        :loading="loading"
+        :bordered="false"
+      />
+    </n-card>
 
     <!-- 编辑/新建弹窗 -->
-    <div v-if="showModal" class="modal-overlay">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3 class="modal-title">
-            {{ isEdit ? '编辑分类' : '新建分类' }}
-          </h3>
+    <n-modal v-model:show="showModal" preset="card" :title="isEdit ? '编辑分类' : '新建分类'" style="width: 600px">
+      <n-form
+        ref="formRef"
+        :model="form"
+        :rules="rules"
+        label-placement="left"
+        label-width="120"
+      >
+        <n-form-item label="名称" path="name">
+          <n-input v-model:value="form.name" placeholder="例如：前端开发" />
+        </n-form-item>
+        <n-form-item label="别名 (Slug)" path="slug">
+          <n-input v-model:value="form.slug" placeholder="例如：frontend" />
+        </n-form-item>
+        <n-form-item label="排序" path="sort">
+          <n-input-number v-model:value="form.sort" :min="0" placeholder="越小越靠前" style="width: 100%" />
+        </n-form-item>
+      </n-form>
+      <template #footer>
+        <div style="display: flex; justify-content: flex-end; gap: 12px">
+          <n-button @click="showModal = false">取消</n-button>
+          <n-button type="primary" @click="handleSave">保存</n-button>
         </div>
-        
-        <div class="modal-body space-y-4">
-          <div class="form-group">
-            <label class="form-label">名称</label>
-            <input v-model="form.name" type="text" class="form-input" placeholder="例如：前端开发">
-          </div>
-          <div class="form-group">
-            <label class="form-label">别名 (Slug)</label>
-            <input v-model="form.slug" type="text" class="form-input" placeholder="例如：frontend">
-          </div>
-          <div class="form-group">
-            <label class="form-label">排序 (越小越靠前)</label>
-            <input v-model.number="form.sort" type="number" class="form-input">
-          </div>
-        </div>
-
-        <div class="modal-footer">
-          <button @click="showModal = false" class="btn-secondary">取消</button>
-          <button @click="handleSave" class="btn-primary">保存</button>
-        </div>
-      </div>
-    </div>
+      </template>
+    </n-modal>
   </div>
 </template>
 
 <script setup lang="ts">
+import { NButton, NCard, NDataTable, NModal, NForm, NFormItem, NInput, NInputNumber, NPopconfirm, h, type FormInst, type FormRules } from 'naive-ui'
+import type { DataTableColumns } from 'naive-ui'
 import type { Category } from '~/types/api'
-import { useNotification } from '~/composables/useToast'
+import { useMessage, useDialog } from 'naive-ui'
 import { useErrorHandler } from '~/composables/useErrorHandler'
 
 definePageMeta({
@@ -89,9 +62,15 @@ definePageMeta({
 })
 
 const api = useApi()
+const message = useMessage()
+const dialog = useDialog()
+const { handleError } = useErrorHandler()
+
 const categories = ref<Category[]>([])
+const loading = ref(false)
 const showModal = ref(false)
 const isEdit = ref(false)
+const formRef = ref<FormInst | null>(null)
 const form = ref({
   id: 0,
   name: '',
@@ -99,7 +78,77 @@ const form = ref({
   sort: 0
 })
 
+// 表单验证规则
+const rules: FormRules = {
+  name: {
+    required: true,
+    message: '请输入分类名称',
+    trigger: 'blur'
+  }
+}
+
+// 表格列定义
+const columns: DataTableColumns<Category> = [
+  {
+    title: '名称',
+    key: 'name',
+    ellipsis: {
+      tooltip: true
+    }
+  },
+  {
+    title: '别名 (Slug)',
+    key: 'slug',
+    render(row) {
+      return row.slug || '-'
+    }
+  },
+  {
+    title: '排序',
+    key: 'sort',
+    width: 100
+  },
+  {
+    title: '创建时间',
+    key: 'createdAt',
+    width: 180,
+    render(row) {
+      return new Date(row.createdAt).toLocaleDateString()
+    }
+  },
+  {
+    title: '操作',
+    key: 'actions',
+    width: 150,
+    render(row) {
+      return h('div', { class: 'action-buttons' }, [
+        h(NButton, {
+          size: 'small',
+          type: 'primary',
+          quaternary: true,
+          onClick: () => openModal(row)
+        }, {
+          default: () => '编辑'
+        }),
+        h(NPopconfirm, {
+          onPositiveClick: () => handleDelete(row)
+        }, {
+          trigger: () => h(NButton, {
+            size: 'small',
+            type: 'error',
+            quaternary: true
+          }, {
+            default: () => '删除'
+          }),
+          default: () => `确定要删除分类 "${row.name}" 吗？`
+        })
+      ])
+    }
+  }
+]
+
 const fetchCategories = async () => {
+  loading.value = true
   try {
     // 后端返回格式: { code: 0, data: List<Category> }
     // useApi 已经处理了响应格式，直接返回 data (即 List<Category>)
@@ -110,6 +159,9 @@ const fetchCategories = async () => {
       console.error('Failed to fetch categories:', e)
     }
     categories.value = []
+    message.error('加载分类列表失败')
+  } finally {
+    loading.value = false
   }
 }
 
@@ -125,21 +177,23 @@ const openModal = (item?: Category) => {
 }
 
 const handleSave = async () => {
-  const { warning, success } = useNotification()
-  const { handleError } = useErrorHandler()
+  if (!formRef.value) return
   
-  if (!form.value.name) {
-    warning('请输入分类名称')
-    return
-  }
-  
+  await formRef.value.validate((errors) => {
+    if (!errors) {
+      saveCategory()
+    }
+  })
+}
+
+const saveCategory = async () => {
   try {
     if (isEdit.value) {
       await api.put(`/Categories/${form.value.id}`, form.value)
     } else {
       await api.post('/Categories', form.value)
     }
-    success('保存成功')
+    message.success('保存成功')
     showModal.value = false
     fetchCategories()
   } catch (e: unknown) {
@@ -148,14 +202,9 @@ const handleSave = async () => {
 }
 
 const handleDelete = async (item: Category) => {
-  if (!confirm(`确定要删除分类 "${item.name}" 吗？`)) return
-  
-  const { success } = useNotification()
-  const { handleError } = useErrorHandler()
-  
   try {
     await api.del(`/Categories/${item.id}`)
-    success('删除成功')
+    message.success('删除成功')
     fetchCategories()
   } catch (e: unknown) {
     handleError(e, '删除失败')

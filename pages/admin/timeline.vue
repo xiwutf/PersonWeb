@@ -1,87 +1,99 @@
 <template>
-  <div>
+  <div class="timeline-page">
     <div class="page-header">
       <h1 class="page-title">成长轨迹管理</h1>
-      <button @click="showCreateModal = true" class="btn-primary">
-        + 新建事件
-      </button>
+      <n-button type="primary" @click="showCreateModal = true">
+        <template #icon>
+          <i class="fas fa-plus"></i>
+        </template>
+        新建事件
+      </n-button>
     </div>
 
     <!-- 列表 -->
-    <div class="space-y-4">
-      <div
-        v-for="event in events"
-        :key="event.id"
-        class="card p-6"
-      >
-        <div class="flex items-start justify-between">
-          <div class="flex items-start gap-4">
+    <div class="events-list">
+      <n-card v-for="event in events" :key="event.id" class="event-card">
+        <div class="event-content">
+          <div class="event-main">
             <div
-              class="w-12 h-12 rounded-full flex items-center justify-center text-xl"
+              class="event-icon"
               :style="{ backgroundColor: event.color || '#3b82f6' }"
             >
               {{ event.icon || '⭐' }}
             </div>
-            <div>
-              <div class="flex items-center gap-2 mb-1">
-                <span class="text-lg font-bold text-gray-800 dark:text-white">{{ event.title }}</span>
-                <span class="badge badge-blue">
-                  {{ event.year }}
-                </span>
+            <div class="event-info">
+              <div class="event-header">
+                <span class="event-title">{{ event.title }}</span>
+                <n-tag type="info" size="small">{{ event.year }}</n-tag>
               </div>
-              <p class="text-gray-600 dark:text-gray-400">{{ event.description }}</p>
+              <p class="event-description">{{ event.description }}</p>
             </div>
           </div>
-          <div class="flex gap-2">
-            <button @click="editEvent(event)" class="btn-link btn-link--blue">编辑</button>
-            <button @click="deleteEvent(event.id)" class="btn-link btn-link--red">删除</button>
+          <div class="event-actions">
+            <n-button size="small" type="primary" quaternary @click="editEvent(event)">
+              编辑
+            </n-button>
+            <n-popconfirm @positive-click="deleteEvent(event.id)">
+              <template #trigger>
+                <n-button size="small" type="error" quaternary>删除</n-button>
+              </template>
+              确定要删除吗？
+            </n-popconfirm>
           </div>
         </div>
-      </div>
+      </n-card>
+      <n-empty v-if="events.length === 0" description="暂无时间线事件" />
     </div>
 
     <!-- 创建/编辑模态框 -->
-    <div v-if="showCreateModal || editingEvent" class="modal-overlay">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2 class="modal-title">{{ editingEvent ? '编辑' : '新建' }}时间线事件</h2>
+    <n-modal
+      v-model:show="showCreateModal || !!editingEvent"
+      preset="card"
+      :title="editingEvent ? '编辑时间线事件' : '新建时间线事件'"
+      style="width: 600px"
+    >
+      <n-form
+        ref="formRef"
+        :model="form"
+        :rules="rules"
+        label-placement="left"
+        label-width="100"
+      >
+        <n-form-item label="年份" path="year">
+          <n-input-number v-model:value="form.year" :min="1900" :max="2100" style="width: 100%" />
+        </n-form-item>
+        <n-form-item label="标题" path="title">
+          <n-input v-model:value="form.title" placeholder="请输入标题" />
+        </n-form-item>
+        <n-form-item label="描述" path="description">
+          <n-input
+            v-model:value="form.description"
+            type="textarea"
+            :rows="3"
+            placeholder="请输入描述"
+          />
+        </n-form-item>
+        <n-form-item label="图标（emoji）" path="icon">
+          <n-input v-model:value="form.icon" placeholder="例如: 🚀" />
+        </n-form-item>
+        <n-form-item label="颜色" path="color">
+          <n-color-picker v-model:value="form.color" />
+        </n-form-item>
+      </n-form>
+      <template #footer>
+        <div style="display: flex; justify-content: flex-end; gap: 12px">
+          <n-button @click="cancelEdit">取消</n-button>
+          <n-button type="primary" @click="saveEvent">保存</n-button>
         </div>
-        
-        <div class="modal-body space-y-4">
-          <div class="form-group">
-            <label class="form-label">年份</label>
-            <input v-model.number="form.year" type="number" class="form-input" />
-          </div>
-          <div class="form-group">
-            <label class="form-label">标题</label>
-            <input v-model="form.title" type="text" class="form-input" />
-          </div>
-          <div class="form-group">
-            <label class="form-label">描述</label>
-            <textarea v-model="form.description" rows="3" class="form-textarea"></textarea>
-          </div>
-          <div class="form-group">
-            <label class="form-label">图标（emoji）</label>
-            <input v-model="form.icon" type="text" class="form-input" placeholder="例如: 🚀" />
-          </div>
-          <div class="form-group">
-            <label class="form-label">颜色</label>
-            <input v-model="form.color" type="color" class="w-full h-10 border rounded" />
-          </div>
-        </div>
-
-        <div class="modal-footer">
-          <button @click="saveEvent" class="btn-primary">保存</button>
-          <button @click="cancelEdit" class="btn-secondary">取消</button>
-        </div>
-      </div>
-    </div>
+      </template>
+    </n-modal>
   </div>
 </template>
 
 <script setup lang="ts">
+import { NButton, NCard, NTag, NPopconfirm, NModal, NForm, NFormItem, NInput, NInputNumber, NColorPicker, NEmpty, type FormInst, type FormRules } from 'naive-ui'
 import type { TimelineEvent, TimelineEventRequest } from '~/types/api'
-import { useNotification } from '~/composables/useToast'
+import { useMessage } from 'naive-ui'
 import { useErrorHandler } from '~/composables/useErrorHandler'
 
 definePageMeta({
@@ -90,10 +102,14 @@ definePageMeta({
 })
 
 const api = useApi()
+const message = useMessage()
+const { handleError } = useErrorHandler()
 
 const events = ref<TimelineEvent[]>([])
+const loading = ref(false)
 const showCreateModal = ref(false)
 const editingEvent = ref<TimelineEvent | null>(null)
+const formRef = ref<FormInst | null>(null)
 const form = ref({
   year: new Date().getFullYear(),
   title: '',
@@ -102,7 +118,23 @@ const form = ref({
   color: '#3b82f6'
 })
 
+// 表单验证规则
+const rules: FormRules = {
+  year: {
+    required: true,
+    type: 'number',
+    message: '请输入年份',
+    trigger: 'blur'
+  },
+  title: {
+    required: true,
+    message: '请输入标题',
+    trigger: 'blur'
+  }
+}
+
 const fetchEvents = async () => {
+  loading.value = true
   try {
     const res = await api.get<TimelineEvent[] | { List: TimelineEvent[] }>('/Timeline')
     if (Array.isArray(res)) {
@@ -114,6 +146,9 @@ const fetchEvents = async () => {
     if (process.env.NODE_ENV === 'development') {
       console.error('Failed to fetch timeline:', e)
     }
+    message.error('加载时间线事件失败')
+  } finally {
+    loading.value = false
   }
 }
 
@@ -129,9 +164,16 @@ const editEvent = (event: TimelineEvent) => {
 }
 
 const saveEvent = async () => {
-  const { success } = useNotification()
-  const { handleError } = useErrorHandler()
+  if (!formRef.value) return
   
+  await formRef.value.validate((errors) => {
+    if (!errors) {
+      submitEvent()
+    }
+  })
+}
+
+const submitEvent = async () => {
   try {
     const payload: TimelineEventRequest = {
       year: form.value.year,
@@ -147,7 +189,7 @@ const saveEvent = async () => {
       await api.post('/Timeline', payload)
     }
 
-    success('保存成功')
+    message.success('保存成功')
     cancelEdit()
     fetchEvents()
   } catch (e: unknown) {
@@ -156,14 +198,9 @@ const saveEvent = async () => {
 }
 
 const deleteEvent = async (id: number) => {
-  if (!confirm('确定要删除吗？')) return
-  
-  const { success } = useNotification()
-  const { handleError } = useErrorHandler()
-  
   try {
     await api.delete(`/Timeline/${id}`)
-    success('删除成功')
+    message.success('删除成功')
     fetchEvents()
   } catch (e: unknown) {
     handleError(e, '删除失败')
@@ -186,4 +223,72 @@ onMounted(() => {
   fetchEvents()
 })
 </script>
+
+<style scoped>
+.timeline-page {
+  width: 100%;
+}
+
+.events-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.event-card {
+  margin-bottom: 0;
+}
+
+.event-content {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.event-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  flex: 1;
+}
+
+.event-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.event-info {
+  flex: 1;
+}
+
+.event-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.event-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #e5e7eb;
+}
+
+.event-description {
+  color: #9ca3af;
+  margin: 0;
+}
+
+.event-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+</style>
 
