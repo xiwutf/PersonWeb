@@ -52,7 +52,7 @@
         <div
           v-for="category in skillTree"
           :key="category.id"
-          class="card overflow-hidden"
+          class="card overflow-hidden skill-tree-card"
         >
           <div
             class="p-6 border-b border-gray-200 dark:border-gray-700"
@@ -306,6 +306,28 @@ useHead({
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* 技能树发光效果 */
+.skill-tree-card {
+  transition: all 0.3s ease;
+}
+
+:global(.skill-tree-glowing) .skill-tree-card {
+  animation: skill-tree-glow 3s ease-in-out;
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.6);
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+@keyframes skill-tree-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 rgba(59, 130, 246, 0);
+    border-color: transparent;
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.8);
+    border-color: rgba(59, 130, 246, 0.8);
+  }
 }
 </style>
 

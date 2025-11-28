@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed bottom-24 right-8 z-40">
+  <div class="fixed bottom-28 right-8 z-[45]">
     <!-- 打开按钮 -->
     <button
       v-if="!isOpen"

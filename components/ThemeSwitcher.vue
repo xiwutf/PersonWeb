@@ -315,7 +315,7 @@ onUnmounted(() => {
 <style scoped>
 .theme-switcher {
   position: fixed;
-  bottom: 7rem;
+  bottom: 18rem;
   right: 2rem;
   z-index: 1000;
 }
@@ -357,7 +357,7 @@ onUnmounted(() => {
 
 .theme-switcher-panel {
   position: fixed;
-  bottom: 11rem;
+  bottom: 22rem;
   right: 2rem;
   width: 90vw;
   max-width: 600px;

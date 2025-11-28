@@ -32,6 +32,13 @@
     <VisitorFootprintMap />
     <VisitorInteractionPanel />
     
+    <!-- 访客互动式玩法 -->
+    <VisitorBehaviorListener />
+    <VisitorLevelDisplay />
+    <VisitorChallengeButton />
+    <VisitorTriggerEffects />
+    <FireworksEffect />
+    
     <!-- 隐秘的后台入口 -->
     <SecretAdminAccess />
   </div>

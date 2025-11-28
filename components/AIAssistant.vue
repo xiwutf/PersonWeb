@@ -3,7 +3,7 @@
   <button
     v-if="!isOpen"
     @click="toggleAssistant"
-    class="fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 z-40 flex items-center justify-center group"
+    class="fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 z-50 flex items-center justify-center group"
     aria-label="打开 AI 助手"
   >
     <svg class="w-8 h-8 text-white group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -16,7 +16,7 @@
   <Transition name="slide-up">
     <div
       v-if="isOpen"
-      class="fixed bottom-8 right-8 w-96 h-[600px] bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 z-40 flex flex-col overflow-hidden"
+      class="fixed bottom-8 right-8 w-96 h-[600px] bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 z-50 flex flex-col overflow-hidden"
     >
       <!-- 头部 -->
       <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-4 flex items-center justify-between">
@@ -132,6 +132,8 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, onUnmounted } from 'vue'
+
 interface Message {
   role: 'user' | 'assistant'
   content: string
@@ -161,6 +163,31 @@ const toggleAssistant = () => {
     })
   }
 }
+
+// 监听打开助手事件（用于触发问候）
+onMounted(() => {
+  if (process.client) {
+    window.addEventListener('open-ai-assistant', ((e: CustomEvent) => {
+      if (!isOpen.value) {
+        isOpen.value = true
+        nextTick(() => {
+          if (e.detail?.message) {
+            // 自动发送问候消息
+            inputText.value = e.detail.message
+            sendMessage()
+          }
+          scrollToBottom()
+        })
+      }
+    }) as EventListener)
+  }
+})
+
+onUnmounted(() => {
+  if (process.client) {
+    window.removeEventListener('open-ai-assistant', () => {})
+  }
+})
 
 const scrollToBottom = () => {
   if (messagesRef.value) {

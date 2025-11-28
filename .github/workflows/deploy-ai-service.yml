@@ -51,57 +51,42 @@ jobs:
           host: ${{ secrets.REMOTE_HOST }}
           username: ${{ secrets.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          timeout: 300s
+          command_timeout: 300s
           script: |
             cd /srv/ai-service
             
-            # 检查并安装 Python 3.11（如果不存在）
-            if ! command -v python3.11 &> /dev/null; then
-              echo "Python 3.11 未找到，尝试安装..."
-              
-              # 检测系统类型
-              if [ -f /etc/os-release ]; then
-                . /etc/os-release
-                if [ "$ID" = "ubuntu" ] || [ "$ID" = "debian" ]; then
-                  # Ubuntu/Debian 系统
-                  sudo apt-get update
-                  sudo apt-get install -y software-properties-common
-                  sudo add-apt-repository -y ppa:deadsnakes/ppa
-                  sudo apt-get update
-                  sudo apt-get install -y python3.11 python3.11-venv python3.11-dev
-                  PYTHON_CMD="python3.11"
-                elif [ "$ID" = "centos" ] || [ "$ID" = "rhel" ]; then
-                  # CentOS/RHEL 系统
-                  sudo yum install -y python3.11 python3.11-pip
-                  PYTHON_CMD="python3.11"
-                else
-                  echo "⚠️  未识别的系统，使用系统默认 Python"
-                  PYTHON_CMD="python3"
-                fi
-              else
-                echo "⚠️  无法检测系统类型，使用系统默认 Python"
-                PYTHON_CMD="python3"
-              fi
-            else
-              echo "✅ Python 3.11 已安装"
+            # 检测可用的 Python 版本（优先使用 3.11，否则使用 3.10+）
+            if command -v python3.11 &> /dev/null; then
+              echo "✅ 使用 Python 3.11"
               PYTHON_CMD="python3.11"
+            elif command -v python3.10 &> /dev/null; then
+              echo "✅ 使用 Python 3.10"
+              PYTHON_CMD="python3.10"
+            elif command -v python3 &> /dev/null; then
+              echo "✅ 使用系统默认 Python 3"
+              PYTHON_CMD="python3"
+            else
+              echo "❌ 未找到 Python 3，请手动安装"
+              exit 1
             fi
             
             # 显示 Python 版本
             $PYTHON_CMD --version
             
-            # 创建虚拟环境（如果不存在或需要重建）
+            # 创建虚拟环境（如果不存在）
             if [ ! -d "venv" ]; then
               echo "创建虚拟环境..."
               $PYTHON_CMD -m venv venv
             else
-              echo "虚拟环境已存在"
+              echo "虚拟环境已存在，检查是否需要更新..."
             fi
             
             # 激活虚拟环境并安装/更新依赖
             source venv/bin/activate
             python --version
-            pip install --upgrade pip
-            pip install -r requirements.txt
+            pip install --upgrade pip --quiet
+            pip install -r requirements.txt --quiet
 
       - name: Install Systemd Service
         uses: appleboy/ssh-action@v1.0.3
@@ -109,6 +94,8 @@ jobs:
           host: ${{ secrets.REMOTE_HOST }}
           username: ${{ secrets.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          timeout: 60s
+          command_timeout: 60s
           script: |
             # 复制 systemd 服务文件（如果不存在）
             if [ ! -f /etc/systemd/system/ai-service.service ]; then
@@ -123,6 +110,8 @@ jobs:
           host: ${{ secrets.REMOTE_HOST }}
           username: ${{ secrets.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          timeout: 60s
+          command_timeout: 60s
           script: |
             # 检查服务是否存在
             if systemctl list-unit-files | grep -q ai-service.service; then
@@ -140,6 +129,8 @@ jobs:
           host: ${{ secrets.REMOTE_HOST }}
           username: ${{ secrets.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          timeout: 30s
+          command_timeout: 30s
           script: |
             sleep 3
             if curl -f http://127.0.0.1:8001/health > /dev/null 2>&1; then

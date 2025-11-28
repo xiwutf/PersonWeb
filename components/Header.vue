@@ -6,7 +6,8 @@
         <div class="flex items-center space-x-3 group shrink-0">
           <div 
             @click="handleLogoClick"
-            class="w-10 h-10 rounded-lg overflow-hidden shadow-sm group-hover:shadow-md transition-all duration-300 border border-gray-200 group-hover:scale-105 cursor-pointer"
+            @mouseenter="handleAvatarHover"
+            class="w-10 h-10 rounded-lg overflow-hidden shadow-sm group-hover:shadow-md transition-all duration-300 border border-gray-200 group-hover:scale-105 cursor-pointer avatar-trigger"
             title=""
           >
             <img src="/images/avatar.jpg" alt="溪午听风" class="w-full h-full object-cover" />
@@ -142,6 +143,13 @@ let logoClickCount = 0
 let logoClickTimer: NodeJS.Timeout | null = null
 const SECRET_CLICKS = 5 // 需要点击5次
 const SECRET_TIMEOUT = 3000 // 3秒内完成
+
+const handleAvatarHover = () => {
+  // 触发头像悬停行为记录
+  if (process.client && (window as any).handleAvatarHover) {
+    (window as any).handleAvatarHover()
+  }
+}
 
 const handleLogoClick = (e: MouseEvent) => {
   // 如果点击的是链接部分，不处理

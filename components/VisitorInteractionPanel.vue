@@ -150,7 +150,7 @@ const sendMessage = async () => {
 <style scoped>
 .interaction-panel {
   position: fixed;
-  bottom: 8rem;
+  bottom: 12rem;
   right: 2rem;
   z-index: 150;
   pointer-events: none;

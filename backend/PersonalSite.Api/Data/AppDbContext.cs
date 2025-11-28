@@ -52,6 +52,12 @@ public class AppDbContext : DbContext
     public DbSet<VisitorMessage> VisitorMessages { get; set; }
     public DbSet<VisitorFootprint> VisitorFootprints { get; set; }
     public DbSet<VisitorBubble> VisitorBubbles { get; set; }
+    public DbSet<VisitorLevel> VisitorLevels { get; set; }
+    public DbSet<VisitorBehavior> VisitorBehaviors { get; set; }
+    public DbSet<VisitorChallenge> VisitorChallenges { get; set; }
+    public DbSet<VisitorChallengeParticipant> VisitorChallengeParticipants { get; set; }
+    public DbSet<VisitorAchievement> VisitorAchievements { get; set; }
+    public DbSet<VisitorTriggerEvent> VisitorTriggerEvents { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
