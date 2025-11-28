@@ -138,11 +138,13 @@ const animate = () => {
     particle.vx *= 0.95
     particle.vy *= 0.95
 
-    // 绘制粒子
+    // 绘制粒子 - 降低透明度
+    ctx.globalAlpha = 0.6
     ctx.fillStyle = particle.color
     ctx.beginPath()
-    ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
+    ctx.arc(particle.x, particle.y, particle.size * 0.8, 0, Math.PI * 2)
     ctx.fill()
+    ctx.globalAlpha = 1.0
   })
 
   animationFrame = requestAnimationFrame(animate)

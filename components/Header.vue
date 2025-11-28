@@ -12,7 +12,7 @@
             <img src="/images/avatar.jpg" alt="溪午听风" class="w-full h-full object-cover" />
           </div>
           <NuxtLink to="/" class="hidden lg:block">
-            <span class="text-xl font-bold text-gray-800 font-['Outfit']">溪午听风</span>
+            <span class="text-xl font-bold text-gray-800">溪午听风</span>
           </NuxtLink>
         </div>
 

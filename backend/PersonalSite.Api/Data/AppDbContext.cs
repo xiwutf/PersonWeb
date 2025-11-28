@@ -37,6 +37,7 @@ public class AppDbContext : DbContext
     public DbSet<TaskItem> Tasks { get; set; }
     public DbSet<Goal> Goals { get; set; }
     public DbSet<MonthlyKpi> MonthlyKpis { get; set; }
+    public DbSet<HomeStyle> HomeStyles { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

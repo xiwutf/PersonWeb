@@ -4,28 +4,14 @@
     <canvas v-if="shouldRender3D" ref="canvasRef" class="w-full h-full" />
     
     <!-- 移动端简化背景 -->
-    <div v-else class="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      <div class="absolute inset-0 bg-[url('/images/grid.svg')] bg-center opacity-10"></div>
+    <div v-else class="absolute inset-0 bg-gradient-to-br from-gray-950 via-slate-950 to-zinc-950">
+      <div class="absolute inset-0 bg-[url('/images/grid.svg')] bg-center opacity-8"></div>
     </div>
     
     <!-- 交互提示（仅桌面端显示） -->
     <div v-if="showHint && shouldRender3D" class="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-6 py-3 rounded-full text-sm backdrop-blur-md z-20 border border-white/20 pointer-events-none">
       <span class="mr-2">🖱️</span>
       滚动页面或拖动鼠标探索 3D 世界
-    </div>
-
-    <!-- 导航标签（移动端优化） -->
-    <div class="absolute top-4 sm:top-8 left-4 sm:left-8 z-20 space-y-2 sm:space-y-3 pointer-events-auto">
-      <button
-        v-for="(item, index) in navigationItems"
-        :key="index"
-        @click="navigateTo(item.path)"
-        class="block px-3 sm:px-4 py-2 sm:py-2 bg-black/50 backdrop-blur-md text-white rounded-lg hover:bg-black/70 active:bg-black/80 transition-all border border-white/20 hover:border-blue-400/50 hover:scale-105 active:scale-95 cursor-pointer text-sm sm:text-base min-h-[44px] flex items-center justify-center"
-        :class="{ 'bg-blue-500/50 border-blue-400': currentPath === item.path }"
-      >
-        <span class="mr-2">{{ item.icon }}</span>
-        {{ item.label }}
-      </button>
     </div>
   </div>
 </template>
@@ -61,16 +47,6 @@ let raycaster: THREE.Raycaster | null = null
 let mouse: THREE.Vector2 | null = null
 
 const router = useRouter()
-const route = useRoute()
-const currentPath = computed(() => route.path)
-
-const navigationItems = [
-  { icon: '🌍', label: '博客', path: '/blog' },
-  { icon: '🚀', label: '项目', path: '/projects' },
-  { icon: '📚', label: '知识库', path: '/knowledge' },
-  { icon: '💻', label: '工具', path: '/tools' },
-  { icon: '👤', label: '关于', path: '/about' }
-]
 
 // 创建渐变背景纹理
 const createGradientTexture = () => {
@@ -80,14 +56,14 @@ const createGradientTexture = () => {
   const context = canvas.getContext('2d')
   
   if (!context) {
-    return new THREE.Color(0x1a1a2e)
+    return new THREE.Color(0x030712)
   }
 
-  // 创建从深蓝到紫色的渐变
+  // 创建从深灰到深蓝灰的渐变（更中性的颜色）
   const gradient = context.createLinearGradient(0, 0, 0, 256)
-  gradient.addColorStop(0, '#0f172a') // 深蓝
-  gradient.addColorStop(0.5, '#1e1b4b') // 中蓝紫
-  gradient.addColorStop(1, '#312e81') // 深紫
+  gradient.addColorStop(0, '#030712') // 深灰 gray-950
+  gradient.addColorStop(0.5, '#0f172a') // 深蓝灰 slate-950
+  gradient.addColorStop(1, '#18181b') // 深灰 zinc-950
 
   context.fillStyle = gradient
   context.fillRect(0, 0, 256, 256)
@@ -104,10 +80,10 @@ const initScene = () => {
   try {
     // 创建场景 - 使用渐变背景替代纯色
     scene = new THREE.Scene()
-    // 使用更柔和的深蓝紫色渐变背景
+    // 使用更中性的深灰色渐变背景
     const gradientTexture = createGradientTexture()
     scene.background = gradientTexture
-    scene.fog = new THREE.Fog(0x1a1a2e, 15, 60)
+    scene.fog = new THREE.Fog(0x030712, 15, 60)
 
     // 创建相机
     const width = containerRef.value.clientWidth
@@ -352,10 +328,6 @@ const handleResize = () => {
   camera.aspect = width / height
   camera.updateProjectionMatrix()
   renderer.setSize(width, height)
-}
-
-const navigateTo = (path: string) => {
-  router.push(path)
 }
 
 onMounted(() => {

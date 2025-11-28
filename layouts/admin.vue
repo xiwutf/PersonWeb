@@ -99,6 +99,11 @@
           <i class="fas fa-cog w-6 text-center mr-2"></i>
           站点配置
         </NuxtLink>
+        
+        <NuxtLink to="/admin/home-styles" class="flex items-center px-4 py-2 rounded hover:bg-slate-700 transition-colors" active-class="bg-blue-600 hover:bg-blue-600">
+          <i class="fas fa-palette w-6 text-center mr-2"></i>
+          首页风格管理
+        </NuxtLink>
       </nav>
       
       <div class="p-4 border-t border-slate-700">
