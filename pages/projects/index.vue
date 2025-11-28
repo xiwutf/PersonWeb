@@ -55,7 +55,13 @@
 
           <!-- 技术栈 -->
           <div class="flex flex-wrap gap-2 mb-6">
-            <span v-for="tech in project.techStack" :key="tech" class="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded">
+            <span 
+              v-for="tech in project.techStack" 
+              :key="tech" 
+              class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-full transition-all duration-200 hover:scale-105"
+              :class="getTechTagClass(tech)"
+            >
+              <span class="mr-1.5">{{ getTechIcon(tech) }}</span>
               {{ tech }}
             </span>
           </div>
