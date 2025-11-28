@@ -174,6 +174,26 @@ public class ArticlesController : ControllerBase
                     }
                 }
 
+                // 创建版本历史（保存旧版本）
+                var history = new Article
+                {
+                    Title = existing.Title,
+                    Slug = existing.Slug + $"-v{existing.Version}", // 避免slug冲突
+                    Summary = existing.Summary,
+                    ContentMd = existing.ContentMd,
+                    ContentHtml = existing.ContentHtml,
+                    CoverUrl = existing.CoverUrl,
+                    CategoryId = existing.CategoryId,
+                    Status = 2, // 下线（历史版本）
+                    Version = existing.Version,
+                    ParentId = existing.Id,
+                    CreatedAt = existing.CreatedAt,
+                    UpdatedAt = existing.UpdatedAt,
+                    AuthorId = existing.AuthorId
+                };
+                _context.Articles.Add(history);
+
+                // 更新当前版本
                 existing.Title = article.Title;
                 existing.Slug = article.Slug;
                 existing.Summary = article.Summary;
@@ -181,6 +201,7 @@ public class ArticlesController : ControllerBase
                 existing.ContentHtml = article.ContentHtml;
                 existing.CoverUrl = article.CoverUrl;
                 existing.CategoryId = article.CategoryId;
+                existing.Version++;
                 existing.UpdatedAt = DateTime.Now;
 
                 // 状态变更逻辑
@@ -228,5 +249,100 @@ public class ArticlesController : ControllerBase
         await _context.SaveChangesAsync();
 
         return Ok(ApiResponse.Success(null, "删除成功"));
+    }
+
+    /// <summary>
+    /// 获取文章版本历史
+    /// </summary>
+    [HttpGet("{id}/versions")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<object>>> GetVersions(long id)
+    {
+        var versions = await _context.Articles
+            .Where(a => a.ParentId == id || a.Id == id)
+            .OrderByDescending(a => a.Version)
+            .Select(a => new
+            {
+                a.Id,
+                a.Version,
+                a.Title,
+                a.UpdatedAt,
+                a.Status
+            })
+            .ToListAsync();
+
+        return Ok(ApiResponse.Success(versions));
+    }
+
+    /// <summary>
+    /// 获取指定版本的文章内容
+    /// </summary>
+    [HttpGet("{id}/versions/{versionId}")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<Article>>> GetVersion(long id, long versionId)
+    {
+        var version = await _context.Articles
+            .Include(a => a.Category)
+            .Include(a => a.Tags)
+            .FirstOrDefaultAsync(a => a.Id == versionId && (a.ParentId == id || a.Id == id));
+
+        if (version == null)
+        {
+            return Ok(ApiResponse<Article>.Error("版本不存在", 404));
+        }
+
+        return Ok(ApiResponse<Article>.Success(version));
+    }
+
+    /// <summary>
+    /// 恢复指定版本
+    /// </summary>
+    [HttpPost("{id}/versions/{versionId}/restore")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse>> RestoreVersion(long id, long versionId)
+    {
+        var current = await _context.Articles.FindAsync(id);
+        if (current == null)
+        {
+            return Ok(ApiResponse.Error("文章不存在", 404));
+        }
+
+        var version = await _context.Articles.FindAsync(versionId);
+        if (version == null || (version.ParentId != id && version.Id != id))
+        {
+            return Ok(ApiResponse.Error("版本不存在", 404));
+        }
+
+        // 创建当前版本的备份
+        var backup = new Article
+        {
+            Title = current.Title,
+            Slug = current.Slug + $"-v{current.Version}",
+            Summary = current.Summary,
+            ContentMd = current.ContentMd,
+            ContentHtml = current.ContentHtml,
+            CoverUrl = current.CoverUrl,
+            CategoryId = current.CategoryId,
+            Status = 2,
+            Version = current.Version,
+            ParentId = current.Id,
+            CreatedAt = current.CreatedAt,
+            UpdatedAt = current.UpdatedAt,
+            AuthorId = current.AuthorId
+        };
+        _context.Articles.Add(backup);
+
+        // 恢复版本内容
+        current.Title = version.Title;
+        current.Summary = version.Summary;
+        current.ContentMd = version.ContentMd;
+        current.ContentHtml = version.ContentHtml;
+        current.CoverUrl = version.CoverUrl;
+        current.CategoryId = version.CategoryId;
+        current.Version++;
+        current.UpdatedAt = DateTime.Now;
+
+        await _context.SaveChangesAsync();
+        return Ok(ApiResponse.Success(null, "恢复成功"));
     }
 }

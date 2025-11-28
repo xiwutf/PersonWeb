@@ -117,4 +117,75 @@ public class ProjectsController : ControllerBase
         await _context.SaveChangesAsync();
         return Ok(ApiResponse<bool>.Success(true));
     }
+
+    /// <summary>
+    /// 获取项目访问趋势
+    /// </summary>
+    [HttpGet("{id}/trends")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<object>>> GetTrends(
+        Guid id,
+        [FromQuery] int days = 30)
+    {
+        // 这里简化实现，实际应该从访问日志表中统计
+        // 目前返回模拟数据，后续可以集成真实的访问日志统计
+        var project = await _context.Projects.FindAsync(id);
+        if (project == null)
+        {
+            return Ok(ApiResponse.Error("项目不存在", 404));
+        }
+
+        // 生成模拟趋势数据（实际应该从 visit_logs 表统计）
+        var trends = new List<object>();
+        var random = new Random();
+        var baseViews = project.ViewCount / days;
+        
+        for (int i = days - 1; i >= 0; i--)
+        {
+            var date = DateTime.Now.AddDays(-i).Date;
+            trends.Add(new
+            {
+                Date = date.ToString("yyyy-MM-dd"),
+                Views = baseViews + random.Next(-5, 10) // 模拟波动
+            });
+        }
+
+        return Ok(ApiResponse.Success(new
+        {
+            ProjectId = id,
+            ProjectTitle = project.Title,
+            TotalViews = project.ViewCount,
+            Trends = trends
+        }));
+    }
+
+    /// <summary>
+    /// 获取所有项目的访问统计
+    /// </summary>
+    [HttpGet("stats")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<object>>> GetStats()
+    {
+        var projects = await _context.Projects
+            .OrderByDescending(p => p.ViewCount)
+            .Take(10)
+            .Select(p => new
+            {
+                p.Id,
+                p.Title,
+                p.ViewCount,
+                p.Status
+            })
+            .ToListAsync();
+
+        var totalViews = await _context.Projects.SumAsync(p => p.ViewCount);
+        var totalProjects = await _context.Projects.CountAsync();
+
+        return Ok(ApiResponse.Success(new
+        {
+            TotalProjects = totalProjects,
+            TotalViews = totalViews,
+            TopProjects = projects
+        }));
+    }
 }

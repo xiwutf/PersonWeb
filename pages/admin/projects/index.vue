@@ -2,9 +2,14 @@
   <div>
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-bold text-gray-800 dark:text-white">项目管理</h1>
-      <NuxtLink to="/admin/projects/edit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-        新建项目
-      </NuxtLink>
+      <div class="flex gap-2">
+        <NuxtLink to="/admin/projects/stats" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
+          访问统计
+        </NuxtLink>
+        <NuxtLink to="/admin/projects/edit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+          新建项目
+        </NuxtLink>
+      </div>
     </div>
 
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">

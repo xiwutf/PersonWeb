@@ -67,4 +67,10 @@ public class Article
     
     [Column("view_count")]
     public int ViewCount { get; set; } = 0;
+
+    [Column("version")]
+    public int Version { get; set; } = 1;
+
+    [Column("parent_id")]
+    public long? ParentId { get; set; } // 版本历史关联
 }
