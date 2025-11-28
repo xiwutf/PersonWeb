@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed bottom-28 right-8 z-[45]">
+  <div class="time-capsule-container">
     <!-- 打开按钮 -->
     <button
       v-if="!isOpen"

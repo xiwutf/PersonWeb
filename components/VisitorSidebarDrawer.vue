@@ -221,6 +221,40 @@ onMounted(() => {
   justify-content: center;
 }
 
+/* 调整时间胶囊墙样式 */
+.drawer-section :deep(.fixed) {
+  position: relative !important;
+  bottom: auto !important;
+  right: auto !important;
+  width: 100%;
+}
+
+.drawer-section :deep(.w-80) {
+  width: 100% !important;
+}
+
+.drawer-section :deep(.h-\[500px\]) {
+  height: auto !important;
+  max-height: 400px;
+}
+
+/* 调整访客足迹地图样式 */
+.drawer-section :deep(.footprint-map-container) {
+  position: relative;
+  width: 100%;
+  min-height: 200px;
+}
+
+.drawer-section :deep(.footprint-button) {
+  position: relative !important;
+  bottom: auto !important;
+  right: auto !important;
+  margin-top: 1rem;
+  width: 100%;
+  border-radius: 0.5rem;
+  height: 3rem;
+}
+
 /* 过渡动画 */
 .fade-enter-active,
 .fade-leave-active {
