@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using PersonalSite.Api.Data;
 using PersonalSite.Api.Models;
 using System.Net;
+using System.Text.Json;
 
 namespace PersonalSite.Api.Controllers;
 
@@ -46,21 +47,39 @@ public class AnalyticsController : ControllerBase
                 .OrderByDescending(v => v.UpdatedAt)
                 .FirstOrDefaultAsync();
 
-            if (analytics == null)
+            // 如果是新会话或IP发生变化，解析地理位置
+            if (analytics == null || analytics.Ip != ip)
             {
-                analytics = new VisitorAnalytics
+                var geoInfo = await GetIpGeoLocation(ip);
+                
+                if (analytics == null)
                 {
-                    VisitorId = request.VisitorId,
-                    Ip = ip,
-                    Referrer = referrer,
-                    DeviceType = deviceInfo.DeviceType,
-                    Browser = deviceInfo.Browser,
-                    Os = deviceInfo.Os,
-                    Path = request.Path,
-                    SessionStart = DateTime.Now,
-                    IsOnline = true
-                };
-                _context.VisitorAnalytics.Add(analytics);
+                    analytics = new VisitorAnalytics
+                    {
+                        VisitorId = request.VisitorId,
+                        Ip = ip,
+                        Country = geoInfo.Country,
+                        Region = geoInfo.Region,
+                        City = geoInfo.City,
+                        Referrer = referrer,
+                        SearchKeyword = request.SearchKeyword,
+                        DeviceType = deviceInfo.DeviceType,
+                        Browser = deviceInfo.Browser,
+                        Os = deviceInfo.Os,
+                        Path = request.Path,
+                        SessionStart = DateTime.Now,
+                        IsOnline = true
+                    };
+                    _context.VisitorAnalytics.Add(analytics);
+                }
+                else
+                {
+                    // IP变化，更新地理位置信息
+                    analytics.Ip = ip;
+                    analytics.Country = geoInfo.Country;
+                    analytics.Region = geoInfo.Region;
+                    analytics.City = geoInfo.City;
+                }
             }
             else
             {
@@ -70,6 +89,11 @@ public class AnalyticsController : ControllerBase
                 if (analytics.Path != request.Path)
                 {
                     analytics.Path = request.Path;
+                }
+                // 更新搜索关键词（如果有）
+                if (!string.IsNullOrEmpty(request.SearchKeyword))
+                {
+                    analytics.SearchKeyword = request.SearchKeyword;
                 }
             }
 
@@ -149,6 +173,32 @@ public class AnalyticsController : ControllerBase
             .Take(10)
             .ToListAsync();
 
+        // 设备类型统计
+        var deviceStats = await _context.VisitorAnalytics
+            .Where(v => !string.IsNullOrEmpty(v.DeviceType))
+            .GroupBy(v => v.DeviceType)
+            .Select(g => new { DeviceType = g.Key, Count = g.Count() })
+            .OrderByDescending(x => x.Count)
+            .ToListAsync();
+
+        // 浏览器统计
+        var browserStats = await _context.VisitorAnalytics
+            .Where(v => !string.IsNullOrEmpty(v.Browser))
+            .GroupBy(v => v.Browser)
+            .Select(g => new { Browser = g.Key, Count = g.Count() })
+            .OrderByDescending(x => x.Count)
+            .Take(10)
+            .ToListAsync();
+
+        // 操作系统统计
+        var osStats = await _context.VisitorAnalytics
+            .Where(v => !string.IsNullOrEmpty(v.Os))
+            .GroupBy(v => v.Os)
+            .Select(g => new { Os = g.Key, Count = g.Count() })
+            .OrderByDescending(x => x.Count)
+            .Take(10)
+            .ToListAsync();
+
         return Ok(ApiResponse.Success(new
         {
             Today = new { Pv = todayPv, Uv = todayUv },
@@ -156,7 +206,10 @@ public class AnalyticsController : ControllerBase
             OnlineCount = onlineCount,
             TopArticles = topArticles,
             RegionStats = regionStats,
-            SearchSources = searchSources
+            SearchSources = searchSources,
+            DeviceStats = deviceStats,
+            BrowserStats = browserStats,
+            OsStats = osStats
         }));
     }
 
@@ -214,6 +267,103 @@ public class AnalyticsController : ControllerBase
         }
 
         return (deviceType, browser, os);
+    }
+
+    /// <summary>
+    /// 获取IP地理位置信息（使用免费的ip-api.com服务）
+    /// </summary>
+    private async Task<(string? Country, string? Region, string? City)> GetIpGeoLocation(string? ip)
+    {
+        if (string.IsNullOrEmpty(ip) || ip == "::1" || ip == "127.0.0.1" || ip.StartsWith("192.168.") || ip.StartsWith("10.") || ip.StartsWith("172."))
+        {
+            return (null, null, null);
+        }
+
+        try
+        {
+            using var httpClient = new HttpClient();
+            httpClient.Timeout = TimeSpan.FromSeconds(3);
+            var response = await httpClient.GetStringAsync($"http://ip-api.com/json/{ip}?fields=status,country,regionName,city");
+            var jsonDoc = JsonDocument.Parse(response);
+            var root = jsonDoc.RootElement;
+
+            if (root.GetProperty("status").GetString() == "success")
+            {
+                return (
+                    root.TryGetProperty("country", out var country) ? country.GetString() : null,
+                    root.TryGetProperty("regionName", out var region) ? region.GetString() : null,
+                    root.TryGetProperty("city", out var city) ? city.GetString() : null
+                );
+            }
+        }
+        catch
+        {
+            // 静默失败，不影响主流程
+        }
+
+        return (null, null, null);
+    }
+
+    /// <summary>
+    /// 获取访客列表（管理员）
+    /// </summary>
+    [HttpGet("visitors")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<object>>> GetVisitors(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20,
+        [FromQuery] bool onlineOnly = false)
+    {
+        try
+        {
+            var query = _context.VisitorAnalytics.AsQueryable();
+
+            // 只显示在线访客
+            if (onlineOnly)
+            {
+                query = query.Where(v => v.IsOnline && v.UpdatedAt >= DateTime.Now.AddMinutes(-5));
+            }
+
+            // 按更新时间倒序排列
+            query = query.OrderByDescending(v => v.UpdatedAt);
+
+            var total = await query.CountAsync();
+            var visitors = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(v => new
+                {
+                    v.Id,
+                    v.VisitorId,
+                    v.Ip,
+                    v.Country,
+                    v.Region,
+                    v.City,
+                    v.DeviceType,
+                    v.Browser,
+                    v.Os,
+                    v.Path,
+                    v.Referrer,
+                    v.SearchKeyword,
+                    v.PageViews,
+                    v.SessionStart,
+                    v.UpdatedAt,
+                    v.IsOnline
+                })
+                .ToListAsync();
+
+            return Ok(ApiResponse.Success(new
+            {
+                Total = total,
+                Page = page,
+                PageSize = pageSize,
+                Visitors = visitors
+            }));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse.Error($"获取访客列表失败: {ex.Message}", 500));
+        }
     }
 }
 

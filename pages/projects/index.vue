@@ -22,6 +22,16 @@
     
     <!-- 传统网格视图 -->
     <div v-else class="projects-container">
+      <!-- 返回按钮 -->
+      <div class="projects-back-button-container">
+        <NuxtLink to="/lab" class="projects-back-button">
+          <svg class="projects-back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          <span>返回AI实验室</span>
+        </NuxtLink>
+      </div>
+
       <div class="projects-header">
         <h1 class="projects-title">项目展示</h1>
         <p class="projects-subtitle">探索我的开源项目和技术实验</p>
@@ -305,4 +315,33 @@ onMounted(() => {
 <style scoped>
 /* 页面特有样式已移至 assets/css/projects.css */
 /* 这里只保留组件特有的样式（如果有） */
+
+.projects-back-button-container {
+  margin-bottom: 2rem;
+}
+
+.projects-back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  color: rgb(148, 163, 184);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 0.875rem;
+}
+
+.projects-back-button:hover {
+  background: rgba(15, 23, 42, 0.7);
+  border-color: rgba(139, 92, 246, 0.3);
+  color: white;
+}
+
+.projects-back-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
 </style>

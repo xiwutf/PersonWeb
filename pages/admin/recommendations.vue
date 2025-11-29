@@ -14,10 +14,10 @@
           v-for="type in recommendationTypes"
           :key="type.value"
           @click="selectedType = type.value; fetchRecommendations()"
-          class="px-4 py-2 rounded transition-colors"
+          class="px-4 py-2 rounded transition-colors font-medium"
           :class="selectedType === type.value 
             ? 'bg-blue-600 text-white' 
-            : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'"
+            : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600'"
         >
           {{ type.label }}
         </button>

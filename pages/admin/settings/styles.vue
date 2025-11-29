@@ -23,10 +23,21 @@
     <div v-if="activeCategory" class="styles-section">
       <div class="section-header">
         <h2 class="section-title">{{ activeCategory.name }}样式</h2>
-        <button @click="openStyleModal()" class="btn-primary">
-          <i class="fas fa-plus mr-2"></i>
-          新增样式
-        </button>
+        <div class="flex gap-2">
+          <button 
+            v-if="styles.length === 0" 
+            @click="initDefaultStyles" 
+            class="btn-secondary"
+            :disabled="initializing"
+          >
+            <i class="fas fa-magic mr-2"></i>
+            {{ initializing ? '初始化中...' : '初始化默认样式' }}
+          </button>
+          <button @click="openStyleModal()" class="btn-primary">
+            <i class="fas fa-plus mr-2"></i>
+            新增样式
+          </button>
+        </div>
       </div>
 
       <div v-if="loading" class="table-loading">加载中...</div>
@@ -288,6 +299,7 @@ const styles = ref<StyleDefinition[]>([])
 const usageStats = ref<StyleUsage[]>([])
 const allUsageStats = ref<StyleUsageStats[]>([])
 const loading = ref(false)
+const initializing = ref(false)
 const showStyleModal = ref(false)
 const showUsageModal = ref(false)
 const editingStyle = ref<StyleDefinition | null>(null)
@@ -438,6 +450,44 @@ const viewUsage = async (styleId: number) => {
 const formatDate = (dateStr?: string) => {
   if (!dateStr) return '-'
   return new Date(dateStr).toLocaleString('zh-CN')
+}
+
+const initDefaultStyles = async () => {
+  if (!activeCategory.value) return
+  
+  try {
+    initializing.value = true
+    const res = await api.post<{ count: number }>('/StyleManagement/init-defaults')
+    
+    if (res && res.count > 0) {
+      // 显示成功提示
+      if (process.client) {
+        window.dispatchEvent(new CustomEvent('show-toast', {
+          detail: {
+            message: `成功初始化 ${res.count} 个默认样式`,
+            type: 'success',
+            duration: 3000
+          }
+        }))
+      }
+      // 重新加载样式列表
+      await fetchStyles()
+    } else {
+      if (process.client) {
+        window.dispatchEvent(new CustomEvent('show-toast', {
+          detail: {
+            message: '该分类已有样式，无需初始化',
+            type: 'info',
+            duration: 3000
+          }
+        }))
+      }
+    }
+  } catch (e: unknown) {
+    handleError(e, '初始化失败')
+  } finally {
+    initializing.value = false
+  }
 }
 
 watch(activeCategory, () => {

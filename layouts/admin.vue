@@ -22,242 +22,321 @@
         </NuxtLink>
         
         <!-- 内容管理 -->
-        <div class="text-xs text-slate-400 px-4 mt-4 mb-2 uppercase font-semibold">内容管理</div>
-        
-        <a 
-          href="/admin/articles"
-          class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
-          :class="{ 'admin-sidebar-link-active': route.path.startsWith('/admin/articles') }"
-          @click.prevent="() => router.push('/admin/articles')"
-        >
-          <i class="fas fa-file-alt w-6 text-center mr-2"></i>
-          文章管理
-        </a>
-        
-        <a 
-          href="/admin/categories"
-          class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
-          :class="{ 'admin-sidebar-link-active': route.path === '/admin/categories' }"
-          @click.prevent="() => router.push('/admin/categories')"
-        >
-          <i class="fas fa-folder w-6 text-center mr-2"></i>
-          分类管理
-        </a>
+        <div class="menu-group">
+          <button 
+            @click="toggleMenu('content')"
+            class="menu-group-header"
+            :class="{ 'menu-group-active': isMenuActive('content') }"
+          >
+            <i class="fas fa-chevron-right transition-transform duration-200 mr-2" :class="{ 'rotate-90': expandedMenus.content }"></i>
+            <span class="text-xs text-slate-400 uppercase font-semibold">内容管理</span>
+          </button>
+          <div v-show="expandedMenus.content" class="menu-group-items">
+            <a 
+              href="/admin/articles"
+              class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
+              :class="{ 'admin-sidebar-link-active': route.path.startsWith('/admin/articles') }"
+              @click.prevent="() => router.push('/admin/articles')"
+            >
+              <i class="fas fa-file-alt w-6 text-center mr-2"></i>
+              文章管理
+            </a>
+            
+            <a 
+              href="/admin/categories"
+              class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
+              :class="{ 'admin-sidebar-link-active': route.path === '/admin/categories' }"
+              @click.prevent="() => router.push('/admin/categories')"
+            >
+              <i class="fas fa-folder w-6 text-center mr-2"></i>
+              分类管理
+            </a>
+          </div>
+        </div>
 
         <!-- 项目管理 -->
-        <div class="text-xs text-slate-400 px-4 mt-4 mb-2 uppercase font-semibold">项目管理</div>
-        
-        <a 
-          href="/admin/projects"
-          class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
-          :class="{ 'admin-sidebar-link-active': route.path.startsWith('/admin/projects') }"
-          @click.prevent="() => router.push('/admin/projects')"
-        >
-          <i class="fas fa-project-diagram w-6 text-center mr-2"></i>
-          项目管理
-        </a>
-        
-        <a 
-          href="/admin/tools"
-          class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
-          :class="{ 'admin-sidebar-link-active': route.path === '/admin/tools' }"
-          @click.prevent="() => router.push('/admin/tools')"
-        >
-          <i class="fas fa-tools w-6 text-center mr-2"></i>
-          工具管理
-        </a>
+        <div class="menu-group">
+          <button 
+            @click="toggleMenu('project')"
+            class="menu-group-header"
+            :class="{ 'menu-group-active': isMenuActive('project') }"
+          >
+            <i class="fas fa-chevron-right transition-transform duration-200 mr-2" :class="{ 'rotate-90': expandedMenus.project }"></i>
+            <span class="text-xs text-slate-400 uppercase font-semibold">项目管理</span>
+          </button>
+          <div v-show="expandedMenus.project" class="menu-group-items">
+            <a 
+              href="/admin/projects"
+              class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
+              :class="{ 'admin-sidebar-link-active': route.path.startsWith('/admin/projects') }"
+              @click.prevent="() => router.push('/admin/projects')"
+            >
+              <i class="fas fa-project-diagram w-6 text-center mr-2"></i>
+              项目管理
+            </a>
+            
+            <a 
+              href="/admin/tools"
+              class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
+              :class="{ 'admin-sidebar-link-active': route.path === '/admin/tools' }"
+              @click.prevent="() => router.push('/admin/tools')"
+            >
+              <i class="fas fa-tools w-6 text-center mr-2"></i>
+              工具管理
+            </a>
+          </div>
+        </div>
 
         <!-- 知识管理 -->
-        <div class="text-xs text-slate-400 px-4 mt-4 mb-2 uppercase font-semibold">知识管理</div>
+        <div class="menu-group">
+          <button 
+            @click="toggleMenu('knowledge')"
+            class="menu-group-header"
+            :class="{ 'menu-group-active': isMenuActive('knowledge') }"
+          >
+            <i class="fas fa-chevron-right transition-transform duration-200 mr-2" :class="{ 'rotate-90': expandedMenus.knowledge }"></i>
+            <span class="text-xs text-slate-400 uppercase font-semibold">知识管理</span>
+          </button>
+          <div v-show="expandedMenus.knowledge" class="menu-group-items">
+            <NuxtLink to="/admin/knowledge" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
+              <i class="fas fa-book w-6 text-center mr-2"></i>
+              知识库
+            </NuxtLink>
 
-        <NuxtLink to="/admin/knowledge" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
-          <i class="fas fa-book w-6 text-center mr-2"></i>
-          知识库
-        </NuxtLink>
+            <NuxtLink to="/admin/timeline" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
+              <i class="fas fa-history w-6 text-center mr-2"></i>
+              时间线
+            </NuxtLink>
 
-        <NuxtLink to="/admin/timeline" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
-          <i class="fas fa-history w-6 text-center mr-2"></i>
-          时间线
-        </NuxtLink>
-
-        <a 
-          href="/admin/time-capsules"
-          class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
-          :class="{ 'admin-sidebar-link-active': route.path === '/admin/time-capsules' }"
-          @click.prevent="() => router.push('/admin/time-capsules')"
-        >
-          <i class="fas fa-clock w-6 text-center mr-2"></i>
-          时间胶囊
-        </a>
+            <a 
+              href="/admin/time-capsules"
+              class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
+              :class="{ 'admin-sidebar-link-active': route.path === '/admin/time-capsules' }"
+              @click.prevent="() => router.push('/admin/time-capsules')"
+            >
+              <i class="fas fa-clock w-6 text-center mr-2"></i>
+              时间胶囊
+            </a>
+          </div>
+        </div>
 
         <!-- 数据分析 -->
-        <div class="text-xs text-slate-400 px-4 mt-4 mb-2 uppercase font-semibold">数据分析</div>
+        <div class="menu-group">
+          <button 
+            @click="toggleMenu('analytics')"
+            class="menu-group-header"
+            :class="{ 'menu-group-active': isMenuActive('analytics') }"
+          >
+            <i class="fas fa-chevron-right transition-transform duration-200 mr-2" :class="{ 'rotate-90': expandedMenus.analytics }"></i>
+            <span class="text-xs text-slate-400 uppercase font-semibold">数据分析</span>
+          </button>
+          <div v-show="expandedMenus.analytics" class="menu-group-items">
+            <NuxtLink to="/admin/analytics" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
+              <i class="fas fa-chart-bar w-6 text-center mr-2"></i>
+              访客分析
+            </NuxtLink>
 
-        <NuxtLink to="/admin/analytics" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
-          <i class="fas fa-chart-bar w-6 text-center mr-2"></i>
-          访客分析
-        </NuxtLink>
-
-        <NuxtLink to="/admin/investment" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
-          <i class="fas fa-chart-line w-6 text-center mr-2"></i>
-          投资仪表盘
-        </NuxtLink>
+            <NuxtLink to="/admin/investment" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
+              <i class="fas fa-chart-line w-6 text-center mr-2"></i>
+              投资仪表盘
+            </NuxtLink>
+          </div>
+        </div>
 
         <!-- 个人管理 -->
-        <div class="text-xs text-slate-400 px-4 mt-4 mb-2 uppercase font-semibold">个人管理</div>
+        <div class="menu-group">
+          <button 
+            @click="toggleMenu('personal')"
+            class="menu-group-header"
+            :class="{ 'menu-group-active': isMenuActive('personal') }"
+          >
+            <i class="fas fa-chevron-right transition-transform duration-200 mr-2" :class="{ 'rotate-90': expandedMenus.personal }"></i>
+            <span class="text-xs text-slate-400 uppercase font-semibold">个人管理</span>
+          </button>
+          <div v-show="expandedMenus.personal" class="menu-group-items">
+            <NuxtLink to="/admin/tasks" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
+              <i class="fas fa-tasks w-6 text-center mr-2"></i>
+              任务管理
+            </NuxtLink>
 
-        <NuxtLink to="/admin/tasks" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
-          <i class="fas fa-tasks w-6 text-center mr-2"></i>
-          任务管理
-        </NuxtLink>
+            <NuxtLink to="/admin/goals" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
+              <i class="fas fa-bullseye w-6 text-center mr-2"></i>
+              年度目标
+            </NuxtLink>
 
-        <NuxtLink to="/admin/goals" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
-          <i class="fas fa-bullseye w-6 text-center mr-2"></i>
-          年度目标
-        </NuxtLink>
-
-        <NuxtLink to="/admin/toolbox" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
-          <span class="mr-2">🛒</span>
-          <span>工具商城管理</span>
-        </NuxtLink>
+            <NuxtLink to="/admin/toolbox" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
+              <span class="mr-2">🛒</span>
+              <span>工具商城管理</span>
+            </NuxtLink>
+          </div>
+        </div>
 
         <!-- 商业化功能 -->
-        <div class="text-xs text-slate-400 px-4 mt-4 mb-2 uppercase font-semibold">商业化功能</div>
+        <div class="menu-group">
+          <button 
+            @click="toggleMenu('commercial')"
+            class="menu-group-header"
+            :class="{ 'menu-group-active': isMenuActive('commercial') }"
+          >
+            <i class="fas fa-chevron-right transition-transform duration-200 mr-2" :class="{ 'rotate-90': expandedMenus.commercial }"></i>
+            <span class="text-xs text-slate-400 uppercase font-semibold">商业化功能</span>
+          </button>
+          <div v-show="expandedMenus.commercial" class="menu-group-items">
+            <NuxtLink to="/admin/commercial/themes" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
+              <i class="fas fa-palette w-6 text-center mr-2"></i>
+              主题商店
+            </NuxtLink>
 
-        <NuxtLink to="/admin/commercial/themes" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
-          <i class="fas fa-palette w-6 text-center mr-2"></i>
-          主题商店
-        </NuxtLink>
+            <NuxtLink to="/admin/commercial/api-keys" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
+              <i class="fas fa-key w-6 text-center mr-2"></i>
+              API Key 管理
+            </NuxtLink>
 
-        <NuxtLink to="/admin/commercial/api-keys" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
-          <i class="fas fa-key w-6 text-center mr-2"></i>
-          API Key 管理
-        </NuxtLink>
+            <NuxtLink to="/admin/commercial/memberships" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
+              <i class="fas fa-crown w-6 text-center mr-2"></i>
+              会员管理
+            </NuxtLink>
 
-        <NuxtLink to="/admin/commercial/memberships" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
-          <i class="fas fa-crown w-6 text-center mr-2"></i>
-          会员管理
-        </NuxtLink>
-
-        <NuxtLink to="/admin/commercial/orders" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
-          <i class="fas fa-shopping-cart w-6 text-center mr-2"></i>
-          支付订单
-        </NuxtLink>
-        <NuxtLink to="/admin/skill-tree" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
-          <i class="fas fa-sitemap w-6 text-center mr-2"></i>
-          技能树管理
-        </NuxtLink>
+            <NuxtLink to="/admin/commercial/orders" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
+              <i class="fas fa-shopping-cart w-6 text-center mr-2"></i>
+              支付订单
+            </NuxtLink>
+            
+            <NuxtLink to="/admin/skill-tree" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
+              <i class="fas fa-sitemap w-6 text-center mr-2"></i>
+              技能树管理
+            </NuxtLink>
+          </div>
+        </div>
 
         <!-- 智能功能 -->
-        <div class="text-xs text-slate-400 px-4 mt-4 mb-2 uppercase font-semibold">智能功能</div>
+        <div class="menu-group">
+          <button 
+            @click="toggleMenu('ai')"
+            class="menu-group-header"
+            :class="{ 'menu-group-active': isMenuActive('ai') }"
+          >
+            <i class="fas fa-chevron-right transition-transform duration-200 mr-2" :class="{ 'rotate-90': expandedMenus.ai }"></i>
+            <span class="text-xs text-slate-400 uppercase font-semibold">智能功能</span>
+          </button>
+          <div v-show="expandedMenus.ai" class="menu-group-items">
+            <NuxtLink to="/admin/recommendations" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
+              <i class="fas fa-brain w-6 text-center mr-2"></i>
+              AI 推荐
+            </NuxtLink>
+          </div>
+        </div>
 
-        <NuxtLink to="/admin/recommendations" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
-          <i class="fas fa-brain w-6 text-center mr-2"></i>
-          AI 推荐
-        </NuxtLink>
-
-        <div class="text-xs text-slate-400 px-4 mt-4 mb-2 uppercase font-semibold">设置</div>
-        
-        <NuxtLink 
-          to="/admin/settings" 
-          class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
-          :class="{ 'admin-sidebar-link-active': route.path === '/admin/settings' || route.path.startsWith('/admin/settings') }"
-        >
-          <i class="fas fa-cog w-6 text-center mr-2"></i>
-          系统设置
-        </NuxtLink>
-        
-        <!-- 设置子菜单（可折叠，当前展开显示） -->
-        <div v-if="route.path.startsWith('/admin/settings') || route.path === '/admin/config' || route.path === '/admin/users' || route.path === '/admin/error-logs' || route.path === '/admin/friend-links' || route.path === '/admin/home-styles' || route.path === '/admin/admin-styles'" class="ml-4 space-y-1">
-          <NuxtLink 
-            to="/admin/config" 
-            class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
-            :class="{ 'admin-sidebar-link-active': route.path === '/admin/config' }"
+        <!-- 设置 -->
+        <div class="menu-group">
+          <button 
+            @click="toggleMenu('settings')"
+            class="menu-group-header"
+            :class="{ 'menu-group-active': isMenuActive('settings') }"
           >
-            <i class="fas fa-cog w-6 text-center mr-2 text-sm"></i>
-            <span class="text-sm">站点配置</span>
-          </NuxtLink>
-          
-          <NuxtLink 
-            to="/admin/users" 
-            class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
-            :class="{ 'admin-sidebar-link-active': route.path === '/admin/users' }"
-          >
-            <i class="fas fa-users w-6 text-center mr-2 text-sm"></i>
-            <span class="text-sm">用户管理</span>
-          </NuxtLink>
-          
-          <NuxtLink 
-            to="/admin/friend-links" 
-            class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
-            :class="{ 'admin-sidebar-link-active': route.path.startsWith('/admin/friend-links') }"
-          >
-            <i class="fas fa-link w-6 text-center mr-2 text-sm"></i>
-            <span class="text-sm">友情链接</span>
-          </NuxtLink>
-          
-          <NuxtLink 
-            to="/admin/home-styles" 
-            class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
-            :class="{ 'admin-sidebar-link-active': route.path === '/admin/home-styles' }"
-          >
-            <i class="fas fa-palette w-6 text-center mr-2 text-sm"></i>
-            <span class="text-sm">首页风格管理</span>
-          </NuxtLink>
-          
-          <NuxtLink 
-            to="/admin/admin-styles" 
-            class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
-            :class="{ 'admin-sidebar-link-active': route.path === '/admin/admin-styles' }"
-          >
-            <i class="fas fa-paint-brush w-6 text-center mr-2 text-sm"></i>
-            <span class="text-sm">后台风格管理</span>
-          </NuxtLink>
-          
-          <NuxtLink 
-            to="/admin/settings/styles" 
-            class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
-            :class="{ 'admin-sidebar-link-active': route.path === '/admin/settings/styles' }"
-          >
-            <i class="fas fa-palette w-6 text-center mr-2 text-sm"></i>
-            <span class="text-sm">样式管理</span>
-          </NuxtLink>
-          
-          <NuxtLink 
-            to="/admin/settings/themes" 
-            class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
-            :class="{ 'admin-sidebar-link-active': route.path === '/admin/settings/themes' }"
-          >
-            <i class="fas fa-paint-brush w-6 text-center mr-2 text-sm"></i>
-            <span class="text-sm">主题风格管理</span>
-          </NuxtLink>
-          
-        <NuxtLink 
-          to="/admin/settings/modules" 
-          class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
-          :class="{ 'admin-sidebar-link-active': route.path === '/admin/settings/modules' }"
-        >
-          <i class="fas fa-puzzle-piece w-6 text-center mr-2 text-sm"></i>
-          <span class="text-sm">模块管理</span>
-        </NuxtLink>
-        
-        <NuxtLink 
-          to="/admin/visitor-messages" 
-          class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
-          :class="{ 'admin-sidebar-link-active': route.path === '/admin/visitor-messages' }"
-        >
-          <i class="fas fa-comments w-6 text-center mr-2 text-sm"></i>
-          <span class="text-sm">访客留言</span>
-        </NuxtLink>
-          
-          <NuxtLink 
-            to="/admin/error-logs" 
-            class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
-            :class="{ 'admin-sidebar-link-active': route.path === '/admin/error-logs' }"
-          >
-            <i class="fas fa-exclamation-triangle w-6 text-center mr-2 text-sm"></i>
-            <span class="text-sm">错误日志</span>
-          </NuxtLink>
+            <i class="fas fa-chevron-right transition-transform duration-200 mr-2" :class="{ 'rotate-90': expandedMenus.settings }"></i>
+            <span class="text-xs text-slate-400 uppercase font-semibold">设置</span>
+          </button>
+          <div v-show="expandedMenus.settings" class="menu-group-items">
+            <NuxtLink 
+              to="/admin/settings" 
+              class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
+              :class="{ 'admin-sidebar-link-active': route.path === '/admin/settings' && !route.path.startsWith('/admin/settings/') }"
+            >
+              <i class="fas fa-cog w-6 text-center mr-2"></i>
+              系统设置
+            </NuxtLink>
+            
+            <NuxtLink 
+              to="/admin/config" 
+              class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
+              :class="{ 'admin-sidebar-link-active': route.path === '/admin/config' }"
+            >
+              <i class="fas fa-cog w-6 text-center mr-2 text-sm"></i>
+              <span class="text-sm">站点配置</span>
+            </NuxtLink>
+            
+            <NuxtLink 
+              to="/admin/users" 
+              class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
+              :class="{ 'admin-sidebar-link-active': route.path === '/admin/users' }"
+            >
+              <i class="fas fa-users w-6 text-center mr-2 text-sm"></i>
+              <span class="text-sm">用户管理</span>
+            </NuxtLink>
+            
+            <NuxtLink 
+              to="/admin/friend-links" 
+              class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
+              :class="{ 'admin-sidebar-link-active': route.path.startsWith('/admin/friend-links') }"
+            >
+              <i class="fas fa-link w-6 text-center mr-2 text-sm"></i>
+              <span class="text-sm">友情链接</span>
+            </NuxtLink>
+            
+            <NuxtLink 
+              to="/admin/home-styles" 
+              class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
+              :class="{ 'admin-sidebar-link-active': route.path === '/admin/home-styles' }"
+            >
+              <i class="fas fa-palette w-6 text-center mr-2 text-sm"></i>
+              <span class="text-sm">首页风格管理</span>
+            </NuxtLink>
+            
+            <NuxtLink 
+              to="/admin/admin-styles" 
+              class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
+              :class="{ 'admin-sidebar-link-active': route.path === '/admin/admin-styles' }"
+            >
+              <i class="fas fa-paint-brush w-6 text-center mr-2 text-sm"></i>
+              <span class="text-sm">后台风格管理</span>
+            </NuxtLink>
+            
+            <NuxtLink 
+              to="/admin/settings/styles" 
+              class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
+              :class="{ 'admin-sidebar-link-active': route.path === '/admin/settings/styles' }"
+            >
+              <i class="fas fa-palette w-6 text-center mr-2 text-sm"></i>
+              <span class="text-sm">样式管理</span>
+            </NuxtLink>
+            
+            <NuxtLink 
+              to="/admin/settings/themes" 
+              class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
+              :class="{ 'admin-sidebar-link-active': route.path === '/admin/settings/themes' }"
+            >
+              <i class="fas fa-paint-brush w-6 text-center mr-2 text-sm"></i>
+              <span class="text-sm">主题风格管理</span>
+            </NuxtLink>
+            
+            <NuxtLink 
+              to="/admin/settings/modules" 
+              class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
+              :class="{ 'admin-sidebar-link-active': route.path === '/admin/settings/modules' }"
+            >
+              <i class="fas fa-puzzle-piece w-6 text-center mr-2 text-sm"></i>
+              <span class="text-sm">模块管理</span>
+            </NuxtLink>
+            
+            <NuxtLink 
+              to="/admin/visitor-messages" 
+              class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
+              :class="{ 'admin-sidebar-link-active': route.path === '/admin/visitor-messages' }"
+            >
+              <i class="fas fa-comments w-6 text-center mr-2 text-sm"></i>
+              <span class="text-sm">访客留言</span>
+            </NuxtLink>
+              
+            <NuxtLink 
+              to="/admin/error-logs" 
+              class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
+              :class="{ 'admin-sidebar-link-active': route.path === '/admin/error-logs' }"
+            >
+              <i class="fas fa-exclamation-triangle w-6 text-center mr-2 text-sm"></i>
+              <span class="text-sm">错误日志</span>
+            </NuxtLink>
+          </div>
         </div>
       </nav>
       
@@ -288,13 +367,103 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed, watch } from 'vue'
+import { onMounted, computed, watch, ref } from 'vue'
 import { NMessageProvider, NDialogProvider, NConfigProvider, darkTheme } from 'naive-ui'
 import { useAdminGlobalStyle } from '~/composables/useAdminStyle'
 
 const router = useRouter()
 const route = useRoute()
 const { globalStyle, styleConfig, cssVariables, inlineStyle, fetchGlobalStyle } = useAdminGlobalStyle()
+
+// 菜单折叠状态
+const expandedMenus = ref<Record<string, boolean>>({
+  content: false,
+  project: false,
+  knowledge: false,
+  analytics: false,
+  personal: false,
+  commercial: false,
+  ai: false,
+  settings: false
+})
+
+// 切换菜单展开/折叠
+const toggleMenu = (menuKey: string) => {
+  expandedMenus.value[menuKey] = !expandedMenus.value[menuKey]
+}
+
+// 检查菜单是否应该高亮（包含活动路由）
+const isMenuActive = (menuKey: string): boolean => {
+  const path = route.path
+  switch (menuKey) {
+    case 'content':
+      return path.startsWith('/admin/articles') || path === '/admin/categories'
+    case 'project':
+      return path.startsWith('/admin/projects') || path === '/admin/tools'
+    case 'knowledge':
+      return path === '/admin/knowledge' || path === '/admin/timeline' || path === '/admin/time-capsules'
+    case 'analytics':
+      return path === '/admin/analytics' || path === '/admin/investment'
+    case 'personal':
+      return path === '/admin/tasks' || path === '/admin/goals' || path === '/admin/toolbox'
+    case 'commercial':
+      return path.startsWith('/admin/commercial') || path === '/admin/skill-tree'
+    case 'ai':
+      return path === '/admin/recommendations'
+    case 'settings':
+      return path.startsWith('/admin/settings') || 
+             path === '/admin/config' || 
+             path === '/admin/users' || 
+             path === '/admin/error-logs' || 
+             path.startsWith('/admin/friend-links') || 
+             path === '/admin/home-styles' || 
+             path === '/admin/admin-styles' ||
+             path === '/admin/visitor-messages'
+    default:
+      return false
+  }
+}
+
+// 根据当前路由自动展开对应的菜单
+const autoExpandMenu = () => {
+  const path = route.path
+  if (path.startsWith('/admin/articles') || path === '/admin/categories') {
+    expandedMenus.value.content = true
+  }
+  if (path.startsWith('/admin/projects') || path === '/admin/tools') {
+    expandedMenus.value.project = true
+  }
+  if (path === '/admin/knowledge' || path === '/admin/timeline' || path === '/admin/time-capsules') {
+    expandedMenus.value.knowledge = true
+  }
+  if (path === '/admin/analytics' || path === '/admin/investment') {
+    expandedMenus.value.analytics = true
+  }
+  if (path === '/admin/tasks' || path === '/admin/goals' || path === '/admin/toolbox') {
+    expandedMenus.value.personal = true
+  }
+  if (path.startsWith('/admin/commercial') || path === '/admin/skill-tree') {
+    expandedMenus.value.commercial = true
+  }
+  if (path === '/admin/recommendations') {
+    expandedMenus.value.ai = true
+  }
+  if (path.startsWith('/admin/settings') || 
+      path === '/admin/config' || 
+      path === '/admin/users' || 
+      path === '/admin/error-logs' || 
+      path.startsWith('/admin/friend-links') || 
+      path === '/admin/home-styles' || 
+      path === '/admin/admin-styles' ||
+      path === '/admin/visitor-messages') {
+    expandedMenus.value.settings = true
+  }
+}
+
+// 监听路由变化，自动展开对应菜单
+watch(() => route.path, () => {
+  autoExpandMenu()
+}, { immediate: true })
 
 // 侧边栏样式
 const sidebarStyle = computed(() => {
@@ -1053,6 +1222,62 @@ const logout = () => {
 .admin-sidebar .ml-4 .admin-sidebar-link {
   font-size: 0.875rem;
   padding-left: 0.75rem;
+}
+
+/* 折叠菜单组样式 */
+.menu-group {
+  margin-top: 0.5rem;
+}
+
+.menu-group-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  text-align: left;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 0.375rem;
+  color: var(--admin-sidebar-text, #ffffff);
+}
+
+.menu-group-header:hover {
+  background-color: var(--admin-sidebar-hover-bg, rgba(255, 255, 255, 0.05));
+}
+
+.menu-group-header .fa-chevron-right {
+  font-size: 0.75rem;
+  width: 1rem;
+  transition: transform 0.2s ease;
+}
+
+.menu-group-header .fa-chevron-right.rotate-90 {
+  transform: rotate(90deg);
+}
+
+.menu-group-active {
+  background-color: var(--admin-sidebar-hover-bg, rgba(255, 255, 255, 0.1)) !important;
+}
+
+.menu-group-items {
+  margin-top: 0.25rem;
+  margin-left: 0.5rem;
+  padding-left: 0.5rem;
+  border-left: 2px solid rgba(255, 255, 255, 0.1);
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>
 
