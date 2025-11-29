@@ -273,7 +273,8 @@ public class PageBuilderController : ControllerBase
                 query = query.Where(c => c.IsPremium == isPremium.Value);
             }
 
-            var components = await query
+            // 先查询出基础数据，避免在表达式树中使用可选参数
+            var componentsData = await query
                 .OrderBy(c => c.Category)
                 .ThenBy(c => c.Name)
                 .Select(c => new
@@ -282,15 +283,29 @@ public class PageBuilderController : ControllerBase
                     c.Name,
                     c.Type,
                     c.Category,
-                    ConfigSchema = !string.IsNullOrEmpty(c.ConfigSchema) 
-                        ? JsonSerializer.Deserialize<object>(c.ConfigSchema) 
-                        : null,
+                    ConfigSchemaJson = c.ConfigSchema, // 先获取 JSON 字符串
                     c.PreviewImage,
                     c.IsPremium,
                     c.Price,
                     c.UsageCount
                 })
                 .ToListAsync();
+
+            // 在内存中反序列化 JSON 数据
+            var components = componentsData.Select(c => new
+            {
+                c.Id,
+                c.Name,
+                c.Type,
+                c.Category,
+                ConfigSchema = !string.IsNullOrEmpty(c.ConfigSchemaJson) 
+                    ? JsonSerializer.Deserialize<object>(c.ConfigSchemaJson) 
+                    : null,
+                c.PreviewImage,
+                c.IsPremium,
+                c.Price,
+                c.UsageCount
+            }).ToList();
 
             return Ok(ApiResponse.Success(components));
         }

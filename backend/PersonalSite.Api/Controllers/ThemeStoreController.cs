@@ -61,7 +61,8 @@ public class ThemeStoreController : ControllerBase
             };
 
             var total = await query.CountAsync();
-            var themes = await query
+            // 先查询出基础数据，避免在表达式树中使用可选参数
+            var themesData = await query
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .Select(t => new
@@ -79,11 +80,30 @@ public class ThemeStoreController : ControllerBase
                     t.Rating,
                     t.RatingCount,
                     t.AuthorName,
-                    Tags = !string.IsNullOrEmpty(t.Tags) 
-                        ? JsonSerializer.Deserialize<string[]>(t.Tags) ?? Array.Empty<string>()
-                        : Array.Empty<string>()
+                    TagsJson = t.Tags // 先获取 JSON 字符串
                 })
                 .ToListAsync();
+
+            // 在内存中反序列化 JSON 数据
+            var themes = themesData.Select(t => new
+            {
+                t.Id,
+                t.Name,
+                t.Slug,
+                t.Description,
+                t.PreviewImage,
+                t.Price,
+                t.IsFree,
+                t.Category,
+                t.DownloadCount,
+                t.PurchaseCount,
+                t.Rating,
+                t.RatingCount,
+                t.AuthorName,
+                Tags = !string.IsNullOrEmpty(t.TagsJson) 
+                    ? JsonSerializer.Deserialize<string[]>(t.TagsJson) ?? Array.Empty<string>()
+                    : Array.Empty<string>()
+            }).ToList();
 
             return Ok(ApiResponse.Success(new
             {

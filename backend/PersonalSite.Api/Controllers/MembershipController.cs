@@ -31,7 +31,8 @@ public class MembershipController : ControllerBase
     {
         try
         {
-            var types = await _context.MembershipTypes
+            // 先查询出基础数据，避免在表达式树中使用可选参数
+            var typesData = await _context.MembershipTypes
                 .Where(t => t.IsActive)
                 .OrderBy(t => t.SortOrder)
                 .ThenBy(t => t.Price)
@@ -42,12 +43,24 @@ public class MembershipController : ControllerBase
                     t.Code,
                     t.Price,
                     t.DurationDays,
-                    Features = !string.IsNullOrEmpty(t.Features) 
-                        ? JsonSerializer.Deserialize<string[]>(t.Features) ?? Array.Empty<string>()
-                        : Array.Empty<string>(),
+                    FeaturesJson = t.Features, // 先获取 JSON 字符串
                     t.Description
                 })
                 .ToListAsync();
+
+            // 在内存中反序列化 JSON 数据
+            var types = typesData.Select(t => new
+            {
+                t.Id,
+                t.Name,
+                t.Code,
+                t.Price,
+                t.DurationDays,
+                Features = !string.IsNullOrEmpty(t.FeaturesJson) 
+                    ? JsonSerializer.Deserialize<string[]>(t.FeaturesJson) ?? Array.Empty<string>()
+                    : Array.Empty<string>(),
+                t.Description
+            }).ToList();
 
             return Ok(ApiResponse.Success(types));
         }

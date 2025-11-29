@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PersonalSite.Api.Data;
 using PersonalSite.Api.Models;
+using PersonalSite.Api.Models.Dto;
 using System.Text.Json;
 using System.Security.Cryptography;
 using System.Text;
