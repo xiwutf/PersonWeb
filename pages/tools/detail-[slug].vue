@@ -23,8 +23,18 @@
         </NuxtLink>
       </div>
 
+      <!-- 加载状态 -->
+      <div v-if="loading" class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 text-center">
+        <div class="animate-pulse">
+          <div class="h-8 bg-gray-200 rounded mb-4"></div>
+          <div class="h-4 bg-gray-200 rounded mb-2"></div>
+          <div class="h-4 bg-gray-200 rounded mb-2"></div>
+          <div class="h-4 bg-gray-200 rounded w-2/3 mx-auto"></div>
+        </div>
+      </div>
+
       <!-- 工具内容 -->
-      <div v-if="tool" class="space-y-8">
+      <div v-else-if="tool" class="space-y-8">
         <!-- 工具信息头部 -->
         <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8">
           <div class="flex flex-col lg:flex-row gap-8">
@@ -85,7 +95,8 @@
         <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden">
           <div class="p-8">
             <div class="prose prose-lg max-w-none">
-              <ContentDoc :path="tool._path" />
+              <div v-if="tool.content" v-html="renderMarkdown(tool.content)"></div>
+              <div v-else class="text-gray-500 italic">暂无详细描述</div>
             </div>
           </div>
         </div>
@@ -110,21 +121,67 @@
 </template>
 
 <script setup lang="ts">
+import MarkdownIt from 'markdown-it'
+
 const route = useRoute()
-const slug = route.params.slug
+const api = useApi()
+const slug = route.params.slug as string
+
+const tool = ref<any>(null)
+const loading = ref(true)
+const error = ref<string | null>(null)
+
+// 初始化 markdown 渲染器
+const md = new MarkdownIt({
+  html: true,
+  linkify: true,
+  typographer: true
+})
 
 // 获取具体工具数据
-const { data: tool, error } = await useAsyncData(`tool-${slug}`, () =>
-  queryContent('/tools').where({
-    $or: [
-      { _path: `/tools/${slug}` },
-      { slug: slug }
-    ]
-  }).findOne()
-)
+const fetchTool = async () => {
+  loading.value = true
+  error.value = null
+  try {
+    // 先通过 slug 搜索工具
+    const searchRes = await api.get<any>('/Toolbox/marketplace', {
+      params: { search: slug }
+    })
+    
+    if (searchRes && searchRes.tools && searchRes.tools.length > 0) {
+      // 找到匹配的工具（优先精确匹配 slug）
+      const matchedTool = searchRes.tools.find((t: any) => t.slug === slug) || searchRes.tools[0]
+      const toolId = matchedTool.id
+      
+      // 获取工具详情
+      const detailRes = await api.get<any>(`/Toolbox/${toolId}`)
+      if (detailRes) {
+        // 转换为页面需要的格式
+        tool.value = {
+          title: detailRes.name,
+          description: detailRes.description || '',
+          price: detailRes.price || 0,
+          date: detailRes.createdAt || new Date().toISOString(),
+          tags: detailRes.tags || [],
+          buy_link: detailRes.isFree ? '#' : '#',
+          _path: `/tools/${detailRes.slug}`,
+          content: detailRes.detailedDescription || detailRes.description || ''
+        }
+      }
+    } else {
+      error.value = '未找到工具数据'
+    }
+  } catch (e: any) {
+    console.error('获取工具详情失败:', e)
+    error.value = e.message || '获取工具数据失败'
+  } finally {
+    loading.value = false
+  }
+}
 
 // 格式化日期
-const formatDate = (dateString) => {
+const formatDate = (dateString: string) => {
+  if (!dateString) return ''
   return new Date(dateString).toLocaleDateString('zh-CN', {
     year: 'numeric',
     month: 'long',
@@ -132,12 +189,22 @@ const formatDate = (dateString) => {
   })
 }
 
+// 渲染 Markdown
+const renderMarkdown = (markdown: string) => {
+  if (!markdown) return ''
+  return md.render(markdown)
+}
+
+onMounted(() => {
+  fetchTool()
+})
+
 // 设置页面标题和SEO
 useHead({
-  title: `${tool.value?.title || '工具详情'} - 插件工具 - 溪午听风`,
+  title: computed(() => `${tool.value?.title || '工具详情'} - 插件工具 - 溪午听风`),
   meta: [
-    { name: 'description', content: tool.value?.description || '工具详情页面' },
-    { name: 'keywords', content: tool.value?.tags?.join(', ') || '插件工具' }
+    { name: 'description', content: computed(() => tool.value?.description || '工具详情页面') },
+    { name: 'keywords', content: computed(() => tool.value?.tags?.join(', ') || '插件工具') }
   ]
 })
 </script>

@@ -291,6 +291,92 @@
             </div>
           </div>
 
+          <!-- 工具结果 -->
+          <div v-if="searchResults.tools && searchResults.tools.length > 0" class="mb-12">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+              <span class="text-3xl mr-3">🔧</span>
+              插件工具 ({{ searchResults.tools.length }})
+            </h2>
+            <div class="grid md:grid-cols-2 gap-6">
+              <article
+                v-for="tool in searchResults.tools"
+                :key="tool.id"
+                class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+              >
+                <div class="p-6">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded">
+                      工具
+                    </span>
+                    <span v-if="tool.category" class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                      {{ tool.category }}
+                    </span>
+                    <span class="text-gray-500 text-sm ml-auto">{{ formatDate(tool.createdAt) }}</span>
+                  </div>
+                  <h3 
+                    class="text-lg font-semibold text-gray-800 mb-2"
+                    v-html="highlightText(tool.title, searchQuery)"
+                  ></h3>
+                  <p 
+                    class="text-gray-600 mb-4 line-clamp-3"
+                    v-html="highlightText(tool.summary || tool.content.substring(0, 200), searchQuery)"
+                  ></p>
+                  <div class="flex items-center justify-between">
+                    <NuxtLink
+                      :to="tool.url"
+                      class="text-orange-600 hover:text-orange-800 font-medium"
+                    >
+                      查看详情 →
+                    </NuxtLink>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <!-- 主题结果 -->
+          <div v-if="searchResults.themes && searchResults.themes.length > 0" class="mb-12">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+              <span class="text-3xl mr-3">🎨</span>
+              主题商店 ({{ searchResults.themes.length }})
+            </h2>
+            <div class="grid md:grid-cols-2 gap-6">
+              <article
+                v-for="theme in searchResults.themes"
+                :key="theme.id"
+                class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+              >
+                <div class="p-6">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="text-xs bg-pink-100 text-pink-600 px-2 py-1 rounded">
+                      主题
+                    </span>
+                    <span v-if="theme.category" class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                      {{ theme.category }}
+                    </span>
+                    <span class="text-gray-500 text-sm ml-auto">{{ formatDate(theme.createdAt) }}</span>
+                  </div>
+                  <h3 
+                    class="text-lg font-semibold text-gray-800 mb-2"
+                    v-html="highlightText(theme.title, searchQuery)"
+                  ></h3>
+                  <p 
+                    class="text-gray-600 mb-4 line-clamp-3"
+                    v-html="highlightText(theme.summary || theme.content.substring(0, 200), searchQuery)"
+                  ></p>
+                  <div class="flex items-center justify-between">
+                    <NuxtLink
+                      :to="theme.url"
+                      class="text-pink-600 hover:text-pink-800 font-medium"
+                    >
+                      查看详情 →
+                    </NuxtLink>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+
           <!-- 无结果提示 -->
           <div v-if="searchResults.total === 0" class="text-center py-16">
             <div class="text-6xl mb-4">🔍</div>
@@ -361,7 +447,9 @@ const searchTypes = [
   { key: 'all', label: '全部', icon: '🔍' },
   { key: 'articles', label: '文章', icon: '📝' },
   { key: 'projects', label: '项目', icon: '🧪' },
-  { key: 'knowledge', label: '知识库', icon: '📚' }
+  { key: 'knowledge', label: '知识库', icon: '📚' },
+  { key: 'tools', label: '工具', icon: '🔧' },
+  { key: 'themes', label: '主题', icon: '🎨' }
 ]
 
 // 热门搜索标签
@@ -393,7 +481,9 @@ const performSearch = async () => {
     const backendType = selectedType.value === 'all' ? 'all' :
                        selectedType.value === 'articles' ? 'articles' :
                        selectedType.value === 'projects' ? 'projects' :
-                       selectedType.value === 'knowledge' ? 'knowledge' : 'all'
+                       selectedType.value === 'knowledge' ? 'knowledge' :
+                       selectedType.value === 'tools' ? 'tools' :
+                       selectedType.value === 'themes' ? 'themes' : 'all'
 
     const res = await api.get<SearchResults>('/Search', {
       params: {
@@ -414,7 +504,9 @@ const performSearch = async () => {
       total: 0,
       articles: [],
       projects: [],
-      knowledgeBases: []
+      knowledgeBases: [],
+      tools: [],
+      themes: []
     }
   } finally {
     loading.value = false

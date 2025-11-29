@@ -2,12 +2,9 @@
   <div class="min-h-screen bg-[#0f172a] text-slate-200 relative overflow-hidden font-['Outfit']">
     <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <!-- 返回按钮 -->
-      <div class="mb-6">
-        <NuxtLink
-          to="/tools"
-          class="inline-flex items-center gap-2 px-4 py-2 bg-slate-800/50 hover:bg-slate-700/50 border border-white/10 rounded-lg transition-all text-slate-300 hover:text-white"
-        >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="tools-back-button-container">
+        <NuxtLink to="/tools" class="tools-back-button">
+          <svg class="tools-back-button-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
           <span>返回插件工具</span>
@@ -117,13 +114,14 @@ const loading = ref(false)
 const fetchCollections = async () => {
   loading.value = true
   try {
-    // TODO: 实现获取合集列表的API
-    // const res = await api.get('/Toolbox/collections')
-    // if (res) {
-    //   collections.value = res as Collection[]
-    // }
+    const res = await api.get<Collection[]>('/Toolbox/collections')
+    if (res && Array.isArray(res)) {
+      collections.value = res
+    }
   } catch (e) {
     console.error('获取合集列表失败', e)
+    // 如果API失败，使用空数组
+    collections.value = []
   } finally {
     loading.value = false
   }
@@ -154,6 +152,34 @@ useHead({
 </script>
 
 <style scoped>
+/* 返回按钮样式 */
+.tools-back-button-container {
+  margin-bottom: 1.5rem;
+}
+
+.tools-back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  color: rgb(203, 213, 225);
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.tools-back-button:hover {
+  background: rgba(30, 41, 59, 0.7);
+  color: white;
+}
+
+.tools-back-button-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;

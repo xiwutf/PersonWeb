@@ -16,15 +16,19 @@ CREATE TABLE IF NOT EXISTS `skill_category` (
 -- 2. 技能表
 CREATE TABLE IF NOT EXISTS `skill` (
   `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `category_id` BIGINT NOT NULL COMMENT '分类ID',
+  `category_id` BIGINT NOT NULL COMMENT '分类ID（逻辑关联到 skill_category.id）',
   `name` VARCHAR(100) NOT NULL COMMENT '技能名称',
   `description` TEXT NULL COMMENT '技能描述',
   `icon` VARCHAR(50) NULL COMMENT '图标',
+  `current_rating` DECIMAL(3,1) DEFAULT 0.0 COMMENT '当前评分（0-10）',
+  `target_rating` DECIMAL(3,1) DEFAULT NULL COMMENT '目标评分',
   `sort_order` INT NOT NULL DEFAULT 0 COMMENT '排序',
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   KEY `idx_category_id` (`category_id`),
-  FOREIGN KEY (`category_id`) REFERENCES `skill_category`(`id`) ON DELETE CASCADE
+  KEY `idx_sort_order` (`sort_order`)
+  -- 注意：不使用外键约束，category_id 通过逻辑关联到 skill_category.id
+  -- 关联关系由应用层维护，便于后期维护和扩展
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='技能表';
 
 -- 3. 技能评级表（记录不同时间点的技能评级）
@@ -36,8 +40,8 @@ CREATE TABLE IF NOT EXISTS `skill_rating` (
   `recorded_at` DATETIME NOT NULL COMMENT '记录时间',
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   KEY `idx_skill_id` (`skill_id`),
-  KEY `idx_recorded_at` (`recorded_at`),
-  FOREIGN KEY (`skill_id`) REFERENCES `skill`(`id`) ON DELETE CASCADE
+  KEY `idx_recorded_at` (`recorded_at`)
+  -- 注意：不使用外键约束，skill_id 通过逻辑关联到 skill.id
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='技能评级表';
 
 -- 4. 学习日志表
@@ -52,8 +56,8 @@ CREATE TABLE IF NOT EXISTS `learning_log` (
   `learned_at` DATETIME NOT NULL COMMENT '学习时间',
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   KEY `idx_skill_id` (`skill_id`),
-  KEY `idx_learned_at` (`learned_at`),
-  FOREIGN KEY (`skill_id`) REFERENCES `skill`(`id`) ON DELETE CASCADE
+  KEY `idx_learned_at` (`learned_at`)
+  -- 注意：不使用外键约束，skill_id 通过逻辑关联到 skill.id
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='学习日志表';
 
 -- 插入默认技能分类

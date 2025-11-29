@@ -11,6 +11,16 @@
     </div>
 
     <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <!-- 返回按钮 -->
+      <div class="mb-8">
+        <NuxtLink to="/" class="ai-lab-back-button">
+          <svg class="ai-lab-back-button-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          <span>返回首页</span>
+        </NuxtLink>
+      </div>
+
       <!-- 头部 -->
       <div class="text-center mb-20" data-aos="fade-down">
         <div class="inline-flex items-center px-3 py-1 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 text-xs font-mono mb-6 tracking-widest">
@@ -136,6 +146,32 @@ useHead({
 </script>
 
 <style scoped>
+/* 返回按钮样式 */
+.ai-lab-back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  color: rgb(148, 163, 184);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 0.875rem;
+}
+
+.ai-lab-back-button:hover {
+  background: rgba(15, 23, 42, 0.7);
+  border-color: rgba(6, 182, 212, 0.3);
+  color: white;
+}
+
+.ai-lab-back-button-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
 .animation-delay-2000 {
   animation-delay: 2s;
 }

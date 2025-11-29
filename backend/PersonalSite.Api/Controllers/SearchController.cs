@@ -24,7 +24,7 @@ public class SearchController : ControllerBase
     /// 全文搜索
     /// </summary>
     /// <param name="keyword">搜索关键词</param>
-    /// <param name="type">搜索类型：all/articles/projects/knowledge</param>
+    /// <param name="type">搜索类型：all/articles/projects/knowledge/tools/themes</param>
     /// <param name="page">页码</param>
     /// <param name="pageSize">每页数量</param>
     /// <param name="sort">排序方式：relevance（相关性）/time（时间）</param>
@@ -52,7 +52,9 @@ public class SearchController : ControllerBase
             Total = 0,
             Articles = new List<SearchResultItem>(),
             Projects = new List<SearchResultItem>(),
-            KnowledgeBases = new List<SearchResultItem>()
+            KnowledgeBases = new List<SearchResultItem>(),
+            Tools = new List<SearchResultItem>(),
+            Themes = new List<SearchResultItem>()
         };
 
         // 使用 LIKE 搜索（兼容性更好，全文索引需要特殊配置）
@@ -173,6 +175,85 @@ public class SearchController : ControllerBase
             results.Total += knowledgeTotal;
         }
 
+        // 搜索工具
+        if (type == "all" || type == "tools")
+        {
+            var toolQuery = _context.Tools
+                .Where(t => t.Status == "published") // 只搜索已发布的工具
+                .Where(t => t.Name.Contains(keyword) ||
+                           (t.Description != null && t.Description.Contains(keyword)) ||
+                           (t.DetailedDescription != null && t.DetailedDescription.Contains(keyword)));
+
+            var toolTotal = await toolQuery.CountAsync();
+            
+            // 根据排序方式排序
+            IQueryable<Tool> sortedToolQuery = sort == "time"
+                ? toolQuery.OrderByDescending(t => t.CreatedAt)
+                : toolQuery.OrderByDescending(t =>
+                    (t.Name.Contains(keyword) ? 3 : 0) +
+                    (t.Description != null && t.Description.Contains(keyword) ? 2 : 0) +
+                    (t.DetailedDescription != null && t.DetailedDescription.Contains(keyword) ? 1 : 0))
+                    .ThenByDescending(t => t.CreatedAt);
+            
+            var tools = await sortedToolQuery
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Include(t => t.Category)
+                .Select(t => new SearchResultItem
+                {
+                    Id = t.Id.ToString(),
+                    Title = t.Name,
+                    Summary = t.Description ?? "",
+                    Content = t.DetailedDescription ?? "",
+                    Type = "tool",
+                    Url = $"/tools/{t.Slug ?? t.Id.ToString()}",
+                    CreatedAt = t.CreatedAt,
+                    Category = t.Category != null ? t.Category.Name : null
+                })
+                .ToListAsync();
+
+            results.Tools = tools;
+            results.Total += toolTotal;
+        }
+
+        // 搜索主题
+        if (type == "all" || type == "themes")
+        {
+            var themeQuery = _context.ThemeStores
+                .Where(t => t.Status == "published") // 只搜索已发布的主题
+                .Where(t => t.Name.Contains(keyword) ||
+                           (t.Description != null && t.Description.Contains(keyword)));
+
+            var themeTotal = await themeQuery.CountAsync();
+            
+            // 根据排序方式排序
+            IQueryable<ThemeStore> sortedThemeQuery = sort == "time"
+                ? themeQuery.OrderByDescending(t => t.CreatedAt)
+                : themeQuery.OrderByDescending(t =>
+                    (t.Name.Contains(keyword) ? 2 : 0) +
+                    (t.Description != null && t.Description.Contains(keyword) ? 1 : 0))
+                    .ThenByDescending(t => t.CreatedAt);
+            
+            var themes = await sortedThemeQuery
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(t => new SearchResultItem
+                {
+                    Id = t.Id.ToString(),
+                    Title = t.Name,
+                    Summary = t.Description ?? "",
+                    Content = "",
+                    Type = "theme",
+                    Url = $"/themes/{t.Slug ?? t.Id.ToString()}",
+                    CreatedAt = t.CreatedAt,
+                    Category = t.Category
+                })
+                .ToListAsync();
+
+            results.Themes = themes;
+            results.Total += themeTotal;
+        }
+
         return Ok(ApiResponse.Success(results));
     }
 }
@@ -188,6 +269,8 @@ public class SearchResults
     public List<SearchResultItem> Articles { get; set; } = new();
     public List<SearchResultItem> Projects { get; set; } = new();
     public List<SearchResultItem> KnowledgeBases { get; set; } = new();
+    public List<SearchResultItem> Tools { get; set; } = new();
+    public List<SearchResultItem> Themes { get; set; } = new();
 }
 
 /// <summary>

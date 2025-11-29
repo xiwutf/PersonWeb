@@ -63,12 +63,13 @@ public class ToolboxController : ControllerBase
                 query = query.Where(t => t.IsPremium == isPremium.Value);
             }
 
-            // 搜索
+            // 搜索（支持名称、描述和 slug）
             if (!string.IsNullOrEmpty(search))
             {
                 query = query.Where(t => 
                     t.Name.Contains(search) || 
-                    (t.Description != null && t.Description.Contains(search)));
+                    (t.Description != null && t.Description.Contains(search)) ||
+                    (t.Slug != null && t.Slug.Contains(search)));
             }
 
             // 排序
@@ -213,6 +214,50 @@ public class ToolboxController : ControllerBase
         {
             _logger.LogError(ex, "获取工具详情失败");
             return StatusCode(500, ApiResponse.Error($"获取工具详情失败: {ex.Message}", 500));
+        }
+    }
+
+    /// <summary>
+    /// 获取工具合集列表
+    /// </summary>
+    [HttpGet("collections")]
+    public async Task<ActionResult<ApiResponse<object>>> GetCollections(
+        [FromQuery] bool? featured = null)
+    {
+        try
+        {
+            var query = _context.ToolCollections
+                .Where(c => c.Status == "published");
+
+            if (featured.HasValue && featured.Value)
+            {
+                query = query.Where(c => c.IsFeatured);
+            }
+
+            var collections = await query
+                .OrderByDescending(c => c.IsFeatured)
+                .ThenBy(c => c.SortOrder)
+                .Select(c => new
+                {
+                    c.Id,
+                    c.Name,
+                    c.Slug,
+                    c.Description,
+                    c.CoverImage,
+                    c.Price,
+                    c.OriginalPrice,
+                    ToolCount = c.ToolCount,
+                    c.PurchaseCount,
+                    c.IsFeatured
+                })
+                .ToListAsync();
+
+            return Ok(ApiResponse.Success(collections));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "获取工具合集列表失败");
+            return StatusCode(500, ApiResponse.Error($"获取工具合集列表失败: {ex.Message}", 500));
         }
     }
 

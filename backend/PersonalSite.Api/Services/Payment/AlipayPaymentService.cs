@@ -25,7 +25,7 @@ public class AlipayPaymentService : IPaymentService
         _httpClientFactory = httpClientFactory;
     }
 
-    public async Task<PaymentResponse> CreatePaymentAsync(PaymentRequest request)
+    public Task<PaymentResponse> CreatePaymentAsync(PaymentRequest request)
     {
         try
         {
@@ -37,11 +37,11 @@ public class AlipayPaymentService : IPaymentService
 
             if (string.IsNullOrEmpty(appId) || string.IsNullOrEmpty(privateKey))
             {
-                return new PaymentResponse
+                return Task.FromResult(new PaymentResponse
                 {
                     Success = false,
                     ErrorMessage = "支付宝配置不完整"
-                };
+                });
             }
 
             // 构建支付参数
@@ -76,22 +76,22 @@ public class AlipayPaymentService : IPaymentService
             // 构建支付URL
             var paymentUrl = BuildPaymentUrl(parameters);
 
-            return new PaymentResponse
+            return Task.FromResult(new PaymentResponse
             {
                 Success = true,
                 PaymentId = request.OrderId,
                 PaymentUrl = paymentUrl,
                 PaymentParams = parameters.ToDictionary(kv => kv.Key, kv => (object)kv.Value)
-            };
+            });
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "创建支付宝支付订单失败");
-            return new PaymentResponse
+            return Task.FromResult(new PaymentResponse
             {
                 Success = false,
                 ErrorMessage = $"创建支付订单失败: {ex.Message}"
-            };
+            });
         }
     }
 
@@ -142,7 +142,7 @@ public class AlipayPaymentService : IPaymentService
         }
     }
 
-    public async Task<PaymentCallbackResult> HandleCallbackAsync(PaymentCallbackRequest request)
+    public Task<PaymentCallbackResult> HandleCallbackAsync(PaymentCallbackRequest request)
     {
         try
         {
@@ -152,19 +152,19 @@ public class AlipayPaymentService : IPaymentService
             // 验证签名
             if (!VerifySignature(data, publicKey))
             {
-                return new PaymentCallbackResult
+                return Task.FromResult(new PaymentCallbackResult
                 {
                     Success = false,
                     ErrorMessage = "签名验证失败",
                     ResponseContent = "fail"
-                };
+                });
             }
 
             var tradeStatus = data["trade_status"] ?? "";
 
             if (tradeStatus == "TRADE_SUCCESS" || tradeStatus == "TRADE_FINISHED")
             {
-                return new PaymentCallbackResult
+                return Task.FromResult(new PaymentCallbackResult
                 {
                     Success = true,
                     PaymentId = data["out_trade_no"] ?? "",
@@ -172,25 +172,25 @@ public class AlipayPaymentService : IPaymentService
                     Status = "paid",
                     ThirdPartyOrderId = data["trade_no"],
                     ResponseContent = "success"
-                };
+                });
             }
 
-            return new PaymentCallbackResult
+            return Task.FromResult(new PaymentCallbackResult
             {
                 Success = false,
                 ErrorMessage = "支付未完成",
                 ResponseContent = "success"
-            };
+            });
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "处理支付宝支付回调失败");
-            return new PaymentCallbackResult
+            return Task.FromResult(new PaymentCallbackResult
             {
                 Success = false,
                 ErrorMessage = ex.Message,
                 ResponseContent = "fail"
-            };
+            });
         }
     }
 

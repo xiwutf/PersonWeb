@@ -30,7 +30,7 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
         <div class="bg-slate-800/30 backdrop-blur-md border border-white/5 rounded-2xl p-6 text-center hover:bg-slate-800/50 transition-colors group">
           <div class="text-4xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-amber-400">
-            {{ tools?.length || 0 }}+
+            {{ tools.length || 0 }}+
           </div>
           <div class="text-sm text-slate-400 group-hover:text-slate-300 transition-colors">专业工具</div>
         </div>
@@ -168,10 +168,46 @@
 </template>
 
 <script setup lang="ts">
-// 使用 @nuxt/content 查询工具数据
-const { data: tools, pending, error } = await useAsyncData('tools', () =>
-  queryContent('/tools').sort({ date: -1 }).find()
-)
+const api = useApi()
+const tools = ref<any[]>([])
+const pending = ref(true)
+const error = ref<string | null>(null)
+
+// 从API获取工具数据
+const fetchTools = async () => {
+  try {
+    pending.value = true
+    error.value = null
+    
+    // 优先从API获取
+    const res = await api.get<any[]>('/MockData/tools')
+    if (res && res.length > 0) {
+      tools.value = res
+      return
+    }
+    
+    // 如果API没有数据，尝试从 @nuxt/content 获取
+    const { data: contentTools } = await useAsyncData('tools', () =>
+      queryContent('/tools').sort({ date: -1 }).find()
+    )
+    
+    if (contentTools.value && Array.isArray(contentTools.value) && contentTools.value.length > 0) {
+      tools.value = contentTools.value
+    } else {
+      tools.value = []
+    }
+  } catch (e: any) {
+    console.error('Failed to fetch tools:', e)
+    error.value = e.message || '加载失败'
+    tools.value = []
+  } finally {
+    pending.value = false
+  }
+}
+
+onMounted(() => {
+  fetchTools()
+})
 
 useHead({
   title: '插件工具 - 溪午听风',

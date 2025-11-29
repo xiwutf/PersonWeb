@@ -1,17 +1,24 @@
 ﻿<template>
   <div class="relative min-h-screen">
     <!-- 3D 旋转空间视图切换（移动端隐藏） -->
-    <div class="fixed top-32 right-4 z-20 hidden md:block">
+    <div class="projects-view-toggle-container">
       <button
-        @click="viewMode = viewMode === 'grid' ? '3d' : 'grid'"
-        class="btn-primary shadow-lg backdrop-blur-md touch-target"
+        v-if="viewMode === 'grid'"
+        @click="viewMode = '3d'"
+        class="projects-view-toggle-button"
+        title="切换到3D视图"
       >
-        {{ viewMode === 'grid' ? '🌐 3D视图' : '📋 列表视图' }}
+        <span class="projects-view-toggle-icon">🌐</span>
+        <span class="projects-view-toggle-text">3D视图</span>
       </button>
     </div>
     
     <!-- 3D 旋转空间 -->
-    <Project3DSpace v-if="viewMode === '3d' && !loading && projects.length > 0" :projects="projects" />
+    <Project3DSpace 
+      v-if="viewMode === '3d' && !loading && projects.length > 0" 
+      :projects="projects"
+      @back-to-list="viewMode = 'grid'"
+    />
     
     <!-- 传统网格视图 -->
     <div v-else class="container mx-auto px-4 py-12">
@@ -273,3 +280,65 @@ onMounted(() => {
   fetchProjects()
 })
 </script>
+
+<style scoped>
+/* 3D视图切换按钮样式 */
+.projects-view-toggle-container {
+  position: fixed;
+  top: 8rem;
+  right: 1rem;
+  z-index: 20;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .projects-view-toggle-container {
+    display: block;
+  }
+}
+
+.projects-view-toggle-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border: 2px solid rgba(59, 130, 246, 0.3);
+  border-radius: 0.75rem;
+  color: #1e293b;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  min-width: auto;
+  min-height: 44px;
+}
+
+.projects-view-toggle-button:hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: rgba(59, 130, 246, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+}
+
+.projects-view-toggle-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.projects-view-toggle-text {
+  white-space: nowrap;
+}
+
+:global(.dark) .projects-view-toggle-button {
+  background: rgba(30, 41, 59, 0.95);
+  color: white;
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+:global(.dark) .projects-view-toggle-button:hover {
+  background: rgba(30, 41, 59, 1);
+}
+</style>

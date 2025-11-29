@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace PersonalSite.Api.Models;
 
 /// <summary>
-/// 技能分类表
+/// 技能树分类表
 /// </summary>
 [Table("skill_category")]
 public class SkillCategory
@@ -14,7 +14,7 @@ public class SkillCategory
     public long Id { get; set; }
 
     [Required]
-    [MaxLength(50)]
+    [MaxLength(100)]
     [Column("name")]
     public string Name { get; set; } = string.Empty;
 
@@ -38,4 +38,3 @@ public class SkillCategory
     // 导航属性
     public List<Skill> Skills { get; set; } = new();
 }
-

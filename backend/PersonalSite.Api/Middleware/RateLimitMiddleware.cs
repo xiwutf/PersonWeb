@@ -104,27 +104,67 @@ public class RateLimitMiddleware
 
     /// <summary>
     /// 获取限流标识键
-    /// 优先级：API Key > IP 地址
+    /// 优先级：API Key > 用户 ID (从 JWT) > IP 地址
     /// </summary>
     private string GetRateLimitKey(HttpContext context)
     {
-        // 优先使用 API Key
-        var apiKey = context.Request.Headers["X-API-Key"].FirstOrDefault() ??
-                     context.Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
-
+        // 优先使用 API Key（X-API-Key header）
+        var apiKey = context.Request.Headers["X-API-Key"].FirstOrDefault();
         if (!string.IsNullOrEmpty(apiKey))
         {
             return $"apikey:{apiKey}";
         }
 
-        // 使用 IP 地址
+        // 获取 IP 地址（在方法开始处获取，避免重复声明）
         var ipAddress = context.Connection.RemoteIpAddress?.ToString();
+
+        // 检查 Authorization header
+        var authHeader = context.Request.Headers["Authorization"].FirstOrDefault();
+        if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer "))
+        {
+            var token = authHeader.Replace("Bearer ", "").Trim();
+            
+            // 判断是否是 JWT token（JWT 格式：header.payload.signature，用 . 分隔）
+            if (IsJwtToken(token))
+            {
+                // 对于 JWT token，使用 IP 地址进行限流
+                // 原因：
+                // 1. JWT token 可能每次不同（如果实现了 token 刷新）
+                // 2. 解析 JWT token 有性能开销
+                // 3. 使用 IP 地址可以更好地防止滥用
+                if (!string.IsNullOrEmpty(ipAddress))
+                {
+                    return $"ip:{ipAddress}";
+                }
+            }
+            else
+            {
+                // 非 JWT token，可能是 API Key，使用完整 token 作为标识
+                return $"apikey:{token}";
+            }
+        }
+
+        // 使用 IP 地址
         if (!string.IsNullOrEmpty(ipAddress))
         {
             return $"ip:{ipAddress}";
         }
 
         return string.Empty;
+    }
+
+    /// <summary>
+    /// 判断是否是 JWT token
+    /// JWT 格式：header.payload.signature（三部分用 . 分隔）
+    /// </summary>
+    private bool IsJwtToken(string token)
+    {
+        if (string.IsNullOrEmpty(token))
+            return false;
+
+        var parts = token.Split('.');
+        // JWT 应该有 3 部分
+        return parts.Length == 3;
     }
 
     /// <summary>

@@ -107,7 +107,39 @@ const contactInfo = [
   }
 ]
 
-const { data: stats } = await useFetch('/api/stats')
+// 获取统计数据（从后端API获取实时数据）
+const stats = ref<{ todayVisits: number; totalVisits: number } | null>(null)
+
+// 获取统计数据
+const fetchStats = async () => {
+  try {
+    // 从Nuxt API获取统计数据（这个API会从数据库查询实时数据）
+    const { data } = await useFetch('/api/stats', {
+      server: false, // 只在客户端获取，避免SSR问题
+      key: 'footer-stats'
+    })
+    
+    if (data.value) {
+      stats.value = {
+        todayVisits: data.value.todayVisits || 0,
+        totalVisits: data.value.totalVisits || 0
+      }
+    } else {
+      stats.value = { todayVisits: 0, totalVisits: 0 }
+    }
+  } catch (err) {
+    console.error('Failed to fetch stats:', err)
+    stats.value = { todayVisits: 0, totalVisits: 0 }
+  }
+}
+
+onMounted(() => {
+  if (process.client) {
+    fetchStats()
+    // 每60秒刷新一次统计数据
+    setInterval(fetchStats, 60000)
+  }
+})
 </script>
 
 <style scoped>

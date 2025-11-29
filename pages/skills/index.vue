@@ -264,13 +264,164 @@ const getRatingBarColor = (rating: number) => {
   return 'bg-red-500'
 }
 
+// 保留模拟数据作为注释，方便参考
+// const mockSkillTree = [
+//   {
+//     id: 1,
+//     name: '前端开发',
+//     icon: '💻',
+//     color: '#3b82f6',
+//     skills: [
+//       {
+//         id: 1,
+//         name: 'Vue.js',
+//         icon: '⚡',
+//         description: '渐进式JavaScript框架，用于构建用户界面',
+//         currentRating: 8.5
+//       },
+//       {
+//         id: 2,
+//         name: 'Nuxt.js',
+//         icon: '🚀',
+//         description: '基于Vue.js的通用应用框架',
+//         currentRating: 8.0
+//       },
+//       {
+//         id: 3,
+//         name: 'TypeScript',
+//         icon: '📘',
+//         description: 'JavaScript的超集，提供静态类型检查',
+//         currentRating: 7.5
+//       },
+//       {
+//         id: 4,
+//         name: 'Tailwind CSS',
+//         icon: '🎨',
+//         description: '实用优先的CSS框架',
+//         currentRating: 7.0
+//       }
+//     ]
+//   },
+//   {
+//     id: 2,
+//     name: '后端开发',
+//     icon: '⚙️',
+//     color: '#10b981',
+//     skills: [
+//       {
+//         id: 5,
+//         name: '.NET Core',
+//         icon: '🔷',
+//         description: '跨平台的开源开发框架',
+//         currentRating: 8.0
+//       },
+//       {
+//         id: 6,
+//         name: 'Node.js',
+//         icon: '🟢',
+//         description: '基于Chrome V8引擎的JavaScript运行时',
+//         currentRating: 7.5
+//       },
+//       {
+//         id: 7,
+//         name: 'Entity Framework',
+//         icon: '🗄️',
+//         description: 'Microsoft的ORM框架',
+//         currentRating: 7.5
+//       },
+//       {
+//         id: 8,
+//         name: 'RESTful API',
+//         icon: '🌐',
+//         description: '设计和开发RESTful风格的API',
+//         currentRating: 8.5
+//       }
+//     ]
+//   },
+//   {
+//     id: 3,
+//     name: '数据库',
+//     icon: '💾',
+//     color: '#f59e0b',
+//     skills: [
+//       {
+//         id: 9,
+//         name: 'MySQL',
+//         icon: '🗄️',
+//         description: '开源关系型数据库管理系统',
+//         currentRating: 7.5
+//       },
+//       {
+//         id: 10,
+//         name: 'PostgreSQL',
+//         icon: '🐘',
+//         description: '功能强大的开源对象关系数据库',
+//         currentRating: 6.5
+//       },
+//       {
+//         id: 11,
+//         name: 'Redis',
+//         icon: '🔴',
+//         description: '内存数据结构存储系统',
+//         currentRating: 6.0
+//       }
+//     ]
+//   },
+//   {
+//     id: 4,
+//     name: 'AI & 机器学习',
+//     icon: '🤖',
+//     color: '#8b5cf6',
+//     skills: [
+//       {
+//         id: 12,
+//         name: 'LangChain',
+//         icon: '🔗',
+//         description: '构建LLM应用的框架',
+//         currentRating: 7.0
+//       },
+//       {
+//         id: 13,
+//         name: 'OpenAI API',
+//         icon: '🧠',
+//         description: 'OpenAI的API集成和使用',
+//         currentRating: 7.5
+//       },
+//       {
+//         id: 14,
+//         name: 'Python',
+//         icon: '🐍',
+//         description: '通用编程语言，AI领域常用',
+//         currentRating: 7.0
+//       }
+//     ]
+//   }
+// ]
+
+// 保留模拟分类数据作为注释，方便参考
+// const mockCategories = [
+//   { id: 1, name: '前端开发', icon: '💻' },
+//   { id: 2, name: '后端开发', icon: '⚙️' },
+//   { id: 3, name: '数据库', icon: '💾' },
+//   { id: 4, name: 'AI & 机器学习', icon: '🤖' }
+// ]
+
 const fetchSkillTree = async () => {
   loading.value = true
   try {
-    const res = await api.get<any>('/SkillTree')
-    skillTree.value = res || []
+    // 优先从新的MockData API获取
+    const res = await api.get<any>('/MockData/skill-tree')
+    if (res && Array.isArray(res) && res.length > 0) {
+      skillTree.value = res
+      return
+    }
+    
+    // 如果新API没有数据，尝试从旧API获取
+    const oldRes = await api.get<any>('/SkillTree')
+    skillTree.value = oldRes && Array.isArray(oldRes) && oldRes.length > 0 ? oldRes : []
   } catch (e) {
     console.error('Failed to fetch skill tree:', e)
+    skillTree.value = []
   } finally {
     loading.value = false
   }
@@ -278,10 +429,19 @@ const fetchSkillTree = async () => {
 
 const fetchCategories = async () => {
   try {
-    const res = await api.get<any[]>('/SkillTree/categories')
-    categories.value = res || []
+    // 优先从新的MockData API获取
+    const res = await api.get<any[]>('/MockData/skill-categories')
+    if (res && Array.isArray(res) && res.length > 0) {
+      categories.value = res
+      return
+    }
+    
+    // 如果新API没有数据，尝试从旧API获取
+    const oldRes = await api.get<any[]>('/SkillTree/categories')
+    categories.value = oldRes && Array.isArray(oldRes) && oldRes.length > 0 ? oldRes : []
   } catch (e) {
     console.error('Failed to fetch categories:', e)
+    categories.value = []
   }
 }
 

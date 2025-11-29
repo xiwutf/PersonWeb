@@ -100,14 +100,55 @@
 </template>
 
 <script setup lang="ts">
-// 使用 @nuxt/content 查询生活随笔数据
-const { data: posts } = await useAsyncData('life-posts', () =>
-  queryContent('/life').sort({ date: -1 }).find()
-)
+const api = useApi()
+const posts = ref<any[]>([])
+const pending = ref(true)
+const error = ref<string | null>(null)
+
+// 从API获取生活随笔数据
+const fetchPosts = async () => {
+  try {
+    pending.value = true
+    error.value = null
+    
+    // 优先从API获取
+    const res = await api.get<any[]>('/MockData/life-posts')
+    if (res && res.length > 0) {
+      posts.value = res.map(p => ({
+        ...p,
+        date: new Date(p.date)
+      }))
+      return
+    }
+    
+    // 如果API没有数据，尝试从 @nuxt/content 获取
+    const { data: contentPosts } = await useAsyncData('life-posts', () =>
+      queryContent('/life').sort({ date: -1 }).find()
+    )
+    
+    if (contentPosts.value && Array.isArray(contentPosts.value) && contentPosts.value.length > 0) {
+      posts.value = contentPosts.value
+    } else {
+      posts.value = []
+    }
+  } catch (e: any) {
+    console.error('Failed to fetch life posts:', e)
+    error.value = e.message || '加载失败'
+    posts.value = []
+  } finally {
+    pending.value = false
+  }
+}
+
+onMounted(() => {
+  fetchPosts()
+})
 
 // 格式化日期
 const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleDateString('zh-CN', {
+  if (!dateString) return ''
+  const date = dateString instanceof Date ? dateString : new Date(dateString)
+  return date.toLocaleDateString('zh-CN', {
     year: 'numeric',
     month: 'long',
     day: 'numeric'

@@ -2,28 +2,45 @@
   <div ref="containerRef" class="relative w-full h-screen overflow-hidden bg-gradient-to-b from-slate-900 via-purple-900 to-slate-900">
     <canvas ref="canvasRef" class="w-full h-full" />
     
+    <!-- 返回列表按钮 -->
+    <button
+      @click="handleBackToList"
+      class="project-3d-back-button"
+      title="返回列表视图"
+    >
+      <svg class="project-3d-back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      <span class="project-3d-back-text">返回列表</span>
+    </button>
+    
     <!-- 控制提示 -->
-    <div class="absolute top-4 left-4 bg-black/50 text-white px-4 py-2 rounded-lg backdrop-blur-md text-sm z-10">
-      <div>🖱️ 拖动旋转 | 🖱️ 滚轮缩放 | 点击卡片查看详情</div>
+    <div class="project-3d-hint">
+      <div class="project-3d-hint-content">
+        <div class="project-3d-hint-item">🖱️ 拖动旋转视角</div>
+        <div class="project-3d-hint-item">🖱️ 滚轮缩放</div>
+        <div class="project-3d-hint-item">👆 点击卡片查看详情</div>
+      </div>
     </div>
     
     <!-- 项目信息卡片 -->
     <div
       v-if="selectedProject"
-      class="absolute top-4 right-4 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl p-6 max-w-sm shadow-2xl z-10"
+      class="project-3d-info-card"
     >
       <button
         @click="selectedProject = null"
-        class="absolute top-2 right-2 w-6 h-6 flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 transition"
+        class="project-3d-info-close"
+        title="关闭"
       >
         ×
       </button>
-      <h3 class="text-xl font-bold mb-2">{{ selectedProject.title }}</h3>
-      <p class="text-gray-600 dark:text-gray-400 mb-4">{{ selectedProject.description }}</p>
-      <div class="flex gap-2">
+      <h3 class="project-3d-info-title">{{ selectedProject.title }}</h3>
+      <p class="project-3d-info-description">{{ selectedProject.description }}</p>
+      <div class="project-3d-info-actions">
         <NuxtLink
           :to="`/projects/${selectedProject.id}`"
-          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+          class="project-3d-info-button project-3d-info-button-primary"
         >
           查看详情
         </NuxtLink>
@@ -31,10 +48,18 @@
           v-if="selectedProject.githubUrl"
           :href="selectedProject.githubUrl"
           target="_blank"
-          class="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition"
+          class="project-3d-info-button project-3d-info-button-secondary"
         >
           GitHub
         </a>
+      </div>
+    </div>
+    
+    <!-- 悬停提示 -->
+    <div v-if="hoveredProject" class="project-3d-hover-hint">
+      <div class="project-3d-hover-hint-content">
+        <div class="project-3d-hover-hint-title">{{ hoveredProject.title }}</div>
+        <div class="project-3d-hover-hint-text">点击查看详情</div>
       </div>
     </div>
   </div>
@@ -49,9 +74,14 @@ const props = defineProps<{
   projects: Project[]
 }>()
 
+const emit = defineEmits<{
+  'back-to-list': []
+}>()
+
 const containerRef = ref<HTMLDivElement | null>(null)
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 const selectedProject = ref<Project | null>(null)
+const hoveredProject = ref<Project | null>(null)
 
 let scene: THREE.Scene | null = null
 let camera: THREE.PerspectiveCamera | null = null
@@ -210,6 +240,83 @@ const createTextTexture = (text: string): Promise<THREE.Texture> => {
   })
 }
 
+const handleBackToList = () => {
+  emit('back-to-list')
+}
+
+const onMouseMove = (event: MouseEvent) => {
+  if (!raycaster || !camera || !mouse) return
+  
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
+  
+  raycaster.setFromCamera(mouse, camera)
+  
+  const intersects = raycaster.intersectObjects(projectCards)
+  
+  if (intersects.length > 0) {
+    const hoveredCard = intersects[0].object as THREE.Mesh
+    if (hoveredCard.userData.project) {
+      hoveredProject.value = hoveredCard.userData.project
+      // 添加悬停效果：放大卡片
+      hoveredCard.scale.set(1.2, 1.2, 1.2)
+      // 改变材质颜色
+      if (Array.isArray(hoveredCard.material)) {
+        hoveredCard.material.forEach((mat: any) => {
+          if (mat instanceof THREE.MeshStandardMaterial) {
+            mat.color.setHex(0x3b82f6)
+            mat.emissive.setHex(0x1e40af)
+            mat.emissiveIntensity = 0.3
+          }
+        })
+      } else if (hoveredCard.material instanceof THREE.MeshStandardMaterial) {
+        hoveredCard.material.color.setHex(0x3b82f6)
+        hoveredCard.material.emissive.setHex(0x1e40af)
+        hoveredCard.material.emissiveIntensity = 0.3
+      }
+      
+      // 恢复其他卡片
+      projectCards.forEach((card) => {
+        if (card !== hoveredCard) {
+          card.scale.set(1, 1, 1)
+          if (Array.isArray(card.material)) {
+            card.material.forEach((mat: any) => {
+              if (mat instanceof THREE.MeshStandardMaterial) {
+                mat.color.setHex(0x1e293b)
+                mat.emissive.setHex(0x000000)
+                mat.emissiveIntensity = 0
+              }
+            })
+          } else if (card.material instanceof THREE.MeshStandardMaterial) {
+            card.material.color.setHex(0x1e293b)
+            card.material.emissive.setHex(0x000000)
+            card.material.emissiveIntensity = 0
+          }
+        }
+      })
+    }
+  } else {
+    hoveredProject.value = null
+    // 恢复所有卡片
+    projectCards.forEach((card) => {
+      card.scale.set(1, 1, 1)
+      if (Array.isArray(card.material)) {
+        card.material.forEach((mat: any) => {
+          if (mat instanceof THREE.MeshStandardMaterial) {
+            mat.color.setHex(0x1e293b)
+            mat.emissive.setHex(0x000000)
+            mat.emissiveIntensity = 0
+          }
+        })
+      } else if (card.material instanceof THREE.MeshStandardMaterial) {
+        card.material.color.setHex(0x1e293b)
+        card.material.emissive.setHex(0x000000)
+        card.material.emissiveIntensity = 0
+      }
+    })
+  }
+}
+
 const onMouseClick = (event: MouseEvent) => {
   if (!raycaster || !camera || !mouse) return
   
@@ -260,12 +367,14 @@ onMounted(() => {
   if (process.client) {
     initThree()
     window.addEventListener('click', onMouseClick)
+    window.addEventListener('mousemove', onMouseMove)
     window.addEventListener('resize', handleResize)
   }
 })
 
 onUnmounted(() => {
   window.removeEventListener('click', onMouseClick)
+  window.removeEventListener('mousemove', onMouseMove)
   window.removeEventListener('resize', handleResize)
   
   if (renderer) {
@@ -282,4 +391,228 @@ onUnmounted(() => {
   })
 })
 </script>
+
+<style scoped>
+/* 返回列表按钮 */
+.project-3d-back-button {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border: 2px solid rgba(59, 130, 246, 0.3);
+  border-radius: 0.75rem;
+  color: #1e293b;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.project-3d-back-button:hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: rgba(59, 130, 246, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+}
+
+.project-3d-back-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+}
+
+.project-3d-back-text {
+  white-space: nowrap;
+}
+
+/* 控制提示 */
+.project-3d-hint {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  z-index: 100;
+}
+
+.project-3d-hint-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.project-3d-hint-item {
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* 项目信息卡片 */
+.project-3d-info-card {
+  position: fixed;
+  top: 50%;
+  right: 2rem;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  max-width: 24rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.project-3d-info-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.1);
+  border: none;
+  color: #1e293b;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.project-3d-info-close:hover {
+  background: rgba(0, 0, 0, 0.2);
+  transform: scale(1.1);
+}
+
+.project-3d-info-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #1e293b;
+  padding-right: 2rem;
+}
+
+.project-3d-info-description {
+  color: #64748b;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.project-3d-info-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.project-3d-info-button {
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.project-3d-info-button-primary {
+  background: #3b82f6;
+  color: white;
+}
+
+.project-3d-info-button-primary:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.project-3d-info-button-secondary {
+  background: #1e293b;
+  color: white;
+}
+
+.project-3d-info-button-secondary:hover {
+  background: #0f172a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* 悬停提示 */
+.project-3d-hover-hint {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  pointer-events: none;
+}
+
+.project-3d-hover-hint-content {
+  background: rgba(59, 130, 246, 0.95);
+  backdrop-filter: blur(12px);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+  animation: project-3d-hint-fade-in 0.3s ease;
+}
+
+.project-3d-hover-hint-title {
+  color: white;
+  font-weight: 600;
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+}
+
+.project-3d-hover-hint-text {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.75rem;
+}
+
+@keyframes project-3d-hint-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 暗色模式适配 */
+:global(.dark) .project-3d-info-card {
+  background: rgba(30, 41, 59, 0.95);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global(.dark) .project-3d-info-title {
+  color: white;
+}
+
+:global(.dark) .project-3d-info-description {
+  color: #94a3b8;
+}
+
+:global(.dark) .project-3d-info-close {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+:global(.dark) .project-3d-info-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+</style>
 

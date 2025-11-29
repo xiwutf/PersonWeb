@@ -318,9 +318,9 @@ public class CommercialAdminController : ControllerBase
                     Id = p.Id,
                     OrderId = p.Id.ToString(),
                     Type = "theme",
-                    UserId = p.UserId,
+                    UserId = p.UserId ?? string.Empty,
                     Amount = p.Price,
-                    PaymentMethod = p.PaymentMethod,
+                    PaymentMethod = p.PaymentMethod ?? string.Empty,
                     PaymentStatus = p.PaymentStatus,
                     CreatedAt = p.CreatedAt,
                     PaidAt = p.PaidAt
@@ -335,9 +335,9 @@ public class CommercialAdminController : ControllerBase
                     Id = p.Id,
                     OrderId = p.Id.ToString(),
                     Type = "tool",
-                    UserId = p.UserId,
+                    UserId = p.UserId ?? string.Empty,
                     Amount = p.Price,
-                    PaymentMethod = p.PaymentMethod,
+                    PaymentMethod = p.PaymentMethod ?? string.Empty,
                     PaymentStatus = p.PaymentStatus,
                     CreatedAt = p.CreatedAt,
                     PaidAt = p.PaidAt

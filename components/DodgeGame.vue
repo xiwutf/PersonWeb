@@ -1,5 +1,16 @@
 <template>
   <div class="relative w-full h-full bg-gradient-to-b from-slate-900 to-slate-800 overflow-hidden">
+    <!-- 关闭按钮 -->
+    <button
+      @click="$emit('close')"
+      class="absolute top-4 right-4 z-20 w-10 h-10 bg-black/50 text-white rounded-lg backdrop-blur-md hover:bg-black/70 transition-colors flex items-center justify-center"
+      aria-label="关闭游戏"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
     <canvas ref="canvasRef" class="w-full h-full" />
     
     <!-- 游戏UI -->
@@ -42,6 +53,11 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 
+// 定义事件
+defineEmits<{
+  close: []
+}>()
+
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 const score = ref(0)
 const highScore = ref(0)
@@ -74,7 +90,7 @@ const initGame = () => {
   
   // 加载最高分
   if (process.client) {
-    const saved = localStorage.getItem('dodge_game_high_score')
+    const saved = localStorage.getItem('game_dodge_high_score')
     if (saved) {
       highScore.value = parseInt(saved, 10)
     }
@@ -199,7 +215,7 @@ const endGame = () => {
   if (score.value > highScore.value) {
     highScore.value = score.value
     if (process.client) {
-      localStorage.setItem('dodge_game_high_score', score.value.toString())
+      localStorage.setItem('game_dodge_high_score', score.value.toString())
     }
   }
 }

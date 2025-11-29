@@ -104,7 +104,7 @@ onMounted(() => {
   position: fixed;
   top: 5rem;
   right: 2rem;
-  z-index: 45;
+  z-index: 40;
   width: 2.5rem;
   height: 2.5rem;
   background: rgba(30, 41, 59, 0.95);
@@ -135,7 +135,7 @@ onMounted(() => {
   inset: 0;
   background: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(4px);
-  z-index: 45;
+  z-index: 9998;
 }
 
 /* 抽屉容器 */
@@ -149,7 +149,7 @@ onMounted(() => {
   background: rgba(30, 41, 59, 0.98);
   backdrop-filter: blur(20px);
   border-left: 1px solid rgba(255, 255, 255, 0.2);
-  z-index: 46;
+  z-index: 9999;
   display: flex;
   flex-direction: column;
   box-shadow: -4px 0 24px rgba(0, 0, 0, 0.3);
@@ -164,9 +164,10 @@ onMounted(() => {
   padding: 1.25rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
-  z-index: 100;
+  z-index: 10000;
   flex-shrink: 0;
   pointer-events: auto;
+  background: rgba(30, 41, 59, 0.98);
 }
 
 .drawer-title {
@@ -190,10 +191,11 @@ onMounted(() => {
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
-  z-index: 101;
+  z-index: 10001;
   pointer-events: auto;
   flex-shrink: 0;
   -webkit-tap-highlight-color: transparent;
+  isolation: isolate;
 }
 
 .drawer-close-btn:hover {

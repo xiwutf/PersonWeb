@@ -116,13 +116,31 @@ const resetIdleTimer = () => {
     clearTimeout(idleTimer)
   }
 
+  // 检查用户是否禁用了自动弹出
+  if (process.client) {
+    const autoOpenDisabled = localStorage.getItem('ai-assistant-auto-open-disabled')
+    if (autoOpenDisabled === 'true') {
+      return // 用户已禁用自动弹出，不再检测闲置
+    }
+  }
+
   idleTimer = setTimeout(() => {
     const idleTime = Date.now() - lastActivityTime
     if (idleTime >= IDLE_THRESHOLD) {
-      recordBehavior('idle_10s', 'assistant_greet', {
-        path: route.path,
-        idleTime
-      })
+      // 检查今天是否已经触发过（避免频繁弹出）
+      const lastTriggerDate = process.client ? localStorage.getItem('ai-assistant-last-trigger-date') : null
+      const today = new Date().toDateString()
+      
+      if (lastTriggerDate !== today) {
+        recordBehavior('idle_10s', 'assistant_greet', {
+          path: route.path,
+          idleTime
+        })
+        // 记录今天已触发
+        if (process.client) {
+          localStorage.setItem('ai-assistant-last-trigger-date', today)
+        }
+      }
     }
   }, IDLE_THRESHOLD)
 }

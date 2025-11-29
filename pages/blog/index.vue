@@ -13,6 +13,19 @@
     </div>
 
     <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <!-- 返回按钮 -->
+      <div class="mb-8">
+        <NuxtLink
+          to="/lab"
+          class="blog-back-button"
+        >
+          <svg class="blog-back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          <span>返回AI实验室</span>
+        </NuxtLink>
+      </div>
+
       <!-- 页面头部 -->
       <header class="text-center mb-16 relative">
         <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500/20 to-emerald-500/20 backdrop-blur-xl border border-white/10 mb-6 shadow-lg shadow-blue-500/10 animate-float">
@@ -67,6 +80,24 @@
         </div>
       </div>
 
+      <!-- 文章统计和分页信息 -->
+      <div v-if="filteredPosts.length > 0" class="mb-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div class="text-slate-400 text-sm">
+          共找到 <span class="text-blue-400 font-semibold">{{ filteredPosts.length }}</span> 篇文章
+          <span v-if="currentPage > 1" class="ml-2">
+            第 {{ currentPage }} / {{ totalPages }} 页
+          </span>
+        </div>
+        <div class="flex items-center gap-2">
+          <label class="text-sm text-slate-400">每页显示：</label>
+          <select v-model="pageSize" class="blog-page-size-select">
+            <option :value="10">10</option>
+            <option :value="20">20</option>
+            <option :value="30">30</option>
+          </select>
+        </div>
+      </div>
+
       <!-- 文章列表 -->
       <div class="grid gap-8">
         <div v-if="filteredPosts.length === 0" class="text-center py-20">
@@ -77,36 +108,53 @@
 
         <TransitionGroup name="list" tag="div" class="space-y-6">
           <article
-            v-for="(post, index) in filteredPosts"
-            :key="post._path"
-            class="group relative bg-slate-800/30 backdrop-blur-md border border-white/5 rounded-2xl p-6 sm:p-8 hover:bg-slate-800/50 transition-all duration-500 hover:border-blue-500/30 hover:shadow-[0_0_30px_rgba(59,130,246,0.1)]"
+            v-for="(post, index) in paginatedPosts"
+            :key="post.id || post._path"
+            class="blog-post-card"
             :style="{ transitionDelay: `${index * 50}ms` }"
           >
             <div class="flex flex-col md:flex-row gap-6 md:gap-8">
               <!-- 分类图标/封面 -->
               <div class="flex-shrink-0">
-                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-700/50 to-slate-800/50 border border-white/10 flex items-center justify-center text-3xl shadow-inner group-hover:scale-110 transition-transform duration-500">
-                  {{ getCategoryIcon(post.category) }}
-                </div>
+                <NuxtLink 
+                  :to="getArticlePath(post)" 
+                  class="block"
+                >
+                  <div class="w-24 h-24 md:w-32 md:h-32 rounded-2xl bg-gradient-to-br from-slate-700/50 to-slate-800/50 border border-white/10 flex items-center justify-center text-4xl md:text-5xl shadow-inner group-hover:scale-110 group-hover:border-blue-500/30 transition-all duration-500 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-blue-500/0 to-emerald-500/0 group-hover:from-blue-500/20 group-hover:to-emerald-500/20 transition-all duration-500"></div>
+                    <span class="relative z-10">{{ getCategoryIcon(post.category) }}</span>
+                  </div>
+                </NuxtLink>
               </div>
 
               <!-- 内容区域 -->
               <div class="flex-1 min-w-0">
                 <div class="flex flex-wrap items-center gap-3 text-sm text-slate-500 mb-3">
-                  <span class="px-2.5 py-0.5 rounded-md bg-blue-500/10 text-blue-400 border border-blue-500/20 font-medium">
+                  <NuxtLink 
+                    :to="`/blog?category=${encodeURIComponent(post.category)}`" 
+                    class="px-2.5 py-0.5 rounded-md bg-blue-500/10 text-blue-400 border border-blue-500/20 font-medium hover:bg-blue-500/20 transition-colors"
+                    @click.stop
+                  >
                     {{ post.category }}
-                  </span>
+                  </NuxtLink>
                   <span class="flex items-center gap-1">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     {{ formatDate(post.date) }}
                   </span>
+                  <span v-if="post.viewCount" class="flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                    {{ post.viewCount }}
+                  </span>
                 </div>
 
-                <NuxtLink :to="post._path" class="block group-hover:translate-x-1 transition-transform duration-300">
-                  <h2 class="text-2xl font-bold text-slate-100 mb-3 group-hover:text-blue-400 transition-colors line-clamp-1">
+                <NuxtLink 
+                  :to="getArticlePath(post)" 
+                  class="block group-hover:translate-x-1 transition-transform duration-300"
+                >
+                  <h2 class="text-2xl md:text-3xl font-bold text-slate-100 mb-3 group-hover:text-blue-400 transition-colors line-clamp-2">
                     {{ post.title }}
                   </h2>
-                  <p class="text-slate-400 leading-relaxed mb-4 line-clamp-2 group-hover:text-slate-300 transition-colors">
+                  <p class="text-slate-400 leading-relaxed mb-4 line-clamp-3 group-hover:text-slate-300 transition-colors">
                     {{ post.description }}
                   </p>
                 </NuxtLink>
@@ -114,11 +162,20 @@
                 <!-- 底部信息 -->
                 <div class="flex items-center justify-between mt-4 pt-4 border-t border-white/5">
                   <div class="flex flex-wrap gap-2">
-                    <span v-for="tag in post.tags" :key="tag" class="text-xs text-slate-500 hover:text-blue-400 transition-colors cursor-pointer">
+                    <NuxtLink
+                      v-for="tag in post.tags"
+                      :key="tag"
+                      :to="`/blog?search=${encodeURIComponent(tag)}`"
+                      class="text-xs px-2 py-1 rounded-md bg-slate-700/30 text-slate-400 hover:text-blue-400 hover:bg-blue-500/10 transition-all cursor-pointer"
+                      @click.stop
+                    >
                       #{{ tag }}
-                    </span>
+                    </NuxtLink>
                   </div>
-                  <NuxtLink :to="post._path" class="inline-flex items-center gap-1 text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors group/link">
+                  <NuxtLink 
+                    :to="getArticlePath(post)" 
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 transition-all group/link"
+                  >
                     阅读全文
                     <svg class="w-4 h-4 group-hover/link:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                   </NuxtLink>
@@ -129,44 +186,105 @@
         </TransitionGroup>
       </div>
 
-      <!-- 归档区域 (简化版) -->
-      <div class="mt-20 grid md:grid-cols-3 gap-6">
+      <!-- 分页器 -->
+      <div v-if="totalPages > 1" class="mt-12 flex justify-center items-center gap-2">
+        <button
+          @click="goToPage(currentPage - 1)"
+          :disabled="currentPage === 1"
+          class="blog-pagination-btn blog-pagination-btn-prev"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </button>
+        
+        <div class="flex gap-1">
+          <template v-for="page in visiblePages" :key="page">
+            <button
+              v-if="page !== -1"
+              @click="goToPage(page)"
+              :class="[
+                'blog-pagination-btn',
+                'blog-pagination-btn-number',
+                page === currentPage ? 'blog-pagination-btn-active' : ''
+              ]"
+            >
+              {{ page }}
+            </button>
+            <span v-else class="blog-pagination-ellipsis">...</span>
+          </template>
+        </div>
+        
+        <button
+          @click="goToPage(currentPage + 1)"
+          :disabled="currentPage === totalPages"
+          class="blog-pagination-btn blog-pagination-btn-next"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- 归档区域 -->
+      <div class="mt-20 grid md:grid-cols-2 lg:grid-cols-4 gap-6">
         <!-- 热门标签 -->
-        <div class="bg-slate-800/30 backdrop-blur-md border border-white/5 rounded-2xl p-6">
-          <h3 class="text-lg font-semibold text-slate-200 mb-4 flex items-center gap-2">
+        <div class="blog-sidebar-card">
+          <h3 class="blog-sidebar-title">
             <span class="text-blue-400">🏷️</span> 热门标签
           </h3>
           <div class="flex flex-wrap gap-2">
-            <span 
-              v-for="tagInfo in popularTags" 
+            <NuxtLink
+              v-for="tagInfo in popularTags"
               :key="tagInfo.tag"
-              class="px-3 py-1 bg-slate-700/50 hover:bg-blue-500/20 text-slate-300 hover:text-blue-300 border border-white/5 hover:border-blue-500/30 rounded-full text-xs transition-all cursor-pointer"
+              :to="`/blog?search=${encodeURIComponent(tagInfo.tag)}`"
+              class="blog-tag-item"
             >
               {{ tagInfo.tag }} <span class="opacity-50 ml-1">{{ tagInfo.count }}</span>
-            </span>
+            </NuxtLink>
           </div>
         </div>
 
         <!-- 时间归档 -->
-        <div class="bg-slate-800/30 backdrop-blur-md border border-white/5 rounded-2xl p-6">
-          <h3 class="text-lg font-semibold text-slate-200 mb-4 flex items-center gap-2">
+        <div class="blog-sidebar-card">
+          <h3 class="blog-sidebar-title">
             <span class="text-emerald-400">📅</span> 时间归档
           </h3>
-          <ul class="space-y-2 text-sm text-slate-400">
-            <li v-for="archive in timeArchives.slice(0, 5)" :key="archive.period" class="flex justify-between items-center hover:text-slate-200 transition-colors cursor-pointer">
+          <ul class="blog-archive-list">
+            <li v-for="archive in timeArchives.slice(0, 6)" :key="archive.period" class="blog-archive-item">
               <span>{{ archive.period }}</span>
-              <span class="bg-slate-700/50 px-2 py-0.5 rounded-full text-xs">{{ archive.count }}</span>
+              <span class="blog-archive-count">{{ archive.count }}</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- 分类统计 -->
+        <div class="blog-sidebar-card">
+          <h3 class="blog-sidebar-title">
+            <span class="text-purple-400">📂</span> 分类统计
+          </h3>
+          <ul class="blog-archive-list">
+            <li
+              v-for="cat in categories.filter(c => c !== '全部文章').slice(0, 6)"
+              :key="cat"
+              class="blog-archive-item cursor-pointer"
+              @click="selectCategory(cat)"
+            >
+              <span>{{ cat }}</span>
+              <span class="blog-archive-count">{{ getCategoryCount(cat) }}</span>
             </li>
           </ul>
         </div>
         
-        <!-- 返回首页 -->
-        <div class="bg-gradient-to-br from-blue-600/20 to-purple-600/20 backdrop-blur-md border border-white/10 rounded-2xl p-6 flex flex-col items-center justify-center text-center group cursor-pointer hover:border-blue-500/50 transition-all" @click="navigateTo('/')">
-          <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+        <!-- 返回AI实验室 -->
+        <div class="blog-back-card" @click="navigateTo('/lab')">
+          <div class="blog-back-card-icon">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
           </div>
-          <h3 class="text-lg font-semibold text-white mb-1">返回首页</h3>
-          <p class="text-sm text-blue-200/70">Back to Home</p>
+          <h3 class="blog-back-card-title">返回AI实验室</h3>
+          <p class="blog-back-card-subtitle">Back to AI Lab</p>
         </div>
       </div>
     </div>
@@ -189,13 +307,28 @@ const { data: allPosts } = await useAsyncData('blog-posts', async () => {
   // Map .NET response to frontend format
   // 注意：res 已经是 useApi 处理后的 data，格式为 { Total: int, List: [] }
   const articles = res.List ?? res.list ?? []
-  return articles.map((article: any) => ({
-    ...article,
-    _path: `/blog/${article.slug || article.id}`, // Use slug if available
-    date: article.publishTime || article.createdAt,
-    category: article.categoryName || '未分类',
-    tags: article.tags ? (Array.isArray(article.tags) ? article.tags : article.tags.split(',')) : []
-  }))
+  return articles.map((article: any) => {
+    // 确保有有效的 ID 或 slug
+    const articleId = article.id || article.Id
+    const articleSlug = article.slug || article.Slug
+    
+    // 优先使用 slug，如果没有则使用 id
+    const pathSegment = articleSlug || articleId
+    
+    if (!pathSegment) {
+      console.warn('Article missing both id and slug:', article)
+    }
+    
+    return {
+      ...article,
+      id: articleId,
+      slug: articleSlug,
+      _path: pathSegment ? `/blog/${pathSegment}` : '#', // 确保路径有效
+      date: article.publishTime || article.createdAt,
+      category: article.categoryName || article.category?.name || '未分类',
+      tags: article.tags ? (Array.isArray(article.tags) ? article.tags : article.tags.split(',').filter((t: string) => t.trim())) : []
+    }
+  })
 })
 
 // 当前选中的分类
@@ -203,6 +336,10 @@ const selectedCategory = ref('全部文章')
 
 // 搜索关键词
 const searchKeyword = ref('')
+
+// 分页相关
+const currentPage = ref(1)
+const pageSize = ref(10)
 
 // 获取所有可用的分类
 const categories = computed(() => {
@@ -236,6 +373,78 @@ const filteredPosts = computed(() => {
   return posts
 })
 
+// 分页后的文章列表
+const paginatedPosts = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value
+  const end = start + pageSize.value
+  return filteredPosts.value.slice(start, end)
+})
+
+// 总页数
+const totalPages = computed(() => {
+  return Math.ceil(filteredPosts.value.length / pageSize.value)
+})
+
+// 可见的页码（最多显示7个）
+const visiblePages = computed(() => {
+  const pages: number[] = []
+  const total = totalPages.value
+  const current = currentPage.value
+  
+  if (total <= 7) {
+    // 如果总页数少于等于7，显示所有页码
+    for (let i = 1; i <= total; i++) {
+      pages.push(i)
+    }
+  } else {
+    // 否则显示当前页附近的页码
+    if (current <= 4) {
+      // 前几页
+      for (let i = 1; i <= 5; i++) {
+        pages.push(i)
+      }
+      pages.push(-1) // 省略号
+      pages.push(total)
+    } else if (current >= total - 3) {
+      // 后几页
+      pages.push(1)
+      pages.push(-1) // 省略号
+      for (let i = total - 4; i <= total; i++) {
+        pages.push(i)
+      }
+    } else {
+      // 中间页
+      pages.push(1)
+      pages.push(-1) // 省略号
+      for (let i = current - 1; i <= current + 1; i++) {
+        pages.push(i)
+      }
+      pages.push(-1) // 省略号
+      pages.push(total)
+    }
+  }
+  
+  return pages
+})
+
+// 跳转到指定页
+const goToPage = (page: number) => {
+  if (page < 1 || page > totalPages.value || page === currentPage.value) return
+  currentPage.value = page
+  // 滚动到顶部
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+// 监听筛选条件变化，重置到第一页
+watch([selectedCategory, searchKeyword], () => {
+  currentPage.value = 1
+})
+
+// 监听每页数量变化，重置到第一页
+watch(pageSize, () => {
+  currentPage.value = 1
+})
+
 // 格式化日期
 const formatDate = (dateString) => {
   if (!dateString) return ''
@@ -261,6 +470,7 @@ const getCategoryIcon = (category) => {
 // 切换分类
 const selectCategory = (category) => {
   selectedCategory.value = category
+  currentPage.value = 1 // 重置到第一页
 }
 
 // 清空搜索
@@ -300,6 +510,24 @@ const popularTags = computed(() => {
     .slice(0, 10)
 })
 
+// 获取分类文章数量
+const getCategoryCount = (category: string) => {
+  if (!allPosts.value) return 0
+  return allPosts.value.filter(post => post.category === category).length
+}
+
+// 获取文章路径
+const getArticlePath = (post: any) => {
+  // 优先使用 slug，如果没有则使用 id
+  const pathSegment = post.slug || post.id
+  if (!pathSegment) {
+    console.warn('Article missing both id and slug:', post)
+    return '/blog'
+  }
+  return `/blog/${pathSegment}`
+}
+
+
 useHead({
   title: '技术博客 - 溪午听风',
   meta: [
@@ -309,6 +537,101 @@ useHead({
 </script>
 
 <style scoped>
+/* 文章卡片 */
+.blog-post-card {
+  position: relative;
+  background: rgba(30, 41, 59, 0.3);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 1rem;
+  padding: 1.5rem 2rem;
+  transition: all 0.5s ease;
+}
+
+.blog-post-card:hover {
+  background: rgba(30, 41, 59, 0.5);
+  border-color: rgba(59, 130, 246, 0.3);
+  box-shadow: 0 0 30px rgba(59, 130, 246, 0.1);
+}
+
+/* 分页器样式 */
+.blog-page-size-select {
+  padding: 0.375rem 0.75rem;
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  color: rgb(203, 213, 225);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.blog-page-size-select:hover {
+  background: rgba(30, 41, 59, 0.7);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.blog-page-size-select:focus {
+  outline: none;
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.blog-pagination-btn {
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0.5rem;
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  color: rgb(203, 213, 225);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.blog-pagination-btn:hover:not(:disabled) {
+  background: rgba(30, 41, 59, 0.7);
+  border-color: rgba(59, 130, 246, 0.3);
+  color: rgb(148, 163, 184);
+}
+
+.blog-pagination-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.blog-pagination-btn-number {
+  min-width: 2.5rem;
+}
+
+.blog-pagination-btn-active {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.5);
+  color: rgb(96, 165, 250);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+}
+
+.blog-pagination-btn-active:hover {
+  background: rgba(59, 130, 246, 0.3);
+  color: rgb(147, 197, 253);
+}
+
+.blog-pagination-ellipsis {
+  min-width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(148, 163, 184);
+  font-size: 0.875rem;
+}
+
+/* 列表动画 */
 .list-enter-active,
 .list-leave-active {
   transition: all 0.5s ease;
@@ -338,5 +661,167 @@ useHead({
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
+}
+
+/* 返回按钮样式 */
+.blog-back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: rgba(139, 92, 246, 0.2);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 0.75rem;
+  color: rgb(196, 181, 253);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+}
+
+.blog-back-button:hover {
+  background: rgba(139, 92, 246, 0.3);
+  border-color: rgba(139, 92, 246, 0.5);
+  color: white;
+  transform: translateX(-4px);
+}
+
+.blog-back-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+}
+
+/* 侧边栏卡片样式 */
+.blog-sidebar-card {
+  background: rgba(30, 41, 59, 0.3);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.blog-sidebar-card:hover {
+  background: rgba(30, 41, 59, 0.5);
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.blog-sidebar-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: rgb(226, 232, 240);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.blog-tag-item {
+  padding: 0.375rem 0.75rem;
+  background: rgba(51, 65, 85, 0.5);
+  color: rgb(203, 213, 225);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.blog-tag-item:hover {
+  background: rgba(59, 130, 246, 0.2);
+  color: rgb(147, 197, 253);
+  border-color: rgba(59, 130, 246, 0.3);
+  transform: scale(1.05);
+}
+
+.blog-archive-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.blog-archive-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  color: rgb(148, 163, 184);
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.blog-archive-item:hover {
+  color: rgb(226, 232, 240);
+  padding-left: 0.5rem;
+}
+
+.blog-archive-item:last-child {
+  border-bottom: none;
+}
+
+.blog-archive-count {
+  background: rgba(51, 65, 85, 0.5);
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* 返回AI实验室卡片 */
+.blog-back-card {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2));
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.blog-back-card:hover {
+  border-color: rgba(139, 92, 246, 0.5);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
+}
+
+.blog-back-card-icon {
+  width: 3rem;
+  height: 3rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+  transition: transform 0.3s ease;
+}
+
+.blog-back-card:hover .blog-back-card-icon {
+  transform: scale(1.1) rotate(-10deg);
+}
+
+.blog-back-card-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 0.25rem;
+}
+
+.blog-back-card-subtitle {
+  font-size: 0.875rem;
+  color: rgba(196, 181, 253, 0.7);
 }
 </style>

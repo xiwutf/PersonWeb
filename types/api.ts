@@ -217,6 +217,8 @@ export interface SearchResults {
   articles: SearchResultItem[]
   projects: SearchResultItem[]
   knowledgeBases: SearchResultItem[]
+  tools?: SearchResultItem[]
+  themes?: SearchResultItem[]
 }
 
 // ==================== 友情链接相关 ====================

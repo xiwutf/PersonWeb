@@ -9,9 +9,14 @@
       </div>
 
       <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <NuxtLink to="/" class="inline-flex items-center text-xs text-slate-400 mb-6 hover:text-slate-200 transition-colors">
-          <i class="fas fa-arrow-left mr-2"></i> 返回首页
-        </NuxtLink>
+        <div class="mb-6">
+          <NuxtLink to="/" class="lab-back-button">
+            <svg class="lab-back-button-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            <span>返回首页</span>
+          </NuxtLink>
+        </div>
 
         <div class="grid lg:grid-cols-2 gap-10 items-center">
           <div>
@@ -110,4 +115,32 @@ useHead({
   meta: [{ name: 'description', content: '3D 场景与 AI 小实验的集合地。' }]
 })
 </script>
+
+<style scoped>
+/* 返回按钮样式 */
+.lab-back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  color: rgb(148, 163, 184);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 0.75rem;
+}
+
+.lab-back-button:hover {
+  background: rgba(15, 23, 42, 0.7);
+  border-color: rgba(59, 130, 246, 0.3);
+  color: rgb(203, 213, 225);
+}
+
+.lab-back-button-icon {
+  width: 1rem;
+  height: 1rem;
+}
+</style>
 

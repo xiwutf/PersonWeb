@@ -118,6 +118,16 @@ public class WeChatPaymentService : IPaymentService
             var mchId = _configuration["WeChatPay:MchId"];
             var apiKey = _configuration["WeChatPay:ApiKey"];
 
+            if (string.IsNullOrEmpty(apiKey))
+            {
+                _logger.LogWarning("微信支付 API Key 未配置");
+                return new PaymentStatusResponse
+                {
+                    PaymentId = paymentId,
+                    Status = "pending"
+                };
+            }
+
             var queryRequest = new
             {
                 appid = appId,

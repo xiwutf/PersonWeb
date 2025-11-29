@@ -24,12 +24,12 @@
             v-for="item in mainNavigationItems"
             :key="item.path"
             :to="item.path"
-            class="relative px-3 py-2 rounded-xl text-sm font-medium transition-all duration-300 hover:bg-gray-100/50 hover:text-primary-600 whitespace-nowrap"
-            :class="{ 'bg-primary-50 text-primary-600 shadow-sm': route.path === item.path, 'text-gray-600': route.path !== item.path }"
+            class="header-nav-item"
+            :class="{ 'header-nav-item-active': route.path === item.path, 'header-nav-item-inactive': route.path !== item.path }"
           >
-            <span class="flex items-center space-x-1.5">
-              <span>{{ item.icon }}</span>
-              <span>{{ item.title }}</span>
+            <span class="header-nav-item-content">
+              <span class="header-nav-item-icon">{{ item.icon }}</span>
+              <span class="header-nav-item-title">{{ item.title }}</span>
             </span>
           </NuxtLink>
           
@@ -332,3 +332,55 @@ const toggleMobileMenu = () => {
   isMobileMenuOpen.value = !isMobileMenuOpen.value
 }
 </script>
+
+<style scoped>
+/* 导航项样式 */
+.header-nav-item {
+  position: relative;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  display: inline-block;
+  text-decoration: none;
+  min-width: fit-content;
+}
+
+.header-nav-item:hover {
+  background: rgba(229, 231, 235, 0.5);
+  color: rgb(37, 99, 235);
+}
+
+.header-nav-item-active {
+  background: rgba(239, 246, 255, 1);
+  color: rgb(37, 99, 235);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.header-nav-item-inactive {
+  color: rgb(75, 85, 99);
+}
+
+.header-nav-item-content {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  flex-direction: row;
+  writing-mode: horizontal-tb;
+  text-orientation: mixed;
+}
+
+.header-nav-item-icon {
+  display: inline-block;
+  line-height: 1;
+}
+
+.header-nav-item-title {
+  display: inline-block;
+  line-height: 1.5;
+  writing-mode: horizontal-tb;
+  text-orientation: mixed;
+}
+</style>

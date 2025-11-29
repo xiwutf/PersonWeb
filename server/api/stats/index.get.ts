@@ -1,13 +1,29 @@
-import fs from 'node:fs'
-import path from 'node:path'
-
-const statsFile = path.resolve(process.cwd(), 'server/data/stats.json')
+import { db } from '~/server/utils/db'
 
 export default defineEventHandler(async (event) => {
-    if (!fs.existsSync(statsFile)) {
-        return { totalVisits: 0, todayVisits: 0 }
-    }
+    try {
+        // 从数据库查询实时统计数据
+        const [totalRows] = await db.query('SELECT COUNT(*) as count FROM visit_logs') as any[]
+        const totalVisits = totalRows[0]?.count || 0
 
-    const data = JSON.parse(fs.readFileSync(statsFile, 'utf-8'))
-    return data
+        // 查询今日访问量（使用当前日期）
+        const today = new Date().toISOString().split('T')[0] // YYYY-MM-DD
+        const [todayRows] = await db.query(
+            'SELECT COUNT(*) as count FROM visit_logs WHERE DATE(timestamp) = ?',
+            [today]
+        ) as any[]
+        const todayVisits = todayRows[0]?.count || 0
+
+        return {
+            totalVisits,
+            todayVisits
+        }
+    } catch (e) {
+        console.error('Failed to fetch stats from database:', e)
+        // 如果数据库查询失败，返回默认值
+        return {
+            totalVisits: 0,
+            todayVisits: 0
+        }
+    }
 })

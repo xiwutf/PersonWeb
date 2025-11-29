@@ -147,7 +147,8 @@ const fetchArticle = async () => {
             // Add ID to token attributes
             token.attrSet('id', id)
             
-            if (level <= 3) { // Only H1-H3
+            // 排除H1标题（通常是文章标题），只包含H2-H3
+            if (level >= 2 && level <= 3) {
               tocList.push({ id, text, level })
             }
           }

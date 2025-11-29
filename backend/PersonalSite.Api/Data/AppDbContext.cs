@@ -77,6 +77,9 @@ public class AppDbContext : DbContext
     public DbSet<ApiCall> ApiCalls { get; set; }
     public DbSet<ApiBilling> ApiBillings { get; set; }
     public DbSet<MembershipType> MembershipTypes { get; set; }
+    
+    // 仪表盘指标表
+    public DbSet<DashboardMetric> DashboardMetrics { get; set; }
     public DbSet<UserMembership> UserMemberships { get; set; }
     public DbSet<PaidContent> PaidContents { get; set; }
     public DbSet<ContentPurchase> ContentPurchases { get; set; }
