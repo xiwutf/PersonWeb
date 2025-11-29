@@ -1,5 +1,6 @@
 ﻿<template>
-  <div class="min-h-screen flex flex-col relative">
+  <!-- 首页布局：使用主题背景色和文字颜色 -->
+  <div class="min-h-screen flex flex-col relative bg-bg-body text-text-main">
     <!-- 动态粒子背景 -->
     <ParticleBackground />
     

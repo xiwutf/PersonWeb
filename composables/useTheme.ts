@@ -2,24 +2,37 @@
  * 主题切换组合式函数
  * 
  * 职责：
- * - 管理用户选择的主题（light/dark/tech-blue）
+ * - 管理用户选择的主题（light/dark/tech-blue/paper/forest）
  * - 将主题写入 document.documentElement.dataset.theme
  * - 将主题变量写入 CSS 变量
  * - 持久化主题到 localStorage
  * - 提供主题切换和切换方法
  */
 
-import type { ThemeName } from '~/constants/design/tokens'
-import { themeVariables, DEFAULT_THEME, THEME_STORAGE_KEY } from '~/constants/design/tokens'
+import type { ThemeName, ThemeKey } from '~/constants/design/tokens'
+import { themeVariables, DEFAULT_THEME, THEME_STORAGE_KEY, resolveThemeTokens } from '~/constants/design/tokens'
+
+// 全局主题状态（单例模式，确保所有组件共享同一个主题状态）
+const globalThemeState = {
+  currentTheme: ref<ThemeName>(DEFAULT_THEME),
+  initialized: false,
+  // 后端传来的 theme tokens 覆盖
+  // 来源：plugins/init-theme.client.ts 从后端 /api/Config/theme-tokens/{themeKey} 获取
+  // 用途：覆盖默认 tokens，实现后台细粒度管理样式
+  backendTokens: ref<Partial<Record<ThemeKey, Record<string, string>>>>({})
+}
 
 export const useTheme = () => {
-  // 当前主题的响应式引用
-  // 初始值从 localStorage 获取，如果没有则使用默认主题
-  const currentTheme = ref<ThemeName>(DEFAULT_THEME)
+  // 使用全局主题状态，确保所有组件共享同一个主题
+  const currentTheme = globalThemeState.currentTheme
 
   /**
    * 应用主题到 DOM
    * 这一步会将主题名设置到 data-theme 属性，并将所有 CSS 变量写入 document.documentElement
+   * 
+   * 更新：现在支持后端 tokens 覆盖
+   * - 先合并默认 tokens 和后端覆盖的 tokens
+   * - 再写入 CSS 变量
    */
   const applyTheme = (theme: ThemeName) => {
     if (!process.client) return
@@ -27,12 +40,19 @@ export const useTheme = () => {
     // 1. 设置 data-theme 属性，这样 CSS 选择器 :root[data-theme='xxx'] 会生效
     document.documentElement.dataset.theme = theme
 
-    // 2. 获取当前主题对应的所有 CSS 变量
-    const variables = themeVariables[theme]
+    // 2. 获取后端覆盖的 tokens（如果有）
+    const backendOverrides = globalThemeState.backendTokens.value[theme]
 
-    // 3. 将每个变量写入 document.documentElement.style
+    // 3. 合并默认 tokens 和后端覆盖，得到最终 tokens
+    // resolveThemeTokens 会：
+    // - 从 defaultThemeTokens 获取默认值
+    // - 用 backendOverrides 覆盖默认值
+    // - 返回 CSS 变量格式的键值对（--color-xxx: value）
+    const finalTokens = resolveThemeTokens(theme, backendOverrides)
+
+    // 4. 将每个变量写入 document.documentElement.style
     // 这样即使 CSS 文件还没加载，也能通过内联样式生效
-    Object.entries(variables).forEach(([key, value]) => {
+    Object.entries(finalTokens).forEach(([key, value]) => {
       document.documentElement.style.setProperty(key, value)
     })
   }
@@ -46,7 +66,9 @@ export const useTheme = () => {
 
     try {
       const saved = localStorage.getItem(THEME_STORAGE_KEY)
-      if (saved && (saved === 'light' || saved === 'dark' || saved === 'tech-blue')) {
+      // 验证主题值是否在支持的列表中
+      const validThemes: ThemeName[] = ['light', 'dark', 'tech-blue', 'paper', 'forest']
+      if (saved && validThemes.includes(saved as ThemeName)) {
         return saved as ThemeName
       }
     } catch (error) {
@@ -89,11 +111,31 @@ export const useTheme = () => {
   }
 
   // 初始化：在客户端挂载时，从 localStorage 读取主题并应用
-  if (process.client) {
-    // 立即读取并应用保存的主题
-    const savedTheme = loadThemeFromStorage()
-    currentTheme.value = savedTheme
-    applyTheme(savedTheme)
+  // 注意：init-theme 插件会在应用启动时从后端获取主题并调用 setTheme()
+  // 如果插件执行成功，setTheme() 会设置 currentTheme 和 localStorage
+  // 如果插件执行失败，这里会回退到使用 localStorage 中的旧值或默认值
+  if (process.client && !globalThemeState.initialized) {
+    // 标记已初始化，避免重复初始化
+    globalThemeState.initialized = true
+    
+    // 延迟初始化，确保插件有机会先执行
+    // 使用 nextTick 让插件先执行，然后再读取 localStorage
+    nextTick(() => {
+      // 检查 DOM 是否已经有主题被设置（插件可能已经设置了）
+      const domTheme = document.documentElement.dataset.theme as ThemeName | undefined
+      // 验证主题值是否在支持的列表中
+      const validThemes: ThemeName[] = ['light', 'dark', 'tech-blue', 'paper', 'forest']
+      
+      if (domTheme && validThemes.includes(domTheme)) {
+        // 如果 DOM 已经有主题（说明插件已经执行），使用 DOM 中的主题
+        currentTheme.value = domTheme
+      } else {
+        // 如果 DOM 没有主题，从 localStorage 读取
+        const savedTheme = loadThemeFromStorage()
+        currentTheme.value = savedTheme
+        applyTheme(savedTheme)
+      }
+    })
 
     // 监听 currentTheme 的变化，自动应用新主题
     // 这样当通过 setTheme 或 toggleDark 改变主题时，会自动更新 DOM
@@ -103,12 +145,35 @@ export const useTheme = () => {
     })
   }
 
+  /**
+   * 设置后端 theme tokens 覆盖
+   * 
+   * 用途：
+   * - 由 plugins/init-theme.client.ts 调用，注入从后端获取的 tokens
+   * - 后端 tokens 会覆盖默认 tokens 中对应的字段
+   * - 如果后端没有提供某个主题的 tokens，使用默认值
+   * 
+   * @param tokensFromBackend 后端返回的 tokens，格式为 { themeKey: { "color.bg.body": "#ffffff", ... } }
+   */
+  const setBackendThemeTokens = (
+    tokensFromBackend: Partial<Record<ThemeKey, Record<string, string>>>
+  ) => {
+    globalThemeState.backendTokens.value = tokensFromBackend
+    
+    // 如果当前主题有 tokens 覆盖，重新应用主题以生效
+    if (process.client && currentTheme.value) {
+      applyTheme(currentTheme.value)
+    }
+  }
+
   return {
     // 当前主题（响应式引用）
     currentTheme: readonly(currentTheme),
     // 设置主题
     setTheme,
     // 切换暗色模式
-    toggleDark
+    toggleDark,
+    // 设置后端 theme tokens（供插件调用）
+    setBackendThemeTokens
   }
 }

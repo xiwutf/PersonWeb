@@ -1,5 +1,6 @@
 ﻿<template>
-  <div class="min-h-screen flex flex-col relative">
+  <!-- 最外层容器：使用主题背景色和文字颜色 -->
+  <div class="min-h-screen flex flex-col relative bg-bg-body text-text-main">
     <!-- 动态背景效果（根据主题切换） -->
     <BackgroundEffects :effect="currentBackground" :config="backgroundConfig" />
     

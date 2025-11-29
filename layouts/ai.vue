@@ -1,5 +1,6 @@
 ﻿<template>
-  <div class="min-h-screen flex flex-col bg-[#050505] text-white">
+  <!-- AI 布局：使用主题背景色和文字颜色，替换写死的深色背景 -->
+  <div class="min-h-screen flex flex-col bg-bg-body text-text-main">
     <!-- 头部导航 -->
     <Header />
     

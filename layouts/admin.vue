@@ -3,12 +3,12 @@
     class="min-h-screen flex admin-layout"
     :style="layoutStyle"
   >
-    <!-- 侧边栏 -->
+    <!-- 侧边栏：使用主题颜色，替换写死的 text-white 和 border-slate-700 -->
     <aside 
-      class="w-64 text-white flex flex-col fixed h-full left-0 top-0 z-50 admin-sidebar"
+      class="w-64 text-text-main flex flex-col fixed h-full left-0 top-0 z-50 admin-sidebar bg-bg-card"
       :style="sidebarStyle"
     >
-      <div class="p-6 text-xl font-bold border-b border-slate-700 flex items-center gap-2">
+      <div class="p-6 text-xl font-bold border-b border-border-subtle flex items-center gap-2">
         <span>管理后台</span>
       </div>
       <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
@@ -29,7 +29,8 @@
             :class="{ 'menu-group-active': isMenuActive('content') }"
           >
             <i class="fas fa-chevron-right transition-transform duration-200 mr-2" :class="{ 'rotate-90': expandedMenus.content }"></i>
-            <span class="text-xs text-slate-400 uppercase font-semibold">内容管理</span>
+            <!-- 菜单组标题：使用主题次要文字颜色，替换写死的 text-slate-400 -->
+            <span class="text-xs text-text-muted uppercase font-semibold">内容管理</span>
           </button>
           <div v-show="expandedMenus.content" class="menu-group-items">
             <a 
@@ -349,24 +350,21 @@
         </div>
       </nav>
       
-      <div class="p-4 border-t border-slate-700">
-        <button @click="logout" class="w-full flex items-center px-4 py-2 text-left hover:bg-slate-700 rounded text-red-300 transition-colors">
+      <!-- 退出登录区域：使用主题边框颜色，替换写死的 border-slate-700 -->
+      <div class="p-4 border-t border-border-subtle">
+        <button @click="logout" class="w-full flex items-center px-4 py-2 text-left hover:bg-primary-soft rounded text-text-muted hover:text-text-main transition-colors">
           <i class="fas fa-sign-out-alt w-6 text-center mr-2"></i>
           退出登录
         </button>
       </div>
     </aside>
 
-    <!-- 主内容区 -->
-    <main class="flex-1 ml-64 p-8 admin-main" :style="mainContentStyle">
+    <!-- 主内容区：使用主题背景色和文字颜色 -->
+    <main class="flex-1 ml-64 p-8 admin-main bg-bg-body text-text-main" :style="mainContentStyle">
       <ClientOnly>
-        <n-config-provider :theme="currentTheme" :theme-overrides="themeOverrides">
-          <n-message-provider>
-            <n-dialog-provider>
-              <slot />
-            </n-dialog-provider>
-          </n-message-provider>
-        </n-config-provider>
+        <NaiveUIProviders :theme="currentTheme" :theme-overrides="themeOverrides">
+          <slot />
+        </NaiveUIProviders>
         <template #fallback>
           <slot />
         </template>
@@ -377,7 +375,6 @@
 
 <script setup lang="ts">
 import { onMounted, computed, watch, ref } from 'vue'
-import { NMessageProvider, NDialogProvider, NConfigProvider } from 'naive-ui'
 import { useAdminGlobalStyle } from '~/composables/useAdminStyle'
 import { useNaiveTheme } from '~/composables/useNaiveTheme'
 

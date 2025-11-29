@@ -9,9 +9,9 @@
 
 .projects-view-toggle-container {
   position: fixed;
-  top: 2rem;
+  top: 6rem; /* 调整位置，避开 Header (top-4 + h-16 = 约 6rem) */
   right: 2rem;
-  z-index: 9999;
+  z-index: 100; /* 确保在 Header (z-50) 之上 */
   pointer-events: auto;
 }
 

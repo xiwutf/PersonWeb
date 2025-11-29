@@ -102,15 +102,18 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { NCard, NSpace, NRadioGroup, NRadio, NAlert, NDivider, NColorPicker, NButton, NTag, NInput, NSelect, useMessage } from 'naive-ui'
+import { NCard, NSpace, NRadioGroup, NRadio, NAlert, NDivider, NColorPicker, NButton, NTag, NInput, NSelect } from 'naive-ui'
 import { useNaiveTheme } from '~/composables/useNaiveTheme'
+import { useSafeMessage } from '~/composables/useNaiveUI'
 
 definePageMeta({
   layout: 'admin',
-  middleware: 'admin-auth'
+  middleware: 'admin-auth',
+  ssr: false // 禁用 SSR，避免 Naive UI 组件在服务端渲染时出错
 })
 
-const message = useMessage()
+// 使用安全的 message composable，支持服务端渲染
+const message = useSafeMessage()
 const { themeMode, currentTheme, themeOverrides, setThemeMode, setThemeColor, applyPresetColor, presetColors } = useNaiveTheme()
 
 // 创建响应式的主题模式值（因为 themeMode 是 computed）

@@ -1,6 +1,6 @@
 ﻿<template>
-  <header class="fixed top-4 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8">
-    <div class="glass max-w-7xl mx-auto rounded-2xl transition-all duration-300">
+  <header class="fixed top-4 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 pointer-events-none">
+    <div class="glass max-w-7xl mx-auto rounded-2xl transition-all duration-300 pointer-events-auto">
       <div class="flex justify-between items-center h-16 px-4">
         <!-- Logo 区域 - 添加隐秘后台入口 -->
         <div class="flex items-center space-x-3 group shrink-0">
@@ -13,7 +13,8 @@
             <img src="/images/avatar.jpg" alt="溪午听风" class="w-full h-full object-cover" />
           </div>
           <NuxtLink to="/" class="hidden lg:block">
-            <span class="text-xl font-bold text-gray-800">溪午听风</span>
+            <!-- Logo 文本：使用主题文字颜色，替换写死的 gray-800 -->
+            <span class="text-xl font-bold text-text-main">溪午听风</span>
           </NuxtLink>
         </div>
 
@@ -35,9 +36,10 @@
           
           <!-- 更多菜单下拉 -->
           <div class="relative group">
+            <!-- 更多菜单按钮：使用主题颜色，替换写死的 gray 颜色 -->
             <button
-              class="relative px-3 py-2 rounded-xl text-sm font-medium transition-all duration-300 hover:bg-gray-100/50 hover:text-primary-600 whitespace-nowrap text-gray-600"
-              :class="{ 'bg-primary-50 text-primary-600 shadow-sm': isMoreMenuActive }"
+              class="relative px-3 py-2 rounded-xl text-sm font-medium transition-all duration-300 hover:bg-primary-soft hover:text-primary whitespace-nowrap text-text-muted"
+              :class="{ 'bg-primary-soft text-primary shadow-sm': isMoreMenuActive }"
             >
               <span class="flex items-center space-x-1.5">
                 <span>⋯</span>
@@ -48,15 +50,15 @@
               </span>
             </button>
             
-            <!-- 下拉菜单 -->
-            <div class="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+            <!-- 下拉菜单：使用主题背景和文字颜色，替换写死的 white 和 gray -->
+            <div class="absolute right-0 top-full mt-2 w-48 bg-bg-card rounded-xl shadow-lg border border-border-subtle opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
               <div class="py-2">
                 <NuxtLink
                   v-for="item in moreNavigationItems"
                   :key="item.path"
                   :to="item.path"
-                  class="flex items-center space-x-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary-600 transition-colors"
-                  :class="{ 'bg-primary-50 text-primary-600': route.path === item.path }"
+                  class="flex items-center space-x-3 px-4 py-2.5 text-sm text-text-muted hover:bg-primary-soft hover:text-primary transition-colors"
+                  :class="{ 'bg-primary-soft text-primary': route.path === item.path }"
                 >
                   <span class="text-base">{{ item.icon }}</span>
                   <span>{{ item.title }}</span>
@@ -65,11 +67,11 @@
             </div>
           </div>
           
-          <!-- 搜索按钮 -->
+          <!-- 搜索按钮：使用主题颜色，替换写死的 gray -->
           <NuxtLink
             to="/search"
-            class="flex items-center justify-center w-9 h-9 rounded-xl text-gray-600 hover:text-primary-600 hover:bg-primary-50 transition-all duration-300 ml-1"
-            :class="{ 'text-primary-600 bg-primary-50 shadow-sm': route.path === '/search' }"
+            class="flex items-center justify-center w-9 h-9 rounded-xl text-text-muted hover:text-primary hover:bg-primary-soft transition-all duration-300 ml-1"
+            :class="{ 'text-primary bg-primary-soft shadow-sm': route.path === '/search' }"
             title="搜索"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,22 +85,22 @@
           </div>
         </nav>
 
-        <!-- 移动端菜单按钮 -->
+        <!-- 移动端菜单按钮：使用主题颜色，替换写死的 gray -->
         <button
           @click="toggleMobileMenu"
-          class="md:hidden p-2 rounded-xl hover:bg-gray-100 active:bg-gray-200 transition-colors touch-target"
+          class="md:hidden p-2 rounded-xl hover:bg-primary-soft active:bg-primary-soft transition-colors touch-target"
           aria-label="打开菜单"
         >
-          <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-6 h-6 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
           </svg>
         </button>
       </div>
 
-      <!-- 移动端菜单 -->
+      <!-- 移动端菜单：使用主题颜色，替换写死的 gray -->
       <div
         v-show="isMobileMenuOpen"
-        class="md:hidden border-t border-gray-100 max-h-[calc(100vh-4rem)] overflow-y-auto smooth-scroll"
+        class="md:hidden border-t border-border-subtle max-h-[calc(100vh-4rem)] overflow-y-auto smooth-scroll"
       >
         <nav class="p-2 space-y-1">
           <NuxtLink
@@ -106,19 +108,19 @@
             :key="item.path"
             :to="item.path"
             @click="closeMobileMenu"
-            class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 touch-target active:bg-gray-100"
-            :class="{ 'bg-primary-50 text-primary-600': route.path === item.path, 'text-gray-600 hover:bg-gray-50': route.path !== item.path }"
+            class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 touch-target active:bg-primary-soft"
+            :class="{ 'bg-primary-soft text-primary': route.path === item.path, 'text-text-muted hover:bg-primary-soft': route.path !== item.path }"
           >
             <span class="text-lg">{{ item.icon }}</span>
             <span class="font-medium">{{ item.title }}</span>
           </NuxtLink>
           
-          <!-- 移动端搜索 -->
+          <!-- 移动端搜索：使用主题颜色，替换写死的 gray -->
           <NuxtLink
             to="/search"
             @click="closeMobileMenu"
             class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200"
-            :class="{ 'bg-primary-50 text-primary-600': route.path === '/search', 'text-gray-600 hover:bg-gray-50': route.path !== '/search' }"
+            :class="{ 'bg-primary-soft text-primary': route.path === '/search', 'text-text-muted hover:bg-primary-soft': route.path !== '/search' }"
           >
             <span class="text-lg">🔍</span>
             <span class="font-medium">搜索</span>
@@ -348,19 +350,20 @@ const toggleMobileMenu = () => {
   min-width: fit-content;
 }
 
+/* 导航项样式：使用主题颜色，替换写死的颜色值 */
 .header-nav-item:hover {
-  background: rgba(229, 231, 235, 0.5);
-  color: rgb(37, 99, 235);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
 }
 
 .header-nav-item-active {
-  background: rgba(239, 246, 255, 1);
-  color: rgb(37, 99, 235);
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
 }
 
 .header-nav-item-inactive {
-  color: rgb(75, 85, 99);
+  color: var(--color-text-muted);
 }
 
 .header-nav-item-content {

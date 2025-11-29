@@ -4,7 +4,7 @@
     <div class="projects-view-toggle-container">
       <button
         v-if="viewMode === 'grid'"
-        @click="viewMode = '3d'"
+        @click.stop.prevent="handleToggle3DView"
         class="projects-view-toggle-button"
         title="切换到3D视图"
       >
@@ -145,6 +145,13 @@ const loading = ref(true)
 const error = ref('')
 const debugData = ref('')
 const viewMode = ref<'grid' | '3d'>('grid')
+
+// 切换3D视图处理函数
+const handleToggle3DView = () => {
+  console.log('切换3D视图，当前模式:', viewMode.value)
+  viewMode.value = '3d'
+  console.log('切换后模式:', viewMode.value)
+}
 
 // 图表配置
 const chartOptions = {

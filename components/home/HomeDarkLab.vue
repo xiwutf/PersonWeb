@@ -9,8 +9,20 @@
       style="background-image: url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E&quot;);"
     ></div>
 
-    <!-- Hero Banner -->
-    <section :class="styles.heroSection">
+    <!-- 
+      Hero Banner 区域
+      moduleId: home_hero
+      
+      如何在后台配置中控制这个模块的主题：
+      1. 登录后台，进入主题管理页面
+      2. 找到"首页头部 Hero 区域"配置项
+      3. 选择"跟随全局"或指定独立主题（如 "tech-blue"）
+      4. 保存后，刷新页面即可看到效果
+    -->
+    <section 
+      :class="styles.heroSection"
+      :data-module-theme="moduleTheme || undefined"
+    >
       <!-- 专业网格背景 -->
       <div :class="styles.backgroundGrid">
         <!-- 清晰的网格线 -->
@@ -541,6 +553,9 @@
 <script setup lang="ts">
 // 逻辑部分保持原有结构，只是补充了类型声明
 import { ref, onMounted, onUnmounted } from 'vue'
+
+// 使用模块主题 composable
+const { moduleTheme } = useModuleTheme('home_hero')
 
 const api = useApi()
 const latestPosts = ref<any[]>([])

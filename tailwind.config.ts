@@ -26,18 +26,32 @@ export default <Partial<Config>>{
                 'primary-base': 'var(--color-primary)',
                 'primary-soft': 'var(--color-primary-soft)',
                 'primary-hover': 'var(--color-primary-hover)',
-                // 背景色
+                // 背景色（支持 bg-bg-body, bg-bg-card 等）
                 'bg-body': 'var(--color-bg-body)',
                 'bg-card': 'var(--color-bg-card)',
                 'bg-elevated': 'var(--color-bg-elevated)',
-                // 文字颜色
+                // 文字颜色（支持 text-text-main, text-text-muted 等）
                 'text-main': 'var(--color-text-main)',
                 'text-muted': 'var(--color-text-muted)',
                 'text-disabled': 'var(--color-text-disabled)',
-                // 边框颜色
+                // 边框颜色（支持 border-border-subtle 等）
                 'border-subtle': 'var(--color-border-subtle)',
                 'border-default': 'var(--color-border-default)',
-                'border-strong': 'var(--color-border-strong)'
+                'border-strong': 'var(--color-border-strong)',
+                // 图表颜色（支持 chart-primary, chart-secondary 等）
+                'chart-primary': 'var(--chart-primary)',
+                'chart-secondary': 'var(--chart-secondary)',
+                'chart-tertiary': 'var(--chart-tertiary)',
+                'chart-quaternary': 'var(--chart-quaternary)',
+                'chart-quinary': 'var(--chart-quinary)',
+                'chart-senary': 'var(--chart-senary)',
+                'chart-septenary': 'var(--chart-septenary)',
+                'chart-octonary': 'var(--chart-octonary)',
+                'chart-nonary': 'var(--chart-nonary)',
+                'chart-denary': 'var(--chart-denary)',
+                // 为了兼容性，添加 primary 作为 var(--color-primary) 的别名
+                // 注意：这会覆盖上面的 primary 对象，但实际使用时优先使用 primary-500 等具体色阶
+                // 如果需要直接使用主题主色，可以用 primary-base
             },
             // 扩展圆角，使用 CSS 变量
             borderRadius: {
