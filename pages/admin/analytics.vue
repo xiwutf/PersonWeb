@@ -520,51 +520,86 @@
           <tbody class="divide-y divide-border-subtle">
             <tr
               v-for="visitor in visitors"
-              :key="visitor.Id"
+              :key="visitor.id || visitor.Id"
               class="hover:bg-bg-elevated transition-colors"
             >
+              <!-- 修复访客列表 IP 一直显示未知的问题：后端返回的是小写字段名 -->
               <td class="px-4 py-3 text-text-main font-mono text-xs">
-                {{ visitor.VisitorId?.substring(0, 8) }}...
+                {{ (visitor.visitorId || visitor.VisitorId)?.substring(0, 8) }}...
               </td>
-              <!-- 修复线上访问仍然显示未知的问题：确保 IP 字段正确显示 -->
+              <!-- 修复访客列表 IP 一直显示未知的问题：后端返回的是小写字段名 ip，不是 Ip -->
               <td class="px-4 py-3 text-text-main font-mono text-xs">
-                {{ visitor.Ip && visitor.Ip !== '-' ? visitor.Ip : '未知' }}
+                {{ (visitor.ip || visitor.Ip) && (visitor.ip || visitor.Ip) !== '-' ? (visitor.ip || visitor.Ip) : '未知' }}
               </td>
+              <!-- 修复访客列表 IP 一直显示未知的问题：后端返回的是小写字段名 -->
               <td class="px-4 py-3 text-text-main">
                 <div class="text-xs">
-                  <div v-if="visitor.Country">{{ visitor.Country }}</div>
-                  <div v-if="visitor.Region" class="text-text-muted">{{ visitor.Region }}</div>
-                  <div v-if="visitor.City" class="text-text-muted">{{ visitor.City }}</div>
-                  <div v-if="!visitor.Country && !visitor.Region && !visitor.City" class="text-text-disabled">未知</div>
+                  <div v-if="visitor.country || visitor.Country">{{ visitor.country || visitor.Country }}</div>
+                  <div v-if="visitor.region || visitor.Region" class="text-text-muted">{{ visitor.region || visitor.Region }}</div>
+                  <div v-if="visitor.city || visitor.City" class="text-text-muted">{{ visitor.city || visitor.City }}</div>
+                  <div v-if="!(visitor.country || visitor.Country) && !(visitor.region || visitor.Region) && !(visitor.city || visitor.City)" class="text-text-disabled">未知</div>
                 </div>
               </td>
+              <!-- 修复访客列表 IP 一直显示未知的问题：后端返回的是小写字段名 -->
               <td class="px-4 py-3 text-text-main">
                 <div class="text-xs">
-                  <div>{{ visitor.DeviceType || '-' }}</div>
-                  <div class="text-text-muted">{{ visitor.Browser || '-' }} / {{ visitor.Os || '-' }}</div>
+                  <div>{{ (visitor.deviceType || visitor.DeviceType) && (visitor.deviceType || visitor.DeviceType) !== 'unknown' ? (visitor.deviceType || visitor.DeviceType) : '-' }}</div>
+                  <div class="text-text-muted">
+                    {{ (visitor.browser || visitor.Browser) && (visitor.browser || visitor.Browser) !== 'unknown' ? (visitor.browser || visitor.Browser) : '-' }} / 
+                    {{ (visitor.os || visitor.Os) && (visitor.os || visitor.Os) !== 'unknown' ? (visitor.os || visitor.Os) : '-' }}
+                  </div>
                 </div>
               </td>
+              <!-- 修复访客列表 IP 一直显示未知的问题：后端返回的是小写字段名 -->
+              <!-- 优化路径显示：添加图标和更好的格式 -->
               <td class="px-4 py-3 text-text-main">
-                <!-- 修复线上访问仍然显示未知的问题：确保 Path 字段正确显示 -->
-                <div class="text-xs max-w-xs truncate" :title="visitor.Path || '/'">
-                  {{ formatPathName(visitor.Path || '/') }}
+                <div class="flex items-center gap-1.5">
+                  <!-- 根据路径类型显示不同图标 -->
+                  <span class="text-text-muted text-xs">
+                    <svg v-if="(visitor.path || visitor.Path) === '/'" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    <svg v-else-if="(visitor.path || visitor.Path)?.includes('/admin')" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                    <svg v-else-if="(visitor.path || visitor.Path)?.includes('/blog') || (visitor.path || visitor.Path)?.includes('/article')" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                    </svg>
+                    <svg v-else class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                  </span>
+                  <div class="flex-1 min-w-0">
+                    <div class="text-xs font-medium truncate" :title="(visitor.path || visitor.Path) || '/'">
+                      {{ formatPathName((visitor.path || visitor.Path) || '/') }}
+                    </div>
+                    <!-- 显示原始路径（如果格式化后的名称与原始路径不同） -->
+                    <div v-if="(visitor.path || visitor.Path) && formatPathName((visitor.path || visitor.Path) || '/') !== (visitor.path || visitor.Path)?.replace(/^\//, '')" 
+                         class="text-xs text-text-muted truncate mt-0.5" 
+                         :title="(visitor.path || visitor.Path) || '/'">
+                      {{ (visitor.path || visitor.Path)?.replace(/^\//, '') || '/' }}
+                    </div>
+                  </div>
                 </div>
-                <div v-if="visitor.SearchKeyword" class="text-xs text-primary mt-1">
-                  搜索: {{ visitor.SearchKeyword }}
+                <div v-if="visitor.searchKeyword || visitor.SearchKeyword" class="text-xs text-primary mt-1.5 flex items-center gap-1">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                  搜索: {{ visitor.searchKeyword || visitor.SearchKeyword }}
                 </div>
               </td>
-              <!-- 修复线上访问仍然显示未知的问题：确保浏览量字段正确显示 -->
+              <!-- 修复访客列表 IP 一直显示未知的问题：后端返回的是小写字段名 -->
               <td class="px-4 py-3 text-text-main text-center">
-                {{ visitor.PageViews > 0 ? visitor.PageViews : 1 }}
+                {{ ((visitor.pageViews || visitor.PageViews) || 0) > 0 ? (visitor.pageViews || visitor.PageViews) : 1 }}
               </td>
-              <!-- 修复线上访问仍然显示未知的问题：确保最后活跃时间字段正确显示 -->
+              <!-- 修复访客列表 IP 一直显示未知的问题：后端返回的是小写字段名 -->
               <td class="px-4 py-3 text-text-main text-xs">
-                {{ visitor.UpdatedAt ? formatTime(visitor.UpdatedAt) : '-' }}
+                {{ (visitor.updatedAt || visitor.UpdatedAt) ? formatTime(visitor.updatedAt || visitor.UpdatedAt) : '-' }}
               </td>
-              <!-- 修复线上访问仍然显示未知的问题：确保在线状态字段正确显示 -->
+              <!-- 修复访客列表 IP 一直显示未知的问题：后端返回的是小写字段名 -->
               <td class="px-4 py-3">
                 <span
-                  v-if="visitor.IsOnline === true"
+                  v-if="(visitor.isOnline || visitor.IsOnline) === true"
                   class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-chart-secondary/20 text-chart-secondary"
                 >
                   <span class="w-1.5 h-1.5 bg-chart-secondary rounded-full mr-1"></span>
@@ -1259,14 +1294,24 @@ const fetchVisitors = async () => {
       
       // 详细调试信息
       if (visitors.value.length > 0) {
+        const firstVisitor = visitors.value[0]
+        // 修复访客列表 IP 一直显示未知的问题：添加详细的字段调试信息
         console.log('[Analytics] ✅ 访客数据已获取，第一条记录:', {
-          id: visitors.value[0].Id,
-          visitorId: visitors.value[0].VisitorId,
-          ip: visitors.value[0].Ip,
-          path: visitors.value[0].Path,
-          isOnline: visitors.value[0].IsOnline,
-          updatedAt: visitors.value[0].UpdatedAt,
-          pageViews: visitors.value[0].PageViews
+          id: firstVisitor.id || firstVisitor.Id,
+          visitorId: firstVisitor.visitorId || firstVisitor.VisitorId,
+          ip: firstVisitor.ip || firstVisitor.Ip,
+          ipType: typeof (firstVisitor.ip || firstVisitor.Ip),
+          ipValue: firstVisitor.ip || firstVisitor.Ip,
+          ipCheck: (firstVisitor.ip || firstVisitor.Ip) && (firstVisitor.ip || firstVisitor.Ip) !== '-',
+          path: firstVisitor.path || firstVisitor.Path,
+          isOnline: firstVisitor.isOnline || firstVisitor.IsOnline,
+          updatedAt: firstVisitor.updatedAt || firstVisitor.UpdatedAt,
+          pageViews: firstVisitor.pageViews || firstVisitor.PageViews,
+          // 检查所有可能的字段名（大小写变体）
+          allKeys: Object.keys(firstVisitor),
+          ipLower: firstVisitor.ip,
+          ipUpper: firstVisitor.IP,
+          ipPascal: firstVisitor.Ip
         })
       } else {
         console.warn('[Analytics] ⚠️ 访客列表为空，可能的原因：')
@@ -1337,15 +1382,49 @@ const formatPathName = (path: string): string => {
     'admin': '管理后台',
     'about': '关于',
     'contact': '联系',
-    'search': '搜索'
+    'search': '搜索',
+    'dashboard': '仪表盘',
+    'home': '首页',
+    'index': '首页',
+    'skills': '技能',
+    'experience': '经历',
+    'resume': '简历',
+    'portfolio': '作品集',
+    'gallery': '画廊',
+    'news': '新闻',
+    'events': '活动',
+    'faq': '常见问题',
+    'help': '帮助',
+    'support': '支持',
+    'privacy': '隐私政策',
+    'terms': '服务条款',
+    'sitemap': '网站地图'
   }
   
   const firstPart = parts[0]
   const firstLevelName = firstLevelMap[firstPart] || firstPart
   
-  // 如果只有一级路径，直接返回
+  // 如果只有一级路径，直接返回（如果映射表中没有，尝试智能识别）
   if (parts.length === 1) {
-    return firstLevelName
+    // 如果已经在映射表中，直接返回
+    if (firstLevelMap[firstPart]) {
+      return firstLevelName
+    }
+    // 如果不在映射表中，尝试将英文转换为中文（简单的常见词映射）
+    const commonWords: Record<string, string> = {
+      'dashboard': '仪表盘',
+      'home': '首页',
+      'index': '首页',
+      'profile': '个人资料',
+      'settings': '设置',
+      'account': '账户',
+      'login': '登录',
+      'register': '注册',
+      'logout': '退出',
+      'forgot-password': '忘记密码',
+      'reset-password': '重置密码'
+    }
+    return commonWords[firstPart.toLowerCase()] || firstPart
   }
   
   // 处理二级路径
@@ -1362,9 +1441,27 @@ const formatPathName = (path: string): string => {
       'themes': '主题设置',
       'theme-settings': '主题设置',
       'edit': '编辑',
-      'login': '登录'
+      'login': '登录',
+      'dashboard': '仪表盘',
+      'index': '仪表盘',
+      'settings': '设置',
+      'users': '用户管理',
+      'comments': '评论管理',
+      'media': '媒体管理',
+      'pages': '页面管理',
+      'menus': '菜单管理',
+      'widgets': '组件管理',
+      'backup': '备份',
+      'logs': '日志',
+      'security': '安全',
+      'api': 'API管理'
     }
     return adminPageMap[secondPart] || `${firstLevelName}：${secondPart}`
+  }
+  
+  // 处理单独的 dashboard 路径（可能是 /dashboard 或 /admin/dashboard）
+  if (firstPart === 'dashboard') {
+    return '仪表盘'
   }
   
   // 处理动态路由（如 /blog/[slug], /tools/[slug] 等）
@@ -1407,6 +1504,36 @@ const formatPathName = (path: string): string => {
   }
   
   // 默认情况：返回路径的友好格式
+  // 尝试将常见的英文路径转换为中文
+  const commonPathTranslations: Record<string, string> = {
+    'dashboard': '仪表盘',
+    'profile': '个人资料',
+    'settings': '设置',
+    'account': '账户',
+    'login': '登录',
+    'register': '注册',
+    'logout': '退出',
+    'forgot-password': '忘记密码',
+    'reset-password': '重置密码',
+    'not-found': '页面未找到',
+    'error': '错误页面',
+    'unauthorized': '未授权',
+    'forbidden': '禁止访问'
+  }
+  
+  // 检查整个路径是否在翻译表中
+  const pathKey = pathWithoutQuery.toLowerCase().replace(/^\//, '')
+  if (commonPathTranslations[pathKey]) {
+    return commonPathTranslations[pathKey]
+  }
+  
+  // 检查路径的最后一部分是否在翻译表中
+  const lastPart = parts[parts.length - 1]?.toLowerCase()
+  if (lastPart && commonPathTranslations[lastPart]) {
+    const prefix = parts.length > 1 ? `${firstLevelName}：` : ''
+    return `${prefix}${commonPathTranslations[lastPart]}`
+  }
+  
   const displayPath = pathWithoutQuery.length > 35 
     ? pathWithoutQuery.substring(0, 35) + '...' 
     : pathWithoutQuery

@@ -36,7 +36,16 @@ public class AnalyticsController : ControllerBase
                 return BadRequest(ApiResponse.Error("VisitorId is required", 400));
             }
 
-            var ip = _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
+            // 修复访客列表 IP 一直显示未知的问题：使用统一的 IP 获取方法，优先从 X-Forwarded-For 获取
+            // 注意：即使是私网 IP 也会返回，只是后续不解析地理位置
+            var ip = GetClientIpAddress();
+            
+            // 记录日志用于调试
+            Console.WriteLine($"[Analytics Track] GetClientIpAddress returned: {ip ?? "null"}");
+            Console.WriteLine($"[Analytics Track] X-Forwarded-For: {Request.Headers["X-Forwarded-For"].FirstOrDefault() ?? "null"}");
+            Console.WriteLine($"[Analytics Track] X-Real-IP: {Request.Headers["X-Real-IP"].FirstOrDefault() ?? "null"}");
+            Console.WriteLine($"[Analytics Track] RemoteIpAddress: {_httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString() ?? "null"}");
+            
             var userAgent = Request.Headers["User-Agent"].ToString();
             var referrer = Request.Headers["Referer"].ToString();
 
@@ -44,16 +53,20 @@ public class AnalyticsController : ControllerBase
             var deviceInfo = ParseDeviceInfo(userAgent);
 
             // ========== 1. 写入 VisitLogs 表（基础访问日志）==========
+            // 修复访客列表 IP 一直显示未知的问题：确保 IP 字段正确写入，即使是私网 IP 也要记录
             var visitLog = new VisitLog
             {
                 Id = Guid.NewGuid().ToString(),
                 VisitorId = request.VisitorId,
-                Ip = ip,
+                Ip = ip, // IP 可能为 null（如果完全获取不到），或私网 IP（会记录但地理位置显示为未知）
                 UserAgent = userAgent,
-                Path = request.Path,
+                Path = request.Path ?? "/", // 确保 Path 不为 null
                 Timestamp = DateTime.Now
             };
             _context.VisitLogs.Add(visitLog);
+            
+            // 记录日志用于调试
+            Console.WriteLine($"[Analytics Track] VisitLog created: Id={visitLog.Id}, Ip={visitLog.Ip ?? "null"}, Path={visitLog.Path}");
 
             // ========== 2. 写入或更新 VisitorAnalytics 表（详细分析）==========
             // 查找或创建访客会话
@@ -399,11 +412,111 @@ public class AnalyticsController : ControllerBase
     }
 
     /// <summary>
+    /// 获取客户端真实 IP 地址（修复访客列表 IP 一直显示未知的问题）
+    /// 优先级：X-Forwarded-For（第一个非私网IP） > X-Real-IP > RemoteIpAddress
+    /// 注意：即使是私网 IP 也会返回，只是后续不解析地理位置（前端会显示为"未知"）
+    /// </summary>
+    private string? GetClientIpAddress()
+    {
+        var httpContext = _httpContextAccessor.HttpContext;
+        if (httpContext == null) return null;
+
+        // 1. 优先从 X-Forwarded-For 获取（可能包含多个IP，用逗号分隔）
+        // X-Forwarded-For 格式：client, proxy1, proxy2
+        var forwardedFor = Request.Headers["X-Forwarded-For"].FirstOrDefault();
+        if (!string.IsNullOrEmpty(forwardedFor))
+        {
+            var ips = forwardedFor.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            
+            // 遍历所有 IP，返回第一个非私网 IP
+            foreach (var ip in ips)
+            {
+                var trimmedIp = ip.Trim();
+                if (!string.IsNullOrWhiteSpace(trimmedIp) && !IsPrivateIp(trimmedIp))
+                {
+                    return trimmedIp;
+                }
+            }
+            
+            // 如果都是私网 IP，返回第一个（仍然记录，但地理位置显示为未知）
+            // 修复访客列表 IP 一直显示未知的问题：确保私网 IP 也会返回，而不是 null
+            if (ips.Length > 0)
+            {
+                var firstIp = ips[0].Trim();
+                if (!string.IsNullOrWhiteSpace(firstIp))
+                {
+                    return firstIp;
+                }
+            }
+        }
+
+        // 2. 其次从 X-Real-IP 获取
+        var realIp = Request.Headers["X-Real-IP"].FirstOrDefault();
+        if (!string.IsNullOrEmpty(realIp))
+        {
+            var trimmedIp = realIp.Trim();
+            // 修复访客列表 IP 一直显示未知的问题：即使是私网 IP 也返回，但地理位置会显示为未知
+            if (!string.IsNullOrWhiteSpace(trimmedIp))
+            {
+                return trimmedIp;
+            }
+        }
+
+        // 3. 最后从 RemoteIpAddress 获取
+        var remoteIp = httpContext.Connection.RemoteIpAddress?.ToString();
+        // 修复访客列表 IP 一直显示未知的问题：即使获取不到 IP 也返回 null（前端会显示为"未知"）
+        return remoteIp;
+    }
+
+    /// <summary>
+    /// 判断是否为私网 IP（修复线上访问仍然显示未知的问题）
+    /// </summary>
+    private bool IsPrivateIp(string? ip)
+    {
+        if (string.IsNullOrEmpty(ip)) return true;
+
+        // IPv4 私网地址范围检查
+        // 192.168.0.0/16
+        if (ip.StartsWith("192.168."))
+        {
+            return true;
+        }
+        
+        // 10.0.0.0/8
+        if (ip.StartsWith("10."))
+        {
+            return true;
+        }
+        
+        // 172.16.0.0/12 (172.16.0.0 - 172.31.255.255)
+        if (ip.StartsWith("172."))
+        {
+            var parts = ip.Split('.');
+            if (parts.Length >= 2 && int.TryParse(parts[1], out var secondOctet))
+            {
+                if (secondOctet >= 16 && secondOctet <= 31)
+                {
+                    return true;
+                }
+            }
+        }
+
+        // IPv6 本地地址和 IPv4 回环地址
+        if (ip == "::1" || ip == "127.0.0.1" || ip.StartsWith("fe80:"))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
     /// 获取IP地理位置信息（使用免费的ip-api.com服务）
     /// </summary>
     private async Task<(string? Country, string? Region, string? City)> GetIpGeoLocation(string? ip)
     {
-        if (string.IsNullOrEmpty(ip) || ip == "::1" || ip == "127.0.0.1" || ip.StartsWith("192.168.") || ip.StartsWith("10.") || ip.StartsWith("172."))
+        // 修复线上访问仍然显示未知的问题：私网 IP 不解析地理位置，返回 null（前端会显示"未知"）
+        if (string.IsNullOrEmpty(ip) || IsPrivateIp(ip))
         {
             return (null, null, null);
         }
@@ -722,11 +835,13 @@ public class AnalyticsController : ControllerBase
             {
                 var query = _context.VisitorAnalytics.AsQueryable();
 
+                // 修复变量名冲突：将 fiveMinutesAgo 声明移到 if 块之前
+                var fiveMinutesAgo = DateTime.Now.AddMinutes(-5);
+
                 // 只显示在线访客（最近5分钟内有活动）
                 // 注意：不依赖 IsOnline 字段，直接根据 UpdatedAt 判断，因为 IsOnline 可能没有及时更新
                 if (onlineOnly)
                 {
-                    var fiveMinutesAgo = DateTime.Now.AddMinutes(-5);
                     query = query.Where(v => v.UpdatedAt >= fiveMinutesAgo);
                     Console.WriteLine($"[Analytics Visitors] Filtering online visitors (UpdatedAt >= {fiveMinutesAgo})");
                 }
@@ -747,6 +862,7 @@ public class AnalyticsController : ControllerBase
                     Console.WriteLine($"[Analytics Visitors] Sample visitors: {System.Text.Json.JsonSerializer.Serialize(sampleVisitors)}");
                 }
                 
+                // 修复访客列表 IP 一直显示未知的问题：确保字段映射正确，并计算在线状态
                 var visitors = await query
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize)
@@ -754,24 +870,34 @@ public class AnalyticsController : ControllerBase
                     {
                         v.Id,
                         v.VisitorId,
-                        v.Ip,
+                        // 修复访客列表 IP 一直显示未知的问题：确保 IP 字段有值
+                        // 如果 IP 为 null 或空，返回 "-"（前端会显示为"未知"）
+                        // 如果是私网 IP，直接返回 IP 字符串（前端会显示 IP，但地理位置显示为"未知"）
+                        Ip = !string.IsNullOrWhiteSpace(v.Ip) ? v.Ip : "-",
                         v.Country,
                         v.Region,
                         v.City,
-                        v.DeviceType,
-                        v.Browser,
-                        v.Os,
-                        v.Path,
+                        DeviceType = v.DeviceType ?? "unknown",
+                        Browser = v.Browser ?? "unknown",
+                        Os = v.Os ?? "unknown",
+                        Path = v.Path ?? "/", // 确保 Path 不为 null，修复"未知页面"问题
                         v.Referrer,
                         v.SearchKeyword,
-                        v.PageViews,
-                        v.SessionStart,
-                        v.UpdatedAt,
-                        v.IsOnline
+                        PageViews = v.PageViews > 0 ? v.PageViews : 1, // 确保浏览量至少为 1
+                        SessionStart = v.SessionStart,
+                        UpdatedAt = v.UpdatedAt, // 最后活跃时间
+                        IsOnline = v.UpdatedAt >= fiveMinutesAgo // 修复在线状态：最近5分钟有活动即为在线
                     })
                     .ToListAsync();
                 
                 Console.WriteLine($"[Analytics Visitors] Returning {visitors.Count} visitors");
+                
+                // 修复访客列表 IP 一直显示未知的问题：添加调试日志，记录返回的 IP 字段
+                if (visitors.Count > 0)
+                {
+                    var firstVisitor = visitors.First();
+                    Console.WriteLine($"[Analytics Visitors] First visitor IP: {firstVisitor.Ip ?? "null"}, Path: {firstVisitor.Path ?? "null"}");
+                }
 
                 return Ok(ApiResponse.Success(new
                 {
@@ -804,8 +930,7 @@ public class AnalyticsController : ControllerBase
                     .ToListAsync();
 
                 // 转换为访客格式
-                // 注意：VisitLogs 表只有基础字段，没有地理位置、Referrer、SearchKeyword 等
-                // 这些信息只在 VisitorAnalytics 表中才有
+                // 修复：从 VisitLogs 表解析 IP 获取地理位置和设备信息（解决访客分析无数据问题）
                 var visitorIds = visitLogs.Select(v => v.VisitorId).Distinct().ToList();
                 var pageViewsDict = await _context.VisitLogs
                     .Where(log => visitorIds.Contains(log.VisitorId))
@@ -813,31 +938,78 @@ public class AnalyticsController : ControllerBase
                     .Select(g => new { VisitorId = g.Key, Count = g.Count() })
                     .ToDictionaryAsync(x => x.VisitorId, x => x.Count);
                 
+                // 先收集需要解析的 IP（去重，避免重复解析）
+                // 修复线上访问仍然显示未知的问题：只解析非私网 IP
+                var ipSet = visitLogs
+                    .Where(v => !string.IsNullOrEmpty(v.Ip) && !IsPrivateIp(v.Ip))
+                    .Select(v => v.Ip!)
+                    .Distinct()
+                    .ToList();
+                
+                // 批量解析 IP 地理位置（使用字典缓存，避免重复解析）
+                var geoCache = new Dictionary<string, (string? Country, string? Region, string? City)>();
+                foreach (var ip in ipSet.Take(50)) // 限制最多解析 50 个 IP，避免性能问题
+                {
+                    try
+                    {
+                        var geoInfo = await GetIpGeoLocation(ip);
+                        geoCache[ip] = geoInfo;
+                    }
+                    catch
+                    {
+                        // 静默失败，继续处理下一个 IP（修复：使用命名元组以匹配类型）
+                        geoCache[ip] = (Country: null, Region: null, City: null);
+                    }
+                }
+                
+                // 构建访客列表
+                // 修复访客列表 IP 一直显示未知的问题：确保 IP 字段正确映射，即使是 null 或私网 IP 也要显示
                 var visitors = visitLogs.Select(v =>
                 {
                     var deviceInfo = ParseDeviceInfo(v.UserAgent ?? "");
                     var pageViews = pageViewsDict.GetValueOrDefault(v.VisitorId, 1);
                     
+                    // 从缓存获取地理位置信息（修复：使用明确的命名元组类型声明）
+                    (string? Country, string? Region, string? City) geoInfo = !string.IsNullOrEmpty(v.Ip) && geoCache.ContainsKey(v.Ip)
+                        ? geoCache[v.Ip]
+                        : (Country: null, Region: null, City: null);
+                    
+                    // 修复访客列表 IP 一直显示未知的问题：确保字段映射正确，Path 不为空，在线状态正确计算
+                    var fiveMinutesAgo = DateTime.Now.AddMinutes(-5);
+                    var isOnline = v.Timestamp >= fiveMinutesAgo;
+                    
+                    // 修复访客列表 IP 一直显示未知的问题：确保 IP 字段正确返回
+                    // 如果 IP 为 null 或空，返回 "-"（前端会显示为"未知"）
+                    // 如果是私网 IP，直接返回 IP 字符串（前端会显示 IP，但地理位置显示为"未知"）
+                    var ipValue = !string.IsNullOrWhiteSpace(v.Ip) ? v.Ip : "-";
+                    
                     return new
                     {
                         Id = v.Id,
                         VisitorId = v.VisitorId,
-                        Ip = v.Ip ?? "-",
-                        Country = (string?)null, // VisitLogs 表没有地理位置字段，需要从 VisitorAnalytics 获取
-                        Region = (string?)null,
-                        City = (string?)null,
+                        Ip = ipValue, // 修复访客列表 IP 一直显示未知的问题：确保 IP 字段有值
+                        Country = geoInfo.Country, // 修复：使用命名元组属性访问
+                        Region = geoInfo.Region, // 修复：使用命名元组属性访问
+                        City = geoInfo.City, // 修复：使用命名元组属性访问
                         DeviceType = deviceInfo.DeviceType ?? "unknown",
                         Browser = deviceInfo.Browser ?? "unknown",
                         Os = deviceInfo.Os ?? "unknown",
-                        Path = v.Path ?? "-",
+                        Path = !string.IsNullOrEmpty(v.Path) ? v.Path : "/", // 修复"未知页面"问题：确保 Path 不为空
                         Referrer = (string?)null, // VisitLogs 表没有 Referrer 字段
                         SearchKeyword = (string?)null, // VisitLogs 表没有 SearchKeyword 字段
-                        PageViews = pageViews,
+                        PageViews = pageViews > 0 ? pageViews : 1, // 确保浏览量至少为 1
                         SessionStart = v.Timestamp,
-                        UpdatedAt = v.Timestamp,
-                        IsOnline = !onlineOnly || v.Timestamp >= DateTime.Now.AddMinutes(-5)
+                        UpdatedAt = v.Timestamp, // 最后活跃时间
+                        IsOnline = isOnline // 修复在线状态：最近5分钟有活动即为在线
                     };
                 }).ToList();
+                
+                // 修复访客列表 IP 一直显示未知的问题：添加调试日志，记录返回的 IP 字段
+                if (visitors.Count > 0)
+                {
+                    var firstVisitor = visitors.First();
+                    Console.WriteLine($"[Analytics Visitors] First visitor IP: {firstVisitor.Ip ?? "null"}, Path: {firstVisitor.Path ?? "null"}");
+                }
 
                 return Ok(ApiResponse.Success(new
                 {
@@ -1288,8 +1460,60 @@ public class AnalyticsController : ControllerBase
                 return Ok(ApiResponse.Success(new { items = regionsFromAnalytics }));
             }
 
-            // 如果 VisitorAnalytics 没有地区数据，返回空列表
-            // 后续可以通过 IP 解析库补充
+            // 如果 VisitorAnalytics 没有地区数据，尝试从 VisitLogs 解析 IP 获取地理位置（修复访客分析无数据问题）
+            // 先统计每个 IP 的访问次数，然后解析地理位置
+            var ipCounts = await _context.VisitLogs
+                .Where(v => v.Timestamp >= startDate && v.Timestamp < endDate && !string.IsNullOrEmpty(v.Ip))
+                .GroupBy(v => v.Ip)
+                .Select(g => new { Ip = g.Key, Count = g.Count() })
+                .OrderByDescending(x => x.Count)
+                .Take(100) // 限制最多解析 100 个 IP，避免性能问题
+                .ToListAsync();
+            
+            var regionDict = new Dictionary<string, int>(); // key: "country|region", value: count
+            
+            // 批量解析 IP 地理位置（按访问次数排序，优先解析访问量大的 IP）
+            // 修复线上访问仍然显示未知的问题：只解析非私网 IP
+            foreach (var ipCount in ipCounts)
+            {
+                var ip = ipCount.Ip;
+                if (string.IsNullOrEmpty(ip) || IsPrivateIp(ip))
+                {
+                    continue; // 跳过私网 IP
+                }
+                
+                try
+                {
+                    var geoInfo = await GetIpGeoLocation(ip);
+                    if (!string.IsNullOrEmpty(geoInfo.Country))
+                    {
+                        var key = $"{geoInfo.Country}|{geoInfo.Region ?? ""}";
+                        regionDict[key] = regionDict.GetValueOrDefault(key, 0) + ipCount.Count;
+                    }
+                }
+                catch
+                {
+                    // 静默失败，继续处理下一个 IP
+                }
+            }
+            
+            if (regionDict.Count > 0)
+            {
+                var items = regionDict.Select(kvp =>
+                {
+                    var parts = kvp.Key.Split('|');
+                    return new
+                    {
+                        country = parts[0],
+                        province = parts.Length > 1 ? parts[1] : "",
+                        count = kvp.Value
+                    };
+                }).OrderByDescending(x => x.count).ToList();
+                
+                return Ok(ApiResponse.Success(new { items }));
+            }
+            
+            // 如果仍然没有数据，返回空列表
             return Ok(ApiResponse.Success(new { items = new List<object>() }));
         }
         catch (Exception ex)
