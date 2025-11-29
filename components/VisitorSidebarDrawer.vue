@@ -6,10 +6,10 @@
     :class="{ 'drawer-open': isOpen }"
     aria-label="打开访客功能"
   >
-    <svg v-if="!isOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg v-if="!isOpen" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
     </svg>
-    <svg v-else class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
     </svg>
   </button>
@@ -34,12 +34,12 @@
       <div class="drawer-header">
         <h3 class="drawer-title">访客中心</h3>
         <button
-          @click.stop="closeDrawer"
+          @click.stop.prevent="closeDrawer"
           class="drawer-close-btn"
           aria-label="关闭"
           type="button"
         >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" pointer-events="none">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
@@ -105,12 +105,12 @@ onMounted(() => {
   top: 5rem;
   right: 2rem;
   z-index: 45;
-  width: 3rem;
-  height: 3rem;
+  width: 2.5rem;
+  height: 2.5rem;
   background: rgba(30, 41, 59, 0.95);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 0.75rem;
+  border-radius: 0.625rem;
   color: white;
   display: flex;
   align-items: center;
@@ -153,6 +153,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   box-shadow: -4px 0 24px rgba(0, 0, 0, 0.3);
+  pointer-events: auto;
 }
 
 /* 抽屉头部 */
@@ -163,8 +164,9 @@ onMounted(() => {
   padding: 1.25rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
-  z-index: 10;
+  z-index: 100;
   flex-shrink: 0;
+  pointer-events: auto;
 }
 
 .drawer-title {
@@ -172,6 +174,7 @@ onMounted(() => {
   font-weight: 600;
   color: white;
   margin: 0;
+  pointer-events: none;
 }
 
 .drawer-close-btn {
@@ -187,9 +190,10 @@ onMounted(() => {
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
-  z-index: 10;
+  z-index: 101;
   pointer-events: auto;
   flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .drawer-close-btn:hover {

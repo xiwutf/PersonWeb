@@ -1,7 +1,7 @@
 ﻿<template>
   <div class="relative min-h-screen">
     <!-- 3D 旋转空间视图切换（移动端隐藏） -->
-    <div class="fixed top-20 right-4 z-20 hidden md:block">
+    <div class="fixed top-32 right-4 z-20 hidden md:block">
       <button
         @click="viewMode = viewMode === 'grid' ? '3d' : 'grid'"
         class="btn-primary shadow-lg backdrop-blur-md touch-target"

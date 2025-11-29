@@ -1,6 +1,19 @@
 <template>
   <div class="min-h-screen bg-[#0f172a] text-slate-200 relative overflow-hidden font-['Outfit']">
     <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <!-- 返回按钮 -->
+      <div class="mb-6">
+        <NuxtLink
+          to="/tools"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-slate-800/50 hover:bg-slate-700/50 border border-white/10 rounded-lg transition-all text-slate-300 hover:text-white"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          <span>返回插件工具</span>
+        </NuxtLink>
+      </div>
+
       <!-- 页面头部 -->
       <header class="text-center mb-12">
         <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-orange-200 via-white to-red-200">
