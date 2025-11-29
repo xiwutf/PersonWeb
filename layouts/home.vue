@@ -33,25 +33,8 @@
 const route = useRoute()
 const api = useApi()
 
-// 记录访问量
-onMounted(async () => {
-  try {
-    // 获取或生成 Visitor ID
-    let visitorId = localStorage.getItem('visitor_id')
-    
-    // 调用统计 API
-    const res = await api.post('/tracking/visit', { 
-      visitorId,
-      path: route.path 
-    })
-
-    // 保存 Visitor ID (如果是新生成的)
-    if (res && res.visitorId && res.visitorId !== visitorId) {
-      localStorage.setItem('visitor_id', res.visitorId)
-    }
-  } catch (e) {
-    console.error('Failed to update stats', e)
-  }
-})
+// 注意：访问追踪由 plugins/analytics.client.ts 统一处理
+// 该插件会调用 /api/Analytics/track 接口，同时写入 VisitLogs 和 VisitorAnalytics 表
+// 这里不再需要单独调用统计 API
 </script>
 

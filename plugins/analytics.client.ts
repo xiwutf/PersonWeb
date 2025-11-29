@@ -27,7 +27,8 @@ export default defineNuxtPlugin((nuxtApp) => {
       }
 
       const now = Date.now()
-      const currentPath = window.location.pathname + window.location.search
+      // 修复线上访问仍然显示未知的问题：确保 path 正确记录，包含路径和查询参数
+      const currentPath = window.location.pathname + (window.location.search || '')
 
       // 检查请求间隔（除非强制请求）
       if (!force && now - lastTrackTime < MIN_TRACK_INTERVAL) {

@@ -66,15 +66,77 @@ public class StatsController : ControllerBase
         var articleCount = await _context.Articles.CountAsync();
         var projectCount = await _context.Projects.CountAsync();
 
+        // 7. 待审核留言数（时间胶囊）
+        var pendingMessages = await _context.VisitorMessages
+            .CountAsync(m => m.Status == "pending");
+
+        // 8. 待办任务数
+        var pendingTasks = await _context.Tasks
+            .CountAsync(t => t.Status == "pending" || t.Status == "in_progress");
+
+        // 9. 最近7天访问趋势（用于图表）
+        var sevenDaysAgo = DateTime.Today.AddDays(-6);
+        var visitTrend = await _context.VisitLogs
+            .Where(v => v.Timestamp >= sevenDaysAgo)
+            .GroupBy(v => v.Timestamp.Date)
+            .Select(g => new 
+            { 
+                Date = g.Key.ToString("yyyy-MM-dd"), 
+                Count = g.Count(),
+                UniqueVisitors = g.Select(v => v.VisitorId).Distinct().Count()
+            })
+            .OrderBy(x => x.Date)
+            .ToListAsync();
+
+        // 10. 在线人数（最近5分钟）- 从 VisitorAnalytics 或 VisitLogs 获取
+        int onlineCount = 0;
+        try
+        {
+            var analyticsCount = await _context.VisitorAnalytics.CountAsync();
+            if (analyticsCount > 0)
+            {
+                onlineCount = await _context.VisitorAnalytics
+                    .Where(v => v.IsOnline && v.UpdatedAt >= DateTime.Now.AddMinutes(-5))
+                    .Select(v => v.VisitorId)
+                    .Distinct()
+                    .CountAsync();
+            }
+            else
+            {
+                // 如果 VisitorAnalytics 为空，从 VisitLogs 获取最近5分钟的访问
+                onlineCount = await _context.VisitLogs
+                    .Where(v => v.Timestamp >= DateTime.Now.AddMinutes(-5))
+                    .Select(v => v.VisitorId)
+                    .Distinct()
+                    .CountAsync();
+            }
+        }
+        catch
+        {
+            // 如果查询失败，使用默认值 0
+            onlineCount = 0;
+        }
+
+        // 11. 昨日访问量（用于对比）
+        var yesterday = today.AddDays(-1);
+        var yesterdayVisits = await _context.VisitLogs
+            .Where(v => v.Timestamp >= yesterday && v.Timestamp < today)
+            .CountAsync();
+
         return Ok(ApiResponse.Success(new 
         {
             TotalVisits = totalVisits,
             UniqueVisitors = uniqueVisitors,
             TodayVisits = todayVisits,
+            YesterdayVisits = yesterdayVisits,
+            OnlineCount = onlineCount,
             TopPaths = topPaths,
             RecentVisits = recentVisits,
             ArticleCount = articleCount,
-            ProjectCount = projectCount
+            ProjectCount = projectCount,
+            PendingMessages = pendingMessages,
+            PendingTasks = pendingTasks,
+            VisitTrend = visitTrend
         }));
     }
 }

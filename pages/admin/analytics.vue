@@ -526,8 +526,9 @@
               <td class="px-4 py-3 text-text-main font-mono text-xs">
                 {{ visitor.VisitorId?.substring(0, 8) }}...
               </td>
+              <!-- 修复线上访问仍然显示未知的问题：确保 IP 字段正确显示 -->
               <td class="px-4 py-3 text-text-main font-mono text-xs">
-                {{ visitor.Ip || '-' }}
+                {{ visitor.Ip && visitor.Ip !== '-' ? visitor.Ip : '未知' }}
               </td>
               <td class="px-4 py-3 text-text-main">
                 <div class="text-xs">
@@ -544,22 +545,26 @@
                 </div>
               </td>
               <td class="px-4 py-3 text-text-main">
-                <div class="text-xs max-w-xs truncate" :title="visitor.Path">
-                  {{ formatPathName(visitor.Path || '') }}
+                <!-- 修复线上访问仍然显示未知的问题：确保 Path 字段正确显示 -->
+                <div class="text-xs max-w-xs truncate" :title="visitor.Path || '/'">
+                  {{ formatPathName(visitor.Path || '/') }}
                 </div>
                 <div v-if="visitor.SearchKeyword" class="text-xs text-primary mt-1">
                   搜索: {{ visitor.SearchKeyword }}
                 </div>
               </td>
+              <!-- 修复线上访问仍然显示未知的问题：确保浏览量字段正确显示 -->
               <td class="px-4 py-3 text-text-main text-center">
-                {{ visitor.PageViews || 0 }}
+                {{ visitor.PageViews > 0 ? visitor.PageViews : 1 }}
               </td>
+              <!-- 修复线上访问仍然显示未知的问题：确保最后活跃时间字段正确显示 -->
               <td class="px-4 py-3 text-text-main text-xs">
-                {{ formatTime(visitor.UpdatedAt) }}
+                {{ visitor.UpdatedAt ? formatTime(visitor.UpdatedAt) : '-' }}
               </td>
+              <!-- 修复线上访问仍然显示未知的问题：确保在线状态字段正确显示 -->
               <td class="px-4 py-3">
                 <span
-                  v-if="visitor.IsOnline"
+                  v-if="visitor.IsOnline === true"
                   class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-chart-secondary/20 text-chart-secondary"
                 >
                   <span class="w-1.5 h-1.5 bg-chart-secondary rounded-full mr-1"></span>

@@ -59,6 +59,8 @@ onMounted(async () => {
     updateTheme()
 
     // 获取或生成 Visitor ID
+    // 注意：访问追踪由 plugins/analytics.client.ts 统一处理，这里不再重复调用
+    // 该插件会调用 /api/Analytics/track 接口，同时写入 VisitLogs 和 VisitorAnalytics 表
     let visitorId = localStorage.getItem('visitor_id')
     if (!visitorId) {
       visitorId = `visitor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
@@ -70,22 +72,6 @@ onMounted(async () => {
           detail: { visitorId, location: null }
         }))
       }
-    }
-    
-    // 调用统计 API
-    try {
-      const res = await api.post('/tracking/visit', { 
-        visitorId,
-        path: route.path 
-      })
-
-      // 保存 Visitor ID (如果是新生成的)
-      if (res && res.visitorId && res.visitorId !== visitorId) {
-        localStorage.setItem('visitor_id', res.visitorId)
-        visitorId = res.visitorId
-      }
-    } catch (e) {
-      console.warn('统计API调用失败', e)
     }
 
     // 加载用户主题偏好
