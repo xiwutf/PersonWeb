@@ -24,39 +24,53 @@
       </AppButton>
     </div>
 
-    <!-- 数据提示 -->
-    <AppCard v-if="showNoDataAlert" class="mb-6 border-2 border-chart-tertiary/50 bg-chart-tertiary/10 p-4">
-      <div class="flex items-start">
-        <div class="flex-shrink-0">
-          <svg class="h-5 w-5 text-chart-tertiary" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-          </svg>
-        </div>
-        <div class="ml-3 flex-1">
-          <!-- 使用样式组合类简化代码 -->
-          <h3 class="text-sm text-heading mb-2">暂无访客数据</h3>
-          <div class="mt-2 text-sm text-body leading-relaxed">
-            <p class="mb-2 font-medium">当前没有访客访问记录。可能的原因：</p>
-            <ul class="list-disc list-inside mt-1 space-y-1 ml-2">
-              <li>网站还没有访客访问</li>
-              <!-- 使用 bg-code 样式组合类，替代多个类名 -->
-              <li>访客数据存储在 <code class="bg-code">VisitLogs</code> 表中，请检查数据库</li>
-              <li>如果使用代理或VPN，可能无法正确记录IP地址</li>
-            </ul>
-            <p class="mt-3 mb-2 font-medium">
-              <strong class="text-body">提示：</strong>访问网站首页会自动记录访问数据。您可以：
-            </p>
-            <ul class="list-disc list-inside mt-1 space-y-1 ml-2">
-              <li>打开网站首页，系统会自动记录您的访问</li>
-              <li>点击"刷新数据"按钮更新统计数据</li>
-              <li>检查浏览器控制台的日志信息</li>
-            </ul>
+    <!-- 初始加载状态：只在首次加载时显示，避免闪烁 -->
+    <template v-if="!initialLoadComplete">
+      <AppCard class="mb-6">
+        <div class="flex items-center justify-center py-12">
+          <div class="text-center">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-4"></div>
+            <p class="text-text-muted">正在加载数据...</p>
           </div>
         </div>
-      </div>
-    </AppCard>
+      </AppCard>
+    </template>
 
-    <!-- 第一行：概览卡片区 -->
+    <!-- 数据提示和主要内容：只在加载完成后显示 -->
+    <template v-else>
+      <!-- 数据提示：只在确实没有数据时显示 -->
+      <AppCard v-if="showNoDataAlert" class="mb-6 border-2 border-chart-tertiary/50 bg-chart-tertiary/10 p-4">
+        <div class="flex items-start">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-chart-tertiary" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3 flex-1">
+            <!-- 使用样式组合类简化代码 -->
+            <h3 class="text-sm text-heading mb-2">暂无访客数据</h3>
+            <div class="mt-2 text-sm text-body leading-relaxed">
+              <p class="mb-2 font-medium">当前没有访客访问记录。可能的原因：</p>
+              <ul class="list-disc list-inside mt-1 space-y-1 ml-2">
+                <li>网站还没有访客访问</li>
+                <!-- 使用 bg-code 样式组合类，替代多个类名 -->
+                <li>访客数据存储在 <code class="bg-code">VisitLogs</code> 表中，请检查数据库</li>
+                <li>如果使用代理或VPN，可能无法正确记录IP地址</li>
+              </ul>
+              <p class="mt-3 mb-2 font-medium">
+                <strong class="text-body">提示：</strong>访问网站首页会自动记录访问数据。您可以：
+              </p>
+              <ul class="list-disc list-inside mt-1 space-y-1 ml-2">
+                <li>打开网站首页，系统会自动记录您的访问</li>
+                <li>点击"刷新数据"按钮更新统计数据</li>
+                <li>检查浏览器控制台的日志信息</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </AppCard>
+
+      <!-- 第一行：概览卡片区 -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
       <AppCard class="p-4">
         <div class="text-sm text-text-muted mb-1">今日浏览量</div>
@@ -491,7 +505,7 @@
             />
             仅显示在线访客
           </label>
-          <AppButton variant="secondary" size="sm" @click="() => { console.log('🖱️ [Analytics] 手动点击刷新列表按钮'); fetchVisitors(); }">
+          <AppButton variant="secondary" size="sm" @click="fetchVisitors">
             刷新列表
           </AppButton>
         </div>
@@ -645,6 +659,7 @@
         </div>
       </div>
     </AppCard>
+    </template>
   </div>
 </template>
 
@@ -706,10 +721,9 @@ const visitorsTotal = ref(0)
 const pageSize = ref(20)
 const onlineOnly = ref(false) // 默认不勾选，显示所有访客
 
-// 调试：监听访客数据变化
-watch(visitors, (newVal) => {
-  console.log('[Analytics] visitors 数据变化:', newVal.length, '条')
-}, { deep: true })
+// 初始加载完成标志，用于避免页面刚进入时显示"暂无数据"提示
+const initialLoadComplete = ref(false)
+
 
 // 统一时间范围选择
 const selectedRange = ref<'today' | '7d' | '30d' | '90d'>('7d')
@@ -847,7 +861,6 @@ const generateColors = (count: number): string[] => {
 
 // 访问区域图表数据（使用新的 regions 接口）
 const regionChartData = computed(() => {
-  console.log('[Analytics] regionChartData computed, regions.value:', regions.value)
   if (!regions.value || !regions.value.items || regions.value.items.length === 0) {
     return { labels: [], datasets: [] }
   }
@@ -892,7 +905,6 @@ const sourcesChartData = computed(() => {
 
 // 设备类型图表数据（使用新的 client-distribution 接口）
 const deviceChartData = computed(() => {
-  console.log('[Analytics] deviceChartData computed, clientDistribution.value:', clientDistribution.value)
   if (!clientDistribution.value || !clientDistribution.value.devices || clientDistribution.value.devices.length === 0) {
     return { labels: [], datasets: [] }
   }
@@ -913,7 +925,6 @@ const deviceChartData = computed(() => {
 
 // 浏览器图表数据（使用新的 client-distribution 接口）
 const browserChartData = computed(() => {
-  console.log('[Analytics] browserChartData computed, clientDistribution.value:', clientDistribution.value)
   if (!clientDistribution.value || !clientDistribution.value.browsers || clientDistribution.value.browsers.length === 0) {
     return { labels: [], datasets: [] }
   }
@@ -934,7 +945,6 @@ const browserChartData = computed(() => {
 
 // 操作系统图表数据（使用新的 client-distribution 接口）
 const osChartData = computed(() => {
-  console.log('[Analytics] osChartData computed, clientDistribution.value:', clientDistribution.value)
   if (!clientDistribution.value || !clientDistribution.value.os || clientDistribution.value.os.length === 0) {
     return { labels: [], datasets: [] }
   }
@@ -955,7 +965,6 @@ const osChartData = computed(() => {
 
 // 趋势图数据（使用新的 trend 接口）
 const trendChartData = computed(() => {
-  console.log('[Analytics] trendChartData computed, trendData.value:', trendData.value)
   // 后端返回的是 points（小写），不是 Points
   const points = trendData.value?.points || trendData.value?.Points || []
   if (!trendData.value || points.length === 0) {
@@ -1127,9 +1136,18 @@ const totalOsCount = computed(() => {
 
 // 判断是否显示"暂无访客数据"提示（只有所有数据都为空时才显示）
 const showNoDataAlert = computed(() => {
+  // 如果初始加载未完成，不显示提示，避免闪烁
+  if (!initialLoadComplete.value) {
+    return false
+  }
+  
   // 如果数据还在加载中，不显示黄框，避免闪烁
   if (statsLoading.value || topPagesLoading.value || trendLoading.value || 
-      regionsLoading.value || clientDistributionLoading.value) return false
+      regionsLoading.value || clientDistributionLoading.value || 
+      visitorsLoading.value || pageFlowLoading.value || 
+      sourcesLoading.value || searchKeywordsLoading.value) {
+    return false
+  }
 
   // 检查是否有任何数据
   const hasOverviewData = (overview.value?.todayPv ?? 0) > 0 || (overview.value?.todayUv ?? 0) > 0 ||
@@ -1137,7 +1155,7 @@ const showNoDataAlert = computed(() => {
   const hasAnyData = hasOverviewData || hasTrendData.value || hasRegionData.value || 
                      hasClientDistributionData.value || (topPages.value?.length ?? 0) > 0 || 
                      (sources.value?.items?.length ?? 0) > 0 || (searchKeywords.value?.length ?? 0) > 0 ||
-                     (pageFlow.value?.edges?.length ?? 0) > 0
+                     (pageFlow.value?.edges?.length ?? 0) > 0 || (visitors.value?.length ?? 0) > 0
 
   return !hasAnyData
 })
@@ -1149,16 +1167,13 @@ const rateLimitRetryCount = ref(0)
 const fetchStats = async () => {
   // 如果正在加载，跳过本次请求
   if (statsLoading.value) {
-    console.log('统计数据正在加载中，跳过本次请求')
     return
   }
-
+  
   try {
     statsLoading.value = true
     statsError.value = null
-    console.log('开始获取统计数据...')
     const res = await api.get<any>('/Analytics/stats')
-    console.log('API 响应:', res)
     
     // 成功获取数据，重置重试计数
     rateLimitRetryCount.value = 0
@@ -1176,45 +1191,15 @@ const fetchStats = async () => {
         BrowserStats: res.BrowserStats || [],
         OsStats: res.OsStats || []
       }
-      console.log('统计数据加载成功:', stats.value)
-      console.log('今日PV:', stats.value.Today?.Pv)
-      console.log('今日UV:', stats.value.Today?.Uv)
-      console.log('访问区域数据:', stats.value.RegionStats?.length || 0, '条')
-      console.log('设备数据:', stats.value.DeviceStats?.length || 0, '条')
-      
-      // 获取调试信息
-      try {
-        const debugRes = await api.get<any>('/Analytics/debug-status')
-        console.log('=== 访客分析调试信息 ===')
-        console.log('最近7天访问日志数:', debugRes.visitLogsCountLast7Days)
-        console.log('今日访问日志数:', debugRes.visitLogsCountToday)
-        console.log('是否有 VisitorAnalytics 数据:', debugRes.hasVisitorAnalyticsData)
-        console.log('VisitorAnalytics 记录数:', debugRes.visitorAnalyticsCount)
-        console.log('今日PV (从Logs):', debugRes.todayPvFromLogs)
-        console.log('今日UV (从Logs):', debugRes.todayUvFromLogs)
-        console.log('今日PV (从Analytics):', debugRes.todayPvFromAnalytics)
-        console.log('今日UV (从Analytics):', debugRes.todayUvFromAnalytics)
-        console.log('最后一条访问记录:', debugRes.lastVisitSample)
-        console.log('========================')
-      } catch (debugErr) {
-        console.warn('获取调试信息失败:', debugErr)
-      }
-    } else {
-      console.warn('API 返回空数据')
     }
   } catch (e: any) {
-    console.error('Failed to fetch analytics:', e)
-    console.error('错误详情:', e.message, e.response)
-    
     // 处理 429 速率限制错误
     if (e.response?.status === 429) {
       rateLimitRetryCount.value++
       statsError.value = '请求过于频繁，请稍后再试'
-      console.warn('速率限制错误，重试次数:', rateLimitRetryCount.value)
       
       // 如果连续遇到速率限制，停止自动刷新
       if (rateLimitRetryCount.value >= 3) {
-        console.warn('连续遇到速率限制，停止自动刷新')
         if (autoRefreshInterval.value) {
           clearInterval(autoRefreshInterval.value)
           autoRefreshInterval.value = null
@@ -1227,10 +1212,6 @@ const fetchStats = async () => {
     } else {
       // 其他错误，显示提示但不阻止后续请求
       statsError.value = e.message || '获取数据失败'
-      if (process.client && rateLimitRetryCount.value === 0) {
-        // 只在第一次错误时显示 alert，避免频繁弹窗
-        console.warn('获取统计数据失败:', e.message || '未知错误')
-      }
     }
   } finally {
     statsLoading.value = false
@@ -1240,107 +1221,31 @@ const fetchStats = async () => {
 const fetchVisitors = async () => {
   try {
     visitorsLoading.value = true
-    console.log('🔍 [Analytics] ========== 开始获取访客列表 ==========')
-    console.log('🔍 [Analytics] 请求参数:', {
-      page: visitorsPage.value,
-      pageSize: pageSize.value,
-      onlineOnly: onlineOnly.value
-    })
-    console.log('🔍 [Analytics] 准备发送 API 请求...')
-    console.log('🔍 [Analytics] API 请求开始时间:', new Date().toISOString())
     
-    let res: any = null
-    try {
-      res = await api.get<any>('/Analytics/visitors', {
-        params: {
-          page: visitorsPage.value,
-          pageSize: pageSize.value,
-          onlineOnly: onlineOnly.value
-        }
-      })
-      console.log('✅ [Analytics] 访客列表API响应成功！')
-      console.log('✅ [Analytics] API 响应时间:', new Date().toISOString())
-      console.log('📦 [Analytics] API响应原始数据:', res)
-      console.log('📦 [Analytics] API响应数据类型:', typeof res)
-      console.log('📦 [Analytics] API响应是否为数组:', Array.isArray(res))
-      console.log('📦 [Analytics] API响应是否为 null:', res === null)
-      console.log('📦 [Analytics] API响应是否为 undefined:', res === undefined)
-      console.log('📦 [Analytics] API响应数据结构:', JSON.stringify(res, null, 2))
-    } catch (apiError: any) {
-      console.error('❌ [Analytics] API 请求失败（在 fetchVisitors 内部捕获）:', apiError)
-      throw apiError // 重新抛出，让外层的 catch 处理
-    }
+    const res = await api.get<any>('/Analytics/visitors', {
+      params: {
+        page: visitorsPage.value,
+        pageSize: pageSize.value,
+        onlineOnly: onlineOnly.value
+      }
+    })
+    
     if (res) {
-      console.log('📦 [Analytics] 开始处理响应数据...')
-      console.log('📦 [Analytics] res 的所有键:', Object.keys(res || {}))
-      
       // useApi 已经提取了 data 字段，所以 res 应该是 { total: 39, page: 1, pageSize: 20, visitors: [...] }
       // 注意：后端返回的是小写的 "visitors" 和 "total"，优先使用小写
       const visitorsData = res.visitors || res.Visitors || (Array.isArray(res) ? res : [])
       const totalData = res.total ?? res.Total ?? (Array.isArray(res) ? res.length : 0)
       
-      console.log('📦 [Analytics] 提取的 visitorsData:', visitorsData)
-      console.log('📦 [Analytics] 提取的 totalData:', totalData)
-      console.log('📦 [Analytics] visitorsData 是否为数组:', Array.isArray(visitorsData))
-      
       visitors.value = Array.isArray(visitorsData) ? visitorsData : []
       visitorsTotal.value = totalData
-      
-      console.log('📦 [Analytics] 数据已赋值到 visitors.value，长度:', visitors.value.length)
-      
-      console.log(`[Analytics] 获取到 ${visitors.value.length} 条访客记录，总计 ${visitorsTotal.value} 条`)
-      console.log(`[Analytics] onlineOnly=${onlineOnly.value}`)
-      console.log(`[Analytics] visitors.value 详细数据:`, JSON.stringify(visitors.value, null, 2))
-      
-      // 详细调试信息
-      if (visitors.value.length > 0) {
-        const firstVisitor = visitors.value[0]
-        // 修复访客列表 IP 一直显示未知的问题：添加详细的字段调试信息
-        console.log('[Analytics] ✅ 访客数据已获取，第一条记录:', {
-          id: firstVisitor.id || firstVisitor.Id,
-          visitorId: firstVisitor.visitorId || firstVisitor.VisitorId,
-          ip: firstVisitor.ip || firstVisitor.Ip,
-          ipType: typeof (firstVisitor.ip || firstVisitor.Ip),
-          ipValue: firstVisitor.ip || firstVisitor.Ip,
-          ipCheck: (firstVisitor.ip || firstVisitor.Ip) && (firstVisitor.ip || firstVisitor.Ip) !== '-',
-          path: firstVisitor.path || firstVisitor.Path,
-          isOnline: firstVisitor.isOnline || firstVisitor.IsOnline,
-          updatedAt: firstVisitor.updatedAt || firstVisitor.UpdatedAt,
-          pageViews: firstVisitor.pageViews || firstVisitor.PageViews,
-          // 检查所有可能的字段名（大小写变体）
-          allKeys: Object.keys(firstVisitor),
-          ipLower: firstVisitor.ip,
-          ipUpper: firstVisitor.IP,
-          ipPascal: firstVisitor.Ip
-        })
-      } else {
-        console.warn('[Analytics] ⚠️ 访客列表为空，可能的原因：')
-        console.warn(`  1. onlineOnly=${onlineOnly.value}，如果为 true 则只显示最近5分钟内的在线访客`)
-        console.warn('  2. VisitorAnalytics 表为空且 VisitLogs 表也为空')
-        console.warn('  3. 时间范围过滤导致没有数据')
-        console.warn('  4. 建议：取消勾选"仅显示在线访客"查看所有访客')
-        console.warn('  5. 请检查后端控制台的 [Analytics Visitors] 日志，确认查询结果')
-      }
-    } else {
-      console.warn('[Analytics] 访客列表API返回空数据')
     }
   } catch (e: any) {
-    console.error('❌❌❌ [Analytics] ========== 获取访客列表失败! ==========')
-    console.error('❌ [Analytics] 错误类型:', e?.constructor?.name || typeof e)
-    console.error('❌ [Analytics] 错误信息:', e?.message || String(e))
-    console.error('❌ [Analytics] 错误对象:', e)
-    if (e?.response) {
-      console.error('❌ [Analytics] HTTP 状态码:', e.response.status)
-      console.error('❌ [Analytics] 响应数据:', e.response.data)
-    }
-    console.error('❌ [Analytics] 完整错误堆栈:', e?.stack)
     // 显示错误提示
     if (process.client) {
       alert(`获取访客列表失败: ${e?.message || '未知错误'}\n\n请检查：\n1. 是否已登录管理员账号\n2. 后端服务是否正常运行\n3. 网络连接是否正常`)
     }
   } finally {
     visitorsLoading.value = false
-    console.log('🔍 [Analytics] fetchVisitors 执行完成，loading 状态已重置')
   }
 }
 
@@ -1349,31 +1254,17 @@ const changePage = (page: number) => {
   fetchVisitors()
 }
 
-// 格式化路径名称，转换为友好的中文描述（智能识别，不依赖写死的映射表）
-const formatPathName = (path: string): string => {
-  if (!path) return '未知页面'
+// 智能转换英文单词为中文（常见词汇映射）
+const translateWord = (word: string): string => {
+  const wordLower = word.toLowerCase()
   
-  // 移除前缀
-  const cleanPath = path.replace('landing:', '').replace('page:', '').trim()
-  
-  // 处理空路径或根路径
-  if (!cleanPath || cleanPath === '/') {
-    return '首页'
-  }
-  
-  // 移除查询参数和锚点
-  const pathWithoutQuery = cleanPath.split('?')[0].split('#')[0]
-  
-  // 智能识别路径结构
-  const parts = pathWithoutQuery.split('/').filter(p => p)
-  
-  if (parts.length === 0) {
-    return '首页'
-  }
-  
-  // 第一级路径映射（常用路径）
-  const firstLevelMap: Record<string, string> = {
+  // 常见英文单词到中文的映射（作为后备，主要用于无法智能识别的词）
+  const wordMap: Record<string, string> = {
+    'dashboard': '仪表盘',
+    'home': '首页',
+    'index': '首页',
     'blog': '博客',
+    'article': '文章',
     'tools': '工具',
     'projects': '项目',
     'life': '生活',
@@ -1383,163 +1274,120 @@ const formatPathName = (path: string): string => {
     'about': '关于',
     'contact': '联系',
     'search': '搜索',
-    'dashboard': '仪表盘',
-    'home': '首页',
-    'index': '首页',
-    'skills': '技能',
-    'experience': '经历',
-    'resume': '简历',
-    'portfolio': '作品集',
-    'gallery': '画廊',
-    'news': '新闻',
-    'events': '活动',
-    'faq': '常见问题',
-    'help': '帮助',
-    'support': '支持',
-    'privacy': '隐私政策',
-    'terms': '服务条款',
-    'sitemap': '网站地图'
-  }
-  
-  const firstPart = parts[0]
-  const firstLevelName = firstLevelMap[firstPart] || firstPart
-  
-  // 如果只有一级路径，直接返回（如果映射表中没有，尝试智能识别）
-  if (parts.length === 1) {
-    // 如果已经在映射表中，直接返回
-    if (firstLevelMap[firstPart]) {
-      return firstLevelName
-    }
-    // 如果不在映射表中，尝试将英文转换为中文（简单的常见词映射）
-    const commonWords: Record<string, string> = {
-      'dashboard': '仪表盘',
-      'home': '首页',
-      'index': '首页',
-      'profile': '个人资料',
-      'settings': '设置',
-      'account': '账户',
-      'login': '登录',
-      'register': '注册',
-      'logout': '退出',
-      'forgot-password': '忘记密码',
-      'reset-password': '重置密码'
-    }
-    return commonWords[firstPart.toLowerCase()] || firstPart
-  }
-  
-  // 处理二级路径
-  const secondPart = parts[1]
-  
-  // 管理后台的特殊处理
-  if (firstPart === 'admin') {
-    const adminPageMap: Record<string, string> = {
-      'analytics': '访客分析',
-      'articles': '文章管理',
-      'categories': '分类管理',
-      'projects': '项目管理',
-      'timeline': '时间线',
-      'themes': '主题设置',
-      'theme-settings': '主题设置',
-      'edit': '编辑',
-      'login': '登录',
-      'dashboard': '仪表盘',
-      'index': '仪表盘',
-      'settings': '设置',
-      'users': '用户管理',
-      'comments': '评论管理',
-      'media': '媒体管理',
-      'pages': '页面管理',
-      'menus': '菜单管理',
-      'widgets': '组件管理',
-      'backup': '备份',
-      'logs': '日志',
-      'security': '安全',
-      'api': 'API管理'
-    }
-    return adminPageMap[secondPart] || `${firstLevelName}：${secondPart}`
-  }
-  
-  // 处理单独的 dashboard 路径（可能是 /dashboard 或 /admin/dashboard）
-  if (firstPart === 'dashboard') {
-    return '仪表盘'
-  }
-  
-  // 处理动态路由（如 /blog/[slug], /tools/[slug] 等）
-  if (parts.length === 2) {
-    const slug = secondPart
-    
-    // 智能截断过长的 slug
-    const displaySlug = slug.length > 25 ? slug.substring(0, 25) + '...' : slug
-    
-    // 根据第一级路径返回对应的描述
-    if (firstPart === 'blog' || firstPart === 'article') {
-      return `${firstLevelName}：${displaySlug}`
-    }
-    if (firstPart === 'tools') {
-      return `工具：${displaySlug}`
-    }
-    if (firstPart === 'projects') {
-      return `项目：${displaySlug}`
-    }
-    if (firstPart === 'life') {
-      return `生活：${displaySlug}`
-    }
-    if (firstPart === 'ai') {
-      // AI 实验室可能有 type 和 slug
-      if (parts.length === 3) {
-        return `AI：${parts[1]}/${displaySlug}`
-      }
-      return `AI：${displaySlug}`
-    }
-    
-    // 默认格式：分类/内容
-    return `${firstLevelName}：${displaySlug}`
-  }
-  
-  // 处理三级或更多级路径（如 /ai/[type]/[slug]）
-  if (parts.length >= 3) {
-    const lastPart = parts[parts.length - 1]
-    const displaySlug = lastPart.length > 20 ? lastPart.substring(0, 20) + '...' : lastPart
-    return `${firstLevelName}：${parts.slice(1).join('/')}`
-  }
-  
-  // 默认情况：返回路径的友好格式
-  // 尝试将常见的英文路径转换为中文
-  const commonPathTranslations: Record<string, string> = {
-    'dashboard': '仪表盘',
     'profile': '个人资料',
     'settings': '设置',
     'account': '账户',
     'login': '登录',
     'register': '注册',
     'logout': '退出',
-    'forgot-password': '忘记密码',
-    'reset-password': '重置密码',
-    'not-found': '页面未找到',
-    'error': '错误页面',
-    'unauthorized': '未授权',
-    'forbidden': '禁止访问'
+    'analytics': '分析',
+    'articles': '文章',
+    'categories': '分类',
+    'timeline': '时间线',
+    'themes': '主题',
+    'users': '用户',
+    'comments': '评论',
+    'media': '媒体',
+    'pages': '页面',
+    'menus': '菜单',
+    'widgets': '组件',
+    'backup': '备份',
+    'logs': '日志',
+    'security': '安全',
+    'api': 'API',
+    'edit': '编辑',
+    'create': '创建',
+    'update': '更新',
+    'delete': '删除',
+    'list': '列表',
+    'detail': '详情',
+    'manage': '管理'
   }
   
-  // 检查整个路径是否在翻译表中
-  const pathKey = pathWithoutQuery.toLowerCase().replace(/^\//, '')
-  if (commonPathTranslations[pathKey]) {
-    return commonPathTranslations[pathKey]
+  if (wordMap[wordLower]) {
+    return wordMap[wordLower]
   }
   
-  // 检查路径的最后一部分是否在翻译表中
-  const lastPart = parts[parts.length - 1]?.toLowerCase()
-  if (lastPart && commonPathTranslations[lastPart]) {
-    const prefix = parts.length > 1 ? `${firstLevelName}：` : ''
-    return `${prefix}${commonPathTranslations[lastPart]}`
+  // 智能识别：处理连字符和驼峰命名
+  // 例如：forgot-password -> 忘记密码, userProfile -> 用户资料
+  const hyphenParts = wordLower.split('-')
+  if (hyphenParts.length > 1) {
+    // 处理连字符：尝试翻译每个部分
+    const translated = hyphenParts.map(part => wordMap[part] || part).join('')
+    if (translated !== wordLower) {
+      return translated
+    }
   }
   
-  const displayPath = pathWithoutQuery.length > 35 
-    ? pathWithoutQuery.substring(0, 35) + '...' 
-    : pathWithoutQuery
+  // 处理驼峰命名：userProfile -> user profile
+  const camelCaseParts = wordLower.replace(/([A-Z])/g, ' $1').split(' ').filter(p => p)
+  if (camelCaseParts.length > 1) {
+    const translated = camelCaseParts.map(part => wordMap[part] || part).join('')
+    if (translated !== wordLower) {
+      return translated
+    }
+  }
   
-  // 如果路径以 / 开头，移除它
-  return displayPath.startsWith('/') ? displayPath.substring(1) : displayPath
+  // 如果无法识别，返回原词（首字母大写）
+  return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+}
+
+// 格式化路径名称，智能识别并转换为友好的中文描述
+const formatPathName = (path: string): string => {
+  if (!path) return '未知页面'
+  
+  // 移除前缀和查询参数
+  const cleanPath = path.replace('landing:', '').replace('page:', '').trim()
+  const pathWithoutQuery = cleanPath.split('?')[0].split('#')[0]
+  
+  // 处理空路径或根路径
+  if (!pathWithoutQuery || pathWithoutQuery === '/') {
+    return '首页'
+  }
+  
+  // 分割路径
+  const parts = pathWithoutQuery.split('/').filter(p => p)
+  
+  if (parts.length === 0) {
+    return '首页'
+  }
+  
+  // 智能翻译每个路径部分
+  const translatedParts = parts.map(part => translateWord(part))
+  
+  // 根据路径层级返回不同格式
+  if (parts.length === 1) {
+    // 单级路径：直接返回翻译后的名称
+    return translatedParts[0]
+  } else if (parts.length === 2) {
+    // 二级路径：分类：内容
+    // 如果第二部分看起来像 slug（包含连字符、数字等），显示为"分类：内容"
+    const secondPart = parts[1]
+    const isSlug = /^[a-z0-9-]+$/.test(secondPart.toLowerCase()) && secondPart.length > 10
+    
+    if (isSlug) {
+      // 截断过长的 slug
+      const displaySlug = secondPart.length > 25 ? secondPart.substring(0, 25) + '...' : secondPart
+      return `${translatedParts[0]}：${displaySlug}`
+    } else {
+      // 如果第二部分也是可识别的单词，翻译它
+      return `${translatedParts[0]}：${translatedParts[1]}`
+    }
+  } else {
+    // 多级路径：分类：子分类/内容
+    const lastPart = parts[parts.length - 1]
+    const isSlug = /^[a-z0-9-]+$/.test(lastPart.toLowerCase()) && lastPart.length > 10
+    
+    if (isSlug) {
+      // 最后一部分是 slug，显示为"分类：路径/内容"
+      const displaySlug = lastPart.length > 20 ? lastPart.substring(0, 20) + '...' : lastPart
+      const middleParts = translatedParts.slice(1, -1).join('/')
+      return `${translatedParts[0]}：${middleParts ? middleParts + '/' : ''}${displaySlug}`
+    } else {
+      // 所有部分都可识别，全部翻译
+      return translatedParts.join('：')
+    }
+  }
 }
 
 const formatTime = (timeStr: string) => {
@@ -1605,26 +1453,18 @@ const formatPageUrl = (url: string) => {
 const fetchTrend = async () => {
   try {
     trendLoading.value = true
-    console.log('[Analytics] fetchTrend called, range:', trendRange.value)
     const res = await api.get<any>('/Analytics/trend', {
       params: {
         range: trendRange.value,
         granularity: 'day'
       }
     })
-    console.log('[Analytics] trend API response:', res)
     if (res) {
       trendData.value = res
-      const points = res.points || res.Points || []
-      console.log('[Analytics] trendData assigned, points count:', points.length)
-      console.log('[Analytics] trendData.value:', trendData.value)
     } else {
-      console.warn('[Analytics] 趋势数据API返回空数据')
       trendData.value = { points: [] }
     }
   } catch (e: any) {
-    console.error('[Analytics] Failed to fetch trend:', e)
-    console.error('[Analytics] 错误详情:', e.message, e.response)
     // 即使出错也设置空数据，避免显示错误
     trendData.value = { points: [] }
   } finally {
@@ -1640,7 +1480,7 @@ const fetchOverview = async () => {
       overview.value = res
     }
   } catch (e: any) {
-    console.error('Failed to fetch overview:', e)
+    // 静默失败
   }
 }
 
@@ -1653,7 +1493,7 @@ const fetchTopPages = async () => {
       topPages.value = res.items
     }
   } catch (e: any) {
-    console.error('Failed to fetch top pages:', e)
+    // 静默失败
   } finally {
     topPagesLoading.value = false
   }
@@ -1668,7 +1508,7 @@ const fetchSources = async () => {
       sources.value = res
     }
   } catch (e: any) {
-    console.error('Failed to fetch sources:', e)
+    // 静默失败
   } finally {
     sourcesLoading.value = false
   }
@@ -1683,7 +1523,7 @@ const fetchSearchKeywords = async () => {
       searchKeywords.value = res.items
     }
   } catch (e: any) {
-    console.error('Failed to fetch search keywords:', e)
+    // 静默失败
   } finally {
     searchKeywordsLoading.value = false
   }
@@ -1693,18 +1533,13 @@ const fetchSearchKeywords = async () => {
 const fetchRegions = async () => {
   try {
     regionsLoading.value = true
-    console.log('[Analytics] fetchRegions called, range:', selectedRange.value)
     const res = await api.get<any>(`/Analytics/regions?range=${selectedRange.value}`)
-    console.log('[Analytics] regions API response:', res)
     if (res && res.items) {
       regions.value = { items: res.items }
-      console.log('[Analytics] regions.value assigned, items count:', res.items.length)
     } else {
-      console.warn('[Analytics] 地区分布API返回空数据')
       regions.value = { items: [] }
     }
   } catch (e: any) {
-    console.error('[Analytics] Failed to fetch regions:', e)
     regions.value = { items: [] }
   } finally {
     regionsLoading.value = false
@@ -1715,25 +1550,17 @@ const fetchRegions = async () => {
 const fetchClientDistribution = async () => {
   try {
     clientDistributionLoading.value = true
-    console.log('[Analytics] fetchClientDistribution called, range:', selectedRange.value)
     const res = await api.get<any>(`/Analytics/client-distribution?range=${selectedRange.value}`)
-    console.log('[Analytics] client-distribution API response:', res)
     if (res) {
       clientDistribution.value = {
         devices: res.devices || [],
         browsers: res.browsers || [],
         os: res.os || []
       }
-      console.log('[Analytics] clientDistribution.value assigned:')
-      console.log('  - devices:', clientDistribution.value.devices.length)
-      console.log('  - browsers:', clientDistribution.value.browsers.length)
-      console.log('  - os:', clientDistribution.value.os.length)
     } else {
-      console.warn('[Analytics] 客户端分布API返回空数据')
       clientDistribution.value = { devices: [], browsers: [], os: [] }
     }
   } catch (e: any) {
-    console.error('[Analytics] Failed to fetch client distribution:', e)
     clientDistribution.value = { devices: [], browsers: [], os: [] }
   } finally {
     clientDistributionLoading.value = false
@@ -1749,7 +1576,7 @@ const fetchPageFlow = async () => {
       pageFlow.value = res
     }
   } catch (e: any) {
-    console.error('Failed to fetch page flow:', e)
+    // 静默失败
   } finally {
     pageFlowLoading.value = false
   }
@@ -1757,8 +1584,6 @@ const fetchPageFlow = async () => {
 
 // 统一刷新所有数据
 const refreshAll = async () => {
-  console.log('🔄 [Analytics] ========== refreshAll() 被调用 ==========')
-  console.log('🔄 [Analytics] 开始并行加载所有数据...')
   try {
     await Promise.all([
       fetchOverview(),
@@ -1772,15 +1597,16 @@ const refreshAll = async () => {
       fetchPageFlow(),
       fetchVisitors()
     ])
-    console.log('✅ [Analytics] 所有数据加载完成')
+    // 标记初始加载完成
+    initialLoadComplete.value = true
   } catch (error) {
-    console.error('❌ [Analytics] 加载数据时出错:', error)
+    // 即使出错也标记为完成，避免一直显示加载状态
+    initialLoadComplete.value = true
   }
 }
 
 // 时间范围变化时刷新数据
 watch(selectedRange, (newRange) => {
-  console.log('[Analytics] selectedRange changed to:', newRange)
   // 趋势图使用独立的 range，但需要同步（today 映射为 7d）
   trendRange.value = newRange === 'today' ? '7d' : newRange as any
   // 刷新所有依赖时间范围的数据
@@ -1800,29 +1626,18 @@ const refreshStats = () => {
 const autoRefreshInterval = ref<NodeJS.Timeout | null>(null)
 
 onMounted(() => {
-  console.log('🚀🚀🚀 [Analytics] ========== 访客分析页面开始加载 ==========')
-  console.log('🚀 [Analytics] 检查管理员登录状态...')
-  
   if (process.client) {
     const token = localStorage.getItem('admin_token')
-    const user = localStorage.getItem('admin_user')
-    console.log('🚀 [Analytics] 管理员Token:', token ? '已存在' : '不存在')
-    console.log('🚀 [Analytics] 管理员信息:', user)
     
     if (!token) {
-      console.warn('⚠️ [Analytics] 未检测到管理员登录，请先登录')
       alert('请先登录管理员账号才能查看访客数据！\n\n将跳转到登录页面...')
       navigateTo('/admin/login')
       return
     }
-    
-    console.log('✅ [Analytics] 管理员已登录，准备加载数据')
   }
   
   // 延迟一下再加载数据，确保页面完全渲染
   setTimeout(() => {
-    console.log('🚀 [Analytics] 页面已加载，开始初始化数据...')
-    console.log('🚀 [Analytics] 调用 refreshAll() 函数...')
     refreshAll()
   }, 500)
   
@@ -1832,7 +1647,6 @@ onMounted(() => {
     autoRefreshInterval.value = setInterval(() => {
       // 检查是否遇到速率限制
       if (rateLimitRetryCount.value >= 3) {
-        console.warn('已停止自动刷新（速率限制）')
         if (autoRefreshInterval.value) {
           clearInterval(autoRefreshInterval.value)
           autoRefreshInterval.value = null
