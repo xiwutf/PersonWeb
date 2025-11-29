@@ -101,6 +101,7 @@ export default defineNuxtConfig({
 
   // CSS 配置
   css: [
+    '~/assets/styles/theme.css', // 统一主题样式文件（必须在最前面，定义 CSS 变量）
     '~/assets/css/main.css', // main.css 已经导入了 components.css
     '~/assets/css/themes.css',
     '~/assets/css/visitor-interaction.css',

@@ -124,6 +124,79 @@ public class ConfigController : ControllerBase
         await _context.SaveChangesAsync();
         return Ok(ApiResponse.Success());
     }
+
+    /// <summary>
+    /// 获取当前全站主题
+    /// 这是前台用来初始化全站主题的配置接口，允许匿名访问
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("theme")]
+    [AllowAnonymous]
+    public async Task<ActionResult<ApiResponse<ThemeResponse>>> GetTheme()
+    {
+        // 从 SiteConfig 表中读取 ConfigKey == "site_theme" 的记录
+        var config = await _context.SiteConfigs.FindAsync("site_theme");
+        
+        // 如果不存在，则返回默认主题 "light"
+        var theme = config?.ConfigValue ?? "light";
+        
+        // 只返回合法值 "light" | "dark" | "tech-blue"，否则也回退到 "light"
+        if (theme != "light" && theme != "dark" && theme != "tech-blue")
+        {
+            theme = "light";
+        }
+
+        return Ok(ApiResponse<ThemeResponse>.Success(new ThemeResponse
+        {
+            Theme = theme
+        }));
+    }
+
+    /// <summary>
+    /// 设置当前全站主题
+    /// 需要管理员权限，后台管理界面调用此接口修改全站主题
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <returns></returns>
+    [HttpPut("theme")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<ThemeResponse>>> SetTheme([FromBody] SetThemeDto dto)
+    {
+        // 校验 theme 值必须在 "light" | "dark" | "tech-blue" 三者之一
+        if (dto.Theme != "light" && dto.Theme != "dark" && dto.Theme != "tech-blue")
+        {
+            return BadRequest(ApiResponse<ThemeResponse>.Error("主题值必须是 light、dark 或 tech-blue 之一", 400));
+        }
+
+        // 使用 SiteConfig 表进行 Upsert：ConfigKey = "site_theme"，ConfigValue = theme
+        var config = await _context.SiteConfigs.FindAsync("site_theme");
+        if (config == null)
+        {
+            // 如果不存在则创建
+            config = new SiteConfig
+            {
+                ConfigKey = "site_theme",
+                ConfigValue = dto.Theme,
+                Description = "全站主题配置（light/dark/tech-blue）",
+                UpdatedAt = DateTime.Now
+            };
+            _context.SiteConfigs.Add(config);
+        }
+        else
+        {
+            // 如果存在则更新
+            config.ConfigValue = dto.Theme;
+            config.UpdatedAt = DateTime.Now;
+        }
+
+        await _context.SaveChangesAsync();
+
+        // 返回更新后的主题信息
+        return Ok(ApiResponse<ThemeResponse>.Success(new ThemeResponse
+        {
+            Theme = dto.Theme
+        }));
+    }
 }
 
 public class ConfigUpdateDto
@@ -139,4 +212,20 @@ public class HomeStyleResponse
 public class SetHomeStyleDto
 {
     public string Style { get; set; } = string.Empty;
+}
+
+/// <summary>
+/// 主题响应 DTO
+/// </summary>
+public class ThemeResponse
+{
+    public string Theme { get; set; } = string.Empty;
+}
+
+/// <summary>
+/// 设置主题请求 DTO
+/// </summary>
+public class SetThemeDto
+{
+    public string Theme { get; set; } = string.Empty;
 }
