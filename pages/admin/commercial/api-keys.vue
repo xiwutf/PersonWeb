@@ -324,6 +324,7 @@ onMounted(() => {
 .page-title {
   font-size: 1.5rem;
   font-weight: bold;
+  color: var(--color-text-main);
 }
 
 .stats-grid {
@@ -334,22 +335,25 @@ onMounted(() => {
 }
 
 .stat-card {
-  background: white;
+  background: var(--color-bg-card);
   padding: 1.5rem;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border-subtle);
 }
 
 .stat-label {
   font-size: 0.875rem;
-  color: #666;
+  color: var(--color-text-muted);
   margin-bottom: 0.5rem;
+  font-weight: 600;
 }
 
 .stat-value {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #333;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  line-height: 1.2;
 }
 
 .filter-bar {
@@ -360,9 +364,18 @@ onMounted(() => {
 
 .filter-input {
   flex: 1;
-  padding: 0.5rem;
-  border: 1px solid #ddd;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border-default);
   border-radius: 4px;
+  background: var(--color-bg-card);
+  color: var(--color-text-main);
+  font-size: 0.875rem;
+}
+
+.filter-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-soft);
 }
 
 .table-container {
@@ -373,27 +386,41 @@ onMounted(() => {
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  background: white;
+  background: var(--color-bg-card);
   border-radius: 8px;
   overflow: hidden;
+  border: 1px solid var(--color-border-subtle);
 }
 
 .data-table th,
 .data-table td {
-  padding: 0.75rem;
+  padding: 0.75rem 1rem;
   text-align: left;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .data-table th {
-  background: #f5f5f5;
+  background: var(--color-bg-elevated);
   font-weight: 600;
+  color: var(--color-text-main);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.data-table td {
+  color: var(--color-text-main);
+  font-size: 0.875rem;
+}
+
+.data-table tbody tr:hover {
+  background: var(--color-bg-elevated);
 }
 
 .badge {
   display: inline-block;
   padding: 0.25rem 0.5rem;
-  background: #3b82f6;
+  background: var(--color-primary);
   color: white;
   border-radius: 4px;
   font-size: 0.875rem;
@@ -402,10 +429,12 @@ onMounted(() => {
 
 .api-key-cell code {
   font-family: 'Courier New', monospace;
-  background: #f5f5f5;
+  background: var(--color-bg-elevated);
+  color: var(--color-text-main);
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   font-size: 0.875rem;
+  border: 1px solid var(--color-border-subtle);
 }
 
 .pagination {
@@ -435,7 +464,7 @@ onMounted(() => {
 }
 
 .modal-content {
-  background: white;
+  background: var(--color-bg-card);
   border-radius: 8px;
   width: 90%;
   max-width: 800px;
@@ -443,6 +472,8 @@ onMounted(() => {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  border: 1px solid var(--color-border-default);
+  box-shadow: var(--shadow-lg);
 }
 
 .modal-large {
@@ -454,7 +485,13 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.modal-header h2 {
+  color: var(--color-text-main);
+  font-size: 1.25rem;
+  font-weight: 600;
 }
 
 .modal-header h2 {
@@ -467,29 +504,31 @@ onMounted(() => {
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
-  color: #666;
+  color: var(--color-text-muted);
   padding: 0;
   width: 2rem;
   height: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: color 0.2s;
 }
 
 .modal-close:hover {
-  color: #333;
+  color: var(--color-text-main);
 }
 
 .modal-body {
   padding: 1.5rem;
   overflow-y: auto;
   flex: 1;
+  color: var(--color-text-main);
 }
 
 .empty-state {
   text-align: center;
   padding: 2rem;
-  color: #666;
+  color: var(--color-text-muted);
 }
 
 .stats-summary {
@@ -497,9 +536,9 @@ onMounted(() => {
   gap: 2rem;
   margin-bottom: 1.5rem;
   padding: 1.25rem 1.5rem;
-  background: #111827; /* 深色卡片背景，提升对比度 */
+  background: var(--color-bg-elevated);
   border-radius: 8px;
-  border: 1px solid rgba(148, 163, 184, 0.4);
+  border: 1px solid var(--color-border-subtle);
 }
 
 .stat-item {
@@ -509,14 +548,15 @@ onMounted(() => {
 
 .stat-item .stat-label {
   font-size: 0.875rem;
-  color: #9ca3af; /* 浅灰色文本，在深色背景上有足够对比度 */
+  color: var(--color-text-muted);
   margin-bottom: 0.25rem;
+  font-weight: 500;
 }
 
 .stat-item .stat-value {
   font-size: 1.25rem;
   font-weight: bold;
-  color: #f9fafb; /* 近白色，保证数值清晰可见 */
+  color: var(--color-text-main);
 }
 
 /* 按钮样式 */
@@ -534,21 +574,23 @@ onMounted(() => {
 }
 
 .btn-primary {
-  background: #3b82f6;
+  background: var(--color-primary);
   color: white;
 }
 
 .btn-primary:hover {
-  background: #2563eb;
+  background: var(--color-primary-hover);
 }
 
 .btn-secondary {
-  background: #e5e7eb;
-  color: #374151;
+  background: var(--color-bg-elevated);
+  color: var(--color-text-main);
+  border: 1px solid var(--color-border-default);
 }
 
 .btn-secondary:hover {
-  background: #d1d5db;
+  background: var(--color-bg-card);
+  border-color: var(--color-border-strong);
 }
 
 .btn-secondary:disabled {

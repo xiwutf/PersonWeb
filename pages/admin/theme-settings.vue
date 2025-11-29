@@ -194,11 +194,12 @@ watch(() => themeOverrides.value.common?.primaryColor, (color) => {
   font-size: 2rem;
   font-weight: bold;
   margin-bottom: 0.5rem;
-  @apply text-gray-800 dark:text-white;
+  color: var(--color-text-main);
 }
 
 .page-subtitle {
-  @apply text-gray-600 dark:text-gray-400;
+  color: var(--color-text-muted);
+  font-weight: 500;
 }
 
 .settings-grid {
@@ -208,7 +209,8 @@ watch(() => themeOverrides.value.common?.primaryColor, (color) => {
 }
 
 .settings-card {
-  @apply bg-white dark:bg-gray-800;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-subtle);
 }
 
 .preset-colors {
@@ -226,25 +228,30 @@ watch(() => themeOverrides.value.common?.primaryColor, (color) => {
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
-  @apply border-2 border-transparent hover:border-gray-300 dark:hover:border-gray-600;
+  border: 2px solid transparent;
+  background: var(--color-bg-elevated);
+}
+
+.color-item:hover {
+  border-color: var(--color-border-default);
 }
 
 .color-item.active {
-  @apply border-blue-500 dark:border-blue-400;
-  background-color: rgba(59, 130, 246, 0.1);
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
 }
 
 .color-preview {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  border: 2px solid rgba(0, 0, 0, 0.1);
-  @apply dark:border-gray-600;
+  border: 2px solid var(--color-border-subtle);
 }
 
 .color-name {
   font-size: 0.875rem;
-  @apply text-gray-700 dark:text-gray-300;
+  color: var(--color-text-main);
+  font-weight: 500;
 }
 
 .custom-color {
@@ -254,7 +261,7 @@ watch(() => themeOverrides.value.common?.primaryColor, (color) => {
 .label {
   font-size: 0.875rem;
   font-weight: 500;
-  @apply text-gray-700 dark:text-gray-300;
+  color: var(--color-text-main);
 }
 
 .preview-card {

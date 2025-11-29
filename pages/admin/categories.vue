@@ -200,19 +200,20 @@ onMounted(() => {
 <style scoped>
 /* 表格容器 */
 .table-container {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-subtle);
   border-radius: 0.5rem;
   overflow: hidden;
   margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-sm);
 }
 
 .table-loading,
 .table-empty {
   padding: 2rem;
   text-align: center;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--color-text-muted);
+  font-weight: 500;
 }
 
 /* 数据表格 */
@@ -223,15 +224,17 @@ onMounted(() => {
 }
 
 .table-header {
-  background: rgba(255, 255, 255, 0.05);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--color-bg-elevated);
+  border-bottom: 2px solid var(--color-border-subtle);
 }
 
 .table-header th {
   padding: 0.75rem 1.5rem;
   font-size: 0.875rem;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+  color: var(--color-text-main);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .table-body {
@@ -239,12 +242,12 @@ onMounted(() => {
 }
 
 .table-row {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--color-border-subtle);
   transition: background-color 0.2s ease;
 }
 
 .table-row:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--color-bg-elevated);
 }
 
 .table-row:last-child {
@@ -253,7 +256,9 @@ onMounted(() => {
 
 .table-cell {
   padding: 1rem 1.5rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-main);
+  font-size: 0.875rem;
+  font-weight: 500;
 }
 
 /* 操作按钮 */

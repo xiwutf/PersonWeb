@@ -25,7 +25,7 @@
     </div>
 
     <!-- 数据提示 -->
-    <AppCard v-if="stats.Today?.Pv === 0 && stats.Today?.Uv === 0" class="mb-6 border-2 border-chart-tertiary/50 bg-chart-tertiary/10 p-4">
+    <AppCard v-if="showNoDataAlert" class="mb-6 border-2 border-chart-tertiary/50 bg-chart-tertiary/10 p-4">
       <div class="flex items-start">
         <div class="flex-shrink-0">
           <svg class="h-5 w-5 text-chart-tertiary" viewBox="0 0 20 20" fill="currentColor">
@@ -33,16 +33,18 @@
           </svg>
         </div>
         <div class="ml-3 flex-1">
-          <h3 class="text-sm font-bold text-text-main mb-2">暂无访客数据</h3>
-          <div class="mt-2 text-sm text-text-main leading-relaxed">
+          <!-- 使用样式组合类简化代码 -->
+          <h3 class="text-sm text-heading mb-2">暂无访客数据</h3>
+          <div class="mt-2 text-sm text-body leading-relaxed">
             <p class="mb-2 font-medium">当前没有访客访问记录。可能的原因：</p>
             <ul class="list-disc list-inside mt-1 space-y-1 ml-2">
               <li>网站还没有访客访问</li>
-              <li>访客数据存储在 <code class="bg-bg-elevated px-2 py-0.5 rounded font-mono text-xs font-semibold text-text-main">VisitLogs</code> 表中，请检查数据库</li>
+              <!-- 使用 bg-code 样式组合类，替代多个类名 -->
+              <li>访客数据存储在 <code class="bg-code">VisitLogs</code> 表中，请检查数据库</li>
               <li>如果使用代理或VPN，可能无法正确记录IP地址</li>
             </ul>
             <p class="mt-3 mb-2 font-medium">
-              <strong class="text-text-main">提示：</strong>访问网站首页会自动记录访问数据。您可以：
+              <strong class="text-body">提示：</strong>访问网站首页会自动记录访问数据。您可以：
             </p>
             <ul class="list-disc list-inside mt-1 space-y-1 ml-2">
               <li>打开网站首页，系统会自动记录您的访问</li>
@@ -57,14 +59,14 @@
     <!-- 第一行：概览卡片区 -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
       <AppCard class="p-4">
-        <div class="text-sm text-text-muted mb-1">今日 PV</div>
+        <div class="text-sm text-text-muted mb-1">今日浏览量</div>
         <div class="text-2xl font-bold text-primary">{{ overview.todayPv || 0 }}</div>
         <div class="text-xs text-text-muted mt-1">
           昨日: {{ overview.yesterdayPv || 0 }} | 总计: {{ overview.totalPv || 0 }}
         </div>
       </AppCard>
       <AppCard class="p-4">
-        <div class="text-sm text-text-muted mb-1">今日 UV</div>
+        <div class="text-sm text-text-muted mb-1">今日访客数</div>
         <div class="text-2xl font-bold text-chart-secondary">{{ overview.todayUv || 0 }}</div>
         <div class="text-xs text-text-muted mt-1">
           昨日: {{ overview.yesterdayUv || 0 }} | 总计: {{ overview.totalUv || 0 }}
@@ -82,29 +84,29 @@
       </AppCard>
     </div>
 
-    <!-- PV/UV 趋势图 -->
+    <!-- 浏览量/访客数趋势图 -->
     <AppCard class="mb-6 p-6">
       <div class="flex justify-between items-center mb-4">
-        <h2 class="text-lg font-bold text-text-main">PV/UV 趋势</h2>
+        <h2 class="text-lg font-bold text-text-main">浏览量/访客数趋势</h2>
         <div class="flex gap-2">
           <AppButton
             :variant="trendRange === '7d' ? 'primary' : 'secondary'"
             size="sm"
-            @click="trendRange = '7d'; fetchTrend()"
+            @click="trendRange = '7d'; selectedRange = '7d'"
           >
             7天
           </AppButton>
           <AppButton
             :variant="trendRange === '30d' ? 'primary' : 'secondary'"
             size="sm"
-            @click="trendRange = '30d'; fetchTrend()"
+            @click="trendRange = '30d'; selectedRange = '30d'"
           >
             30天
           </AppButton>
           <AppButton
             :variant="trendRange === '90d' ? 'primary' : 'secondary'"
             size="sm"
-            @click="trendRange = '90d'; fetchTrend()"
+            @click="trendRange = '90d'; selectedRange = '90d'"
           >
             90天
           </AppButton>
@@ -113,7 +115,7 @@
       <div v-if="trendLoading" class="text-center py-8 text-text-muted">
         加载中...
       </div>
-      <div v-else-if="trendData && trendData.Points && trendData.Points.length > 0" class="h-80">
+      <div v-else-if="hasTrendData && trendChartData.labels.length > 0" class="h-80">
         <Line :data="trendChartData" :options="trendChartOptions" />
       </div>
       <div v-else class="text-center py-8 text-text-muted">
@@ -126,7 +128,7 @@
       <!-- 访问区域饼状图 -->
       <AppCard class="p-6">
         <h2 class="text-lg font-bold text-text-main mb-4">访问区域分布</h2>
-        <div v-if="stats.RegionStats && stats.RegionStats.length > 0" class="h-64">
+        <div v-if="hasRegionData && regionChartData.labels.length > 0" class="h-64">
           <Pie :data="regionChartData" :options="chartOptions" />
         </div>
         <div v-else class="text-center text-text-muted py-8">暂无数据</div>
@@ -135,7 +137,7 @@
       <!-- 设备类型饼状图 -->
       <AppCard class="p-6">
         <h2 class="text-lg font-bold text-text-main mb-4">设备类型分布</h2>
-        <div v-if="stats.DeviceStats && stats.DeviceStats.length > 0" class="h-64">
+        <div v-if="hasDeviceData && deviceChartData.labels.length > 0" class="h-64">
           <Pie :data="deviceChartData" :options="chartOptions" />
         </div>
         <div v-else class="text-center text-text-muted py-8">暂无数据</div>
@@ -144,7 +146,7 @@
       <!-- 浏览器饼状图 -->
       <AppCard class="p-6">
         <h2 class="text-lg font-bold text-text-main mb-4">浏览器分布</h2>
-        <div v-if="stats.BrowserStats && stats.BrowserStats.length > 0" class="h-64">
+        <div v-if="hasBrowserData && browserChartData.labels.length > 0" class="h-64">
           <Pie :data="browserChartData" :options="chartOptions" />
         </div>
         <div v-else class="text-center text-text-muted py-8">暂无数据</div>
@@ -153,7 +155,7 @@
       <!-- 操作系统饼状图 -->
       <AppCard class="p-6">
         <h2 class="text-lg font-bold text-text-main mb-4">操作系统分布</h2>
-        <div v-if="stats.OsStats && stats.OsStats.length > 0" class="h-64">
+        <div v-if="hasOsData && osChartData.labels.length > 0" class="h-64">
           <Pie :data="osChartData" :options="chartOptions" />
         </div>
         <div v-else class="text-center text-text-muted py-8">暂无数据</div>
@@ -177,18 +179,20 @@
             </thead>
             <tbody class="divide-y divide-border-subtle">
               <tr
-                v-for="(region, index) in stats.RegionStats"
+                v-for="(region, index) in (regions.items || [])"
                 :key="index"
                 class="hover:bg-bg-elevated transition-colors"
               >
                 <td class="px-4 py-3 text-text-main font-bold">{{ index + 1 }}</td>
-                <td class="px-4 py-3 text-text-main">{{ region.Country || '未知' }}</td>
-                <td class="px-4 py-3 text-text-main">{{ region.Count }}</td>
                 <td class="px-4 py-3 text-text-main">
-                  {{ ((region.Count / totalRegionCount) * 100).toFixed(2) }}%
+                  {{ region.country || '未知' }}{{ region.province ? ' - ' + region.province : '' }}
+                </td>
+                <td class="px-4 py-3 text-text-main">{{ region.count || 0 }}</td>
+                <td class="px-4 py-3 text-text-main">
+                  {{ totalRegionCount > 0 ? ((region.count / totalRegionCount) * 100).toFixed(2) : '0.00' }}%
                 </td>
               </tr>
-              <tr v-if="!stats.RegionStats || stats.RegionStats.length === 0">
+              <tr v-if="!regions.items || regions.items.length === 0">
                 <td colspan="4" class="px-4 py-8 text-center text-text-muted">暂无数据</td>
               </tr>
             </tbody>
@@ -210,17 +214,17 @@
             </thead>
             <tbody class="divide-y divide-border-subtle">
               <tr
-                v-for="(device, index) in stats.DeviceStats"
+                v-for="(device, index) in (clientDistribution.devices || [])"
                 :key="index"
                 class="hover:bg-bg-elevated transition-colors"
               >
-                <td class="px-4 py-3 text-text-main">{{ device.DeviceType || '未知' }}</td>
-                <td class="px-4 py-3 text-text-main">{{ device.Count }}</td>
+                <td class="px-4 py-3 text-text-main">{{ device.name || '未知' }}</td>
+                <td class="px-4 py-3 text-text-main">{{ device.count || 0 }}</td>
                 <td class="px-4 py-3 text-text-main">
-                  {{ ((device.Count / totalDeviceCount) * 100).toFixed(2) }}%
+                  {{ totalDeviceCount > 0 ? ((device.count / totalDeviceCount) * 100).toFixed(2) : '0.00' }}%
                 </td>
               </tr>
-              <tr v-if="!stats.DeviceStats || stats.DeviceStats.length === 0">
+              <tr v-if="!clientDistribution.devices || clientDistribution.devices.length === 0">
                 <td colspan="3" class="px-4 py-8 text-center text-text-muted">暂无数据</td>
               </tr>
             </tbody>
@@ -243,18 +247,18 @@
             </thead>
             <tbody class="divide-y divide-border-subtle">
               <tr
-                v-for="(browser, index) in stats.BrowserStats"
+                v-for="(browser, index) in (clientDistribution.browsers || [])"
                 :key="index"
                 class="hover:bg-bg-elevated transition-colors"
               >
                 <td class="px-4 py-3 text-text-main font-bold">{{ index + 1 }}</td>
-                <td class="px-4 py-3 text-text-main">{{ browser.Browser || '未知' }}</td>
-                <td class="px-4 py-3 text-text-main">{{ browser.Count }}</td>
+                <td class="px-4 py-3 text-text-main">{{ browser.name || '未知' }}</td>
+                <td class="px-4 py-3 text-text-main">{{ browser.count || 0 }}</td>
                 <td class="px-4 py-3 text-text-main">
-                  {{ ((browser.Count / totalBrowserCount) * 100).toFixed(2) }}%
+                  {{ totalBrowserCount > 0 ? ((browser.count / totalBrowserCount) * 100).toFixed(2) : '0.00' }}%
                 </td>
               </tr>
-              <tr v-if="!stats.BrowserStats || stats.BrowserStats.length === 0">
+              <tr v-if="!clientDistribution.browsers || clientDistribution.browsers.length === 0">
                 <td colspan="4" class="px-4 py-8 text-center text-text-muted">暂无数据</td>
               </tr>
             </tbody>
@@ -277,18 +281,18 @@
             </thead>
             <tbody class="divide-y divide-border-subtle">
               <tr
-                v-for="(os, index) in stats.OsStats"
+                v-for="(os, index) in (clientDistribution.os || [])"
                 :key="index"
                 class="hover:bg-bg-elevated transition-colors"
               >
                 <td class="px-4 py-3 text-text-main font-bold">{{ index + 1 }}</td>
-                <td class="px-4 py-3 text-text-main">{{ os.Os || '未知' }}</td>
-                <td class="px-4 py-3 text-text-main">{{ os.Count }}</td>
+                <td class="px-4 py-3 text-text-main">{{ os.name || '未知' }}</td>
+                <td class="px-4 py-3 text-text-main">{{ os.count || 0 }}</td>
                 <td class="px-4 py-3 text-text-main">
-                  {{ ((os.Count / totalOsCount) * 100).toFixed(2) }}%
+                  {{ totalOsCount > 0 ? ((os.count / totalOsCount) * 100).toFixed(2) : '0.00' }}%
                 </td>
               </tr>
-              <tr v-if="!stats.OsStats || stats.OsStats.length === 0">
+              <tr v-if="!clientDistribution.os || clientDistribution.os.length === 0">
                 <td colspan="4" class="px-4 py-8 text-center text-text-muted">暂无数据</td>
               </tr>
             </tbody>
@@ -304,7 +308,7 @@
         <!-- Top 页面列表 -->
         <AppCard class="p-6">
           <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-bold text-text-main">Top 页面</h2>
+            <h2 class="text-lg font-bold text-text-main">热门页面</h2>
             <select v-model="selectedRange" class="text-sm px-2 py-1 rounded border border-border-subtle bg-bg-card text-text-main">
               <option value="today">今日</option>
               <option value="7d">7天</option>
@@ -318,13 +322,18 @@
             <div
               v-for="(page, index) in topPages.slice(0, 10)"
               :key="index"
-              class="flex items-center justify-between p-2 bg-bg-elevated rounded hover:bg-bg-hover transition-colors"
+              class="flex items-center justify-between p-3 bg-bg-elevated rounded hover:bg-bg-hover transition-colors"
             >
               <div class="flex-1 min-w-0">
-                <div class="text-sm text-text-main truncate" :title="page.url">{{ page.url }}</div>
-                <div class="text-xs text-text-muted mt-1">PV: {{ page.pv }} | UV: {{ page.uv }}</div>
+                <div class="text-sm font-medium text-text-main truncate" :title="formatPageUrl(page.url)">
+                  {{ formatPageUrl(page.url) }}
+                </div>
+                <div class="text-xs text-text-muted mt-1.5 flex items-center gap-3">
+                  <span>浏览量: <span class="font-semibold text-primary">{{ page.pv }}</span></span>
+                  <span>访客数: <span class="font-semibold text-chart-secondary">{{ page.uv }}</span></span>
+                </div>
               </div>
-              <div class="w-6 h-6 rounded-full bg-primary-soft flex items-center justify-center text-primary font-bold text-xs ml-2">
+              <div class="w-8 h-8 rounded-full bg-primary-soft flex items-center justify-center text-primary font-bold text-sm ml-3 flex-shrink-0">
                 {{ index + 1 }}
               </div>
             </div>
@@ -409,10 +418,10 @@
         <AppCard class="p-6">
           <h2 class="text-lg font-bold text-text-main mb-4">地区分布</h2>
           <div v-if="regionsLoading" class="text-center py-4 text-text-muted">加载中...</div>
-          <div v-else-if="regions.length === 0" class="text-center py-4 text-text-muted">暂无数据</div>
+          <div v-else-if="!regions.items || regions.items.length === 0" class="text-center py-4 text-text-muted">暂无数据</div>
           <div v-else class="space-y-2 max-h-64 overflow-y-auto">
             <div
-              v-for="(region, index) in regions.slice(0, 10)"
+              v-for="(region, index) in (regions.items || []).slice(0, 10)"
               :key="index"
               class="flex items-center justify-between p-2 bg-bg-elevated rounded"
             >
@@ -426,21 +435,26 @@
 
         <!-- 行为路径 -->
         <AppCard class="p-6">
-          <h2 class="text-lg font-bold text-text-main mb-4">访问路径</h2>
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-bold text-text-main">访问路径</h2>
+            <span class="text-xs text-text-muted">了解用户浏览路径</span>
+          </div>
           <div v-if="pageFlowLoading" class="text-center py-4 text-text-muted">加载中...</div>
           <div v-else-if="!pageFlow.edges || pageFlow.edges.length === 0" class="text-center py-4 text-text-muted">暂无数据</div>
           <div v-else class="space-y-2 max-h-64 overflow-y-auto">
             <div
               v-for="(edge, index) in pageFlow.edges.slice(0, 10)"
               :key="index"
-              class="p-2 bg-bg-elevated rounded text-sm"
+              class="p-3 bg-bg-elevated rounded text-sm hover:bg-bg-hover transition-colors"
             >
-              <div class="text-text-main">
-                <span class="text-text-muted">{{ edge.from.replace('landing:', '').replace('page:', '') }}</span>
-                <span class="mx-2 text-text-muted">→</span>
-                <span class="text-text-muted">{{ edge.to.replace('landing:', '').replace('page:', '') }}</span>
+              <div class="flex items-center gap-2 text-text-main">
+                <span class="font-medium text-primary">{{ formatPathName(edge.from) }}</span>
+                <span class="text-text-muted">→</span>
+                <span class="font-medium text-primary">{{ formatPathName(edge.to) }}</span>
               </div>
-              <div class="text-xs text-text-muted mt-1">{{ edge.count }} 次</div>
+              <div class="text-xs text-text-muted mt-1.5">
+                <span class="font-semibold text-text-main">{{ edge.count }}</span> 次访问
+              </div>
             </div>
           </div>
         </AppCard>
@@ -477,7 +491,7 @@
             />
             仅显示在线访客
           </label>
-          <AppButton variant="secondary" size="sm" @click="fetchVisitors">
+          <AppButton variant="secondary" size="sm" @click="() => { console.log('🖱️ [Analytics] 手动点击刷新列表按钮'); fetchVisitors(); }">
             刷新列表
           </AppButton>
         </div>
@@ -531,7 +545,7 @@
               </td>
               <td class="px-4 py-3 text-text-main">
                 <div class="text-xs max-w-xs truncate" :title="visitor.Path">
-                  {{ visitor.Path || '-' }}
+                  {{ formatPathName(visitor.Path || '') }}
                 </div>
                 <div v-if="visitor.SearchKeyword" class="text-xs text-primary mt-1">
                   搜索: {{ visitor.SearchKeyword }}
@@ -623,6 +637,11 @@ definePageMeta({
   middleware: 'admin-auth'
 })
 
+// 注意：AppButton 组件应该在 Nuxt 3 中自动导入
+// 如果出现 "Failed to resolve component: AppButton" 错误，
+// 可能需要检查 components/ui/AppButton.vue 是否存在
+// 或者手动导入：import AppButton from '~/components/ui/AppButton.vue'
+
 // 使用模块主题 composable
 const { moduleTheme } = useModuleTheme('analytics_dashboard')
 
@@ -645,7 +664,12 @@ const visitorsLoading = ref(false)
 const visitorsPage = ref(1)
 const visitorsTotal = ref(0)
 const pageSize = ref(20)
-const onlineOnly = ref(false)
+const onlineOnly = ref(false) // 默认不勾选，显示所有访客
+
+// 调试：监听访客数据变化
+watch(visitors, (newVal) => {
+  console.log('[Analytics] visitors 数据变化:', newVal.length, '条')
+}, { deep: true })
 
 // 统一时间范围选择
 const selectedRange = ref<'today' | '7d' | '30d' | '90d'>('7d')
@@ -662,9 +686,9 @@ const overview = ref<any>({
   hotArticleCount: 0
 })
 
-// 趋势图相关
+// 趋势图相关（与 selectedRange 同步）
 const trendRange = ref<'7d' | '30d' | '90d'>('7d')
-const trendData = ref<any>(null)
+const trendData = ref<any>({ points: [] })
 const trendLoading = ref(false)
 
 // Top 页面数据
@@ -684,7 +708,7 @@ const searchKeywords = ref<any[]>([])
 const searchKeywordsLoading = ref(false)
 
 // 地区分布数据
-const regions = ref<any[]>([])
+const regions = ref<any>({ items: [] })
 const regionsLoading = ref(false)
 
 // 客户端分布数据
@@ -781,13 +805,18 @@ const generateColors = (count: number): string[] => {
   return chartColors.slice(0, count)
 }
 
-// 访问区域图表数据
+// 访问区域图表数据（使用新的 regions 接口）
 const regionChartData = computed(() => {
-  if (!stats.value.RegionStats || stats.value.RegionStats.length === 0) {
+  console.log('[Analytics] regionChartData computed, regions.value:', regions.value)
+  if (!regions.value || !regions.value.items || regions.value.items.length === 0) {
     return { labels: [], datasets: [] }
   }
-  const labels = stats.value.RegionStats.map((r: any) => r.Country || '未知')
-  const data = stats.value.RegionStats.map((r: any) => r.Count)
+  const labels = regions.value.items.map((r: any) => {
+    const country = r.country || '未知'
+    const province = r.province || ''
+    return province ? `${country} - ${province}` : country
+  })
+  const data = regions.value.items.map((r: any) => r.count || 0)
   const colors = generateColors(labels.length)
   
   return {
@@ -821,13 +850,14 @@ const sourcesChartData = computed(() => {
   }
 })
 
-// 设备类型图表数据
+// 设备类型图表数据（使用新的 client-distribution 接口）
 const deviceChartData = computed(() => {
-  if (!clientDistribution.value.devices || clientDistribution.value.devices.length === 0) {
+  console.log('[Analytics] deviceChartData computed, clientDistribution.value:', clientDistribution.value)
+  if (!clientDistribution.value || !clientDistribution.value.devices || clientDistribution.value.devices.length === 0) {
     return { labels: [], datasets: [] }
   }
   const labels = clientDistribution.value.devices.map((d: any) => d.name || '未知')
-  const data = clientDistribution.value.devices.map((d: any) => d.count)
+  const data = clientDistribution.value.devices.map((d: any) => d.count || 0)
   const colors = generateColors(labels.length)
   
   return {
@@ -841,13 +871,14 @@ const deviceChartData = computed(() => {
   }
 })
 
-// 浏览器图表数据
+// 浏览器图表数据（使用新的 client-distribution 接口）
 const browserChartData = computed(() => {
-  if (!clientDistribution.value.browsers || clientDistribution.value.browsers.length === 0) {
+  console.log('[Analytics] browserChartData computed, clientDistribution.value:', clientDistribution.value)
+  if (!clientDistribution.value || !clientDistribution.value.browsers || clientDistribution.value.browsers.length === 0) {
     return { labels: [], datasets: [] }
   }
   const labels = clientDistribution.value.browsers.map((b: any) => b.name || '未知')
-  const data = clientDistribution.value.browsers.map((b: any) => b.count)
+  const data = clientDistribution.value.browsers.map((b: any) => b.count || 0)
   const colors = generateColors(labels.length)
   
   return {
@@ -861,13 +892,14 @@ const browserChartData = computed(() => {
   }
 })
 
-// 操作系统图表数据
+// 操作系统图表数据（使用新的 client-distribution 接口）
 const osChartData = computed(() => {
-  if (!clientDistribution.value.os || clientDistribution.value.os.length === 0) {
+  console.log('[Analytics] osChartData computed, clientDistribution.value:', clientDistribution.value)
+  if (!clientDistribution.value || !clientDistribution.value.os || clientDistribution.value.os.length === 0) {
     return { labels: [], datasets: [] }
   }
   const labels = clientDistribution.value.os.map((o: any) => o.name || '未知')
-  const data = clientDistribution.value.os.map((o: any) => o.count)
+  const data = clientDistribution.value.os.map((o: any) => o.count || 0)
   const colors = generateColors(labels.length)
   
   return {
@@ -881,21 +913,25 @@ const osChartData = computed(() => {
   }
 })
 
-// 趋势图数据
+// 趋势图数据（使用新的 trend 接口）
 const trendChartData = computed(() => {
-  if (!trendData.value || !trendData.value.Points || trendData.value.Points.length === 0) {
+  console.log('[Analytics] trendChartData computed, trendData.value:', trendData.value)
+  // 后端返回的是 points（小写），不是 Points
+  const points = trendData.value?.points || trendData.value?.Points || []
+  if (!trendData.value || points.length === 0) {
     return { labels: [], datasets: [] }
   }
-
-  const points = trendData.value.Points
   const labels = points.map((p: any) => {
+    // 兼容 date（小写）和 Date（大写）
+    const dateStr = p.date || p.Date || ''
+    if (!dateStr) return ''
     // 格式化日期显示
-    if (p.Date.includes(' ')) {
+    if (dateStr.includes(' ')) {
       // 包含时间（小时粒度）
-      return p.Date.split(' ')[1] // 只显示时间部分
+      return dateStr.split(' ')[1] // 只显示时间部分
     } else {
       // 只有日期
-      const date = new Date(p.Date)
+      const date = new Date(dateStr)
       return date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })
     }
   })
@@ -907,8 +943,8 @@ const trendChartData = computed(() => {
     labels,
     datasets: [
       {
-        label: 'PV',
-        data: points.map((p: any) => p.Pv || 0),
+        label: '浏览量',
+        data: points.map((p: any) => p.pv || p.Pv || 0),
         borderColor: pvColor,
         backgroundColor: pvColor + '20', // 20% 透明度
         tension: 0.4,
@@ -917,8 +953,8 @@ const trendChartData = computed(() => {
         pointHoverRadius: 5
       },
       {
-        label: 'UV',
-        data: points.map((p: any) => p.Uv || 0),
+        label: '访客数',
+        data: points.map((p: any) => p.uv || p.Uv || 0),
         borderColor: uvColor,
         backgroundColor: uvColor + '20', // 20% 透明度
         tension: 0.4,
@@ -1002,25 +1038,68 @@ const trendChartOptions = computed(() => {
   }
 })
 
+// 数据存在性判断（用于显示"暂无数据"）
+const hasTrendData = computed(() => {
+  const points = trendData.value?.points || trendData.value?.Points || []
+  return points.length > 0
+})
+
+const hasRegionData = computed(() => {
+  return (regions.value?.items?.length ?? 0) > 0
+})
+
+const hasDeviceData = computed(() => {
+  return (clientDistribution.value?.devices?.length ?? 0) > 0
+})
+
+const hasBrowserData = computed(() => {
+  return (clientDistribution.value?.browsers?.length ?? 0) > 0
+})
+
+const hasOsData = computed(() => {
+  return (clientDistribution.value?.os?.length ?? 0) > 0
+})
+
+const hasClientDistributionData = computed(() => {
+  return hasDeviceData.value || hasBrowserData.value || hasOsData.value
+})
+
 // 计算总数用于百分比
 const totalRegionCount = computed(() => {
-  if (!stats.value.RegionStats || stats.value.RegionStats.length === 0) return 1
-  return stats.value.RegionStats.reduce((sum: number, r: any) => sum + r.Count, 0)
+  if (!regions.value?.items || regions.value.items.length === 0) return 1
+  return regions.value.items.reduce((sum: number, r: any) => sum + (r.count || 0), 0)
 })
 
 const totalDeviceCount = computed(() => {
-  if (!stats.value.DeviceStats || stats.value.DeviceStats.length === 0) return 1
-  return stats.value.DeviceStats.reduce((sum: number, d: any) => sum + d.Count, 0)
+  if (!clientDistribution.value?.devices || clientDistribution.value.devices.length === 0) return 1
+  return clientDistribution.value.devices.reduce((sum: number, d: any) => sum + (d.count || 0), 0)
 })
 
 const totalBrowserCount = computed(() => {
-  if (!stats.value.BrowserStats || stats.value.BrowserStats.length === 0) return 1
-  return stats.value.BrowserStats.reduce((sum: number, b: any) => sum + b.Count, 0)
+  if (!clientDistribution.value?.browsers || clientDistribution.value.browsers.length === 0) return 1
+  return clientDistribution.value.browsers.reduce((sum: number, b: any) => sum + (b.count || 0), 0)
 })
 
 const totalOsCount = computed(() => {
-  if (!stats.value.OsStats || stats.value.OsStats.length === 0) return 1
-  return stats.value.OsStats.reduce((sum: number, o: any) => sum + o.Count, 0)
+  if (!clientDistribution.value?.os || clientDistribution.value.os.length === 0) return 1
+  return clientDistribution.value.os.reduce((sum: number, o: any) => sum + (o.count || 0), 0)
+})
+
+// 判断是否显示"暂无访客数据"提示（只有所有数据都为空时才显示）
+const showNoDataAlert = computed(() => {
+  // 如果数据还在加载中，不显示黄框，避免闪烁
+  if (statsLoading.value || topPagesLoading.value || trendLoading.value || 
+      regionsLoading.value || clientDistributionLoading.value) return false
+
+  // 检查是否有任何数据
+  const hasOverviewData = (overview.value?.todayPv ?? 0) > 0 || (overview.value?.todayUv ?? 0) > 0 ||
+                          (overview.value?.totalPv ?? 0) > 0 || (overview.value?.totalUv ?? 0) > 0
+  const hasAnyData = hasOverviewData || hasTrendData.value || hasRegionData.value || 
+                     hasClientDistributionData.value || (topPages.value?.length ?? 0) > 0 || 
+                     (sources.value?.items?.length ?? 0) > 0 || (searchKeywords.value?.length ?? 0) > 0 ||
+                     (pageFlow.value?.edges?.length ?? 0) > 0
+
+  return !hasAnyData
 })
 
 const statsLoading = ref(false)
@@ -1121,41 +1200,214 @@ const fetchStats = async () => {
 const fetchVisitors = async () => {
   try {
     visitorsLoading.value = true
-    console.log('开始获取访客列表...', {
+    console.log('🔍 [Analytics] ========== 开始获取访客列表 ==========')
+    console.log('🔍 [Analytics] 请求参数:', {
       page: visitorsPage.value,
       pageSize: pageSize.value,
       onlineOnly: onlineOnly.value
     })
-    const res = await api.get<any>('/Analytics/visitors', {
-      params: {
-        page: visitorsPage.value,
-        pageSize: pageSize.value,
-        onlineOnly: onlineOnly.value
-      }
-    })
-    console.log('访客列表API响应:', res)
+    console.log('🔍 [Analytics] 准备发送 API 请求...')
+    console.log('🔍 [Analytics] API 请求开始时间:', new Date().toISOString())
+    
+    let res: any = null
+    try {
+      res = await api.get<any>('/Analytics/visitors', {
+        params: {
+          page: visitorsPage.value,
+          pageSize: pageSize.value,
+          onlineOnly: onlineOnly.value
+        }
+      })
+      console.log('✅ [Analytics] 访客列表API响应成功！')
+      console.log('✅ [Analytics] API 响应时间:', new Date().toISOString())
+      console.log('📦 [Analytics] API响应原始数据:', res)
+      console.log('📦 [Analytics] API响应数据类型:', typeof res)
+      console.log('📦 [Analytics] API响应是否为数组:', Array.isArray(res))
+      console.log('📦 [Analytics] API响应是否为 null:', res === null)
+      console.log('📦 [Analytics] API响应是否为 undefined:', res === undefined)
+      console.log('📦 [Analytics] API响应数据结构:', JSON.stringify(res, null, 2))
+    } catch (apiError: any) {
+      console.error('❌ [Analytics] API 请求失败（在 fetchVisitors 内部捕获）:', apiError)
+      throw apiError // 重新抛出，让外层的 catch 处理
+    }
     if (res) {
-      visitors.value = res.Visitors || []
-      visitorsTotal.value = res.Total || 0
-      console.log(`获取到 ${visitors.value.length} 条访客记录，总计 ${visitorsTotal.value} 条`)
+      console.log('📦 [Analytics] 开始处理响应数据...')
+      console.log('📦 [Analytics] res 的所有键:', Object.keys(res || {}))
+      
+      // useApi 已经提取了 data 字段，所以 res 应该是 { total: 39, page: 1, pageSize: 20, visitors: [...] }
+      // 注意：后端返回的是小写的 "visitors" 和 "total"，优先使用小写
+      const visitorsData = res.visitors || res.Visitors || (Array.isArray(res) ? res : [])
+      const totalData = res.total ?? res.Total ?? (Array.isArray(res) ? res.length : 0)
+      
+      console.log('📦 [Analytics] 提取的 visitorsData:', visitorsData)
+      console.log('📦 [Analytics] 提取的 totalData:', totalData)
+      console.log('📦 [Analytics] visitorsData 是否为数组:', Array.isArray(visitorsData))
+      
+      visitors.value = Array.isArray(visitorsData) ? visitorsData : []
+      visitorsTotal.value = totalData
+      
+      console.log('📦 [Analytics] 数据已赋值到 visitors.value，长度:', visitors.value.length)
+      
+      console.log(`[Analytics] 获取到 ${visitors.value.length} 条访客记录，总计 ${visitorsTotal.value} 条`)
+      console.log(`[Analytics] onlineOnly=${onlineOnly.value}`)
+      console.log(`[Analytics] visitors.value 详细数据:`, JSON.stringify(visitors.value, null, 2))
+      
+      // 详细调试信息
+      if (visitors.value.length > 0) {
+        console.log('[Analytics] ✅ 访客数据已获取，第一条记录:', {
+          id: visitors.value[0].Id,
+          visitorId: visitors.value[0].VisitorId,
+          ip: visitors.value[0].Ip,
+          path: visitors.value[0].Path,
+          isOnline: visitors.value[0].IsOnline,
+          updatedAt: visitors.value[0].UpdatedAt,
+          pageViews: visitors.value[0].PageViews
+        })
+      } else {
+        console.warn('[Analytics] ⚠️ 访客列表为空，可能的原因：')
+        console.warn(`  1. onlineOnly=${onlineOnly.value}，如果为 true 则只显示最近5分钟内的在线访客`)
+        console.warn('  2. VisitorAnalytics 表为空且 VisitLogs 表也为空')
+        console.warn('  3. 时间范围过滤导致没有数据')
+        console.warn('  4. 建议：取消勾选"仅显示在线访客"查看所有访客')
+        console.warn('  5. 请检查后端控制台的 [Analytics Visitors] 日志，确认查询结果')
+      }
     } else {
-      console.warn('访客列表API返回空数据')
+      console.warn('[Analytics] 访客列表API返回空数据')
     }
   } catch (e: any) {
-    console.error('Failed to fetch visitors:', e)
-    console.error('错误详情:', e.message, e.response)
+    console.error('❌❌❌ [Analytics] ========== 获取访客列表失败! ==========')
+    console.error('❌ [Analytics] 错误类型:', e?.constructor?.name || typeof e)
+    console.error('❌ [Analytics] 错误信息:', e?.message || String(e))
+    console.error('❌ [Analytics] 错误对象:', e)
+    if (e?.response) {
+      console.error('❌ [Analytics] HTTP 状态码:', e.response.status)
+      console.error('❌ [Analytics] 响应数据:', e.response.data)
+    }
+    console.error('❌ [Analytics] 完整错误堆栈:', e?.stack)
     // 显示错误提示
     if (process.client) {
-      alert(`获取访客列表失败: ${e.message || '未知错误'}\n\n请检查：\n1. 是否已登录管理员账号\n2. 后端服务是否正常运行\n3. 网络连接是否正常`)
+      alert(`获取访客列表失败: ${e?.message || '未知错误'}\n\n请检查：\n1. 是否已登录管理员账号\n2. 后端服务是否正常运行\n3. 网络连接是否正常`)
     }
   } finally {
     visitorsLoading.value = false
+    console.log('🔍 [Analytics] fetchVisitors 执行完成，loading 状态已重置')
   }
 }
 
 const changePage = (page: number) => {
   visitorsPage.value = page
   fetchVisitors()
+}
+
+// 格式化路径名称，转换为友好的中文描述（智能识别，不依赖写死的映射表）
+const formatPathName = (path: string): string => {
+  if (!path) return '未知页面'
+  
+  // 移除前缀
+  const cleanPath = path.replace('landing:', '').replace('page:', '').trim()
+  
+  // 处理空路径或根路径
+  if (!cleanPath || cleanPath === '/') {
+    return '首页'
+  }
+  
+  // 移除查询参数和锚点
+  const pathWithoutQuery = cleanPath.split('?')[0].split('#')[0]
+  
+  // 智能识别路径结构
+  const parts = pathWithoutQuery.split('/').filter(p => p)
+  
+  if (parts.length === 0) {
+    return '首页'
+  }
+  
+  // 第一级路径映射（常用路径）
+  const firstLevelMap: Record<string, string> = {
+    'blog': '博客',
+    'tools': '工具',
+    'projects': '项目',
+    'life': '生活',
+    'lab': '实验室',
+    'ai': 'AI实验室',
+    'admin': '管理后台',
+    'about': '关于',
+    'contact': '联系',
+    'search': '搜索'
+  }
+  
+  const firstPart = parts[0]
+  const firstLevelName = firstLevelMap[firstPart] || firstPart
+  
+  // 如果只有一级路径，直接返回
+  if (parts.length === 1) {
+    return firstLevelName
+  }
+  
+  // 处理二级路径
+  const secondPart = parts[1]
+  
+  // 管理后台的特殊处理
+  if (firstPart === 'admin') {
+    const adminPageMap: Record<string, string> = {
+      'analytics': '访客分析',
+      'articles': '文章管理',
+      'categories': '分类管理',
+      'projects': '项目管理',
+      'timeline': '时间线',
+      'themes': '主题设置',
+      'theme-settings': '主题设置',
+      'edit': '编辑',
+      'login': '登录'
+    }
+    return adminPageMap[secondPart] || `${firstLevelName}：${secondPart}`
+  }
+  
+  // 处理动态路由（如 /blog/[slug], /tools/[slug] 等）
+  if (parts.length === 2) {
+    const slug = secondPart
+    
+    // 智能截断过长的 slug
+    const displaySlug = slug.length > 25 ? slug.substring(0, 25) + '...' : slug
+    
+    // 根据第一级路径返回对应的描述
+    if (firstPart === 'blog' || firstPart === 'article') {
+      return `${firstLevelName}：${displaySlug}`
+    }
+    if (firstPart === 'tools') {
+      return `工具：${displaySlug}`
+    }
+    if (firstPart === 'projects') {
+      return `项目：${displaySlug}`
+    }
+    if (firstPart === 'life') {
+      return `生活：${displaySlug}`
+    }
+    if (firstPart === 'ai') {
+      // AI 实验室可能有 type 和 slug
+      if (parts.length === 3) {
+        return `AI：${parts[1]}/${displaySlug}`
+      }
+      return `AI：${displaySlug}`
+    }
+    
+    // 默认格式：分类/内容
+    return `${firstLevelName}：${displaySlug}`
+  }
+  
+  // 处理三级或更多级路径（如 /ai/[type]/[slug]）
+  if (parts.length >= 3) {
+    const lastPart = parts[parts.length - 1]
+    const displaySlug = lastPart.length > 20 ? lastPart.substring(0, 20) + '...' : lastPart
+    return `${firstLevelName}：${parts.slice(1).join('/')}`
+  }
+  
+  // 默认情况：返回路径的友好格式
+  const displayPath = pathWithoutQuery.length > 35 
+    ? pathWithoutQuery.substring(0, 35) + '...' 
+    : pathWithoutQuery
+  
+  // 如果路径以 / 开头，移除它
+  return displayPath.startsWith('/') ? displayPath.substring(1) : displayPath
 }
 
 const formatTime = (timeStr: string) => {
@@ -1181,24 +1433,68 @@ const formatTime = (timeStr: string) => {
   })
 }
 
+// 格式化页面URL，使其更易读
+const formatPageUrl = (url: string) => {
+  if (!url) return '未知页面'
+  
+  // 如果是根路径
+  if (url === '/' || url === '') return '首页'
+  
+  // 移除开头的斜杠
+  const cleanUrl = url.startsWith('/') ? url.substring(1) : url
+  
+  // 根据路径类型返回友好的名称
+  if (cleanUrl.startsWith('blog/')) {
+    const slug = cleanUrl.replace('blog/', '')
+    return slug ? `博客: ${slug}` : '博客列表'
+  }
+  if (cleanUrl.startsWith('tools/')) {
+    const tool = cleanUrl.replace('tools/', '')
+    return tool ? `工具: ${tool}` : '工具列表'
+  }
+  if (cleanUrl.startsWith('ai/')) {
+    return 'AI助手'
+  }
+  if (cleanUrl.startsWith('projects/')) {
+    const project = cleanUrl.replace('projects/', '')
+    return project ? `项目: ${project}` : '项目列表'
+  }
+  if (cleanUrl.startsWith('lab')) {
+    return '实验室'
+  }
+  if (cleanUrl.startsWith('admin')) {
+    return '管理后台'
+  }
+  
+  // 其他情况返回原始URL（去掉斜杠）
+  return cleanUrl || '首页'
+}
+
 const fetchTrend = async () => {
   try {
     trendLoading.value = true
+    console.log('[Analytics] fetchTrend called, range:', trendRange.value)
     const res = await api.get<any>('/Analytics/trend', {
       params: {
         range: trendRange.value,
         granularity: 'day'
       }
     })
+    console.log('[Analytics] trend API response:', res)
     if (res) {
       trendData.value = res
-      console.log('趋势数据加载成功:', res)
+      const points = res.points || res.Points || []
+      console.log('[Analytics] trendData assigned, points count:', points.length)
+      console.log('[Analytics] trendData.value:', trendData.value)
     } else {
-      console.warn('趋势数据API返回空数据')
+      console.warn('[Analytics] 趋势数据API返回空数据')
+      trendData.value = { points: [] }
     }
   } catch (e: any) {
-    console.error('Failed to fetch trend:', e)
-    console.error('错误详情:', e.message, e.response)
+    console.error('[Analytics] Failed to fetch trend:', e)
+    console.error('[Analytics] 错误详情:', e.message, e.response)
+    // 即使出错也设置空数据，避免显示错误
+    trendData.value = { points: [] }
   } finally {
     trendLoading.value = false
   }
@@ -1265,12 +1561,19 @@ const fetchSearchKeywords = async () => {
 const fetchRegions = async () => {
   try {
     regionsLoading.value = true
+    console.log('[Analytics] fetchRegions called, range:', selectedRange.value)
     const res = await api.get<any>(`/Analytics/regions?range=${selectedRange.value}`)
+    console.log('[Analytics] regions API response:', res)
     if (res && res.items) {
-      regions.value = res.items
+      regions.value = { items: res.items }
+      console.log('[Analytics] regions.value assigned, items count:', res.items.length)
+    } else {
+      console.warn('[Analytics] 地区分布API返回空数据')
+      regions.value = { items: [] }
     }
   } catch (e: any) {
-    console.error('Failed to fetch regions:', e)
+    console.error('[Analytics] Failed to fetch regions:', e)
+    regions.value = { items: [] }
   } finally {
     regionsLoading.value = false
   }
@@ -1280,12 +1583,26 @@ const fetchRegions = async () => {
 const fetchClientDistribution = async () => {
   try {
     clientDistributionLoading.value = true
+    console.log('[Analytics] fetchClientDistribution called, range:', selectedRange.value)
     const res = await api.get<any>(`/Analytics/client-distribution?range=${selectedRange.value}`)
+    console.log('[Analytics] client-distribution API response:', res)
     if (res) {
-      clientDistribution.value = res
+      clientDistribution.value = {
+        devices: res.devices || [],
+        browsers: res.browsers || [],
+        os: res.os || []
+      }
+      console.log('[Analytics] clientDistribution.value assigned:')
+      console.log('  - devices:', clientDistribution.value.devices.length)
+      console.log('  - browsers:', clientDistribution.value.browsers.length)
+      console.log('  - os:', clientDistribution.value.os.length)
+    } else {
+      console.warn('[Analytics] 客户端分布API返回空数据')
+      clientDistribution.value = { devices: [], browsers: [], os: [] }
     }
   } catch (e: any) {
-    console.error('Failed to fetch client distribution:', e)
+    console.error('[Analytics] Failed to fetch client distribution:', e)
+    clientDistribution.value = { devices: [], browsers: [], os: [] }
   } finally {
     clientDistributionLoading.value = false
   }
@@ -1308,30 +1625,39 @@ const fetchPageFlow = async () => {
 
 // 统一刷新所有数据
 const refreshAll = async () => {
-  await Promise.all([
-    fetchOverview(),
-    fetchStats(),
-    fetchTrend(),
-    fetchTopPages(),
-    fetchSources(),
-    fetchSearchKeywords(),
-    fetchRegions(),
-    fetchClientDistribution(),
-    fetchPageFlow(),
-    fetchVisitors()
-  ])
+  console.log('🔄 [Analytics] ========== refreshAll() 被调用 ==========')
+  console.log('🔄 [Analytics] 开始并行加载所有数据...')
+  try {
+    await Promise.all([
+      fetchOverview(),
+      fetchStats(),
+      fetchTrend(),
+      fetchTopPages(),
+      fetchSources(),
+      fetchSearchKeywords(),
+      fetchRegions(),
+      fetchClientDistribution(),
+      fetchPageFlow(),
+      fetchVisitors()
+    ])
+    console.log('✅ [Analytics] 所有数据加载完成')
+  } catch (error) {
+    console.error('❌ [Analytics] 加载数据时出错:', error)
+  }
 }
 
 // 时间范围变化时刷新数据
-watch(selectedRange, () => {
+watch(selectedRange, (newRange) => {
+  console.log('[Analytics] selectedRange changed to:', newRange)
+  // 趋势图使用独立的 range，但需要同步（today 映射为 7d）
+  trendRange.value = newRange === 'today' ? '7d' : newRange as any
+  // 刷新所有依赖时间范围的数据
   fetchTopPages()
   fetchSources()
   fetchSearchKeywords()
   fetchRegions()
   fetchClientDistribution()
   fetchPageFlow()
-  // 趋势图使用独立的 range
-  trendRange.value = selectedRange.value === 'today' ? '7d' : selectedRange.value as any
   fetchTrend()
 })
 
@@ -1342,26 +1668,29 @@ const refreshStats = () => {
 const autoRefreshInterval = ref<NodeJS.Timeout | null>(null)
 
 onMounted(() => {
-  console.log('访客分析页面已加载')
-  console.log('检查管理员登录状态...')
+  console.log('🚀🚀🚀 [Analytics] ========== 访客分析页面开始加载 ==========')
+  console.log('🚀 [Analytics] 检查管理员登录状态...')
   
   if (process.client) {
     const token = localStorage.getItem('admin_token')
     const user = localStorage.getItem('admin_user')
-    console.log('管理员Token:', token ? '已存在' : '不存在')
-    console.log('管理员信息:', user)
+    console.log('🚀 [Analytics] 管理员Token:', token ? '已存在' : '不存在')
+    console.log('🚀 [Analytics] 管理员信息:', user)
     
     if (!token) {
-      console.warn('未检测到管理员登录，请先登录')
+      console.warn('⚠️ [Analytics] 未检测到管理员登录，请先登录')
       alert('请先登录管理员账号才能查看访客数据！\n\n将跳转到登录页面...')
       navigateTo('/admin/login')
       return
     }
+    
+    console.log('✅ [Analytics] 管理员已登录，准备加载数据')
   }
   
   // 延迟一下再加载数据，确保页面完全渲染
   setTimeout(() => {
-    console.log('开始加载数据...')
+    console.log('🚀 [Analytics] 页面已加载，开始初始化数据...')
+    console.log('🚀 [Analytics] 调用 refreshAll() 函数...')
     refreshAll()
   }, 500)
   
@@ -1379,10 +1708,10 @@ onMounted(() => {
         return
       }
       
+      fetchOverview()
       fetchStats()
-      if (onlineOnly.value) {
-        fetchVisitors()
-      }
+      // 自动刷新访客列表（无论是否勾选"仅显示在线访客"）
+      fetchVisitors()
     }, 60000) // 改为 60 秒
   }
 })

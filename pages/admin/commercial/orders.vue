@@ -196,6 +196,7 @@ onMounted(() => {
 .page-title {
   font-size: 1.5rem;
   font-weight: bold;
+  color: var(--color-text-main);
 }
 
 .filter-bar {
@@ -205,9 +206,18 @@ onMounted(() => {
 }
 
 .filter-input {
-  padding: 0.5rem;
-  border: 1px solid #ddd;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border-default);
   border-radius: 4px;
+  background: var(--color-bg-card);
+  color: var(--color-text-main);
+  font-size: 0.875rem;
+}
+
+.filter-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-soft);
 }
 
 .table-container {
@@ -217,63 +227,80 @@ onMounted(() => {
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  background: white;
+  background: var(--color-bg-card);
   border-radius: 8px;
   overflow: hidden;
+  border: 1px solid var(--color-border-subtle);
 }
 
 .data-table th,
 .data-table td {
-  padding: 0.75rem;
+  padding: 0.75rem 1rem;
   text-align: left;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .data-table th {
-  background: #f5f5f5;
+  background: var(--color-bg-elevated);
   font-weight: 600;
+  color: var(--color-text-main);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.data-table td {
+  color: var(--color-text-main);
+  font-size: 0.875rem;
+}
+
+.data-table tbody tr:hover {
+  background: var(--color-bg-elevated);
 }
 
 .type-badge {
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   font-size: 0.875rem;
+  font-weight: 500;
 }
 
 .type-theme {
-  background: #dbeafe;
-  color: #1e40af;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
 }
 
 .type-tool {
-  background: #fce7f3;
-  color: #9f1239;
+  background: rgba(236, 72, 153, 0.2);
+  color: #ec4899;
 }
 
 .status-badge {
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   font-size: 0.875rem;
+  font-weight: 500;
 }
 
 .status-pending {
-  background: #fef3c7;
-  color: #92400e;
+  background: rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
 }
 
 .status-paid {
-  background: #d1fae5;
-  color: #065f46;
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
 }
 
 .status-failed {
-  background: #fee2e2;
-  color: #991b1b;
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
 }
 
 .status-refunded {
-  background: #e5e7eb;
-  color: #374151;
+  background: var(--color-bg-elevated);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border-subtle);
 }
 
 .pagination {

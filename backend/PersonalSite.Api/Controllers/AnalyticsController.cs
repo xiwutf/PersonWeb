@@ -57,8 +57,10 @@ public class AnalyticsController : ControllerBase
 
             // ========== 2. 写入或更新 VisitorAnalytics 表（详细分析）==========
             // 查找或创建访客会话
+            // 查找最近30分钟内有活动的会话（即使 IsOnline=false，也可能还在线）
+            var thirtyMinutesAgo = DateTime.Now.AddMinutes(-30);
             var analytics = await _context.VisitorAnalytics
-                .Where(v => v.VisitorId == request.VisitorId && v.IsOnline)
+                .Where(v => v.VisitorId == request.VisitorId && v.UpdatedAt >= thirtyMinutesAgo)
                 .OrderByDescending(v => v.UpdatedAt)
                 .FirstOrDefaultAsync();
 
@@ -117,6 +119,7 @@ public class AnalyticsController : ControllerBase
 
             // 记录日志（用于调试）
             Console.WriteLine($"[Analytics] Track visit: VisitorId={request.VisitorId}, Path={request.Path}, IP={ip}, Time={DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+            Console.WriteLine($"[Analytics] Session created/updated: Id={analytics.Id}, IsOnline={analytics.IsOnline}, UpdatedAt={analytics.UpdatedAt:yyyy-MM-dd HH:mm:ss}, PageViews={analytics.PageViews}");
 
             return Ok(ApiResponse.Success(new { SessionId = analytics.Id, VisitLogId = visitLog.Id }));
         }
@@ -713,21 +716,37 @@ public class AnalyticsController : ControllerBase
         {
             // 优先从 VisitorAnalytics 获取
             var analyticsCount = await _context.VisitorAnalytics.CountAsync();
+            Console.WriteLine($"[Analytics Visitors] VisitorAnalytics count: {analyticsCount}, onlineOnly: {onlineOnly}, page: {page}, pageSize: {pageSize}");
             
             if (analyticsCount > 0)
             {
                 var query = _context.VisitorAnalytics.AsQueryable();
 
-                // 只显示在线访客
+                // 只显示在线访客（最近5分钟内有活动）
+                // 注意：不依赖 IsOnline 字段，直接根据 UpdatedAt 判断，因为 IsOnline 可能没有及时更新
                 if (onlineOnly)
                 {
-                    query = query.Where(v => v.IsOnline && v.UpdatedAt >= DateTime.Now.AddMinutes(-5));
+                    var fiveMinutesAgo = DateTime.Now.AddMinutes(-5);
+                    query = query.Where(v => v.UpdatedAt >= fiveMinutesAgo);
+                    Console.WriteLine($"[Analytics Visitors] Filtering online visitors (UpdatedAt >= {fiveMinutesAgo})");
                 }
 
                 // 按更新时间倒序排列
                 query = query.OrderByDescending(v => v.UpdatedAt);
 
                 var total = await query.CountAsync();
+                Console.WriteLine($"[Analytics Visitors] Total visitors after filter: {total}");
+                
+                // 如果 total > 0，打印一些示例数据用于调试
+                if (total > 0)
+                {
+                    var sampleVisitors = await query
+                        .Take(3)
+                        .Select(v => new { v.VisitorId, v.Ip, v.Path, v.UpdatedAt, v.IsOnline })
+                        .ToListAsync();
+                    Console.WriteLine($"[Analytics Visitors] Sample visitors: {System.Text.Json.JsonSerializer.Serialize(sampleVisitors)}");
+                }
+                
                 var visitors = await query
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize)
@@ -751,6 +770,8 @@ public class AnalyticsController : ControllerBase
                         v.IsOnline
                     })
                     .ToListAsync();
+                
+                Console.WriteLine($"[Analytics Visitors] Returning {visitors.Count} visitors");
 
                 return Ok(ApiResponse.Success(new
                 {
@@ -765,10 +786,12 @@ public class AnalyticsController : ControllerBase
                 // 如果 VisitorAnalytics 没有数据，从 VisitLogs 读取
                 var query = _context.VisitLogs.AsQueryable();
 
-                // 只显示最近24小时的访客（因为 VisitLogs 没有在线状态）
+                // 只显示最近5分钟的访客（在线访客）
                 if (onlineOnly)
                 {
-                    query = query.Where(v => v.Timestamp >= DateTime.Now.AddHours(-24));
+                    var fiveMinutesAgo = DateTime.Now.AddMinutes(-5);
+                    query = query.Where(v => v.Timestamp >= fiveMinutesAgo);
+                    Console.WriteLine($"[Analytics Visitors] Filtering online visitors from VisitLogs (Timestamp >= {fiveMinutesAgo})");
                 }
 
                 // 按时间倒序排列
@@ -781,24 +804,35 @@ public class AnalyticsController : ControllerBase
                     .ToListAsync();
 
                 // 转换为访客格式
+                // 注意：VisitLogs 表只有基础字段，没有地理位置、Referrer、SearchKeyword 等
+                // 这些信息只在 VisitorAnalytics 表中才有
+                var visitorIds = visitLogs.Select(v => v.VisitorId).Distinct().ToList();
+                var pageViewsDict = await _context.VisitLogs
+                    .Where(log => visitorIds.Contains(log.VisitorId))
+                    .GroupBy(log => log.VisitorId)
+                    .Select(g => new { VisitorId = g.Key, Count = g.Count() })
+                    .ToDictionaryAsync(x => x.VisitorId, x => x.Count);
+                
                 var visitors = visitLogs.Select(v =>
                 {
                     var deviceInfo = ParseDeviceInfo(v.UserAgent ?? "");
+                    var pageViews = pageViewsDict.GetValueOrDefault(v.VisitorId, 1);
+                    
                     return new
                     {
                         Id = v.Id,
                         VisitorId = v.VisitorId,
-                        Ip = v.Ip,
-                        Country = (string?)null,
+                        Ip = v.Ip ?? "-",
+                        Country = (string?)null, // VisitLogs 表没有地理位置字段，需要从 VisitorAnalytics 获取
                         Region = (string?)null,
                         City = (string?)null,
-                        DeviceType = deviceInfo.DeviceType,
-                        Browser = deviceInfo.Browser,
-                        Os = deviceInfo.Os,
-                        Path = v.Path,
-                        Referrer = (string?)null,
-                        SearchKeyword = (string?)null,
-                        PageViews = 1,
+                        DeviceType = deviceInfo.DeviceType ?? "unknown",
+                        Browser = deviceInfo.Browser ?? "unknown",
+                        Os = deviceInfo.Os ?? "unknown",
+                        Path = v.Path ?? "-",
+                        Referrer = (string?)null, // VisitLogs 表没有 Referrer 字段
+                        SearchKeyword = (string?)null, // VisitLogs 表没有 SearchKeyword 字段
+                        PageViews = pageViews,
                         SessionStart = v.Timestamp,
                         UpdatedAt = v.Timestamp,
                         IsOnline = !onlineOnly || v.Timestamp >= DateTime.Now.AddMinutes(-5)

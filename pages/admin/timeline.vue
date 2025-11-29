@@ -296,12 +296,14 @@ onMounted(() => {
 .event-title {
   font-size: 1.125rem;
   font-weight: 700;
-  color: #e5e7eb;
+  color: var(--color-text-main);
 }
 
 .event-description {
-  color: #9ca3af;
+  color: var(--color-text-muted);
   margin: 0;
+  font-weight: 500;
+  line-height: 1.6;
 }
 
 .event-actions {

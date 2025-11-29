@@ -1,8 +1,93 @@
 /* ============================================
    通用组件样式
    用于提取各页面中重复使用的样式类
+   
+   注意：这些样式类使用新的主题系统（基于 CSS 变量），
+   会自动适配当前主题（light/dark/tech-blue/paper/forest）
    ============================================ */
 @layer components {
+  /* ========== 文字样式组合类（基于主题系统） ========== */
+  /**
+   * 主要文字样式
+   * 使用场景：标题、重要文字
+   */
+  .text-body {
+    @apply text-text-main;
+  }
+
+  /**
+   * 次要文字样式
+   * 使用场景：描述、辅助信息
+   */
+  .text-label {
+    @apply text-text-muted;
+  }
+
+  /**
+   * 禁用文字样式
+   * 使用场景：禁用状态、占位符
+   */
+  .text-disabled {
+    @apply text-text-disabled;
+  }
+
+  /**
+   * 标题样式组合
+   * 使用场景：页面标题、卡片标题
+   */
+  .text-heading {
+    @apply text-text-main font-bold;
+  }
+
+  /**
+   * 小标题样式组合
+   * 使用场景：章节标题、列表标题
+   */
+  .text-subheading {
+    @apply text-text-main font-semibold;
+  }
+
+  /**
+   * 描述文字样式组合
+   * 使用场景：说明文字、提示信息
+   */
+  .text-description {
+    @apply text-text-muted text-sm;
+  }
+
+  /* ========== 背景样式组合类（基于主题系统） ========== */
+  /**
+   * 代码块背景样式
+   * 使用场景：<code> 标签、代码片段
+   */
+  .bg-code {
+    @apply bg-bg-elevated px-2 py-0.5 rounded font-mono text-xs font-semibold text-text-main;
+  }
+
+  /**
+   * 强调背景样式
+   * 使用场景：高亮区域、重要提示
+   */
+  .bg-emphasis {
+    @apply bg-bg-elevated;
+  }
+
+  /* ========== 边框样式组合类（基于主题系统） ========== */
+  /**
+   * 分割线样式
+   * 使用场景：列表项之间的分割线
+   */
+  .divider {
+    @apply border-t border-border-subtle;
+  }
+
+  /**
+   * 卡片边框样式
+   * 使用场景：卡片容器的边框
+   */
+  .border-card {
+    @apply border border-border-subtle;
+  }
   /* ========== 卡片样式 ========== */
   .card {
     @apply bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700;

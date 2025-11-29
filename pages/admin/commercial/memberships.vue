@@ -55,58 +55,70 @@ const refresh = () => {
 .page-title {
   font-size: 1.5rem;
   font-weight: 600;
+  color: var(--color-text-main);
 }
 
 .membership-card {
   padding: 1.75rem 2rem;
   border-radius: 0.75rem;
-  background: rgba(15, 23, 42, 0.9);
-  border: 1px solid rgba(148, 163, 184, 0.4);
-  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.6);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: var(--shadow-lg);
 }
 
 .membership-title {
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
+  color: var(--color-text-main);
 }
 
 .membership-desc {
   font-size: 0.95rem;
-  color: #e5e7eb;
+  color: var(--color-text-main);
   margin-bottom: 0.75rem;
+  font-weight: 500;
+  line-height: 1.6;
 }
 
 .membership-list {
   margin-left: 1.25rem;
   margin-bottom: 0.75rem;
   list-style-type: disc;
-  color: #e5e7eb;
+  color: var(--color-text-main);
   font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.8;
+}
+
+.membership-list li {
+  margin-bottom: 0.5rem;
 }
 
 .membership-tip {
   font-size: 0.9rem;
-  color: #9ca3af;
+  color: var(--color-text-muted);
+  font-weight: 500;
 }
 
 .btn-secondary {
   padding: 0.5rem 1rem;
   border-radius: 0.375rem;
-  border: none;
-  background: rgba(148, 163, 184, 0.2);
-  color: #e5e7eb;
+  border: 1px solid var(--color-border-default);
+  background: var(--color-bg-elevated);
+  color: var(--color-text-main);
   font-size: 0.875rem;
+  font-weight: 500;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  transition: background 0.2s ease, transform 0.1s ease;
+  transition: all 0.2s ease;
 }
 
 .btn-secondary:hover {
-  background: rgba(148, 163, 184, 0.35);
-  transform: translateY(-1px);
+  background: var(--color-bg-card);
+  border-color: var(--color-border-strong);
 }
 </style>
 
