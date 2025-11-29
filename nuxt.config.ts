@@ -103,7 +103,12 @@ export default defineNuxtConfig({
   css: [
     '~/assets/css/main.css',
     '~/assets/css/themes.css',
-    '~/assets/css/visitor-interaction.css'
+    '~/assets/css/visitor-interaction.css',
+    '~/assets/css/about.css',
+    '~/assets/css/tools.css',
+    '~/assets/css/life.css',
+    '~/assets/css/blog.css',
+    '~/assets/css/projects.css'
   ],
 
   // Nitro 配置（用于静态生成优化）

@@ -1,3 +1,11 @@
+-- 投资相关数据库表结构
+-- 
+-- 设计原则：
+-- 1. 不使用外键约束，通过逻辑关联维护表间关系
+-- 2. 关联关系由应用层维护，便于后期维护和扩展
+-- 3. 为关联字段创建索引以提升查询性能
+-- 4. 详细说明请参考 database/DESIGN_PRINCIPLES.md
+
 -- 用户行为记录表（用于 AI 推荐）
 CREATE TABLE IF NOT EXISTS `user_behavior` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
@@ -37,9 +45,11 @@ CREATE TABLE IF NOT EXISTS `investment` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='投资记录表';
 
 -- 投资交易记录表
+-- 注意：根据数据库设计原则，不使用外键约束
+-- investment_id 通过逻辑关联到 investment.id，关联关系由应用层维护
 CREATE TABLE IF NOT EXISTS `investment_transaction` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `investment_id` BIGINT NOT NULL COMMENT '投资ID',
+  `investment_id` BIGINT NOT NULL COMMENT '投资ID（逻辑关联到 investment.id）',
   `transaction_type` VARCHAR(20) NOT NULL COMMENT '交易类型：buy/sell',
   `quantity` DECIMAL(18, 4) NOT NULL DEFAULT 0 COMMENT '交易数量',
   `price` DECIMAL(18, 4) NOT NULL DEFAULT 0 COMMENT '交易价格',
@@ -50,7 +60,8 @@ CREATE TABLE IF NOT EXISTS `investment_transaction` (
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   INDEX `idx_investment_id` (`investment_id`),
-  INDEX `idx_transaction_date` (`transaction_date`),
-  FOREIGN KEY (`investment_id`) REFERENCES `investment`(`id`) ON DELETE CASCADE
+  INDEX `idx_transaction_date` (`transaction_date`)
+  -- 注意：不使用外键约束，investment_id 通过逻辑关联到 investment.id
+  -- 关联关系由应用层维护，便于后期维护和扩展
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='投资交易记录表';
 

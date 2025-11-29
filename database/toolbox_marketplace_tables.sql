@@ -1,4 +1,10 @@
 -- 工具商城系统数据库表结构
+-- 
+-- 设计原则：
+-- 1. 不使用外键约束，通过逻辑关联维护表间关系
+-- 2. 关联关系由应用层维护，便于后期维护和扩展
+-- 3. 为关联字段创建索引以提升查询性能
+-- 4. 详细说明请参考 database/DESIGN_PRINCIPLES.md
 
 -- ============================================
 -- 1. ToolCategory 表 - 工具分类
@@ -22,9 +28,11 @@ CREATE TABLE IF NOT EXISTS `tool_category` (
 -- ============================================
 -- 2. Tool 表 - 工具主表
 -- ============================================
+-- 注意：根据数据库设计原则，不使用外键约束
+-- category_id 通过逻辑关联到 tool_category.id，关联关系由应用层维护
 CREATE TABLE IF NOT EXISTS `tool` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '工具ID',
-    `category_id` BIGINT DEFAULT NULL COMMENT '分类ID',
+    `category_id` BIGINT DEFAULT NULL COMMENT '分类ID（逻辑关联到 tool_category.id）',
     `name` VARCHAR(200) NOT NULL COMMENT '工具名称',
     `slug` VARCHAR(200) NOT NULL COMMENT '工具标识（URL友好）',
     `icon` VARCHAR(50) DEFAULT NULL COMMENT '工具图标',
@@ -59,16 +67,19 @@ CREATE TABLE IF NOT EXISTS `tool` (
     INDEX `idx_is_free` (`is_free`),
     INDEX `idx_is_premium` (`is_premium`),
     INDEX `idx_purchase_count` (`purchase_count`),
-    INDEX `idx_rating` (`rating`),
-    FOREIGN KEY (`category_id`) REFERENCES `tool_category`(`id`) ON DELETE SET NULL
+    INDEX `idx_rating` (`rating`)
+    -- 注意：不使用外键约束，category_id 通过逻辑关联到 tool_category.id
+    -- 关联关系由应用层维护，便于后期维护和扩展
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='工具表';
 
 -- ============================================
 -- 3. ToolPurchase 表 - 工具购买记录
 -- ============================================
+-- 注意：根据数据库设计原则，不使用外键约束
+-- tool_id 通过逻辑关联到 tool.id，关联关系由应用层维护
 CREATE TABLE IF NOT EXISTS `tool_purchase` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '购买记录ID',
-    `tool_id` BIGINT NOT NULL COMMENT '工具ID',
+    `tool_id` BIGINT NOT NULL COMMENT '工具ID（逻辑关联到 tool.id）',
     `user_id` VARCHAR(100) DEFAULT NULL COMMENT '用户ID（访客ID或管理员ID）',
     `purchase_type` VARCHAR(20) DEFAULT 'one_time' COMMENT '购买类型：one_time-一次性, subscription-订阅, lifetime-终身',
     `price` DECIMAL(10,2) NOT NULL COMMENT '购买价格',
@@ -83,16 +94,19 @@ CREATE TABLE IF NOT EXISTS `tool_purchase` (
     INDEX `idx_user_id` (`user_id`),
     INDEX `idx_payment_status` (`payment_status`),
     INDEX `idx_is_active` (`is_active`),
-    INDEX `idx_purchased_at` (`purchased_at`),
-    FOREIGN KEY (`tool_id`) REFERENCES `tool`(`id`) ON DELETE CASCADE
+    INDEX `idx_purchased_at` (`purchased_at`)
+    -- 注意：不使用外键约束，tool_id 通过逻辑关联到 tool.id
+    -- 关联关系由应用层维护，便于后期维护和扩展
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='工具购买记录表';
 
 -- ============================================
 -- 4. ToolUsage 表 - 工具使用记录
 -- ============================================
+-- 注意：根据数据库设计原则，不使用外键约束
+-- tool_id 通过逻辑关联到 tool.id，关联关系由应用层维护
 CREATE TABLE IF NOT EXISTS `tool_usage` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '使用记录ID',
-    `tool_id` BIGINT NOT NULL COMMENT '工具ID',
+    `tool_id` BIGINT NOT NULL COMMENT '工具ID（逻辑关联到 tool.id）',
     `user_id` VARCHAR(100) DEFAULT NULL COMMENT '用户ID',
     `usage_type` VARCHAR(50) DEFAULT 'web' COMMENT '使用类型：web-网页, api-API调用, embed-嵌入',
     `request_data` JSON DEFAULT NULL COMMENT '请求数据（JSON格式）',
@@ -109,16 +123,19 @@ CREATE TABLE IF NOT EXISTS `tool_usage` (
     INDEX `idx_user_id` (`user_id`),
     INDEX `idx_usage_type` (`usage_type`),
     INDEX `idx_status` (`status`),
-    INDEX `idx_created_at` (`created_at`),
-    FOREIGN KEY (`tool_id`) REFERENCES `tool`(`id`) ON DELETE CASCADE
+    INDEX `idx_created_at` (`created_at`)
+    -- 注意：不使用外键约束，tool_id 通过逻辑关联到 tool.id
+    -- 关联关系由应用层维护，便于后期维护和扩展
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='工具使用记录表';
 
 -- ============================================
 -- 5. ToolApiKey 表 - 工具API密钥
 -- ============================================
+-- 注意：根据数据库设计原则，不使用外键约束
+-- tool_id 通过逻辑关联到 tool.id，关联关系由应用层维护
 CREATE TABLE IF NOT EXISTS `tool_api_key` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'API密钥ID',
-    `tool_id` BIGINT NOT NULL COMMENT '工具ID',
+    `tool_id` BIGINT NOT NULL COMMENT '工具ID（逻辑关联到 tool.id）',
     `user_id` VARCHAR(100) NOT NULL COMMENT '用户ID',
     `api_key` VARCHAR(100) NOT NULL COMMENT 'API密钥（加密存储）',
     `key_name` VARCHAR(100) DEFAULT NULL COMMENT '密钥名称（用户自定义）',
@@ -133,8 +150,9 @@ CREATE TABLE IF NOT EXISTS `tool_api_key` (
     UNIQUE KEY `uk_api_key` (`api_key`),
     INDEX `idx_tool_id` (`tool_id`),
     INDEX `idx_user_id` (`user_id`),
-    INDEX `idx_is_active` (`is_active`),
-    FOREIGN KEY (`tool_id`) REFERENCES `tool`(`id`) ON DELETE CASCADE
+    INDEX `idx_is_active` (`is_active`)
+    -- 注意：不使用外键约束，tool_id 通过逻辑关联到 tool.id
+    -- 关联关系由应用层维护，便于后期维护和扩展
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='工具API密钥表';
 
 -- ============================================
@@ -164,26 +182,34 @@ CREATE TABLE IF NOT EXISTS `tool_collection` (
 -- ============================================
 -- 7. ToolCollectionItem 表 - 工具合集关联表
 -- ============================================
+-- 注意：根据数据库设计原则，不使用外键约束
+-- collection_id 通过逻辑关联到 tool_collection.id
+-- tool_id 通过逻辑关联到 tool.id
+-- 关联关系由应用层维护
 CREATE TABLE IF NOT EXISTS `tool_collection_item` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '关联ID',
-    `collection_id` BIGINT NOT NULL COMMENT '合集ID',
-    `tool_id` BIGINT NOT NULL COMMENT '工具ID',
+    `collection_id` BIGINT NOT NULL COMMENT '合集ID（逻辑关联到 tool_collection.id）',
+    `tool_id` BIGINT NOT NULL COMMENT '工具ID（逻辑关联到 tool.id）',
     `sort_order` INT DEFAULT 0 COMMENT '排序顺序',
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_collection_tool` (`collection_id`, `tool_id`),
     INDEX `idx_collection_id` (`collection_id`),
-    INDEX `idx_tool_id` (`tool_id`),
-    FOREIGN KEY (`collection_id`) REFERENCES `tool_collection`(`id`) ON DELETE CASCADE,
-    FOREIGN KEY (`tool_id`) REFERENCES `tool`(`id`) ON DELETE CASCADE
+    INDEX `idx_tool_id` (`tool_id`)
+    -- 注意：不使用外键约束
+    -- collection_id 通过逻辑关联到 tool_collection.id
+    -- tool_id 通过逻辑关联到 tool.id
+    -- 关联关系由应用层维护，便于后期维护和扩展
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='工具合集关联表';
 
 -- ============================================
 -- 8. ToolReview 表 - 工具评价
 -- ============================================
+-- 注意：根据数据库设计原则，不使用外键约束
+-- tool_id 通过逻辑关联到 tool.id，关联关系由应用层维护
 CREATE TABLE IF NOT EXISTS `tool_review` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '评价ID',
-    `tool_id` BIGINT NOT NULL COMMENT '工具ID',
+    `tool_id` BIGINT NOT NULL COMMENT '工具ID（逻辑关联到 tool.id）',
     `user_id` VARCHAR(100) NOT NULL COMMENT '用户ID',
     `rating` INT NOT NULL COMMENT '评分（1-5）',
     `comment` TEXT DEFAULT NULL COMMENT '评价内容',
@@ -196,16 +222,19 @@ CREATE TABLE IF NOT EXISTS `tool_review` (
     INDEX `idx_tool_id` (`tool_id`),
     INDEX `idx_user_id` (`user_id`),
     INDEX `idx_rating` (`rating`),
-    INDEX `idx_status` (`status`),
-    FOREIGN KEY (`tool_id`) REFERENCES `tool`(`id`) ON DELETE CASCADE
+    INDEX `idx_status` (`status`)
+    -- 注意：不使用外键约束，tool_id 通过逻辑关联到 tool.id
+    -- 关联关系由应用层维护，便于后期维护和扩展
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='工具评价表';
 
 -- ============================================
 -- 9. ToolAnalytics 表 - 工具分析统计（汇总表）
 -- ============================================
+-- 注意：根据数据库设计原则，不使用外键约束
+-- tool_id 通过逻辑关联到 tool.id，关联关系由应用层维护
 CREATE TABLE IF NOT EXISTS `tool_analytics` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '统计ID',
-    `tool_id` BIGINT NOT NULL COMMENT '工具ID',
+    `tool_id` BIGINT NOT NULL COMMENT '工具ID（逻辑关联到 tool.id）',
     `date` DATE NOT NULL COMMENT '统计日期',
     `view_count` INT DEFAULT 0 COMMENT '查看次数',
     `use_count` INT DEFAULT 0 COMMENT '使用次数',
@@ -219,8 +248,9 @@ CREATE TABLE IF NOT EXISTS `tool_analytics` (
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_tool_date` (`tool_id`, `date`),
     INDEX `idx_tool_id` (`tool_id`),
-    INDEX `idx_date` (`date`),
-    FOREIGN KEY (`tool_id`) REFERENCES `tool`(`id`) ON DELETE CASCADE
+    INDEX `idx_date` (`date`)
+    -- 注意：不使用外键约束，tool_id 通过逻辑关联到 tool.id
+    -- 关联关系由应用层维护，便于后期维护和扩展
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='工具分析统计表';
 
 -- ============================================

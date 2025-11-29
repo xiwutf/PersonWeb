@@ -1,6 +1,12 @@
 -- ============================================
 -- 商业化功能数据库表结构
 -- ============================================
+-- 
+-- 设计原则：
+-- 1. 不使用外键约束，通过逻辑关联维护表间关系
+-- 2. 关联关系由应用层维护，便于后期维护和扩展
+-- 3. 为关联字段创建索引以提升查询性能
+-- 4. 详细说明请参考 database/DESIGN_PRINCIPLES.md
 
 -- ============================================
 -- 1. 主题商店相关表
@@ -35,24 +41,29 @@ CREATE TABLE IF NOT EXISTS `theme_store` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='主题商店表';
 
 -- 主题文件表
+-- 注意：根据数据库设计原则，不使用外键约束
+-- theme_id 通过逻辑关联到 theme_store.id，关联关系由应用层维护
 CREATE TABLE IF NOT EXISTS `theme_files` (
   `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-  `theme_id` BIGINT NOT NULL COMMENT '主题ID',
+  `theme_id` BIGINT NOT NULL COMMENT '主题ID（逻辑关联到 theme_store.id）',
   `file_type` VARCHAR(50) NOT NULL COMMENT '文件类型（css/js/config等）',
   `file_path` VARCHAR(500) NOT NULL COMMENT '文件路径',
   `file_size` BIGINT COMMENT '文件大小（字节）',
   `version` VARCHAR(20) DEFAULT '1.0.0' COMMENT '版本号',
   `checksum` VARCHAR(64) COMMENT '文件校验和',
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (`theme_id`) REFERENCES `theme_store`(`id`) ON DELETE CASCADE,
   INDEX `idx_theme_id` (`theme_id`)
+  -- 注意：不使用外键约束，theme_id 通过逻辑关联到 theme_store.id
+  -- 关联关系由应用层维护，便于后期维护和扩展
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='主题文件表';
 
 -- 主题购买记录表
+-- 注意：根据数据库设计原则，不使用外键约束
+-- theme_id 通过逻辑关联到 theme_store.id，关联关系由应用层维护
 CREATE TABLE IF NOT EXISTS `theme_purchases` (
   `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
   `user_id` VARCHAR(100) NOT NULL COMMENT '用户ID',
-  `theme_id` BIGINT NOT NULL COMMENT '主题ID',
+  `theme_id` BIGINT NOT NULL COMMENT '主题ID（逻辑关联到 theme_store.id）',
   `purchase_type` VARCHAR(20) DEFAULT 'one_time' COMMENT '购买类型（one_time/subscription）',
   `price` DECIMAL(10, 2) NOT NULL COMMENT '购买价格',
   `payment_method` VARCHAR(50) COMMENT '支付方式',
@@ -61,10 +72,11 @@ CREATE TABLE IF NOT EXISTS `theme_purchases` (
   `expires_at` DATETIME COMMENT '过期时间（订阅类型）',
   `is_active` BOOLEAN DEFAULT TRUE COMMENT '是否激活',
   `purchased_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (`theme_id`) REFERENCES `theme_store`(`id`),
   INDEX `idx_user_id` (`user_id`),
   INDEX `idx_theme_id` (`theme_id`),
   INDEX `idx_payment_status` (`payment_status`)
+  -- 注意：不使用外键约束，theme_id 通过逻辑关联到 theme_store.id
+  -- 关联关系由应用层维护，便于后期维护和扩展
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='主题购买记录表';
 
 -- ============================================
@@ -90,9 +102,11 @@ CREATE TABLE IF NOT EXISTS `api_users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='API用户表';
 
 -- API Key 表
+-- 注意：根据数据库设计原则，不使用外键约束
+-- user_id 通过逻辑关联到 api_users.id，关联关系由应用层维护
 CREATE TABLE IF NOT EXISTS `api_keys` (
   `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-  `user_id` BIGINT NOT NULL COMMENT '用户ID',
+  `user_id` BIGINT NOT NULL COMMENT '用户ID（逻辑关联到 api_users.id）',
   `api_key` VARCHAR(100) NOT NULL UNIQUE COMMENT 'API Key',
   `api_secret` VARCHAR(255) NOT NULL COMMENT 'API Secret（加密存储）',
   `name` VARCHAR(100) COMMENT 'Key名称',
@@ -102,17 +116,21 @@ CREATE TABLE IF NOT EXISTS `api_keys` (
   `is_active` BOOLEAN DEFAULT TRUE COMMENT '是否激活',
   `last_used_at` DATETIME COMMENT '最后使用时间',
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (`user_id`) REFERENCES `api_users`(`id`) ON DELETE CASCADE,
   INDEX `idx_user_id` (`user_id`),
   INDEX `idx_api_key` (`api_key`),
   INDEX `idx_is_active` (`is_active`)
+  -- 注意：不使用外键约束，user_id 通过逻辑关联到 api_users.id
+  -- 关联关系由应用层维护，便于后期维护和扩展
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='API Key表';
 
 -- API 调用记录表
+-- 注意：根据数据库设计原则，不使用外键约束
+-- api_key_id 通过逻辑关联到 api_keys.id，user_id 通过逻辑关联到 api_users.id
+-- 关联关系由应用层维护
 CREATE TABLE IF NOT EXISTS `api_calls` (
   `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-  `api_key_id` BIGINT NOT NULL COMMENT 'API Key ID',
-  `user_id` BIGINT COMMENT '用户ID',
+  `api_key_id` BIGINT NOT NULL COMMENT 'API Key ID（逻辑关联到 api_keys.id）',
+  `user_id` BIGINT COMMENT '用户ID（逻辑关联到 api_users.id）',
   `endpoint` VARCHAR(200) NOT NULL COMMENT 'API端点',
   `method` VARCHAR(10) DEFAULT 'POST' COMMENT 'HTTP方法',
   `status_code` INT COMMENT '响应状态码',
@@ -123,17 +141,22 @@ CREATE TABLE IF NOT EXISTS `api_calls` (
   `ip_address` VARCHAR(50) COMMENT 'IP地址',
   `user_agent` VARCHAR(500) COMMENT 'User Agent',
   `called_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (`api_key_id`) REFERENCES `api_keys`(`id`),
   INDEX `idx_api_key_id` (`api_key_id`),
   INDEX `idx_user_id` (`user_id`),
   INDEX `idx_called_at` (`called_at`),
   INDEX `idx_endpoint` (`endpoint`)
+  -- 注意：不使用外键约束
+  -- api_key_id 通过逻辑关联到 api_keys.id
+  -- user_id 通过逻辑关联到 api_users.id
+  -- 关联关系由应用层维护，便于后期维护和扩展
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='API调用记录表';
 
 -- API 计费记录表
+-- 注意：根据数据库设计原则，不使用外键约束
+-- user_id 通过逻辑关联到 api_users.id，关联关系由应用层维护
 CREATE TABLE IF NOT EXISTS `api_billing` (
   `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-  `user_id` BIGINT NOT NULL COMMENT '用户ID',
+  `user_id` BIGINT NOT NULL COMMENT '用户ID（逻辑关联到 api_users.id）',
   `period` VARCHAR(20) NOT NULL COMMENT '计费周期（2024-12）',
   `total_calls` BIGINT DEFAULT 0 COMMENT '总调用次数',
   `free_calls` BIGINT DEFAULT 0 COMMENT '免费调用次数',
@@ -142,9 +165,10 @@ CREATE TABLE IF NOT EXISTS `api_billing` (
   `status` VARCHAR(20) DEFAULT 'pending' COMMENT '状态（pending/paid/overdue）',
   `paid_at` DATETIME COMMENT '支付时间',
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (`user_id`) REFERENCES `api_users`(`id`),
   UNIQUE KEY `uk_user_period` (`user_id`, `period`),
   INDEX `idx_status` (`status`)
+  -- 注意：不使用外键约束，user_id 通过逻辑关联到 api_users.id
+  -- 关联关系由应用层维护，便于后期维护和扩展
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='API计费记录表';
 
 -- ============================================
@@ -168,19 +192,22 @@ CREATE TABLE IF NOT EXISTS `membership_types` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='会员类型表';
 
 -- 用户会员表
+-- 注意：根据数据库设计原则，不使用外键约束
+-- membership_type_id 通过逻辑关联到 membership_types.id，关联关系由应用层维护
 CREATE TABLE IF NOT EXISTS `user_memberships` (
   `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
   `user_id` VARCHAR(100) NOT NULL COMMENT '用户ID',
-  `membership_type_id` BIGINT NOT NULL COMMENT '会员类型ID',
+  `membership_type_id` BIGINT NOT NULL COMMENT '会员类型ID（逻辑关联到 membership_types.id）',
   `start_date` DATETIME NOT NULL COMMENT '开始日期',
   `end_date` DATETIME COMMENT '结束日期（NULL表示永久）',
   `status` VARCHAR(20) DEFAULT 'active' COMMENT '状态（active/expired/cancelled）',
   `auto_renew` BOOLEAN DEFAULT FALSE COMMENT '自动续费',
   `purchased_at` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '购买时间',
-  FOREIGN KEY (`membership_type_id`) REFERENCES `membership_types`(`id`),
   INDEX `idx_user_id` (`user_id`),
   INDEX `idx_status` (`status`),
   INDEX `idx_end_date` (`end_date`)
+  -- 注意：不使用外键约束，membership_type_id 通过逻辑关联到 membership_types.id
+  -- 关联关系由应用层维护，便于后期维护和扩展
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户会员表';
 
 -- 付费内容表
@@ -241,9 +268,11 @@ CREATE TABLE IF NOT EXISTS `user_pages` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户页面表';
 
 -- 页面组件表
+-- 注意：根据数据库设计原则，不使用外键约束
+-- page_id 通过逻辑关联到 user_pages.id，关联关系由应用层维护
 CREATE TABLE IF NOT EXISTS `page_components` (
   `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-  `page_id` BIGINT NOT NULL COMMENT '页面ID',
+  `page_id` BIGINT NOT NULL COMMENT '页面ID（逻辑关联到 user_pages.id）',
   `component_type` VARCHAR(100) NOT NULL COMMENT '组件类型',
   `component_id` VARCHAR(100) COMMENT '组件ID（用于拖拽）',
   `position` INT DEFAULT 0 COMMENT '位置顺序',
@@ -252,9 +281,10 @@ CREATE TABLE IF NOT EXISTS `page_components` (
   `parent_id` BIGINT COMMENT '父组件ID',
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (`page_id`) REFERENCES `user_pages`(`id`) ON DELETE CASCADE,
   INDEX `idx_page_id` (`page_id`),
   INDEX `idx_position` (`position`)
+  -- 注意：不使用外键约束，page_id 通过逻辑关联到 user_pages.id
+  -- 关联关系由应用层维护，便于后期维护和扩展
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='页面组件表';
 
 -- 组件库表

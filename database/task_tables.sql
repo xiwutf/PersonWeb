@@ -1,5 +1,11 @@
 -- 任务/目标追踪系统数据库表结构
 -- 数据库: personal_site
+-- 
+-- 设计原则：
+-- 1. 不使用外键约束，通过逻辑关联维护表间关系
+-- 2. 关联关系由应用层维护，便于后期维护和扩展
+-- 3. 为关联字段创建索引以提升查询性能
+-- 4. 详细说明请参考 database/DESIGN_PRINCIPLES.md
 
 -- ============================================
 -- 1. 任务表（Task）
@@ -17,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `task` (
   `estimated_hours` DECIMAL(5,2) NULL COMMENT '预计工时（小时）',
   `actual_hours` DECIMAL(5,2) NULL COMMENT '实际工时（小时）',
   `progress` INT NOT NULL DEFAULT 0 COMMENT '进度百分比 0-100',
-  `parent_id` BIGINT NULL COMMENT '父任务ID（支持子任务）',
+  `parent_id` BIGINT NULL COMMENT '父任务ID（支持子任务，逻辑关联到 task.id）',
   `sort_order` INT NOT NULL DEFAULT 0 COMMENT '排序顺序',
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -27,12 +33,9 @@ CREATE TABLE IF NOT EXISTS `task` (
   INDEX `idx_task_due_date` (`due_date`),
   INDEX `idx_task_category` (`category`),
   INDEX `idx_task_parent` (`parent_id`),
-  INDEX `idx_task_created` (`created_at`),
-  CONSTRAINT `fk_task_parent`
-    FOREIGN KEY (`parent_id`)
-    REFERENCES `task` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
+  INDEX `idx_task_created` (`created_at`)
+  -- 注意：不使用外键约束，parent_id 通过逻辑关联到 task.id
+  -- 关联关系由应用层维护，便于后期维护和扩展
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='任务表';
 
 -- ============================================
@@ -62,9 +65,11 @@ CREATE TABLE IF NOT EXISTS `goal` (
 -- ============================================
 -- 3. 月度 KPI 表（Monthly KPI）
 -- ============================================
+-- 注意：根据数据库设计原则，不使用外键约束
+-- goal_id 通过逻辑关联到 goal.id，关联关系由应用层维护
 CREATE TABLE IF NOT EXISTS `monthly_kpi` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `goal_id` BIGINT NOT NULL COMMENT '关联的年度目标ID',
+  `goal_id` BIGINT NOT NULL COMMENT '关联的年度目标ID（逻辑关联到 goal.id）',
   `year` INT NOT NULL COMMENT '年份',
   `month` INT NOT NULL COMMENT '月份 1-12',
   `title` VARCHAR(255) NOT NULL COMMENT 'KPI 标题',
@@ -79,31 +84,27 @@ CREATE TABLE IF NOT EXISTS `monthly_kpi` (
   PRIMARY KEY (`id`),
   INDEX `idx_kpi_goal` (`goal_id`),
   INDEX `idx_kpi_year_month` (`year`, `month`),
-  INDEX `idx_kpi_status` (`status`),
-  CONSTRAINT `fk_kpi_goal`
-    FOREIGN KEY (`goal_id`)
-    REFERENCES `goal` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
+  INDEX `idx_kpi_status` (`status`)
+  -- 注意：不使用外键约束，goal_id 通过逻辑关联到 goal.id
+  -- 关联关系由应用层维护，便于后期维护和扩展
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='月度KPI表';
 
 -- ============================================
 -- 4. 任务时间记录表（Task Time Log）
 -- ============================================
+-- 注意：根据数据库设计原则，不使用外键约束
+-- task_id 通过逻辑关联到 task.id，关联关系由应用层维护
 CREATE TABLE IF NOT EXISTS `task_time_log` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `task_id` BIGINT NOT NULL COMMENT '任务ID',
+  `task_id` BIGINT NOT NULL COMMENT '任务ID（逻辑关联到 task.id）',
   `log_date` DATE NOT NULL COMMENT '记录日期',
   `hours` DECIMAL(5,2) NOT NULL COMMENT '工时（小时）',
   `notes` TEXT NULL COMMENT '备注',
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   INDEX `idx_time_log_task` (`task_id`),
-  INDEX `idx_time_log_date` (`log_date`),
-  CONSTRAINT `fk_time_log_task`
-    FOREIGN KEY (`task_id`)
-    REFERENCES `task` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
+  INDEX `idx_time_log_date` (`log_date`)
+  -- 注意：不使用外键约束，task_id 通过逻辑关联到 task.id
+  -- 关联关系由应用层维护，便于后期维护和扩展
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='任务时间记录表';
 

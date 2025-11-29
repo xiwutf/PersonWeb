@@ -1,4 +1,10 @@
 -- 访客互动式玩法系统数据库表结构
+-- 
+-- 设计原则：
+-- 1. 不使用外键约束，通过逻辑关联维护表间关系
+-- 2. 关联关系由应用层维护，便于后期维护和扩展
+-- 3. 为关联字段创建索引以提升查询性能
+-- 4. 详细说明请参考 database/DESIGN_PRINCIPLES.md
 
 -- ============================================
 -- 1. VisitorLevel 表 - 访客等级系统
@@ -62,9 +68,11 @@ CREATE TABLE IF NOT EXISTS `visitor_challenge` (
 -- ============================================
 -- 4. VisitorChallengeParticipant 表 - 挑战参与者
 -- ============================================
+-- 注意：根据数据库设计原则，不使用外键约束
+-- challenge_id 通过逻辑关联到 visitor_challenge.id，关联关系由应用层维护
 CREATE TABLE IF NOT EXISTS `visitor_challenge_participant` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '参与记录ID',
-    `challenge_id` BIGINT NOT NULL COMMENT '挑战ID',
+    `challenge_id` BIGINT NOT NULL COMMENT '挑战ID（逻辑关联到 visitor_challenge.id）',
     `visitor_id` VARCHAR(100) NOT NULL COMMENT '访客ID',
     `action_type` VARCHAR(50) NOT NULL COMMENT '动作类型（如：button_press）',
     `action_data` JSON DEFAULT NULL COMMENT '动作数据',
@@ -73,8 +81,9 @@ CREATE TABLE IF NOT EXISTS `visitor_challenge_participant` (
     PRIMARY KEY (`id`),
     INDEX `idx_challenge_id` (`challenge_id`),
     INDEX `idx_visitor_id` (`visitor_id`),
-    INDEX `idx_created_at` (`created_at`),
-    FOREIGN KEY (`challenge_id`) REFERENCES `visitor_challenge`(`id`) ON DELETE CASCADE
+    INDEX `idx_created_at` (`created_at`)
+    -- 注意：不使用外键约束，challenge_id 通过逻辑关联到 visitor_challenge.id
+    -- 关联关系由应用层维护，便于后期维护和扩展
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='挑战参与者表';
 
 -- ============================================

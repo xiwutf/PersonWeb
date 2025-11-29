@@ -1,5 +1,5 @@
 ﻿<template>
-  <div class="relative min-h-screen">
+  <div class="projects-page">
     <!-- 3D 旋转空间视图切换（移动端隐藏） -->
     <div class="projects-view-toggle-container">
       <button
@@ -21,82 +21,103 @@
     />
     
     <!-- 传统网格视图 -->
-    <div v-else class="container mx-auto px-4 py-12">
-      <div class="text-center mb-16">
-        <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">项目展示</h1>
-        <p class="text-xl text-gray-600 dark:text-gray-400">探索我的开源项目和技术实验</p>
+    <div v-else class="projects-container">
+      <div class="projects-header">
+        <h1 class="projects-title">项目展示</h1>
+        <p class="projects-subtitle">探索我的开源项目和技术实验</p>
       </div>
 
-      <div v-if="loading" class="text-center py-20">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+      <div v-if="loading" class="projects-loading">
+        <div class="projects-loading-spinner"></div>
       </div>
 
       <!-- 错误提示 -->
-      <div v-if="error" class="card p-4 mb-8 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300">
-        <p class="font-semibold">加载失败</p>
-        <p class="text-sm mt-1">{{ error }}</p>
-        <p v-if="debugData" class="text-xs mt-2 opacity-75">{{ debugData }}</p>
+      <div v-if="error" class="projects-error">
+        <p class="projects-error-title">加载失败</p>
+        <p class="projects-error-message">{{ error }}</p>
+        <p v-if="debugData" class="projects-error-debug">{{ debugData }}</p>
       </div>
       
       <!-- 无数据提示 -->
-      <div v-if="projects.length === 0 && !loading && !error" class="text-center py-20">
-        <div class="text-6xl mb-4">📦</div>
-        <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">暂无项目</h3>
-        <p class="text-gray-500 dark:text-gray-400">还没有添加任何项目，请先在后台管理中创建项目</p>
+      <div v-if="projects.length === 0 && !loading && !error" class="projects-empty">
+        <div class="projects-empty-icon">📦</div>
+        <h3 class="projects-empty-title">暂无项目</h3>
+        <p class="projects-empty-text">还没有添加任何项目，请先在后台管理中创建项目</p>
       </div>
 
-      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <NuxtLink v-for="project in projects" :key="project.id" :to="`/projects/${project.id}`" class="card overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col">
-        <!-- 封面图 -->
-        <div class="h-48 overflow-hidden relative group">
-          <img :src="project.coverUrl || 'https://placehold.co/600x400'" :alt="project.title" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" />
-          <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-opacity duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-            <div class="flex gap-4">
-              <a v-if="project.demoUrl" :href="project.demoUrl" target="_blank" class="bg-white text-gray-900 px-4 py-2 rounded-full font-bold hover:bg-gray-100 transition">Live Demo</a>
-              <a v-if="project.githubUrl" :href="project.githubUrl" target="_blank" class="bg-gray-900 text-white px-4 py-2 rounded-full font-bold hover:bg-gray-800 transition">GitHub</a>
+      <div v-else class="projects-grid">
+        <NuxtLink 
+          v-for="project in projects" 
+          :key="project.id" 
+          :to="`/projects/${project.id}`" 
+          class="projects-card"
+        >
+          <!-- 封面图 -->
+          <div class="projects-card-cover">
+            <img :src="project.coverUrl || 'https://placehold.co/600x400'" :alt="project.title" />
+            <div class="projects-card-cover-overlay">
+              <div class="projects-card-cover-actions">
+                <a 
+                  v-if="project.demoUrl" 
+                  :href="project.demoUrl" 
+                  target="_blank" 
+                  class="projects-card-cover-button projects-card-cover-button--white"
+                  @click.stop
+                >
+                  Live Demo
+                </a>
+                <a 
+                  v-if="project.githubUrl" 
+                  :href="project.githubUrl" 
+                  target="_blank" 
+                  class="projects-card-cover-button projects-card-cover-button--dark"
+                  @click.stop
+                >
+                  GitHub
+                </a>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- 内容 -->
-        <div class="p-6 flex-1 flex flex-col">
-          <div class="flex justify-between items-start mb-4">
-            <h3 class="text-xl font-bold text-gray-900 dark:text-white">{{ project.title }}</h3>
-            <div class="flex items-center gap-2">
-              <span class="badge badge-blue">
-                {{ project.status }}
+          <!-- 内容 -->
+          <div class="projects-card-body">
+            <div class="projects-card-header">
+              <h3 class="projects-card-title">{{ project.title }}</h3>
+              <div class="projects-card-meta">
+                <span class="projects-card-badge projects-card-badge--blue">
+                  {{ project.status }}
+                </span>
+                <span class="projects-card-view-count">
+                  <i class="fas fa-eye"></i>
+                  {{ project.viewCount || 0 }}
+                </span>
+              </div>
+            </div>
+            
+            <p class="projects-card-description">{{ project.description }}</p>
+
+            <!-- 技术栈 -->
+            <div class="projects-card-tech-stack">
+              <span 
+                v-for="tech in project.techStack" 
+                :key="tech" 
+                class="projects-tech-tag"
+                :class="getTechTagClass(tech)"
+              >
+                <span class="projects-tech-tag-icon">{{ getTechIcon(tech) }}</span>
+                {{ tech }}
               </span>
-              <span class="px-2 py-1 text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                <i class="fas fa-eye"></i>
-                {{ project.viewCount || 0 }}
-              </span>
+            </div>
+
+            <!-- GitHub Activity Chart -->
+            <div v-if="project.githubUrl && project.chartData" class="projects-card-chart">
+              <p class="projects-card-chart-label">GitHub Activity (Last Year)</p>
+              <div class="projects-card-chart-container">
+                <Bar :data="project.chartData" :options="chartOptions" />
+              </div>
             </div>
           </div>
-          
-          <p class="text-gray-600 dark:text-gray-400 mb-4 flex-1">{{ project.description }}</p>
-
-          <!-- 技术栈 -->
-          <div class="flex flex-wrap gap-2 mb-6">
-            <span 
-              v-for="tech in project.techStack" 
-              :key="tech" 
-              class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-full transition-all duration-200 hover:scale-105"
-              :class="getTechTagClass(tech)"
-            >
-              <span class="mr-1.5">{{ getTechIcon(tech) }}</span>
-              {{ tech }}
-            </span>
-          </div>
-
-          <!-- GitHub Activity Chart -->
-          <div v-if="project.githubUrl && project.chartData" class="mt-auto pt-4 border-t border-gray-100 dark:border-gray-700">
-            <p class="text-xs text-gray-500 mb-2">GitHub Activity (Last Year)</p>
-            <div class="h-24">
-              <Bar :data="project.chartData" :options="chartOptions" />
-            </div>
-          </div>
-        </div>
-      </NuxtLink>
+        </NuxtLink>
       </div>
     </div>
   </div>
@@ -183,44 +204,44 @@ const fetchProjects = async () => {
   }
 }
 
-// 获取技术栈标签样式
+// 获取技术栈标签样式类名
 const getTechTagClass = (tech: string) => {
   const techLower = tech.toLowerCase()
   
   // 前端技术
   if (techLower.includes('vue') || techLower.includes('react') || techLower.includes('angular') || techLower.includes('nuxt') || techLower.includes('next')) {
-    return 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md hover:shadow-lg'
+    return 'projects-tech-tag--vue'
   }
   // JavaScript/TypeScript
   if (techLower.includes('javascript') || techLower.includes('typescript') || techLower.includes('js') || techLower.includes('ts')) {
-    return 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900 shadow-md hover:shadow-lg'
+    return 'projects-tech-tag--js'
   }
   // Python
   if (techLower.includes('python')) {
-    return 'bg-gradient-to-r from-blue-400 to-blue-500 text-white shadow-md hover:shadow-lg'
+    return 'projects-tech-tag--python'
   }
   // Node.js
   if (techLower.includes('node') || techLower.includes('express')) {
-    return 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-md hover:shadow-lg'
+    return 'projects-tech-tag--node'
   }
   // 数据库
   if (techLower.includes('mysql') || techLower.includes('postgresql') || techLower.includes('mongodb') || techLower.includes('redis')) {
-    return 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md hover:shadow-lg'
+    return 'projects-tech-tag--database'
   }
   // 框架
   if (techLower.includes('spring') || techLower.includes('fastapi') || techLower.includes('django') || techLower.includes('flask')) {
-    return 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-md hover:shadow-lg'
+    return 'projects-tech-tag--framework'
   }
   // 小程序
   if (techLower.includes('小程序') || techLower.includes('wechat') || techLower.includes('miniprogram')) {
-    return 'bg-gradient-to-r from-green-400 to-green-500 text-white shadow-md hover:shadow-lg'
+    return 'projects-tech-tag--miniprogram'
   }
   // AI/ML
   if (techLower.includes('ai') || techLower.includes('ml') || techLower.includes('langchain') || techLower.includes('openai')) {
-    return 'bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-md hover:shadow-lg'
+    return 'projects-tech-tag--ai'
   }
   // 默认样式
-  return 'bg-gradient-to-r from-gray-500 to-gray-600 text-white shadow-md hover:shadow-lg'
+  return 'projects-tech-tag--default'
 }
 
 // 获取技术栈图标
@@ -282,63 +303,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* 3D视图切换按钮样式 */
-.projects-view-toggle-container {
-  position: fixed;
-  top: 8rem;
-  right: 1rem;
-  z-index: 20;
-  display: none;
-}
-
-@media (min-width: 768px) {
-  .projects-view-toggle-container {
-    display: block;
-  }
-}
-
-.projects-view-toggle-button {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.25rem;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(12px);
-  border: 2px solid rgba(59, 130, 246, 0.3);
-  border-radius: 0.75rem;
-  color: #1e293b;
-  font-weight: 600;
-  font-size: 0.875rem;
-  cursor: pointer;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
-  min-width: auto;
-  min-height: 44px;
-}
-
-.projects-view-toggle-button:hover {
-  background: rgba(255, 255, 255, 1);
-  border-color: rgba(59, 130, 246, 0.6);
-  transform: translateY(-2px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-}
-
-.projects-view-toggle-icon {
-  font-size: 1.25rem;
-  line-height: 1;
-}
-
-.projects-view-toggle-text {
-  white-space: nowrap;
-}
-
-:global(.dark) .projects-view-toggle-button {
-  background: rgba(30, 41, 59, 0.95);
-  color: white;
-  border-color: rgba(59, 130, 246, 0.5);
-}
-
-:global(.dark) .projects-view-toggle-button:hover {
-  background: rgba(30, 41, 59, 1);
-}
+/* 页面特有样式已移至 assets/css/projects.css */
+/* 这里只保留组件特有的样式（如果有） */
 </style>

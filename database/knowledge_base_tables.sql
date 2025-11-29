@@ -1,4 +1,14 @@
+-- 知识库相关数据库表结构
+-- 
+-- 设计原则：
+-- 1. 不使用外键约束，通过逻辑关联维护表间关系
+-- 2. 关联关系由应用层维护，便于后期维护和扩展
+-- 3. 为关联字段创建索引以提升查询性能
+-- 4. 详细说明请参考 database/DESIGN_PRINCIPLES.md
+
 -- 个人知识库表
+-- 注意：根据数据库设计原则，不使用外键约束
+-- author_id 通过逻辑关联到 user.id，关联关系由应用层维护
 CREATE TABLE IF NOT EXISTS `knowledge_base` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(255) NOT NULL COMMENT '标题',
@@ -11,12 +21,13 @@ CREATE TABLE IF NOT EXISTS `knowledge_base` (
   `view_count` INT NOT NULL DEFAULT 0 COMMENT '查看次数',
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `author_id` BIGINT NULL COMMENT '作者ID',
+  `author_id` BIGINT NULL COMMENT '作者ID（逻辑关联到 user.id）',
   PRIMARY KEY (`id`),
   INDEX `idx_category` (`category`),
   INDEX `idx_status` (`status`),
-  INDEX `idx_created_at` (`created_at`),
-  FOREIGN KEY (`author_id`) REFERENCES `user`(`id`) ON DELETE SET NULL
+  INDEX `idx_created_at` (`created_at`)
+  -- 注意：不使用外键约束，author_id 通过逻辑关联到 user.id
+  -- 关联关系由应用层维护，便于后期维护和扩展
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='个人知识库表';
 
 -- 成长轨迹时间线表

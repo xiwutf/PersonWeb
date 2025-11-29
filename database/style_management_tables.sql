@@ -1,5 +1,11 @@
     -- 样式管理系统数据库表结构
     -- 用于统一管理后台样式配置
+    -- 
+    -- 设计原则：
+    -- 1. 不使用外键约束，通过逻辑关联维护表间关系
+    -- 2. 关联关系由应用层维护，便于后期维护和扩展
+    -- 3. 为关联字段创建索引以提升查询性能
+    -- 4. 详细说明请参考 database/DESIGN_PRINCIPLES.md
 
     -- ============================================
     -- 1. StyleCategories 表 - 样式分类
@@ -20,9 +26,11 @@
     -- ============================================
     -- 2. StyleDefinitions 表 - 样式定义
     -- ============================================
+    -- 注意：根据数据库设计原则，不使用外键约束
+    -- category_id 通过逻辑关联到 style_category.id，关联关系由应用层维护
     CREATE TABLE IF NOT EXISTS `style_definition` (
         `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '样式ID',
-        `category_id` BIGINT NOT NULL COMMENT '分类ID',
+        `category_id` BIGINT NOT NULL COMMENT '分类ID（逻辑关联到 style_category.id）',
         `name` VARCHAR(100) NOT NULL COMMENT '样式名称（如：信息标签、成功标签等）',
         `code` VARCHAR(100) NOT NULL COMMENT '样式代码（如：tag-info、tag-success等）',
         `css_class` VARCHAR(100) NOT NULL COMMENT 'CSS类名',
@@ -43,16 +51,19 @@
         PRIMARY KEY (`id`),
         UNIQUE KEY `uk_code` (`code`),
         INDEX `idx_category_id` (`category_id`),
-        INDEX `idx_is_active` (`is_active`),
-        FOREIGN KEY (`category_id`) REFERENCES `style_category`(`id`) ON DELETE CASCADE
+        INDEX `idx_is_active` (`is_active`)
+        -- 注意：不使用外键约束，category_id 通过逻辑关联到 style_category.id
+        -- 关联关系由应用层维护，便于后期维护和扩展
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='样式定义表';
 
     -- ============================================
     -- 3. StyleUsage 表 - 样式使用统计
     -- ============================================
+    -- 注意：根据数据库设计原则，不使用外键约束
+    -- style_id 通过逻辑关联到 style_definition.id，关联关系由应用层维护
     CREATE TABLE IF NOT EXISTS `style_usage` (
         `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '使用记录ID',
-        `style_id` BIGINT NOT NULL COMMENT '样式ID',
+        `style_id` BIGINT NOT NULL COMMENT '样式ID（逻辑关联到 style_definition.id）',
         `page_path` VARCHAR(255) NOT NULL COMMENT '页面路径（如：/admin/articles）',
         `component_name` VARCHAR(100) DEFAULT NULL COMMENT '组件名称（如：ArticleList）',
         `usage_count` INT DEFAULT 1 COMMENT '使用次数',
@@ -62,8 +73,9 @@
         PRIMARY KEY (`id`),
         UNIQUE KEY `uk_style_page_component` (`style_id`, `page_path`, `component_name`),
         INDEX `idx_style_id` (`style_id`),
-        INDEX `idx_page_path` (`page_path`),
-        FOREIGN KEY (`style_id`) REFERENCES `style_definition`(`id`) ON DELETE CASCADE
+        INDEX `idx_page_path` (`page_path`)
+        -- 注意：不使用外键约束，style_id 通过逻辑关联到 style_definition.id
+        -- 关联关系由应用层维护，便于后期维护和扩展
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='样式使用统计表';
 
     -- ============================================

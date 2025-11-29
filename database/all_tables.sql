@@ -1,6 +1,12 @@
 -- 完整的数据库表结构 SQL 脚本
 -- 数据库: personal_site
 -- 用于手动维护数据库表结构
+-- 
+-- 设计原则：
+-- 1. 不使用外键约束，通过逻辑关联维护表间关系
+-- 2. 关联关系由应用层维护，便于后期维护和扩展
+-- 3. 为关联字段创建索引以提升查询性能
+-- 4. 详细说明请参考 database/DESIGN_PRINCIPLES.md
 
 -- ============================================
 -- 1. Projects 表
@@ -42,6 +48,8 @@ CREATE TABLE IF NOT EXISTS `category` (
 -- ============================================
 -- 3. Articles 表（如果不存在）
 -- 注意：实体类使用 [Table("article")]，所以表名是小写 article
+-- 注意：根据数据库设计原则，不使用外键约束
+-- category_id 通过逻辑关联到 category.id，关联关系由应用层维护
 -- ============================================
 CREATE TABLE IF NOT EXISTS `article` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '文章ID',
@@ -51,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `article` (
     `content_md` LONGTEXT DEFAULT NULL COMMENT 'Markdown内容',
     `content_html` LONGTEXT DEFAULT NULL COMMENT 'HTML内容',
     `cover_url` VARCHAR(500) DEFAULT NULL COMMENT '封面图片URL',
-    `category_id` BIGINT DEFAULT NULL COMMENT '分类ID',
+    `category_id` BIGINT DEFAULT NULL COMMENT '分类ID（逻辑关联到 category.id）',
     `status` TINYINT DEFAULT 1 COMMENT '状态: 0-草稿 1-已发布 2-下线',
     `author_id` BIGINT DEFAULT NULL COMMENT '作者ID',
     `publish_time` DATETIME DEFAULT NULL COMMENT '发布时间',
@@ -62,8 +70,9 @@ CREATE TABLE IF NOT EXISTS `article` (
     UNIQUE KEY `uk_slug` (`slug`),
     INDEX `idx_category_id` (`category_id`),
     INDEX `idx_status` (`status`),
-    INDEX `idx_created_at` (`created_at`),
-    FOREIGN KEY (`category_id`) REFERENCES `category`(`id`) ON DELETE SET NULL
+    INDEX `idx_created_at` (`created_at`)
+    -- 注意：不使用外键约束，category_id 通过逻辑关联到 category.id
+    -- 关联关系由应用层维护，便于后期维护和扩展
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='文章表';
 
 -- ============================================

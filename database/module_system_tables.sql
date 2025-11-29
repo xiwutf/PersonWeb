@@ -1,5 +1,11 @@
 -- 模块化系统数据库表结构
 -- 用于管理各个功能模块的启用/禁用和配置
+-- 
+-- 设计原则：
+-- 1. 不使用外键约束，通过逻辑关联维护表间关系
+-- 2. 关联关系由应用层维护，便于后期维护和扩展
+-- 3. 为关联字段创建索引以提升查询性能
+-- 4. 详细说明请参考 database/DESIGN_PRINCIPLES.md
 
 -- ============================================
 -- 1. Modules 表 - 模块定义
@@ -33,9 +39,11 @@ CREATE TABLE IF NOT EXISTS `module` (
 -- ============================================
 -- 2. ModuleConfigs 表 - 模块配置
 -- ============================================
+-- 注意：根据数据库设计原则，不使用外键约束
+-- module_key 通过逻辑关联到 module.module_key，关联关系由应用层维护
 CREATE TABLE IF NOT EXISTS `module_config` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '配置ID',
-    `module_key` VARCHAR(50) NOT NULL COMMENT '模块标识',
+    `module_key` VARCHAR(50) NOT NULL COMMENT '模块标识（逻辑关联到 module.module_key）',
     `config_key` VARCHAR(100) NOT NULL COMMENT '配置键',
     `config_value` TEXT DEFAULT NULL COMMENT '配置值（JSON格式）',
     `description` VARCHAR(255) DEFAULT NULL COMMENT '配置描述',
@@ -43,8 +51,9 @@ CREATE TABLE IF NOT EXISTS `module_config` (
     `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_module_config` (`module_key`, `config_key`),
-    INDEX `idx_module_key` (`module_key`),
-    FOREIGN KEY (`module_key`) REFERENCES `module`(`module_key`) ON DELETE CASCADE
+    INDEX `idx_module_key` (`module_key`)
+    -- 注意：不使用外键约束，module_key 通过逻辑关联到 module.module_key
+    -- 关联关系由应用层维护，便于后期维护和扩展
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='模块配置表';
 
 -- ============================================
