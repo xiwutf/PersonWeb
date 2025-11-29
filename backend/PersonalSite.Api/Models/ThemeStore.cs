@@ -166,5 +166,15 @@ public class ThemePurchase
 
     [Column("purchased_at")]
     public DateTime PurchasedAt { get; set; } = DateTime.Now;
+
+    [Column("paid_at")]
+    public DateTime? PaidAt { get; set; }
+
+    [Column("created_at")]
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+    // 导航属性
+    [ForeignKey("ThemeId")]
+    public ThemeStore? Theme { get; set; }
 }
 

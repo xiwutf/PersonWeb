@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PersonalSite.Api.Data;
 using PersonalSite.Api.Models;
+using PersonalSite.Api.Services.Payment;
 using System.Text.Json;
 
 namespace PersonalSite.Api.Controllers;
@@ -15,11 +16,16 @@ public class ThemeStoreController : ControllerBase
 {
     private readonly AppDbContext _context;
     private readonly ILogger<ThemeStoreController> _logger;
+    private readonly PaymentServiceFactory _paymentServiceFactory;
 
-    public ThemeStoreController(AppDbContext context, ILogger<ThemeStoreController> logger)
+    public ThemeStoreController(
+        AppDbContext context,
+        ILogger<ThemeStoreController> logger,
+        PaymentServiceFactory paymentServiceFactory)
     {
         _context = context;
         _logger = logger;
+        _paymentServiceFactory = paymentServiceFactory;
     }
 
     /// <summary>
@@ -239,11 +245,44 @@ public class ThemeStoreController : ControllerBase
             _context.ThemePurchases.Add(purchase);
             await _context.SaveChangesAsync();
 
-            // TODO: 集成支付系统，生成支付订单
+            // 创建支付订单
+            var paymentService = _paymentServiceFactory.GetPaymentService(request.PaymentMethod ?? "wechat");
+            var paymentRequest = new PersonalSite.Api.Services.Payment.PaymentRequest
+            {
+                OrderId = purchase.Id.ToString(),
+                Amount = (int)(purchase.Price * 100), // 转换为分
+                Description = $"购买主题: {theme.Name}",
+                UserId = request.UserId,
+                PaymentMethod = request.PaymentMethod ?? "wechat",
+                ClientIp = HttpContext.Connection.RemoteIpAddress?.ToString(),
+                NotifyUrl = $"{Request.Scheme}://{Request.Host}/api/payment/callback/{request.PaymentMethod ?? "wechat"}",
+                ReturnUrl = $"{Request.Scheme}://{Request.Host}/payment/success",
+                ExtraData = new Dictionary<string, string>
+                {
+                    ["purchase_id"] = purchase.Id.ToString(),
+                    ["theme_id"] = theme.Id.ToString(),
+                    ["type"] = "theme"
+                }
+            };
+
+            var paymentResponse = await paymentService.CreatePaymentAsync(paymentRequest);
+
+            if (!paymentResponse.Success)
+            {
+                return BadRequest(ApiResponse.Error(paymentResponse.ErrorMessage ?? "创建支付订单失败", 400));
+            }
+
+            // 更新购买记录的支付ID
+            purchase.PaymentId = paymentResponse.PaymentId;
+            await _context.SaveChangesAsync();
 
             return Ok(ApiResponse.Success(new
             {
                 PurchaseId = purchase.Id,
+                PaymentId = paymentResponse.PaymentId,
+                PaymentUrl = paymentResponse.PaymentUrl,
+                QrCode = paymentResponse.QrCode,
+                PaymentParams = paymentResponse.PaymentParams,
                 Message = "请完成支付",
                 PaymentStatus = purchase.PaymentStatus,
                 Price = purchase.Price

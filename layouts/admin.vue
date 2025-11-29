@@ -120,6 +120,29 @@
           <span class="mr-2">🛒</span>
           <span>工具商城管理</span>
         </NuxtLink>
+
+        <!-- 商业化功能 -->
+        <div class="text-xs text-slate-400 px-4 mt-4 mb-2 uppercase font-semibold">商业化功能</div>
+
+        <NuxtLink to="/admin/commercial/themes" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
+          <i class="fas fa-palette w-6 text-center mr-2"></i>
+          主题商店
+        </NuxtLink>
+
+        <NuxtLink to="/admin/commercial/api-keys" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
+          <i class="fas fa-key w-6 text-center mr-2"></i>
+          API Key 管理
+        </NuxtLink>
+
+        <NuxtLink to="/admin/commercial/memberships" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
+          <i class="fas fa-crown w-6 text-center mr-2"></i>
+          会员管理
+        </NuxtLink>
+
+        <NuxtLink to="/admin/commercial/orders" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
+          <i class="fas fa-shopping-cart w-6 text-center mr-2"></i>
+          支付订单
+        </NuxtLink>
         <NuxtLink to="/admin/skill-tree" class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link" active-class="admin-sidebar-link-active">
           <i class="fas fa-sitemap w-6 text-center mr-2"></i>
           技能树管理

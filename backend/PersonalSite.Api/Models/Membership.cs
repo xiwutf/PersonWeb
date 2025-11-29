@@ -83,6 +83,9 @@ public class UserMembership
     [Column("purchased_at")]
     public DateTime PurchasedAt { get; set; } = DateTime.Now;
 
+    [Column("created_at")]
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+
     // 导航属性
     [ForeignKey("MembershipTypeId")]
     public MembershipType? MembershipType { get; set; }

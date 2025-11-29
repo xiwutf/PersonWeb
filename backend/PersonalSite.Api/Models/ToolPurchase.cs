@@ -47,6 +47,9 @@ public class ToolPurchase
     [Column("created_at")]
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 
+    [Column("paid_at")]
+    public DateTime? PaidAt { get; set; }
+
     // 导航属性
     [ForeignKey("ToolId")]
     public Tool? Tool { get; set; }

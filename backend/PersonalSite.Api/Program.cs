@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PersonalSite.Api.Data;
@@ -48,10 +49,50 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpClient(); // 添加 HttpClient 支持
 builder.Services.AddHttpContextAccessor(); // 添加 HttpContextAccessor 支持
 
+// 配置内存缓存（用于限流）
+builder.Services.AddMemoryCache();
+
+// 注册内存缓存服务（Singleton，因为 IMemoryCache 是 Singleton）
+builder.Services.AddSingleton<PersonalSite.Api.Services.Cache.MemoryCacheService>();
+
+// 注册 Redis 缓存服务（Singleton，即使未启用也会注册，但不会使用）
+builder.Services.AddSingleton<PersonalSite.Api.Services.Cache.RedisCacheService>();
+
+// 配置缓存服务（支持内存缓存和Redis）- 使用 Singleton，因为中间件需要
+builder.Services.AddSingleton<PersonalSite.Api.Services.Cache.ICacheService>(serviceProvider =>
+{
+    var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+    var redisEnabled = configuration.GetValue<bool>("Redis:Enabled", false);
+    
+    if (redisEnabled)
+    {
+        // 使用 Redis 缓存服务
+        return serviceProvider.GetRequiredService<PersonalSite.Api.Services.Cache.RedisCacheService>();
+    }
+    else
+    {
+        // 使用内存缓存服务
+        return serviceProvider.GetRequiredService<PersonalSite.Api.Services.Cache.MemoryCacheService>();
+    }
+});
+
+// 配置限流选项
+builder.Services.Configure<PersonalSite.Api.Middleware.RateLimitOptions>(options =>
+{
+    options.DefaultLimit = builder.Configuration.GetValue<int>("RateLimit:DefaultLimit", 100);
+    options.WindowSeconds = builder.Configuration.GetValue<int>("RateLimit:WindowSeconds", 60);
+});
+
 // 配置 AI Service 客户端
 builder.Services.Configure<PersonalSite.Api.Services.AiServiceOptions>(
     builder.Configuration.GetSection("AiService"));
 builder.Services.AddHttpClient<PersonalSite.Api.Services.AiServiceClient>();
+
+// 注册支付服务
+builder.Services.AddScoped<PersonalSite.Api.Services.Payment.WeChatPaymentService>();
+builder.Services.AddScoped<PersonalSite.Api.Services.Payment.AlipayPaymentService>();
+builder.Services.AddScoped<PersonalSite.Api.Services.Payment.StripePaymentService>();
+builder.Services.AddScoped<PersonalSite.Api.Services.Payment.PaymentServiceFactory>();
 
 // 4. 配置 Swagger
 builder.Services.AddSwaggerGen(c =>
@@ -100,6 +141,10 @@ if (app.Environment.IsDevelopment())
 // app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
+
+// 注册中间件（顺序很重要）
+app.UseMiddleware<PersonalSite.Api.Middleware.ApiKeyAuthMiddleware>(); // API Key 验证
+app.UseMiddleware<PersonalSite.Api.Middleware.RateLimitMiddleware>(); // 限流
 
 app.UseAuthentication();
 app.UseAuthorization();
