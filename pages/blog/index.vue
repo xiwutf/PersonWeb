@@ -11,16 +11,6 @@
     </div>
 
     <div class="blog-content">
-      <!-- 返回按钮 -->
-      <div class="blog-back-button-container">
-        <NuxtLink to="/lab" class="blog-back-button">
-          <svg class="blog-back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          <span>返回AI实验室</span>
-        </NuxtLink>
-      </div>
-
       <!-- 页面头部 -->
       <header class="blog-header">
         <div class="blog-header-icon">

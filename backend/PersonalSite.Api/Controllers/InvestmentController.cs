@@ -238,16 +238,91 @@ public class InvestmentController : ControllerBase
         var totalProfitLoss = totalMarketValue - totalCost;
         var totalProfitRate = totalCost > 0 ? (totalProfitLoss / totalCost) * 100 : 0;
 
+        // 按类型统计
         var byType = investments
             .GroupBy(i => i.Type)
             .Select(g => new
             {
                 Type = g.Key,
+                TypeName = g.Key == "stock" ? "股票" : "基金",
+                Count = g.Count(),
+                TotalCost = g.Sum(i => i.TotalCost),
+                TotalMarketValue = g.Sum(i => i.MarketValue),
+                ProfitLoss = g.Sum(i => i.ProfitLoss),
+                ProfitRate = g.Sum(i => i.TotalCost) > 0 
+                    ? (g.Sum(i => i.ProfitLoss) / g.Sum(i => i.TotalCost)) * 100 
+                    : 0
+            })
+            .ToList();
+
+        // 按盈亏状态统计
+        var byProfitStatus = investments
+            .GroupBy(i => i.ProfitLoss >= 0 ? "profit" : "loss")
+            .Select(g => new
+            {
+                Status = g.Key,
+                StatusName = g.Key == "profit" ? "盈利" : "亏损",
                 Count = g.Count(),
                 TotalCost = g.Sum(i => i.TotalCost),
                 TotalMarketValue = g.Sum(i => i.MarketValue),
                 ProfitLoss = g.Sum(i => i.ProfitLoss)
             })
+            .ToList();
+
+        // Top 5 持仓（按市值）
+        var topByMarketValue = investments
+            .OrderByDescending(i => i.MarketValue)
+            .Take(5)
+            .Select(i => new
+            {
+                i.Code,
+                i.Name,
+                i.Type,
+                i.MarketValue,
+                i.ProfitLoss,
+                i.ProfitRate
+            })
+            .ToList();
+
+        // Top 5 收益（按盈亏）
+        var topByProfit = investments
+            .OrderByDescending(i => i.ProfitLoss)
+            .Take(5)
+            .Select(i => new
+            {
+                i.Code,
+                i.Name,
+                i.Type,
+                i.ProfitLoss,
+                i.ProfitRate
+            })
+            .ToList();
+
+        // Top 5 亏损（按盈亏）
+        var topByLoss = investments
+            .Where(i => i.ProfitLoss < 0)
+            .OrderBy(i => i.ProfitLoss)
+            .Take(5)
+            .Select(i => new
+            {
+                i.Code,
+                i.Name,
+                i.Type,
+                i.ProfitLoss,
+                i.ProfitRate
+            })
+            .ToList();
+
+        // 资产分布（按代码）
+        var assetDistribution = investments
+            .Select(i => new
+            {
+                i.Code,
+                i.Name,
+                MarketValue = i.MarketValue,
+                Percentage = totalMarketValue > 0 ? (i.MarketValue / totalMarketValue) * 100 : 0
+            })
+            .OrderByDescending(i => i.MarketValue)
             .ToList();
 
         return Ok(ApiResponse.Success(new
@@ -257,7 +332,12 @@ public class InvestmentController : ControllerBase
             TotalProfitLoss = totalProfitLoss,
             TotalProfitRate = totalProfitRate,
             TotalCount = investments.Count,
-            ByType = byType
+            ByType = byType,
+            ByProfitStatus = byProfitStatus,
+            TopByMarketValue = topByMarketValue,
+            TopByProfit = topByProfit,
+            TopByLoss = topByLoss,
+            AssetDistribution = assetDistribution
         }));
     }
 

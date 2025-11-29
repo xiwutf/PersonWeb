@@ -496,9 +496,10 @@ onMounted(() => {
   display: flex;
   gap: 2rem;
   margin-bottom: 1.5rem;
-  padding: 1rem;
-  background: #f5f5f5;
-  border-radius: 4px;
+  padding: 1.25rem 1.5rem;
+  background: #111827; /* 深色卡片背景，提升对比度 */
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
 }
 
 .stat-item {
@@ -508,14 +509,14 @@ onMounted(() => {
 
 .stat-item .stat-label {
   font-size: 0.875rem;
-  color: #666;
+  color: #9ca3af; /* 浅灰色文本，在深色背景上有足够对比度 */
   margin-bottom: 0.25rem;
 }
 
 .stat-item .stat-value {
   font-size: 1.25rem;
   font-weight: bold;
-  color: #333;
+  color: #f9fafb; /* 近白色，保证数值清晰可见 */
 }
 
 /* 按钮样式 */

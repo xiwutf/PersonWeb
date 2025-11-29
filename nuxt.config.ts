@@ -101,14 +101,16 @@ export default defineNuxtConfig({
 
   // CSS 配置
   css: [
-    '~/assets/css/main.css',
+    '~/assets/css/main.css', // main.css 已经导入了 components.css
     '~/assets/css/themes.css',
     '~/assets/css/visitor-interaction.css',
     '~/assets/css/about.css',
     '~/assets/css/tools.css',
     '~/assets/css/life.css',
     '~/assets/css/blog.css',
-    '~/assets/css/projects.css'
+    '~/assets/css/projects.css',
+    '~/assets/css/investment.css',
+    '~/assets/css/charts.css'
   ],
 
   // Nitro 配置（用于静态生成优化）

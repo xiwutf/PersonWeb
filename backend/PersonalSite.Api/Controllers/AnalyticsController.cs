@@ -117,37 +117,63 @@ public class AnalyticsController : ControllerBase
         var today = DateTime.Today;
         var yesterday = today.AddDays(-1);
 
-        // 今日访问量
-        var todayPv = await _context.VisitorAnalytics
+        // 从 VisitLogs 表获取基础统计数据（首页使用的表）
+        var todayPvFromLogs = await _context.VisitLogs
+            .Where(v => v.Timestamp >= today)
+            .CountAsync();
+
+        var todayUvFromLogs = await _context.VisitLogs
+            .Where(v => v.Timestamp >= today)
+            .Select(v => v.VisitorId)
+            .Distinct()
+            .CountAsync();
+
+        var yesterdayPvFromLogs = await _context.VisitLogs
+            .Where(v => v.Timestamp >= yesterday && v.Timestamp < today)
+            .CountAsync();
+
+        var yesterdayUvFromLogs = await _context.VisitLogs
+            .Where(v => v.Timestamp >= yesterday && v.Timestamp < today)
+            .Select(v => v.VisitorId)
+            .Distinct()
+            .CountAsync();
+
+        // 从 VisitorAnalytics 表获取详细统计数据
+        var todayPvFromAnalytics = await _context.VisitorAnalytics
             .Where(v => v.SessionStart >= today)
             .SumAsync(v => v.PageViews);
 
-        var todayUv = await _context.VisitorAnalytics
+        var todayUvFromAnalytics = await _context.VisitorAnalytics
             .Where(v => v.SessionStart >= today)
             .Select(v => v.VisitorId)
             .Distinct()
             .CountAsync();
 
-        // 昨日访问量
-        var yesterdayPv = await _context.VisitorAnalytics
+        var yesterdayPvFromAnalytics = await _context.VisitorAnalytics
             .Where(v => v.SessionStart >= yesterday && v.SessionStart < today)
             .SumAsync(v => v.PageViews);
 
-        var yesterdayUv = await _context.VisitorAnalytics
+        var yesterdayUvFromAnalytics = await _context.VisitorAnalytics
             .Where(v => v.SessionStart >= yesterday && v.SessionStart < today)
             .Select(v => v.VisitorId)
             .Distinct()
             .CountAsync();
 
-        // 在线人数（最近5分钟）
+        // 合并数据：优先使用 VisitorAnalytics，如果没有则使用 VisitLogs
+        var todayPv = todayPvFromAnalytics > 0 ? todayPvFromAnalytics : todayPvFromLogs;
+        var todayUv = todayUvFromAnalytics > 0 ? todayUvFromAnalytics : todayUvFromLogs;
+        var yesterdayPv = yesterdayPvFromAnalytics > 0 ? yesterdayPvFromAnalytics : yesterdayPvFromLogs;
+        var yesterdayUv = yesterdayUvFromAnalytics > 0 ? yesterdayUvFromAnalytics : yesterdayUvFromLogs;
+
+        // 在线人数（最近5分钟）- 仅从 VisitorAnalytics
         var onlineCount = await _context.VisitorAnalytics
             .Where(v => v.IsOnline && v.UpdatedAt >= DateTime.Now.AddMinutes(-5))
             .Select(v => v.VisitorId)
             .Distinct()
             .CountAsync();
 
-        // 热门文章（通过路径统计）
-        var topArticles = await _context.VisitorAnalytics
+        // 热门文章（通过路径统计）- 优先从 VisitorAnalytics，否则从 VisitLogs
+        var topArticlesFromAnalytics = await _context.VisitorAnalytics
             .Where(v => v.Path != null && v.Path.StartsWith("/blog/"))
             .GroupBy(v => v.Path)
             .Select(g => new { Path = g.Key, Views = g.Sum(v => v.PageViews) })
@@ -155,7 +181,17 @@ public class AnalyticsController : ControllerBase
             .Take(10)
             .ToListAsync();
 
-        // 访问区域统计
+        var topArticlesFromLogs = await _context.VisitLogs
+            .Where(v => v.Path != null && v.Path.StartsWith("/blog/"))
+            .GroupBy(v => v.Path)
+            .Select(g => new { Path = g.Key, Views = g.Count() })
+            .OrderByDescending(x => x.Views)
+            .Take(10)
+            .ToListAsync();
+
+        var topArticles = topArticlesFromAnalytics.Count > 0 ? topArticlesFromAnalytics : topArticlesFromLogs;
+
+        // 访问区域统计 - 从 VisitorAnalytics，如果没有数据则尝试从 VisitLogs（需要解析IP）
         var regionStats = await _context.VisitorAnalytics
             .Where(v => v.Country != null)
             .GroupBy(v => v.Country)
@@ -163,6 +199,8 @@ public class AnalyticsController : ControllerBase
             .OrderByDescending(x => x.Count)
             .Take(10)
             .ToListAsync();
+        
+        // 如果 VisitorAnalytics 没有区域数据，返回空列表（因为 VisitLogs 没有地理位置信息）
 
         // 搜索来源
         var searchSources = await _context.VisitorAnalytics
@@ -316,49 +354,108 @@ public class AnalyticsController : ControllerBase
     {
         try
         {
-            var query = _context.VisitorAnalytics.AsQueryable();
-
-            // 只显示在线访客
-            if (onlineOnly)
+            // 优先从 VisitorAnalytics 获取
+            var analyticsCount = await _context.VisitorAnalytics.CountAsync();
+            
+            if (analyticsCount > 0)
             {
-                query = query.Where(v => v.IsOnline && v.UpdatedAt >= DateTime.Now.AddMinutes(-5));
-            }
+                var query = _context.VisitorAnalytics.AsQueryable();
 
-            // 按更新时间倒序排列
-            query = query.OrderByDescending(v => v.UpdatedAt);
-
-            var total = await query.CountAsync();
-            var visitors = await query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .Select(v => new
+                // 只显示在线访客
+                if (onlineOnly)
                 {
-                    v.Id,
-                    v.VisitorId,
-                    v.Ip,
-                    v.Country,
-                    v.Region,
-                    v.City,
-                    v.DeviceType,
-                    v.Browser,
-                    v.Os,
-                    v.Path,
-                    v.Referrer,
-                    v.SearchKeyword,
-                    v.PageViews,
-                    v.SessionStart,
-                    v.UpdatedAt,
-                    v.IsOnline
-                })
-                .ToListAsync();
+                    query = query.Where(v => v.IsOnline && v.UpdatedAt >= DateTime.Now.AddMinutes(-5));
+                }
 
-            return Ok(ApiResponse.Success(new
+                // 按更新时间倒序排列
+                query = query.OrderByDescending(v => v.UpdatedAt);
+
+                var total = await query.CountAsync();
+                var visitors = await query
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(v => new
+                    {
+                        v.Id,
+                        v.VisitorId,
+                        v.Ip,
+                        v.Country,
+                        v.Region,
+                        v.City,
+                        v.DeviceType,
+                        v.Browser,
+                        v.Os,
+                        v.Path,
+                        v.Referrer,
+                        v.SearchKeyword,
+                        v.PageViews,
+                        v.SessionStart,
+                        v.UpdatedAt,
+                        v.IsOnline
+                    })
+                    .ToListAsync();
+
+                return Ok(ApiResponse.Success(new
+                {
+                    Total = total,
+                    Page = page,
+                    PageSize = pageSize,
+                    Visitors = visitors
+                }));
+            }
+            else
             {
-                Total = total,
-                Page = page,
-                PageSize = pageSize,
-                Visitors = visitors
-            }));
+                // 如果 VisitorAnalytics 没有数据，从 VisitLogs 读取
+                var query = _context.VisitLogs.AsQueryable();
+
+                // 只显示最近24小时的访客（因为 VisitLogs 没有在线状态）
+                if (onlineOnly)
+                {
+                    query = query.Where(v => v.Timestamp >= DateTime.Now.AddHours(-24));
+                }
+
+                // 按时间倒序排列
+                query = query.OrderByDescending(v => v.Timestamp);
+
+                var total = await query.CountAsync();
+                var visitLogs = await query
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync();
+
+                // 转换为访客格式
+                var visitors = visitLogs.Select(v =>
+                {
+                    var deviceInfo = ParseDeviceInfo(v.UserAgent ?? "");
+                    return new
+                    {
+                        Id = v.Id,
+                        VisitorId = v.VisitorId,
+                        Ip = v.Ip,
+                        Country = (string?)null,
+                        Region = (string?)null,
+                        City = (string?)null,
+                        DeviceType = deviceInfo.DeviceType,
+                        Browser = deviceInfo.Browser,
+                        Os = deviceInfo.Os,
+                        Path = v.Path,
+                        Referrer = (string?)null,
+                        SearchKeyword = (string?)null,
+                        PageViews = 1,
+                        SessionStart = v.Timestamp,
+                        UpdatedAt = v.Timestamp,
+                        IsOnline = !onlineOnly || v.Timestamp >= DateTime.Now.AddMinutes(-5)
+                    };
+                }).ToList();
+
+                return Ok(ApiResponse.Success(new
+                {
+                    Total = total,
+                    Page = page,
+                    PageSize = pageSize,
+                    Visitors = visitors
+                }));
+            }
         }
         catch (Exception ex)
         {

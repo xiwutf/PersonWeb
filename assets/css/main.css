@@ -1,12 +1,12 @@
 /* Import Google Fonts: 统一使用更专业的无衬线字体 */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-/* 导入组件样式 - 必须在 @tailwind 之前 */
-@import './components.css';
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* 导入组件样式 - 必须在 @tailwind components 之后 */
+@import './components.css';
 
 @layer base {
   :root {

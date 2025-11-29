@@ -1,0 +1,149 @@
+/* 图表样式 - 确保文字在深色/浅色模式下都清晰可见 */
+
+/* ========== ECharts 图表样式 ========== */
+.chart-wrapper {
+  position: relative;
+}
+
+/* 深色模式下的 ECharts 文字 */
+.dark .chart-wrapper :deep(.echarts) {
+  color: #ffffff !important;
+}
+
+.dark .chart-wrapper :deep(text) {
+  fill: #ffffff !important;
+  font-size: 13px !important;
+  font-weight: normal !important;
+}
+
+.dark .chart-wrapper :deep(.echarts-legend) {
+  color: #e5e7eb !important;
+}
+
+.dark .chart-wrapper :deep(.echarts-legend-item) {
+  color: #e5e7eb !important;
+}
+
+.dark .chart-wrapper :deep(.echarts-legend-item-text) {
+  color: #e5e7eb !important;
+  fill: #e5e7eb !important;
+  font-size: 13px !important;
+}
+
+/* 工具提示样式 - 深色模式 */
+.dark .chart-wrapper :deep(.echarts-tooltip) {
+  background-color: rgba(17, 24, 39, 0.98) !important;
+  border-color: rgba(156, 163, 175, 0.5) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+.dark .chart-wrapper :deep(.echarts-tooltip-content) {
+  color: #ffffff !important;
+}
+
+.dark .chart-wrapper :deep(.echarts-tooltip-title) {
+  color: #ffffff !important;
+}
+
+/* 坐标轴文字 - 深色模式 */
+.dark .chart-wrapper :deep(.echarts-axis-label) {
+  fill: #e5e7eb !important;
+  color: #e5e7eb !important;
+  font-size: 12px !important;
+}
+
+.dark .chart-wrapper :deep(.echarts-axis-line) {
+  stroke: rgba(156, 163, 175, 0.6) !important;
+}
+
+.dark .chart-wrapper :deep(.echarts-split-line) {
+  stroke: rgba(156, 163, 175, 0.3) !important;
+}
+
+/* 浅色模式下的 ECharts 文字 */
+.chart-wrapper :deep(.echarts) {
+  color: #374151;
+}
+
+.chart-wrapper :deep(text) {
+  fill: #374151 !important;
+  font-size: 13px !important;
+}
+
+.chart-wrapper :deep(.echarts-legend-item-text) {
+  color: #6b7280 !important;
+  fill: #6b7280 !important;
+  font-size: 13px !important;
+}
+
+/* ========== Chart.js 图表样式 ========== */
+/* 深色模式下的 Chart.js 文字 */
+.dark .chart-container :deep(canvas) {
+  filter: brightness(1.2);
+}
+
+/* Chart.js 图例文字 - 深色模式 */
+.dark .chart-container :deep(.chartjs-legend) {
+  color: #e5e7eb !important;
+}
+
+.dark .chart-container :deep(.chartjs-legend li) {
+  color: #e5e7eb !important;
+}
+
+.dark .chart-container :deep(.chartjs-legend li span) {
+  color: #e5e7eb !important;
+}
+
+/* Chart.js 工具提示 - 深色模式 */
+.dark .chart-container :deep(.chartjs-tooltip) {
+  background-color: rgba(17, 24, 39, 0.98) !important;
+  border-color: rgba(156, 163, 175, 0.5) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+.dark .chart-container :deep(.chartjs-tooltip-body) {
+  color: #ffffff !important;
+}
+
+.dark .chart-container :deep(.chartjs-tooltip-body-item) {
+  color: #ffffff !important;
+}
+
+.dark .chart-container :deep(.chartjs-tooltip-body-item span) {
+  color: #ffffff !important;
+}
+
+/* 浅色模式下的 Chart.js */
+.chart-container :deep(.chartjs-legend) {
+  color: #6b7280 !important;
+}
+
+.chart-container :deep(.chartjs-legend li) {
+  color: #6b7280 !important;
+}
+
+/* 通用图表容器样式 */
+.chart-container {
+  position: relative;
+}
+
+.chart-container h2 {
+  color: inherit;
+}
+
+/* 确保图表标题可见 */
+.dark .chart-title {
+  color: #ffffff !important;
+}
+
+.chart-title {
+  color: #111827;
+}
+
+.dark .chart-title {
+  color: #ffffff !important;
+}
+

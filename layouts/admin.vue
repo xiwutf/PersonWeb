@@ -311,6 +311,15 @@
             </NuxtLink>
             
             <NuxtLink 
+              to="/admin/theme-settings" 
+              class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
+              :class="{ 'admin-sidebar-link-active': route.path === '/admin/theme-settings' }"
+            >
+              <i class="fas fa-palette w-6 text-center mr-2 text-sm"></i>
+              <span class="text-sm">UI主题设置</span>
+            </NuxtLink>
+            
+            <NuxtLink 
               to="/admin/settings/modules" 
               class="flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
               :class="{ 'admin-sidebar-link-active': route.path === '/admin/settings/modules' }"
@@ -351,7 +360,7 @@
     <!-- 主内容区 -->
     <main class="flex-1 ml-64 p-8 admin-main" :style="mainContentStyle">
       <ClientOnly>
-        <n-config-provider :theme="darkTheme">
+        <n-config-provider :theme="currentTheme" :theme-overrides="themeOverrides">
           <n-message-provider>
             <n-dialog-provider>
               <slot />
@@ -368,12 +377,16 @@
 
 <script setup lang="ts">
 import { onMounted, computed, watch, ref } from 'vue'
-import { NMessageProvider, NDialogProvider, NConfigProvider, darkTheme } from 'naive-ui'
+import { NMessageProvider, NDialogProvider, NConfigProvider } from 'naive-ui'
 import { useAdminGlobalStyle } from '~/composables/useAdminStyle'
+import { useNaiveTheme } from '~/composables/useNaiveTheme'
 
 const router = useRouter()
 const route = useRoute()
 const { globalStyle, styleConfig, cssVariables, inlineStyle, fetchGlobalStyle } = useAdminGlobalStyle()
+
+// 使用 Naive UI 主题系统
+const { currentTheme, themeOverrides, isDark } = useNaiveTheme()
 
 // 菜单折叠状态
 const expandedMenus = ref<Record<string, boolean>>({

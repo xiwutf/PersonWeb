@@ -1,0 +1,451 @@
+/* 投资仪表盘样式 - 统一管理 */
+
+/* ========== 页面布局 ========== */
+.investment-page-header {
+  @apply flex justify-between items-center mb-6;
+}
+
+.investment-page-title {
+  @apply text-2xl font-bold text-gray-800 dark:text-white;
+}
+
+.investment-action-buttons {
+  @apply flex gap-2;
+}
+
+/* ========== 按钮样式 ========== */
+.btn-refresh {
+  @apply px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors;
+}
+
+.btn-add {
+  @apply px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors;
+}
+
+.btn-save {
+  @apply px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors;
+}
+
+.btn-cancel {
+  @apply px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors;
+}
+
+.btn-edit {
+  @apply text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors;
+}
+
+.btn-transaction {
+  @apply text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 transition-colors;
+}
+
+.btn-delete {
+  @apply text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 transition-colors;
+}
+
+/* ========== 信息提示框 ========== */
+.info-box {
+  @apply mb-6 bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-300 dark:border-blue-700 rounded-lg p-4;
+}
+
+.info-box-content {
+  @apply flex items-start;
+}
+
+.info-box-icon {
+  @apply flex-shrink-0;
+}
+
+.info-box-icon svg {
+  @apply h-5 w-5 text-blue-600 dark:text-blue-400;
+}
+
+.info-box-body {
+  @apply ml-3 flex-1;
+}
+
+.info-box-title {
+  @apply text-sm font-bold text-blue-900 dark:text-blue-100 mb-2;
+}
+
+.info-box-text {
+  @apply text-sm text-blue-800 dark:text-blue-200 leading-relaxed;
+}
+
+.info-box-list {
+  @apply list-disc list-inside ml-2 space-y-1;
+}
+
+/* ========== 统计卡片 ========== */
+.stats-grid {
+  @apply grid grid-cols-1 md:grid-cols-4 gap-4 mb-6;
+}
+
+.stat-card {
+  @apply bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4;
+}
+
+.stat-label {
+  @apply text-sm text-gray-500 dark:text-gray-400 mb-1;
+}
+
+.stat-value {
+  @apply text-2xl font-bold text-gray-800 dark:text-white;
+}
+
+.stat-value-positive {
+  @apply text-2xl font-bold text-green-600 dark:text-green-400;
+}
+
+.stat-value-negative {
+  @apply text-2xl font-bold text-red-600 dark:text-red-400;
+}
+
+.stat-value-blue {
+  @apply text-2xl font-bold text-blue-600 dark:text-blue-400;
+}
+
+/* ========== 图表容器 ========== */
+.charts-grid {
+  @apply grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6;
+}
+
+.chart-container {
+  @apply bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6;
+  /* 确保图表容器背景在深色模式下足够深 */
+}
+
+.dark .chart-container {
+  background-color: #1f2937 !important; /* 更深的背景，提高对比度 */
+  border-color: rgba(75, 85, 99, 0.5) !important;
+}
+
+.chart-title {
+  @apply text-lg font-bold text-gray-800 dark:text-white mb-4;
+}
+
+.chart-wrapper {
+  @apply h-64;
+}
+
+/* 确保 ECharts 图表文字在深色模式下可见 */
+.dark .chart-wrapper :deep(.echarts) {
+  color: #ffffff !important;
+}
+
+.dark .chart-wrapper :deep(text) {
+  fill: #ffffff !important;
+  font-size: 13px !important;
+  font-weight: normal !important;
+}
+
+/* 确保图例文字可见 */
+.dark .chart-wrapper :deep(.echarts-legend) {
+  color: #e5e7eb !important;
+}
+
+.dark .chart-wrapper :deep(.echarts-legend-item) {
+  color: #e5e7eb !important;
+}
+
+.dark .chart-wrapper :deep(.echarts-legend-item-text) {
+  color: #e5e7eb !important;
+  fill: #e5e7eb !important;
+}
+
+/* 工具提示样式 */
+.dark .chart-wrapper :deep(.echarts-tooltip) {
+  background-color: rgba(17, 24, 39, 0.98) !important;
+  border-color: rgba(156, 163, 175, 0.5) !important;
+  color: #ffffff !important;
+}
+
+.dark .chart-wrapper :deep(.echarts-tooltip-content) {
+  color: #ffffff !important;
+}
+
+/* 坐标轴文字 */
+.dark .chart-wrapper :deep(.echarts-axis-label) {
+  fill: #e5e7eb !important;
+  color: #e5e7eb !important;
+}
+
+/* 浅色模式下的文字 */
+.chart-wrapper :deep(.echarts) {
+  color: #374151;
+}
+
+.chart-wrapper :deep(text) {
+  fill: #374151 !important;
+  font-size: 13px !important;
+}
+
+.chart-wrapper :deep(.echarts-legend-item-text) {
+  color: #6b7280 !important;
+  fill: #6b7280 !important;
+}
+
+.chart-empty {
+  @apply text-center text-gray-500 dark:text-gray-400 py-8;
+}
+
+/* ========== 表格样式（参考 ECharts 风格） ========== */
+/* ECharts 表格特点：简洁、清晰、专业、易读 */
+.table-container {
+  @apply bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden mb-6;
+}
+
+.investment-table {
+  @apply w-full text-left;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* 表头样式 - ECharts 风格：浅色背景，清晰分隔 */
+.investment-table thead {
+  @apply bg-gray-50 dark:bg-gray-700/50;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.06);
+}
+
+.dark .investment-table thead {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.investment-table th {
+  @apply px-6 py-3 text-sm font-medium text-gray-500 dark:text-gray-400;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.dark .investment-table th {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+/* 表体样式 - ECharts 风格：交替行背景，悬停高亮 */
+.investment-table tbody {
+  @apply divide-y divide-gray-200 dark:divide-gray-700;
+}
+
+.investment-table tbody tr {
+  @apply hover:bg-gray-50 dark:hover:bg-gray-700/30;
+  transition: background-color 0.15s ease;
+}
+
+.investment-table tbody tr:nth-child(even) {
+  @apply bg-gray-50/50 dark:bg-gray-800/50;
+}
+
+.investment-table td {
+  @apply px-6 py-4 text-gray-800 dark:text-gray-200;
+  font-size: 0.875rem;
+}
+
+.investment-table td.font-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+/* 统计表格样式（更紧凑） */
+.stats-table-container {
+  @apply bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6;
+}
+
+.stats-table {
+  @apply w-full text-sm;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.stats-table thead {
+  @apply bg-gray-50 dark:bg-gray-700;
+}
+
+.stats-table th {
+  @apply px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.dark .stats-table th {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.stats-table tbody {
+  @apply divide-y divide-gray-200 dark:divide-gray-700;
+}
+
+.stats-table tbody tr {
+  @apply hover:bg-gray-50 dark:hover:bg-gray-700;
+  transition: background-color 0.15s ease;
+}
+
+.stats-table td {
+  @apply px-4 py-3 text-gray-700 dark:text-gray-300;
+}
+
+.stats-table-empty {
+  @apply px-4 py-8 text-center text-gray-500 dark:text-gray-400;
+}
+
+/* ========== 标签样式 ========== */
+.badge-type {
+  @apply px-2 py-1 rounded text-xs;
+}
+
+.badge-stock {
+  @apply badge-type bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300;
+}
+
+.badge-fund {
+  @apply badge-type bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300;
+}
+
+/* ========== 盈亏显示 ========== */
+.profit-positive {
+  @apply font-semibold text-green-600 dark:text-green-400;
+}
+
+.profit-negative {
+  @apply font-semibold text-red-600 dark:text-red-400;
+}
+
+.profit-rate {
+  @apply text-xs;
+}
+
+.profit-rate-positive {
+  @apply profit-rate text-green-600 dark:text-green-400;
+}
+
+.profit-rate-negative {
+  @apply profit-rate text-red-600 dark:text-red-400;
+}
+
+/* ========== Top 持仓卡片 ========== */
+.top-holdings-container {
+  @apply bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6;
+}
+
+.top-holdings-title {
+  @apply text-lg font-bold text-gray-800 dark:text-white mb-4;
+}
+
+.top-holdings-list {
+  @apply space-y-3;
+}
+
+.holding-item {
+  @apply flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg;
+  transition: background-color 0.15s ease;
+}
+
+.holding-item:hover {
+  @apply bg-gray-100 dark:bg-gray-600;
+}
+
+.holding-rank {
+  @apply w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm;
+}
+
+.holding-rank-1 {
+  @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200;
+}
+
+.holding-rank-2 {
+  @apply bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200;
+}
+
+.holding-rank-3 {
+  @apply bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200;
+}
+
+.holding-rank-other {
+  @apply bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200;
+}
+
+.holding-info {
+  @apply flex items-center gap-3 flex-1;
+}
+
+.holding-details {
+  @apply flex-1;
+}
+
+.holding-name {
+  @apply font-medium text-gray-800 dark:text-gray-200 text-sm;
+}
+
+.holding-type {
+  @apply text-xs text-gray-500 dark:text-gray-400 mt-1;
+}
+
+.holding-value {
+  @apply text-right;
+}
+
+.holding-value-amount {
+  @apply font-semibold text-gray-800 dark:text-gray-200;
+}
+
+.holding-value-rate {
+  @apply text-xs mt-1;
+}
+
+/* ========== 模态框样式 ========== */
+.modal-overlay {
+  @apply fixed inset-0 bg-black/50 flex items-center justify-center z-50;
+}
+
+.modal-content {
+  @apply bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-md m-4;
+}
+
+.modal-body {
+  @apply p-6;
+}
+
+.modal-title {
+  @apply text-xl font-bold mb-4 text-gray-800 dark:text-white;
+}
+
+.modal-form {
+  @apply space-y-4;
+}
+
+.form-group {
+  @apply block;
+}
+
+.form-label {
+  @apply block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300;
+}
+
+.form-input {
+  @apply w-full border rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600;
+}
+
+.form-input:focus {
+  @apply outline-none ring-2 ring-blue-500 border-blue-500;
+}
+
+.form-select {
+  @apply w-full border rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600;
+}
+
+.form-textarea {
+  @apply w-full border rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600;
+}
+
+.modal-actions {
+  @apply flex gap-2 mt-6;
+}
+
+/* ========== 操作按钮组 ========== */
+.action-buttons {
+  @apply flex gap-2;
+}
+
+/* ========== 空状态 ========== */
+.empty-state {
+  @apply text-center text-gray-500 dark:text-gray-400 py-4;
+}
+
