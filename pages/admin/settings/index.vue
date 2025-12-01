@@ -35,6 +35,17 @@
             <i class="fas fa-chevron-right card-arrow"></i>
           </NuxtLink>
 
+          <NuxtLink to="/admin/settings/change-password" class="settings-card">
+            <div class="card-icon">
+              <i class="fas fa-key"></i>
+            </div>
+            <div class="card-content">
+              <h3 class="card-title">修改密码</h3>
+              <p class="card-desc">修改当前管理员账户的登录密码</p>
+            </div>
+            <i class="fas fa-chevron-right card-arrow"></i>
+          </NuxtLink>
+
           <NuxtLink to="/admin/friend-links" class="settings-card">
             <div class="card-icon">
               <i class="fas fa-link"></i>

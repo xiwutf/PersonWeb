@@ -87,6 +87,64 @@ public class AuthController : ControllerBase
         return Ok(ApiResponse<User>.Success(user));
     }
 
+    /// <summary>
+    /// 修改密码
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    [HttpPut("change-password")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<object>>> ChangePassword([FromBody] ChangePasswordRequest request)
+    {
+        // 获取当前用户ID
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        if (userIdClaim == null || !long.TryParse(userIdClaim.Value, out var userId))
+        {
+            return Unauthorized();
+        }
+
+        // 验证请求参数
+        if (string.IsNullOrEmpty(request.OldPassword))
+        {
+            return BadRequest(ApiResponse.Error("当前密码不能为空"));
+        }
+
+        if (string.IsNullOrEmpty(request.NewPassword))
+        {
+            return BadRequest(ApiResponse.Error("新密码不能为空"));
+        }
+
+        if (request.NewPassword.Length < 6)
+        {
+            return BadRequest(ApiResponse.Error("新密码长度至少6位字符"));
+        }
+
+        // 查找用户
+        var user = await _context.Users.FindAsync(userId);
+        if (user == null)
+        {
+            return NotFound(ApiResponse.Error("用户不存在"));
+        }
+
+        // 验证当前密码
+        if (!PasswordHelper.VerifyPassword(request.OldPassword, user.PasswordHash))
+        {
+            return BadRequest(ApiResponse.Error("当前密码错误"));
+        }
+
+        // 检查新密码是否与旧密码相同
+        if (PasswordHelper.VerifyPassword(request.NewPassword, user.PasswordHash))
+        {
+            return BadRequest(ApiResponse.Error("新密码不能与当前密码相同"));
+        }
+
+        // 更新密码
+        user.PasswordHash = PasswordHelper.HashPassword(request.NewPassword);
+        await _context.SaveChangesAsync();
+
+        return Ok(ApiResponse.Success(null, "密码修改成功"));
+    }
+
     private string GenerateJwtToken(User user)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
