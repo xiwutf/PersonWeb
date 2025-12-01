@@ -14,12 +14,18 @@
           v-for="type in recommendationTypes"
           :key="type.value"
           @click="selectedType = type.value; fetchRecommendations()"
-          class="px-4 py-2 rounded transition-colors font-medium"
+          class="px-4 py-2 rounded transition-colors font-bold"
           :class="selectedType === type.value 
-            ? 'bg-blue-600 text-white' 
-            : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600'"
+            ? 'bg-blue-600 text-white shadow-md' 
+            : 'bg-gray-200 dark:bg-gray-700 border-2 border-gray-400 dark:border-gray-500 hover:bg-gray-300 dark:hover:bg-gray-600'"
         >
-          {{ type.label }}
+          <span 
+            :style="selectedType === type.value 
+              ? {} 
+              : (isDark ? { color: '#f3f4f6 !important', fontWeight: '700' } : { color: '#111827 !important', fontWeight: '700' })"
+          >
+            {{ type.label }}
+          </span>
         </button>
       </div>
     </div>
@@ -40,6 +46,8 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+
 definePageMeta({
   layout: 'admin',
   middleware: 'admin-auth'
@@ -50,6 +58,13 @@ const api = useApi()
 const recommendations = ref<string>('')
 const loading = ref(false)
 const selectedType = ref('all')
+
+// 检测是否为暗色模式
+const isDark = computed(() => {
+  if (typeof window === 'undefined') return false
+  return document.documentElement.classList.contains('dark') || 
+         document.documentElement.dataset.theme?.includes('dark')
+})
 
 const recommendationTypes = [
   { value: 'all', label: '全部推荐' },

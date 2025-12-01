@@ -171,8 +171,15 @@
               </select>
             </div>
             <div class="flex justify-end gap-3 pt-4">
-              <button type="button" @click="closeModal" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">取消</button>
-              <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">保存</button>
+              <button 
+                type="button" 
+                @click="closeModal" 
+                class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors font-bold border-2 border-gray-400 dark:border-gray-500 shadow-sm"
+                style="color: #111827;"
+              >
+                <span class="dark:text-gray-100" style="color: inherit;">取消</span>
+              </button>
+              <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors font-medium shadow-md">保存</button>
             </div>
           </form>
         </div>
