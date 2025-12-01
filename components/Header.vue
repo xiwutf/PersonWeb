@@ -1,7 +1,7 @@
 ﻿<template>
-  <header class="fixed top-0 left-0 right-0 z-[1000] bg-bg-body/80 backdrop-blur-xl border-b border-border-subtle/50" style="z-index: 1000 !important;">
+  <header class="fixed top-4 left-1/2 -translate-x-1/2 z-[1000] floating-nav" style="z-index: 1000 !important;">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
+      <div class="flex items-center justify-between h-14">
         <!-- Logo 区域 -->
         <NuxtLink to="/" class="flex items-center space-x-3 group shrink-0 cursor-pointer">
           <div 
@@ -98,7 +98,7 @@
 
       <!-- 移动端菜单 -->
       <Transition name="slide-down">
-        <div v-if="isMobileMenuOpen" class="md:hidden border-t border-border-subtle py-2">
+        <div v-if="isMobileMenuOpen" class="md:hidden border-t border-border-subtle/30 py-2 mt-2">
           <nav class="space-y-1">
             <NuxtLink
               v-for="item in navigationItems"
@@ -132,7 +132,10 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 
+// Nuxt 3 自动导入
+// @ts-ignore - Nuxt 3 auto-imports
 const router = useRouter()
+// @ts-ignore - Nuxt 3 auto-imports
 const route = useRoute()
 
 // 移动端菜单状态
@@ -195,6 +198,7 @@ onMounted(() => {
 
 // 主要导航项
 const mainNavigationItems = computed(() => {
+  // @ts-ignore - Nuxt 3 auto-imports
   const { isModuleEnabled } = useModuleSystem()
   
   const items = [
@@ -247,6 +251,7 @@ const mainNavigationItems = computed(() => {
 
 // 更多菜单项
 const moreNavigationItems = computed(() => {
+  // @ts-ignore - Nuxt 3 auto-imports
   const { isModuleEnabled } = useModuleSystem()
   
   const items: Array<{ title: string; path: string; icon: string; moduleKey?: string }> = []
@@ -354,6 +359,36 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* 独立悬浮导航栏样式 */
+.floating-nav {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05);
+  width: calc(100% - 2rem);
+  max-width: 1280px;
+  transition: all 0.3s ease;
+}
+
+/* 暗色主题下的导航栏 */
+:global(.dark) .floating-nav,
+:global([data-theme="dark"]) .floating-nav {
+  background: rgba(30, 41, 59, 0.9);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 响应式：小屏幕时全宽 */
+@media (max-width: 640px) {
+  .floating-nav {
+    width: calc(100% - 1rem);
+    top: 0.5rem;
+    border-radius: 0.75rem;
+  }
+}
+
 /* 下拉菜单动画 */
 .dropdown-enter-active,
 .dropdown-leave-active {

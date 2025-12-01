@@ -11,7 +11,7 @@
     <Header />
     
     <!-- 主要内容区域 (无顶部内边距，用于沉浸式 Hero) -->
-    <main class="flex-1">
+    <main class="flex-1 pt-0">
       <slot />
     </main>
     

@@ -15,7 +15,7 @@
     <Header />
     
     <!-- 主要内容区域 -->
-    <main class="flex-1 pt-24 relative z-10">
+    <main class="flex-1 pt-20 relative z-10">
       <slot />
     </main>
     
