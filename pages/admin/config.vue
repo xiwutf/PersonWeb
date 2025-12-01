@@ -227,10 +227,49 @@ onMounted(() => {
   outline: none;
 }
 
-/* 下拉框选项文字 */
-.form-input option {
-  background: var(--color-bg-card, rgba(30, 41, 59, 0.95)) !important;
+/* 下拉框选项文字 - 增强样式确保清晰可见 */
+select.form-input {
   color: var(--color-text-main, #ffffff) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  /* 确保下拉箭头可见 */
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffffff' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  padding-right: 2.5rem;
+}
+
+/* 下拉框选项样式 - 使用深色背景和白色文字 */
+select.form-input option {
+  background: #1e293b !important;
+  background-color: #1e293b !important;
+  color: #ffffff !important;
+  padding: 0.75rem 0.5rem !important;
+  font-size: 0.875rem !important;
+  font-weight: 400 !important;
+  /* 确保文字不透明 */
+  opacity: 1 !important;
+}
+
+/* 下拉框打开时的样式 */
+select.form-input:focus {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-color: var(--color-primary, #3b82f6) !important;
+}
+
+/* 选中状态的选项 */
+select.form-input option:checked {
+  background: var(--color-primary, #3b82f6) !important;
+  background-color: var(--color-primary, #3b82f6) !important;
+  color: #ffffff !important;
+}
+
+/* 悬停状态的选项（某些浏览器支持） */
+select.form-input option:hover {
+  background: rgba(59, 130, 246, 0.3) !important;
+  background-color: rgba(59, 130, 246, 0.3) !important;
+  color: #ffffff !important;
 }
 
 /* 加载文字 */

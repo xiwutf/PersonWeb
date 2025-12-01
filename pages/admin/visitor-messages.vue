@@ -122,6 +122,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref, computed, watch, onMounted } from 'vue'
 import { useSafeMessage } from '~/composables/useNaiveUI'
 import { useErrorHandler } from '~/composables/useErrorHandler'
 
@@ -148,12 +149,14 @@ const { handleError } = useErrorHandler()
 const message = useSafeMessage()
 
 const messages = ref<VisitorMessage[]>([])
+const allMessages = ref<VisitorMessage[]>([]) // 存储所有留言，用于统计
 const loading = ref(false)
 const statusFilter = ref('')
 const typeFilter = ref('')
 
+// 统计信息：基于所有留言计算
 const stats = computed(() => {
-  const all = messages.value
+  const all = allMessages.value
   return {
     pending: all.filter(m => m.status === 'pending').length,
     approved: all.filter(m => m.status === 'approved').length,
@@ -161,31 +164,55 @@ const stats = computed(() => {
   }
 })
 
+// 根据筛选器过滤后的留言列表
+const filteredMessages = computed(() => {
+  let result = [...allMessages.value]
+  
+  // 根据状态筛选
+  if (statusFilter.value) {
+    result = result.filter(m => m.status === statusFilter.value)
+  }
+  
+  // 根据类型筛选
+  if (typeFilter.value) {
+    result = result.filter(m => m.messageType === typeFilter.value)
+  }
+  
+  return result
+})
+
 const fetchMessages = async () => {
   loading.value = true
   try {
-    let endpoint = '/VisitorInteraction/messages/pending'
-    if (statusFilter.value) {
-      // 如果需要其他状态的，可以扩展API
-      endpoint = '/VisitorInteraction/messages/pending'
+    // 获取所有留言（不传筛选参数，用于统计）
+    const res = await api.get<VisitorMessage[]>('/VisitorInteraction/messages/all')
+    
+    // useApi 已经处理了 ApiResponse，res 应该是数组
+    let messageList: VisitorMessage[] = []
+    if (Array.isArray(res)) {
+      messageList = res
+    } else if (res && typeof res === 'object' && 'data' in res) {
+      // 如果还是包装在 data 中（双重包装的情况）
+      messageList = Array.isArray((res as any).data) ? (res as any).data : []
     }
     
-    const res = await api.get<VisitorMessage[]>(endpoint)
-    messages.value = Array.isArray(res) ? res : []
-    
-    // 客户端过滤
-    if (statusFilter.value) {
-      messages.value = messages.value.filter(m => m.status === statusFilter.value)
-    }
-    if (typeFilter.value) {
-      messages.value = messages.value.filter(m => m.messageType === typeFilter.value)
-    }
+    allMessages.value = messageList
+    // 更新显示列表（会根据筛选器自动过滤）
+    messages.value = filteredMessages.value
   } catch (e) {
+    console.error('加载留言失败:', e)
     handleError(e, '加载留言失败')
+    allMessages.value = []
+    messages.value = []
   } finally {
     loading.value = false
   }
 }
+
+// 监听筛选器变化，更新显示列表
+watch([statusFilter, typeFilter], () => {
+  messages.value = filteredMessages.value
+})
 
 const approveMessage = async (id: number) => {
   try {

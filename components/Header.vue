@@ -12,7 +12,14 @@
           >
             <img src="/images/avatar.jpg" alt="溪午听风" class="w-full h-full object-cover" />
           </div>
-          <span class="text-xl font-bold text-text-main hidden sm:block">溪午听风</span>
+          <span 
+            class="text-xl font-bold text-text-main hidden sm:block logo-text"
+            :style="{ 
+              color: isDark ? '#ffffff' : undefined,
+              fontWeight: isDark ? '900' : undefined,
+              opacity: isDark ? 1 : undefined
+            }"
+          >溪午听风</span>
         </NuxtLink>
 
         <!-- 桌面端导航菜单 -->
@@ -137,6 +144,17 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 const router = useRouter()
 // @ts-ignore - Nuxt 3 auto-imports
 const route = useRoute()
+
+// 检测是否为暗色主题
+const isDark = computed(() => {
+  if (process.client) {
+    const html = document.documentElement
+    return html.classList.contains('dark') || 
+           html.dataset.theme === 'dark' || 
+           html.dataset.theme === 'hybrid-super-dark'
+  }
+  return false
+})
 
 // 移动端菜单状态
 const isMobileMenuOpen = ref(false)
@@ -372,12 +390,126 @@ onMounted(() => {
   transition: all 0.3s ease;
 }
 
-/* 暗色主题下的导航栏 */
+/* 暗色主题下的导航栏 - 更深的背景确保对比度 */
 :global(.dark) .floating-nav,
-:global([data-theme="dark"]) .floating-nav {
-  background: rgba(30, 41, 59, 0.9);
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
+:global([data-theme="dark"]) .floating-nav,
+:global([data-theme="hybrid-super-dark"]) .floating-nav {
+  background: rgba(0, 0, 0, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* 确保暗色主题下导航栏内的所有文字清晰可见 - 使用纯白色 */
+:global(.dark) .floating-nav,
+:global([data-theme="dark"]) .floating-nav,
+:global([data-theme="hybrid-super-dark"]) .floating-nav {
+  color: #ffffff !important;
+}
+
+/* 左侧 Logo 文字 - 纯白色，无阴影，确保最高优先级 */
+:global(.dark) .floating-nav .text-text-main,
+:global([data-theme="dark"]) .floating-nav .text-text-main,
+:global([data-theme="hybrid-super-dark"]) .floating-nav .text-text-main,
+:global(.dark) .floating-nav a span.text-text-main,
+:global([data-theme="dark"]) .floating-nav a span.text-text-main,
+:global([data-theme="hybrid-super-dark"]) .floating-nav a span.text-text-main,
+:global(.dark) .floating-nav .flex.items-center span,
+:global([data-theme="dark"]) .floating-nav .flex.items-center span,
+:global([data-theme="hybrid-super-dark"]) .floating-nav .flex.items-center span {
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  opacity: 1 !important;
+}
+
+/* 导航链接文字 - 使用纯白色 */
+:global(.dark) .floating-nav .text-text-muted,
+:global([data-theme="dark"]) .floating-nav .text-text-muted,
+:global([data-theme="hybrid-super-dark"]) .floating-nav .text-text-muted {
+  color: #ffffff !important;
+}
+
+/* 导航链接悬停状态 */
+:global(.dark) .floating-nav a:hover,
+:global([data-theme="dark"]) .floating-nav a:hover,
+:global([data-theme="hybrid-super-dark"]) .floating-nav a:hover {
+  color: #ffffff !important;
+}
+
+/* 搜索图标和主题切换图标 - 纯白色 */
+:global(.dark) .floating-nav svg,
+:global([data-theme="dark"]) .floating-nav svg,
+:global([data-theme="hybrid-super-dark"]) .floating-nav svg {
+  color: #ffffff !important;
+}
+
+/* 更多菜单按钮文字 - 纯白色 */
+:global(.dark) .floating-nav button,
+:global([data-theme="dark"]) .floating-nav button,
+:global([data-theme="hybrid-super-dark"]) .floating-nav button {
+  color: #ffffff !important;
+}
+
+/* 移动端菜单按钮图标 - 纯白色 */
+:global(.dark) .floating-nav .md\:hidden svg,
+:global([data-theme="dark"]) .floating-nav .md\:hidden svg,
+:global([data-theme="hybrid-super-dark"]) .floating-nav .md\:hidden svg {
+  color: #ffffff !important;
+}
+
+/* 强制所有导航链接文字在暗色主题下使用纯白色 */
+:global(.dark) .floating-nav nav a,
+:global([data-theme="dark"]) .floating-nav nav a,
+:global([data-theme="hybrid-super-dark"]) .floating-nav nav a {
+  color: #ffffff !important;
+}
+
+/* 强制所有 span 文字在暗色主题下使用纯白色 */
+:global(.dark) .floating-nav span,
+:global([data-theme="dark"]) .floating-nav span,
+:global([data-theme="hybrid-super-dark"]) .floating-nav span {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* 特别确保 Logo 区域的 span 文字清晰可见 */
+:global(.dark) .floating-nav a.flex.items-center span,
+:global([data-theme="dark"]) .floating-nav a.flex.items-center span,
+:global([data-theme="hybrid-super-dark"]) .floating-nav a.flex.items-center span {
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+/* 直接针对 Logo 文字 - 最高优先级 */
+:global(.dark) .floating-nav .logo-text,
+:global([data-theme="dark"]) .floating-nav .logo-text,
+:global([data-theme="hybrid-super-dark"]) .floating-nav .logo-text,
+.floating-nav .logo-text {
+  color: #ffffff !important;
+  font-weight: 900 !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+/* 确保在暗色主题下 Logo 文字始终可见 */
+:global(.dark) .logo-text,
+:global([data-theme="dark"]) .logo-text,
+:global([data-theme="hybrid-super-dark"]) .logo-text {
+  color: #ffffff !important;
+  font-weight: 900 !important;
+  opacity: 1 !important;
+}
+
+/* 确保图标 emoji 也清晰可见（通过父元素文字颜色） */
+:global(.dark) .floating-nav .mr-1\.5,
+:global([data-theme="dark"]) .floating-nav .mr-1\.5,
+:global([data-theme="hybrid-super-dark"]) .floating-nav .mr-1\.5 {
+  color: #ffffff !important;
 }
 
 /* 响应式：小屏幕时全宽 */

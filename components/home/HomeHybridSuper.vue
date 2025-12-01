@@ -1,10 +1,5 @@
 <template>
   <div class="home-hybrid-super min-h-screen bg-bg-body text-text-main overflow-x-hidden">
-    <!-- 调试信息（开发环境） -->
-    <div v-if="isDev" class="fixed top-20 right-4 z-[9999] bg-red-500/90 text-white p-2 rounded text-xs">
-      组件已加载: HomeHybridSuper V2
-    </div>
-    
     <!-- 1. Super Hero（平台定位 + 个人介绍） -->
     <HeroSuper />
     

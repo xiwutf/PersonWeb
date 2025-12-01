@@ -250,6 +250,41 @@ public class VisitorInteractionController : ControllerBase
             return StatusCode(500, ApiResponse<List<VisitorMessage>>.Error($"获取失败: {ex.Message}", 500));
         }
     }
+
+    /// <summary>
+    /// 获取所有留言（管理员，用于管理页面）
+    /// </summary>
+    [HttpGet("messages/all")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<List<VisitorMessage>>>> GetAllMessages([FromQuery] string? status = null, [FromQuery] string? messageType = null)
+    {
+        try
+        {
+            var query = _context.VisitorMessages.AsQueryable();
+
+            // 根据状态筛选
+            if (!string.IsNullOrEmpty(status))
+            {
+                query = query.Where(m => m.Status == status);
+            }
+
+            // 根据类型筛选
+            if (!string.IsNullOrEmpty(messageType))
+            {
+                query = query.Where(m => m.MessageType == messageType);
+            }
+
+            var messages = await query
+                .OrderByDescending(m => m.CreatedAt)
+                .ToListAsync();
+
+            return Ok(ApiResponse<List<VisitorMessage>>.Success(messages));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<List<VisitorMessage>>.Error($"获取失败: {ex.Message}", 500));
+        }
+    }
 }
 
 // DTOs

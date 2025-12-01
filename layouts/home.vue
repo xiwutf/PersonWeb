@@ -32,9 +32,6 @@
     <!-- 访客侧边栏抽屉（包含留言、互动等功能） -->
     <VisitorSidebarDrawer />
     
-    <!-- 时间胶囊墙 -->
-    <TimeCapsuleWall />
-    
     <!-- 隐秘的后台入口 -->
     <SecretAdminAccess />
   </div>
