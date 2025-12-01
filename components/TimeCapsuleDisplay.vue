@@ -43,7 +43,7 @@
           @mouseenter="pauseAnimation"
           @mouseleave="resumeAnimation"
         >
-          <span class="mr-2 text-sky-300 font-medium">@{{ item.visitorName || '匿名' }}</span>
+          <span class="mr-2 text-sky-300 font-medium">@{{ generateVisitorName(index, item.visitorName) }}</span>
           <span class="max-w-[220px] sm:max-w-[320px] truncate">{{ item.content }}</span>
         </div>
       </div>
@@ -121,6 +121,18 @@ const formatDate = (dateStr: string) => {
   return date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })
 }
 
+// 生成访客名称（用于匿名显示）
+const generateVisitorName = (index: number, visitorName?: string): string => {
+  if (visitorName && visitorName.trim()) {
+    return visitorName.trim()
+  }
+  
+  // 如果没有姓名，生成一个有趣的默认名称
+  const names = ['访客A', '访客B', '访客C', '访客D', '访客E', '访客F', '访客G', '访客H', '访客I', '访客J']
+  // 使用索引确保同一批数据中匿名访客有不同的名称
+  return names[index % names.length]
+}
+
 // 获取弹幕样式
 const getBarrageStyle = (index: number) => {
   // 随机分配轨道（0-5）
@@ -130,8 +142,8 @@ const getBarrageStyle = (index: number) => {
   // 随机动画时长（20s-40s）
   const duration = 20 + Math.random() * 20
   
-  // 随机延迟（负数延迟让弹幕一开始就在路上）
-  const delay = -(Math.random() * duration)
+  // 随机延迟（0-5秒，确保弹幕从右侧边缘开始）
+  const delay = Math.random() * 5
   
   // 随机透明度（0.7-1.0）
   const opacity = 0.7 + Math.random() * 0.3
@@ -180,10 +192,12 @@ onMounted(() => {
 <style scoped>
 @keyframes barrage-move {
   0% {
-    transform: translateX(100%);
+    right: -100%; /* 从右侧边缘外开始 */
+    transform: translateX(0);
   }
   100% {
-    transform: translateX(-120%);
+    right: 100%; /* 移动到左侧边缘外 */
+    transform: translateX(0);
   }
 }
 
@@ -191,6 +205,8 @@ onMounted(() => {
   animation-name: barrage-move;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
+  right: -100%; /* 初始位置：右侧边缘外 */
+  will-change: right; /* 优化性能 */
 }
 </style>
 

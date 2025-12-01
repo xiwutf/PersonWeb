@@ -2,13 +2,13 @@
   "name": "溪午听风-personal-site",
   "version": "1.0.0",
   "scripts": {
-    "dev": "nuxt dev",
-    "dev:mobile": "nuxt dev --host 0.0.0.0",
-    "dev:prod": "nuxt dev --dotenv .env.production",
-    "build": "nuxt build",
-    "build:prod": "nuxt build --dotenv .env.production",
-    "generate": "nuxt generate",
-    "generate:prod": "nuxt generate --dotenv .env.production",
+    "dev": "cross-env SASS_SILENCE_DEPRECATIONS=legacy-js-api nuxt dev",
+    "dev:mobile": "cross-env SASS_SILENCE_DEPRECATIONS=legacy-js-api nuxt dev --host 0.0.0.0",
+    "dev:prod": "cross-env SASS_SILENCE_DEPRECATIONS=legacy-js-api nuxt dev --dotenv .env.production",
+    "build": "cross-env SASS_SILENCE_DEPRECATIONS=legacy-js-api nuxt build",
+    "build:prod": "cross-env SASS_SILENCE_DEPRECATIONS=legacy-js-api nuxt build --dotenv .env.production",
+    "generate": "cross-env SASS_SILENCE_DEPRECATIONS=legacy-js-api nuxt generate",
+    "generate:prod": "cross-env SASS_SILENCE_DEPRECATIONS=legacy-js-api nuxt generate --dotenv .env.production",
     "preview": "nuxt preview"
   },
   "devDependencies": {
@@ -17,6 +17,7 @@
     "@tailwindcss/typography": "^0.5.19",
     "@types/markdown-it": "^14.1.2",
     "@types/node": "^24.10.1",
+    "cross-env": "^10.1.0",
     "markdown-it": "^14.1.0",
     "nuxt": "^3.10.0"
   },
@@ -26,6 +27,8 @@
     "@bytemd/plugin-math": "^1.22.0",
     "@bytemd/plugin-medium-zoom": "^1.22.0",
     "@bytemd/vue-next": "^1.22.0",
+    "@motionone/dom": "^10.18.0",
+    "@motionone/vue": "^10.16.4",
     "@types/three": "^0.181.0",
     "@types/uuid": "^10.0.0",
     "bytemd": "^1.22.0",

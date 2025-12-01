@@ -8,11 +8,11 @@
       <form v-else class="space-y-6" @submit.prevent>
         <!-- 站点主题配置区域 -->
         <div class="form-group bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-          <label class="form-label text-blue-900 dark:text-blue-100 font-semibold">
+          <label class="form-label font-semibold">
             <i class="fas fa-palette mr-2"></i>
             站点主题
           </label>
-          <p class="text-sm text-blue-700 dark:text-blue-300 mb-3">
+          <p class="text-sm mb-3 form-description">
             此设置为全站主题，访客刷新页面后会看到新的主题风格。
           </p>
           <div class="flex gap-2 items-center">
@@ -24,6 +24,10 @@
               <option value="light">浅色 (Light)</option>
               <option value="dark">暗色 (Dark)</option>
               <option value="tech-blue">科技蓝 (Tech Blue)</option>
+              <option value="paper">纸张阅读 (Paper)</option>
+              <option value="forest">墨绿自然 (Forest)</option>
+              <option value="hybrid-super-dark">Hybrid Super（深色）</option>
+              <option value="hybrid-super-light">Hybrid Super（浅色）</option>
             </select>
             <button
               type="button"
@@ -61,7 +65,7 @@
 
         <!-- 添加新配置项 (可选) -->
         <div class="pt-6 border-t border-gray-100 dark:border-gray-700">
-          <h3 class="text-sm font-bold text-gray-900 dark:text-white mb-4">添加配置</h3>
+          <h3 class="text-sm font-bold mb-4 form-section-title">添加配置</h3>
           <div class="flex gap-2">
             <input v-model="newKey" type="text" placeholder="Key (e.g. site_title)" class="form-input flex-1" />
             <input v-model="newValue" type="text" placeholder="Value" class="form-input flex-1" />
@@ -93,7 +97,7 @@ const newKey = ref('')
 const newValue = ref('')
 
 // 站点主题相关状态
-const siteTheme = ref<'light' | 'dark' | 'tech-blue'>('light')
+const siteTheme = ref<'light' | 'dark' | 'tech-blue' | 'paper' | 'forest' | 'hybrid-super-dark' | 'hybrid-super-light'>('light')
 const savingTheme = ref(false)
 
 const formatKey = (key: string | number) => {
@@ -130,8 +134,11 @@ const fetchConfigs = async () => {
 const fetchTheme = async () => {
   try {
     const res = await api.get<{ theme: string }>('/Config/theme')
-    if (res && res.theme && (res.theme === 'light' || res.theme === 'dark' || res.theme === 'tech-blue')) {
-      siteTheme.value = res.theme as 'light' | 'dark' | 'tech-blue'
+    if (res && res.theme) {
+      const validThemes = ['light', 'dark', 'tech-blue', 'paper', 'forest', 'hybrid-super', 'hybrid-super-dark', 'hybrid-super-light']
+      if (validThemes.includes(res.theme)) {
+        siteTheme.value = res.theme as any
+      }
     }
   } catch (e: unknown) {
     if (process.env.NODE_ENV === 'development') {
@@ -188,4 +195,53 @@ onMounted(() => {
   fetchTheme()
 })
 </script>
+
+<style scoped>
+/* 确保表单标签文字清晰可见 */
+.form-label {
+  color: var(--color-text-main, #ffffff) !important;
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.form-description {
+  color: var(--color-text-muted, rgba(255, 255, 255, 0.7)) !important;
+}
+
+.form-section-title {
+  color: var(--color-text-main, #ffffff) !important;
+}
+
+/* 确保下拉框文字清晰可见 */
+.form-input {
+  color: var(--color-text-main, #ffffff) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.form-input:focus {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-color: var(--color-primary, #3b82f6) !important;
+  outline: none;
+}
+
+/* 下拉框选项文字 */
+.form-input option {
+  background: var(--color-bg-card, rgba(30, 41, 59, 0.95)) !important;
+  color: var(--color-text-main, #ffffff) !important;
+}
+
+/* 加载文字 */
+.loading {
+  color: var(--color-text-muted, rgba(255, 255, 255, 0.7)) !important;
+}
+
+/* 站点主题区域的背景和边框 */
+.form-group.bg-blue-50 {
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.05)) !important;
+  border-color: var(--color-border-subtle, rgba(255, 255, 255, 0.1)) !important;
+}
+</style>
 

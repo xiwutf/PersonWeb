@@ -140,8 +140,9 @@ public class ConfigController : ControllerBase
         // 如果不存在，则返回默认主题 "light"
         var theme = config?.ConfigValue ?? "light";
         
-        // 只返回合法值 "light" | "dark" | "tech-blue"，否则也回退到 "light"
-        if (theme != "light" && theme != "dark" && theme != "tech-blue")
+        // 只返回合法值，否则也回退到 "light"
+        var validThemes = new[] { "light", "dark", "tech-blue", "paper", "forest", "hybrid-super", "hybrid-super-dark", "hybrid-super-light" };
+        if (!validThemes.Contains(theme))
         {
             theme = "light";
         }
@@ -162,10 +163,11 @@ public class ConfigController : ControllerBase
     [Authorize]
     public async Task<ActionResult<ApiResponse<ThemeResponse>>> SetTheme([FromBody] SetThemeDto dto)
     {
-        // 校验 theme 值必须在 "light" | "dark" | "tech-blue" 三者之一
-        if (dto.Theme != "light" && dto.Theme != "dark" && dto.Theme != "tech-blue")
+        // 校验 theme 值必须在合法主题列表中
+        var validThemes = new[] { "light", "dark", "tech-blue", "paper", "forest", "hybrid-super", "hybrid-super-dark", "hybrid-super-light" };
+        if (!validThemes.Contains(dto.Theme))
         {
-            return BadRequest(ApiResponse<ThemeResponse>.Error("主题值必须是 light、dark 或 tech-blue 之一", 400));
+            return BadRequest(ApiResponse<ThemeResponse>.Error($"主题值必须是以下之一: {string.Join(", ", validThemes)}", 400));
         }
 
         // 使用 SiteConfig 表进行 Upsert：ConfigKey = "site_theme"，ConfigValue = theme
@@ -177,7 +179,7 @@ public class ConfigController : ControllerBase
             {
                 ConfigKey = "site_theme",
                 ConfigValue = dto.Theme,
-                Description = "全站主题配置（light/dark/tech-blue）",
+                Description = "全站主题配置（light/dark/tech-blue/paper/forest/hybrid-super/hybrid-super-dark/hybrid-super-light）",
                 UpdatedAt = DateTime.Now
             };
             _context.SiteConfigs.Add(config);

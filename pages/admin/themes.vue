@@ -190,23 +190,25 @@ const themeOptions = [
   { label: '深色（dark）', value: 'dark' },
   { label: '科技蓝（tech-blue）', value: 'tech-blue' },
   { label: '纸张阅读（paper）', value: 'paper' },
-  { label: '墨绿自然（forest）', value: 'forest' }
+  { label: '墨绿自然（forest）', value: 'forest' },
+  { label: 'Hybrid Super（深色）', value: 'hybrid-super-dark' },
+  { label: 'Hybrid Super（浅色）', value: 'hybrid-super-light' }
 ] as const
 
 // 全局主题
-const globalTheme = ref<'light' | 'dark' | 'tech-blue' | 'paper' | 'forest'>('light')
+const globalTheme = ref<'light' | 'dark' | 'tech-blue' | 'paper' | 'forest' | 'hybrid-super-dark' | 'hybrid-super-light'>('light')
 const savingGlobalTheme = ref(false)
 
 // 模块主题
 const moduleList = ref(MODULE_DEFINITIONS)
 const moduleThemes = ref<Record<string, string | null>>({})
 // 默认主题列表（会从后端获取，这里只是初始值）
-const availableThemes = ref<string[]>(['light', 'dark', 'tech-blue', 'paper', 'forest'])
+const availableThemes = ref<string[]>(['light', 'dark', 'tech-blue', 'paper', 'forest', 'hybrid-super', 'hybrid-super-dark', 'hybrid-super-light'])
 const loadingModules = ref(false)
 const savingModules = ref(false)
 
 // 主题 Tokens
-const selectedThemeForTokens = ref<'light' | 'dark' | 'tech-blue' | 'paper' | 'forest'>('light')
+const selectedThemeForTokens = ref<'light' | 'dark' | 'tech-blue' | 'paper' | 'forest' | 'hybrid-super-dark' | 'hybrid-super-light'>('light')
 const editingTokens = ref<Record<string, string>>({})
 const loadingTokens = ref(false)
 const savingTokens = ref(false)

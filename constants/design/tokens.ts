@@ -67,7 +67,7 @@ export const palette = {
  * - paper: 纸张阅读风格，适合博客、文章阅读场景
  * - forest: 自然墨绿主题，适合自然、环保类内容模块
  */
-export type ThemeName = 'light' | 'dark' | 'tech-blue' | 'paper' | 'forest'
+export type ThemeName = 'light' | 'dark' | 'tech-blue' | 'paper' | 'forest' | 'hybrid-super' | 'hybrid-super-dark' | 'hybrid-super-light'
 
 /**
  * 主题键类型（与 ThemeName 相同，用于 tokens 系统）
@@ -185,6 +185,108 @@ export const themeVariables: Record<ThemeName, Record<string, string>> = {
     '--radius-md': '0.5rem',
     '--radius-lg': '0.75rem',
     '--radius-xl': '1rem'
+  },
+  
+  // 混合超级风格主题（深色）
+  'hybrid-super-dark': {
+    // 背景色
+    '--color-bg-body': '#000000',
+    '--color-bg-card': 'rgba(20, 20, 30, 0.6)',
+    '--color-bg-elevated': 'rgba(30, 30, 40, 0.8)',
+    
+    // 文字颜色
+    '--color-text-main': '#ffffff',
+    '--color-text-muted': 'rgba(255, 255, 255, 0.7)',
+    '--color-text-disabled': 'rgba(255, 255, 255, 0.4)',
+    
+    // 主色调
+    '--color-primary': '#00d9ff',
+    '--color-primary-soft': 'rgba(0, 217, 255, 0.15)',
+    '--color-primary-hover': '#00b8d4',
+    
+    // 边框颜色
+    '--color-border-subtle': 'rgba(255, 255, 255, 0.1)',
+    '--color-border-default': 'rgba(255, 255, 255, 0.2)',
+    '--color-border-strong': 'rgba(255, 255, 255, 0.4)',
+    
+    // 阴影
+    '--shadow-sm': '0 2px 8px rgba(0, 217, 255, 0.1)',
+    '--shadow-md': '0 8px 24px rgba(0, 217, 255, 0.15), 0 4px 12px rgba(0, 0, 0, 0.5)',
+    '--shadow-lg': '0 16px 48px rgba(0, 217, 255, 0.2), 0 8px 24px rgba(0, 0, 0, 0.6)',
+    
+    // 圆角
+    '--radius-sm': '0.5rem',
+    '--radius-md': '0.75rem',
+    '--radius-lg': '1rem',
+    '--radius-xl': '1.5rem'
+  },
+  
+  // 混合超级风格主题（浅色）
+  'hybrid-super-light': {
+    // 背景色
+    '--color-bg-body': '#ffffff',
+    '--color-bg-card': 'rgba(255, 255, 255, 0.8)',
+    '--color-bg-elevated': 'rgba(250, 250, 255, 0.9)',
+    
+    // 文字颜色
+    '--color-text-main': '#0f172a',
+    '--color-text-muted': 'rgba(15, 23, 42, 0.7)',
+    '--color-text-disabled': 'rgba(15, 23, 42, 0.4)',
+    
+    // 主色调
+    '--color-primary': '#0066cc',
+    '--color-primary-soft': 'rgba(0, 102, 204, 0.1)',
+    '--color-primary-hover': '#0052a3',
+    
+    // 边框颜色
+    '--color-border-subtle': 'rgba(15, 23, 42, 0.1)',
+    '--color-border-default': 'rgba(15, 23, 42, 0.2)',
+    '--color-border-strong': 'rgba(15, 23, 42, 0.4)',
+    
+    // 阴影
+    '--shadow-sm': '0 2px 8px rgba(0, 102, 204, 0.1)',
+    '--shadow-md': '0 8px 24px rgba(0, 102, 204, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1)',
+    '--shadow-lg': '0 16px 48px rgba(0, 102, 204, 0.2), 0 8px 24px rgba(0, 0, 0, 0.15)',
+    
+    // 圆角
+    '--radius-sm': '0.5rem',
+    '--radius-md': '0.75rem',
+    '--radius-lg': '1rem',
+    '--radius-xl': '1.5rem'
+  },
+  
+  // 混合超级风格主题（保留旧版本兼容性）
+  'hybrid-super': {
+    // 背景色
+    '--color-bg-body': '#000000',
+    '--color-bg-card': 'rgba(20, 20, 30, 0.6)',
+    '--color-bg-elevated': 'rgba(30, 30, 40, 0.8)',
+    
+    // 文字颜色
+    '--color-text-main': '#ffffff',
+    '--color-text-muted': 'rgba(255, 255, 255, 0.6)',
+    '--color-text-disabled': 'rgba(255, 255, 255, 0.3)',
+    
+    // 主色调
+    '--color-primary': '#00d9ff',
+    '--color-primary-soft': 'rgba(0, 217, 255, 0.15)',
+    '--color-primary-hover': '#00b8d4',
+    
+    // 边框颜色
+    '--color-border-subtle': 'rgba(255, 255, 255, 0.1)',
+    '--color-border-default': 'rgba(255, 255, 255, 0.2)',
+    '--color-border-strong': 'rgba(255, 255, 255, 0.4)',
+    
+    // 阴影
+    '--shadow-sm': '0 2px 8px rgba(0, 217, 255, 0.1)',
+    '--shadow-md': '0 8px 24px rgba(0, 217, 255, 0.15), 0 4px 12px rgba(0, 0, 0, 0.5)',
+    '--shadow-lg': '0 16px 48px rgba(0, 217, 255, 0.2), 0 8px 24px rgba(0, 0, 0, 0.6)',
+    
+    // 圆角
+    '--radius-sm': '0.5rem',
+    '--radius-md': '0.75rem',
+    '--radius-lg': '1rem',
+    '--radius-xl': '1.5rem'
   }
 } as const
 
@@ -403,6 +505,120 @@ export const defaultThemeTokens: Record<ThemeKey, Record<string, string>> = {
     'chart.octonary': '#f97316',      // 橙色
     'chart.nonary': '#ec4899',        // 粉色
     'chart.denary': '#ef4444'        // 红色
+  },
+  /**
+   * 混合超级风格主题（Hybrid Super Style - Dark）
+   * 融合：深色实验室 × Vision Pro × 创作者极简风
+   * 适合：高端个人网站、数字花园、平台化首页
+   * 特点：深色背景、玻璃态材质、精致光效、极简布局
+   */
+  'hybrid-super-dark': {
+    'color.bg.body': '#000000',                    // 纯黑背景（Vision Pro 风格）
+    'color.bg.card': 'rgba(20, 20, 30, 0.6)',      // 半透明深色卡片（玻璃态）
+    'color.bg.elevated': 'rgba(30, 30, 40, 0.8)',  // 凸起背景（更不透明）
+    'color.text.main': '#ffffff',                   // 纯白主文字
+    'color.text.muted': 'rgba(255, 255, 255, 0.7)', // 半透明白色次要文字（提高对比度）
+    'color.text.disabled': 'rgba(255, 255, 255, 0.4)', // 更透明的禁用文字
+    'color.primary': '#00d9ff',                     // 青色主色（科技感）
+    'color.primary.soft': 'rgba(0, 217, 255, 0.15)', // 主色柔和背景
+    'color.primary.hover': '#00b8d4',               // 主色悬停（深青色）
+    'color.border.subtle': 'rgba(255, 255, 255, 0.1)', // 极细边框
+    'color.border.default': 'rgba(255, 255, 255, 0.2)', // 默认边框
+    'color.border.strong': 'rgba(255, 255, 255, 0.4)', // 强调边框
+    'shadow.sm': '0 2px 8px rgba(0, 217, 255, 0.1)',
+    'shadow.md': '0 8px 24px rgba(0, 217, 255, 0.15), 0 4px 12px rgba(0, 0, 0, 0.5)',
+    'shadow.lg': '0 16px 48px rgba(0, 217, 255, 0.2), 0 8px 24px rgba(0, 0, 0, 0.6)',
+    'radius.sm': '0.5rem',
+    'radius.md': '0.75rem',
+    'radius.lg': '1rem',
+    'radius.xl': '1.5rem',
+    // 图表色板（混合超级风格，使用高饱和度的科技色）
+    'chart.primary': '#00d9ff',      // 青色
+    'chart.secondary': '#7c3aed',    // 紫色
+    'chart.tertiary': '#f59e0b',    // 琥珀色
+    'chart.quaternary': '#ef4444',   // 红色
+    'chart.quinary': '#10b981',      // 绿色
+    'chart.senary': '#ec4899',       // 粉色
+    'chart.septenary': '#06b6d4',   // 青色
+    'chart.octonary': '#8b5cf6',     // 紫色
+    'chart.nonary': '#f97316',       // 橙色
+    'chart.denary': '#6366f1'        // 靛蓝色
+  },
+  /**
+   * 混合超级风格主题（Hybrid Super Style - Light）
+   * 融合：浅色实验室 × Vision Pro × 创作者极简风
+   * 适合：高端个人网站、数字花园、平台化首页（浅色版本）
+   * 特点：浅色背景、玻璃态材质、精致光效、极简布局
+   */
+  'hybrid-super-light': {
+    'color.bg.body': '#ffffff',                    // 纯白背景
+    'color.bg.card': 'rgba(255, 255, 255, 0.8)',      // 半透明白色卡片（玻璃态）
+    'color.bg.elevated': 'rgba(250, 250, 255, 0.9)',  // 凸起背景（更不透明）
+    'color.text.main': '#0f172a',                   // 深色主文字
+    'color.text.muted': 'rgba(15, 23, 42, 0.7)', // 半透明深色次要文字
+    'color.text.disabled': 'rgba(15, 23, 42, 0.4)', // 更透明的禁用文字
+    'color.primary': '#0066cc',                     // 蓝色主色（科技感）
+    'color.primary.soft': 'rgba(0, 102, 204, 0.1)', // 主色柔和背景
+    'color.primary.hover': '#0052a3',               // 主色悬停（深蓝色）
+    'color.border.subtle': 'rgba(15, 23, 42, 0.1)', // 极细边框
+    'color.border.default': 'rgba(15, 23, 42, 0.2)', // 默认边框
+    'color.border.strong': 'rgba(15, 23, 42, 0.4)', // 强调边框
+    'shadow.sm': '0 2px 8px rgba(0, 102, 204, 0.1)',
+    'shadow.md': '0 8px 24px rgba(0, 102, 204, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1)',
+    'shadow.lg': '0 16px 48px rgba(0, 102, 204, 0.2), 0 8px 24px rgba(0, 0, 0, 0.15)',
+    'radius.sm': '0.5rem',
+    'radius.md': '0.75rem',
+    'radius.lg': '1rem',
+    'radius.xl': '1.5rem',
+    // 图表色板（混合超级风格浅色版，使用高饱和度的科技色）
+    'chart.primary': '#0066cc',      // 蓝色
+    'chart.secondary': '#7c3aed',    // 紫色
+    'chart.tertiary': '#f59e0b',    // 琥珀色
+    'chart.quaternary': '#ef4444',   // 红色
+    'chart.quinary': '#10b981',      // 绿色
+    'chart.senary': '#ec4899',       // 粉色
+    'chart.septenary': '#06b6d4',   // 青色
+    'chart.octonary': '#8b5cf6',     // 紫色
+    'chart.nonary': '#f97316',       // 橙色
+    'chart.denary': '#6366f1'        // 靛蓝色
+  },
+  /**
+   * 混合超级风格主题（Hybrid Super Style - 保留旧版本兼容性）
+   * 融合：深色实验室 × Vision Pro × 创作者极简风
+   * 适合：高端个人网站、数字花园、平台化首页
+   * 特点：深色背景、玻璃态材质、精致光效、极简布局
+   */
+  'hybrid-super': {
+    'color.bg.body': '#000000',                    // 纯黑背景（Vision Pro 风格）
+    'color.bg.card': 'rgba(20, 20, 30, 0.6)',      // 半透明深色卡片（玻璃态）
+    'color.bg.elevated': 'rgba(30, 30, 40, 0.8)',  // 凸起背景（更不透明）
+    'color.text.main': '#ffffff',                   // 纯白主文字
+    'color.text.muted': 'rgba(255, 255, 255, 0.6)', // 半透明白色次要文字
+    'color.text.disabled': 'rgba(255, 255, 255, 0.3)', // 更透明的禁用文字
+    'color.primary': '#00d9ff',                     // 青色主色（科技感）
+    'color.primary.soft': 'rgba(0, 217, 255, 0.15)', // 主色柔和背景
+    'color.primary.hover': '#00b8d4',               // 主色悬停（深青色）
+    'color.border.subtle': 'rgba(255, 255, 255, 0.1)', // 极细边框
+    'color.border.default': 'rgba(255, 255, 255, 0.2)', // 默认边框
+    'color.border.strong': 'rgba(255, 255, 255, 0.4)', // 强调边框
+    'shadow.sm': '0 2px 8px rgba(0, 217, 255, 0.1)',
+    'shadow.md': '0 8px 24px rgba(0, 217, 255, 0.15), 0 4px 12px rgba(0, 0, 0, 0.5)',
+    'shadow.lg': '0 16px 48px rgba(0, 217, 255, 0.2), 0 8px 24px rgba(0, 0, 0, 0.6)',
+    'radius.sm': '0.5rem',
+    'radius.md': '0.75rem',
+    'radius.lg': '1rem',
+    'radius.xl': '1.5rem',
+    // 图表色板（混合超级风格，使用高饱和度的科技色）
+    'chart.primary': '#00d9ff',      // 青色
+    'chart.secondary': '#7c3aed',    // 紫色
+    'chart.tertiary': '#f59e0b',    // 琥珀色
+    'chart.quaternary': '#ef4444',   // 红色
+    'chart.quinary': '#10b981',      // 绿色
+    'chart.senary': '#ec4899',       // 粉色
+    'chart.septenary': '#06b6d4',   // 青色
+    'chart.octonary': '#8b5cf6',     // 紫色
+    'chart.nonary': '#f97316',       // 橙色
+    'chart.denary': '#6366f1'        // 靛蓝色
   }
 } as const
 

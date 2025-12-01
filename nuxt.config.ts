@@ -125,6 +125,28 @@ export default defineNuxtConfig({
       ],
       // 忽略预渲染错误（admin 页面会失败，这是正常的）
       failOnError: false
+    },
+  },
+  
+  // Vite 配置
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          // 抑制 Sass legacy-js-api 警告
+          // 注意：通过环境变量 SASS_SILENCE_DEPRECATIONS=legacy-js-api 来抑制警告
+          // 已在 package.json 的脚本中设置
+          additionalData: `@use "sass:math";`,
+          quietDeps: true
+        }
+      }
+    },
+    server: {
+      // HMR 配置，减少连接中断
+      hmr: {
+        protocol: 'ws',
+        host: 'localhost'
+      }
     }
   },
 

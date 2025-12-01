@@ -67,7 +67,7 @@ export const useTheme = () => {
     try {
       const saved = localStorage.getItem(THEME_STORAGE_KEY)
       // 验证主题值是否在支持的列表中
-      const validThemes: ThemeName[] = ['light', 'dark', 'tech-blue', 'paper', 'forest']
+      const validThemes: ThemeName[] = ['light', 'dark', 'tech-blue', 'paper', 'forest', 'hybrid-super', 'hybrid-super-dark', 'hybrid-super-light']
       if (saved && validThemes.includes(saved as ThemeName)) {
         return saved as ThemeName
       }
@@ -124,7 +124,7 @@ export const useTheme = () => {
       // 检查 DOM 是否已经有主题被设置（插件可能已经设置了）
       const domTheme = document.documentElement.dataset.theme as ThemeName | undefined
       // 验证主题值是否在支持的列表中
-      const validThemes: ThemeName[] = ['light', 'dark', 'tech-blue', 'paper', 'forest']
+      const validThemes: ThemeName[] = ['light', 'dark', 'tech-blue', 'paper', 'forest', 'hybrid-super', 'hybrid-super-dark', 'hybrid-super-light']
       
       if (domTheme && validThemes.includes(domTheme)) {
         // 如果 DOM 已经有主题（说明插件已经执行），使用 DOM 中的主题

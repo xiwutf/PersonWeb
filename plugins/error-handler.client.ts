@@ -51,6 +51,15 @@ export default defineNuxtPlugin(() => {
 
   // 捕获未处理的 Promise 拒绝
   window.addEventListener('unhandledrejection', (event) => {
+    // 忽略开发服务器连接错误（ECONNABORTED），这些是正常的开发时警告
+    const errorMessage = event.reason?.message || String(event.reason)
+    if (errorMessage.includes('ECONNABORTED') || errorMessage.includes('write ECONNABORTED')) {
+      // 开发环境下的连接中断是正常的，不需要记录
+      if (process.env.NODE_ENV === 'development') {
+        return
+      }
+    }
+    
     const error = event.reason instanceof Error 
       ? event.reason 
       : new Error(String(event.reason))

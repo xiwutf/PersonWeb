@@ -36,7 +36,7 @@ export default defineNuxtPlugin(async () => {
     const response = await api.get<{ theme: string }>('/Config/theme')
     if (response && response.theme) {
       // 验证主题值是否在支持的列表中
-      const validThemes = ['light', 'dark', 'tech-blue', 'paper', 'forest'] as const
+      const validThemes = ['light', 'dark', 'tech-blue', 'paper', 'forest', 'hybrid-super', 'hybrid-super-dark', 'hybrid-super-light'] as const
       const themeFromBackend = response.theme
       if (validThemes.includes(themeFromBackend as any)) {
         globalTheme = themeFromBackend
@@ -123,7 +123,7 @@ export default defineNuxtPlugin(async () => {
     // 应用全局主题（如果获取成功）
     if (globalTheme) {
       // 类型断言：globalTheme 已经在上面验证过，属于有效主题
-      setTheme(globalTheme as 'light' | 'dark' | 'tech-blue' | 'paper' | 'forest')
+      setTheme(globalTheme as 'light' | 'dark' | 'tech-blue' | 'paper' | 'forest' | 'hybrid-super' | 'hybrid-super-dark' | 'hybrid-super-light')
     }
   } catch (error) {
     // 注入失败时的降级策略：不阻塞应用启动
