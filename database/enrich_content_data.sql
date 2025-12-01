@@ -147,26 +147,17 @@ ON DUPLICATE KEY UPDATE
     `content_html`=VALUES(`content_html`);
 
 -- ============================================
--- 4. 插入项目数据
+-- 4. 插入项目数据（已移除与 complete_content_data.sql 重复的项目）
 -- ============================================
+-- 注意：以下项目已在 complete_content_data.sql 中存在，已移除：
+-- - "个人网站 V2"（与 "个人数字资产平台（本网站）" 重复）
+-- - "访客分析系统"（与 "访客分析系统（Analytics）" 重复）
+-- 
 -- 注意：根据表结构，字段名可能大小写敏感，请根据实际表结构调整
 INSERT INTO `projects` (
     `Id`, `Title`, `Description`, `CoverUrl`, `DemoUrl`, `GithubUrl`,
     `Status`, `TechStack`, `Content`, `CreatedAt`, `UpdatedAt`
 ) VALUES
-(
-    UUID(),
-    '个人网站 V2',
-    '基于 Nuxt 3 和 Vue 3 构建的现代化个人网站，集成了博客、项目展示、工具集等多种功能。',
-    NULL,
-    'https://xifg.dev',
-    'https://github.com/xifg/personweb',
-    'Active',
-    '["Nuxt 3", "Vue 3", "TypeScript", "Tailwind CSS", ".NET Core"]',
-    '# 个人网站 V2\n\n## 项目简介\n\n这是一个现代化的个人网站，集成了多种功能模块。\n\n## 技术栈\n\n- Nuxt 3：服务端渲染框架\n- Vue 3：前端框架\n- TypeScript：类型安全\n- Tailwind CSS：样式框架\n- .NET Core：后端 API\n\n## 主要功能\n\n- 博客系统\n- 项目展示\n- 工具集\n- AI 实验室',
-    NOW(),
-    NOW()
-),
 (
     UUID(),
     'AI 创作助手',
@@ -192,19 +183,6 @@ INSERT INTO `projects` (
     '# 工具市场平台\n\n## 项目简介\n\n一个工具分享和交易平台。\n\n## 主要功能\n\n- 工具发布\n- 工具购买\n- 使用统计\n- 评价系统',
     NOW(),
     NOW()
-),
-(
-    UUID(),
-    '访客分析系统',
-    '实时访客行为分析系统，提供访问统计、用户画像、行为追踪等功能。',
-    NULL,
-    NULL,
-    NULL,
-    'Completed',
-    '["Vue 3", ".NET Core", "MySQL", "Chart.js"]',
-    '# 访客分析系统\n\n## 项目简介\n\n实时访客行为分析系统。\n\n## 主要功能\n\n- 访问统计\n- 用户画像\n- 行为追踪\n- 数据可视化',
-    DATE_SUB(NOW(), INTERVAL 30 DAY),
-    DATE_SUB(NOW(), INTERVAL 10 DAY)
 ),
 (
     UUID(),

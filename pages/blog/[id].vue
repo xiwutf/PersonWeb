@@ -135,11 +135,41 @@ const fetchArticle = async () => {
       const tokens = md.parse(res.contentMd, {})
       
       const tocList: any[] = []
+      let firstH1Index = -1 // 记录第一个 H1 标题的位置
       
-      tokens.forEach((token, index) => {
+      // 先找到第一个 H1 标题的位置
+      for (let i = 0; i < tokens.length; i++) {
+        const token = tokens[i]
         if (token.type === 'heading_open') {
           const level = parseInt(token.tag.slice(1))
-          const contentToken = tokens[index + 1]
+          if (level === 1 && firstH1Index === -1) {
+            firstH1Index = i
+            break // 找到第一个 H1 就退出
+          }
+        }
+      }
+      
+      // 过滤掉第一个 H1 标题（heading_open, inline, heading_close）
+      // 因为页面顶部已经显示了文章标题，避免重复
+      const filteredTokens: any[] = []
+      for (let i = 0; i < tokens.length; i++) {
+        // 如果是第一个 H1 标题及其相关内容，跳过
+        if (firstH1Index !== -1) {
+          // heading_open
+          if (i === firstH1Index) continue
+          // inline (内容)
+          if (i === firstH1Index + 1) continue
+          // heading_close
+          if (i === firstH1Index + 2 && tokens[i].type === 'heading_close') continue
+        }
+        filteredTokens.push(tokens[i])
+      }
+      
+      // 为剩余的标题添加 ID 并生成目录
+      filteredTokens.forEach((token: any, index: number) => {
+        if (token.type === 'heading_open') {
+          const level = parseInt(token.tag.slice(1))
+          const contentToken = filteredTokens[index + 1]
           if (contentToken && contentToken.type === 'inline') {
             const text = contentToken.content
             const id = 'h-' + index // Simple ID generation
@@ -156,7 +186,7 @@ const fetchArticle = async () => {
       })
       
       toc.value = tocList
-      renderedContent.value = md.renderer.render(tokens, md.options, {})
+      renderedContent.value = md.renderer.render(filteredTokens, md.options, {})
     }
   } catch (e) {
     console.error('Failed to fetch article', e)

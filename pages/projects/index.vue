@@ -188,13 +188,78 @@ const fetchProjects = async () => {
     // 处理响应数据
     if (Array.isArray(res)) {
       // Process projects to match frontend expectations
-      projects.value = res.map(p => ({
+      let processedProjects = res.map(p => ({
         ...p,
         // Handle TechStack: if string, split by comma; if array, keep it; else empty array
         techStack: typeof p.techStack === 'string' 
           ? p.techStack.split(',').map((t: string) => t.trim()).filter((t: string) => t) 
           : (Array.isArray(p.techStack) ? p.techStack : [])
       }))
+      
+      // 去重：根据标题去重，保留最早创建的版本
+      const titleMap = new Map<string, any>()
+      processedProjects.forEach(project => {
+        const title = (project.title || project.Title || '').trim()
+        if (!title) return // 跳过无标题的项目
+        
+        // 标准化标题用于比较（去除空格、转换为小写）
+        const normalizedTitle = title.toLowerCase().replace(/\s+/g, '')
+        
+        if (!titleMap.has(normalizedTitle)) {
+          titleMap.set(normalizedTitle, project)
+        } else {
+          // 如果已存在，比较创建时间，保留更早的
+          const existing = titleMap.get(normalizedTitle)!
+          const existingDate = new Date(existing.createdAt || existing.CreatedAt || 0)
+          const currentDate = new Date(project.createdAt || project.CreatedAt || 0)
+          if (currentDate < existingDate) {
+            titleMap.set(normalizedTitle, project)
+          }
+        }
+      })
+      
+      // 转换为数组
+      let uniqueProjects = Array.from(titleMap.values())
+      
+      // 进一步去重相似标题（处理已知的重复项）
+      const finalProjects: any[] = []
+      const seenTitles = new Set<string>()
+      
+      // 定义重复项映射（保留的标题 -> 要排除的标题）
+      const duplicateMap: Record<string, string[]> = {
+        '个人数字资产平台': ['个人网站系统', '个人网站v2'],
+        'ai创作助手': ['ai智能助手'],
+        '访客分析系统（analytics）': ['访客分析系统']
+      }
+      
+      uniqueProjects.forEach(project => {
+        const title = (project.title || project.Title || '').trim()
+        const normalizedTitle = title.toLowerCase().replace(/\s+/g, '')
+        
+        // 检查是否应该被排除
+        let shouldExclude = false
+        for (const [keepTitle, excludeTitles] of Object.entries(duplicateMap)) {
+          const keepNormalized = keepTitle.toLowerCase().replace(/\s+/g, '')
+          const isExcluded = excludeTitles.some(exclude => 
+            normalizedTitle.includes(exclude.toLowerCase().replace(/\s+/g, ''))
+          )
+          const isKept = seenTitles.has(keepNormalized) || normalizedTitle.includes(keepNormalized)
+          
+          if (isExcluded && isKept) {
+            shouldExclude = true
+            break
+          }
+        }
+        
+        // 如果应该排除，跳过
+        if (shouldExclude) return
+        
+        // 添加到最终列表
+        finalProjects.push(project)
+        seenTitles.add(normalizedTitle)
+      })
+      
+      projects.value = finalProjects
       
       // 异步加载 GitHub 数据
       loadGithubStats()
