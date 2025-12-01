@@ -68,6 +68,10 @@ public class AppDbContext : DbContext
     public DbSet<ToolReview> ToolReviews { get; set; }
     public DbSet<ToolAnalytics> ToolAnalytics { get; set; }
     
+    // 更新日志和未来规划
+    public DbSet<Changelog> Changelogs { get; set; }
+    public DbSet<Roadmap> Roadmaps { get; set; }
+    
     // 商业化功能表
     public DbSet<ThemeStore> ThemeStores { get; set; }
     public DbSet<ThemeFile> ThemeFiles { get; set; }

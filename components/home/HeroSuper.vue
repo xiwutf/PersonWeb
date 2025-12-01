@@ -42,7 +42,7 @@
 
           <!-- 副标题 -->
           <p class="text-lg sm:text-xl md:text-2xl text-text-main max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
-            把个人网站升级为集「内容 · 项目 · AI 工具」于一体的创作者平台
+            {{ heroSubtitle }}
           </p>
 
           <!-- 平台说明与个人标签（两列布局） -->
@@ -54,7 +54,7 @@
                 平台定位
               </h3>
               <p class="text-sm text-text-main leading-relaxed">
-                这里是一套围绕个人 IP 构建的创作操作系统：文章 / 项目 / 工具 / AI 实验室
+                {{ platformDesc }}
               </p>
             </div>
             
@@ -65,14 +65,12 @@
                 个人标签
               </h3>
               <div class="flex flex-wrap gap-2">
-                <span class="px-3 py-1.5 rounded-lg bg-bg-elevated border border-border-subtle text-text-main text-xs font-medium backdrop-blur-sm">
-                  软件开发
-                </span>
-                <span class="px-3 py-1.5 rounded-lg bg-bg-elevated border border-border-subtle text-text-main text-xs font-medium backdrop-blur-sm">
-                  算法研发
-                </span>
-                <span class="px-3 py-1.5 rounded-lg bg-bg-elevated border border-border-subtle text-text-main text-xs font-medium backdrop-blur-sm">
-                  AI 工具折腾者
+                <span
+                  v-for="tag in personalTags"
+                  :key="tag"
+                  class="px-3 py-1.5 rounded-lg bg-bg-elevated border border-border-subtle text-text-main text-xs font-medium backdrop-blur-sm"
+                >
+                  {{ tag }}
                 </span>
               </div>
             </div>
@@ -156,11 +154,45 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { animate, stagger } from '@motionone/dom'
 
+const api = useApi()
 const leftContentRef = ref<HTMLElement | null>(null)
 const rightContentRef = ref<HTMLElement | null>(null)
+
+// 站点配置
+const siteConfig = ref<Record<string, string>>({})
+const loading = ref(false)
+
+// 从配置中获取内容
+const heroSubtitle = computed(() => {
+  return siteConfig.value.home_hero_intro || '把个人网站升级为集「内容 · 项目 · AI 工具」于一体的创作者平台'
+})
+
+const platformDesc = computed(() => {
+  return siteConfig.value.home_platform_desc || '这里是一套围绕个人 IP 构建的创作操作系统：文章 / 项目 / 工具 / AI 实验室'
+})
+
+const personalTags = computed(() => {
+  const tagsStr = siteConfig.value.home_tags || '软件开发 · 算法研发 · AI 工具折腾者'
+  return tagsStr.split(' · ').filter(t => t.trim())
+})
+
+// 获取站点配置
+const fetchSiteConfig = async () => {
+  try {
+    loading.value = true
+    const res = await api.get<Record<string, string>>('/Config')
+    if (res && typeof res === 'object') {
+      siteConfig.value = res
+    }
+  } catch (e) {
+    console.error('获取站点配置失败:', e)
+  } finally {
+    loading.value = false
+  }
+}
 
 // 角色轮播
 const roles = ['全栈开发者', 'AI 应用探索者', 'Revit 插件实践者', '终身学习者']
@@ -182,7 +214,10 @@ const scrollToContent = () => {
 }
 
 // 初始化动画
-onMounted(() => {
+onMounted(async () => {
+  // 先获取配置
+  await fetchSiteConfig()
+  
   startRoleCarousel()
   
   // 使用 Motion One 添加进入动画
