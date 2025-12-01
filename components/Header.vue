@@ -1,6 +1,6 @@
 ﻿<template>
-  <header class="fixed top-4 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 pointer-events-none">
-    <div class="glass max-w-7xl mx-auto rounded-2xl transition-all duration-300 pointer-events-auto">
+  <header class="fixed top-4 left-0 right-0 z-[100] px-4 sm:px-6 lg:px-8 pointer-events-none">
+    <div class="glass max-w-7xl mx-auto rounded-2xl transition-all duration-300 pointer-events-auto relative z-[101] isolate">
       <div class="flex justify-between items-center h-16 px-4">
         <!-- Logo 区域 - 添加隐秘后台入口 -->
         <div class="flex items-center space-x-3 group shrink-0">

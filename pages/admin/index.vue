@@ -250,8 +250,8 @@
             <div v-for="(path, index) in topPaths" :key="index" class="top-path-item">
               <div class="top-path-rank">{{ index + 1 }}</div>
               <div class="top-path-content">
-                <div class="top-path-name">{{ formatPath(path.Path) }}</div>
-                <div class="top-path-count">{{ path.Count }} 次访问</div>
+                <div class="top-path-name">{{ formatPath(path.Path || path.path) }}</div>
+                <div class="top-path-count">{{ path.Count || path.count || 0 }} 次访问</div>
               </div>
             </div>
             <div v-if="topPaths.length === 0" class="empty-state">暂无数据</div>
@@ -267,10 +267,10 @@
             最近访问
           </h2>
           <div class="recent-visits-list">
-            <div v-for="(visit, index) in recentVisits.slice(0, 10)" :key="visit.Id" class="recent-visit-item">
-              <div class="recent-visit-time">{{ formatTime(visit.Timestamp) }}</div>
-              <div class="recent-visit-path">{{ formatPath(visit.Path) }}</div>
-              <div class="recent-visit-ip">{{ visit.Ip || '未知' }}</div>
+            <div v-for="(visit, index) in recentVisits.slice(0, 10)" :key="visit.Id || visit.id || index" class="recent-visit-item">
+              <div class="recent-visit-time">{{ formatTime(visit.Timestamp || visit.timestamp) }}</div>
+              <div class="recent-visit-path">{{ formatPath(visit.Path || visit.path) }}</div>
+              <div class="recent-visit-ip">{{ visit.Ip || visit.ip || '未知' }}</div>
             </div>
             <div v-if="recentVisits.length === 0" class="empty-state">暂无访问记录</div>
           </div>
@@ -321,9 +321,28 @@ const fetchStats = async () => {
       stats.value.pendingMessages = res.PendingMessages ?? res.pendingMessages ?? 0
       stats.value.pendingTasks = res.PendingTasks ?? res.pendingTasks ?? 0
       
-      topPaths.value = res.TopPaths ?? res.topPaths ?? []
-      recentVisits.value = res.RecentVisits ?? res.recentVisits ?? []
-      visitTrend.value = res.VisitTrend ?? res.visitTrend ?? []
+      // 处理热门路径数据，确保是数组且过滤空值
+      const topPathsData = res.TopPaths ?? res.topPaths ?? []
+      topPaths.value = Array.isArray(topPathsData) 
+        ? topPathsData.filter((p: any) => p && (p.Path || p.path))
+        : []
+      
+      // 处理最近访问数据，确保是数组
+      const recentVisitsData = res.RecentVisits ?? res.recentVisits ?? []
+      recentVisits.value = Array.isArray(recentVisitsData) ? recentVisitsData : []
+      
+      // 处理访问趋势数据
+      const visitTrendData = res.VisitTrend ?? res.visitTrend ?? []
+      visitTrend.value = Array.isArray(visitTrendData) ? visitTrendData : []
+      
+      // 调试日志（开发环境）
+      if (process.dev) {
+        console.log('[Admin Dashboard] 数据加载:', {
+          topPaths: topPaths.value.length,
+          recentVisits: recentVisits.value.length,
+          visitTrend: visitTrend.value.length
+        })
+      }
       
       // 渲染图表
       if (visitTrend.value.length > 0) {
@@ -428,32 +447,83 @@ const renderTrendChart = () => {
   })
 }
 
-const formatPath = (path: string) => {
-  if (!path) return '未知页面'
-  if (path === '/' || path === '') return '首页'
-  return path.replace(/^\//, '').substring(0, 30) || '首页'
+const formatPath = (path: string | null | undefined) => {
+  if (!path || path === '') return '首页'
+  if (path === '/') return '首页'
+  
+  // 移除开头的斜杠
+  const cleanPath = path.replace(/^\//, '')
+  if (!cleanPath) return '首页'
+  
+  // 根据路径类型返回友好的名称
+  if (cleanPath.startsWith('blog/')) {
+    const slug = cleanPath.replace('blog/', '')
+    return slug ? `博客: ${slug.substring(0, 20)}` : '博客列表'
+  }
+  if (cleanPath.startsWith('tools/')) {
+    const tool = cleanPath.replace('tools/', '')
+    return tool ? `工具: ${tool.substring(0, 20)}` : '工具列表'
+  }
+  if (cleanPath.startsWith('ai/')) {
+    return 'AI助手'
+  }
+  if (cleanPath.startsWith('projects/')) {
+    const project = cleanPath.replace('projects/', '')
+    return project ? `项目: ${project.substring(0, 20)}` : '项目列表'
+  }
+  if (cleanPath.startsWith('lab')) {
+    return '实验室'
+  }
+  if (cleanPath.startsWith('admin')) {
+    return '管理后台'
+  }
+  
+  // 其他情况返回原始路径（限制长度）
+  return cleanPath.substring(0, 30) || '首页'
 }
 
-const formatTime = (timeStr: string) => {
-  if (!timeStr) return '-'
-  const date = new Date(timeStr)
-  const now = new Date()
-  const diff = now.getTime() - date.getTime()
-  const minutes = Math.floor(diff / 60000)
+const formatTime = (timeStr: string | null | undefined) => {
+  if (!timeStr) return '未知'
   
-  if (minutes < 1) return '刚刚'
-  if (minutes < 60) return `${minutes}分钟前`
-  const hours = Math.floor(minutes / 60)
-  if (hours < 24) return `${hours}小时前`
-  const days = Math.floor(hours / 24)
-  if (days < 7) return `${days}天前`
-  
-  return date.toLocaleString('zh-CN', {
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
+  try {
+    const date = new Date(timeStr)
+    // 检查日期是否有效
+    if (isNaN(date.getTime())) {
+      return '未知'
+    }
+    
+    const now = new Date()
+    const diff = now.getTime() - date.getTime()
+    
+    // 如果时间差为负数（未来时间），返回格式化日期
+    if (diff < 0) {
+      return date.toLocaleString('zh-CN', {
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      })
+    }
+    
+    const minutes = Math.floor(diff / 60000)
+    
+    if (minutes < 1) return '刚刚'
+    if (minutes < 60) return `${minutes}分钟前`
+    const hours = Math.floor(minutes / 60)
+    if (hours < 24) return `${hours}小时前`
+    const days = Math.floor(hours / 24)
+    if (days < 7) return `${days}天前`
+    
+    return date.toLocaleString('zh-CN', {
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  } catch (e) {
+    console.warn('时间格式化失败:', timeStr, e)
+    return '未知'
+  }
 }
 
 const currentTime = ref('')

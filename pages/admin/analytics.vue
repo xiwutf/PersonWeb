@@ -973,15 +973,48 @@ const trendChartData = computed(() => {
   const labels = points.map((p: any) => {
     // 兼容 date（小写）和 Date（大写）
     const dateStr = p.date || p.Date || ''
-    if (!dateStr) return ''
-    // 格式化日期显示
-    if (dateStr.includes(' ')) {
-      // 包含时间（小时粒度）
-      return dateStr.split(' ')[1] // 只显示时间部分
-    } else {
-      // 只有日期
-      const date = new Date(dateStr)
-      return date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })
+    if (!dateStr) return '未知日期'
+    
+    try {
+      // 格式化日期显示
+      if (dateStr.includes(' ')) {
+        // 包含时间（小时粒度），格式：yyyy-MM-dd HH:mm
+        const parts = dateStr.split(' ')
+        if (parts.length >= 2 && parts[1]) {
+          // 只显示时间部分（HH:mm）
+          const timePart = parts[1]
+          return timePart.substring(0, 5) // 取前5个字符，如 "14:30"
+        }
+        return dateStr
+      } else {
+        // 只有日期，格式：yyyy-MM-dd
+        // 使用更可靠的日期解析方式
+        const dateParts = dateStr.split('-')
+        if (dateParts.length >= 3) {
+          const year = parseInt(dateParts[0], 10)
+          const month = parseInt(dateParts[1], 10)
+          const day = parseInt(dateParts[2], 10)
+          
+          if (!isNaN(year) && !isNaN(month) && !isNaN(day)) {
+            // 格式化：M月D日
+            return `${month}月${day}日`
+          }
+        }
+        
+        // 如果解析失败，尝试使用 Date 构造函数
+        const date = new Date(dateStr)
+        if (!isNaN(date.getTime())) {
+          // 使用 Date 对象格式化
+          return date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })
+        }
+        
+        // 如果还是失败，返回原始字符串
+        return dateStr
+      }
+    } catch (e) {
+      // 如果解析出错，返回原始字符串
+      console.warn('日期格式化失败:', dateStr, e)
+      return dateStr
     }
   })
 

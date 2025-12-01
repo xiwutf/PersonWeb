@@ -40,15 +40,16 @@ public class StatsController : ControllerBase
             .Where(v => v.Timestamp >= today)
             .CountAsync();
 
-        // 4. 热门路径 (Top 5)
+        // 4. 热门路径 (Top 5) - 过滤空路径
         var topPaths = await _context.VisitLogs
+            .Where(v => !string.IsNullOrEmpty(v.Path))
             .GroupBy(v => v.Path)
-            .Select(g => new { Path = g.Key, Count = g.Count() })
+            .Select(g => new { Path = g.Key ?? "/", Count = g.Count() })
             .OrderByDescending(x => x.Count)
             .Take(5)
             .ToListAsync();
 
-        // 5. 最近访问记录 (Top 50)
+        // 5. 最近访问记录 (Top 50) - 确保路径不为空
         var recentVisits = await _context.VisitLogs
             .OrderByDescending(v => v.Timestamp)
             .Take(50)
@@ -57,7 +58,7 @@ public class StatsController : ControllerBase
                 v.Id,
                 v.VisitorId,
                 v.Ip,
-                v.Path,
+                Path = v.Path ?? "/",
                 v.Timestamp
             })
             .ToListAsync();
@@ -76,17 +77,26 @@ public class StatsController : ControllerBase
 
         // 9. 最近7天访问趋势（用于图表）
         var sevenDaysAgo = DateTime.Today.AddDays(-6);
-        var visitTrend = await _context.VisitLogs
+        // 先获取分组数据，然后在内存中格式化日期（因为 EF Core 无法翻译 ToString）
+        var visitTrendData = await _context.VisitLogs
             .Where(v => v.Timestamp >= sevenDaysAgo)
             .GroupBy(v => v.Timestamp.Date)
             .Select(g => new 
             { 
-                Date = g.Key.ToString("yyyy-MM-dd"), 
+                Date = g.Key, 
                 Count = g.Count(),
                 UniqueVisitors = g.Select(v => v.VisitorId).Distinct().Count()
             })
             .OrderBy(x => x.Date)
             .ToListAsync();
+        
+        // 在内存中格式化日期字符串
+        var visitTrend = visitTrendData.Select(g => new 
+        { 
+            Date = g.Date.ToString("yyyy-MM-dd"), 
+            Count = g.Count,
+            UniqueVisitors = g.UniqueVisitors
+        }).ToList();
 
         // 10. 在线人数（最近5分钟）- 从 VisitorAnalytics 或 VisitLogs 获取
         int onlineCount = 0;
