@@ -3,7 +3,8 @@
   <button
     v-if="!isOpen"
     @click="toggleAssistant"
-    class="fixed bottom-2 right-2 w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 z-50 flex items-center justify-center group ai-assistant-button"
+    class="fixed bottom-2 right-2 w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 z-[1001] flex items-center justify-center group ai-assistant-button"
+    style="z-index: 10000 !important; position: fixed !important; bottom: 0.5rem !important; right: 0.5rem !important; visibility: visible !important; opacity: 1 !important; display: flex !important; pointer-events: auto !important; isolation: isolate; transform: translateZ(0); width: 3rem !important; height: 3rem !important; background: linear-gradient(to bottom right, rgb(59, 130, 246), rgb(147, 51, 234)) !important; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;"
     aria-label="打开 AI 助手"
   >
     <svg class="w-6 h-6 text-white group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -266,6 +267,21 @@ const sendMessage = async () => {
 
 <style scoped>
 /* 对话框容器 */
+.ai-assistant-button {
+  position: fixed !important;
+  bottom: 0.5rem !important;
+  right: 0.5rem !important;
+  z-index: 10000 !important;
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  width: 3rem !important;
+  height: 3rem !important;
+  background: linear-gradient(to bottom right, rgb(59, 130, 246), rgb(147, 51, 234)) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
 .ai-assistant-dialog {
   position: fixed;
   bottom: 0.5rem;
@@ -278,7 +294,7 @@ const sendMessage = async () => {
   border-radius: 1rem;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   border: 1px solid rgba(229, 231, 235, 1);
-  z-index: 50;
+  z-index: 10000 !important; /* 确保对话框也在最上层 */
   display: flex;
   flex-direction: column;
   overflow: hidden;

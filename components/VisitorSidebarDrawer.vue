@@ -104,7 +104,7 @@ onMounted(() => {
   position: fixed;
   top: 5rem;
   right: 2rem;
-  z-index: 40;
+  z-index: 999; /* 低于导航栏 (z-1000)，但高于其他内容 */
   width: 2.5rem;
   height: 2.5rem;
   background: rgba(30, 41, 59, 0.95);

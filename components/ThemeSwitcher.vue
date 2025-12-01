@@ -1,11 +1,12 @@
 <template>
-  <div class="theme-switcher">
+  <div class="theme-switcher" style="position: fixed !important; bottom: 4rem !important; right: 0.5rem !important; z-index: 10000 !important; pointer-events: auto !important; display: block !important; visibility: visible !important; opacity: 1 !important; isolation: isolate; transform: translateZ(0);">
     <!-- 切换按钮 -->
     <button
       @click="togglePanel"
       class="theme-switcher-button"
       :class="{ 'active': isOpen }"
       title="切换主题风格"
+      style="z-index: 10000 !important; position: relative !important; display: flex !important; visibility: visible !important; opacity: 1 !important; pointer-events: auto !important;"
     >
       <i class="fas fa-palette"></i>
     </button>
@@ -314,27 +315,38 @@ onUnmounted(() => {
 
 <style scoped>
 .theme-switcher {
-  position: fixed;
-  bottom: 4rem; /* 在AI助手按钮上方，间距2rem */
-  right: 0.5rem; /* 与AI助手按钮右对齐 */
-  z-index: 1000;
+  position: fixed !important;
+  bottom: 4rem !important; /* 在AI助手按钮上方，间距2rem */
+  right: 0.5rem !important; /* 与AI助手按钮右对齐 */
+  z-index: 10000 !important; /* 确保始终在最上层 */
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
+  /* 确保按钮始终可见，不被其他元素遮挡 */
+  isolation: isolate;
+  transform: translateZ(0); /* 启用硬件加速 */
 }
 
 .theme-switcher-button {
-  width: 2.5rem; /* 缩小尺寸 */
-  height: 2.5rem;
-  border-radius: 50%;
-  background: rgba(59, 130, 246, 0.9);
+  width: 2.5rem !important; /* 缩小尺寸 */
+  height: 2.5rem !important;
+  border-radius: 50% !important;
+  background: rgba(59, 130, 246, 0.95) !important;
   backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  color: white;
-  font-size: 1rem; /* 缩小图标 */
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.6) !important;
+  color: white !important;
+  font-size: 1rem !important; /* 缩小图标 */
+  cursor: pointer !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
   transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: relative !important;
+  z-index: 10000 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
 }
 
 .theme-switcher-button:hover {
@@ -353,6 +365,8 @@ onUnmounted(() => {
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(2px);
   z-index: 999;
+  /* 确保不会遮挡导航栏（导航栏 z-index: 1000） */
+  pointer-events: auto;
 }
 
 .theme-switcher-panel {

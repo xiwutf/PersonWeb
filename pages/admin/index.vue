@@ -346,9 +346,12 @@ const fetchStats = async () => {
       
       // 渲染图表
       if (visitTrend.value.length > 0) {
-        setTimeout(() => {
-          renderTrendChart()
-        }, 100)
+        // 使用 nextTick 确保 DOM 已更新
+        nextTick(() => {
+          setTimeout(() => {
+            renderTrendChart()
+          }, 100)
+        })
       }
     } else {
       // 如果返回空，使用默认值
@@ -371,30 +374,82 @@ const renderTrendChart = () => {
   const ctx = trendChart.value.getContext('2d')
   if (!ctx) return
 
-  const labels = visitTrend.value.map((item: any) => {
-    const date = new Date(item.Date)
-    return `${date.getMonth() + 1}/${date.getDate()}`
+  // 格式化日期标签，兼容多种日期格式
+  const formatDateLabel = (dateStr: string | null | undefined, index: number): string => {
+    if (!dateStr || dateStr.trim() === '') {
+      return `${index + 1}日`
+    }
+    
+    try {
+      // 尝试解析 yyyy-MM-dd 格式
+      if (typeof dateStr === 'string' && dateStr.includes('-')) {
+        const parts = dateStr.split('-')
+        if (parts.length >= 3) {
+          const month = parseInt(parts[1], 10)
+          const day = parseInt(parts[2], 10)
+          if (!isNaN(month) && !isNaN(day) && month >= 1 && month <= 12 && day >= 1 && day <= 31) {
+            return `${month}/${day}`
+          }
+        }
+      }
+      
+      // 尝试使用 Date 构造函数
+      const date = new Date(dateStr)
+      if (!isNaN(date.getTime()) && date.getFullYear() > 1970) {
+        const month = date.getMonth() + 1
+        const day = date.getDate()
+        if (!isNaN(month) && !isNaN(day)) {
+          return `${month}/${day}`
+        }
+      }
+    } catch (e) {
+      console.warn('日期格式化失败:', dateStr, e)
+    }
+    
+    // 如果所有方法都失败，返回索引标签
+    return `${index + 1}日`
+  }
+
+  const labels = visitTrend.value.map((item: any, index: number) => {
+    const dateStr = item.Date || item.date || ''
+    return formatDateLabel(dateStr, index)
   })
-  const visitData = visitTrend.value.map((item: any) => item.Count || 0)
-  const visitorData = visitTrend.value.map((item: any) => item.UniqueVisitors || 0)
+  const visitData = visitTrend.value.map((item: any) => item.Count || item.count || 0)
+  const visitorData = visitTrend.value.map((item: any) => item.UniqueVisitors || item.uniqueVisitors || 0)
 
-  // 简单的 Canvas 绘制（也可以使用 Chart.js）
-  const width = trendChart.value.width || 800
-  const height = trendChart.value.height || 300
-  trendChart.value.width = width
-  trendChart.value.height = height
+  // 获取 canvas 容器的实际尺寸
+  const container = trendChart.value.parentElement
+  const containerWidth = container ? container.clientWidth : 800
+  const containerHeight = 300
+  
+  // 设置 canvas 尺寸（考虑设备像素比）
+  const dpr = window.devicePixelRatio || 1
+  const width = containerWidth
+  const height = containerHeight
+  
+  trendChart.value.width = width * dpr
+  trendChart.value.height = height * dpr
+  trendChart.value.style.width = `${width}px`
+  trendChart.value.style.height = `${height}px`
+  
+  // 缩放上下文以匹配设备像素比
+  ctx.scale(dpr, dpr)
 
-  ctx.clearRect(0, 0, width, height)
+  // 使用逻辑尺寸（不是物理像素尺寸）
+  const logicalWidth = width
+  const logicalHeight = height
+  
+  ctx.clearRect(0, 0, logicalWidth, logicalHeight)
   
   // 绘制背景
   ctx.fillStyle = 'rgba(255, 255, 255, 0.05)'
-  ctx.fillRect(0, 0, width, height)
+  ctx.fillRect(0, 0, logicalWidth, logicalHeight)
 
   // 计算最大值
   const maxValue = Math.max(...visitData, ...visitorData, 1)
   const padding = 40
-  const chartWidth = width - padding * 2
-  const chartHeight = height - padding * 2
+  const chartWidth = logicalWidth - padding * 2
+  const chartHeight = logicalHeight - padding * 2
 
   // 绘制网格线
   ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)'
@@ -403,7 +458,7 @@ const renderTrendChart = () => {
     const y = padding + (chartHeight / 5) * i
     ctx.beginPath()
     ctx.moveTo(padding, y)
-    ctx.lineTo(width - padding, y)
+    ctx.lineTo(logicalWidth - padding, y)
     ctx.stroke()
   }
 
@@ -413,7 +468,7 @@ const renderTrendChart = () => {
   ctx.beginPath()
   visitData.forEach((value, index) => {
     const x = padding + (chartWidth / (visitData.length - 1 || 1)) * index
-    const y = height - padding - (value / maxValue) * chartHeight
+    const y = logicalHeight - padding - (value / maxValue) * chartHeight
     if (index === 0) {
       ctx.moveTo(x, y)
     } else {
@@ -428,7 +483,7 @@ const renderTrendChart = () => {
   ctx.beginPath()
   visitorData.forEach((value, index) => {
     const x = padding + (chartWidth / (visitorData.length - 1 || 1)) * index
-    const y = height - padding - (value / maxValue) * chartHeight
+    const y = logicalHeight - padding - (value / maxValue) * chartHeight
     if (index === 0) {
       ctx.moveTo(x, y)
     } else {
@@ -443,7 +498,7 @@ const renderTrendChart = () => {
   ctx.textAlign = 'center'
   labels.forEach((label, index) => {
     const x = padding + (chartWidth / (labels.length - 1 || 1)) * index
-    ctx.fillText(label, x, height - 10)
+    ctx.fillText(label, x, logicalHeight - 10)
   })
 }
 
@@ -540,12 +595,30 @@ const updateTime = () => {
   })
 }
 
+// 窗口大小改变时重新绘制图表
+let resizeTimer: NodeJS.Timeout | null = null
+const handleResize = () => {
+  if (resizeTimer) clearTimeout(resizeTimer)
+  resizeTimer = setTimeout(() => {
+    if (visitTrend.value.length > 0 && trendChart.value) {
+      renderTrendChart()
+    }
+  }, 200)
+}
+
 onMounted(() => {
   fetchStats()
   updateTime()
   setInterval(updateTime, 1000)
   // 每30秒刷新一次数据
   setInterval(fetchStats, 30000)
+  // 监听窗口大小改变
+  window.addEventListener('resize', handleResize)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
+  if (resizeTimer) clearTimeout(resizeTimer)
 })
 </script>
 
@@ -587,17 +660,25 @@ onMounted(() => {
 .dashboard-content {
   position: relative;
   z-index: 10;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden; /* 防止水平滚动 */
 }
 
 /* 头部样式 */
 .dashboard-header {
   margin-bottom: 2rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .header-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap; /* 允许换行 */
+  gap: 1rem;
 }
 
 .header-left {
@@ -605,10 +686,18 @@ onMounted(() => {
 }
 
 .dashboard-title {
-  font-size: 2.25rem;
+  font-size: 1.75rem;
   font-weight: 700;
   color: #f3f4f6;
   margin-bottom: 0.5rem;
+  word-wrap: break-word;
+}
+
+/* 响应式：小屏幕时缩小标题 */
+@media (min-width: 640px) {
+  .dashboard-title {
+    font-size: 2.25rem;
+  }
 }
 
 .dashboard-subtitle {
@@ -628,6 +717,20 @@ onMounted(() => {
 
 .header-right {
   text-align: right;
+  flex-shrink: 0; /* 防止被压缩 */
+}
+
+/* 响应式：小屏幕时头部垂直排列 */
+@media (max-width: 640px) {
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .header-right {
+    text-align: left;
+    width: 100%;
+  }
 }
 
 .time-label {
@@ -645,12 +748,22 @@ onMounted(() => {
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (min-width: 640px) {
+  .stats-grid {
+    gap: 1.25rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (min-width: 768px) {
   .stats-grid {
+    gap: 1.5rem;
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
@@ -666,12 +779,27 @@ onMounted(() => {
   position: relative;
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(4px);
-  padding: 1.5rem;
+  padding: 1rem;
   border-radius: 1rem;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   overflow: hidden;
   transition: all 0.3s;
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0; /* 防止网格溢出 */
+}
+
+@media (min-width: 640px) {
+  .stat-card {
+    padding: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .stat-card {
+    padding: 1.5rem;
+  }
 }
 
 .stat-card:hover {
@@ -753,9 +881,17 @@ onMounted(() => {
 }
 
 .stat-card-value {
-  font-size: 2.25rem;
+  font-size: 1.75rem;
   font-weight: 700;
   margin-bottom: 0.25rem;
+  word-wrap: break-word;
+}
+
+/* 响应式：大屏幕时增大数值 */
+@media (min-width: 768px) {
+  .stat-card-value {
+    font-size: 2.25rem;
+  }
 }
 
 .stat-card-value-blue {
@@ -841,12 +977,21 @@ onMounted(() => {
 .actions-grid {
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .actions-grid {
+    gap: 1.25rem;
+  }
 }
 
 @media (min-width: 1024px) {
   .actions-grid {
+    gap: 1.5rem;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -858,7 +1003,22 @@ onMounted(() => {
   border-radius: 1rem;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 1.5rem;
+  padding: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0; /* 防止网格溢出 */
+}
+
+@media (min-width: 640px) {
+  .action-section {
+    padding: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .action-section {
+    padding: 1.5rem;
+  }
 }
 
 .section-title {
@@ -1062,23 +1222,37 @@ onMounted(() => {
 .chart-container {
   height: 300px;
   position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden; /* 防止 canvas 溢出 */
 }
 
 .chart-container canvas {
-  width: 100%;
-  height: 100%;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* 数据网格 */
 .data-grid {
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .data-grid {
+    gap: 1.25rem;
+  }
 }
 
 @media (min-width: 1024px) {
   .data-grid {
+    gap: 1.5rem;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

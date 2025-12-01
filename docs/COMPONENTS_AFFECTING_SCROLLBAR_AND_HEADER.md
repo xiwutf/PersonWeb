@@ -61,34 +61,86 @@
 - **影响**: 可能遮挡其他元素
 - **建议**: 检查是否需要
 
-## 📋 快速禁用方案
+## 📋 当前状态
 
-在 `layouts/default.vue` 中，可以临时注释掉这些组件来测试：
+**所有可能影响的组件已在 `layouts/default.vue` 中禁用**
 
+当前已禁用的组件：
+- ✅ BackgroundEffects (背景效果)
+- ✅ MouseTrail (鼠标跟踪特效)
+- ✅ VisitorDanmakuWall (弹幕墙)
+- ✅ VisitorBubble (访客气泡)
+- ✅ VisitorInteractionPanel (访客互动面板)
+- ✅ VisitorSidebarDrawer (访客侧边栏抽屉)
+- ✅ VisitorTriggerEffects (访客触发效果)
+- ✅ FireworksEffect (烟花效果)
+
+## 🧪 测试步骤
+
+### 第一步：验证基础功能
+1. 刷新页面
+2. 检查滚动条是否还闪烁
+3. 检查导航栏是否可以正常点击
+4. 如果问题已解决，继续下一步
+
+### 第二步：逐个启用组件测试
+
+按照以下顺序逐个取消注释，每次只启用一个组件：
+
+#### 1. BackgroundEffects (背景效果)
 ```vue
-<template>
-  <div class="min-h-screen flex flex-col relative bg-bg-body text-text-main">
-    <!-- 动态背景效果（根据主题切换） -->
-    <!-- <BackgroundEffects :effect="currentBackground" :config="backgroundConfig" /> -->
-    
-    <!-- 鼠标轨迹特效 -->
-    <!-- <MouseTrail /> -->
-    
-    <!-- 访客互动功能 -->
-    <!-- <VisitorDanmakuWall /> -->
-    <!-- <VisitorBubble /> -->
-    <!-- <VisitorInteractionPanel /> -->
-    
-    <!-- 访客互动式玩法（包含在抽屉中） -->
-    <!-- <VisitorBehaviorListener /> -->
-    <!-- <VisitorSidebarDrawer /> -->
-    <!-- <VisitorTriggerEffects /> -->
-    <!-- <FireworksEffect /> -->
-    
-    <!-- 其他组件保持不变 -->
-  </div>
-</template>
+<BackgroundEffects :effect="currentBackground" :config="backgroundConfig" />
 ```
+- 测试：滚动条是否闪烁
+- 如果正常，继续下一个
+
+#### 2. MouseTrail (鼠标跟踪特效)
+```vue
+<MouseTrail />
+```
+- 测试：滚动条是否闪烁、导航栏是否可点击、特效是否跟随鼠标
+- 如果正常，继续下一个
+
+#### 3. VisitorSidebarDrawer (访客侧边栏抽屉)
+```vue
+<VisitorSidebarDrawer />
+```
+- 测试：导航栏是否可点击
+- 如果正常，继续下一个
+
+#### 4. VisitorInteractionPanel (访客互动面板)
+```vue
+<VisitorInteractionPanel />
+```
+- 测试：导航栏是否可点击
+- 如果正常，继续下一个
+
+#### 5. VisitorBubble (访客气泡)
+```vue
+<VisitorBubble />
+```
+- 测试：导航栏是否可点击
+- 如果正常，继续下一个
+
+#### 6. VisitorDanmakuWall (弹幕墙)
+```vue
+<VisitorDanmakuWall />
+```
+- 测试：导航栏是否可点击、滚动条是否闪烁
+- 如果正常，继续下一个
+
+#### 7. VisitorTriggerEffects (访客触发效果)
+```vue
+<VisitorTriggerEffects />
+```
+- 测试：滚动条是否闪烁
+- 如果正常，继续下一个
+
+#### 8. FireworksEffect (烟花效果)
+```vue
+<FireworksEffect />
+```
+- 测试：滚动条是否闪烁
 
 ## 🎯 推荐操作顺序
 

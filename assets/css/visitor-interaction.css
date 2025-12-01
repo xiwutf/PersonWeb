@@ -4,15 +4,21 @@
    模态框样式（可复用）
    ============================================ */
 .visitor-modal-overlay {
-  position: fixed;
-  inset: 0;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
   background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  pointer-events: auto;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 10001 !important; /* 高于按钮的 z-index: 10000 */
+  pointer-events: auto !important;
+  overflow: auto; /* 允许滚动 */
 }
 
 .visitor-modal {
@@ -20,11 +26,23 @@
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 1rem;
-  width: 90%;
-  max-width: 500px;
-  max-height: 90vh;
-  overflow-y: auto;
-  pointer-events: auto;
+  width: 90% !important;
+  max-width: 500px !important;
+  min-width: 320px !important; /* 确保最小宽度 */
+  max-height: 90vh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important; /* 防止水平滚动条 */
+  pointer-events: auto !important;
+  position: relative !important;
+  z-index: 10002 !important;
+  /* 确保弹窗完整显示 */
+  box-sizing: border-box !important;
+  margin: auto !important; /* 居中显示 */
+  /* 确保弹窗在视口内 */
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
 }
 
 .visitor-modal-header {
@@ -63,6 +81,10 @@
 
 .visitor-modal-body {
   padding: 1.5rem;
+  overflow: visible !important; /* 确保内容不被裁剪 */
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-height: auto !important;
 }
 
 /* ============================================
@@ -166,16 +188,20 @@
   height: 3.5rem;
   border-radius: 50%;
   backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.5);
   color: white;
   font-size: 1.25rem;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
   pointer-events: auto;
-  display: flex;
+  display: flex !important;
   align-items: center;
   justify-content: center;
+  position: relative;
+  z-index: 1001 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 .visitor-button-circle:hover {
@@ -184,7 +210,8 @@
 }
 
 .visitor-button-circle-blue {
-  background: rgba(59, 130, 246, 0.9);
+  background: rgba(59, 130, 246, 0.95) !important;
+  border-color: rgba(255, 255, 255, 0.6) !important;
 }
 
 /* ============================================
@@ -225,6 +252,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  overflow: visible; /* 确保表情不被裁剪 */
 }
 
 .visitor-emoji-button {
@@ -259,6 +287,7 @@
 .visitor-type-buttons {
   display: flex;
   gap: 0.5rem;
+  flex-wrap: wrap; /* 允许换行，避免被裁剪 */
 }
 
 .visitor-type-button {
@@ -286,5 +315,48 @@
   background: rgba(59, 130, 246, 0.3);
   border-color: rgba(59, 130, 246, 0.6);
   color: white;
+}
+
+/* 响应式设计：确保弹窗在小屏幕上也能完整显示 */
+@media (max-width: 640px) {
+  .visitor-modal-overlay {
+    padding: 0.5rem !important;
+  }
+  
+  .visitor-modal {
+    width: calc(100% - 1rem) !important;
+    max-width: calc(100vw - 1rem) !important;
+    margin: 0 !important;
+    max-height: calc(100vh - 1rem) !important;
+    border-radius: 0.75rem !important;
+  }
+  
+  .visitor-modal-body {
+    padding: 1rem !important;
+  }
+  
+  .visitor-type-buttons {
+    flex-direction: column; /* 小屏幕下垂直排列 */
+  }
+  
+  .visitor-type-button {
+    width: 100% !important;
+    flex: none !important;
+  }
+  
+  .visitor-emoji-picker {
+    justify-content: center; /* 居中显示表情 */
+  }
+}
+
+/* 确保弹窗在所有情况下都居中显示 */
+@media (max-height: 600px) {
+  .visitor-modal {
+    max-height: calc(100vh - 2rem) !important;
+  }
+  
+  .visitor-modal-body {
+    padding: 1rem !important;
+  }
 }
 

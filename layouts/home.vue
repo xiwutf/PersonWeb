@@ -18,8 +18,19 @@
     <!-- 页脚 -->
     <Footer />
     
+    <!-- 风格切换面板 -->
+    <ThemeSwitcher />
+    
     <!-- AI 智能助手 -->
     <AIAssistant />
+    
+    <!-- 访客互动功能 -->
+    <VisitorInteractionPanel />
+    
+    <!-- 访客互动式玩法（包含在抽屉中） -->
+    <VisitorBehaviorListener />
+    <!-- 访客侧边栏抽屉（包含留言、互动等功能） -->
+    <VisitorSidebarDrawer />
     
     <!-- 时间胶囊墙 -->
     <TimeCapsuleWall />

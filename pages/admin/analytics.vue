@@ -689,7 +689,8 @@ ChartJS.register(
 
 definePageMeta({
   layout: 'admin',
-  middleware: 'admin-auth'
+  middleware: 'admin-auth',
+  ssr: false // 禁用 SSR，避免 Naive UI 组件在服务端渲染时出错
 })
 
 // 注意：AppButton 组件应该在 Nuxt 3 中自动导入
@@ -970,10 +971,48 @@ const trendChartData = computed(() => {
   if (!trendData.value || points.length === 0) {
     return { labels: [], datasets: [] }
   }
-  const labels = points.map((p: any) => {
+  // 辅助函数：格式化日期标签
+  const formatDateLabel = (dateStr: string, fallbackIndex: number): string => {
+    if (!dateStr || dateStr.trim() === '') {
+      return `第${fallbackIndex + 1}天`
+    }
+    
+    // 尝试解析 yyyy-MM-dd 格式
+    const dateParts = dateStr.split('-')
+    if (dateParts.length >= 3) {
+      const year = parseInt(dateParts[0], 10)
+      const month = parseInt(dateParts[1], 10)
+      const day = parseInt(dateParts[2], 10)
+      
+      // 验证日期有效性
+      if (!isNaN(year) && !isNaN(month) && !isNaN(day) && 
+          year > 0 && month >= 1 && month <= 12 && day >= 1 && day <= 31) {
+        // 格式化：M月D日
+        return `${month}月${day}日`
+      }
+    }
+    
+    // 如果解析失败，尝试使用 Date 构造函数
+    const date = new Date(dateStr)
+    if (!isNaN(date.getTime()) && date.getFullYear() > 1970) {
+      // 使用 Date 对象格式化，确保不会返回 NaN
+      const month = date.getMonth() + 1
+      const day = date.getDate()
+      if (!isNaN(month) && !isNaN(day)) {
+        return `${month}月${day}日`
+      }
+    }
+    
+    // 如果所有方法都失败，返回索引标签
+    return `第${fallbackIndex + 1}天`
+  }
+
+  const labels = points.map((p: any, index: number) => {
     // 兼容 date（小写）和 Date（大写）
     const dateStr = p.date || p.Date || ''
-    if (!dateStr) return '未知日期'
+    if (!dateStr || dateStr.trim() === '') {
+      return `第${index + 1}天`
+    }
     
     try {
       // 格式化日期显示
@@ -983,38 +1022,22 @@ const trendChartData = computed(() => {
         if (parts.length >= 2 && parts[1]) {
           // 只显示时间部分（HH:mm）
           const timePart = parts[1]
-          return timePart.substring(0, 5) // 取前5个字符，如 "14:30"
-        }
-        return dateStr
-      } else {
-        // 只有日期，格式：yyyy-MM-dd
-        // 使用更可靠的日期解析方式
-        const dateParts = dateStr.split('-')
-        if (dateParts.length >= 3) {
-          const year = parseInt(dateParts[0], 10)
-          const month = parseInt(dateParts[1], 10)
-          const day = parseInt(dateParts[2], 10)
-          
-          if (!isNaN(year) && !isNaN(month) && !isNaN(day)) {
-            // 格式化：M月D日
-            return `${month}月${day}日`
+          const timeMatch = timePart.match(/^(\d{1,2}):(\d{2})/)
+          if (timeMatch) {
+            return timeMatch[0] // 返回 "HH:mm" 格式
           }
         }
-        
-        // 如果解析失败，尝试使用 Date 构造函数
-        const date = new Date(dateStr)
-        if (!isNaN(date.getTime())) {
-          // 使用 Date 对象格式化
-          return date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })
-        }
-        
-        // 如果还是失败，返回原始字符串
-        return dateStr
+        // 如果时间部分解析失败，尝试解析日期部分
+        const datePart = parts[0]
+        return formatDateLabel(datePart, index)
+      } else {
+        // 只有日期，格式：yyyy-MM-dd
+        return formatDateLabel(dateStr, index)
       }
     } catch (e) {
-      // 如果解析出错，返回原始字符串
+      // 如果解析出错，返回索引标签
       console.warn('日期格式化失败:', dateStr, e)
-      return dateStr
+      return `第${index + 1}天`
     }
   })
 

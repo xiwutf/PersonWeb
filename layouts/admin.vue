@@ -358,7 +358,7 @@
     </aside>
 
     <!-- 主内容区：使用主题背景色和文字颜色 -->
-    <main class="flex-1 ml-64 p-8 admin-main" :style="mainContentStyle">
+    <main class="flex-1 ml-64 p-4 md:p-6 lg:p-8 admin-main" :style="mainContentStyle">
       <ClientOnly>
         <NaiveUIProviders :theme="currentTheme" :theme-overrides="themeOverrides">
           <slot />
@@ -369,11 +369,22 @@
       </ClientOnly>
     </main>
 
-    <!-- 主题切换按钮 -->
+    <!-- 鼠标轨迹特效 -->
+    <MouseTrail />
+    
+    <!-- 风格切换面板 -->
     <ClientOnly>
-      <div class="fixed bottom-6 right-6 z-[9999]">
-        <ThemeSwitcher />
-      </div>
+      <ThemeSwitcher />
+    </ClientOnly>
+    
+    <!-- AI 智能助手 -->
+    <ClientOnly>
+      <AIAssistant />
+    </ClientOnly>
+    
+    <!-- 访客互动功能 -->
+    <ClientOnly>
+      <VisitorInteractionPanel />
     </ClientOnly>
   </div>
 </template>
@@ -734,6 +745,17 @@ const logout = () => {
 .admin-main {
   position: relative;
   z-index: 1;
+  max-width: 100%;
+  overflow-x: hidden; /* 防止水平滚动 */
+  box-sizing: border-box;
+}
+
+/* 响应式：小屏幕时减少左边距 */
+@media (max-width: 768px) {
+  .admin-main {
+    margin-left: 0 !important;
+    padding: 1rem !important;
+  }
 }
 
 /* 确保卡片在深色背景下可见 */

@@ -1,17 +1,19 @@
 <template>
-  <div class="interaction-panel">
+  <div class="interaction-panel" style="position: fixed !important; bottom: 12rem !important; right: 2rem !important; z-index: 10000 !important; pointer-events: auto !important; display: flex !important; visibility: visible !important; opacity: 1 !important; isolation: isolate; transform: translateZ(0); overflow: visible !important;">
     <!-- 发送弹幕按钮 -->
     <button
       @click="showMessageModal = true"
       class="visitor-button-circle visitor-button-circle-blue panel-button"
       title="发送弹幕"
+      style="z-index: 10000 !important; position: relative !important; display: flex !important; visibility: visible !important; opacity: 1 !important; pointer-events: auto !important;"
     >
       <i class="fas fa-comment-dots"></i>
     </button>
 
     <!-- 发送弹幕弹窗 -->
-    <div v-if="showMessageModal" class="visitor-modal-overlay" @click="showMessageModal = false">
-      <div class="visitor-modal" @click.stop>
+    <Teleport to="body">
+      <div v-if="showMessageModal" class="visitor-modal-overlay" @click="showMessageModal = false">
+        <div class="visitor-modal" @click.stop>
         <div class="visitor-modal-header">
           <h3>发送弹幕</h3>
           <button @click="showMessageModal = false" class="visitor-modal-close">
@@ -83,6 +85,7 @@
         </div>
       </div>
     </div>
+    </Teleport>
   </div>
 </template>
 
@@ -149,15 +152,33 @@ const sendMessage = async () => {
 
 <style scoped>
 .interaction-panel {
-  position: fixed;
-  bottom: 12rem;
-  right: 2rem;
-  z-index: 150;
-  pointer-events: none;
+  position: fixed !important;
+  bottom: 12rem !important;
+  right: 2rem !important;
+  z-index: 10000 !important; /* 确保始终在最上层 */
+  pointer-events: auto !important; /* 确保可以点击 */
+  display: flex !important;
+  flex-direction: column;
+  align-items: flex-end;
+  visibility: visible !important;
+  opacity: 1 !important;
+  /* 确保按钮始终可见，不被其他元素遮挡 */
+  isolation: isolate;
+  transform: translateZ(0); /* 启用硬件加速 */
 }
 
 .panel-button {
   margin-bottom: 0.75rem;
+  pointer-events: auto !important; /* 确保按钮可以点击 */
+  position: relative !important;
+  z-index: 10000 !important;
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  /* 确保按钮有足够的对比度 */
+  background: rgba(59, 130, 246, 0.95) !important;
+  border: 2px solid rgba(255, 255, 255, 0.6) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
 }
 </style>
 
