@@ -12,15 +12,33 @@ if [ -f /etc/systemd/system/ai-service.service ]; then
     echo "✓ 服务文件存在，检查内容..."
     
     # 检查 ExecStart 命令是否正确
-    if grep -q "venv/bin/uvicorn" /etc/systemd/system/ai-service.service; then
-        echo "⚠️  发现错误的 ExecStart 命令，正在修复..."
-        sudo sed -i 's|ExecStart=/srv/ai-service/venv/bin/uvicorn|ExecStart=/srv/ai-service/venv/bin/python -m uvicorn|g' /etc/systemd/system/ai-service.service
+    if grep -q "^ExecStart=/srv/ai-service/venv/bin/uvicorn" /etc/systemd/system/ai-service.service; then
+        echo "⚠️  发现错误的 ExecStart 命令（直接调用 uvicorn），正在修复..."
+        sudo sed -i 's|^ExecStart=/srv/ai-service/venv/bin/uvicorn|ExecStart=/srv/ai-service/venv/bin/python -m uvicorn|g' /etc/systemd/system/ai-service.service
         echo "✓ 已修复 ExecStart 命令"
+    elif ! grep -q "^ExecStart=/srv/ai-service/venv/bin/python -m uvicorn" /etc/systemd/system/ai-service.service; then
+        echo "⚠️  ExecStart 命令格式异常，正在修复..."
+        # 备份原文件
+        sudo cp /etc/systemd/system/ai-service.service /etc/systemd/system/ai-service.service.bak
+        # 使用正确的服务文件替换
+        if [ -f /srv/ai-service/ai-service.service ]; then
+            sudo cp /srv/ai-service/ai-service.service /etc/systemd/system/ai-service.service
+            echo "✓ 已使用正确的服务文件替换"
+        else
+            echo "✗ 无法找到源服务文件，请手动修复"
+        fi
+    else
+        echo "✓ ExecStart 命令格式正确"
     fi
 else
     echo "✗ 服务文件不存在，正在创建..."
-    sudo cp /srv/ai-service/ai-service.service /etc/systemd/system/
-    echo "✓ 服务文件已创建"
+    if [ -f /srv/ai-service/ai-service.service ]; then
+        sudo cp /srv/ai-service/ai-service.service /etc/systemd/system/
+        echo "✓ 服务文件已创建"
+    else
+        echo "✗ 无法找到源服务文件 /srv/ai-service/ai-service.service"
+        exit 1
+    fi
 fi
 echo ""
 
@@ -84,45 +102,94 @@ sudo chmod 775 /srv/ai-service/logs
 echo "✓ 权限已修复"
 echo ""
 
-# 7. 测试启动命令
-echo "7. 测试启动命令（以 www-data 用户）..."
+# 7. 测试 Python 导入
+echo "7. 测试 Python 模块导入..."
 cd /srv/ai-service
-sudo -u www-data /srv/ai-service/venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8001 &
-TEST_PID=$!
-sleep 3
+if sudo -u www-data /srv/ai-service/venv/bin/python -c "from app.main import app; print('✓ 模块导入成功')" 2>&1; then
+    echo "✓ Python 模块导入测试通过"
+else
+    echo "✗ Python 模块导入失败"
+    echo "错误信息："
+    sudo -u www-data /srv/ai-service/venv/bin/python -c "from app.main import app" 2>&1 || true
+    echo ""
+    echo "请检查："
+    echo "1. 依赖是否完整安装：pip install -r requirements.txt"
+    echo "2. app/__init__.py 文件是否存在"
+    echo "3. 所有导入的模块是否都存在"
+    exit 1
+fi
+echo ""
 
-if ps -p $TEST_PID > /dev/null; then
-    echo "✓ 手动启动测试成功"
+# 8. 测试启动命令
+echo "8. 测试启动命令（以 www-data 用户）..."
+cd /srv/ai-service
+# 先检查端口是否被占用
+if sudo netstat -tlnp 2>/dev/null | grep -q ":8001 " || sudo ss -tlnp 2>/dev/null | grep -q ":8001 "; then
+    echo "⚠️  端口 8001 已被占用，正在尝试停止占用进程..."
+    sudo fuser -k 8001/tcp 2>/dev/null || true
+    sleep 2
+fi
+
+# 测试启动（后台运行，捕获输出）
+TEST_OUTPUT=$(sudo -u www-data /srv/ai-service/venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8001 2>&1 &)
+TEST_PID=$!
+sleep 5
+
+if ps -p $TEST_PID > /dev/null 2>&1; then
+    echo "✓ 手动启动测试成功（PID: $TEST_PID）"
     kill $TEST_PID 2>/dev/null || true
+    sleep 1
     wait $TEST_PID 2>/dev/null || true
 else
     echo "✗ 手动启动测试失败"
-    wait $TEST_PID
-    echo "退出码: $?"
-    echo "请查看详细错误信息："
+    wait $TEST_PID 2>/dev/null || true
+    EXIT_CODE=$?
+    echo "退出码: $EXIT_CODE"
+    echo ""
+    echo "详细错误信息："
+    echo "$TEST_OUTPUT"
+    echo ""
+    echo "请查看系统日志获取更多信息："
     echo "sudo journalctl -u ai-service -n 50 --no-pager"
     exit 1
 fi
 echo ""
 
-# 8. 重新加载 systemd 并启动服务
-echo "8. 重新加载 systemd 配置..."
+# 9. 重新加载 systemd 并启动服务
+echo "9. 重新加载 systemd 配置..."
 sudo systemctl daemon-reload
 echo "✓ systemd 配置已重新加载"
 echo ""
 
-echo "9. 启动服务..."
+echo "10. 启动服务..."
 sudo systemctl restart ai-service
 sleep 2
 
 # 检查服务状态
+sleep 3
 if sudo systemctl is-active --quiet ai-service; then
     echo "✓ 服务启动成功"
+    echo ""
+    echo "服务状态："
     sudo systemctl status ai-service --no-pager -l
+    echo ""
+    echo "测试健康检查："
+    sleep 2
+    if curl -s http://127.0.0.1:8001/health > /dev/null; then
+        echo "✓ 健康检查通过"
+    else
+        echo "⚠️  健康检查失败，但服务已启动"
+    fi
 else
     echo "✗ 服务启动失败"
+    echo ""
     echo "详细错误信息："
     sudo journalctl -u ai-service -n 50 --no-pager
+    echo ""
+    echo "请尝试以下命令获取更多信息："
+    echo "1. 查看完整日志: sudo journalctl -u ai-service -n 100 --no-pager"
+    echo "2. 手动测试启动: cd /srv/ai-service && sudo -u www-data venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8001"
+    echo "3. 检查应用日志: tail -n 50 /srv/ai-service/logs/ai-service.log"
     exit 1
 fi
 

@@ -80,19 +80,61 @@ echo "7. 检查端口占用："
 sudo netstat -tlnp | grep 8001 || echo "端口 8001 未被占用"
 echo ""
 
-# 8. 手动测试启动（以 www-data 用户）
-echo "8. 尝试手动启动（以 www-data 用户）："
+# 8. 检查服务文件中的 ExecStart 命令
+echo "8. 检查服务文件中的启动命令..."
+if [ -f /etc/systemd/system/ai-service.service ]; then
+    EXEC_START=$(grep "^ExecStart=" /etc/systemd/system/ai-service.service | head -1)
+    echo "当前 ExecStart: $EXEC_START"
+    if echo "$EXEC_START" | grep -q "venv/bin/uvicorn[[:space:]]"; then
+        echo "⚠️  发现错误的启动命令格式（直接调用 uvicorn）"
+        echo "   应该使用: ExecStart=/srv/ai-service/venv/bin/python -m uvicorn ..."
+    elif echo "$EXEC_START" | grep -q "venv/bin/python -m uvicorn"; then
+        echo "✓ 启动命令格式正确"
+    else
+        echo "⚠️  启动命令格式异常"
+    fi
+fi
+echo ""
+
+# 9. 测试 Python 模块导入
+echo "9. 测试 Python 模块导入..."
 cd /srv/ai-service
-sudo -u www-data /srv/ai-service/venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8001 &
+if sudo -u www-data /srv/ai-service/venv/bin/python -c "from app.main import app" 2>&1; then
+    echo "✓ Python 模块导入成功"
+else
+    echo "✗ Python 模块导入失败"
+    echo "错误详情："
+    sudo -u www-data /srv/ai-service/venv/bin/python -c "from app.main import app" 2>&1 || true
+fi
+echo ""
+
+# 10. 手动测试启动（以 www-data 用户）
+echo "10. 尝试手动启动（以 www-data 用户）："
+cd /srv/ai-service
+# 检查端口占用
+if sudo netstat -tlnp 2>/dev/null | grep -q ":8001 " || sudo ss -tlnp 2>/dev/null | grep -q ":8001 "; then
+    echo "⚠️  端口 8001 已被占用"
+    sudo netstat -tlnp 2>/dev/null | grep ":8001 " || sudo ss -tlnp 2>/dev/null | grep ":8001 "
+else
+    echo "✓ 端口 8001 未被占用"
+fi
+
+# 尝试启动
+sudo -u www-data /srv/ai-service/venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8001 > /tmp/ai-service-test.log 2>&1 &
 TEST_PID=$!
-sleep 3
-if ps -p $TEST_PID > /dev/null; then
-    echo "✓ 手动启动成功"
-    kill $TEST_PID
+sleep 5
+if ps -p $TEST_PID > /dev/null 2>&1; then
+    echo "✓ 手动启动成功（PID: $TEST_PID）"
+    kill $TEST_PID 2>/dev/null || true
+    wait $TEST_PID 2>/dev/null || true
 else
     echo "✗ 手动启动失败"
-    wait $TEST_PID
-    echo "退出码: $?"
+    wait $TEST_PID 2>/dev/null || true
+    EXIT_CODE=$?
+    echo "退出码: $EXIT_CODE"
+    echo "启动日志："
+    cat /tmp/ai-service-test.log 2>/dev/null || echo "无法读取日志文件"
+    rm -f /tmp/ai-service-test.log
 fi
 echo ""
 

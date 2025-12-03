@@ -97,11 +97,22 @@ jobs:
           timeout: 60s
           command_timeout: 60s
           script: |
-            # 复制 systemd 服务文件（如果不存在）
-            if [ ! -f /etc/systemd/system/ai-service.service ]; then
+            # 复制 systemd 服务文件（如果不存在或需要更新）
+            if [ ! -f /etc/systemd/system/ai-service.service ] || [ /srv/ai-service/ai-service.service -nt /etc/systemd/system/ai-service.service ]; then
+              echo "安装/更新 systemd 服务文件..."
               sudo cp /srv/ai-service/ai-service.service /etc/systemd/system/
+              
+              # 确保启动命令格式正确
+              if grep -q "^ExecStart=/srv/ai-service/venv/bin/uvicorn[[:space:]]" /etc/systemd/system/ai-service.service 2>/dev/null; then
+                echo "修复启动命令格式..."
+                sudo sed -i 's|^ExecStart=/srv/ai-service/venv/bin/uvicorn|ExecStart=/srv/ai-service/venv/bin/python -m uvicorn|g' /etc/systemd/system/ai-service.service
+              fi
+              
               sudo systemctl daemon-reload
               sudo systemctl enable ai-service
+              echo "✅ 服务文件已安装/更新"
+            else
+              echo "✅ 服务文件已是最新版本"
             fi
 
       - name: Restart Service
@@ -115,10 +126,34 @@ jobs:
           script: |
             # 检查服务是否存在
             if systemctl list-unit-files | grep -q ai-service.service; then
+              # 修复服务文件中的启动命令（如果格式不正确）
+              if grep -q "^ExecStart=/srv/ai-service/venv/bin/uvicorn[[:space:]]" /etc/systemd/system/ai-service.service 2>/dev/null; then
+                echo "⚠️  发现错误的启动命令格式，正在修复..."
+                sudo sed -i 's|^ExecStart=/srv/ai-service/venv/bin/uvicorn|ExecStart=/srv/ai-service/venv/bin/python -m uvicorn|g' /etc/systemd/system/ai-service.service
+                echo "✅ 已修复启动命令"
+              fi
+              
+              # 确保日志目录存在且可写
+              sudo mkdir -p /srv/ai-service/logs
+              sudo chown www-data:www-data /srv/ai-service/logs
+              sudo chmod 775 /srv/ai-service/logs
+              
+              # 重新加载 systemd 配置
               sudo systemctl daemon-reload
+              
+              # 重启服务
               sudo systemctl restart ai-service
-              sleep 2
-              sudo systemctl status ai-service --no-pager
+              sleep 3
+              
+              # 检查服务状态
+              if sudo systemctl is-active --quiet ai-service; then
+                echo "✅ 服务启动成功"
+                sudo systemctl status ai-service --no-pager -l
+              else
+                echo "❌ 服务启动失败，查看详细日志："
+                sudo journalctl -u ai-service -n 50 --no-pager
+                exit 1
+              fi
             else
               echo "⚠️  ai-service.service 未找到，请手动安装服务文件"
             fi
