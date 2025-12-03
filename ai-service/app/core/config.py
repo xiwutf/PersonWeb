@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     DEFAULT_MODEL_NAME: str = "gpt-3.5-turbo"
     
     # DeepSeek 配置
-    DEEPSEEK_API_KEY: str = ""
+    DEEPSEEK_API_KEY: str = "your-deepseek-api-key-here"
     DEEPSEEK_BASE_URL: str = "https://api.deepseek.com/v1"
     DEEPSEEK_MODEL_NAME: str = "deepseek-chat"
     
@@ -39,6 +39,15 @@ class Settings(BaseSettings):
     # 日志配置
     LOG_LEVEL: str = "INFO"
     LOG_FILE: str = "logs/ai-service.log"
+    
+    # 向量数据库配置（Chroma）
+    CHROMA_DB_PATH: str = "./data/chroma"  # Chroma 数据库存储路径
+    CHROMA_COLLECTION_NAME: str = "document_chunks"  # 默认集合名称
+    
+    # Embedding 配置
+    LLM_EMBED_MODEL: str = "text-embedding-ada-002"  # 默认使用 OpenAI embedding 模型
+    LLM_EMBED_API_KEY: str = ""  # Embedding API Key（如果与 Chat API Key 不同）
+    LLM_EMBED_API_BASE: str = ""  # Embedding API Base URL（如果与 Chat API Base 不同）
     
     class Config:
         env_file = ".env"

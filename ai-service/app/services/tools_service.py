@@ -5,7 +5,7 @@ AI 工具服务
 
 from typing import Optional
 from app.core.llm_client import llm_client
-from app.core.logging import logger
+from app.core.app_logging import logger
 
 
 class ToolsService:

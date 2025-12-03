@@ -289,7 +289,7 @@ ai-service/
 │   │   ├── config.py        # 配置管理
 │   │   ├── llm_client.py    # 大模型客户端
 │   │   ├── auth.py          # 鉴权
-│   │   └── logging.py       # 日志
+│   │   └── app_logging.py   # 日志
 │   ├── services/            # 服务层
 │   │   ├── chat_service.py  # 聊天服务
 │   │   ├── tools_service.py # 工具服务

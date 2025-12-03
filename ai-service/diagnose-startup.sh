@@ -74,7 +74,7 @@ FILES_TO_CHECK=(
     "/srv/ai-service/app/main.py"
     "/srv/ai-service/app/__init__.py"
     "/srv/ai-service/app/core/config.py"
-    "/srv/ai-service/app/core/logging.py"
+    "/srv/ai-service/app/core/app_logging.py"
     "/srv/ai-service/requirements.txt"
 )
 

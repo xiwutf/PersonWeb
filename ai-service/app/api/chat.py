@@ -6,7 +6,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.core.auth import check_internal_token
-from app.core.logging import logger
+from app.core.app_logging import logger
 from app.models.dto import (
     BaseResponse,
     ChatRequest,

@@ -6,7 +6,7 @@
 from typing import Optional, Dict, Any
 
 from app.core.llm_client import llm_client
-from app.core.logging import logger
+from app.core.app_logging import logger
 
 
 class ChatService:

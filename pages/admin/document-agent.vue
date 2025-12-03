@@ -231,7 +231,7 @@
             </div>
 
             <!-- 问答历史 -->
-            <div class="query-history">
+            <div class="query-history" ref="queryHistoryRef">
               <div
                 v-for="(item, index) in queryHistory"
                 :key="index"
@@ -244,24 +244,37 @@
                 <div class="query-answer">
                   <i class="fas fa-robot"></i>
                   <div class="answer-content">
-                    <p>{{ item.answer }}</p>
-                    <div v-if="item.relevantChunks && item.relevantChunks.length > 0" class="relevant-chunks">
-                      <p class="chunks-title">相关片段：</p>
-                      <div
-                        v-for="(chunk, idx) in item.relevantChunks"
-                        :key="idx"
-                        class="chunk-item"
-                      >
-                        <span class="chunk-index">片段 {{ chunk.chunkIndex + 1 }}</span>
-                        <span class="chunk-score">相似度: {{ (chunk.score * 100).toFixed(1) }}%</span>
-                        <p class="chunk-content">{{ chunk.content }}</p>
-                      </div>
+                    <!-- 加载状态 -->
+                    <div v-if="item.loading" class="loading-answer">
+                      <i class="fas fa-spinner fa-spin"></i>
+                      <span>正在思考中...</span>
                     </div>
+                    <!-- 答案内容 -->
+                    <div v-if="!item.loading && item.answer" class="answer-text">
+                      <div class="answer-label">
+                        <i class="fas fa-lightbulb"></i>
+                        <span>AI 回答：</span>
+                      </div>
+                      <div class="answer-body" v-html="formatAnswer(item.answer)"></div>
+                    </div>
+                    <!-- 错误状态 -->
+                    <div v-else-if="!item.loading && item.error" class="error-answer">
+                      <i class="fas fa-exclamation-triangle"></i>
+                      <span>{{ item.error }}</span>
+                    </div>
+                    <!-- 如果没有答案也没有错误，显示提示 -->
+                    <div v-else-if="!item.loading && !item.answer && !item.error" class="no-answer">
+                      <i class="fas fa-info-circle"></i>
+                      <span>未能获取到答案，请稍后重试</span>
+                    </div>
+                    <!-- 相关片段已移除，只显示AI回答 -->
                   </div>
                 </div>
               </div>
-              <div v-if="queryHistory.length === 0" class="empty-history">
-                暂无问答记录，开始提问吧！
+              <div v-if="queryHistory.length === 0 && !querying" class="empty-history">
+                <i class="fas fa-comments"></i>
+                <p>暂无问答记录</p>
+                <p class="empty-hint">输入问题开始对话吧！</p>
               </div>
             </div>
           </div>
@@ -272,8 +285,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, nextTick } from 'vue'
 import { useApi } from '~/composables/useApi'
+
+definePageMeta({
+  layout: 'admin',
+  middleware: 'admin-auth'
+})
 
 // 统一 API 响应接口
 interface ApiResponse<T> {
@@ -447,16 +465,24 @@ const queryDocument = (doc: any) => {
 
 // 提交问题
 const submitQuery = async () => {
-  if (!queryText.value.trim() || !selectedDocument.value) return
+  if (!queryText.value.trim() || !selectedDocument.value || querying.value) return
 
   const question = queryText.value.trim()
   queryText.value = ''
 
-  // 添加到历史（先显示问题）
-  queryHistory.value.push({
+  // 添加到历史（先显示问题和加载状态）
+  const queryItem = {
     query: question,
     answer: '',
-    relevantChunks: []
+    relevantChunks: [],
+    loading: true,
+    error: null as string | null
+  }
+  queryHistory.value.push(queryItem)
+
+  // 滚动到底部
+  nextTick(() => {
+    scrollToBottom()
   })
 
   querying.value = true
@@ -467,15 +493,170 @@ const submitQuery = async () => {
     })
 
     // 更新最后一条历史记录
-    const lastItem = queryHistory.value[queryHistory.value.length - 1]
-    lastItem.answer = result.answer
-    lastItem.relevantChunks = result.relevantChunks || []
+    queryItem.loading = false
+    
+    // 解析返回的数据（支持多种格式）
+    // 注意：API 返回格式可能是 { data: { answer: "...", relevantChunks: [...] } }
+    let answer = ''
+    let relevantChunks: any[] = []
+    
+    // 尝试多种可能的路径
+    if (result.data) {
+      // 格式: { data: { answer: "...", relevantChunks: [...] } }
+      answer = result.data.answer || result.data.Answer || ''
+      relevantChunks = result.data.relevantChunks || result.data.RelevantChunks || []
+    } else if (result.answer !== undefined) {
+      // 格式: { answer: "...", relevantChunks: [...] }
+      answer = result.answer || result.Answer || ''
+      relevantChunks = result.relevantChunks || result.RelevantChunks || []
+    }
+    
+    // 记录原始答案用于调试
+    console.log('问答结果 - 原始数据:', { 
+      rawAnswer: answer, 
+      answerLength: answer?.length || 0,
+      answerType: typeof answer,
+      relevantChunksCount: relevantChunks?.length || 0,
+      fullResult: result,
+      resultKeys: Object.keys(result || {})
+    })
+    
+    queryItem.relevantChunks = relevantChunks || []
+    
+    // 检查是否是模拟回复（说明 API 调用失败）
+    const isMockResponse = String(answer).includes('【模拟模型回复】') || 
+                          String(answer).includes('【模拟流式回复】') ||
+                          String(answer).includes('模拟模型回复') ||
+                          String(answer).includes('模拟流式回复')
+    
+    if (isMockResponse) {
+      queryItem.error = '⚠️ DeepSeek API 调用失败，返回了模拟数据。请检查：1) DEEPSEEK_API_KEY 是否配置 2) API Key 是否有效 3) 网络连接是否正常 4) 查看 Python 服务日志'
+      queryItem.answer = ''
+      console.error('检测到模拟回复，说明 DeepSeek API 调用失败')
+      console.error('请检查 ai-service/.env 文件中的 DEEPSEEK_API_KEY 和 DEEPSEEK_BASE_URL 配置')
+      console.error('完整返回结果:', JSON.stringify(result, null, 2))
+    } else if (!answer || (typeof answer === 'string' && answer.trim() === '')) {
+      queryItem.error = '未能获取到答案，请检查：1) 文档是否已处理完成 2) 查看控制台日志'
+      queryItem.answer = ''
+      console.error('答案为空，完整返回结果:', JSON.stringify(result, null, 2))
+    } else {
+      queryItem.error = null
+      // 格式化答案（但不过度清理）
+      const formatted = formatAnswer(String(answer))
+      console.log('答案格式化 - 原始 (前200字符):', String(answer).substring(0, 200))
+      console.log('答案格式化 - 处理后 (前200字符):', formatted.substring(0, 200))
+      
+      // 如果格式化后答案太短，使用原始答案
+      if (formatted.length < 20 && String(answer).length > 20) {
+        console.warn('格式化后答案过短，使用原始答案')
+        queryItem.answer = String(answer)
+      } else {
+        queryItem.answer = formatted || String(answer)
+      }
+    }
   } catch (error: any) {
     console.error('问答失败:', error)
-    const lastItem = queryHistory.value[queryHistory.value.length - 1]
-    lastItem.answer = '问答失败: ' + (error.message || '未知错误')
+    queryItem.loading = false
+    queryItem.error = '问答失败: ' + (error.message || error.response?.data?.message || '未知错误')
   } finally {
     querying.value = false
+    // 滚动到底部显示答案
+    nextTick(() => {
+      scrollToBottom()
+    })
+  }
+}
+
+// 格式化答案（移除系统提示、问题重复等，但不过度清理）
+const formatAnswer = (answer: string): string => {
+  if (!answer) return ''
+  
+  let formatted = answer.trim()
+  
+  // 第一步：移除所有系统提示和模拟回复标记
+  formatted = formatted
+    .replace(/【系统提示[^】]*】/g, '')
+    .replace(/\[系统提示[^\]]*\]/g, '')
+    .replace(/系统提示[：:][^\n]*/g, '')
+    .replace(/【模拟模型回复】/g, '')
+    .replace(/【模拟流式回复】/g, '')
+    .replace(/模拟模型回复/g, '')
+    .replace(/模拟流式回复/g, '')
+  
+  // 第二步：移除"用户问题:"及其后面的问题内容（只移除开头的）
+  // 匹配模式：用户问题: xxx 或 用户问题：xxx
+  formatted = formatted.replace(/^用户问题[：:]\s*[^\n]+\n*/i, '')
+  formatted = formatted.replace(/^问题[：:]\s*[^\n]+\n*/i, '')
+  
+  // 第三步：移除"相关文档片段:"及其后面的所有片段内容
+  // 匹配从"相关文档片段:"开始到字符串结尾的所有内容
+  const relatedChunksIndex = formatted.search(/相关(文档)?片段[：:]/i)
+  if (relatedChunksIndex >= 0) {
+    formatted = formatted.substring(0, relatedChunksIndex).trim()
+  }
+  
+  // 第四步：移除所有片段标记（如 [片段 0]: ... 或 [片段0]: ...）
+  // 匹配完整的片段块，包括多行内容
+  formatted = formatted.replace(/\[片段\s*\d+\][：:]\s*[^\n]*(?:\n(?!\[片段)[^\n]*)*/g, '')
+  
+  // 第五步：移除"片段摘要:"等标记
+  formatted = formatted.replace(/片段摘要[：:][^\n]*/g, '')
+  formatted = formatted.replace(/片段\s*\d+\s*的摘要[：:][^\n]*/g, '')
+  
+  // 第六步：清理多余的空白和换行
+  formatted = formatted.replace(/\n{3,}/g, '\n\n')
+  formatted = formatted.replace(/^\s+|\s+$/g, '')
+  
+  // 第七步：如果清理后答案为空或太短，尝试提取可能的答案部分
+  if (!formatted || formatted.length < 10) {
+    // 尝试从原始答案中提取可能的答案（在"用户问题"之后，"相关文档片段"之前）
+    const userQIndex = answer.search(/用户问题[：:]/i)
+    const relatedIndex = answer.search(/相关(文档)?片段[：:]/i)
+    
+    if (userQIndex >= 0 && relatedIndex > userQIndex) {
+      // 提取用户问题和相关片段之间的内容
+      let extracted = answer.substring(userQIndex, relatedIndex)
+      // 移除"用户问题: xxx"部分
+      extracted = extracted.replace(/用户问题[：:]\s*[^\n]+\n*/i, '')
+      extracted = extracted.trim()
+      
+      if (extracted.length > 10) {
+        formatted = extracted
+      }
+    }
+  }
+  
+  // 第八步：如果还是为空，返回提示信息
+  if (!formatted || formatted.length < 5) {
+    console.warn('答案格式化后为空，原始答案:', answer.substring(0, 200))
+    return '<p>抱歉，未能从返回内容中提取到有效答案。这可能是由于 LLM 返回格式异常。请检查 DeepSeek API 配置是否正确。</p>'
+  }
+  
+  // 第九步：格式化输出（转换为 HTML）
+  formatted = formatted.replace(/\n\n+/g, '</p><p>')
+  formatted = formatted.replace(/\n/g, '<br>')
+  if (!formatted.startsWith('<p>')) {
+    formatted = '<p>' + formatted
+  }
+  if (!formatted.endsWith('</p>')) {
+    formatted = formatted + '</p>'
+  }
+  
+  return formatted
+}
+
+// 截断文本
+const truncateText = (text: string, maxLength: number): string => {
+  if (!text) return ''
+  if (text.length <= maxLength) return text
+  return text.substring(0, maxLength) + '...'
+}
+
+// 滚动到底部
+const queryHistoryRef = ref<HTMLElement | null>(null)
+const scrollToBottom = () => {
+  if (queryHistoryRef.value) {
+    queryHistoryRef.value.scrollTop = queryHistoryRef.value.scrollHeight
   }
 }
 
@@ -545,23 +726,51 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* 全局移除所有文字发光效果 */
+.document-agent-page,
+.document-agent-page *,
+.modal-content,
+.modal-content * {
+  text-shadow: none !important;
+  filter: none !important; /* 移除可能的滤镜效果 */
+}
+
 .document-agent-page {
-  padding: 20px;
-  max-width: 1400px;
-  margin: 0 auto;
+  padding: 24px;
+  color: #1e293b !important; /* 确保页面文字是深色 */
+  background: transparent !important;
+}
+
+/* 强制覆盖全局深色主题样式 */
+.document-agent-page * {
+  color: inherit;
+}
+
+.document-agent-page .page-header,
+.document-agent-page .section-header,
+.document-agent-page .document-table th,
+.document-agent-page .document-table td,
+.document-agent-page .filter-select,
+.document-agent-page .btn-refresh {
+  color: #1e293b !important;
+  text-shadow: none !important; /* 移除文字发光效果 */
 }
 
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 24px;
+  color: #1e293b !important;
+  gap: 20px;
 }
 
 .page-title {
-  font-size: 28px;
-  font-weight: bold;
+  font-size: 24px;
+  font-weight: 600;
   margin: 0;
+  color: #1e293b !important;
+  text-shadow: none !important; /* 移除所有文字发光效果 */
 }
 
 .btn-primary {
@@ -603,10 +812,11 @@ onMounted(() => {
 }
 
 .document-list-section {
-  background: white;
+  background: white !important;
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  color: #1e293b !important; /* 确保文字是深色 */
 }
 
 .section-header {
@@ -614,6 +824,14 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+}
+
+.section-header h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e293b !important;
+  margin: 0;
+  text-shadow: none !important; /* 移除文字发光效果 */
 }
 
 .filter-controls {
@@ -627,6 +845,13 @@ onMounted(() => {
   border: 1px solid #d1d5db;
   border-radius: 6px;
   font-size: 14px;
+  background: white !important;
+  color: #1e293b !important;
+}
+
+.filter-select option {
+  background: white;
+  color: #1e293b;
 }
 
 .btn-refresh {
@@ -638,6 +863,13 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 6px;
+  color: #1e293b !important;
+  transition: all 0.2s;
+}
+
+.btn-refresh:hover {
+  background: #e5e7eb;
+  color: #0f172a !important;
 }
 
 .table-container {
@@ -650,30 +882,36 @@ onMounted(() => {
 }
 
 .document-table th {
-  background: #f9fafb;
+  background: #f9fafb !important;
   padding: 12px;
   text-align: left;
   font-weight: 600;
   border-bottom: 2px solid #e5e7eb;
+  color: #1e293b !important;
+  font-size: 14px;
+  text-shadow: none !important; /* 移除文字发光效果 */
 }
 
 .document-table td {
   padding: 12px;
   border-bottom: 1px solid #e5e7eb;
-  color: #374151;
+  color: #1e293b !important;
   font-size: 14px;
+  background: white !important;
+  text-shadow: none !important; /* 移除文字发光效果 */
 }
 
 .document-row {
-  background: white;
+  background: white !important;
 }
 
 .document-row:hover {
-  background: #f9fafb;
+  background: #f9fafb !important;
 }
 
 .document-row td {
-  color: #111827;
+  color: #1e293b !important;
+  background: inherit !important;
 }
 
 .title-cell {
@@ -689,6 +927,7 @@ onMounted(() => {
   text-decoration: none;
   cursor: default;
   pointer-events: none;
+  text-shadow: none !important; /* 移除文字发光效果 */
 }
 
 .doc-summary {
@@ -836,7 +1075,7 @@ onMounted(() => {
 }
 
 .modal-content {
-  background: white;
+  background: white !important;
   border-radius: 8px;
   width: 90%;
   max-width: 600px;
@@ -847,6 +1086,23 @@ onMounted(() => {
   flex-direction: column;
   position: relative;
   z-index: 10000;
+  color: #1e293b !important; /* 确保模态框内所有文字都是深色 */
+}
+
+/* 强制覆盖全局深色主题样式 */
+.modal-content * {
+  color: inherit;
+  text-shadow: none !important; /* 移除所有文字发光效果 */
+}
+
+.modal-content .query-question,
+.modal-content .query-answer,
+.modal-content .answer-text,
+.modal-content .chunk-content,
+.modal-content .chunk-index,
+.modal-content .chunks-title {
+  color: #1e293b !important;
+  text-shadow: none !important; /* 移除文字发光效果 */
 }
 
 .modal-large {
@@ -859,11 +1115,16 @@ onMounted(() => {
   align-items: center;
   padding: 20px;
   border-bottom: 1px solid #e5e7eb;
+  background: white !important;
+  color: #1e293b !important;
 }
 
 .modal-header h3 {
   margin: 0;
   font-size: 20px;
+  color: #1e293b !important;
+  font-weight: 600;
+  text-shadow: none !important; /* 移除文字发光效果 */
 }
 
 .modal-close {
@@ -988,9 +1249,11 @@ onMounted(() => {
 
 .query-input-area {
   padding: 20px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 2px solid #e5e7eb;
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  background: #fafbfc !important;
+  color: #1e293b !important;
 }
 
 .query-input {
@@ -1000,6 +1263,22 @@ onMounted(() => {
   border-radius: 6px;
   font-size: 14px;
   resize: none;
+  font-family: inherit;
+  transition: border-color 0.2s;
+  background: white !important;
+  color: #1e293b !important;
+}
+
+.query-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  background: white !important;
+  color: #1e293b !important;
+}
+
+.query-input::placeholder {
+  color: #9ca3af !important;
 }
 
 .btn-query {
@@ -1011,16 +1290,45 @@ onMounted(() => {
   cursor: pointer;
   font-size: 14px;
   white-space: nowrap;
+  transition: all 0.2s;
+  font-weight: 500;
 }
 
 .btn-query:hover:not(:disabled) {
   background: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-query:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .query-history {
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
+  padding: 24px;
+  background: #ffffff !important;
+  color: #1e293b !important;
+}
+
+.query-history::-webkit-scrollbar {
+  width: 8px;
+}
+
+.query-history::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.query-history::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.query-history::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
 .query-item {
@@ -1031,33 +1339,166 @@ onMounted(() => {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  margin-bottom: 12px;
-  padding: 12px;
-  background: #f3f4f6;
-  border-radius: 6px;
+  margin-bottom: 16px;
+  padding: 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.query-question * {
+  text-shadow: none !important; /* 移除文字发光效果 */
 }
 
 .query-question i {
   color: #3b82f6;
-  margin-top: 2px;
+  margin-top: 4px;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.query-question span {
+  color: #1e293b !important;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.6;
+  flex: 1;
+  text-shadow: none !important; /* 移除文字发光效果 */
 }
 
 .query-answer {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  padding: 12px;
-  background: #eff6ff;
-  border-radius: 6px;
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
 }
 
 .query-answer i {
   color: #10b981;
-  margin-top: 2px;
+  margin-top: 4px;
+  font-size: 16px;
+  flex-shrink: 0;
 }
 
 .answer-content {
   flex: 1;
+  min-width: 0; /* 防止内容溢出 */
+}
+
+.answer-text {
+  width: 100%;
+}
+
+.answer-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: #2563eb !important;
+  font-size: 15px;
+}
+
+.answer-label i {
+  color: #fbbf24;
+  font-size: 16px;
+}
+
+.answer-body {
+  line-height: 1.8;
+  color: #111827 !important;
+  font-size: 15px;
+  font-weight: 400;
+  word-wrap: break-word;
+  word-break: break-word;
+  padding: 16px;
+  background: #ffffff;
+  border-radius: 8px;
+  border-left: 4px solid #3b82f6;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  text-shadow: none !important; /* 移除文字发光效果 */
+}
+
+.answer-body p {
+  margin: 0 0 12px 0;
+  color: #111827 !important;
+  font-weight: 400;
+}
+
+.answer-body * {
+  color: #111827 !important;
+}
+
+/* 确保所有文本元素都清晰可见 */
+.answer-body span,
+.answer-body div,
+.answer-body strong,
+.answer-body em,
+.answer-body b,
+.answer-body i:not(.fas):not(.far):not(.fab) {
+  color: #111827 !important;
+  text-shadow: none !important; /* 移除文字发光效果 */
+}
+
+.answer-body p:last-child {
+  margin-bottom: 0;
+}
+
+.no-answer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #6b7280;
+  font-size: 14px;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 6px;
+  border: 1px dashed #d1d5db;
+}
+
+.no-answer i {
+  color: #6b7280;
+}
+
+.loading-answer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #475569;
+  font-size: 14px;
+  padding: 8px 0;
+}
+
+.loading-answer i {
+  color: #3b82f6;
+  font-size: 16px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.error-answer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #dc2626;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 0;
+}
+
+.error-answer i {
+  color: #dc2626;
+  font-size: 16px;
 }
 
 .relevant-chunks {
@@ -1100,7 +1541,27 @@ onMounted(() => {
 .empty-history {
   text-align: center;
   color: #9ca3af;
-  padding: 60px 20px;
+  padding: 80px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.empty-history i {
+  font-size: 48px;
+  color: #d1d5db;
+  margin-bottom: 8px;
+}
+
+.empty-history p {
+  margin: 0;
+  font-size: 15px;
+}
+
+.empty-hint {
+  font-size: 13px;
+  color: #9ca3af;
 }
 </style>
 

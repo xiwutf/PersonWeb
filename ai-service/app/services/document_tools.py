@@ -4,8 +4,9 @@
 """
 
 from typing import Dict, List, Any, Optional
-from app.core.logging import logger
+from app.core.app_logging import logger
 from app.core.llm_client import llm_client
+from app.services.vector_store import vector_store
 
 
 class DocumentTools:
@@ -41,46 +42,219 @@ class DocumentTools:
                 logger.error(error_msg)
                 raise FileNotFoundError(error_msg)
             
-            # TODO: 实现真实的文档解析逻辑
-            # 1. 根据 file_type 选择对应的解析库
-            #    - PDF: PyPDF2, pdfplumber
-            #    - DOCX: python-docx
-            #    - TXT/MD: 直接读取
-            # 2. 提取文本和元数据
+            # 根据文件类型选择对应的解析方法
+            file_type_lower = file_type.lower().strip('.')
             
-            # 当前为简单实现：读取文本文件
-            if file_type in ["txt", "md"]:
-                try:
-                    with open(file_path, "r", encoding="utf-8") as f:
-                        raw_text = f.read()
-                except UnicodeDecodeError:
-                    # 如果 UTF-8 失败，尝试其他编码
-                    logger.warning(f"UTF-8 解码失败，尝试其他编码: {file_path}")
-                    with open(file_path, "r", encoding="gbk") as f:
-                        raw_text = f.read()
+            if file_type_lower == "pdf":
+                # 解析 PDF 文件
+                return await self._parse_pdf(file_path)
+            elif file_type_lower == "docx":
+                # 解析 DOCX 文件
+                return await self._parse_docx(file_path)
+            elif file_type_lower in ["txt", "md"]:
+                # 解析文本文件
+                return await self._parse_text(file_path, file_type_lower)
             else:
-                # 其他格式暂时返回占位文本
-                logger.warning(f"不支持的文件类型 {file_type}，返回占位文本")
-                raw_text = f"[文档内容占位符] 文件类型: {file_type}, 路径: {file_path}"
-            
-            metadata = {
-                "file_type": file_type,
-                "file_path": file_path,
-                "title": os.path.basename(file_path) or "未命名文档"
-            }
-            
-            logger.info(f"文档解析完成: text_length={len(raw_text)}")
-            
-            return {
-                "raw_text": raw_text,
-                "metadata": metadata
-            }
+                # 不支持的文件类型
+                error_msg = f"不支持的文件类型: {file_type}"
+                logger.error(error_msg)
+                raise ValueError(error_msg)
+                
         except FileNotFoundError:
             # 重新抛出文件不存在错误
             raise
         except Exception as e:
             logger.error(f"解析文档失败: {str(e)}", exc_info=True)
             raise
+    
+    async def _parse_pdf(self, file_path: str) -> Dict[str, Any]:
+        """
+        解析 PDF 文件
+        
+        Args:
+            file_path: PDF 文件路径
+            
+        Returns:
+            dict: 包含原始文本和元数据
+        """
+        try:
+            from pypdf import PdfReader
+            import os
+            
+            logger.info(f"开始解析 PDF: {file_path}")
+            
+            # 使用 pypdf 读取 PDF
+            reader = PdfReader(file_path)
+            
+            # 提取所有页面的文本
+            pages_text = []
+            total_pages = len(reader.pages)
+            
+            for page_num, page in enumerate(reader.pages, start=1):
+                try:
+                    text = page.extract_text()
+                    if text.strip():  # 只添加非空页面
+                        pages_text.append(text)
+                        logger.debug(f"提取第 {page_num} 页文本，长度: {len(text)}")
+                except Exception as e:
+                    logger.warning(f"提取第 {page_num} 页文本失败: {str(e)}")
+                    # 继续处理下一页
+                    continue
+            
+            # 合并所有页面文本，用换行符分隔
+            raw_text = "\n\n".join(pages_text)
+            
+            # 提取元数据
+            metadata = reader.metadata if reader.metadata else {}
+            title = metadata.get("/Title", "") if metadata else ""
+            if not title:
+                title = os.path.basename(file_path) or "未命名文档"
+            
+            # 构建返回的元数据
+            result_metadata = {
+                "file_type": "pdf",
+                "file_path": file_path,
+                "title": title,
+                "total_pages": total_pages,
+                "extracted_pages": len(pages_text),
+                "author": metadata.get("/Author", "") if metadata else "",
+                "subject": metadata.get("/Subject", "") if metadata else "",
+            }
+            
+            logger.info(f"PDF 解析完成: text_length={len(raw_text)}, pages={total_pages}")
+            
+            return {
+                "raw_text": raw_text,
+                "metadata": result_metadata
+            }
+            
+        except ImportError:
+            error_msg = "pypdf 库未安装，请运行: pip install pypdf"
+            logger.error(error_msg)
+            raise ImportError(error_msg)
+        except Exception as e:
+            logger.error(f"解析 PDF 失败: {str(e)}", exc_info=True)
+            raise
+    
+    async def _parse_docx(self, file_path: str) -> Dict[str, Any]:
+        """
+        解析 DOCX 文件
+        
+        Args:
+            file_path: DOCX 文件路径
+            
+        Returns:
+            dict: 包含原始文本和元数据
+        """
+        try:
+            from docx import Document
+            import os
+            
+            logger.info(f"开始解析 DOCX: {file_path}")
+            
+            # 使用 python-docx 读取 DOCX
+            doc = Document(file_path)
+            
+            # 提取所有段落文本
+            paragraphs = []
+            for para in doc.paragraphs:
+                text = para.text.strip()
+                if text:  # 只添加非空段落
+                    paragraphs.append(text)
+            
+            # 合并所有段落，用换行符分隔
+            raw_text = "\n\n".join(paragraphs)
+            
+            # 提取表格文本（如果有）
+            tables_text = []
+            for table in doc.tables:
+                table_rows = []
+                for row in table.rows:
+                    row_cells = [cell.text.strip() for cell in row.cells]
+                    if any(row_cells):  # 只添加非空行
+                        table_rows.append(" | ".join(row_cells))
+                if table_rows:
+                    tables_text.append("\n".join(table_rows))
+            
+            # 如果有表格，添加到文本末尾
+            if tables_text:
+                raw_text += "\n\n[表格内容]\n\n" + "\n\n".join(tables_text)
+            
+            # 提取元数据
+            core_props = doc.core_properties
+            title = core_props.title or os.path.basename(file_path) or "未命名文档"
+            
+            # 构建返回的元数据
+            result_metadata = {
+                "file_type": "docx",
+                "file_path": file_path,
+                "title": title,
+                "total_paragraphs": len(paragraphs),
+                "total_tables": len(doc.tables),
+                "author": core_props.author or "",
+                "subject": core_props.subject or "",
+                "created": str(core_props.created) if core_props.created else "",
+            }
+            
+            logger.info(f"DOCX 解析完成: text_length={len(raw_text)}, paragraphs={len(paragraphs)}")
+            
+            return {
+                "raw_text": raw_text,
+                "metadata": result_metadata
+            }
+            
+        except ImportError:
+            error_msg = "python-docx 库未安装，请运行: pip install python-docx"
+            logger.error(error_msg)
+            raise ImportError(error_msg)
+        except Exception as e:
+            logger.error(f"解析 DOCX 失败: {str(e)}", exc_info=True)
+            raise
+    
+    async def _parse_text(self, file_path: str, file_type: str) -> Dict[str, Any]:
+        """
+        解析文本文件（TXT/MD）
+        
+        Args:
+            file_path: 文本文件路径
+            file_type: 文件类型 (txt, md)
+            
+        Returns:
+            dict: 包含原始文本和元数据
+        """
+        import os
+        
+        logger.info(f"开始解析文本文件: {file_path}")
+        
+        try:
+            # 尝试 UTF-8 编码
+            with open(file_path, "r", encoding="utf-8") as f:
+                raw_text = f.read()
+        except UnicodeDecodeError:
+            # 如果 UTF-8 失败，尝试 GBK 编码（常见于中文 Windows 系统）
+            logger.warning(f"UTF-8 解码失败，尝试 GBK 编码: {file_path}")
+            try:
+                with open(file_path, "r", encoding="gbk") as f:
+                    raw_text = f.read()
+            except UnicodeDecodeError:
+                # 如果 GBK 也失败，尝试 latin-1（几乎总能成功，但可能乱码）
+                logger.warning(f"GBK 解码也失败，尝试 latin-1 编码: {file_path}")
+                with open(file_path, "r", encoding="latin-1") as f:
+                    raw_text = f.read()
+        
+        # 构建元数据
+        result_metadata = {
+            "file_type": file_type,
+            "file_path": file_path,
+            "title": os.path.basename(file_path) or "未命名文档",
+        }
+        
+        logger.info(f"文本文件解析完成: text_length={len(raw_text)}")
+        
+        return {
+            "raw_text": raw_text,
+            "metadata": result_metadata
+        }
     
     async def chunk_text(
         self,
@@ -376,15 +550,27 @@ class DocumentTools:
         logger.info(f"存储向量: vectors_count={len(vectors)}")
         
         try:
-            # TODO: 实现真实的向量存储逻辑
-            # 1. 连接向量数据库（如 Chroma、Milvus、Qdrant）
-            # 2. 存储向量和元数据
-            # 3. 返回存储的向量 ID
+            # 从 metadata 中提取 document_id（用于组织集合）
+            document_id = None
+            if metadata and "document_id" in metadata[0]:
+                document_id = str(metadata[0]["document_id"])
             
-            # 当前为简单实现：只记录日志
-            vector_ids = [f"vector_{i}_{hash(str(v))}" for i, v in enumerate(vectors)]
+            # 准备文本列表（用于存储到 Chroma）
+            # 如果 metadata 中有 content，使用它；否则使用 summary 或空字符串
+            texts = []
+            for meta in metadata:
+                text = meta.get("content", meta.get("summary", ""))
+                texts.append(text)
             
-            logger.info(f"向量存储完成: stored_count={len(vector_ids)}")
+            # 调用 vector_store 存储向量
+            vector_ids = await vector_store.add_vectors(
+                vectors=vectors,
+                texts=texts,
+                metadata=metadata,
+                document_id=document_id
+            )
+            
+            logger.info(f"向量存储完成: stored_count={len(vector_ids)}, document_id={document_id}")
             
             return {
                 "success": True,
@@ -427,23 +613,48 @@ class DocumentTools:
         logger.info(f"向量检索: top_k={top_k}, document_id={document_id}")
         
         try:
-            # TODO: 实现真实的向量检索逻辑
-            # 1. 在向量数据库中检索相似向量
-            # 2. 根据 document_id 过滤（如果提供）
-            # 3. 返回相似度最高的 top_k 个结果
+            # 调用 vector_store 检索向量
+            search_results = await vector_store.search_vectors(
+                query_vector=query_vector,
+                top_k=top_k,
+                document_id=document_id
+            )
             
-            # 当前为简单实现：返回模拟数据
-            results = [
-                {
-                    "chunk_id": i,
-                    "document_id": document_id or "unknown",
-                    "score": 0.9 - i * 0.1,
-                    "content": f"这是文档片段 {i} 的内容...",
-                    "summary": f"片段 {i} 的摘要",
-                    "chunk_index": i
+            # 转换结果格式，匹配期望的输出格式
+            results = []
+            for item in search_results:
+                metadata = item.get("metadata", {})
+                
+                # 确保 score 在 0-1 范围内
+                raw_score = item.get("score", 0.0)
+                
+                # 调试日志：如果 score 异常，记录详细信息
+                if raw_score < 0.0 or raw_score > 1.0:
+                    logger.warning(f"⚠️ document_tools.search_vectors: 检测到异常的 score 值: {raw_score}, item keys: {item.keys()}")
+                    logger.warning(f"   原始 item: {item}")
+                
+                # 强制修正 score 到 0-1 范围
+                if raw_score < 0.0:
+                    score = 0.0
+                    logger.warning(f"   Score 为负数 {raw_score}，已修正为 0.0")
+                elif raw_score > 1.0:
+                    score = 1.0
+                    logger.warning(f"   Score 超过 1.0 ({raw_score})，已修正为 1.0")
+                else:
+                    score = raw_score
+                
+                # 再次确保 score 在有效范围内（双重保险）
+                final_score = max(0.0, min(1.0, float(score)))
+                
+                result_item = {
+                    "chunk_id": int(metadata.get("chunk_id", metadata.get("chunk_index", 0))),
+                    "document_id": str(metadata.get("document_id", document_id or "unknown")),
+                    "score": final_score,
+                    "content": item.get("document", metadata.get("content", "")),
+                    "summary": metadata.get("summary"),
+                    "chunk_index": int(metadata.get("chunk_index", metadata.get("chunk_id", 0)))
                 }
-                for i in range(top_k)
-            ]
+                results.append(result_item)
             
             logger.info(f"向量检索完成: results_count={len(results)}")
             

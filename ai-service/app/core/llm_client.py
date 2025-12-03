@@ -4,9 +4,10 @@
 """
 
 import httpx
+import json
 from typing import Optional, Dict, Any, AsyncIterator
 from app.core.config import settings
-from app.core.logging import logger
+from app.core.app_logging import logger
 
 
 class LLMClient:
@@ -14,7 +15,18 @@ class LLMClient:
     
     def __init__(self):
         """初始化客户端"""
-        self.default_model = settings.DEFAULT_MODEL_NAME
+        # 根据 LLM_PROVIDER 设置默认模型
+        provider = settings.LLM_PROVIDER.lower()
+        if provider == "deepseek":
+            self.default_model = settings.DEEPSEEK_MODEL_NAME or "deepseek-chat"
+        elif provider == "openai":
+            self.default_model = settings.DEFAULT_MODEL_NAME or "gpt-3.5-turbo"
+        elif provider == "qwen":
+            self.default_model = "qwen-turbo"  # 默认通义千问模型
+        else:
+            self.default_model = settings.DEFAULT_MODEL_NAME or "gpt-3.5-turbo"
+        
+        logger.info(f"LLMClient 初始化: provider={provider}, default_model={self.default_model}")
     
     async def chat(
         self,
@@ -44,9 +56,22 @@ class LLMClient:
         
         logger.info(f"调用大模型: provider={provider}, model={model_name}, prompt 长度: {len(prompt)}")
         
+        # 检查配置
+        if provider == "deepseek":
+            if not settings.DEEPSEEK_API_KEY:
+                logger.error("❌ DEEPSEEK_API_KEY 未配置！请检查 .env 文件")
+                logger.warning("将使用模拟回复")
+                return self._chat_mock(prompt, model_name, system_prompt)
+            else:
+                logger.info(f"✅ DEEPSEEK_API_KEY 已配置 (前10字符: {settings.DEEPSEEK_API_KEY[:10]}...)")
+                logger.info(f"✅ DEEPSEEK_BASE_URL: {settings.DEEPSEEK_BASE_URL}")
+        
         try:
             if provider == "deepseek":
-                return await self._chat_deepseek(prompt, model_name, system_prompt, temperature, max_tokens)
+                logger.info(f"🚀 开始调用 DeepSeek API: base_url={settings.DEEPSEEK_BASE_URL}, model={model_name}")
+                result = await self._chat_deepseek(prompt, model_name, system_prompt, temperature, max_tokens)
+                logger.info(f"✅ DeepSeek API 调用成功，返回结果长度: {len(result.get('reply', ''))}")
+                return result
             elif provider == "openai":
                 return await self._chat_openai(prompt, model_name, system_prompt, temperature, max_tokens)
             elif provider == "qwen":
@@ -55,8 +80,28 @@ class LLMClient:
                 logger.warning(f"未知的模型提供商: {provider}，使用模拟回复")
                 return self._chat_mock(prompt, model_name, system_prompt)
         except Exception as e:
-            logger.error(f"调用大模型失败: {str(e)}", exc_info=True)
+            # 详细记录错误信息
+            error_msg = str(e)
+            error_type = type(e).__name__
+            
+            print(f"\n{'='*60}")
+            print(f"❌ 调用大模型失败！")
+            print(f"{'='*60}")
+            print(f"错误类型: {error_type}")
+            print(f"错误信息: {error_msg}")
+            print(f"Provider: {provider}")
+            print(f"Model: {model_name}")
+            print(f"DEEPSEEK_API_KEY: {'已配置' if settings.DEEPSEEK_API_KEY else '❌ 未配置'}")
+            if settings.DEEPSEEK_API_KEY:
+                print(f"API Key 前10字符: {settings.DEEPSEEK_API_KEY[:10]}...")
+            print(f"{'='*60}\n")
+            
+            logger.error(f"调用大模型失败: {error_type} - {error_msg}", exc_info=True)
+            logger.error(f"错误详情: provider={provider}, model={model_name}")
+            logger.error(f"DEEPSEEK_API_KEY 状态: {'已配置' if settings.DEEPSEEK_API_KEY else '未配置'}")
+            
             # 失败时返回模拟回复，避免服务中断
+            logger.warning("API 调用失败，返回模拟回复")
             return self._chat_mock(prompt, model_name, system_prompt)
     
     async def _chat_deepseek(
@@ -74,6 +119,8 @@ class LLMClient:
         base_url = settings.DEEPSEEK_BASE_URL or "https://api.deepseek.com/v1"
         model_name = model or settings.DEEPSEEK_MODEL_NAME or "deepseek-chat"
         
+        logger.info(f"准备调用 DeepSeek API: url={base_url}/chat/completions, model={model_name}")
+        
         # 构建消息列表
         messages = []
         if system_prompt:
@@ -89,22 +136,79 @@ class LLMClient:
         if max_tokens:
             payload["max_tokens"] = max_tokens
         
+        logger.debug(f"DeepSeek API 请求: model={model_name}, messages_count={len(messages)}")
+        
         # 调用 API
-        async with httpx.AsyncClient(timeout=60.0) as client:
-            response = await client.post(
-                f"{base_url}/chat/completions",
-                headers={
-                    "Authorization": f"Bearer {settings.DEEPSEEK_API_KEY}",
-                    "Content-Type": "application/json"
-                },
-                json=payload
-            )
-            response.raise_for_status()
-            result = response.json()
+        try:
+            async with httpx.AsyncClient(timeout=60.0) as client:
+                logger.info(f"发送请求到: {base_url}/chat/completions")
+                logger.debug(f"请求体: model={model_name}, messages_count={len(messages)}, temperature={temperature}")
+                
+                response = await client.post(
+                    f"{base_url}/chat/completions",
+                    headers={
+                        "Authorization": f"Bearer {settings.DEEPSEEK_API_KEY}",
+                        "Content-Type": "application/json"
+                    },
+                    json=payload
+                )
+                
+                logger.info(f"DeepSeek API 响应状态码: {response.status_code}")
+                
+                if response.status_code != 200:
+                    # 打印完整的错误信息
+                    error_text = response.text
+                    error_body = ""
+                    try:
+                        error_json = response.json()
+                        error_body = json.dumps(error_json, ensure_ascii=False, indent=2)
+                    except:
+                        error_body = error_text
+                    
+                    print(f"\n{'='*60}")
+                    print(f"❌ DeepSeek API 调用失败")
+                    print(f"{'='*60}")
+                    print(f"状态码: {response.status_code}")
+                    print(f"响应头: {dict(response.headers)}")
+                    print(f"响应体:")
+                    print(error_body[:2000])  # 打印前2000字符
+                    print(f"{'='*60}\n")
+                    
+                    logger.error(f"DeepSeek API 调用失败:")
+                    logger.error(f"  状态码: {response.status_code}")
+                    logger.error(f"  响应头: {dict(response.headers)}")
+                    logger.error(f"  响应体: {error_body[:2000]}")
+                    
+                    raise Exception(f"DeepSeek API 返回错误: {response.status_code} - {error_text[:500]}")
+                
+                result = response.json()
+                logger.info(f"DeepSeek API 调用成功: choices_count={len(result.get('choices', []))}")
+                logger.debug(f"DeepSeek API 响应: {json.dumps(result, ensure_ascii=False)[:500]}")
+        except httpx.TimeoutException as e:
+            error_msg = f"DeepSeek API 调用超时: {str(e)}"
+            print(f"\n❌ {error_msg}\n")
+            logger.error(error_msg)
+            raise
+        except httpx.RequestError as e:
+            error_msg = f"DeepSeek API 请求错误: {str(e)}"
+            print(f"\n❌ {error_msg}\n")
+            logger.error(error_msg, exc_info=True)
+            raise
+        except Exception as e:
+            error_msg = f"DeepSeek API 调用异常: {str(e)}"
+            print(f"\n❌ {error_msg}\n")
+            logger.error(error_msg, exc_info=True)
+            raise
         
         # 解析响应
+        if "choices" not in result or len(result["choices"]) == 0:
+            logger.error(f"DeepSeek API 响应格式错误: {result}")
+            raise ValueError("DeepSeek API 响应格式错误：缺少 choices")
+        
         reply = result["choices"][0]["message"]["content"]
         usage = result.get("usage", {})
+        
+        logger.info(f"DeepSeek API 调用成功: reply_length={len(reply)}, tokens={usage.get('total_tokens', 0)}")
         
         return {
             "reply": reply,
@@ -149,6 +253,8 @@ class LLMClient:
         system_prompt: Optional[str]
     ) -> Dict[str, Any]:
         """模拟回复（用于测试或 API 调用失败时）"""
+        logger.warning("⚠️ 使用模拟回复 - 这不应该在生产环境中出现！")
+        logger.warning(f"提示: 检查 DEEPSEEK_API_KEY 配置和网络连接")
         reply = f"【模拟模型回复】{prompt[:50]}..."
         
         if system_prompt:

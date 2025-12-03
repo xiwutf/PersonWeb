@@ -10,7 +10,7 @@ import time
 from contextlib import asynccontextmanager
 
 from app.core.config import settings
-from app.core.logging import setup_logging, logger
+from app.core.app_logging import setup_logging, logger
 from app.api import health, chat, tools, rag, document
 
 

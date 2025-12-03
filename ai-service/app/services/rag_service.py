@@ -4,7 +4,7 @@ RAG 知识库服务
 """
 
 from typing import Optional, List, Dict, Any
-from app.core.logging import logger
+from app.core.app_logging import logger
 
 
 class RAGService:

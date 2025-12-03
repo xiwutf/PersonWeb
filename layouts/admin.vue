@@ -114,6 +114,14 @@
               <i class="fas fa-clock w-5 text-center mr-3"></i>
               <span>时间胶囊</span>
             </a>
+            <NuxtLink 
+              to="/admin/document-agent" 
+              class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm"
+              active-class="admin-sidebar-link-active"
+            >
+              <i class="fas fa-file-alt w-5 text-center mr-3"></i>
+              <span>文档知识管家</span>
+            </NuxtLink>
           </div>
         </div>
 
@@ -428,7 +436,7 @@ const isMenuActive = (menuKey: string): boolean => {
     case 'project':
       return path.startsWith('/admin/projects') || path === '/admin/tools'
     case 'knowledge':
-      return path === '/admin/knowledge' || path === '/admin/timeline' || path === '/admin/time-capsules'
+      return path === '/admin/knowledge' || path === '/admin/timeline' || path === '/admin/time-capsules' || path === '/admin/document-agent'
     case 'analytics':
       return path === '/admin/analytics' || path === '/admin/investment'
     case 'personal':
@@ -464,7 +472,7 @@ const autoExpandMenu = () => {
   if (path.startsWith('/admin/projects') || path === '/admin/tools') {
     expandedMenus.value.project = true
   }
-  if (path === '/admin/knowledge' || path === '/admin/timeline' || path === '/admin/time-capsules') {
+  if (path === '/admin/knowledge' || path === '/admin/timeline' || path === '/admin/time-capsules' || path === '/admin/document-agent') {
     expandedMenus.value.knowledge = true
   }
   if (path === '/admin/analytics' || path === '/admin/investment') {

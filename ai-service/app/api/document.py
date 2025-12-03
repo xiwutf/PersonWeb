@@ -6,7 +6,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.core.auth import check_internal_token
-from app.core.logging import logger
+from app.core.app_logging import logger
 from app.models.dto import (
     BaseResponse,
     DocumentProcessRequest,
@@ -15,6 +15,7 @@ from app.models.dto import (
     DocumentQueryResponseData
 )
 from app.services.document_agent_service import DocumentAgentService
+from app.services.vector_store import vector_store
 
 router = APIRouter()
 document_agent_service = DocumentAgentService()
@@ -88,18 +89,41 @@ async def query_document(
         BaseResponse: 包含答案和相关文档片段
     """
     try:
+        # 使用 print 确保输出到控制台
+        print("\n" + "=" * 60)
+        print("📝 收到文档问答请求")
+        print(f"document_id={request.document_id}")
+        print(f"user_id={request.user_id}")
+        print(f"query={request.query[:50]}...")
+        print(f"top_k={request.top_k}")
+        print("=" * 60 + "\n")
+        
+        logger.info("=" * 60)
+        logger.info("📝 收到文档问答请求")
         logger.info(
-            f"收到文档问答请求: document_id={request.document_id}, "
-            f"user_id={request.user_id}, query={request.query[:50]}..."
+            f"document_id={request.document_id}, "
+            f"user_id={request.user_id}, "
+            f"query={request.query[:50]}..., "
+            f"top_k={request.top_k}"
         )
+        logger.info("=" * 60)
         
         # 调用 Agent 服务进行问答
+        logger.info("🚀 开始调用 document_agent_service.query_document")
         result = await document_agent_service.query_document(
             document_id=request.document_id,
             user_id=request.user_id,
             query=request.query,
             top_k=request.top_k
         )
+        
+        # result 是 DocumentQueryResponseData 对象，直接访问属性
+        answer_length = len(result.answer) if result.answer else 0
+        chunks_count = len(result.relevant_chunks) if result.relevant_chunks else 0
+        
+        print(f"✅ 问答完成: answer_length={answer_length}, chunks_count={chunks_count}")
+        logger.info(f"✅ 问答完成: answer_length={answer_length}, chunks_count={chunks_count}")
+        logger.info("=" * 60)
         
         return BaseResponse(
             success=True,
@@ -115,6 +139,48 @@ async def query_document(
                 "success": False,
                 "error_code": "DOCUMENT_QUERY_ERROR",
                 "message": f"文档问答失败: {str(e)}",
+                "data": None
+            }
+        )
+
+
+@router.delete("/document/{document_id}/vectors", response_model=BaseResponse)
+async def delete_document_vectors(
+    document_id: str,
+    token: str = Depends(check_internal_token)
+):
+    """
+    删除文档的所有向量
+    
+    用于清理不再需要的文档向量，释放存储空间
+    
+    Args:
+        document_id: 文档 ID
+        token: 内部调用 Token
+        
+    Returns:
+        BaseResponse: 删除结果
+    """
+    try:
+        logger.info(f"收到删除文档向量请求: document_id={document_id}")
+        
+        # 调用 vector_store 删除文档的所有向量
+        success = await vector_store.delete_document_vectors(document_id=str(document_id))
+        
+        return BaseResponse(
+            success=success,
+            data={"document_id": document_id},
+            error_code=None,
+            message="文档向量删除成功" if success else "文档向量删除失败"
+        )
+    except Exception as e:
+        logger.error(f"删除文档向量接口异常: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
+                "success": False,
+                "error_code": "DELETE_VECTORS_ERROR",
+                "message": f"删除文档向量失败: {str(e)}",
                 "data": None
             }
         )
