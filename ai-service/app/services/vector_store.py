@@ -14,13 +14,29 @@ class VectorStore:
     
     def __init__(self):
         """初始化向量存储服务"""
-        self.db_path = settings.CHROMA_DB_PATH
+        # 如果路径是相对路径，转换为绝对路径（基于工作目录）
+        db_path = settings.CHROMA_DB_PATH
+        if not os.path.isabs(db_path):
+            # 获取工作目录（通常是 /srv/ai-service）
+            work_dir = os.getcwd()
+            db_path = os.path.join(work_dir, db_path)
+        
+        self.db_path = db_path
         self.collection_name = settings.CHROMA_COLLECTION_NAME
         self._client = None
         self._collection = None
         
-        # 确保数据目录存在
-        os.makedirs(self.db_path, exist_ok=True)
+        # 确保数据目录存在（带错误处理）
+        try:
+            os.makedirs(self.db_path, exist_ok=True)
+            logger.info(f"向量数据库目录已准备: {self.db_path}")
+        except PermissionError as e:
+            logger.error(f"无法创建向量数据库目录 {self.db_path}: {e}")
+            logger.error("请确保目录存在且服务用户有写入权限")
+            raise
+        except Exception as e:
+            logger.error(f"创建向量数据库目录失败: {e}")
+            raise
     
     def _get_client(self):
         """获取 Chroma 客户端（延迟初始化）"""

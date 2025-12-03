@@ -138,6 +138,13 @@ jobs:
               sudo chown www-data:www-data /srv/ai-service/logs
               sudo chmod 775 /srv/ai-service/logs
               
+              # 确保向量数据库目录存在且可写
+              sudo mkdir -p /srv/ai-service/data/chroma
+              sudo chown www-data:www-data /srv/ai-service/data
+              sudo chown www-data:www-data /srv/ai-service/data/chroma
+              sudo chmod 775 /srv/ai-service/data
+              sudo chmod 775 /srv/ai-service/data/chroma
+              
               # 重新加载 systemd 配置
               sudo systemctl daemon-reload
               
