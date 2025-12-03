@@ -91,6 +91,11 @@ public class AppDbContext : DbContext
     public DbSet<PageComponent> PageComponents { get; set; }
     public DbSet<ComponentLibrary> ComponentLibraries { get; set; }
     public DbSet<PageTemplate> PageTemplates { get; set; }
+    
+    // 文档知识管家 Agent 相关表
+    public DbSet<Document> Documents { get; set; }
+    public DbSet<DocumentChunk> DocumentChunks { get; set; }
+    public DbSet<DocumentQuery> DocumentQueries { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

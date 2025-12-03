@@ -21,9 +21,17 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str = ""
     DEFAULT_MODEL_NAME: str = "gpt-3.5-turbo"
     
+    # DeepSeek 配置
+    DEEPSEEK_API_KEY: str = ""
+    DEEPSEEK_BASE_URL: str = "https://api.deepseek.com/v1"
+    DEEPSEEK_MODEL_NAME: str = "deepseek-chat"
+    
     # 其他模型配置（预留）
     QWEN_API_KEY: str = ""
     QWEN_BASE_URL: str = ""
+    
+    # 模型提供商选择: openai, deepseek, qwen
+    LLM_PROVIDER: str = "deepseek"
     
     # CORS 配置
     ALLOWED_ORIGINS: List[str] = ["*"]

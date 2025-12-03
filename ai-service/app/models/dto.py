@@ -126,3 +126,54 @@ class RAGQueryResponseData(BaseModel):
     answer: str = Field(..., description="生成的答案")
     relevant_docs: List[RelevantDoc] = Field(..., description="相关文档列表")
 
+
+# ==================== 文档知识管家 Agent 相关 ====================
+
+class DocumentProcessRequest(BaseModel):
+    """文档处理请求模型"""
+    document_id: str = Field(..., description="文档 ID")
+    file_path: str = Field(..., description="文件路径")
+    file_type: str = Field(..., description="文件类型 (pdf, docx, txt, etc.)")
+    user_id: str = Field(..., description="用户 ID")
+
+
+class DocumentChunkData(BaseModel):
+    """文档分段数据"""
+    index: int = Field(..., description="分段索引")
+    content: str = Field(..., description="分段内容")
+    summary: Optional[str] = Field(None, description="分段摘要")
+    metadata: Optional[Dict[str, Any]] = Field(None, description="元数据")
+    vector_id: Optional[str] = Field(None, description="向量数据库中的 ID")
+
+
+class DocumentProcessResponseData(BaseModel):
+    """文档处理响应数据"""
+    document_id: str = Field(..., description="文档 ID")
+    summary: str = Field(..., description="文档摘要")
+    knowledge_structure: str = Field(..., description="知识结构 (JSON 字符串)")
+    total_chunks: int = Field(..., description="分段总数")
+    chunks: List[DocumentChunkData] = Field(..., description="分段列表")
+
+
+class DocumentQueryRequest(BaseModel):
+    """文档问答请求模型"""
+    document_id: str = Field(..., description="文档 ID")
+    user_id: str = Field(..., description="用户 ID")
+    query: str = Field(..., min_length=1, description="用户问题")
+    top_k: int = Field(5, ge=1, le=20, description="返回相关文档片段数量")
+
+
+class RelevantChunk(BaseModel):
+    """相关文档片段"""
+    chunk_id: int = Field(..., description="分段 ID")
+    chunk_index: int = Field(..., description="分段索引")
+    content: str = Field(..., description="内容片段")
+    summary: Optional[str] = Field(None, description="分段摘要")
+    score: float = Field(..., ge=0.0, le=1.0, description="相似度分数")
+
+
+class DocumentQueryResponseData(BaseModel):
+    """文档问答响应数据"""
+    answer: str = Field(..., description="AI 生成的答案")
+    relevant_chunks: List[RelevantChunk] = Field(..., description="相关文档片段列表")
+    confidence: Optional[float] = Field(None, ge=0.0, le=1.0, description="置信度")

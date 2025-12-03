@@ -1,3 +1,4 @@
+using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using Microsoft.Extensions.Options;
@@ -12,12 +13,17 @@ public class AiServiceOptions
     /// <summary>
     /// AI 服务基础 URL
     /// </summary>
-    public string BaseUrl { get; set; } = "http://api.xifg.com.cn/_internal/ai";
+    public string BaseUrl { get; set; } = "http://localhost:8001/api/ai";
+    
+    /// <summary>
+    /// 内部调用 Token（用于调用 Python Agent）
+    /// </summary>
+    public string? InternalToken { get; set; }
     
     /// <summary>
     /// 请求超时时间（秒）
     /// </summary>
-    public int TimeoutSeconds { get; set; } = 60;
+    public int TimeoutSeconds { get; set; } = 300; // 文档处理可能需要较长时间
 }
 
 /// <summary>
@@ -296,5 +302,237 @@ public class AiServiceClient
             return false;
         }
     }
+
+    /// <summary>
+    /// 处理文档（解析+分段+摘要+知识结构）
+    /// </summary>
+    public async Task<DocumentProcessResponseDto> ProcessDocumentAsync(
+        string documentId,
+        string filePath,
+        string fileType,
+        string userId,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            _logger.LogInformation("调用文档处理接口: DocumentId={DocumentId}, FileType={FileType}, FilePath={FilePath}",
+                documentId, fileType, filePath);
+
+            var request = new DocumentProcessRequestDto
+            {
+                DocumentId = documentId,
+                FilePath = filePath,
+                FileType = fileType,
+                UserId = userId
+            };
+
+            // 添加内部调用 Token（从配置中读取）
+            var internalToken = _options.InternalToken ?? "default-internal-token-change-in-production";
+            
+            // 构建完整 URL（确保路径正确拼接）
+            // 注意：如果 BaseAddress 是 http://localhost:8001/api/ai，relativePath 应该是 "document/process"（不带前导斜杠）
+            // 这样会得到 http://localhost:8001/api/ai/document/process
+            var baseAddress = _httpClient.BaseAddress?.ToString().TrimEnd('/') ?? _options.BaseUrl.TrimEnd('/');
+            var requestUri = $"{baseAddress}/document/process";
+            _logger.LogInformation("BaseAddress: {BaseAddress}, 请求 URL: {RequestUri}", 
+                _httpClient.BaseAddress, requestUri);
+            
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri)
+            {
+                Content = JsonContent.Create(request)
+            };
+            requestMessage.Headers.Add("X-Internal-Token", internalToken);
+
+            var response = await _httpClient.SendAsync(requestMessage, cancellationToken);
+            response.EnsureSuccessStatusCode();
+
+            var result = await response.Content.ReadFromJsonAsync<AiServiceResponse<DocumentProcessResponseDto>>(
+                cancellationToken: cancellationToken);
+
+            if (result == null || !result.Success)
+            {
+                throw new Exception($"AI 服务返回错误: {result?.ErrorCode} - {result?.Message}");
+            }
+
+            return result.Data ?? throw new Exception("AI 服务返回数据为空");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "调用文档处理接口失败");
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// 文档问答
+    /// </summary>
+    public async Task<AiServiceDocumentQueryResponseDto> QueryDocumentAsync(
+        string documentId,
+        string userId,
+        string query,
+        int topK = 5,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            _logger.LogInformation("调用文档问答接口: DocumentId={DocumentId}, QueryLength={Length}",
+                documentId, query.Length);
+
+            var request = new DocumentQueryRequestDto
+            {
+                DocumentId = documentId,
+                UserId = userId,
+                Query = query,
+                TopK = topK
+            };
+
+            // 添加内部调用 Token
+            var internalToken = _options.InternalToken ?? "default-internal-token-change-in-production";
+            
+            // 构建完整 URL（确保路径正确拼接）
+            var baseAddress = _httpClient.BaseAddress?.ToString().TrimEnd('/') ?? _options.BaseUrl.TrimEnd('/');
+            var requestUri = $"{baseAddress}/document/query";
+            _logger.LogInformation("BaseAddress: {BaseAddress}, 请求 URL: {RequestUri}", 
+                _httpClient.BaseAddress, requestUri);
+            
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri)
+            {
+                Content = JsonContent.Create(request)
+            };
+            requestMessage.Headers.Add("X-Internal-Token", internalToken);
+
+            var response = await _httpClient.SendAsync(requestMessage, cancellationToken);
+            response.EnsureSuccessStatusCode();
+
+            var result = await response.Content.ReadFromJsonAsync<AiServiceResponse<AiServiceDocumentQueryResponseDto>>(
+                cancellationToken: cancellationToken);
+
+            if (result == null || !result.Success)
+            {
+                throw new Exception($"AI 服务返回错误: {result?.ErrorCode} - {result?.Message}");
+            }
+
+            return result.Data ?? throw new Exception("AI 服务返回数据为空");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "调用文档问答接口失败");
+            throw;
+        }
+    }
+}
+
+/// <summary>
+/// 文档处理请求 DTO
+/// </summary>
+public class DocumentProcessRequestDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("document_id")]
+    public string DocumentId { get; set; } = "";
+    
+    [System.Text.Json.Serialization.JsonPropertyName("file_path")]
+    public string FilePath { get; set; } = "";
+    
+    [System.Text.Json.Serialization.JsonPropertyName("file_type")]
+    public string FileType { get; set; } = "";
+    
+    [System.Text.Json.Serialization.JsonPropertyName("user_id")]
+    public string UserId { get; set; } = "";
+}
+
+/// <summary>
+/// 文档处理响应 DTO（AI 服务返回）
+/// </summary>
+public class DocumentProcessResponseDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("document_id")]
+    public string DocumentId { get; set; } = "";
+    
+    [System.Text.Json.Serialization.JsonPropertyName("summary")]
+    public string Summary { get; set; } = "";
+    
+    [System.Text.Json.Serialization.JsonPropertyName("knowledge_structure")]
+    public string KnowledgeStructure { get; set; } = "";
+    
+    [System.Text.Json.Serialization.JsonPropertyName("total_chunks")]
+    public int TotalChunks { get; set; }
+    
+    [System.Text.Json.Serialization.JsonPropertyName("chunks")]
+    public List<AiServiceDocumentChunkDto> Chunks { get; set; } = new();
+}
+
+/// <summary>
+/// 文档分段 DTO（AI 服务返回）
+/// </summary>
+public class AiServiceDocumentChunkDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("index")]
+    public int Index { get; set; }
+    
+    [System.Text.Json.Serialization.JsonPropertyName("content")]
+    public string Content { get; set; } = "";
+    
+    [System.Text.Json.Serialization.JsonPropertyName("summary")]
+    public string? Summary { get; set; }
+    
+    [System.Text.Json.Serialization.JsonPropertyName("metadata")]
+    public System.Text.Json.JsonElement? Metadata { get; set; }
+    
+    [System.Text.Json.Serialization.JsonPropertyName("vector_id")]
+    public string? VectorId { get; set; }
+}
+
+/// <summary>
+/// 文档问答请求 DTO
+/// </summary>
+public class DocumentQueryRequestDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("document_id")]
+    public string DocumentId { get; set; } = "";
+    
+    [System.Text.Json.Serialization.JsonPropertyName("user_id")]
+    public string UserId { get; set; } = "";
+    
+    [System.Text.Json.Serialization.JsonPropertyName("query")]
+    public string Query { get; set; } = "";
+    
+    [System.Text.Json.Serialization.JsonPropertyName("top_k")]
+    public int TopK { get; set; } = 5;
+}
+
+/// <summary>
+/// 文档问答响应 DTO（AI 服务返回）
+/// </summary>
+public class AiServiceDocumentQueryResponseDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("answer")]
+    public string Answer { get; set; } = "";
+    
+    [System.Text.Json.Serialization.JsonPropertyName("relevant_chunks")]
+    public List<AiServiceRelevantChunkDto> RelevantChunks { get; set; } = new();
+    
+    [System.Text.Json.Serialization.JsonPropertyName("confidence")]
+    public decimal? Confidence { get; set; }
+}
+
+/// <summary>
+/// 相关文档片段 DTO（AI 服务返回）
+/// </summary>
+public class AiServiceRelevantChunkDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("chunk_id")]
+    public long ChunkId { get; set; }
+    
+    [System.Text.Json.Serialization.JsonPropertyName("chunk_index")]
+    public int ChunkIndex { get; set; }
+    
+    [System.Text.Json.Serialization.JsonPropertyName("content")]
+    public string Content { get; set; } = "";
+    
+    [System.Text.Json.Serialization.JsonPropertyName("summary")]
+    public string? Summary { get; set; }
+    
+    [System.Text.Json.Serialization.JsonPropertyName("score")]
+    public decimal Score { get; set; }
 }
 
