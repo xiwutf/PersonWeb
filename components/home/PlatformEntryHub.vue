@@ -96,6 +96,15 @@ const entries = [
     glowBg: 'bg-gradient-to-br from-red-500/20 to-orange-500/20',
     tags: ['AI', 'Agent'],
     path: '/lab'
+  },
+  {
+    title: 'Side Projects',
+    description: '副业项目展示、能力证明',
+    icon: 'fas fa-briefcase',
+    iconBg: 'bg-gradient-to-br from-amber-500 to-yellow-500',
+    glowBg: 'bg-gradient-to-br from-amber-500/20 to-yellow-500/20',
+    tags: ['Freelance', 'Projects'],
+    path: '/side-projects'
   }
 ]
 

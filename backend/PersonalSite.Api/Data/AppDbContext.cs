@@ -96,6 +96,7 @@ public class AppDbContext : DbContext
     public DbSet<Document> Documents { get; set; }
     public DbSet<DocumentChunk> DocumentChunks { get; set; }
     public DbSet<DocumentQuery> DocumentQueries { get; set; }
+    public DbSet<SideProject> SideProjects { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

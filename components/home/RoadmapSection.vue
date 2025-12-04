@@ -38,8 +38,8 @@
           </h3>
           <div class="milestone-list">
             <div
-              v-for="(item, index) in inProgressItems"
-              :key="index"
+              v-for="item in inProgressItems"
+              :key="item.id || item.title"
               class="milestone-item"
               :class="item.status === 'in-progress' ? 'in-progress' : 'planned'"
               :ref="el => { if (el) itemRefs.push(el as HTMLElement) }"
@@ -86,9 +86,20 @@ const completedItems = computed(() => {
 
 // 获取未来规划（进行中和计划中的项目）
 const inProgressItems = computed(() => {
+  // 去重：根据 title 和 timeline 去重
+  const seen = new Set<string>()
   return roadmaps.value
     .filter(r => r.status === 'in_progress' || r.status === 'planned')
+    .filter(r => {
+      const key = `${r.title}-${r.timeline}`
+      if (seen.has(key)) {
+        return false
+      }
+      seen.add(key)
+      return true
+    })
     .map(r => ({
+      id: r.id,
       title: r.title,
       date: getTimelineLabel(r.timeline),
       status: r.status === 'in_progress' ? 'in-progress' : 'planned',
@@ -156,6 +167,9 @@ onMounted(async () => {
   await Promise.all([fetchChangelogs(), fetchRoadmaps()])
   loading.value = false
   
+  // 等待数据加载后再初始化动画
+  await nextTick()
+  
   // 动画初始化
   if (sectionTitleRef.value) {
     inView(sectionTitleRef.value, () => {
@@ -167,30 +181,8 @@ onMounted(async () => {
     })
   }
 
-  // 等待数据加载后再初始化动画
+  // 等待 refs 更新后再初始化列表动画
   await nextTick()
-  if (itemRefs.value.length > 0) {
-    inView(itemRefs.value[0], () => {
-      animate(
-        itemRefs.value,
-        { opacity: [0, 1], x: [-20, 0] },
-        { duration: 0.5, delay: stagger(0.1), easing: 'ease-out' }
-      )
-    })
-  }
-})
-
-onMounted(() => {
-  if (sectionTitleRef.value) {
-    inView(sectionTitleRef.value, () => {
-      animate(
-        sectionTitleRef.value!,
-        { opacity: [0, 1], y: [30, 0] },
-        { duration: 0.6, easing: 'ease-out' }
-      )
-    })
-  }
-
   if (itemRefs.value.length > 0) {
     inView(itemRefs.value[0], () => {
       animate(

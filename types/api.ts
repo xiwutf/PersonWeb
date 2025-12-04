@@ -326,6 +326,102 @@ export interface StyleUsageStats {
   lastUsedAt?: string
 }
 
+// ==================== 兼职项目相关 ====================
+
+export interface SideProject {
+  id: number
+  title: string
+  description?: string
+  clientName?: string
+  clientContact?: string
+  source?: string
+  category?: string
+  techStack?: string
+  budgetMin?: number
+  budgetMax?: number
+  priceFinal?: number
+  status: number // 0 进行中 / 1 已完成 / 2 待付款 / 3 已取消
+  startTime?: string
+  endTime?: string
+  isPublic: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface CreateSideProjectDto {
+  title: string
+  description?: string
+  clientName?: string
+  clientContact?: string
+  source?: string
+  category?: string
+  techStack?: string
+  budgetMin?: number
+  budgetMax?: number
+  priceFinal?: number
+  status?: number
+  startTime?: string
+  endTime?: string
+  isPublic?: boolean
+}
+
+export interface UpdateSideProjectDto {
+  title?: string
+  description?: string
+  clientName?: string
+  clientContact?: string
+  source?: string
+  category?: string
+  techStack?: string
+  budgetMin?: number
+  budgetMax?: number
+  priceFinal?: number
+  status?: number
+  startTime?: string
+  endTime?: string
+  isPublic?: boolean
+}
+
+export interface ProjectDashboardSummaryDto {
+  totalIncome: number
+  totalProjects: number
+  avgProjectPrice: number
+  avgDurationDays: number
+}
+
+export interface IncomeTrendPointDto {
+  date: string
+  income: number
+}
+
+export interface CategoryDistributionItemDto {
+  category: string
+  count: number
+  income: number
+}
+
+export interface TechStackDistributionItemDto {
+  tech: string
+  count: number
+  income: number
+}
+
+export interface ClientSourceItemDto {
+  source: string
+  count: number
+  income: number
+}
+
+export interface DurationBucketItemDto {
+  bucketName: string
+  count: number
+}
+
+export interface SideProjectListResponse {
+  Total: number
+  List: SideProject[]
+}
+
 // ==================== API 响应格式 ====================
 
 export interface ApiResponse<T = any> {

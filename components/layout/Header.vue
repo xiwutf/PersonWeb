@@ -309,6 +309,14 @@ const moreNavigationItems = computed(() => {
     })
   }
 
+  // 副业项目展示
+  items.push({
+    title: '副业项目',
+    path: '/side-projects',
+    icon: '💼',
+    moduleKey: 'core'
+  })
+
   if (isModuleEnabled('game')) {
     items.push({
       title: '小游戏',

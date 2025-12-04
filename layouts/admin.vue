@@ -154,6 +154,38 @@
           </div>
         </div>
 
+        <!-- 副业管理 -->
+        <div class="menu-group">
+          <button 
+            @click="toggleMenu('sideBusiness')"
+            class="menu-group-header"
+            :class="{ 'menu-group-active': isMenuActive('sideBusiness') }"
+          >
+            <i class="fas fa-chevron-right transition-transform duration-200 mr-2 text-xs" :class="{ 'rotate-90': expandedMenus.sideBusiness }"></i>
+            <span class="text-xs text-text-muted uppercase font-semibold tracking-wider">副业管理</span>
+          </button>
+          <div v-show="expandedMenus.sideBusiness" class="menu-group-items">
+            <a 
+              href="/admin/side-projects"
+              class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm"
+              :class="{ 'admin-sidebar-link-active': route.path === '/admin/side-projects' }"
+              @click.prevent="() => router.push('/admin/side-projects')"
+            >
+              <i class="fas fa-list w-5 text-center mr-3"></i>
+              <span>副业项目管理</span>
+            </a>
+            <a 
+              href="/admin/side-projects/dashboard"
+              class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm"
+              :class="{ 'admin-sidebar-link-active': route.path === '/admin/side-projects/dashboard' }"
+              @click.prevent="() => router.push('/admin/side-projects/dashboard')"
+            >
+              <i class="fas fa-chart-pie w-5 text-center mr-3"></i>
+              <span>数据分析看板</span>
+            </a>
+          </div>
+        </div>
+
         <!-- 个人管理 -->
         <div class="menu-group">
           <button 
@@ -431,6 +463,7 @@ const expandedMenus = ref<Record<string, boolean>>({
   project: false,
   knowledge: false,
   analytics: false,
+  sideBusiness: false,
   personal: false,
   commercial: false,
   system: false,
@@ -440,7 +473,12 @@ const expandedMenus = ref<Record<string, boolean>>({
 
 // 切换菜单展开/折叠
 const toggleMenu = (menuKey: string) => {
-  expandedMenus.value[menuKey] = !expandedMenus.value[menuKey]
+  const currentValue = expandedMenus.value[menuKey]
+  expandedMenus.value[menuKey] = !currentValue
+  // 调试信息
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`[Menu] 切换菜单 ${menuKey}: ${currentValue} -> ${!currentValue}`)
+  }
 }
 
 // 检查菜单是否应该高亮（包含活动路由）
@@ -455,6 +493,8 @@ const isMenuActive = (menuKey: string): boolean => {
       return path === '/admin/knowledge' || path === '/admin/timeline' || path === '/admin/time-capsules' || path === '/admin/document-agent'
     case 'analytics':
       return path === '/admin/analytics' || path === '/admin/investment'
+    case 'sideBusiness':
+      return path.startsWith('/admin/side-projects')
     case 'personal':
       return path === '/admin/tasks' || path === '/admin/goals' || path === '/admin/toolbox'
     case 'commercial':
@@ -494,6 +534,9 @@ const autoExpandMenu = () => {
   }
   if (path === '/admin/analytics' || path === '/admin/investment') {
     expandedMenus.value.analytics = true
+  }
+  if (path.startsWith('/admin/side-projects')) {
+    expandedMenus.value.sideBusiness = true
   }
   if (path === '/admin/tasks' || path === '/admin/goals' || path === '/admin/toolbox') {
     expandedMenus.value.personal = true
