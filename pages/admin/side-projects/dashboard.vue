@@ -130,6 +130,50 @@
       </n-grid>
     </div>
 
+    <!-- 图表分析区域 -->
+    <div class="charts-section" v-if="!hasNoData">
+      <n-grid :cols="12" :x-gap="16" :y-gap="16">
+        <!-- 项目类型饼图 -->
+        <n-grid-item :span="6">
+          <ClientOnly>
+            <DashboardCategoryChart 
+              :category-data="categoryDistribution" 
+            />
+          </ClientOnly>
+        </n-grid-item>
+        
+        <!-- 技术栈饼图 -->
+        <n-grid-item :span="6">
+          <ClientOnly>
+            <DashboardTechChart 
+              :tech-data="techDistribution" 
+            />
+          </ClientOnly>
+        </n-grid-item>
+        
+        <!-- 收入趋势折线图 -->
+        <n-grid-item :span="12">
+          <ClientOnly>
+            <DashboardIncomeTrend :data="incomeTrend" :loading="loading" />
+          </ClientOnly>
+        </n-grid-item>
+        
+        <!-- 客户来源柱状图 -->
+        <n-grid-item :span="6">
+          <ClientOnly>
+            <DashboardClientSource :data="clientSource" />
+          </ClientOnly>
+        </n-grid-item>
+        
+        <!-- 项目周期分布柱状图 -->
+        <n-grid-item :span="6">
+          <ClientOnly>
+            <DashboardDurationBuckets :data="durationBuckets" />
+          </ClientOnly>
+        </n-grid-item>
+      </n-grid>
+    </div>
+
     <!-- 主体内容区域 -->
     <div class="main-content" v-if="!hasNoData">
       <n-grid :cols="12" :x-gap="16" :y-gap="16">
@@ -138,7 +182,7 @@
           <div class="content-card projects-card">
             <div class="card-header">
               <div class="card-header-left">
-                <h3 class="card-title">最近项目</h3>
+                <h3 class="card-title">项目列表</h3>
                 <n-tag v-if="recentProjects.length > 0" size="small" type="info" class="card-count-tag">
                   {{ recentProjects.length }} 个项目
                 </n-tag>
@@ -245,7 +289,7 @@
                 </div>
                 <div v-else class="stats-list">
                   <div
-                    v-for="item in categoryDistribution.slice(0, 5)"
+                    v-for="item in categoryDistribution.slice(0, 10)"
                     :key="item.category"
                     class="stats-item"
                   >
@@ -272,7 +316,7 @@
                 </div>
                 <div v-else class="stats-list">
                   <div
-                    v-for="item in techDistribution.slice(0, 5)"
+                    v-for="item in techDistribution.slice(0, 10)"
                     :key="item.tech"
                     class="stats-item"
                   >
@@ -296,69 +340,11 @@
         </n-grid-item>
       </n-grid>
     </div>
-
-    <!-- 图表分析区域 -->
-    <div class="charts-section" v-if="!hasNoData">
-      <n-grid :cols="12" :x-gap="16" :y-gap="16">
-        <!-- 收入趋势折线图 -->
-        <n-grid-item :span="8">
-          <ClientOnly>
-            <DashboardIncomeTrend :data="incomeTrend" :loading="loading" />
-          </ClientOnly>
-        </n-grid-item>
-        
-        <!-- 项目类型和技术栈饼图 -->
-        <n-grid-item :span="4">
-          <ClientOnly>
-            <DashboardCategoryTechTabs 
-              :category-data="categoryDistribution" 
-              :tech-data="techDistribution" 
-            />
-          </ClientOnly>
-        </n-grid-item>
-        
-        <!-- 客户来源柱状图 -->
-        <n-grid-item :span="6">
-          <ClientOnly>
-            <DashboardClientSource :data="clientSource" />
-          </ClientOnly>
-        </n-grid-item>
-        
-        <!-- 项目周期分布柱状图 -->
-        <n-grid-item :span="6">
-          <ClientOnly>
-            <DashboardDurationBuckets :data="durationBuckets" />
-          </ClientOnly>
-        </n-grid-item>
-      </n-grid>
-    </div>
-
-    <!-- 数据表格区域 -->
-    <div class="table-section" v-if="!hasNoData">
-      <div class="content-card">
-        <div class="card-header">
-          <h3 class="card-title">项目数据表格</h3>
-        </div>
-        <div class="card-content">
-          <ClientOnly>
-            <n-data-table
-              :columns="tableColumns"
-              :data="recentProjects"
-              :loading="loading"
-              :pagination="false"
-              :bordered="false"
-              :single-line="false"
-              class="projects-table"
-            />
-          </ClientOnly>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, h } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { 
   NDatePicker, 
@@ -374,13 +360,11 @@ import {
   NList,
   NListItem,
   NThing,
-  NTag,
-  NDataTable,
-  zhCN,
-  type DataTableColumns
+  NTag
 } from 'naive-ui'
 import DashboardIncomeTrend from '~/components/side-projects/DashboardIncomeTrend.vue'
-import DashboardCategoryTechTabs from '~/components/side-projects/DashboardCategoryTechTabs.vue'
+import DashboardCategoryChart from '~/components/side-projects/DashboardCategoryChart.vue'
+import DashboardTechChart from '~/components/side-projects/DashboardTechChart.vue'
 import DashboardClientSource from '~/components/side-projects/DashboardClientSource.vue'
 import DashboardDurationBuckets from '~/components/side-projects/DashboardDurationBuckets.vue'
 import { useApi } from '~/composables/useApi'
@@ -751,89 +735,6 @@ const handleProjectClick = (id: number) => {
   router.push(`/admin/side-projects/${id}`)
 }
 
-// 表格列定义
-const tableColumns: DataTableColumns<SideProject> = [
-  {
-    title: '项目名称',
-    key: 'title',
-    width: 200,
-    ellipsis: {
-      tooltip: true
-    }
-  },
-  {
-    title: '项目类型',
-    key: 'category',
-    width: 120,
-    render: (row) => row.category || '未分类'
-  },
-  {
-    title: '技术栈',
-    key: 'techStack',
-    width: 200,
-    render: (row) => {
-      if (!row.techStack) return '-'
-      const techs = parseTechStack(row.techStack)
-      return techs.length > 0 ? techs.join(', ') : '-'
-    }
-  },
-  {
-    title: '客户名称',
-    key: 'clientName',
-    width: 150,
-    ellipsis: {
-      tooltip: true
-    },
-    render: (row) => row.clientName || '-'
-  },
-  {
-    title: '客户来源',
-    key: 'source',
-    width: 120,
-    render: (row) => row.source || '-'
-  },
-  {
-    title: '项目金额',
-    key: 'priceFinal',
-    width: 120,
-    align: 'right',
-    render: (row) => row.priceFinal ? `¥${formatNumber(row.priceFinal)}` : '-'
-  },
-  {
-    title: '状态',
-    key: 'status',
-    width: 100,
-    render: (row) => {
-      return h(NTag, {
-        type: getStatusType(row.status),
-        size: 'small'
-      }, { default: () => getStatusText(row.status) })
-    }
-  },
-  {
-    title: '开始时间',
-    key: 'startTime',
-    width: 120,
-    render: (row) => formatDate(row.startTime)
-  },
-  {
-    title: '结束时间',
-    key: 'endTime',
-    width: 120,
-    render: (row) => formatDate(row.endTime)
-  },
-  {
-    title: '是否公开',
-    key: 'isPublic',
-    width: 100,
-    render: (row) => {
-      return h(NTag, {
-        type: row.isPublic ? 'success' : 'default',
-        size: 'small'
-      }, { default: () => row.isPublic ? '可展示' : '不展示' })
-    }
-  }
-]
 
 // 生命周期
 onMounted(() => {
@@ -1051,6 +952,15 @@ onMounted(() => {
   margin-bottom: var(--spacing-xl);
 }
 
+.main-content :deep(.n-grid) {
+  align-items: stretch;
+}
+
+.main-content :deep(.n-grid-item) {
+  display: flex;
+  flex-direction: column;
+}
+
 /* 内容卡片 - 深色玻璃态 */
 .content-card {
   background: var(--color-bg-elevated);
@@ -1093,7 +1003,7 @@ onMounted(() => {
   flex: 1;
   padding: var(--spacing-lg);
   overflow-y: auto;
-  max-height: 600px;
+  min-height: 0;
 }
 
 /* 项目列表 */
@@ -1196,10 +1106,15 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-lg);
+  height: 100%;
+  align-items: stretch;
 }
 
 .stats-card {
-  min-height: 200px;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .stats-list {
@@ -1292,43 +1207,6 @@ onMounted(() => {
   margin-top: var(--spacing-xl);
 }
 
-/* 表格区域 */
-.table-section {
-  margin-top: var(--spacing-xl);
-}
-
-.projects-table {
-  background: transparent;
-}
-
-.projects-table :deep(.n-data-table) {
-  background: transparent;
-}
-
-.projects-table :deep(.n-data-table-th) {
-  background: var(--color-bg-elevated);
-  border-bottom: 1px solid var(--color-border-subtle);
-  color: var(--color-text-main);
-  font-weight: 600;
-}
-
-.projects-table :deep(.n-data-table-td) {
-  border-bottom: 1px solid var(--color-border-subtle);
-  background: var(--color-bg-card);
-}
-
-.projects-table :deep(.n-data-table-tr:hover .n-data-table-td) {
-  background: var(--color-bg-elevated);
-}
-
-.projects-table :deep(.n-data-table-tbody .n-data-table-tr) {
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.projects-table :deep(.n-data-table-tbody .n-data-table-tr:hover) {
-  transform: translateX(2px);
-}
 
 /* 响应式 */
 @media (max-width: 1200px) {
