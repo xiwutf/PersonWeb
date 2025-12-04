@@ -425,6 +425,11 @@
 </template>
 
 <script setup lang="ts">
+// 使用默认布局（包含顶部导航栏）
+definePageMeta({
+  layout: 'default'
+})
+
 import { ref, computed } from 'vue'
 import type { SearchResults, SearchResultItem } from '~/types/api'
 import { useNotification } from '~/composables/useToast'

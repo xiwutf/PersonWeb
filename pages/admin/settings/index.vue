@@ -120,6 +120,17 @@
             </div>
             <i class="fas fa-chevron-right card-arrow"></i>
           </NuxtLink>
+
+          <NuxtLink to="/admin/settings/fonts" class="settings-card">
+            <div class="card-icon">
+              <i class="fas fa-font"></i>
+            </div>
+            <div class="card-content">
+              <h3 class="card-title">字体管理</h3>
+              <p class="card-desc">管理系统字体配置，包括字体族、字号、字重等设置</p>
+            </div>
+            <i class="fas fa-chevron-right card-arrow"></i>
+          </NuxtLink>
         </div>
       </div>
 

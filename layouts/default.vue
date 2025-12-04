@@ -1,4 +1,10 @@
 ﻿<template>
+  <!-- 
+    默认布局（default.vue）
+    用途：所有普通页面的默认布局，包含完整的顶部导航栏和页脚
+    使用场景：博客、工具、项目展示、关于等所有前台页面
+    注意：如果页面没有使用 definePageMeta 指定布局，Nuxt 3 会自动使用此布局
+  -->
   <!-- 使用 AppNaiveConfig 统一管理 Naive UI 主题配置 -->
   <AppNaiveConfig>
     <!-- 最外层容器：使用主题背景色和文字颜色 -->
@@ -13,8 +19,12 @@
     <!-- 风格切换面板 -->
     <ThemeSwitcher />
     
-    <!-- 头部导航 -->
-    <Header />
+    <!-- 注意：Header 已移至 app.vue 全局挂载，此处不再需要 -->
+    
+    <!-- 调试：显示当前布局名 -->
+    <div class="fixed bottom-2 right-2 text-xs text-white/40 z-[9999] bg-black/20 px-2 py-1 rounded">
+      layout: default
+    </div>
     
     <!-- 主要内容区域 -->
     <main class="flex-1 pt-20 relative z-10">
@@ -52,7 +62,16 @@
 </template>
 
 <script setup lang="ts">
-// 导入组件（Nuxt 3 会自动导入 components 目录下的组件）
+// 显式导入组件，确保 Nuxt 3 自动导入正常工作
+import AppNaiveConfig from '~/components/layout/AppNaiveConfig.vue'
+import MouseTrail from '~/components/effects/MouseTrail.vue'
+import ThemeSwitcher from '~/components/layout/ThemeSwitcher.vue'
+import Footer from '~/components/layout/Footer.vue'
+import AIAssistant from '~/components/ai/AIAssistant.vue'
+import VisitorInteractionPanel from '~/components/VisitorInteractionPanel.vue'
+import VisitorBehaviorListener from '~/components/VisitorBehaviorListener.vue'
+import VisitorSidebarDrawer from '~/components/VisitorSidebarDrawer.vue'
+import SecretAdminAccess from '~/components/admin/SecretAdminAccess.vue'
 
 // 使用主题组合式函数
 const { currentTheme } = useTheme()

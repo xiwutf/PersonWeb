@@ -166,6 +166,10 @@
 </template>
 
 <script setup lang="ts">
+// 确保使用 default 布局（包含 Header）
+definePageMeta({
+  layout: 'default'
+})
 const api = useApi()
 const tools = ref<any[]>([])
 const pending = ref(true)

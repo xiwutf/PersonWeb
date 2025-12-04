@@ -270,6 +270,11 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 
+// 确保使用 default 布局（包含 Header）
+definePageMeta({
+  layout: 'default'
+})
+
 const api = useApi()
 
 // 使用 .NET API 查询博客数据

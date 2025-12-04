@@ -1,8 +1,18 @@
 ﻿<template>
+  <!-- 
+    AI 实验室布局（ai.vue）
+    用途：AI 相关页面的专用布局，包含顶部导航栏
+    使用场景：AI 实验室首页 (/ai)、AI 相关详情页 (/ai/[type]/[slug])
+    特点：主内容区域使用 pt-24（顶部内边距）
+  -->
   <!-- AI 布局：使用主题背景色和文字颜色，替换写死的深色背景 -->
   <div class="min-h-screen flex flex-col bg-bg-body text-text-main">
-    <!-- 头部导航 -->
-    <Header />
+    <!-- 注意：Header 已移至 app.vue 全局挂载，此处不再需要 -->
+    
+    <!-- 调试：显示当前布局名 -->
+    <div class="fixed bottom-2 right-2 text-xs text-white/40 z-[9999] bg-black/20 px-2 py-1 rounded">
+      layout: ai
+    </div>
     
     <!-- 主要内容区域 -->
     <main class="flex-1 pt-24">
@@ -32,6 +42,15 @@
 </template>
 
 <script setup lang="ts">
+// 显式导入组件，确保 Nuxt 3 自动导入正常工作
+import MouseTrail from '~/components/effects/MouseTrail.vue'
+import ThemeSwitcher from '~/components/layout/ThemeSwitcher.vue'
+import Footer from '~/components/layout/Footer.vue'
+import AIAssistant from '~/components/ai/AIAssistant.vue'
+import VisitorInteractionPanel from '~/components/VisitorInteractionPanel.vue'
+import VisitorBehaviorListener from '~/components/VisitorBehaviorListener.vue'
+import VisitorSidebarDrawer from '~/components/VisitorSidebarDrawer.vue'
+
 const route = useRoute()
 const api = useApi()
 

@@ -1,9 +1,16 @@
 ﻿<template>
+  <!-- 
+    后台管理布局（admin.vue）
+    用途：后台管理系统的专用布局，不包含前台顶部导航栏，使用侧边栏导航
+    使用场景：所有 /admin/* 路径下的页面
+    注意：此布局不包含前台 Header 组件，这是正确的设计，因为后台管理系统有自己的导航体系
+  -->
   <div 
     class="min-h-screen flex admin-layout"
     :style="layoutStyle"
   >
     <!-- 侧边栏：使用主题颜色，替换写死的 text-white 和 border-slate-700 -->
+    <!-- 注意：后台管理布局不包含前台 Header 组件，使用侧边栏导航 -->
     <aside 
       class="w-64 flex flex-col fixed h-full left-0 top-0 z-50 admin-sidebar"
       :style="sidebarStyle"
@@ -315,6 +322,14 @@
               <i class="fas fa-adjust w-5 text-center mr-3"></i>
               <span>UI主题</span>
             </NuxtLink>
+            <NuxtLink 
+              to="/admin/settings/fonts" 
+              class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm"
+              :class="{ 'admin-sidebar-link-active': route.path === '/admin/settings/fonts' }"
+            >
+              <i class="fas fa-font w-5 text-center mr-3"></i>
+              <span>字体管理</span>
+            </NuxtLink>
           </div>
         </div>
 
@@ -454,7 +469,8 @@ const isMenuActive = (menuKey: string): boolean => {
              path === '/admin/admin-styles' ||
              // path === '/admin/settings/styles' || // 已简化，移除手动CSS配置
              path === '/admin/settings/themes' ||
-             path === '/admin/theme-settings'
+             path === '/admin/theme-settings' ||
+             path === '/admin/settings/fonts'
     case 'other':
       return path.startsWith('/admin/friend-links') || 
              path === '/admin/visitor-messages' ||
@@ -495,7 +511,8 @@ const autoExpandMenu = () => {
       path === '/admin/admin-styles' ||
       path === '/admin/settings/styles' ||
       path === '/admin/settings/themes' ||
-      path === '/admin/theme-settings') {
+      path === '/admin/theme-settings' ||
+      path === '/admin/settings/fonts') {
     expandedMenus.value.theme = true
   }
   if (path.startsWith('/admin/friend-links') || 

@@ -12,10 +12,14 @@ html,
 body {
   margin: 0;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-family-base, -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", Arial, sans-serif);
+  font-size: var(--font-size-base, 16px);
+  font-weight: var(--font-weight-base, 400);
+  line-height: var(--line-height-base, 1.6);
   background-color: var(--color-bg-page);
   color: var(--color-text-main);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  text-shadow: none !important; /* 移除荧光效果，使用 !important 确保优先级 */
+  transition: background-color 0.3s ease, color 0.3s ease, font-family 0.3s ease, font-size 0.3s ease;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -24,6 +28,7 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+  text-shadow: none !important; /* 移除荧光效果 */
   transition: color 0.2s ease;
 }
 
@@ -71,23 +76,23 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
   line-height: 1.2;
   color: var(--color-text-main);
-  text-shadow: none; /* 移除荧光效果 */
+  text-shadow: none !important; /* 移除荧光效果，使用 !important 确保优先级 */
 }
 
 h1 {
-  font-size: var(--font-size-h1);
+  font-size: var(--font-size-h1, var(--font-size-h1, 2rem));
 }
 
 h2 {
-  font-size: var(--font-size-h2);
+  font-size: var(--font-size-h2, var(--font-size-h2, 1.5rem));
 }
 
 h3 {
-  font-size: var(--font-size-h3);
+  font-size: var(--font-size-h3, var(--font-size-h3, 1.25rem));
 }
 
 h4 {
-  font-size: var(--font-size-h4);
+  font-size: var(--font-size-h4, var(--font-size-h4, 1.125rem));
 }
 
 /* ==================== 段落样式 ==================== */
@@ -95,7 +100,17 @@ p {
   margin: 0;
   line-height: 1.6;
   color: var(--color-text-main);
+  text-shadow: none !important; /* 移除荧光效果 */
 }
+
+/* ==================== 全局移除所有荧光效果 ==================== */
+/* 确保所有文字元素都没有 text-shadow，防止主题切换后出现荧光效果 */
+* {
+  text-shadow: none !important;
+}
+
+/* 但允许特定元素使用 text-shadow（如果需要） */
+/* 如果需要某个元素有阴影效果，可以单独设置，但默认全部移除 */
 
 /* ==================== 代码样式 ==================== */
 code {

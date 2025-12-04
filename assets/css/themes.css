@@ -78,27 +78,24 @@
 .theme-cyberpunk h1,
 .theme-cyberpunk h2,
 .theme-cyberpunk h3 {
-  text-shadow: 0 0 10px var(--theme-primary);
+  text-shadow: none; /* 移除荧光效果 */
   font-weight: 700;
   letter-spacing: 0.1em;
 }
 
 .theme-cyberpunk a {
   color: var(--theme-primary);
-  text-shadow: 0 0 5px var(--theme-primary);
+  text-shadow: none; /* 移除荧光效果 */
 }
 
 .theme-cyberpunk a:hover {
-  text-shadow: 0 0 15px var(--theme-primary);
+  text-shadow: none; /* 移除荧光效果 */
 }
 
 /* 霓虹灯效果 */
 .theme-cyberpunk .neon-text {
   color: var(--theme-primary);
-  text-shadow: 
-    0 0 5px var(--theme-primary),
-    0 0 10px var(--theme-primary),
-    0 0 15px var(--theme-primary);
+  text-shadow: none; /* 移除荧光效果 */
   animation: neon-flicker 2s infinite alternate;
 }
 
@@ -184,7 +181,7 @@
 .theme-cartoon h2,
 .theme-cartoon h3 {
   font-weight: 700;
-  text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
+  text-shadow: none; /* 移除荧光效果 */
 }
 
 .theme-cartoon button {
@@ -254,9 +251,7 @@
 .theme-lab-3d h2,
 .theme-lab-3d h3 {
   color: var(--theme-text);
-  text-shadow: 
-    0 0 10px rgba(139, 92, 246, 0.5),
-    0 2px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: none; /* 移除荧光效果 */
   transform: translateZ(10px);
 }
 

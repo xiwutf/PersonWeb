@@ -113,6 +113,11 @@
 </template>
 
 <script setup lang="ts">
+// 使用默认布局（包含顶部导航栏）
+definePageMeta({
+  layout: 'default'
+})
+
 import {
   Chart as ChartJS,
   RadialLinearScale,

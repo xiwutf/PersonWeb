@@ -14,11 +14,6 @@
           </div>
           <span 
             class="header-logo-text logo-text"
-            :style="{ 
-              color: isDark ? '#ffffff' : undefined,
-              fontWeight: isDark ? '900' : undefined,
-              opacity: isDark ? 1 : undefined
-            }"
           >溪午听风</span>
         </NuxtLink>
 
@@ -138,12 +133,19 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+// 显式导入组件，确保 Nuxt 3 自动导入正常工作
+import ThemeToggle from '~/components/layout/ThemeToggle.vue'
 
 // Nuxt 3 自动导入
 // @ts-ignore - Nuxt 3 auto-imports
 const router = useRouter()
 // @ts-ignore - Nuxt 3 auto-imports
 const route = useRoute()
+
+// 调试日志：确认 Header 在哪些路由上被挂载
+onMounted(() => {
+  console.log('🔵 Header mounted, path =', route.fullPath, 'route.path =', route.path)
+})
 
 // 检测是否为暗色主题
 const isDark = computed(() => {
@@ -374,12 +376,22 @@ const closeMoreMenu = () => {
 onMounted(() => {
   const handleClickOutside = (e: MouseEvent) => {
     const target = e.target as HTMLElement
-    if (!target.closest('.relative')) {
+    // 检查点击是否在下拉菜单或其父容器之外
+    const dropdownMenu = document.querySelector('.header-dropdown-menu')
+    const moreButton = document.querySelector('.header-more-menu-button')
+    if (dropdownMenu && moreButton) {
+      if (!dropdownMenu.contains(target) && !moreButton.contains(target)) {
+        isMoreMenuOpen.value = false
+      }
+    } else if (!target.closest('.relative')) {
       isMoreMenuOpen.value = false
     }
   }
   if (process.client) {
-    document.addEventListener('click', handleClickOutside)
+    // 延迟添加事件监听器，避免立即触发
+    setTimeout(() => {
+      document.addEventListener('click', handleClickOutside)
+    }, 100)
     onUnmounted(() => {
       document.removeEventListener('click', handleClickOutside)
     })
@@ -390,35 +402,46 @@ onMounted(() => {
 <style scoped>
 /* Header 容器样式 */
 .header-container {
-  position: fixed;
-  top: 1rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
+  position: fixed !important;
+  top: 1rem !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 10000 !important; /* 提高 z-index，确保在所有元素之上 */
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
 }
 
-/* 独立悬浮导航栏样式 */
+/* 独立悬浮导航栏样式 - 参考截图效果：浅灰色背景 */
 .floating-nav {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 1rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05);
-  width: calc(100% - 2rem);
-  max-width: 1280px;
-  transition: all 0.3s ease;
+  background: #e2e8f0 !important; /* 浅灰色背景（参考截图） */
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(148, 163, 184, 0.3) !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+  width: calc(100% - 2rem) !important;
+  max-width: 1280px !important;
+  transition: all 0.3s ease !important;
+  color: #0f172a !important; /* 浅色主题下使用深色文字 */
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
 }
 
-/* 暗色主题下的导航栏 - 更深的背景确保对比度 */
+/* 暗色主题下的导航栏 - 深灰色背景 */
 :global(.dark) .floating-nav,
 :global([data-theme="dark"]) .floating-nav,
 :global([data-theme="hybrid-super-dark"]) .floating-nav {
-  background: rgba(0, 0, 0, 0.95) !important;
+  background: #1e293b !important; /* 深灰色背景 */
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
-  border-color: rgba(255, 255, 255, 0.3) !important;
+  border-color: rgba(148, 163, 184, 0.3) !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+  color: #ffffff !important; /* 暗色主题下使用白色文字 */
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
 }
 
 /* 确保暗色主题下导航栏内的所有文字清晰可见 - 使用纯白色 */
@@ -443,49 +466,107 @@ onMounted(() => {
   opacity: 1 !important;
 }
 
-/* 导航链接文字 - 使用纯白色 */
+/* 导航链接文字 - 使用清晰可见的颜色 */
+/* 浅色主题下使用深灰色 */
+.floating-nav .text-text-muted {
+  color: #64748b !important;
+}
+
+/* 暗色主题下使用浅灰色 */
 :global(.dark) .floating-nav .text-text-muted,
 :global([data-theme="dark"]) .floating-nav .text-text-muted,
 :global([data-theme="hybrid-super-dark"]) .floating-nav .text-text-muted {
-  color: #ffffff !important;
+  color: rgba(255, 255, 255, 0.7) !important;
 }
 
 /* 导航链接悬停状态 */
+/* 浅色主题下悬停使用深色 */
+.floating-nav a:hover {
+  color: #0f172a !important;
+}
+
+/* 暗色主题下悬停使用白色 */
 :global(.dark) .floating-nav a:hover,
 :global([data-theme="dark"]) .floating-nav a:hover,
 :global([data-theme="hybrid-super-dark"]) .floating-nav a:hover {
   color: #ffffff !important;
 }
 
-/* 搜索图标和主题切换图标 - 纯白色 */
+/* 搜索图标和主题切换图标 - 使用清晰可见的颜色 */
+/* 浅色主题下使用深色 */
+.floating-nav svg {
+  color: #0f172a !important;
+}
+
+/* 暗色主题下使用白色 */
 :global(.dark) .floating-nav svg,
 :global([data-theme="dark"]) .floating-nav svg,
 :global([data-theme="hybrid-super-dark"]) .floating-nav svg {
   color: #ffffff !important;
 }
 
-/* 更多菜单按钮文字 - 纯白色 */
+/* 更多菜单按钮文字 - 使用清晰可见的颜色 */
+/* 浅色主题下使用深色 */
+.floating-nav button {
+  color: #0f172a !important;
+}
+
+/* 暗色主题下使用白色 */
 :global(.dark) .floating-nav button,
 :global([data-theme="dark"]) .floating-nav button,
 :global([data-theme="hybrid-super-dark"]) .floating-nav button {
   color: #ffffff !important;
 }
 
-/* 移动端菜单按钮图标 - 纯白色 */
+/* 移动端菜单按钮图标 - 使用清晰可见的颜色 */
+/* 浅色主题下使用深色 */
+.floating-nav .md\:hidden svg {
+  color: #0f172a !important;
+}
+
+/* 暗色主题下使用白色 */
 :global(.dark) .floating-nav .md\:hidden svg,
 :global([data-theme="dark"]) .floating-nav .md\:hidden svg,
 :global([data-theme="hybrid-super-dark"]) .floating-nav .md\:hidden svg {
   color: #ffffff !important;
 }
 
-/* 强制所有导航链接文字在暗色主题下使用纯白色 */
-:global(.dark) .floating-nav nav a,
-:global([data-theme="dark"]) .floating-nav nav a,
-:global([data-theme="hybrid-super-dark"]) .floating-nav nav a {
-  color: #ffffff !important;
+/* 非激活状态的导航链接：浅灰色背景，浅灰色文字（参考截图效果） */
+.floating-nav nav a:not(.header-nav-link-active) {
+  background-color: rgba(148, 163, 184, 0.2) !important; /* 浅灰色背景 */
+  color: #94a3b8 !important; /* 浅灰色文字 */
 }
 
-/* 强制所有 span 文字在暗色主题下使用纯白色 */
+/* 暗色主题下非激活状态 */
+:global(.dark) .floating-nav nav a:not(.header-nav-link-active),
+:global([data-theme="dark"]) .floating-nav nav a:not(.header-nav-link-active),
+:global([data-theme="hybrid-super-dark"]) .floating-nav nav a:not(.header-nav-link-active) {
+  background-color: rgba(148, 163, 184, 0.15) !important; /* 浅灰色背景 */
+  color: rgba(255, 255, 255, 0.6) !important; /* 浅灰色文字 */
+}
+
+/* 激活状态的导航链接：深蓝色背景，蓝色文字（参考截图效果） */
+.floating-nav nav a.header-nav-link-active {
+  background-color: #1e40af !important; /* 深蓝色背景 */
+  color: #3b82f6 !important; /* 蓝色文字 */
+}
+
+/* 暗色主题下激活状态 */
+:global(.dark) .floating-nav nav a.header-nav-link-active,
+:global([data-theme="dark"]) .floating-nav nav a.header-nav-link-active,
+:global([data-theme="hybrid-super-dark"]) .floating-nav nav a.header-nav-link-active {
+  background-color: #1e40af !important; /* 深蓝色背景 */
+  color: #60a5fa !important; /* 浅蓝色文字 */
+}
+
+/* 强制所有 span 文字使用清晰可见的颜色 */
+/* 浅色主题下使用深色 */
+.floating-nav span {
+  color: #0f172a !important;
+  opacity: 1 !important;
+}
+
+/* 暗色主题下使用白色 */
 :global(.dark) .floating-nav span,
 :global([data-theme="dark"]) .floating-nav span,
 :global([data-theme="hybrid-super-dark"]) .floating-nav span {
@@ -497,19 +578,28 @@ onMounted(() => {
 :global(.dark) .floating-nav a.flex.items-center span,
 :global([data-theme="dark"]) .floating-nav a.flex.items-center span,
 :global([data-theme="hybrid-super-dark"]) .floating-nav a.flex.items-center span {
-  color: #ffffff !important;
-  font-weight: 800 !important;
+  color: var(--color-text-main) !important;
+  font-weight: 700 !important;
   opacity: 1 !important;
   text-shadow: none !important;
 }
 
-/* 直接针对 Logo 文字 - 最高优先级 */
+/* 直接针对 Logo 文字 - 参考截图效果：白色文字 */
+.floating-nav .logo-text {
+  color: #ffffff !important; /* 白色文字（参考截图） */
+  font-weight: 700 !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+/* 暗色主题下也使用白色 */
 :global(.dark) .floating-nav .logo-text,
 :global([data-theme="dark"]) .floating-nav .logo-text,
-:global([data-theme="hybrid-super-dark"]) .floating-nav .logo-text,
-.floating-nav .logo-text {
+:global([data-theme="hybrid-super-dark"]) .floating-nav .logo-text {
   color: #ffffff !important;
-  font-weight: 900 !important;
+  font-weight: 700 !important;
   opacity: 1 !important;
   text-shadow: none !important;
   -webkit-font-smoothing: antialiased !important;
@@ -521,11 +611,17 @@ onMounted(() => {
 :global([data-theme="dark"]) .logo-text,
 :global([data-theme="hybrid-super-dark"]) .logo-text {
   color: #ffffff !important;
-  font-weight: 900 !important;
+  font-weight: 700 !important;
   opacity: 1 !important;
 }
 
 /* 确保图标 emoji 也清晰可见（通过父元素文字颜色） */
+/* 浅色主题下使用深色 */
+.floating-nav .mr-1\.5 {
+  color: #0f172a !important;
+}
+
+/* 暗色主题下使用白色 */
 :global(.dark) .floating-nav .mr-1\.5,
 :global([data-theme="dark"]) .floating-nav .mr-1\.5,
 :global([data-theme="hybrid-super-dark"]) .floating-nav .mr-1\.5 {
@@ -548,12 +644,22 @@ onMounted(() => {
 }
 
 .dropdown-enter-from {
-  opacity: 0;
+  opacity: 0 !important;
   transform: translateY(-10px);
 }
 
+.dropdown-enter-to {
+  opacity: 1 !important;
+  transform: translateY(0);
+}
+
+.dropdown-leave-from {
+  opacity: 1 !important;
+  transform: translateY(0);
+}
+
 .dropdown-leave-to {
-  opacity: 0;
+  opacity: 0 !important;
   transform: translateY(-10px);
 }
 

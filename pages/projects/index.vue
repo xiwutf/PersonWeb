@@ -124,6 +124,11 @@
 </template>
 
 <script setup lang="ts">
+// 确保使用 default 布局（包含 Header）
+definePageMeta({
+  layout: 'default'
+})
+
 import {
   Chart as ChartJS,
   Title,
