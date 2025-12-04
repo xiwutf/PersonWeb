@@ -142,10 +142,7 @@ const router = useRouter()
 // @ts-ignore - Nuxt 3 auto-imports
 const route = useRoute()
 
-// 调试日志：确认 Header 在哪些路由上被挂载
-onMounted(() => {
-  console.log('🔵 Header mounted, path =', route.fullPath, 'route.path =', route.path)
-})
+// 注意：Header 组件已在 app.vue 中全局挂载，确保所有页面都显示导航栏
 
 // 检测是否为暗色主题
 const isDark = computed(() => {

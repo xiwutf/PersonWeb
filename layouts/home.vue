@@ -15,11 +15,6 @@
     
     <!-- 注意：Header 已移至 app.vue 全局挂载，此处不再需要 -->
     
-    <!-- 调试：显示当前布局名 -->
-    <div class="fixed bottom-2 right-2 text-xs text-white/40 z-[9999] bg-black/20 px-2 py-1 rounded">
-      layout: home
-    </div>
-    
     <!-- 主要内容区域 (无顶部内边距，用于沉浸式 Hero) -->
     <main class="flex-1 pt-0">
       <slot />
