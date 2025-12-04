@@ -101,11 +101,16 @@ export default defineNuxtConfig({
 
   // CSS 配置
   css: [
-    '~/assets/styles/theme.css', // 统一主题样式文件（必须在最前面，定义 CSS 变量）
+    '~/assets/styles/tokens.css', // 设计 Token：全局 CSS 变量
+    '~/assets/styles/base.css', // 基础样式和 Reset
+    '~/assets/styles/ui-patch-naive.css', // Naive UI 补丁样式
+    '~/assets/styles/theme.css', // 保留旧的主题文件（兼容性） // 统一主题样式文件（必须在最前面，定义 CSS 变量）
     '~/assets/css/main.css', // main.css 已经导入了 components.css
     '~/assets/css/themes.css',
     '~/assets/css/header.css', // Header 组件统一样式
     '~/assets/css/footer.css', // Footer 组件统一样式
+    '~/assets/css/hero.css', // Hero 组件统一样式
+    '~/assets/css/home.css', // 首页组件统一样式
     '~/assets/css/visitor-interaction.css',
     '~/assets/css/about.css',
     '~/assets/css/tools.css',
@@ -138,7 +143,7 @@ export default defineNuxtConfig({
           // 抑制 Sass legacy-js-api 警告
           // 注意：通过环境变量 SASS_SILENCE_DEPRECATIONS=legacy-js-api 来抑制警告
           // 已在 package.json 的脚本中设置
-          additionalData: `@use "sass:math";`,
+          // 如果项目不使用 SCSS，此配置用于抑制依赖中的 Sass 警告
           quietDeps: true
         }
       }

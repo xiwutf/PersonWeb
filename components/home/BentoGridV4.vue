@@ -1,12 +1,12 @@
 <template>
-  <section class="bento-grid-v4 py-24 sm:py-32 relative">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
-      <div class="text-center mb-16" ref="sectionTitleRef">
-        <h2 class="text-4xl lg:text-5xl font-bold text-text-main mb-4">按功能分类展示</h2>
-        <p class="text-lg text-text-muted">探索不同类别的创作内容</p>
+  <section class="bento-grid-v4">
+    <div class="bento-grid-v4-container">
+      <div class="bento-grid-v4-header" ref="sectionTitleRef">
+        <h2 class="bento-grid-v4-title">按功能分类展示</h2>
+        <p class="bento-grid-v4-subtitle">探索不同类别的创作内容</p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="bento-grid-v4-grid">
         <!-- AI Agents / AI 实验 -->
         <BentoCardSection
           title="AI Agents"

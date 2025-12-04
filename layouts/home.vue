@@ -38,6 +38,14 @@
 </template>
 
 <script setup lang="ts">
+// 显式导入组件（确保 Nuxt 3 自动导入正常工作）
+import ParticleBackground from '~/components/effects/ParticleBackground.vue'
+import MouseTrail from '~/components/effects/MouseTrail.vue'
+import Header from '~/components/layout/Header.vue'
+import Footer from '~/components/layout/Footer.vue'
+import ThemeSwitcher from '~/components/layout/ThemeSwitcher.vue'
+import SecretAdminAccess from '~/components/admin/SecretAdminAccess.vue'
+
 const route = useRoute()
 const api = useApi()
 

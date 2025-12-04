@@ -1,6 +1,8 @@
 ﻿<template>
-  <!-- 最外层容器：使用主题背景色和文字颜色 -->
-  <div class="min-h-screen flex flex-col relative bg-bg-body text-text-main">
+  <!-- 使用 AppNaiveConfig 统一管理 Naive UI 主题配置 -->
+  <AppNaiveConfig>
+    <!-- 最外层容器：使用主题背景色和文字颜色 -->
+    <div class="min-h-screen flex flex-col relative bg-bg-body text-text-main">
     <!-- 动态背景效果（根据主题切换） -->
     <!-- 🔴 已禁用：可能导致滚动条闪烁（requestAnimationFrame 持续动画） -->
     <!-- <BackgroundEffects :effect="currentBackground" :config="backgroundConfig" /> -->
@@ -45,7 +47,8 @@
     
     <!-- 隐秘的后台入口 -->
     <SecretAdminAccess />
-  </div>
+    </div>
+  </AppNaiveConfig>
 </template>
 
 <script setup lang="ts">

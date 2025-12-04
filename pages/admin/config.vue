@@ -23,9 +23,11 @@
             >
               <option value="light">浅色 (Light)</option>
               <option value="dark">暗色 (Dark)</option>
+              <option value="lab">实验室 (Lab)</option>
               <option value="tech-blue">科技蓝 (Tech Blue)</option>
               <option value="paper">纸张阅读 (Paper)</option>
               <option value="forest">墨绿自然 (Forest)</option>
+              <option value="hybrid-super">Hybrid Super</option>
               <option value="hybrid-super-dark">Hybrid Super（深色）</option>
               <option value="hybrid-super-light">Hybrid Super（浅色）</option>
             </select>
@@ -97,7 +99,7 @@ const newKey = ref('')
 const newValue = ref('')
 
 // 站点主题相关状态
-const siteTheme = ref<'light' | 'dark' | 'tech-blue' | 'paper' | 'forest' | 'hybrid-super-dark' | 'hybrid-super-light'>('light')
+const siteTheme = ref<'light' | 'dark' | 'lab' | 'tech-blue' | 'paper' | 'forest' | 'hybrid-super' | 'hybrid-super-dark' | 'hybrid-super-light'>('light')
 const savingTheme = ref(false)
 
 const formatKey = (key: string | number) => {
@@ -135,7 +137,7 @@ const fetchTheme = async () => {
   try {
     const res = await api.get<{ theme: string }>('/Config/theme')
     if (res && res.theme) {
-      const validThemes = ['light', 'dark', 'tech-blue', 'paper', 'forest', 'hybrid-super', 'hybrid-super-dark', 'hybrid-super-light']
+      const validThemes = ['light', 'dark', 'lab', 'tech-blue', 'paper', 'forest', 'hybrid-super', 'hybrid-super-dark', 'hybrid-super-light']
       if (validThemes.includes(res.theme)) {
         siteTheme.value = res.theme as any
       }
@@ -158,7 +160,12 @@ const saveTheme = async () => {
   try {
     // 调用 PUT /api/Config/theme，传入 { theme }
     await api.put<{ theme: string }>('/Config/theme', { theme: siteTheme.value })
-    success('主题保存成功，访客刷新页面后即可看到新主题')
+    
+    // 保存成功后，立即切换前端主题
+    const { setTheme } = useTheme()
+    setTheme(siteTheme.value as any)
+    
+    success('主题保存成功，已立即切换到新主题')
   } catch (e: unknown) {
     handleError(e, '保存主题失败')
   } finally {

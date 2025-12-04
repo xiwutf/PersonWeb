@@ -9,6 +9,7 @@
 ## 📋 目录
 
 1. [样式管理规范](#样式管理规范) ⭐ **必读**
+   - [样式架构规范](./STYLE_ARCHITECTURE.md) - 详细的样式架构说明
 2. [代码组织规范](#代码组织规范)
 3. [命名规范](#命名规范)
 4. [组件开发规范](#组件开发规范)
@@ -31,32 +32,168 @@
 
 ⚠️ **每次修改页面样式前，请先查看样式管理开发提醒文档！**
 
-### 样式组织方式
+### 样式架构（分层设计）
 
-#### 1. 组件级样式（`<style scoped>`）
+项目采用**分层样式架构**，结合 Naive UI 主题系统，实现统一的样式管理。
 
-- **用途**：组件特有的样式
-- **位置**：组件文件内的 `<style scoped>` 块
-- **示例**：
+#### 架构分层
+
+```
+┌─────────────────────────────────────────┐
+│  后端主题配置 (/api/Config/theme)       │
+│  ↓                                      │
+│  useTheme().setTheme()                  │
+│  ↓                                      │
+│  document.documentElement.dataset.theme │
+│  ↓                                      │
+│  tokens.css (CSS 变量)                  │
+│  ↓                                      │
+│  ┌─────────────────┬─────────────────┐ │
+│  │ 自定义组件样式   │  Naive UI 主题  │ │
+│  │ (使用 CSS 变量) │ (themeOverrides)│ │
+│  └─────────────────┴─────────────────┘ │
+└─────────────────────────────────────────┘
+```
+
+#### 1. 设计 Token 层（`assets/styles/tokens.css`）
+
+**职责**：定义全局 CSS 变量（颜色、圆角、阴影、字号、间距等）
+
+**特点**：
+- 通过 `:root` 定义默认主题变量
+- 通过 `html[data-theme="xxx"]` 为不同主题设置变量覆盖
+- 支持的主题：`light`、`dark`、`lab`、`tech-blue`、`paper`、`forest`、`hybrid-super`、`hybrid-super-dark`、`hybrid-super-light`
+
+**变量命名规范**：
+```css
+/* 颜色变量 */
+--color-bg-page          /* 页面背景色 */
+--color-bg-body          /* 主体背景色 */
+--color-bg-card          /* 卡片背景色 */
+--color-bg-elevated      /* 提升层背景色 */
+--color-text-main        /* 主要文字颜色 */
+--color-text-muted       /* 次要文字颜色 */
+--color-text-disabled    /* 禁用文字颜色 */
+--color-primary          /* 主色调 */
+--color-primary-base     /* 主色基础值 */
+--color-primary-soft     /* 主色柔和版本 */
+--color-primary-hover    /* 主色悬停状态 */
+--color-border-subtle    /* 细微边框颜色 */
+--color-border-default    /* 默认边框颜色 */
+--color-border-strong     /* 强调边框颜色 */
+
+/* 圆角变量 */
+--radius-sm              /* 小圆角 */
+--radius-md              /* 中等圆角 */
+--radius-lg              /* 大圆角 */
+--radius-xl              /* 超大圆角 */
+
+/* 阴影变量 */
+--shadow-sm              /* 小阴影 */
+--shadow-md              /* 中等阴影 */
+--shadow-lg              /* 大阴影 */
+--shadow-xl              /* 超大阴影 */
+--shadow-2xl             /* 2倍超大阴影 */
+--shadow-soft            /* 柔和阴影 */
+
+/* 字号变量 */
+--font-size-h1           /* 一级标题 */
+--font-size-h2           /* 二级标题 */
+--font-size-h3           /* 三级标题 */
+--font-size-h4           /* 四级标题 */
+--font-size-body         /* 正文 */
+--font-size-sm           /* 小号 */
+--font-size-xs           /* 超小号 */
+
+/* 间距变量 */
+--spacing-xs             /* 超小间距 */
+--spacing-sm             /* 小间距 */
+--spacing-md             /* 中等间距 */
+--spacing-lg             /* 大间距 */
+--spacing-xl             /* 超大间距 */
+--spacing-2xl            /* 2倍超大间距 */
+```
+
+**使用方式**：
 ```vue
 <style scoped>
-.component-container {
-  /* 组件特有样式 */
+.my-component {
+  background-color: var(--color-bg-card);
+  color: var(--color-text-main);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--spacing-md);
 }
 </style>
 ```
 
-#### 2. 全局统一样式（`assets/css/`）
+#### 2. 基础样式层（`assets/styles/base.css`）
+
+**职责**：基础样式和 Reset
+
+**内容**：
+- `html, body` 的默认字体、背景色、文字颜色
+- 链接、图片、按钮、输入框、列表等基础重置
+- 标题、段落、代码等排版样式
+- 滚动条和选择文本样式
+
+**特点**：不覆盖 Naive UI 内部样式，只做基础重置
+
+#### 3. Naive UI 补丁层（`assets/styles/ui-patch-naive.css`）
+
+**职责**：Naive UI 全局补丁样式
+
+**内容**：
+- Card、Dialog、Button、Input、Select、Form、Table、Menu 等组件的统一风格补丁
+- 使用 CSS 变量（如 `var(--radius-xl)`、`var(--shadow-soft)`）确保与主题系统联动
+
+**特点**：只做视觉风格调整，不覆盖核心功能
+
+#### 4. Naive UI 配置层（`components/layout/AppNaiveConfig.vue`）
+
+**职责**：统一管理 Naive UI 的主题配置
+
+**功能**：
+- 使用 `NConfigProvider`、`NDialogProvider`、`NMessageProvider`、`NNotificationProvider` 包裹内容
+- 基于 `useTheme().currentTheme` 计算 Naive 主题（light 用默认，其他用 darkTheme）
+- 在 `themeOverrides` 中使用 CSS 变量（如 `var(--color-primary)`）作为主题色
+- 支持 SSR，使用动态导入避免服务端错误
+
+**使用方式**：
+- 已在 `layouts/default.vue` 中使用 `<AppNaiveConfig>` 包裹内容
+- 所有 Naive UI 组件自动应用统一的主题配置，无需额外设置
+
+#### 5. 组件级样式（`<style scoped>`）
+
+- **用途**：组件特有的样式
+- **位置**：组件文件内的 `<style scoped>` 块
+- **要求**：优先使用 CSS 变量，避免硬编码颜色、尺寸等值
+- **示例**：
+```vue
+<style scoped>
+.component-container {
+  background-color: var(--color-bg-card);
+  color: var(--color-text-main);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--spacing-md);
+}
+</style>
+```
+
+#### 6. 功能模块统一样式（`assets/css/`）
 
 - **用途**：跨组件复用的样式类
 - **位置**：`assets/css/` 目录下的 CSS 文件
-- **命名规范**：使用功能前缀，如 `visitor-*`、`admin-*` 等
+- **命名规范**：使用功能前缀，如 `visitor-*`、`admin-*`、`home-*` 等
+- **要求**：使用 CSS 变量，确保与主题系统联动
 - **示例**：
   - `assets/css/visitor-interaction.css` - 访客互动统一样式
-  - `assets/css/themes.css` - 主题样式
-  - `assets/css/main.css` - 全局基础样式
+  - `assets/css/header.css` - Header 组件统一样式
+  - `assets/css/footer.css` - Footer 组件统一样式
+  - `assets/css/home.css` - 首页组件统一样式
 
-#### 3. 动态样式（`:style` 绑定）
+#### 7. 动态样式（`:style` 绑定）
 
 - **使用场景**：仅用于必须动态计算的属性
 - **允许的属性**：
@@ -65,10 +202,45 @@
   - 动画参数（`animationDuration`, `animationDelay`）
 - **禁止的属性**：
   - 固定尺寸（应使用 CSS 类）
-  - 固定颜色（应使用 CSS 类）
+  - 固定颜色（应使用 CSS 变量）
   - 布局属性（应使用 CSS 类）
 
-#### 4. 样式类命名规范
+### 主题切换机制
+
+#### 工作原理
+
+1. **后端配置驱动**：
+   - 从 `/api/Config/theme` 获取当前主题
+   - 保存主题时调用 `PUT /api/Config/theme`
+   - 保存成功后立即调用 `setTheme()` 切换前端主题
+
+2. **前端主题应用**：
+   - `useTheme().setTheme()` 设置 `document.documentElement.dataset.theme`
+   - `tokens.css` 中的 `html[data-theme="xxx"]` 选择器生效
+   - CSS 变量自动切换，所有使用变量的组件自动更新
+
+3. **Naive UI 主题联动**：
+   - `AppNaiveConfig` 组件监听 `currentTheme` 变化
+   - 自动计算 Naive 主题（light 用默认，其他用 darkTheme）
+   - `themeOverrides` 中使用 CSS 变量，确保与主题系统联动
+
+#### 切换主题示例
+
+```typescript
+// 在组件中切换主题
+const { setTheme } = useTheme()
+
+// 切换到深色主题
+setTheme('dark')
+
+// 切换到实验室主题
+setTheme('lab')
+
+// 切换到混合超级风格主题
+setTheme('hybrid-super')
+```
+
+### 样式类命名规范
 
 ```css
 /* 功能前缀 + 元素类型 + 状态/变体 */
@@ -80,9 +252,117 @@
 
 ### 样式提取规则
 
-1. **重复样式** → 提取到统一样式文件
+1. **重复样式** → 提取到统一样式文件（`assets/css/`）
 2. **组件特有样式** → 保留在组件 `<style scoped>` 中
 3. **动态计算样式** → 使用 `:style` 绑定（最小化）
+4. **设计变量** → 使用 CSS 变量（`var(--color-primary)` 等）
+
+### 样式开发流程
+
+1. **确定样式类型**：
+   - 设计变量（颜色、圆角、阴影等）→ 使用 CSS 变量
+   - 组件特有样式 → 使用 `<style scoped>`
+   - 跨组件复用样式 → 提取到 `assets/css/` 统一样式文件
+
+2. **使用 CSS 变量**：
+   - 优先使用 `tokens.css` 中定义的变量
+   - 避免硬编码颜色、尺寸等值
+   - 确保样式与主题系统联动
+
+3. **Naive UI 组件**：
+   - 直接使用 Naive UI 组件，无需额外配置
+   - 组件会自动应用 `AppNaiveConfig` 中的主题配置
+   - 如需自定义样式，使用 CSS 变量覆盖
+
+### 示例对比
+
+❌ **错误示例**：
+```vue
+<template>
+  <div :style="{ padding: '1rem', background: 'rgba(0,0,0,0.5)' }">
+    <button :style="{ width: '100px', height: '40px', color: '#fff' }">按钮</button>
+  </div>
+</template>
+```
+
+✅ **正确示例**：
+```vue
+<template>
+  <div class="visitor-modal">
+    <button class="visitor-button-primary">按钮</button>
+  </div>
+</template>
+
+<style scoped>
+.visitor-modal {
+  padding: var(--spacing-md);
+  background-color: var(--color-bg-elevated);
+  border-radius: var(--radius-lg);
+}
+
+.visitor-button-primary {
+  width: 100px;
+  height: 40px;
+  background-color: var(--color-primary);
+  color: var(--color-text-main);
+  border-radius: var(--radius-md);
+}
+</style>
+```
+
+✅ **动态样式正确示例**：
+```vue
+<template>
+  <div 
+    class="danmaku-item danmaku-row-0"
+    :style="{ 
+      color: dynamicColor,  // ✅ 必须动态计算
+      animationDuration: `${duration}s`  // ✅ 必须动态计算
+    }"
+  >
+    弹幕内容
+  </div>
+</template>
+
+<style scoped>
+.danmaku-item {
+  position: absolute;
+  left: 100%;
+  background-color: var(--color-bg-card);  /* ✅ 使用 CSS 变量 */
+  border-radius: var(--radius-md);        /* ✅ 使用 CSS 变量 */
+  /* 其他固定样式 */
+}
+
+.danmaku-row-0 { top: 10%; }  /* ✅ 使用CSS类控制位置 */
+</style>
+```
+
+### Naive UI 组件使用
+
+所有 Naive UI 组件会自动应用 `AppNaiveConfig` 中的主题配置，无需额外设置：
+
+```vue
+<template>
+  <!-- 直接使用，自动应用主题 -->
+  <n-button type="primary">按钮</n-button>
+  <n-card>卡片内容</n-card>
+  <n-input v-model:value="inputValue" placeholder="请输入" />
+  <n-data-table :columns="columns" :data="data" />
+</template>
+```
+
+如需自定义样式，使用 CSS 变量：
+
+```vue
+<style scoped>
+/* 自定义 Naive 组件样式 */
+.n-card {
+  background-color: var(--color-bg-card);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-soft);
+}
+</style>
+```
 
 ### 示例对比
 
@@ -150,11 +430,21 @@
 ```
 项目根目录/
 ├── assets/
-│   └── css/              # 全局样式文件
-│       ├── main.css      # 基础样式
-│       ├── themes.css    # 主题样式
+│   ├── styles/          # 全局样式文件（设计 Token 和基础样式）
+│   │   ├── tokens.css   # 设计 Token：CSS 变量定义（颜色、圆角、阴影等）
+│   │   ├── base.css     # 基础样式和 Reset
+│   │   ├── ui-patch-naive.css  # Naive UI 补丁样式
+│   │   └── theme.css    # 旧主题文件（兼容性，逐步迁移）
+│   └── css/             # 功能模块统一样式文件
+│       ├── main.css     # 全局基础样式
+│       ├── themes.css   # 主题样式（兼容性）
+│       ├── header.css  # Header 组件统一样式
+│       ├── footer.css  # Footer 组件统一样式
+│       ├── home.css     # 首页组件统一样式
 │       └── visitor-interaction.css  # 功能模块统一样式
-├── components/           # Vue 组件
+├── components/          # Vue 组件
+│   ├── layout/          # 布局组件
+│   │   └── AppNaiveConfig.vue  # Naive UI 统一配置容器
 │   ├── home/            # 首页相关组件
 │   ├── admin/           # 后台管理组件
 │   └── [功能模块]/      # 按功能模块组织
@@ -162,13 +452,17 @@
 │   ├── admin/           # 后台管理页面
 │   └── [功能模块]/      # 按功能模块组织
 ├── composables/         # 组合式函数
+│   └── useTheme.ts      # 主题管理（设置 data-theme）
 ├── layouts/             # 布局组件
+│   └── default.vue      # 默认布局（使用 AppNaiveConfig 包裹）
 ├── middleware/          # 路由中间件
 ├── plugins/             # 插件
+│   └── init-theme.client.ts  # 主题初始化（从后端获取主题）
 ├── types/               # TypeScript 类型定义
 ├── backend/             # 后端代码（C#）
 │   └── PersonalSite.Api/
 │       ├── Controllers/  # API 控制器
+│       │   └── ConfigController.cs  # 配置控制器（主题配置）
 │       ├── Models/       # 数据模型
 │       └── Data/         # 数据访问层
 └── database/            # 数据库脚本
@@ -642,8 +936,11 @@ AI: "检测到以下变更：
 
 - ✅ 所有样式放在 `<style scoped>` 或统一样式文件中
 - ✅ 使用 CSS 类而非内联样式
+- ✅ **优先使用 CSS 变量**（`var(--color-primary)` 等），避免硬编码颜色、尺寸等值
 - ✅ 动态样式仅用于必须运行时计算的属性
 - ✅ 提取可复用的样式到统一样式文件
+- ✅ 使用 `AppNaiveConfig` 统一管理 Naive UI 主题
+- ✅ 确保样式与主题系统联动（使用 CSS 变量）
 
 ### 2. 代码质量
 
@@ -696,6 +993,8 @@ AI: "检测到以下变更：
 - ❌ 禁止在 template 中使用内联 `style` 属性（固定样式）
 - ❌ 禁止在 template 中使用 Tailwind 类（应使用自定义 CSS 类）
 - ❌ 禁止在多个组件中重复定义相同的样式
+- ❌ **禁止硬编码颜色、圆角、阴影等设计值**（应使用 CSS 变量）
+- ❌ 禁止在组件中直接设置 `document.documentElement.dataset.theme`（应使用 `useTheme().setTheme()`）
 
 ### 代码相关
 
@@ -713,9 +1012,12 @@ AI: "检测到以下变更：
 
 ## 📚 相关文档
 
+- [样式架构规范](./STYLE_ARCHITECTURE.md) - 详细的样式架构说明和最佳实践
+- [样式管理开发提醒](./STYLE_MANAGEMENT_REMINDER.md) - 样式开发流程和示例
 - [模块系统文档](../architecture/README_MODULES.md)
 - [Naive UI 使用指南](../config/README_NAIVE_UI.md)
 - [UI 组件库文档](../config/UI_COMPONENT_LIBRARY.md)
+- [样式架构重构报告](../STYLE_ARCHITECTURE_REFACTOR.md) - 重构完成报告
 
 ---
 
@@ -725,6 +1027,7 @@ AI: "检测到以下变更：
 - **2024-12-XX**: 添加访客互动模块开发规范
 - **2024-12-XX**: 完善 API 和数据库规范
 - **2024-12-XX**: 添加文档维护规范，要求开发过程中随时记录和更新文档
+- **2024-12-03**: 重构样式架构，添加分层样式管理规范（tokens.css、base.css、ui-patch-naive.css、AppNaiveConfig）
 
 ---
 

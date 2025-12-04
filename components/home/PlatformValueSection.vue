@@ -1,31 +1,31 @@
 <template>
-  <section class="platform-value-section py-24 sm:py-32 relative">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
-      <div class="text-center mb-16">
-        <h2 class="text-4xl lg:text-5xl font-bold text-text-main mb-4">这不是普通个人主页</h2>
-        <p class="text-lg text-text-muted max-w-2xl mx-auto">
+  <section class="platform-value-section">
+    <div class="platform-value-section-container">
+      <div class="platform-value-section-header">
+        <h2 class="platform-value-section-title">这不是普通个人主页</h2>
+        <p class="platform-value-section-subtitle">
           这是一个 AI 创作平台，围绕个人 IP 构建的创作操作系统
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="platform-value-section-grid">
         <div
           v-for="(value, index) in values"
           :key="index"
-          class="value-card"
+          class="platform-value-card"
           :ref="el => { if (el) cardRefs[index] = el as HTMLElement }"
         >
-          <div class="card-inner">
+          <div class="platform-value-card-inner">
             <!-- 图标 -->
-            <div class="card-icon" :class="value.iconBg">
-              <i :class="value.icon" class="text-3xl"></i>
+            <div class="platform-value-card-icon" :class="value.iconBg">
+              <i :class="value.icon"></i>
             </div>
             
             <!-- 标题 -->
-            <h3 class="card-title">{{ value.title }}</h3>
+            <h3 class="platform-value-card-title">{{ value.title }}</h3>
             
             <!-- 描述 -->
-            <p class="card-description">{{ value.description }}</p>
+            <p class="platform-value-card-description">{{ value.description }}</p>
           </div>
         </div>
       </div>
@@ -77,35 +77,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.platform-value-section {
-  background-color: var(--color-bg-body);
-}
-
-.value-card {
-  @apply relative;
-}
-
-.card-inner {
-  @apply relative bg-bg-card backdrop-blur-xl border border-border-subtle rounded-3xl p-8 h-full transition-all duration-300;
-  box-shadow: var(--shadow-md);
-}
-
-.value-card:hover .card-inner {
-  @apply scale-105 border-border-default;
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-4px);
-}
-
-.card-icon {
-  @apply w-16 h-16 rounded-2xl flex items-center justify-center mb-6;
-}
-
-.card-title {
-  @apply text-2xl font-bold text-text-main mb-4;
-}
-
-.card-description {
-  @apply text-base text-text-muted leading-relaxed;
-}
+/* 样式已移至 assets/css/home.css */
+/* 保留组件特有的样式（如果有） */
 </style>
 

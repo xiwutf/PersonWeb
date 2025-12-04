@@ -33,11 +33,15 @@ export const useTheme = () => {
    * 更新：现在支持后端 tokens 覆盖
    * - 先合并默认 tokens 和后端覆盖的 tokens
    * - 再写入 CSS 变量
+   * 
+   * 重要：设置 data-theme 属性，这样 CSS 选择器 html[data-theme='xxx'] 会生效
+   * 这是新的样式架构的核心：通过 data-theme 驱动 tokens.css 中的主题变量
    */
   const applyTheme = (theme: ThemeName) => {
     if (!process.client) return
 
-    // 1. 设置 data-theme 属性，这样 CSS 选择器 :root[data-theme='xxx'] 会生效
+    // 1. 设置 data-theme 属性，这样 CSS 选择器 html[data-theme='xxx'] 会生效
+    // 这是新的样式架构的核心：通过 data-theme 驱动 tokens.css 中的主题变量
     document.documentElement.dataset.theme = theme
 
     // 2. 获取后端覆盖的 tokens（如果有）

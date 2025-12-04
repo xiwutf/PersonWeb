@@ -106,6 +106,10 @@
   font-weight: 500; /* font-medium */
   transition: all 0.2s; /* transition-all duration-200 */
   cursor: pointer;
+  font-family: inherit; /* 确保使用统一的字体 */
+  text-decoration: none; /* 移除链接下划线 */
+  display: inline-flex; /* 确保布局一致 */
+  align-items: center; /* 垂直居中 */
 }
 
 .header-nav-link-active {

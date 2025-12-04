@@ -1,25 +1,25 @@
 <template>
-  <section class="timeline-super py-24 relative">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-12" ref="titleRef">
-        <h2 class="text-3xl lg:text-4xl font-bold text-text-main mb-4">平台发展轨迹</h2>
-        <p class="text-lg text-text-muted">这个平台 / 这个创作空间是如何一步步搭出来的</p>
+  <section class="timeline-super">
+    <div class="timeline-super-container">
+      <div class="timeline-super-header" ref="titleRef">
+        <h2 class="timeline-super-title">平台发展轨迹</h2>
+        <p class="timeline-super-subtitle">这个平台 / 这个创作空间是如何一步步搭出来的</p>
       </div>
 
-      <div class="relative" ref="timelineRef">
+      <div class="timeline-wrapper" ref="timelineRef">
         <!-- 时间线 -->
-        <div class="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-cyan-500 via-blue-500 to-purple-500"></div>
+        <div class="timeline-line"></div>
 
-        <div class="space-y-8">
+        <div class="timeline-items">
           <div
             v-for="(event, index) in events"
             :key="event.id"
-            class="timeline-item relative pl-20"
+            class="timeline-item"
             :ref="el => { if (el) timelineItemsRef[index] = el as HTMLElement }"
           >
             <!-- 时间点 -->
             <div
-              class="absolute left-0 top-2 w-16 h-16 rounded-full flex items-center justify-center text-2xl shadow-lg transform transition-all duration-300 hover:scale-110 border-4 border-black"
+              class="timeline-dot"
               :style="{
                 backgroundColor: event.color || '#00d9ff',
                 boxShadow: `0 0 20px ${event.color || '#00d9ff'}40`
@@ -30,27 +30,27 @@
 
             <!-- 内容卡片 -->
             <div
-              class="timeline-card bg-bg-card backdrop-blur-xl rounded-xl border border-border-subtle hover:border-border-default transition-all duration-300 p-6"
+              class="timeline-card"
               :style="{ borderLeftColor: event.color || '#00d9ff', borderLeftWidth: '4px' }"
             >
-              <div class="flex items-start justify-between mb-2">
-                <h3 class="text-xl font-bold text-text-main">{{ event.title }}</h3>
+              <div class="timeline-card-header">
+                <h3 class="timeline-card-title">{{ event.title }}</h3>
                 <span
-                  class="px-3 py-1 rounded-full text-sm font-semibold text-text-main"
+                  class="timeline-card-year"
                   :style="{ backgroundColor: event.color || 'var(--color-primary)' }"
                 >
                   {{ event.year }}
                 </span>
               </div>
-              <p v-if="event.description" class="text-text-muted leading-relaxed">
+              <p v-if="event.description" class="timeline-card-description">
                 {{ event.description }}
               </p>
             </div>
           </div>
         </div>
 
-        <div v-if="loading" class="text-center py-8 text-text-muted">加载中...</div>
-        <div v-if="!loading && events.length === 0" class="text-center py-8 text-text-muted">
+        <div v-if="loading" class="timeline-loading">加载中...</div>
+        <div v-if="!loading && events.length === 0" class="timeline-empty">
           暂无成长记录
         </div>
       </div>
@@ -117,21 +117,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.timeline-super {
-  background: var(--color-bg-body);
-}
-
-.timeline-item {
-  opacity: 0;
-}
-
-.timeline-card {
-  transition: all 0.3s ease;
-}
-
-.timeline-card:hover {
-  transform: translateX(8px);
-  box-shadow: 0 8px 24px rgba(0, 217, 255, 0.15);
-}
+/* 样式已移至 assets/css/home.css */
+/* 保留组件特有的样式（如果有） */
 </style>
 

@@ -1,26 +1,26 @@
 <template>
-  <section class="ai-playground-preview py-24 sm:py-32 relative">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
-      <div class="text-center mb-12">
-        <h2 class="text-4xl lg:text-5xl font-bold text-text-main mb-4">AI Playground</h2>
-        <p class="text-lg text-text-muted">在首页直接体验 AI 能力</p>
+  <section class="ai-playground-preview">
+    <div class="ai-playground-preview-container">
+      <div class="ai-playground-preview-header">
+        <h2 class="ai-playground-preview-title">AI Playground</h2>
+        <p class="ai-playground-preview-subtitle">在首页直接体验 AI 能力</p>
       </div>
 
       <div
-        class="playground-container bg-bg-card backdrop-blur-xl border border-border-subtle rounded-3xl p-8"
+        class="ai-playground-container"
         ref="containerRef"
       >
         <!-- 按钮区域 -->
-        <div class="flex flex-wrap justify-center gap-4 mb-8">
+        <div class="ai-playground-buttons">
           <button
             v-for="(prompt, index) in prompts"
             :key="index"
             @click="handlePromptClick(prompt)"
             :disabled="loading"
-            class="prompt-button"
-            :class="{ 'opacity-50 cursor-not-allowed': loading }"
+            class="ai-playground-prompt-button"
+            :class="{ 'ai-playground-prompt-button-disabled': loading }"
           >
-            <i :class="prompt.icon" class="mr-2"></i>
+            <i :class="prompt.icon" class="ai-playground-prompt-button-icon"></i>
             {{ prompt.label }}
           </button>
         </div>
@@ -28,23 +28,23 @@
         <!-- AI 回复区域 -->
         <div
           v-if="aiResponse"
-          class="ai-response-container bg-bg-card rounded-xl p-6 border border-border-subtle"
+          class="ai-playground-response-container"
         >
-          <div class="flex items-start gap-3">
-            <div class="ai-avatar bg-primary-base rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">
-              <i class="fas fa-robot text-text-main"></i>
+          <div class="ai-playground-response-content">
+            <div class="ai-playground-avatar">
+              <i class="fas fa-robot"></i>
             </div>
-            <div class="flex-1">
-              <div class="text-sm text-text-muted mb-2">AI 回复</div>
-              <div class="text-text-main leading-relaxed" v-html="aiResponse"></div>
+            <div class="ai-playground-response-text">
+              <div class="ai-playground-response-label">AI 回复</div>
+              <div class="ai-playground-response-body" v-html="aiResponse"></div>
             </div>
           </div>
         </div>
 
         <!-- 加载状态 -->
-        <div v-if="loading" class="text-center py-8">
-          <div class="inline-flex items-center gap-2 text-text-muted">
-            <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-primary-base"></div>
+        <div v-if="loading" class="ai-playground-loading">
+          <div class="ai-playground-loading-content">
+            <div class="ai-playground-loading-spinner"></div>
             <span>AI 正在思考...</span>
           </div>
         </div>
@@ -152,36 +152,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.ai-playground-preview {
-  background-color: var(--color-bg-body);
-}
-
-.playground-container {
-  box-shadow: var(--shadow-md, 0 4px 12px -2px rgba(0, 0, 0, 0.6));
-}
-
-.prompt-button {
-  @apply px-6 py-3 bg-bg-elevated hover:bg-bg-card border border-border-default rounded-full text-text-main font-medium transition-all duration-300;
-  @apply hover:scale-105 hover:border-border-strong;
-}
-
-.prompt-button:active {
-  @apply scale-95;
-}
-
-.ai-response-container {
-  animation: fadeIn 0.5s ease-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+/* 样式已移至 assets/css/home.css */
+/* 保留组件特有的样式（如果有） */
 </style>
 

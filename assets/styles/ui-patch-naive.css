@@ -1,0 +1,152 @@
+/**
+ * Naive UI 全局补丁样式
+ * 
+ * 职责：
+ * - 对 Naive UI 常用组件进行少量统一风格补丁
+ * - 使用 CSS 变量，确保与主题系统联动
+ * - 不覆盖 Naive UI 的核心功能，只做视觉风格调整
+ */
+
+/* ==================== Card 组件补丁 ==================== */
+.n-card {
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-soft);
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border-subtle);
+}
+
+/* ==================== Dialog 弹窗补丁 ==================== */
+.n-dialog {
+  border-radius: var(--radius-xl);
+}
+
+.n-dialog .n-card {
+  background-color: var(--color-bg-card);
+}
+
+/* ==================== Button 组件补丁 ==================== */
+.n-button {
+  border-radius: var(--radius-lg);
+  transition: all 0.2s ease;
+}
+
+.n-button:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ==================== Input 组件补丁 ==================== */
+.n-input {
+  border-radius: var(--radius-md);
+}
+
+.n-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary-soft);
+}
+
+/* ==================== Select 组件补丁 ==================== */
+.n-select {
+  border-radius: var(--radius-md);
+}
+
+/* ==================== Form 组件补丁 ==================== */
+.n-form-item-label {
+  color: var(--color-text-main);
+  font-weight: 500;
+}
+
+/* ==================== Table 组件补丁 ==================== */
+.n-data-table {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.n-data-table .n-data-table-th {
+  background-color: var(--color-bg-elevated);
+  color: var(--color-text-main);
+  font-weight: 600;
+}
+
+.n-data-table .n-data-table-td {
+  background-color: var(--color-bg-card);
+  color: var(--color-text-main);
+}
+
+/* ==================== Menu 组件补丁 ==================== */
+.n-menu {
+  background-color: var(--color-bg-card);
+}
+
+.n-menu-item {
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+}
+
+.n-menu-item:hover {
+  background-color: var(--color-bg-elevated);
+}
+
+.n-menu-item--selected {
+  background-color: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+/* ==================== Message 消息补丁 ==================== */
+.n-message {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ==================== Notification 通知补丁 ==================== */
+.n-notification {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ==================== Drawer 抽屉补丁 ==================== */
+.n-drawer {
+  background-color: var(--color-bg-card);
+}
+
+.n-drawer-header {
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+/* ==================== Modal 模态框补丁 ==================== */
+.n-modal {
+  border-radius: var(--radius-xl);
+}
+
+.n-modal .n-card {
+  background-color: var(--color-bg-card);
+}
+
+/* ==================== Tag 标签补丁 ==================== */
+.n-tag {
+  border-radius: var(--radius-md);
+}
+
+/* ==================== Badge 徽章补丁 ==================== */
+.n-badge {
+  border-radius: var(--radius-sm);
+}
+
+/* ==================== Divider 分割线补丁 ==================== */
+.n-divider {
+  border-color: var(--color-border-subtle);
+}
+
+/* ==================== 通用间距优化 ==================== */
+.n-space {
+  gap: var(--spacing-md);
+}
+
+.n-space--vertical {
+  gap: var(--spacing-md);
+}
+
+.n-space--horizontal {
+  gap: var(--spacing-md);
+}
+

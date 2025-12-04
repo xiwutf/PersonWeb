@@ -24,6 +24,7 @@
 开发相关的文档，包括开发规范、构建优化等。
 
 - `DEVELOPMENT_GUIDELINES.md` ⭐ **必读** - 项目开发规范和要求
+- `STYLE_ARCHITECTURE.md` ⭐ **必读** - 样式架构规范（分层设计、CSS 变量、Naive UI 集成）
 - `STYLE_MANAGEMENT_REMINDER.md` ⭐ **必读** - 样式管理开发提醒
 - `STYLE_REMINDER.md` - 样式管理快速提醒
 - `FRONTEND_STYLE_SYSTEM.md` - 前端样式系统说明

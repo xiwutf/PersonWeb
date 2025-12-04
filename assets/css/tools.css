@@ -10,7 +10,7 @@
   color: #e2e8f0;
   position: relative;
   overflow: hidden;
-  font-family: 'Outfit', sans-serif;
+  font-family: inherit;
 }
 
 /* ========== 背景效果 ========== */

@@ -1,5 +1,5 @@
 <template>
-  <div class="home-hybrid-super min-h-screen bg-bg-body text-text-main overflow-x-hidden">
+  <div class="home-hybrid-super">
     <!-- 1. Super Hero（平台定位 + 个人介绍） -->
     <HeroSuper />
     

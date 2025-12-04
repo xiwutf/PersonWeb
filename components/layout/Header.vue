@@ -29,7 +29,7 @@
             :key="item.path"
             :to="item.path"
             class="header-nav-link"
-            :class="route.path === item.path 
+            :class="isActiveRoute(item.path)
               ? 'header-nav-link-active' 
               : 'header-nav-link-inactive'"
           >
@@ -334,9 +334,20 @@ const navigationItems = computed(() => {
   return [...mainNavigationItems.value, ...moreNavigationItems.value]
 })
 
+// 检查路由是否激活（精确匹配，首页特殊处理）
+const isActiveRoute = (path: string) => {
+  if (!route || !route.path) return false
+  // 首页需要精确匹配
+  if (path === '/') {
+    return route.path === '/' || route.path === ''
+  }
+  // 其他路由精确匹配
+  return route.path === path
+}
+
 // 检查"更多"菜单是否包含当前路由
 const isMoreMenuActive = computed(() => {
-  return moreNavigationItems.value.some(item => route.path === item.path)
+  return moreNavigationItems.value.some(item => isActiveRoute(item.path))
 })
 
 // 关闭移动端菜单

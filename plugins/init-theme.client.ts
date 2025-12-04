@@ -40,6 +40,8 @@ export default defineNuxtPlugin(async () => {
       const themeFromBackend = response.theme
       if (validThemes.includes(themeFromBackend as any)) {
         globalTheme = themeFromBackend
+        // 设置 data-theme 属性，驱动 tokens.css 中的主题变量
+        document.documentElement.dataset.theme = themeFromBackend
         if (process.env.NODE_ENV === 'development') {
           console.log('[init-theme] 已从后端加载全局主题:', themeFromBackend)
         }
