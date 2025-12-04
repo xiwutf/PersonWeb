@@ -31,6 +31,7 @@ public class SideProjectsController : ControllerBase
         [FromQuery] int pageSize = 20,
         [FromQuery] int? status = null,
         [FromQuery] string? category = null,
+        [FromQuery] string? incomeType = null,
         [FromQuery] string? keyword = null)
     {
         var query = _context.SideProjects.AsQueryable();
@@ -45,6 +46,12 @@ public class SideProjectsController : ControllerBase
         if (!string.IsNullOrEmpty(category))
         {
             query = query.Where(p => p.Category == category);
+        }
+
+        // 收入类型筛选
+        if (!string.IsNullOrEmpty(incomeType))
+        {
+            query = query.Where(p => p.IncomeType == incomeType);
         }
 
         // 关键词搜索
@@ -68,6 +75,7 @@ public class SideProjectsController : ControllerBase
                 ClientContact = p.ClientContact,
                 Source = p.Source,
                 Category = p.Category,
+                IncomeType = p.IncomeType,
                 TechStack = p.TechStack,
                 BudgetMin = p.BudgetMin,
                 BudgetMax = p.BudgetMax,
@@ -106,6 +114,7 @@ public class SideProjectsController : ControllerBase
             ClientContact = project.ClientContact,
             Source = project.Source,
             Category = project.Category,
+            IncomeType = project.IncomeType,
             TechStack = project.TechStack,
             BudgetMin = project.BudgetMin,
             BudgetMax = project.BudgetMax,
@@ -136,6 +145,7 @@ public class SideProjectsController : ControllerBase
             ClientContact = dto.ClientContact,
             Source = dto.Source,
             Category = dto.Category,
+            IncomeType = dto.IncomeType ?? "development",
             TechStack = dto.TechStack,
             BudgetMin = dto.BudgetMin,
             BudgetMax = dto.BudgetMax,
@@ -160,6 +170,7 @@ public class SideProjectsController : ControllerBase
             ClientContact = project.ClientContact,
             Source = project.Source,
             Category = project.Category,
+            IncomeType = project.IncomeType,
             TechStack = project.TechStack,
             BudgetMin = project.BudgetMin,
             BudgetMax = project.BudgetMax,
@@ -195,6 +206,7 @@ public class SideProjectsController : ControllerBase
         if (dto.ClientContact != null) project.ClientContact = dto.ClientContact;
         if (dto.Source != null) project.Source = dto.Source;
         if (dto.Category != null) project.Category = dto.Category;
+        if (dto.IncomeType != null) project.IncomeType = dto.IncomeType;
         if (dto.TechStack != null) project.TechStack = dto.TechStack;
         if (dto.BudgetMin.HasValue) project.BudgetMin = dto.BudgetMin;
         if (dto.BudgetMax.HasValue) project.BudgetMax = dto.BudgetMax;
@@ -216,6 +228,7 @@ public class SideProjectsController : ControllerBase
             ClientContact = project.ClientContact,
             Source = project.Source,
             Category = project.Category,
+            IncomeType = project.IncomeType,
             TechStack = project.TechStack,
             BudgetMin = project.BudgetMin,
             BudgetMax = project.BudgetMax,
@@ -259,7 +272,8 @@ public class SideProjectsController : ControllerBase
     [Authorize]
     public async Task<ActionResult<ApiResponse<ProjectDashboardSummaryDto>>> GetDashboardSummary(
         [FromQuery] DateTime? from = null,
-        [FromQuery] DateTime? to = null)
+        [FromQuery] DateTime? to = null,
+        [FromQuery] string? incomeType = null)
     {
         var query = _context.SideProjects.AsQueryable();
 
@@ -273,6 +287,12 @@ public class SideProjectsController : ControllerBase
             query = query.Where(p => p.CreatedAt <= to.Value);
         }
 
+        // 收入类型筛选
+        if (!string.IsNullOrEmpty(incomeType))
+        {
+            query = query.Where(p => p.IncomeType == incomeType);
+        }
+
         // 只统计已完成的项目
         var completedProjects = query.Where(p => p.Status == 1 && p.PriceFinal.HasValue);
 
@@ -281,10 +301,19 @@ public class SideProjectsController : ControllerBase
         var completedProjectsCount = await completedProjects.CountAsync();
         
         Console.WriteLine($"[Dashboard Summary] 总项目数: {allProjectsCount}, 已完成项目数: {completedProjectsCount}");
-        Console.WriteLine($"[Dashboard Summary] 时间范围: from={from}, to={to}");
+        Console.WriteLine($"[Dashboard Summary] 时间范围: from={from}, to={to}, incomeType={incomeType}");
 
         var totalIncome = await completedProjects
             .SumAsync(p => p.PriceFinal ?? 0);
+        
+        // 按收入类型分类统计
+        var developmentProjects = completedProjects.Where(p => p.IncomeType == "development" || p.IncomeType == null);
+        var investmentProjects = completedProjects.Where(p => p.IncomeType == "investment");
+        
+        var developmentIncome = await developmentProjects.SumAsync(p => p.PriceFinal ?? 0);
+        var developmentCount = await developmentProjects.CountAsync();
+        var investmentIncome = await investmentProjects.SumAsync(p => p.PriceFinal ?? 0);
+        var investmentCount = await investmentProjects.CountAsync();
 
         var totalProjects = await completedProjects.CountAsync();
 
@@ -307,7 +336,11 @@ public class SideProjectsController : ControllerBase
             TotalIncome = totalIncome,
             TotalProjects = totalProjects,
             AvgProjectPrice = (decimal)avgPrice,
-            AvgDurationDays = avgDurationDays
+            AvgDurationDays = avgDurationDays,
+            DevelopmentIncome = developmentIncome,
+            DevelopmentProjects = developmentCount,
+            InvestmentIncome = investmentIncome,
+            InvestmentProjects = investmentCount
         };
 
         Console.WriteLine($"[Dashboard Summary] 返回数据: TotalIncome={summary.TotalIncome}, TotalProjects={summary.TotalProjects}, AvgProjectPrice={summary.AvgProjectPrice}, AvgDurationDays={summary.AvgDurationDays}");
@@ -323,10 +356,17 @@ public class SideProjectsController : ControllerBase
     public async Task<ActionResult<ApiResponse<List<IncomeTrendPointDto>>>> GetIncomeTrend(
         [FromQuery] DateTime? from = null,
         [FromQuery] DateTime? to = null,
-        [FromQuery] string granularity = "month")
+        [FromQuery] string granularity = "month",
+        [FromQuery] string? incomeType = null)
     {
         var query = _context.SideProjects
             .Where(p => p.Status == 1 && p.PriceFinal.HasValue && p.EndTime.HasValue);
+
+        // 收入类型筛选
+        if (!string.IsNullOrEmpty(incomeType))
+        {
+            query = query.Where(p => p.IncomeType == incomeType);
+        }
 
         if (from.HasValue)
         {
@@ -380,10 +420,17 @@ public class SideProjectsController : ControllerBase
     [Authorize]
     public async Task<ActionResult<ApiResponse<List<CategoryDistributionItemDto>>>> GetCategoryDistribution(
         [FromQuery] DateTime? from = null,
-        [FromQuery] DateTime? to = null)
+        [FromQuery] DateTime? to = null,
+        [FromQuery] string? incomeType = null)
     {
         var query = _context.SideProjects
             .Where(p => p.Status == 1 && p.PriceFinal.HasValue && !string.IsNullOrEmpty(p.Category));
+
+        // 收入类型筛选
+        if (!string.IsNullOrEmpty(incomeType))
+        {
+            query = query.Where(p => p.IncomeType == incomeType);
+        }
 
         if (from.HasValue)
         {
@@ -415,10 +462,22 @@ public class SideProjectsController : ControllerBase
     [Authorize]
     public async Task<ActionResult<ApiResponse<List<TechStackDistributionItemDto>>>> GetTechDistribution(
         [FromQuery] DateTime? from = null,
-        [FromQuery] DateTime? to = null)
+        [FromQuery] DateTime? to = null,
+        [FromQuery] string? incomeType = null)
     {
         var query = _context.SideProjects
             .Where(p => p.Status == 1 && p.PriceFinal.HasValue && !string.IsNullOrEmpty(p.TechStack));
+
+        // 收入类型筛选（技术栈只统计软件开发）
+        if (string.IsNullOrEmpty(incomeType))
+        {
+            query = query.Where(p => p.IncomeType == "development" || p.IncomeType == null);
+        }
+        else if (incomeType == "development")
+        {
+            query = query.Where(p => p.IncomeType == "development" || p.IncomeType == null);
+        }
+        // investment 类型不显示技术栈
 
         if (from.HasValue)
         {
@@ -474,10 +533,17 @@ public class SideProjectsController : ControllerBase
     [Authorize]
     public async Task<ActionResult<ApiResponse<List<ClientSourceItemDto>>>> GetClientSource(
         [FromQuery] DateTime? from = null,
-        [FromQuery] DateTime? to = null)
+        [FromQuery] DateTime? to = null,
+        [FromQuery] string? incomeType = null)
     {
         var query = _context.SideProjects
             .Where(p => p.Status == 1 && p.PriceFinal.HasValue && !string.IsNullOrEmpty(p.Source));
+
+        // 收入类型筛选
+        if (!string.IsNullOrEmpty(incomeType))
+        {
+            query = query.Where(p => p.IncomeType == incomeType);
+        }
 
         if (from.HasValue)
         {

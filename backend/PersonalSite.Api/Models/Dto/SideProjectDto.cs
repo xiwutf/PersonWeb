@@ -12,6 +12,7 @@ public class SideProjectDto
     public string? ClientContact { get; set; }
     public string? Source { get; set; }
     public string? Category { get; set; }
+    public string? IncomeType { get; set; }
     public string? TechStack { get; set; }
     public decimal? BudgetMin { get; set; }
     public decimal? BudgetMax { get; set; }
@@ -35,6 +36,7 @@ public class CreateSideProjectDto
     public string? ClientContact { get; set; }
     public string? Source { get; set; }
     public string? Category { get; set; }
+    public string? IncomeType { get; set; }
     public string? TechStack { get; set; }
     public decimal? BudgetMin { get; set; }
     public decimal? BudgetMax { get; set; }
@@ -56,6 +58,7 @@ public class UpdateSideProjectDto
     public string? ClientContact { get; set; }
     public string? Source { get; set; }
     public string? Category { get; set; }
+    public string? IncomeType { get; set; }
     public string? TechStack { get; set; }
     public decimal? BudgetMin { get; set; }
     public decimal? BudgetMax { get; set; }
@@ -75,6 +78,11 @@ public class ProjectDashboardSummaryDto
     public int TotalProjects { get; set; }
     public decimal AvgProjectPrice { get; set; }
     public double AvgDurationDays { get; set; }
+    // 按收入类型分类统计
+    public decimal DevelopmentIncome { get; set; } // 软件开发收入
+    public int DevelopmentProjects { get; set; } // 软件开发项目数
+    public decimal InvestmentIncome { get; set; } // 投资收入
+    public int InvestmentProjects { get; set; } // 投资项目数
 }
 
 /// <summary>

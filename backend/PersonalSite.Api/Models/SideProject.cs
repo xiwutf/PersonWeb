@@ -35,11 +35,15 @@ public class SideProject
 
     [MaxLength(100)]
     [Column("category")]
-    public string? Category { get; set; } // 网站/小程序/AI/其他
+    public string? Category { get; set; } // 网站/小程序/AI/其他（软件开发）或 股票/基金/加密货币等（投资）
+
+    [MaxLength(50)]
+    [Column("income_type")]
+    public string? IncomeType { get; set; } = "development"; // development=软件开发, investment=投资
 
     [MaxLength(200)]
     [Column("tech_stack")]
-    public string? TechStack { get; set; } // 以逗号分隔：Vue,.NET,Python
+    public string? TechStack { get; set; } // 以逗号分隔：Vue,.NET,Python（仅软件开发需要）
 
     [Column("budget_min", TypeName = "decimal(18,2)")]
     public decimal? BudgetMin { get; set; }

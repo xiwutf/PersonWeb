@@ -31,8 +31,15 @@
         :options="statusOptions"
       />
       <n-select
+        v-model:value="filterIncomeType"
+        placeholder="收入类型"
+        clearable
+        style="width: 150px;"
+        :options="incomeTypeOptions"
+      />
+      <n-select
         v-model:value="filterCategory"
-        placeholder="类型筛选"
+        placeholder="项目类型"
         clearable
         style="width: 150px;"
         :options="categoryOptions"
@@ -71,7 +78,11 @@
             </td>
             <td class="table-cell">{{ project.clientName || '-' }}</td>
             <td class="table-cell">
-              <span class="tag tag-info">{{ project.category || '未分类' }}</span>
+              <div style="display: flex; gap: 4px; align-items: center; flex-wrap: wrap;">
+                <span v-if="project.incomeType === 'investment'" class="tag tag-success" style="font-size: 11px;">投资</span>
+                <span v-else-if="project.incomeType === 'development'" class="tag tag-info" style="font-size: 11px;">软件开发</span>
+                <span class="tag tag-info">{{ project.category || '未分类' }}</span>
+              </div>
             </td>
             <td class="table-cell">
               <span :class="getStatusTagClass(project.status)" class="tag">
@@ -201,11 +212,22 @@
           </n-grid-item>
           <n-grid-item>
             <n-form-item label="项目类型" path="category">
-              <n-input v-model:value="form.category" placeholder="如：网站、小程序、AI等" />
+              <n-input v-model:value="form.category" placeholder="如：网站、小程序、AI等（软件开发）或 股票、基金等（投资）" />
             </n-form-item>
           </n-grid-item>
         </n-grid>
-        <n-form-item label="技术栈" path="techStack">
+        <n-grid :cols="2" :x-gap="16">
+          <n-grid-item>
+            <n-form-item label="收入类型" path="incomeType">
+              <n-select
+                v-model:value="form.incomeType"
+                placeholder="选择收入类型"
+                :options="incomeTypeOptions"
+              />
+            </n-form-item>
+          </n-grid-item>
+        </n-grid>
+        <n-form-item label="技术栈" path="techStack" v-if="form.incomeType !== 'investment'">
           <n-input
             v-model:value="form.techStack"
             placeholder="多个技术栈用逗号分隔，如：Vue3,TypeScript,Node.js"
@@ -357,6 +379,7 @@ const form = ref<CreateSideProjectDto | UpdateSideProjectDto>({
   clientContact: '',
   source: '',
   category: '',
+  incomeType: 'development', // 默认软件开发
   techStack: '',
   budgetMin: null,
   budgetMax: null,
@@ -503,6 +526,7 @@ const handleCreate = () => {
     clientContact: '',
     source: '',
     category: '',
+    incomeType: 'development',
     techStack: '',
     budgetMin: null,
     budgetMax: null,
@@ -525,6 +549,7 @@ const handleEdit = (project: SideProject) => {
     clientContact: project.clientContact || '',
     source: project.source || '',
     category: project.category || '',
+    incomeType: project.incomeType || 'development',
     techStack: project.techStack || '',
     budgetMin: project.budgetMin,
     budgetMax: project.budgetMax,
@@ -599,6 +624,7 @@ const handleSearch = () => {
 const handleReset = () => {
   searchKeyword.value = ''
   filterStatus.value = null
+  filterIncomeType.value = null
   filterCategory.value = null
   handleSearch()
 }

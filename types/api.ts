@@ -336,6 +336,7 @@ export interface SideProject {
   clientContact?: string
   source?: string
   category?: string
+  incomeType?: string // 'development' | 'investment' - 收入类型：软件开发/投资
   techStack?: string
   budgetMin?: number
   budgetMax?: number
@@ -355,6 +356,7 @@ export interface CreateSideProjectDto {
   clientContact?: string
   source?: string
   category?: string
+  incomeType?: string // 'development' | 'investment'
   techStack?: string
   budgetMin?: number
   budgetMax?: number
@@ -372,6 +374,7 @@ export interface UpdateSideProjectDto {
   clientContact?: string
   source?: string
   category?: string
+  incomeType?: string // 'development' | 'investment'
   techStack?: string
   budgetMin?: number
   budgetMax?: number
@@ -387,6 +390,11 @@ export interface ProjectDashboardSummaryDto {
   totalProjects: number
   avgProjectPrice: number
   avgDurationDays: number
+  // 按收入类型分类统计
+  developmentIncome?: number // 软件开发收入
+  developmentProjects?: number // 软件开发项目数
+  investmentIncome?: number // 投资收入
+  investmentProjects?: number // 投资项目数
 }
 
 export interface IncomeTrendPointDto {

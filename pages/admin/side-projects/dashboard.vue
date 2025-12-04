@@ -28,6 +28,22 @@
             <div class="toolbar-group">
               <div class="toolbar-label">
                 <i class="fas fa-filter"></i>
+                <span>收入类型</span>
+              </div>
+              <n-select
+                v-model:value="selectedIncomeType"
+                placeholder="全部类型"
+                clearable
+                size="small"
+                :options="incomeTypeOptions"
+                class="toolbar-input"
+                @update:value="handleIncomeTypeChange"
+              />
+            </div>
+            <div class="toolbar-divider"></div>
+            <div class="toolbar-group">
+              <div class="toolbar-label">
+                <i class="fas fa-tag"></i>
                 <span>项目类型</span>
               </div>
               <n-select
@@ -90,7 +106,7 @@
 
     <!-- KPI 指标卡片区域 -->
     <div class="kpi-section" v-if="!hasNoData">
-      <n-grid :cols="4" :x-gap="16" :y-gap="16">
+      <n-grid :cols="6" :x-gap="16" :y-gap="16">
         <n-grid-item>
           <div class="kpi-card" @click="handleKpiClick('income')">
             <div class="kpi-label">总收入</div>
@@ -98,6 +114,26 @@
               <span class="kpi-prefix">¥</span>
               <span class="kpi-number">{{ formatNumber(summary?.totalIncome || 0) }}</span>
             </div>
+          </div>
+        </n-grid-item>
+        <n-grid-item>
+          <div class="kpi-card kpi-card-development" @click="handleKpiClick('development')">
+            <div class="kpi-label">软件开发收入</div>
+            <div class="kpi-value">
+              <span class="kpi-prefix">¥</span>
+              <span class="kpi-number">{{ formatNumber(summary?.developmentIncome || 0) }}</span>
+            </div>
+            <div class="kpi-subtitle">{{ summary?.developmentProjects || 0 }} 个项目</div>
+          </div>
+        </n-grid-item>
+        <n-grid-item>
+          <div class="kpi-card kpi-card-investment" @click="handleKpiClick('investment')">
+            <div class="kpi-label">投资收入</div>
+            <div class="kpi-value">
+              <span class="kpi-prefix">¥</span>
+              <span class="kpi-number">{{ formatNumber(summary?.investmentIncome || 0) }}</span>
+            </div>
+            <div class="kpi-subtitle">{{ summary?.investmentProjects || 0 }} 个项目</div>
           </div>
         </n-grid-item>
         <n-grid-item>
@@ -237,10 +273,26 @@
                       {{ truncateText(project.description, 100) }}
                     </p>
                     <div class="project-tags">
+                      <n-tag 
+                        v-if="project.incomeType === 'investment'" 
+                        size="small" 
+                        type="success" 
+                        class="project-tag"
+                      >
+                        投资
+                      </n-tag>
+                      <n-tag 
+                        v-else-if="project.incomeType === 'development'" 
+                        size="small" 
+                        type="info" 
+                        class="project-tag"
+                      >
+                        软件开发
+                      </n-tag>
                       <n-tag v-if="project.category" size="small" type="info" class="project-tag">
                         {{ project.category }}
                       </n-tag>
-                      <template v-if="project.techStack">
+                      <template v-if="project.techStack && project.incomeType !== 'investment'">
                         <n-tag
                           v-for="tech in parseTechStack(project.techStack)"
                           :key="tech"
@@ -400,8 +452,16 @@ const recentProjects = ref<SideProject[]>([])
 
 // 筛选条件
 const dateRange = ref<[number, number] | null>(null)
+const selectedIncomeType = ref<string | null>(null) // null=全部, 'development'=软件开发, 'investment'=投资
 const selectedCategory = ref<string | null>(null)
 const selectedStatus = ref<number | null>(null) // null=全部, 0=进行中, 1=已完成, 2=待付款, 3=已取消
+
+// 收入类型选项
+const incomeTypeOptions = [
+  { label: '全部类型', value: null },
+  { label: '软件开发', value: 'development' },
+  { label: '投资', value: 'investment' }
+]
 
 // 状态选项
 const statusOptions = [
@@ -492,6 +552,10 @@ const fetchSummary = async () => {
       params.from = timeRange.value.from.toISOString()
       params.to = timeRange.value.to.toISOString()
     }
+    if (selectedIncomeType.value) {
+      params.incomeType = selectedIncomeType.value
+    }
+    
     const res = await api.get<any>('/side-projects/dashboard/summary', { params })
     
     if (res && typeof res === 'object') {
@@ -499,7 +563,11 @@ const fetchSummary = async () => {
         totalIncome: res.totalIncome ?? res.TotalIncome ?? 0,
         totalProjects: res.totalProjects ?? res.TotalProjects ?? 0,
         avgProjectPrice: res.avgProjectPrice ?? res.AvgProjectPrice ?? 0,
-        avgDurationDays: res.avgDurationDays ?? res.AvgDurationDays ?? 0
+        avgDurationDays: res.avgDurationDays ?? res.AvgDurationDays ?? 0,
+        developmentIncome: res.developmentIncome ?? res.DevelopmentIncome ?? 0,
+        developmentProjects: res.developmentProjects ?? res.DevelopmentProjects ?? 0,
+        investmentIncome: res.investmentIncome ?? res.InvestmentIncome ?? 0,
+        investmentProjects: res.investmentProjects ?? res.InvestmentProjects ?? 0
       }
     } else {
       summary.value = null
@@ -516,6 +584,9 @@ const fetchIncomeTrend = async () => {
     if (timeRange.value.from && timeRange.value.to) {
       params.from = timeRange.value.from.toISOString()
       params.to = timeRange.value.to.toISOString()
+    }
+    if (selectedIncomeType.value) {
+      params.incomeType = selectedIncomeType.value
     }
     const res = await api.get<any>('/side-projects/dashboard/income-trend', { params })
     if (Array.isArray(res)) {
@@ -544,6 +615,9 @@ const fetchCategoryDistribution = async () => {
       params.from = timeRange.value.from.toISOString()
       params.to = timeRange.value.to.toISOString()
     }
+    if (selectedIncomeType.value) {
+      params.incomeType = selectedIncomeType.value
+    }
     const res = await api.get<any>('/side-projects/dashboard/category-distribution', { params })
     if (Array.isArray(res)) {
       categoryDistribution.value = res.map((item: any) => ({
@@ -567,6 +641,14 @@ const fetchTechDistribution = async () => {
       params.from = timeRange.value.from.toISOString()
       params.to = timeRange.value.to.toISOString()
     }
+    // 技术栈只统计软件开发，如果选择了投资类型则不显示
+    if (selectedIncomeType.value === 'investment') {
+      techDistribution.value = []
+      return
+    }
+    if (selectedIncomeType.value) {
+      params.incomeType = selectedIncomeType.value
+    }
     const res = await api.get<any>('/side-projects/dashboard/tech-distribution', { params })
     if (Array.isArray(res)) {
       techDistribution.value = res.map((item: any) => ({
@@ -589,6 +671,9 @@ const fetchClientSource = async () => {
     if (timeRange.value.from && timeRange.value.to) {
       params.from = timeRange.value.from.toISOString()
       params.to = timeRange.value.to.toISOString()
+    }
+    if (selectedIncomeType.value) {
+      params.incomeType = selectedIncomeType.value
     }
     const res = await api.get<any>('/side-projects/dashboard/client-source', { params })
     if (Array.isArray(res)) {
@@ -636,6 +721,9 @@ const fetchRecentProjects = async () => {
     }
     if (selectedStatus.value !== null) {
       params.status = selectedStatus.value
+    }
+    if (selectedIncomeType.value) {
+      params.incomeType = selectedIncomeType.value
     }
     if (selectedCategory.value) {
       params.category = selectedCategory.value
@@ -713,6 +801,10 @@ const loadAllData = async () => {
 
 // 筛选变化处理
 const handleDateRangeChange = () => {
+  loadAllData()
+}
+
+const handleIncomeTypeChange = () => {
   loadAllData()
 }
 
@@ -906,6 +998,29 @@ onMounted(() => {
 
 .kpi-card:nth-child(4)::before {
   background: linear-gradient(90deg, #8b5cf6, #a855f7);
+}
+
+.kpi-card:nth-child(5)::before {
+  background: linear-gradient(90deg, #06b6d4, #3b82f6);
+}
+
+.kpi-card:nth-child(6)::before {
+  background: linear-gradient(90deg, #f59e0b, #ef4444);
+}
+
+.kpi-card-development::before {
+  background: linear-gradient(90deg, #3b82f6, #6366f1) !important;
+}
+
+.kpi-card-investment::before {
+  background: linear-gradient(90deg, #10b981, #06b6d4) !important;
+}
+
+.kpi-subtitle {
+  font-size: var(--font-size-sm);
+  color: rgba(203, 213, 225, 0.6);
+  margin-top: var(--spacing-xs);
+  font-weight: 400;
 }
 
 .kpi-card:hover {
