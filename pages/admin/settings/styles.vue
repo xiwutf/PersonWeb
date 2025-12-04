@@ -165,10 +165,6 @@
             </div>
           </div>
 
-          <div class="form-group">
-            <label class="form-label">自定义CSS (JSON格式)</label>
-            <textarea v-model="styleForm.customCss" class="form-input" rows="3" placeholder='{"box-shadow": "0 2px 4px rgba(0,0,0,0.1)"}'></textarea>
-          </div>
 
           <div class="form-group">
             <label class="form-label">描述</label>
@@ -265,7 +261,6 @@ interface StyleDefinition {
   padding?: string
   borderRadius?: string
   borderWidth?: string
-  customCss?: string
   description?: string
   isActive: boolean
   sort: number
@@ -318,7 +313,6 @@ const styleForm = ref({
   padding: '',
   borderRadius: '',
   borderWidth: '',
-  customCss: '',
   description: '',
   isActive: true,
   sort: 0
@@ -382,7 +376,6 @@ const openStyleModal = (style?: StyleDefinition) => {
       padding: style.padding || '',
       borderRadius: style.borderRadius || '',
       borderWidth: style.borderWidth || '',
-      customCss: style.customCss || '',
       description: style.description || '',
       isActive: style.isActive,
       sort: style.sort
@@ -403,7 +396,6 @@ const openStyleModal = (style?: StyleDefinition) => {
       padding: '',
       borderRadius: '',
       borderWidth: '',
-      customCss: '',
       description: '',
       isActive: true,
       sort: 0

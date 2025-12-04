@@ -290,7 +290,9 @@ npm run preview
 
 **在开始开发前，请务必阅读以下文档：**
 
+- **[项目概览文档](./docs/PROJECT_OVERVIEW.md)** ⭐ **必读** - 项目整体架构、技术栈和目录结构
 - **[开发规范文档](./docs/development/DEVELOPMENT_GUIDELINES.md)** ⭐ **必读** - 项目开发规范和要求，包括样式管理、代码组织、命名规范等
+- **[代码规范检查报告](./docs/quality/CODE_STANDARDS_CHECK.md)** - 代码规范符合度检查结果和改进建议
 - [模块系统文档](./docs/architecture/README_MODULES.md) - 模块化系统说明
 - [Naive UI 使用指南](./docs/config/README_NAIVE_UI.md) - UI 组件库使用说明
 
@@ -304,7 +306,7 @@ npm run preview
 - 🏗️ [架构文档](./docs/architecture/) - 系统架构说明
 - 🚀 [部署文档](./docs/deployment/) - 部署指南、启动说明
 - 🐛 [故障排除文档](./docs/troubleshooting/) - 问题排查、Bug 修复
-- 📊 [代码质量文档](./docs/quality/) - 代码质量报告
+- 📊 [代码质量文档](./docs/quality/) - 代码质量报告、规范检查
 - 📝 [迁移文档](./docs/migration/) - 数据迁移指南
 
 详细文档索引请查看 [文档目录](./docs/README.md)
@@ -313,7 +315,7 @@ npm run preview
 
 如果你在新电脑上配置开发环境，请按以下步骤：
 
-1. **查看快速开始指南**：[QUICK_START.md](./docs/deployment/QUICK_START.md)
+1. **查看快速开始指南**：[快速开始指南](./docs/deployment/QUICK_START.md)
 2. **运行一键配置脚本**：
    - Windows: `.\scripts\setup-dev-env.ps1`
    - Linux/macOS: `./scripts/setup-dev-env.sh`

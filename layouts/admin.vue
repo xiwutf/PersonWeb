@@ -290,14 +290,15 @@
               <i class="fas fa-paint-brush w-5 text-center mr-3"></i>
               <span>后台风格</span>
             </NuxtLink>
-            <NuxtLink 
+            <!-- 样式管理已简化，移除手动CSS配置功能 -->
+            <!-- <NuxtLink 
               to="/admin/settings/styles" 
               class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm"
               :class="{ 'admin-sidebar-link-active': route.path === '/admin/settings/styles' }"
             >
               <i class="fas fa-palette w-5 text-center mr-3"></i>
               <span>样式</span>
-            </NuxtLink>
+            </NuxtLink> -->
             <NuxtLink 
               to="/admin/settings/themes" 
               class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm"
@@ -451,7 +452,7 @@ const isMenuActive = (menuKey: string): boolean => {
     case 'theme':
       return path === '/admin/home-styles' || 
              path === '/admin/admin-styles' ||
-             path === '/admin/settings/styles' ||
+             // path === '/admin/settings/styles' || // 已简化，移除手动CSS配置
              path === '/admin/settings/themes' ||
              path === '/admin/theme-settings'
     case 'other':

@@ -1,44 +1,44 @@
 ﻿<template>
-  <footer class="relative bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white overflow-hidden">
+  <footer class="footer-container">
     <!-- 动态背景装饰 -->
-    <div class="absolute inset-0 overflow-hidden pointer-events-none">
-      <div class="absolute -top-24 -right-24 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse mix-blend-screen"></div>
-      <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse animation-delay-2000 mix-blend-screen"></div>
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[url('/images/grid.svg')] bg-center opacity-10 [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_70%)]"></div>
-      <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary-500/50 to-transparent"></div>
+    <div class="footer-background-decorations">
+      <div class="footer-bg-decoration footer-bg-decoration-purple"></div>
+      <div class="footer-bg-decoration footer-bg-decoration-blue"></div>
+      <div class="footer-grid-bg"></div>
+      <div class="footer-top-gradient-line"></div>
     </div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-12">
+    <div class="footer-content-wrapper">
+      <div class="footer-main-grid">
         <!-- 品牌区域 (占5列) -->
-        <div class="md:col-span-5 space-y-6">
-          <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 bg-gradient-to-br from-primary-600 to-primary-400 rounded-lg flex items-center justify-center shadow-lg shadow-primary-500/20">
-              <span class="text-white font-bold font-['Outfit']">XF</span>
+        <div class="footer-brand-section">
+          <div class="footer-brand-logo-container">
+            <div class="footer-brand-logo-icon">
+              <span class="footer-brand-logo-icon-text">XF</span>
             </div>
-            <span class="text-2xl font-bold font-['Outfit'] tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
+            <span class="footer-brand-name">
               溪午听风
             </span>
           </div>
-          <p class="text-slate-400 leading-relaxed max-w-sm">
+          <p class="footer-brand-description">
             用代码构建未来，用技术解决难题。专注于全栈开发与AI应用探索，致力于创造优雅的数字体验。
           </p>
-          <div class="flex space-x-3 pt-2">
-            <a v-for="social in socialLinks" :key="social.name" :href="social.link" target="_blank" class="w-10 h-10 rounded-full bg-slate-800/50 border border-slate-700 flex items-center justify-center text-slate-400 hover:bg-primary-600 hover:text-white hover:border-primary-500 transition-all duration-300 hover:-translate-y-1">
+          <div class="footer-social-links">
+            <a v-for="social in socialLinks" :key="social.name" :href="social.link" target="_blank" class="footer-social-link">
               <i :class="social.icon"></i>
             </a>
           </div>
         </div>
 
         <!-- 链接区域 (占7列) -->
-        <div class="md:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-8">
+        <div class="footer-links-section">
           <!-- 快速导航 -->
-          <div>
-            <h3 class="text-sm font-semibold text-slate-200 uppercase tracking-wider mb-6">探索</h3>
-            <ul class="space-y-3">
+          <div class="footer-link-group">
+            <h3 class="footer-link-group-title">探索</h3>
+            <ul class="footer-link-list">
               <li v-for="item in quickLinks" :key="item.path">
-                <NuxtLink :to="item.path" class="text-slate-400 hover:text-primary-400 transition-colors flex items-center group text-sm">
-                  <i class="fas fa-chevron-right text-[10px] mr-2 opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300"></i>
+                <NuxtLink :to="item.path" class="footer-link-item">
+                  <i class="fas fa-chevron-right footer-link-icon"></i>
                   {{ item.title }}
                 </NuxtLink>
               </li>
@@ -48,26 +48,26 @@
       </div>
 
       <!-- 底部版权与统计 -->
-      <div class="border-t border-slate-800 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-        <div class="text-slate-500 text-sm">
+      <div class="footer-bottom">
+        <div class="footer-copyright">
           © {{ currentYear }} 溪午听风. All rights reserved.
         </div>
         
-        <div class="flex items-center gap-6 text-sm">
-          <div v-if="stats" class="flex items-center gap-4 px-4 py-1.5 bg-slate-800/50 rounded-full border border-slate-700/50">
-            <div class="flex items-center gap-2 text-slate-400">
-              <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-              <span>今日: <span class="text-slate-200 font-mono">{{ stats.todayVisits }}</span></span>
+        <div class="footer-bottom-right">
+          <div v-if="stats" class="footer-stats-container">
+            <div class="footer-stat-item">
+              <span class="footer-stat-indicator"></span>
+              <span>今日: <span class="footer-stat-number">{{ stats.todayVisits }}</span></span>
             </div>
-            <div class="w-px h-3 bg-slate-700"></div>
-            <div class="text-slate-400">
-              总计: <span class="text-slate-200 font-mono">{{ stats.totalVisits }}</span>
+            <div class="footer-stat-divider"></div>
+            <div class="footer-stat-item">
+              <span>总计: <span class="footer-stat-number">{{ stats.totalVisits }}</span></span>
             </div>
           </div>
           
-          <div class="text-slate-500 flex items-center gap-1">
+          <div class="footer-made-with">
             <span>Made with</span>
-            <i class="fas fa-heart text-red-500 animate-pulse"></i>
+            <i class="fas fa-heart footer-heart-icon"></i>
           </div>
         </div>
       </div>
