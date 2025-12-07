@@ -139,6 +139,57 @@
         </div>
       </div>
 
+      <!-- 待审核内容提示区域 -->
+      <div class="pending-alerts-section" v-if="pendingCounts.total > 0">
+        <div class="pending-alerts-header">
+          <div class="pending-alerts-title">
+            <svg class="pending-alerts-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span>待审核内容</span>
+            <span class="pending-badge">{{ pendingCounts.total }}</span>
+          </div>
+          <p class="pending-alerts-desc">有内容需要您审核，点击下方卡片快速处理</p>
+        </div>
+        <div class="pending-alerts-grid">
+          <!-- 时间胶囊待审核 -->
+          <NuxtLink 
+            v-if="pendingCounts.timeCapsules > 0" 
+            to="/admin/time-capsules?status=pending" 
+            class="pending-alert-card pending-alert-card-purple"
+          >
+            <div class="pending-alert-icon">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div class="pending-alert-content">
+              <div class="pending-alert-title">时间胶囊</div>
+              <div class="pending-alert-count">{{ pendingCounts.timeCapsules }} 条待审核</div>
+            </div>
+            <div class="pending-alert-arrow">→</div>
+          </NuxtLink>
+
+          <!-- 访客留言待审核 -->
+          <NuxtLink 
+            v-if="pendingCounts.messages > 0" 
+            to="/admin/visitor-messages?status=pending" 
+            class="pending-alert-card pending-alert-card-pink"
+          >
+            <div class="pending-alert-icon">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+              </svg>
+            </div>
+            <div class="pending-alert-content">
+              <div class="pending-alert-title">访客留言</div>
+              <div class="pending-alert-count">{{ pendingCounts.messages }} 条待审核</div>
+            </div>
+            <div class="pending-alert-arrow">→</div>
+          </NuxtLink>
+        </div>
+      </div>
+
       <!-- 访问趋势图表 -->
       <div class="chart-section" v-if="visitTrend.length > 0">
         <div class="action-section">
@@ -299,6 +350,13 @@ const stats = ref({
   pendingTasks: 0
 })
 
+// 待审核内容数量
+const pendingCounts = ref({
+  timeCapsules: 0,
+  messages: 0,
+  total: 0
+})
+
 const topPaths = ref<any[]>([])
 const recentVisits = ref<any[]>([])
 const visitTrend = ref<any[]>([])
@@ -320,6 +378,9 @@ const fetchStats = async () => {
       stats.value.onlineCount = res.OnlineCount ?? res.onlineCount ?? 0
       stats.value.pendingMessages = res.PendingMessages ?? res.pendingMessages ?? 0
       stats.value.pendingTasks = res.PendingTasks ?? res.pendingTasks ?? 0
+      
+      // 更新待审核留言数量
+      pendingCounts.value.messages = stats.value.pendingMessages
       
       // 处理热门路径数据，确保是数组且过滤空值
       const topPathsData = res.TopPaths ?? res.topPaths ?? []
@@ -353,6 +414,9 @@ const fetchStats = async () => {
           }, 100)
         })
       }
+      
+      // 获取时间胶囊待审核数量
+      await fetchPendingTimeCapsules()
     } else {
       // 如果返回空，使用默认值
       stats.value.todayVisits = 0
@@ -365,6 +429,25 @@ const fetchStats = async () => {
     stats.value.todayVisits = 0
     stats.value.articleCount = 0
     stats.value.toolCount = 0
+  }
+}
+
+// 获取待审核时间胶囊数量
+const fetchPendingTimeCapsules = async () => {
+  try {
+    const res = await api.get<any>('/TimeCapsule/stats')
+    if (res) {
+      pendingCounts.value.timeCapsules = res.Pending ?? res.pending ?? 0
+      // 计算总待审核数量
+      pendingCounts.value.total = pendingCounts.value.timeCapsules + pendingCounts.value.messages
+    }
+  } catch (e: any) {
+    // 如果接口失败，不影响页面显示
+    if (process.dev) {
+      console.warn('获取时间胶囊统计数据失败:', e)
+    }
+    pendingCounts.value.timeCapsules = 0
+    pendingCounts.value.total = pendingCounts.value.messages
   }
 }
 
@@ -1380,6 +1463,191 @@ onUnmounted(() => {
 
 .section-title-icon-cyan {
   color: #22d3ee;
+}
+
+/* 待审核内容提示区域 */
+.pending-alerts-section {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(168, 85, 247, 0.1));
+  backdrop-filter: blur(4px);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border: 2px solid rgba(236, 72, 153, 0.3);
+  box-shadow: 0 10px 15px -3px rgba(236, 72, 153, 0.1), 0 4px 6px -2px rgba(236, 72, 153, 0.05);
+  animation: pulse-border 2s ease-in-out infinite;
+}
+
+@keyframes pulse-border {
+  0%, 100% {
+    border-color: rgba(236, 72, 153, 0.3);
+    box-shadow: 0 10px 15px -3px rgba(236, 72, 153, 0.1), 0 4px 6px -2px rgba(236, 72, 153, 0.05);
+  }
+  50% {
+    border-color: rgba(236, 72, 153, 0.5);
+    box-shadow: 0 10px 15px -3px rgba(236, 72, 153, 0.2), 0 4px 6px -2px rgba(236, 72, 153, 0.1);
+  }
+}
+
+.pending-alerts-header {
+  margin-bottom: 1.5rem;
+}
+
+.pending-alerts-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #f3f4f6;
+  margin-bottom: 0.5rem;
+}
+
+.pending-alerts-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #f472b6;
+  animation: shake 0.5s ease-in-out infinite;
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-5deg);
+  }
+  75% {
+    transform: rotate(5deg);
+  }
+}
+
+.pending-badge {
+  background: linear-gradient(135deg, #ec4899, #a855f7);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.pending-alerts-desc {
+  color: #9ca3af;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.pending-alerts-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .pending-alerts-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.pending-alert-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(4px);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  text-decoration: none;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.pending-alert-card:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+}
+
+.pending-alert-card-purple {
+  border-color: rgba(168, 85, 247, 0.4);
+}
+
+.pending-alert-card-purple:hover {
+  border-color: rgba(168, 85, 247, 0.6);
+  box-shadow: 0 10px 15px -3px rgba(168, 85, 247, 0.2), 0 4px 6px -2px rgba(168, 85, 247, 0.1);
+}
+
+.pending-alert-card-pink {
+  border-color: rgba(236, 72, 153, 0.4);
+}
+
+.pending-alert-card-pink:hover {
+  border-color: rgba(236, 72, 153, 0.6);
+  box-shadow: 0 10px 15px -3px rgba(236, 72, 153, 0.2), 0 4px 6px -2px rgba(236, 72, 153, 0.1);
+}
+
+.pending-alert-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pending-alert-card-purple .pending-alert-icon {
+  background: rgba(168, 85, 247, 0.2);
+  color: #a78bfa;
+}
+
+.pending-alert-card-pink .pending-alert-icon {
+  background: rgba(236, 72, 153, 0.2);
+  color: #f472b6;
+}
+
+.pending-alert-icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.pending-alert-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.pending-alert-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #e5e7eb;
+  margin-bottom: 0.25rem;
+}
+
+.pending-alert-count {
+  font-size: 0.875rem;
+  color: #9ca3af;
+}
+
+.pending-alert-arrow {
+  font-size: 1.5rem;
+  color: #9ca3af;
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+
+.pending-alert-card:hover .pending-alert-arrow {
+  color: #e5e7eb;
+  transform: translateX(4px);
 }
 </style>
 
