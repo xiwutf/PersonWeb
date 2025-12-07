@@ -292,6 +292,14 @@
               <span>用户</span>
             </NuxtLink>
             <NuxtLink 
+              to="/admin/settings/change-password" 
+              class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm"
+              :class="{ 'admin-sidebar-link-active': route.path === '/admin/settings/change-password' }"
+            >
+              <i class="fas fa-key w-5 text-center mr-3"></i>
+              <span>修改密码</span>
+            </NuxtLink>
+            <NuxtLink 
               to="/admin/settings/modules" 
               class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm"
               :class="{ 'admin-sidebar-link-active': route.path === '/admin/settings/modules' }"
@@ -503,6 +511,7 @@ const isMenuActive = (menuKey: string): boolean => {
       return path.startsWith('/admin/settings') && !path.startsWith('/admin/settings/styles') && !path.startsWith('/admin/settings/themes') && path !== '/admin/settings/modules' ||
              path === '/admin/config' || 
              path === '/admin/users' ||
+             path === '/admin/settings/change-password' ||
              path === '/admin/settings/modules'
     case 'theme':
       return path === '/admin/home-styles' || 
@@ -547,6 +556,7 @@ const autoExpandMenu = () => {
   if (path.startsWith('/admin/settings') && !path.startsWith('/admin/settings/styles') && !path.startsWith('/admin/settings/themes') && path !== '/admin/settings/modules' ||
       path === '/admin/config' || 
       path === '/admin/users' ||
+      path === '/admin/settings/change-password' ||
       path === '/admin/settings/modules') {
     expandedMenus.value.system = true
   }
