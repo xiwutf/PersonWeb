@@ -22,7 +22,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     const trackVisit = async (force = false) => {
       // 如果正在请求中，跳过
       if (isTracking && !force) {
-        console.debug('Analytics tracking already in progress, skipping')
+        // 移除 debug 日志，减少控制台输出
         return
       }
 
@@ -32,13 +32,13 @@ export default defineNuxtPlugin((nuxtApp) => {
 
       // 检查请求间隔（除非强制请求）
       if (!force && now - lastTrackTime < MIN_TRACK_INTERVAL) {
-        console.debug('Analytics tracking rate limited, skipping')
+        // 移除 debug 日志，减少控制台输出
         return
       }
 
       // 如果路径没有变化且不是定期更新，跳过（除非强制）
       if (!force && currentPath === lastTrackPath && now - lastTrackTime < ONLINE_UPDATE_INTERVAL) {
-        console.debug('Analytics tracking path unchanged, skipping')
+        // 移除 debug 日志，减少控制台输出
         return
       }
 
@@ -80,16 +80,18 @@ export default defineNuxtPlugin((nuxtApp) => {
         // 检查响应状态
         if (!response.ok) {
           if (response.status === 429) {
-            console.warn('Analytics tracking rate limited by server')
+            // 只在开发环境输出警告
+            if (process.env.NODE_ENV === 'development') {
+              console.warn('Analytics tracking rate limited by server')
+            }
             // 如果遇到速率限制，延长下次请求时间
             lastTrackTime = now + 60000 // 延迟1分钟
-          } else {
-            console.debug('Analytics tracking failed:', response.status, response.statusText)
           }
+          // 移除其他 debug 日志，减少控制台输出
         }
       } catch (err) {
         // 静默失败，不影响用户体验
-        console.debug('Analytics tracking error:', err)
+        // 移除 debug 日志，减少控制台输出
         // 请求失败时，也更新最后请求时间，避免频繁重试
         lastTrackTime = now
       } finally {

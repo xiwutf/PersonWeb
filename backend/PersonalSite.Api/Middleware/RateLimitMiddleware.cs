@@ -99,6 +99,13 @@ public class RateLimitMiddleware
             return true;
         }
 
+        // 跳过登录接口（避免登录时被限流）
+        // 注意：登录接口本身应该有其他安全措施（如验证码、账户锁定等）
+        if (path == "/api/auth/login" || path == "/api/auth/refresh")
+        {
+            return true;
+        }
+
         return false;
     }
 

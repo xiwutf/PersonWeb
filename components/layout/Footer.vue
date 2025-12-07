@@ -113,31 +113,53 @@ const stats = ref<{ todayVisits: number; totalVisits: number } | null>(null)
 // 获取统计数据
 const fetchStats = async () => {
   try {
-    // 从Nuxt API获取统计数据（这个API会从数据库查询实时数据）
-    const { data } = await useFetch('/api/stats', {
-      server: false, // 只在客户端获取，避免SSR问题
-      key: 'footer-stats'
+    const api = useApi()
+    
+    // 获取或创建 Visitor ID
+    let visitorId = localStorage.getItem('visitor_id')
+    if (!visitorId) {
+      visitorId = crypto.randomUUID()
+      localStorage.setItem('visitor_id', visitorId)
+    }
+    
+    // 调用后端 API：/api/Tracking/visit
+    // 这个接口既记录访问又返回统计数据
+    const data = await api.post<{
+      totalVisits: number
+      todayVisits: number
+      visitorId: string
+    }>('/Tracking/visit', {
+      visitorId,
+      path: window.location.pathname
     })
     
-    if (data.value) {
-      stats.value = {
-        todayVisits: data.value.todayVisits || 0,
-        totalVisits: data.value.totalVisits || 0
-      }
-    } else {
-      stats.value = { todayVisits: 0, totalVisits: 0 }
+    // 后端返回的字段名是 TotalVisits 和 TodayVisits（大写开头）
+    // 但 TypeScript 类型定义是小写，需要兼容两种格式
+    const totalVisits = Number(data?.totalVisits || (data as any)?.TotalVisits || 0)
+    const todayVisits = Number(data?.todayVisits || (data as any)?.TodayVisits || 0)
+    
+    stats.value = {
+      todayVisits,
+      totalVisits
     }
-  } catch (err) {
-    console.error('Failed to fetch stats:', err)
+    
+    // 如果返回了新的 visitorId，更新本地存储
+    if (data?.visitorId && data.visitorId !== visitorId) {
+      localStorage.setItem('visitor_id', data.visitorId)
+    }
+  } catch (err: any) {
+    // 错误时使用默认值，不阻塞页面显示
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('[Footer Stats] 获取统计数据失败:', err?.message || err)
+    }
     stats.value = { todayVisits: 0, totalVisits: 0 }
   }
 }
 
 onMounted(() => {
   if (process.client) {
+    // 直接调用后端接口，既记录访问又获取统计数据
     fetchStats()
-    // 每60秒刷新一次统计数据
-    setInterval(fetchStats, 60000)
   }
 })
 </script>

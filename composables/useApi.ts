@@ -68,14 +68,16 @@ export const useApi = () => {
                 finalBaseURL = baseUrl
             }
             
-            if (process.env.NODE_ENV === 'development') {
-                console.log(`[useApi] ${options.method || 'GET'} ${url}`, {
-                    isNuxtServerAPI,
-                    baseURL: finalBaseURL,
-                    originalBaseUrl: baseUrl,
-                    finalUrl: finalBaseURL ? `${finalBaseURL}${url}` : url
-                })
-            }
+            // 移除详细的请求日志，减少控制台输出
+            // 只在需要调试时手动启用
+            // if (process.env.NODE_ENV === 'development') {
+            //     console.log(`[useApi] ${options.method || 'GET'} ${url}`, {
+            //         isNuxtServerAPI,
+            //         baseURL: finalBaseURL,
+            //         originalBaseUrl: baseUrl,
+            //         finalUrl: finalBaseURL ? `${finalBaseURL}${url}` : url
+            //     })
+            // }
             
             const response = await $fetch<ApiResponse<T>>(url, {
                 baseURL: finalBaseURL,
@@ -92,10 +94,11 @@ export const useApi = () => {
 
             // 如果是标准格式，返回 data；否则直接返回 response
             const result = response.code === 0 ? response.data : response
-            // 调试日志（开发环境）
-            if (process.env.NODE_ENV === 'development') {
-                console.log(`[API] ${options.method || 'GET'} ${url}:`, result)
-            }
+            // 移除响应日志，减少控制台输出
+            // 只在需要调试时手动启用
+            // if (process.env.NODE_ENV === 'development') {
+            //     console.log(`[API] ${options.method || 'GET'} ${url}:`, result)
+            // }
             return result
         } catch (error: any) {
             console.error('API Error:', error)
