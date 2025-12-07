@@ -254,6 +254,14 @@ const mainNavigationItems = computed(() => {
     })
   }
 
+  // AI 实验室 / AI 服务入口（优先显示）
+  items.push({
+    title: 'AI / 智能体',
+    path: '/ai',
+    icon: '🤖',
+    moduleKey: 'ai'
+  })
+
   if (isModuleEnabled('lab-3d')) {
     items.push({
       title: 'AI 实验室',

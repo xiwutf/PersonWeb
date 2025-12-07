@@ -3,6 +3,9 @@
     <!-- 1. Super Hero（平台定位 + 个人介绍） -->
     <HeroSuper />
     
+    <!-- 1.5. AI 能力与智能体服务区块 -->
+    <AiCapabilitySection />
+    
     <!-- 2. 平台价值主张区 -->
     <PlatformValueSection />
     
@@ -31,6 +34,7 @@
 
 <script setup lang="ts">
 import HeroSuper from './HeroSuper.vue'
+import AiCapabilitySection from '~/components/ai/AiCapabilitySection.vue'
 import PlatformValueSection from './PlatformValueSection.vue'
 import PlatformEntryHub from './PlatformEntryHub.vue'
 import FeaturedSection from './FeaturedSection.vue'

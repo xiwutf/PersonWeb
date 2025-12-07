@@ -27,6 +27,19 @@
         <p class="projects-subtitle">探索我的开源项目和技术实验</p>
       </div>
 
+      <!-- 分类过滤 Tab -->
+      <div class="projects-filters">
+        <button
+          v-for="category in projectCategories"
+          :key="category"
+          @click="selectedCategory = category"
+          class="projects-filter-tab"
+          :class="{ 'projects-filter-tab--active': selectedCategory === category }"
+        >
+          {{ category }}
+        </button>
+      </div>
+
       <div v-if="loading" class="projects-loading">
         <div class="projects-loading-spinner"></div>
       </div>
@@ -47,7 +60,7 @@
 
       <div v-else class="projects-grid">
         <NuxtLink 
-          v-for="project in projects" 
+          v-for="project in filteredProjects" 
           :key="project.id" 
           :to="`/projects/${project.id}`" 
           class="projects-card"
@@ -150,6 +163,75 @@ const loading = ref(true)
 const error = ref('')
 const debugData = ref('')
 const viewMode = ref<'grid' | '3d'>('grid')
+
+// 项目分类
+const projectCategories = ref(['全部', 'AI·智能体', 'Web 应用', '插件工具', '其他'])
+const selectedCategory = ref('全部')
+
+// 判断项目是否属于 AI/智能体类别
+const isAiProject = (project: Project) => {
+  const title = (project.title || '').toLowerCase()
+  const description = (project.description || '').toLowerCase()
+  const techStack = Array.isArray(project.techStack) 
+    ? project.techStack.join(' ').toLowerCase()
+    : (project.techStack || '').toLowerCase()
+  
+  const aiKeywords = ['ai', '智能体', '智能', 'agent', 'rag', 'llm', 'gpt', 'openai', 'langchain', '大模型', '机器学习', 'ml']
+  const text = `${title} ${description} ${techStack}`
+  
+  return aiKeywords.some(keyword => text.includes(keyword))
+}
+
+// 判断项目是否属于 Web 应用类别
+const isWebProject = (project: Project) => {
+  const title = (project.title || '').toLowerCase()
+  const description = (project.description || '').toLowerCase()
+  const techStack = Array.isArray(project.techStack) 
+    ? project.techStack.join(' ').toLowerCase()
+    : (project.techStack || '').toLowerCase()
+  
+  const webKeywords = ['web', '网站', '应用', 'vue', 'react', 'nuxt', 'next', '前端', '后端', '全栈']
+  const text = `${title} ${description} ${techStack}`
+  
+  return webKeywords.some(keyword => text.includes(keyword)) && !isAiProject(project)
+}
+
+// 判断项目是否属于插件工具类别
+const isPluginProject = (project: Project) => {
+  const title = (project.title || '').toLowerCase()
+  const description = (project.description || '').toLowerCase()
+  
+  const pluginKeywords = ['插件', 'plugin', 'extension', '工具', 'tool', 'vscode', 'chrome', '浏览器']
+  const text = `${title} ${description}`
+  
+  return pluginKeywords.some(keyword => text.includes(keyword)) && !isAiProject(project) && !isWebProject(project)
+}
+
+// 筛选后的项目列表
+const filteredProjects = computed(() => {
+  if (selectedCategory.value === '全部') {
+    return projects.value
+  }
+  
+  if (selectedCategory.value === 'AI·智能体') {
+    return projects.value.filter(isAiProject)
+  }
+  
+  if (selectedCategory.value === 'Web 应用') {
+    return projects.value.filter(isWebProject)
+  }
+  
+  if (selectedCategory.value === '插件工具') {
+    return projects.value.filter(isPluginProject)
+  }
+  
+  // 其他类别：排除以上所有类别
+  return projects.value.filter(project => 
+    !isAiProject(project) && 
+    !isWebProject(project) && 
+    !isPluginProject(project)
+  )
+})
 
 // 切换3D视图处理函数
 const handleToggle3DView = () => {
