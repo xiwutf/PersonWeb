@@ -56,7 +56,8 @@
           <div v-if="wechatInfo.qrcode" class="flex justify-center mb-3">
             <img :src="wechatInfo.qrcode" alt="微信二维码" class="w-48 h-48 border border-gray-300 rounded-lg" />
           </div>
-          <p class="text-xs text-gray-500">扫描二维码或搜索微信号添加</p>
+          <p v-if="wechatInfo.qrcode" class="text-xs text-gray-500 text-center">扫描二维码或搜索微信号添加</p>
+          <p v-else class="text-xs text-gray-500 text-center">搜索微信号添加</p>
         </div>
 
         <!-- 操作按钮 -->
@@ -114,23 +115,38 @@ const fetchOrderInfo = async () => {
 // 获取微信信息
 const fetchWechatInfo = async () => {
   try {
-    const configRes = await api.get<any>('/Config')
-    if (configRes && configRes.wechat) {
-      wechatInfo.value = {
-        wechat: configRes.wechat,
-        qrcode: configRes.wechatQrcode
+    // 尝试从配置接口获取联系方式信息
+    const configRes = await api.get<Record<string, string>>('/Config')
+    if (configRes && typeof configRes === 'object') {
+      // 从配置中获取联系方式，支持多种配置键名
+      const wechat = configRes.wechat || configRes.wechat_id || configRes.contact_wechat || configRes.微信 || ''
+      const qrcode = configRes.wechatQrcode || configRes.wechat_qrcode || configRes.wechat_qr || configRes.微信二维码 || ''
+      
+      if (wechat) {
+        wechatInfo.value = {
+          wechat: wechat,
+          qrcode: qrcode || undefined
+        }
+      } else {
+        // 如果配置中没有微信，使用默认值
+        wechatInfo.value = {
+          wechat: 'LinXi-5152',
+          qrcode: '/images/wechat-qr.png'
+        }
       }
     } else {
+      // 如果配置接口返回格式不对，使用默认值
       wechatInfo.value = {
-        wechat: '请查看网站联系方式',
-        qrcode: undefined
+        wechat: 'LinXi-5152',
+        qrcode: '/images/wechat-qr.png'
       }
     }
   } catch (e) {
-    console.warn('获取微信信息失败', e)
+    console.warn('获取微信信息失败，使用默认值', e)
+    // 即使获取失败，也显示默认的微信联系方式
     wechatInfo.value = {
-      wechat: '请查看网站联系方式',
-      qrcode: undefined
+      wechat: 'LinXi-5152',
+      qrcode: '/images/wechat-qr.png'
     }
   }
 }

@@ -137,6 +137,7 @@ const quickLinks = [
   { title: '项目展示', path: '/projects' },
   { title: '技术博客', path: '/blog' },
   { title: '生活随笔', path: '/life' },
+  { title: '订单查询', path: '/order/query' },
   { title: '关于我', path: '/about' }
 ]
 
@@ -235,9 +236,6 @@ const fetchStats = async () => {
     }
   } catch (err: any) {
     // 错误时使用默认值，不阻塞页面显示
-    if (process.env.NODE_ENV === 'development') {
-      console.warn('[Footer Stats] 获取统计数据失败:', err?.message || err)
-    }
     stats.value = { todayVisits: 0, totalVisits: 0 }
   }
 }

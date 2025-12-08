@@ -125,16 +125,10 @@ export default defineNuxtPlugin(async () => {
       // 如果有任何字体设置，则应用
       if (Object.keys(fontSettings).length > 0) {
         applyFontSettings(fontSettings)
-        if (process.env.NODE_ENV === 'development') {
-          console.log('[init-fonts] 已从后端加载字体设置:', fontSettings)
-        }
       }
     }
   } catch (error) {
     // 字体设置获取失败不影响应用启动
-    if (process.env.NODE_ENV === 'development') {
-      console.warn('[init-fonts] 获取字体设置失败:', error)
-    }
   }
 })
 

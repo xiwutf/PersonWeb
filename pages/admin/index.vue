@@ -24,23 +24,29 @@
         </div>
       </header>
 
+      <!-- 加载状态 -->
+      <div v-if="isLoading" class="dashboard-loading">
+        <div class="loading-spinner"></div>
+        <p class="loading-text">正在加载数据...</p>
+      </div>
+
       <!-- 1. 核心 KPI 区 -->
-      <AdminDashboardKpiRow :kpis="kpiData" />
+      <AdminDashboardKpiRow v-else :kpis="kpiData" />
 
       <!-- 2. 业务统计区 -->
-      <AdminDashboardStatsGrid :stats="statsData" />
+      <AdminDashboardStatsGrid v-if="!isLoading" :stats="statsData" />
 
       <!-- 3. 数据可视化区 -->
-      <AdminDashboardTrendAndSource :visit-trend="visitTrend" />
+      <AdminDashboardTrendAndSource v-if="!isLoading" :visit-trend="visitTrend" />
 
       <!-- 4. 热门页面 -->
-      <AdminDashboardTopPagesCard :top-paths="topPaths" />
+      <AdminDashboardTopPagesCard v-if="!isLoading" :top-paths="topPaths" />
 
       <!-- 5. 最近访问 -->
-      <AdminDashboardRecentVisitsCard :recent-visits="recentVisits" />
+      <AdminDashboardRecentVisitsCard v-if="!isLoading" :recent-visits="recentVisits" />
 
       <!-- 6. 快捷操作 + 最近活动 -->
-      <div class="actions-section">
+      <div v-if="!isLoading" class="actions-section">
         <AdminDashboardQuickActions :actions="quickActions" />
         <AdminDashboardTimeline :items="timelineItems" />
       </div>
@@ -61,7 +67,8 @@ import AdminDashboardTimeline from '~/components/admin/dashboard/Timeline.vue'
 
 definePageMeta({
   layout: 'admin',
-  middleware: 'admin-auth'
+  middleware: 'admin-auth',
+  ssr: false // 禁用 SSR，提升加载速度
 })
 
 const api = useApi()
@@ -86,6 +93,7 @@ const stats = ref({
 const topPaths = ref<any[]>([])
 const recentVisits = ref<any[]>([])
 const visitTrend = ref<any[]>([])
+const isLoading = ref(true) // 加载状态
 
 // 计算核心 KPI 数据
 const kpiData = computed(() => {
@@ -227,6 +235,7 @@ const timelineItems = computed(() => [
 
 const fetchStats = async () => {
   try {
+    isLoading.value = true
     const res = await api.get<any>('/Stats')
     if (res) {
       stats.value.todayVisits = res.TodayVisits ?? res.todayVisits ?? 0
@@ -253,15 +262,17 @@ const fetchStats = async () => {
       const visitTrendData = res.VisitTrend ?? res.visitTrend ?? []
       visitTrend.value = Array.isArray(visitTrendData) ? visitTrendData : []
       
-      // 获取时间胶囊待审核数量
-      await fetchPendingTimeCapsules()
-      
-      // 获取订单和咨询统计数据
-      await fetchOrderStats()
-      await fetchConsultationStats()
+      // 并行获取所有统计数据，提升加载速度
+      await Promise.all([
+        fetchPendingTimeCapsules(),
+        fetchOrderStats(),
+        fetchConsultationStats()
+      ])
     }
   } catch (e: any) {
     console.error('Failed to fetch stats:', e)
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -280,18 +291,42 @@ const fetchPendingTimeCapsules = async () => {
 
 const fetchOrderStats = async () => {
   try {
-    const pendingRes = await api.get<any>('/AdminOrders', {
-      params: { status: 0, page: 1, pageSize: 1 }
-    })
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    
+    // 并行获取所有订单统计数据
+    const [pendingRes, totalRes, todayRes] = await Promise.all([
+      // 待处理订单数
+      api.get<any>('/admin/orders', {
+        params: { status: 0, page: 1, pageSize: 1 }
+      }),
+      // 总订单数
+      api.get<any>('/admin/orders', {
+        params: { page: 1, pageSize: 1 }
+      }),
+      // 今日订单（只获取第一页，减少数据量）
+      api.get<any>('/admin/orders', {
+        params: { page: 1, pageSize: 50 } // 减少到 50 条，通常今日订单不会超过这个数
+      })
+    ])
+    
     if (pendingRes) {
-      stats.value.pendingOrders = pendingRes.total ?? pendingRes.Total ?? 0
+      stats.value.pendingOrders = pendingRes.Total ?? pendingRes.total ?? 0
     }
     
-    const totalRes = await api.get<any>('/AdminOrders', {
-      params: { page: 1, pageSize: 1 }
-    })
     if (totalRes) {
-      stats.value.totalOrders = totalRes.total ?? totalRes.Total ?? 0
+      stats.value.totalOrders = totalRes.Total ?? totalRes.total ?? 0
+    }
+    
+    // 计算今日订单数
+    if (todayRes) {
+      const list = todayRes.List ?? todayRes.list ?? (Array.isArray(todayRes) ? todayRes : [])
+      const todayOrders = list.filter((order: any) => {
+        if (!order.CreatedAt && !order.createdAt) return false
+        const orderDate = new Date(order.CreatedAt || order.createdAt)
+        return orderDate >= today
+      })
+      stats.value.todayOrders = todayOrders.length
     }
   } catch (e: any) {
     if (process.dev) {
@@ -302,18 +337,42 @@ const fetchOrderStats = async () => {
 
 const fetchConsultationStats = async () => {
   try {
-    const pendingRes = await api.get<any>('/AdminConsultations', {
-      params: { status: 0, page: 1, pageSize: 1 }
-    })
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    
+    // 并行获取所有咨询统计数据
+    const [pendingRes, totalRes, todayRes] = await Promise.all([
+      // 待处理咨询数
+      api.get<any>('/admin/consultations', {
+        params: { status: 0, page: 1, pageSize: 1 }
+      }),
+      // 总咨询数
+      api.get<any>('/admin/consultations', {
+        params: { page: 1, pageSize: 1 }
+      }),
+      // 今日咨询（只获取第一页，减少数据量）
+      api.get<any>('/admin/consultations', {
+        params: { page: 1, pageSize: 50 } // 减少到 50 条，通常今日咨询不会超过这个数
+      })
+    ])
+    
     if (pendingRes) {
-      stats.value.pendingConsultations = pendingRes.total ?? pendingRes.Total ?? 0
+      stats.value.pendingConsultations = pendingRes.Total ?? pendingRes.total ?? 0
     }
     
-    const totalRes = await api.get<any>('/AdminConsultations', {
-      params: { page: 1, pageSize: 1 }
-    })
     if (totalRes) {
-      stats.value.totalConsultations = totalRes.total ?? totalRes.Total ?? 0
+      stats.value.totalConsultations = totalRes.Total ?? totalRes.total ?? 0
+    }
+    
+    // 计算今日咨询数
+    if (todayRes) {
+      const list = todayRes.List ?? todayRes.list ?? (Array.isArray(todayRes) ? todayRes : [])
+      const todayConsultations = list.filter((consultation: any) => {
+        if (!consultation.CreatedAt && !consultation.createdAt) return false
+        const consultationDate = new Date(consultation.CreatedAt || consultation.createdAt)
+        return consultationDate >= today
+      })
+      stats.value.todayConsultations = todayConsultations.length
     }
   } catch (e: any) {
     if (process.dev) {
@@ -342,15 +401,6 @@ onMounted(() => {
   setInterval(updateTime, 1000)
   setInterval(fetchStats, 30000)
   
-  // 调试信息
-  if (process.dev) {
-    console.log('仪表盘数据:', {
-      kpiData: kpiData.value,
-      statsData: statsData.value,
-      quickActions: quickActions.value,
-      timelineItems: timelineItems.value
-    })
-  }
 })
 </script>
 
@@ -382,13 +432,67 @@ onMounted(() => {
 .bg-decoration-blue {
   top: 0;
   right: 0;
-  background-color: rgba(59, 130, 246, 0.1);
+  background: radial-gradient(circle at center, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+  animation: pulse-blue 4s ease-in-out infinite;
 }
 
 .bg-decoration-purple {
   bottom: 0;
   left: 0;
-  background-color: rgba(168, 85, 247, 0.1);
+  background: radial-gradient(circle at center, rgba(168, 85, 247, 0.15) 0%, transparent 70%);
+  animation: pulse-purple 4s ease-in-out infinite 2s;
+}
+
+@keyframes pulse-blue {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes pulse-purple {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.1);
+  }
+}
+
+/* 加载状态 */
+.dashboard-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 1rem;
+}
+
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(59, 130, 246, 0.2);
+  border-top-color: rgba(59, 130, 246, 1);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.loading-text {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* 内容区域 */

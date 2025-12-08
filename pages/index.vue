@@ -54,13 +54,6 @@ const fetchHomeStyle = async () => {
 
 onMounted(() => {
   fetchHomeStyle()
-  
-  // 调试信息
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[HomePage] 当前风格:', style.value)
-    console.log('[HomePage] 组件映射:', Object.keys(componentMap))
-    console.log('[HomePage] 当前组件:', currentComponent.value)
-  }
 })
 
 definePageMeta({

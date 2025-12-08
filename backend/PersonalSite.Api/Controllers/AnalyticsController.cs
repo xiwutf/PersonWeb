@@ -15,11 +15,13 @@ public class AnalyticsController : ControllerBase
 {
     private readonly AppDbContext _context;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ILogger<AnalyticsController> _logger;
 
-    public AnalyticsController(AppDbContext context, IHttpContextAccessor httpContextAccessor)
+    public AnalyticsController(AppDbContext context, IHttpContextAccessor httpContextAccessor, ILogger<AnalyticsController> logger)
     {
         _context = context;
         _httpContextAccessor = httpContextAccessor;
+        _logger = logger;
     }
 
     /// <summary>
@@ -40,12 +42,6 @@ public class AnalyticsController : ControllerBase
             // 注意：即使是私网 IP 也会返回，只是后续不解析地理位置
             var ip = GetClientIpAddress();
             
-            // 记录日志用于调试
-            Console.WriteLine($"[Analytics Track] GetClientIpAddress returned: {ip ?? "null"}");
-            Console.WriteLine($"[Analytics Track] X-Forwarded-For: {Request.Headers["X-Forwarded-For"].FirstOrDefault() ?? "null"}");
-            Console.WriteLine($"[Analytics Track] X-Real-IP: {Request.Headers["X-Real-IP"].FirstOrDefault() ?? "null"}");
-            Console.WriteLine($"[Analytics Track] RemoteIpAddress: {_httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString() ?? "null"}");
-            
             var userAgent = Request.Headers["User-Agent"].ToString();
             var referrer = Request.Headers["Referer"].ToString();
 
@@ -64,9 +60,6 @@ public class AnalyticsController : ControllerBase
                 Timestamp = DateTime.Now
             };
             _context.VisitLogs.Add(visitLog);
-            
-            // 记录日志用于调试
-            Console.WriteLine($"[Analytics Track] VisitLog created: Id={visitLog.Id}, Ip={visitLog.Ip ?? "null"}, Path={visitLog.Path}");
 
             // ========== 2. 写入或更新 VisitorAnalytics 表（详细分析）==========
             // 查找或创建访客会话
@@ -130,16 +123,11 @@ public class AnalyticsController : ControllerBase
             // 保存所有更改
             await _context.SaveChangesAsync();
 
-            // 记录日志（用于调试）
-            Console.WriteLine($"[Analytics] Track visit: VisitorId={request.VisitorId}, Path={request.Path}, IP={ip}, Time={DateTime.Now:yyyy-MM-dd HH:mm:ss}");
-            Console.WriteLine($"[Analytics] Session created/updated: Id={analytics.Id}, IsOnline={analytics.IsOnline}, UpdatedAt={analytics.UpdatedAt:yyyy-MM-dd HH:mm:ss}, PageViews={analytics.PageViews}");
-
             return Ok(ApiResponse.Success(new { SessionId = analytics.Id, VisitLogId = visitLog.Id }));
         }
         catch (Exception ex)
         {
-            // 记录错误日志
-            Console.WriteLine($"[Analytics] Track failed: {ex.Message}\n{ex.StackTrace}");
+            _logger.LogError(ex, "Analytics track failed");
             return StatusCode(500, ApiResponse.Error($"Track failed: {ex.Message}", 500));
         }
     }

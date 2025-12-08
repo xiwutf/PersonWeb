@@ -21,7 +21,7 @@
  * 这个组件使用动态导入，确保 Naive UI 只在客户端加载
  */
 
-import { ref, onMounted, defineComponent, h } from 'vue'
+import { ref, onMounted, defineComponent, h, markRaw } from 'vue'
 import type { GlobalTheme, GlobalThemeOverrides } from 'naive-ui'
 
 const props = defineProps<{
@@ -43,7 +43,8 @@ onMounted(async () => {
     const { NMessageProvider, NDialogProvider, NConfigProvider } = naiveUI
     
     // 创建包装组件
-    ProvidersComponent.value = defineComponent({
+    // 使用 markRaw 避免组件被响应式化，提高性能
+    ProvidersComponent.value = markRaw(defineComponent({
       name: 'NaiveUIProvidersWrapper',
       props: {
         theme: Object,
@@ -61,7 +62,7 @@ onMounted(async () => {
           })
         })
       }
-    })
+    }))
     
     isMounted.value = true
   } catch (error) {

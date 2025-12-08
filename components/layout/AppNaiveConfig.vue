@@ -29,7 +29,7 @@
  * - 所有 Naive UI 组件会自动应用统一的主题配置
  */
 
-import { ref, computed, onMounted, defineComponent, h } from 'vue'
+import { ref, computed, onMounted, defineComponent, h, markRaw } from 'vue'
 import type { GlobalTheme, GlobalThemeOverrides } from 'naive-ui'
 
 const ProvidersComponent = ref<any>(null)
@@ -177,7 +177,8 @@ onMounted(async () => {
     const { NMessageProvider, NDialogProvider, NNotificationProvider, NConfigProvider, darkTheme } = naiveUI
     
     // 创建包装组件
-    ProvidersComponent.value = defineComponent({
+    // 使用 markRaw 避免组件被响应式化，提高性能
+    ProvidersComponent.value = markRaw(defineComponent({
       name: 'AppNaiveConfigWrapper',
       props: {
         theme: Object,
@@ -207,7 +208,7 @@ onMounted(async () => {
           })
         })
       }
-    })
+    }))
   } catch (error) {
     console.error('Failed to load Naive UI components:', error)
   }

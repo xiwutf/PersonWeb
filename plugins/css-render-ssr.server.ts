@@ -23,7 +23,11 @@ export default defineNuxtPlugin({
               querySelector: () => null,
               querySelectorAll: () => [],
               insertBefore: () => {},
-              remove: () => {}
+              remove: () => {},
+              append: () => {},
+              prepend: () => {},
+              children: [],
+              childNodes: []
             },
             documentElement: {
               insertBefore: () => {},
@@ -45,33 +49,47 @@ export default defineNuxtPlugin({
             querySelector: () => null,
             querySelectorAll: () => [],
             insertBefore: () => {},
-            remove: () => {}
+            remove: () => {},
+            append: () => {},
+            prepend: () => {},
+            children: [],
+            childNodes: []
           } as any
         }
       }
 
       // 为 css-render 提供安全的 mount 函数
       // 这样即使组件在 SSR 时被渲染，也不会报错
-      try {
-        // 尝试修复 css-render
-        const cssRender = require('css-render')
-        if (cssRender && typeof cssRender.mount === 'function') {
-          // 保存原始的 mount 函数
-          const originalMount = cssRender.mount.bind(cssRender)
-          // 替换为安全的 mount 函数
-          cssRender.mount = function(...args: any[]) {
-            // 在服务端，不执行实际的 mount 操作
-            if (typeof document === 'undefined' || !document?.head) {
-              // 返回一个空的 unmount 函数
-              return () => {}
+      // 注意：使用动态导入避免在服务端直接 require
+      if (typeof global !== 'undefined') {
+        // 在全局对象上设置一个标记，让 css-render 知道这是服务端环境
+        (global as any).__SSR__ = true
+        
+        // 尝试修复 css-render（使用动态导入）
+        Promise.resolve().then(async () => {
+          try {
+            const cssRenderModule = await import('css-render')
+            const cssRender = cssRenderModule.default || cssRenderModule
+            if (cssRender && typeof cssRender.mount === 'function') {
+              // 保存原始的 mount 函数
+              const originalMount = cssRender.mount.bind(cssRender)
+              // 替换为安全的 mount 函数
+              cssRender.mount = function(...args: any[]) {
+                // 在服务端，不执行实际的 mount 操作
+                if (typeof document === 'undefined' || !document?.head) {
+                  // 返回一个空的 unmount 函数
+                  return () => {}
+                }
+                // 在客户端，使用原始函数
+                return originalMount(...args)
+              }
             }
-            // 在客户端，使用原始函数
-            return originalMount(...args)
+          } catch (e) {
+            // 如果 css-render 未安装或加载失败，忽略错误
           }
-        }
-      } catch (e) {
-        // 如果 css-render 未安装或加载失败，忽略错误
-        // 这在某些情况下是正常的
+        }).catch(() => {
+          // 忽略异步错误
+        })
       }
     }
   }

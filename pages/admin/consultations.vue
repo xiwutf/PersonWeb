@@ -1,12 +1,13 @@
 <template>
-  <div class="admin-consultations-page">
-    <div class="page-header">
-      <h1 class="page-title">咨询管理</h1>
-    </div>
+  <ClientOnly>
+    <div class="admin-consultations-page">
+      <div class="page-header">
+        <h1 class="page-title">咨询管理</h1>
+      </div>
 
-    <!-- 筛选栏 -->
-    <div class="filters-bar">
-      <n-input
+      <!-- 筛选栏 -->
+      <div class="filters-bar">
+        <n-input
         v-model:value="searchKeyword"
         placeholder="搜索客户名、联系方式、商品名..."
         clearable
@@ -137,10 +138,27 @@
         </div>
       </div>
     </n-modal>
-  </div>
+    </div>
+    <template #fallback>
+      <div class="admin-consultations-page">
+        <div class="page-header">
+          <h1 class="page-title">咨询管理</h1>
+        </div>
+        <div class="table-loading">加载中...</div>
+      </div>
+    </template>
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">
+import { NInput, NSelect, NButton, NModal, NDescriptions, NDescriptionsItem } from 'naive-ui'
+
+definePageMeta({
+  layout: 'admin',
+  middleware: 'admin-auth',
+  ssr: false // 禁用 SSR，避免 Naive UI 组件在服务端渲染时出错
+})
+
 const api = useApi()
 const message = useSafeMessage()
 
@@ -174,7 +192,7 @@ const editForm = ref({
 const fetchConsultations = async () => {
   loading.value = true
   try {
-    const res = await api.get<any>('/AdminConsultations', {
+    const res = await api.get<any>('/admin/consultations', {
       params: {
         status: filterStatus.value,
         keyword: searchKeyword.value,
@@ -186,13 +204,19 @@ const fetchConsultations = async () => {
     console.log('获取咨询列表响应:', res)
     
     // useApi 已经处理了响应格式，返回的是 data 部分
-    // 如果响应是 { code: 0, data: { list: [], total: 0, ... } }，则 res 就是 data
+    // 后端返回格式：{ code: 0, data: { Total: xxx, List: [], ... } }
+    // useApi 处理后，res 就是 { Total: xxx, List: [], ... }
     if (res) {
-      // 检查 res 是否包含 list 字段（标准格式）
-      if (res.list && Array.isArray(res.list)) {
+      // 检查 res 是否包含 List 字段（后端使用大写）
+      if (res.List && Array.isArray(res.List)) {
+        consultations.value = res.List
+        pagination.value.itemCount = res.Total ?? res.total ?? 0
+        pagination.value.totalPages = res.TotalPages ?? res.totalPages ?? 0
+      } else if (res.list && Array.isArray(res.list)) {
+        // 兼容小写格式
         consultations.value = res.list
-        pagination.value.itemCount = res.total || 0
-        pagination.value.totalPages = res.totalPages || 0
+        pagination.value.itemCount = res.Total ?? res.total ?? 0
+        pagination.value.totalPages = res.TotalPages ?? res.totalPages ?? 0
       } else if (Array.isArray(res)) {
         // 如果直接返回数组
         consultations.value = res
@@ -200,9 +224,9 @@ const fetchConsultations = async () => {
         pagination.value.totalPages = 1
       } else {
         // 其他格式，尝试从 data 字段获取
-        consultations.value = res.data?.list || res.list || []
-        pagination.value.itemCount = res.data?.total || res.total || 0
-        pagination.value.totalPages = res.data?.totalPages || res.totalPages || 0
+        consultations.value = res.data?.List || res.data?.list || res.List || res.list || []
+        pagination.value.itemCount = res.data?.Total || res.data?.total || res.Total || res.total || 0
+        pagination.value.totalPages = res.data?.TotalPages || res.data?.totalPages || res.TotalPages || res.totalPages || 0
       }
       
       console.log('解析后的咨询列表:', {
@@ -240,7 +264,7 @@ const handleReset = () => {
 // 查看详情
 const handleViewDetail = async (consultation: any) => {
   try {
-    const res = await api.get<any>(`/AdminConsultations/${consultation.id}`)
+    const res = await api.get<any>(`/admin/consultations/${consultation.id}`)
     console.log('获取咨询详情响应:', res)
     
     // useApi 已经处理了响应格式，返回的是 data 部分
@@ -263,7 +287,7 @@ const handleViewDetail = async (consultation: any) => {
 // 转为订单
 const handleConvertToOrder = async (consultation: any) => {
   try {
-    const res = await api.post<any>(`/AdminConsultations/${consultation.id}/convert-to-order`)
+    const res = await api.post<any>(`/admin/consultations/${consultation.id}/convert-to-order`)
     if (res && res.code === 0 && res.data) {
       message.success(`转换成功！新订单号：${res.data.orderNo}`)
       fetchConsultations()
@@ -281,7 +305,7 @@ const handleSaveStatus = async () => {
   if (!currentConsultation.value) return
 
   try {
-    const res = await api.put<any>(`/AdminConsultations/${currentConsultation.value.id}`, {
+    const res = await api.put<any>(`/admin/consultations/${currentConsultation.value.id}`, {
       status: editForm.value.status,
       internalNote: editForm.value.internalNote
     })
@@ -361,7 +385,8 @@ useHead({
 .page-title {
   font-size: 24px;
   font-weight: 600;
-  color: #1e293b;
+  color: #f3f4f6;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .filters-bar {

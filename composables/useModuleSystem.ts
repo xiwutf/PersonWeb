@@ -285,6 +285,11 @@ export const useModuleSystem = () => {
       return true
     }
 
+    // /tools 路由始终启用，不依赖模块系统
+    if (path === '/tools' || path.startsWith('/tools/')) {
+      return true
+    }
+
     for (const [moduleKey, manifest] of moduleRegistry.entries()) {
       if (!enabledModules.value.has(moduleKey)) continue
 

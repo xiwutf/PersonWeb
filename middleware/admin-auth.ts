@@ -5,11 +5,8 @@ export default defineNuxtRouteMiddleware((to) => {
     // 在客户端和服务端都检查
     if (process.client) {
         const token = localStorage.getItem('admin_token')
-        console.log('[Middleware:admin-auth] Checking token for path:', to.path)
-        console.log('[Middleware:admin-auth] Token exists:', !!token)
 
         if (!token && to.path !== '/admin/login') {
-            console.log('[Middleware:admin-auth] No token, redirecting to login')
             return navigateTo('/admin/login')
         }
     }

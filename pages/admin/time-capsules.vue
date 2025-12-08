@@ -183,13 +183,6 @@ const fetchCapsules = async () => {
     const res = await api.get<TimeCapsuleListResponse>(endpoint, { params })
 
     // 兼容大小写：后端返回的是 list（小写），但类型定义可能是 List（大写）
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[TimeCapsules] API Response:', res)
-      console.log('[TimeCapsules] Has List?', !!(res as any)?.List)
-      console.log('[TimeCapsules] Has list?', !!(res as any)?.list)
-      console.log('[TimeCapsules] Is Array?', Array.isArray(res))
-    }
-
     if (res) {
       if (res.List) {
         capsules.value = res.List
@@ -202,10 +195,6 @@ const fetchCapsules = async () => {
       }
     } else {
       capsules.value = []
-    }
-
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[TimeCapsules] Final capsules count:', capsules.value.length)
     }
 
     // 更新统计（从服务器获取准确的统计数据）
@@ -290,11 +279,6 @@ const deleteCapsule = async (id: number) => {
     message.success('删除成功')
     await fetchCapsules() // 刷新列表和统计
   } catch (e: any) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('[Delete] Error:', e)
-      console.error('[Delete] Error URL:', e?.url || e?.request?.url)
-      console.error('[Delete] Error Status:', e?.status || e?.response?.status)
-    }
     handleError(e, '删除失败')
   }
 }

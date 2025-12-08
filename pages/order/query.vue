@@ -159,14 +159,30 @@ const handleQuery = async () => {
       }
     })
 
-    if (res && res.code === 0 && res.data) {
+    console.log('订单查询响应:', res)
+
+    // useApi 已经处理了响应格式，如果成功，res 直接是 data 部分
+    // 后端返回格式：{ code: 0, data: {...} }
+    // useApi 处理后，res 就是 {...}
+    if (res && (res.orderNo || res.OrderNo)) {
+      orderResult.value = res
+      queryError.value = null
+    } else if (res && res.code === 0 && res.data) {
+      // 兼容未处理的响应格式
       orderResult.value = res.data
+      queryError.value = null
     } else {
       queryError.value = res?.message || '订单不存在或联系方式不匹配'
     }
   } catch (e: any) {
     console.error('查询订单失败:', e)
-    queryError.value = e.message || '查询失败，请稍后重试'
+    console.error('错误详情:', {
+      message: e.message,
+      response: e.response,
+      status: e.response?.status,
+      data: e.response?.data
+    })
+    queryError.value = e.response?.data?.message || e.message || '查询失败，请稍后重试'
   } finally {
     querying.value = false
   }

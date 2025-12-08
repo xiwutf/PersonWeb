@@ -438,7 +438,9 @@
     </main>
 
     <!-- 鼠标轨迹特效 -->
-    <MouseTrail />
+    <ClientOnly>
+      <MouseTrail />
+    </ClientOnly>
     
     <!-- 风格切换面板 -->
     <ClientOnly>
@@ -461,6 +463,9 @@
 import { onMounted, computed, watch, ref, nextTick } from 'vue'
 import { useAdminGlobalStyle } from '~/composables/useAdminStyle'
 import { useNaiveTheme } from '~/composables/useNaiveTheme'
+import NaiveUIProviders from '~/components/layout/NaiveUIProviders.vue'
+import MouseTrail from '~/components/effects/MouseTrail.vue'
+import ThemeSwitcher from '~/components/layout/ThemeSwitcher.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -487,10 +492,6 @@ const expandedMenus = ref<Record<string, boolean>>({
 const toggleMenu = (menuKey: string) => {
   const currentValue = expandedMenus.value[menuKey]
   expandedMenus.value[menuKey] = !currentValue
-  // 调试信息
-  if (process.env.NODE_ENV === 'development') {
-    console.log(`[Menu] 切换菜单 ${menuKey}: ${currentValue} -> ${!currentValue}`)
-  }
 }
 
 // 检查菜单是否应该高亮（包含活动路由）
@@ -742,7 +743,8 @@ const logout = () => {
 
 /* 菜单组标题样式 */
 .menu-group-title {
-  color: rgba(255, 255, 255, 0.6) !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-weight: 500;
 }
 
 .menu-group-header {
@@ -1557,7 +1559,8 @@ const logout = () => {
 }
 
 .menu-group-items .admin-sidebar-link {
-  color: rgba(255, 255, 255, 0.85) !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  font-weight: 400;
 }
 
 .menu-group-items .admin-sidebar-link:hover {

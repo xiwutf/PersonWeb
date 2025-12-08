@@ -96,7 +96,7 @@
             <textarea
               v-model="form.remark"
               rows="5"
-              placeholder="请详细描述您的需求，至少20个字符..."
+              placeholder="请详细描述您的需求..."
               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 resize-y"
               :class="{ 'border-red-500': errors.remark }"
               required
@@ -218,11 +218,7 @@ const validate = (): boolean => {
     return false
   }
 
-  if (form.value.remark.trim().length < 20) {
-    errors.value.remark = '需求说明至少需要20个字符'
-    return false
-  }
-
+  // 移除字符数限制
   return true
 }
 
@@ -234,6 +230,12 @@ const handleSubmit = async () => {
 
   submitting.value = true
   try {
+    console.log('提交订单，数据:', {
+      productId: productId.value,
+      customerName: form.value.customerName.trim(),
+      quantity: form.value.quantity || 1
+    })
+    
     const res = await api.post<any>('/Orders', {
       productId: productId.value,
       customerName: form.value.customerName.trim(),
@@ -244,15 +246,37 @@ const handleSubmit = async () => {
       remark: form.value.remark.trim()
     })
 
-    if (res && res.code === 0 && res.data) {
+    console.log('提交订单响应:', res)
+
+    // useApi 已经处理了响应格式，如果成功，res 直接是 data 部分
+    // 后端返回格式：{ code: 0, data: { OrderId: xxx, OrderNo: 'xxx' } }
+    // useApi 处理后，res 就是 { OrderId: xxx, OrderNo: 'xxx' }
+    if (res && res.orderNo) {
+      // 显示成功提示
+      message.success('订单提交成功！')
       // 跳转到成功页
-      router.push(`/order/success?orderNo=${res.data.orderNo}`)
+      setTimeout(() => {
+        router.push(`/order/success?orderNo=${res.orderNo}`)
+      }, 500)
+    } else if (res && res.OrderNo) {
+      // 兼容后端返回的 PascalCase 格式
+      message.success('订单提交成功！')
+      setTimeout(() => {
+        router.push(`/order/success?orderNo=${res.OrderNo}`)
+      }, 500)
     } else {
-      message.error(res?.message || '提交订单失败，请稍后重试')
+      console.error('订单响应格式错误:', res)
+      message.error('提交订单失败，响应格式错误')
     }
   } catch (e: any) {
     console.error('提交订单失败:', e)
-    message.error(e.message || '提交订单失败，请稍后重试')
+    console.error('错误详情:', {
+      message: e.message,
+      response: e.response,
+      status: e.response?.status,
+      data: e.response?.data
+    })
+    message.error(e.response?.data?.message || e.message || '提交订单失败，请稍后重试')
   } finally {
     submitting.value = false
   }

@@ -27,6 +27,7 @@
             :class="isActiveRoute(item.path)
               ? 'header-nav-link-active' 
               : 'header-nav-link-inactive'"
+            @click="handleNavClick(item.path, $event)"
           >
             <span class="header-nav-link-icon">{{ item.icon }}</span>
             <span>{{ item.title }}</span>
@@ -236,7 +237,19 @@ const mainNavigationItems = computed(() => {
     moduleKey: 'tools'
   })
 
-  if (isModuleEnabled('projects')) {
+  // 在 SSR 时，默认显示这些导航项，避免 hydration 不匹配
+  // 在客户端，会根据模块系统状态动态调整
+  const isSSR = process.server
+  const shouldShowProjects = isSSR || isModuleEnabled('projects')
+  const shouldShowBlog = isSSR || isModuleEnabled('blog')
+  const shouldShowLab3D = isSSR || isModuleEnabled('lab-3d')
+  const shouldShowLife = isSSR || isModuleEnabled('life')
+  const shouldShowEnglish = isSSR || isModuleEnabled('english')
+  const shouldShowSkills = isSSR || isModuleEnabled('skills')
+  const shouldShowDashboard = isSSR || isModuleEnabled('dashboard')
+  const shouldShowGame = isSSR || isModuleEnabled('game')
+
+  if (shouldShowProjects) {
     items.push({
       title: '项目展示',
       path: '/projects',
@@ -245,7 +258,7 @@ const mainNavigationItems = computed(() => {
     })
   }
 
-  if (isModuleEnabled('blog')) {
+  if (shouldShowBlog) {
     items.push({
       title: '技术博客',
       path: '/blog',
@@ -262,7 +275,7 @@ const mainNavigationItems = computed(() => {
     moduleKey: 'ai'
   })
 
-  if (isModuleEnabled('lab-3d')) {
+  if (shouldShowLab3D) {
     items.push({
       title: 'AI 实验室',
       path: '/lab',
@@ -279,9 +292,17 @@ const moreNavigationItems = computed(() => {
   // @ts-ignore - Nuxt 3 auto-imports
   const { isModuleEnabled } = useModuleSystem()
   
+  // 在 SSR 时，默认显示这些导航项，避免 hydration 不匹配
+  const isSSR = process.server
+  const shouldShowLife = isSSR || isModuleEnabled('life')
+  const shouldShowEnglish = isSSR || isModuleEnabled('english')
+  const shouldShowSkills = isSSR || isModuleEnabled('skills')
+  const shouldShowDashboard = isSSR || isModuleEnabled('dashboard')
+  const shouldShowGame = isSSR || isModuleEnabled('game')
+  
   const items: Array<{ title: string; path: string; icon: string; moduleKey?: string }> = []
 
-  if (isModuleEnabled('life')) {
+  if (shouldShowLife) {
     items.push({
       title: '生活随笔',
       path: '/life',
@@ -290,7 +311,7 @@ const moreNavigationItems = computed(() => {
     })
   }
 
-  if (isModuleEnabled('english')) {
+  if (shouldShowEnglish) {
     items.push({
       title: '英语学习',
       path: '/english',
@@ -299,7 +320,7 @@ const moreNavigationItems = computed(() => {
     })
   }
 
-  if (isModuleEnabled('skills')) {
+  if (shouldShowSkills) {
     items.push({
       title: '技能树',
       path: '/skills',
@@ -308,7 +329,7 @@ const moreNavigationItems = computed(() => {
     })
   }
 
-  if (isModuleEnabled('dashboard')) {
+  if (shouldShowDashboard) {
     items.push({
       title: '仪表盘',
       path: '/dashboard',
@@ -325,7 +346,7 @@ const moreNavigationItems = computed(() => {
     moduleKey: 'core'
   })
 
-  if (isModuleEnabled('game')) {
+  if (shouldShowGame) {
     items.push({
       title: '小游戏',
       path: '/game',
@@ -334,14 +355,14 @@ const moreNavigationItems = computed(() => {
     })
   }
 
-  items.push({
-    title: '关于我',
-    path: '/about',
-    icon: '👤',
-    moduleKey: 'core'
-  })
+          items.push({
+            title: '关于我',
+            path: '/about',
+            icon: '👤',
+            moduleKey: 'core'
+          })
 
-  return items
+          return items
 })
 
 // 所有导航项（用于移动端菜单）
@@ -356,8 +377,21 @@ const isActiveRoute = (path: string) => {
   if (path === '/') {
     return route.path === '/' || route.path === ''
   }
+  // /tools 路径需要前缀匹配
+  if (path === '/tools') {
+    return route.path === '/tools' || route.path.startsWith('/tools/')
+  }
   // 其他路由精确匹配
   return route.path === path
+}
+
+// 处理导航点击（调试用）
+const handleNavClick = (path: string, event: MouseEvent) => {
+  if (process.dev && path === '/tools') {
+    console.log('点击插件工具链接，路径:', path)
+    console.log('当前路由:', route.path)
+  }
+  // 不阻止默认行为，让 NuxtLink 正常处理
 }
 
 // 检查"更多"菜单是否包含当前路由

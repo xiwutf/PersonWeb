@@ -155,6 +155,12 @@
         >
           🎒 我的工具
         </NuxtLink>
+        <NuxtLink
+          to="/order/query"
+          class="tools-nav-button tools-nav-button--secondary"
+        >
+          📦 订单查询
+        </NuxtLink>
       </div>
 
       <!-- 底部CTA -->
@@ -211,7 +217,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useSafeMessage } from '~/composables/useToast'
+import { useSafeMessage } from '~/composables/useNaiveUI'
 
 // 确保使用 default 布局（包含 Header）
 definePageMeta({
@@ -240,8 +246,6 @@ const fetchTools = async () => {
         params: { page: 1, pageSize: 100 }
       })
       
-      console.log('Toolbox API 响应:', res)
-      
       // useApi 已经处理了响应格式，返回的是 data 部分
       // 检查不同的响应格式
       let toolsList: any[] = []
@@ -266,7 +270,6 @@ const fetchTools = async () => {
           _path: `/tools/${t.slug}`,
           enableOnlineOrder: t.enableOnlineOrder || false
         }))
-        console.log('转换后的工具列表:', tools.value)
         return
       }
     } catch (e) {

@@ -42,15 +42,10 @@ export default defineNuxtPlugin(async () => {
         globalTheme = themeFromBackend
         // 设置 data-theme 属性，驱动 tokens.css 中的主题变量
         document.documentElement.dataset.theme = themeFromBackend
-        if (process.env.NODE_ENV === 'development') {
-          console.log('[init-theme] 已从后端加载全局主题:', themeFromBackend)
-        }
       }
     }
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
-      console.warn('[init-theme] 获取全局主题失败:', error)
-    }
+    // 获取全局主题失败，使用默认逻辑
   }
 
   // ==================== 2. 获取模块主题配置 ====================
@@ -60,14 +55,8 @@ export default defineNuxtPlugin(async () => {
       modules: Array<{ moduleId: string; theme: string | null }>
       availableThemes: string[]
     }>('/Config/module-themes')
-    
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[init-theme] 已从后端加载模块主题配置:', moduleThemesData)
-    }
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
-      console.warn('[init-theme] 获取模块主题配置失败:', error)
-    }
+    // 获取模块主题配置失败，使用默认逻辑
   }
 
   // ==================== 3. 获取主题 tokens（可选，前台暂时先不加载，只在后台编辑页加载）====================
@@ -87,18 +76,10 @@ export default defineNuxtPlugin(async () => {
         }
       } catch (e) {
         // 单个主题 tokens 获取失败不影响其他主题
-        if (process.env.NODE_ENV === 'development') {
-          console.warn(`[init-theme] 获取主题 ${themeKey} 的 tokens 失败:`, e)
-        }
       }
     }
-    if (process.env.NODE_ENV === 'development' && Object.keys(tokensMap).length > 0) {
-      console.log('[init-theme] 已从后端加载主题 tokens:', tokensMap)
-    }
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
-      console.warn('[init-theme] 获取主题 tokens 失败:', error)
-    }
+    // 获取主题 tokens 失败，使用默认逻辑
   }
   */
 
@@ -128,10 +109,7 @@ export default defineNuxtPlugin(async () => {
       setTheme(globalTheme as 'light' | 'dark' | 'tech-blue' | 'paper' | 'forest' | 'hybrid-super' | 'hybrid-super-dark' | 'hybrid-super-light')
     }
   } catch (error) {
-    // 注入失败时的降级策略：不阻塞应用启动
-    if (process.env.NODE_ENV === 'development') {
-      console.warn('[init-theme] 注入主题配置失败，使用默认逻辑:', error)
-    }
+    // 注入失败时的降级策略：不阻塞应用启动，使用默认逻辑
   }
 })
 

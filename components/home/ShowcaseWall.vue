@@ -77,10 +77,6 @@ const fetchCapsules = async () => {
       }
     })
     
-    if (import.meta.env.DEV) {
-      console.log('[ShowcaseWall] TimeCapsule API Response:', res)
-    }
-    
     if (res) {
       let list: TimeCapsule[] = []
       
@@ -105,17 +101,10 @@ const fetchCapsules = async () => {
       
       // /TimeCapsule 端点已经只返回 status == 1 的数据，不需要再过滤
       capsules.value = list
-      
-      if (import.meta.env.DEV) {
-        console.log('[ShowcaseWall] Parsed capsules:', capsules.value.length)
-      }
     } else {
       capsules.value = []
     }
   } catch (e) {
-    if (import.meta.env.DEV) {
-      console.error('[ShowcaseWall] Failed to fetch capsules:', e)
-    }
     capsules.value = []
   }
 }
@@ -181,13 +170,6 @@ const mergeItems = () => {
       })
     }
   })
-  
-  if (import.meta.env.DEV) {
-    console.log('[ShowcaseWall] Merged items:', items.length, {
-      capsules: capsules.value.length,
-      messages: messages.value.length
-    })
-  }
   
   // 随机打乱顺序
   allItems.value = items.sort(() => Math.random() - 0.5)
