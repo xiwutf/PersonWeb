@@ -31,6 +31,7 @@
               @click="selectTheme(theme.code)"
               class="theme-card"
               :class="{ 'active': currentTheme === theme.code }"
+              :data-theme-code="theme.code"
             >
               <div v-if="theme.previewImage" class="theme-preview">
                 <img :src="theme.previewImage" :alt="theme.displayName" />
@@ -128,8 +129,22 @@ let autoSwitchTimer: NodeJS.Timeout | null = null
 
 const fetchThemes = async () => {
   try {
-    const res = await api.get<Theme[]>('/Theme/themes')
-    themes.value = Array.isArray(res) ? res : []
+    // 重构说明（2024-12-XX）：现在只支持 light 和 dark 两个主题
+    // 不再从后端 API 获取，直接使用固定的两个主题
+    themes.value = [
+      {
+        id: 1,
+        code: 'light',
+        displayName: '浅色主题',
+        isDefault: true
+      },
+      {
+        id: 2,
+        code: 'dark',
+        displayName: '深色主题',
+        isDefault: false
+      }
+    ]
   } catch (e) {
     console.error('加载主题失败', e)
   }
@@ -146,10 +161,14 @@ const fetchBackgrounds = async () => {
 
 const loadUserPreference = async () => {
   try {
+    // 重构说明（2024-12-XX）：使用新的主题系统
+    const { currentTheme: themeFromSystem } = useTheme()
+    currentTheme.value = themeFromSystem.value || 'light'
+    
+    // 背景效果仍然从后端获取（如果支持）
     const visitorId = localStorage.getItem('visitor_id') || 'anonymous'
     const res = await api.post('/Theme/preference', { visitorId })
     if (res) {
-      currentTheme.value = res.themeCode || 'default'
       currentBackground.value = res.backgroundEffectCode || 'particles'
       autoSwitch.value = res.autoSwitch || false
       switchInterval.value = res.switchInterval || 30
@@ -160,8 +179,17 @@ const loadUserPreference = async () => {
 }
 
 const selectTheme = async (themeCode: string) => {
+  // 重构说明（2024-12-XX）：只允许选择 light 或 dark
+  if (themeCode !== 'light' && themeCode !== 'dark') {
+    console.warn('不支持的主题:', themeCode, '，已自动映射为 light')
+    themeCode = 'light'
+  }
+  
   currentTheme.value = themeCode
-  applyTheme(themeCode)
+  
+  // 使用新的主题系统
+  const { setTheme } = useTheme()
+  setTheme(themeCode as 'light' | 'dark')
   
   try {
     const visitorId = localStorage.getItem('visitor_id') || 'anonymous'
@@ -190,19 +218,9 @@ const selectBackground = async (bgCode: string) => {
 }
 
 const applyTheme = (themeCode: string) => {
-  // 移除所有主题类
-  document.documentElement.classList.remove(
-    'theme-default',
-    'theme-minimal',
-    'theme-cyberpunk',
-    'theme-dark-tech',
-    'theme-cartoon'
-  )
-  
-  // 添加新主题类
-  document.documentElement.classList.add(`theme-${themeCode}`)
-  
-  // 触发主题切换事件
+  // 重构说明（2024-12-XX）：不再使用 CSS 类名，改用 data-theme 属性
+  // 这个函数现在主要用于兼容，实际主题切换由 useTheme().setTheme() 处理
+  // 但为了保持兼容性，仍然触发主题切换事件
   window.dispatchEvent(new CustomEvent('theme-changed', { detail: { theme: themeCode } }))
 }
 
@@ -295,7 +313,16 @@ onMounted(async () => {
   await Promise.all([fetchThemes(), fetchBackgrounds(), loadUserPreference()])
   
   // 应用当前主题和背景
-  applyTheme(currentTheme.value)
+  // 重构说明（2024-12-XX）：使用新的主题系统
+  const { setTheme } = useTheme()
+  if (currentTheme.value === 'light' || currentTheme.value === 'dark') {
+    setTheme(currentTheme.value as 'light' | 'dark')
+  } else {
+    // 如果当前主题不是 light 或 dark，设置为 light
+    currentTheme.value = 'light'
+    setTheme('light')
+  }
+  
   applyBackground(currentBackground.value)
   
   // 如果启用自动切换，启动定时器
@@ -464,11 +491,34 @@ onUnmounted(() => {
 .background-preview {
   width: 100%;
   aspect-ratio: 16 / 9;
-  background: rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(255, 255, 255, 0.5);
+  /* 浅色主题优化（2025-01）：浅色主题预览使用浅色背景，深色主题预览使用深色背景 */
+  background: var(--bg-elevated, rgba(255, 255, 255, 0.1));
+  color: var(--text-muted, rgba(255, 255, 255, 0.5));
+}
+
+/* 浅色主题预览卡片特殊处理 */
+html[data-theme="light"] .theme-card[data-theme-code="light"] .theme-preview {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+}
+
+html[data-theme="light"] .theme-card[data-theme-code="dark"] .theme-preview {
+  background: #0a0e1a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 深色主题预览卡片特殊处理 */
+html[data-theme="dark"] .theme-card[data-theme-code="light"] .theme-preview {
+  background: #f5f7fb;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+html[data-theme="dark"] .theme-card[data-theme-code="dark"] .theme-preview {
+  background: #0a0e1a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .theme-preview img {
@@ -479,16 +529,18 @@ onUnmounted(() => {
 
 .theme-info {
   padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.05);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  /* 浅色主题优化（2025-01）：使用主题变量 */
+  background: var(--bg-elevated, rgba(255, 255, 255, 0.05));
 }
 
 .theme-name {
   font-size: 0.875rem;
   font-weight: 500;
-  color: white;
+  /* 浅色主题优化（2025-01）：使用主题文字颜色，确保清晰 */
+  color: var(--text-main, white);
 }
 
 .theme-badge {

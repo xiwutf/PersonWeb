@@ -21,8 +21,8 @@
             <div
               class="timeline-dot"
               :style="{
-                backgroundColor: event.color || '#00d9ff',
-                boxShadow: `0 0 20px ${event.color || '#00d9ff'}40`
+                backgroundColor: event.color || 'var(--primary)',
+                boxShadow: `0 0 20px ${event.color || 'var(--primary)'}40`
               }"
             >
               {{ event.icon || '⭐' }}
@@ -31,7 +31,7 @@
             <!-- 内容卡片 -->
             <div
               class="timeline-card"
-              :style="{ borderLeftColor: event.color || '#00d9ff', borderLeftWidth: '4px' }"
+              :style="{ borderLeftColor: event.color || 'var(--primary)', borderLeftWidth: '4px' }"
             >
               <div class="timeline-card-header">
                 <h3 class="timeline-card-title">{{ event.title }}</h3>

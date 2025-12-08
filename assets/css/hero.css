@@ -38,16 +38,30 @@
 .hero-background-grid {
   position: absolute;
   inset: 0;
+  /* 浅色主题优化（2025-01）：降低网格透明度，避免刺眼 */
   opacity: 0.2;
+}
+
+/* 浅色主题下网格线更淡 */
+html[data-theme="light"] .hero-background-grid {
+  opacity: 0.15;
 }
 
 .hero-background-grid-pattern {
   width: 100%;
   height: 100%;
+  /* 浅色主题优化（2025-01）：使用更淡的网格线颜色 */
+  background-image: 
+    linear-gradient(var(--grid-line-color, rgba(148, 163, 184, 0.25)) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line-color, rgba(148, 163, 184, 0.25)) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* 深色主题保持原有网格样式 */
+html[data-theme="dark"] .hero-background-grid-pattern {
   background-image: 
     linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 50px 50px;
 }
 
 /* 角落光晕 */
@@ -57,9 +71,14 @@
   right: 0;
   width: 24rem;
   height: 24rem;
-  background: rgba(6, 182, 212, 0.1);
   border-radius: 9999px;
   filter: blur(64px);
+  /* 浅色主题优化（2025-01）：减弱光效，避免刺眼 */
+  background: rgba(6, 182, 212, 0.05);
+}
+
+html[data-theme="dark"] .hero-glow-cyan {
+  background: rgba(6, 182, 212, 0.1);
 }
 
 .hero-glow-purple {
@@ -68,14 +87,25 @@
   left: 0;
   width: 24rem;
   height: 24rem;
-  background: rgba(168, 85, 247, 0.1);
   border-radius: 9999px;
   filter: blur(64px);
+  /* 浅色主题优化（2025-01）：减弱光效，避免刺眼 */
+  background: rgba(168, 85, 247, 0.05);
+}
+
+html[data-theme="dark"] .hero-glow-purple {
+  background: rgba(168, 85, 247, 0.1);
 }
 
 .hero-particle-overlay {
   position: absolute;
   inset: 0;
+  /* 浅色主题优化（2025-01）：减弱渐变光效，避免刺眼 */
+  background: radial-gradient(circle at 20% 50%, rgba(37, 99, 235, 0.02) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(124, 58, 237, 0.02) 0%, transparent 50%);
+}
+
+html[data-theme="dark"] .hero-particle-overlay {
   background: radial-gradient(circle at 20% 50%, rgba(0, 217, 255, 0.05) 0%, transparent 50%),
               radial-gradient(circle at 80% 80%, rgba(124, 58, 237, 0.05) 0%, transparent 50%);
 }
@@ -330,12 +360,20 @@
 .hero-tag {
   padding: 0.375rem 0.75rem;
   border-radius: 0.5rem;
-  background: var(--color-bg-elevated);
-  border: 1px solid var(--color-border-subtle);
-  color: var(--color-text-main);
   font-size: 0.75rem;
   font-weight: 500;
   backdrop-filter: blur(4px);
+  /* 浅色主题优化（2025-01）：标签使用主色柔和背景，提高可读性 */
+  background: var(--primary-soft-bg);
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  color: var(--primary);
+}
+
+/* 深色主题保持原有样式 */
+html[data-theme="dark"] .hero-tag {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-subtle);
+  color: var(--color-text-main);
 }
 
 /* 按钮区 */
@@ -366,32 +404,54 @@
   padding: 1rem 3rem;
   font-size: 1rem;
   font-weight: 600;
-  color: var(--color-text-main);
-  background: var(--color-primary-soft);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--color-primary);
   border-radius: var(--radius-md);
   transition: all 0.3s ease;
   overflow: hidden;
+  /* 浅色主题优化（2025-01）：主按钮使用主色背景 + 白色文字，对比更清晰 */
+  background: var(--primary);
+  color: #ffffff;
+  border: 1px solid var(--primary);
 }
 
 .hero-button-primary::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: var(--color-primary);
+  background: var(--primary-hover);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
 
 .hero-button-primary:hover::before {
-  opacity: 0.2;
+  opacity: 1;
 }
 
 .hero-button-primary:hover {
-  border-color: var(--color-primary-hover);
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
   box-shadow: var(--shadow-md);
   transform: translateY(-2px);
+}
+
+/* 深色主题保持原有样式 */
+html[data-theme="dark"] .hero-button-primary {
+  color: var(--color-text-main);
+  background: var(--color-primary-soft);
+  border: 1px solid var(--color-primary);
+}
+
+html[data-theme="dark"] .hero-button-primary::before {
+  background: var(--color-primary);
+  opacity: 0;
+}
+
+html[data-theme="dark"] .hero-button-primary:hover::before {
+  opacity: 0.2;
+}
+
+html[data-theme="dark"] .hero-button-primary:hover {
+  background: var(--color-primary-soft);
+  border-color: var(--color-primary-hover);
 }
 
 .hero-button-primary-content {
@@ -417,15 +477,28 @@
   padding: 1rem 3rem;
   font-size: 1rem;
   font-weight: 600;
-  color: var(--color-text-main);
-  background: var(--color-bg-card);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-md);
   transition: all 0.3s ease;
+  /* 浅色主题优化（2025-01）：次按钮使用主色柔和背景 + 主色文字 */
+  background: var(--primary-soft-bg);
+  color: var(--primary);
+  border: 1px solid rgba(37, 99, 235, 0.2);
 }
 
 .hero-button-secondary:hover {
+  background: var(--primary-soft-bg);
+  border-color: var(--primary);
+  color: var(--primary-hover);
+}
+
+/* 深色主题保持原有样式 */
+html[data-theme="dark"] .hero-button-secondary {
+  color: var(--color-text-main);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-subtle);
+}
+
+html[data-theme="dark"] .hero-button-secondary:hover {
   background: var(--color-bg-elevated);
   border-color: var(--color-border-default);
 }
@@ -560,11 +633,19 @@
 .hero-info-card-large-tag {
   padding: 0.375rem 0.75rem;
   border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  /* 浅色主题优化（2025-01）：标签使用主色柔和背景 + 主色文字 */
+  background: var(--primary-soft-bg);
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  color: var(--primary);
+}
+
+/* 深色主题保持原有样式 */
+html[data-theme="dark"] .hero-info-card-large-tag {
   background: var(--color-primary-soft);
   border: 1px solid var(--color-primary-base);
   color: var(--color-text-main);
-  font-size: 0.75rem;
-  font-weight: 500;
 }
 
 /* 滚动提示 */

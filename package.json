@@ -4,11 +4,9 @@
   "scripts": {
     "dev": "cross-env SASS_SILENCE_DEPRECATIONS=legacy-js-api nuxt dev",
     "dev:mobile": "cross-env SASS_SILENCE_DEPRECATIONS=legacy-js-api nuxt dev --host 0.0.0.0",
-    "dev:prod": "cross-env SASS_SILENCE_DEPRECATIONS=legacy-js-api nuxt dev --dotenv .env.production",
-    "build": "cross-env SASS_SILENCE_DEPRECATIONS=legacy-js-api nuxt build",
-    "build:prod": "cross-env SASS_SILENCE_DEPRECATIONS=legacy-js-api nuxt build --dotenv .env.production",
-    "generate": "cross-env SASS_SILENCE_DEPRECATIONS=legacy-js-api nuxt generate",
-    "generate:prod": "cross-env SASS_SILENCE_DEPRECATIONS=legacy-js-api nuxt generate --dotenv .env.production",
+    "dev:prod": "cross-env SASS_SILENCE_DEPRECATIONS=legacy-js-api NODE_ENV=production nuxt dev",
+    "build": "cross-env SASS_SILENCE_DEPRECATIONS=legacy-js-api NODE_ENV=production nuxt build",
+    "generate": "cross-env SASS_SILENCE_DEPRECATIONS=legacy-js-api NODE_ENV=production nuxt generate",
     "preview": "nuxt preview"
   },
   "devDependencies": {

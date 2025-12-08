@@ -118,7 +118,7 @@
             <div :class="styles.buttonsContainer">
               <NuxtLink to="/projects" class="relative inline-flex group touch-target">
                 <div
-                  class="absolute transition-all duration-700 opacity-70 -inset-px bg-gradient-to-r from-[#44BCFF] via-[#FF44EC] to-[#FF675E] rounded-xl blur-lg group-hover:opacity-100 group-hover:-inset-1 group-hover:duration-200 animate-tilt"
+                  class="absolute transition-all duration-700 opacity-70 -inset-px bg-gradient-to-r from-[var(--primary)] via-[var(--primary-hover)] to-[var(--primary)] rounded-xl blur-lg group-hover:opacity-100 group-hover:-inset-1 group-hover:duration-200 animate-tilt"
                 ></div>
                 <button :class="styles.primaryButton">
                   浏览项目

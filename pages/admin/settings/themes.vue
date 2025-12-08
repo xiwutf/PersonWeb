@@ -33,10 +33,16 @@
     <div v-if="activeTab === 'themes'" class="content-section">
       <div class="section-header">
         <h2 class="section-title">主题风格列表</h2>
-        <button @click="openThemeModal()" class="btn-primary">
-          <i class="fas fa-plus mr-2"></i>
-          新增主题
-        </button>
+        <div class="flex items-center gap-4">
+          <p class="text-sm text-gray-400">
+            目前仅保留两套稳定主题，后续如果有需要再新增。
+          </p>
+          <!-- 暂时禁用新增按钮，因为只支持 light 和 dark -->
+          <!-- <button @click="openThemeModal()" class="btn-primary">
+            <i class="fas fa-plus mr-2"></i>
+            新增主题
+          </button> -->
+        </div>
       </div>
 
       <div v-if="loading" class="table-loading">加载中...</div>
@@ -160,10 +166,10 @@
             @change="updateSetting('default_theme', settings.defaultTheme)"
             class="form-input"
           >
-            <option v-for="theme in themes" :key="theme.code" :value="theme.code">
-              {{ theme.displayName }}
-            </option>
+            <option value="light">浅色主题（light）</option>
+            <option value="dark">深色主题（dark）</option>
           </select>
+          <small class="form-hint">目前只支持 light 和 dark 两个主题</small>
         </div>
 
         <div class="form-group">
@@ -197,8 +203,11 @@
 
           <div class="form-group">
             <label class="form-label">主题代码 *</label>
-            <input v-model="themeForm.code" type="text" class="form-input" required />
-            <small class="form-hint">用于在代码中引用，如：default、minimal</small>
+            <select v-model="themeForm.code" class="form-input" required>
+              <option value="light">light（浅色主题）</option>
+              <option value="dark">dark（深色主题）</option>
+            </select>
+            <small class="form-hint">目前只支持 light 和 dark 两个主题</small>
           </div>
 
           <div class="form-group">
@@ -321,8 +330,41 @@ const themeForm = ref({
 const fetchThemes = async () => {
   loading.value = true
   try {
+    // 重构说明（2024-12-XX）：现在只支持 light 和 dark 两个主题
+    // 从后端获取主题列表，但只显示 light 和 dark
     const res = await api.get<Theme[]>('/Theme/admin/themes')
-    themes.value = Array.isArray(res) ? res : []
+    const allThemes = Array.isArray(res) ? res : []
+    
+    // 只保留 light 和 dark 主题，其他主题过滤掉
+    themes.value = allThemes.filter(theme => 
+      theme.code === 'light' || theme.code === 'dark'
+    )
+    
+    // 如果数据库中没有 light 和 dark，创建默认数据
+    if (themes.value.length === 0) {
+      themes.value = [
+        {
+          id: 0,
+          name: '浅色主题',
+          code: 'light',
+          displayName: '浅色主题（light）',
+          description: '清爽明亮的浅色主题，适合日间使用',
+          isEnabled: true,
+          isDefault: true,
+          sort: 1
+        },
+        {
+          id: 0,
+          name: '深色主题',
+          code: 'dark',
+          displayName: '深色主题（dark）',
+          description: '深色科技风格主题，适合夜间使用',
+          isEnabled: true,
+          isDefault: false,
+          sort: 2
+        }
+      ]
+    }
   } catch (e: unknown) {
     handleError(e, '加载主题失败')
   } finally {
@@ -390,6 +432,12 @@ const openThemeModal = (theme?: Theme) => {
 }
 
 const saveTheme = async () => {
+  // 重构说明（2024-12-XX）：只允许保存 light 或 dark 主题
+  if (themeForm.value.code !== 'light' && themeForm.value.code !== 'dark') {
+    message.error('目前只支持 light 和 dark 两个主题')
+    return
+  }
+  
   try {
     await api.post('/Theme/admin/themes', themeForm.value)
     message.success('保存成功')

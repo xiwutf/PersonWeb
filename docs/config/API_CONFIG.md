@@ -69,10 +69,10 @@ Nuxt 3 的环境变量加载优先级（从高到低）：
 
 ## 🚀 生产环境构建
 
-生产环境构建会自动使用 `.env.production` 文件：
+生产环境构建会自动使用 `.env.production` 文件（通过 `NODE_ENV=production` 自动加载）：
 
 ```bash
-npm run build:prod
+npm run build
 ```
 
 或使用部署脚本：
@@ -129,6 +129,6 @@ console.log('API Base:', config.public.apiBase)
 ### 问题：生产构建后仍使用本地 API
 
 1. 检查 `.env.production` 文件内容
-2. 使用 `npm run build:prod` 而不是 `npm run build`
+2. 确保使用 `npm run build`（会自动设置 `NODE_ENV=production` 并加载 `.env.production`）
 3. 检查构建日志中的环境变量值
 

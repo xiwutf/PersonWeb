@@ -487,6 +487,14 @@
   padding: 0.25rem 0.75rem;
   border-radius: 0.5rem;
   font-size: 0.75rem;
+  /* 浅色主题优化（2025-01）：标签使用主色柔和背景，提高可读性 */
+  background: var(--primary-soft-bg);
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  color: var(--primary);
+}
+
+/* 深色主题保持原有样式 */
+html[data-theme="dark"] .platform-entry-card-tag {
   background: var(--color-bg-elevated);
   border: 1px solid var(--color-border-subtle);
   color: var(--color-text-muted);
@@ -760,6 +768,14 @@
   padding: 0.125rem 0.5rem;
   border-radius: 0.375rem;
   font-size: 0.75rem;
+  /* 浅色主题优化（2025-01）：标签使用主色柔和背景，提高可读性 */
+  background: var(--primary-soft-bg);
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  color: var(--primary);
+}
+
+/* 深色主题保持原有样式 */
+html[data-theme="dark"] .bento-card-item-tag {
   background: var(--color-bg-elevated);
   border: 1px solid var(--color-border-subtle);
   color: var(--color-text-muted);
@@ -792,6 +808,14 @@
   padding: 0.125rem 0.5rem;
   border-radius: 0.25rem;
   font-size: 0.75rem;
+  /* 浅色主题优化（2025-01）：标签使用主色柔和背景，提高可读性 */
+  background: var(--primary-soft-bg);
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  color: var(--primary);
+}
+
+/* 深色主题保持原有样式 */
+html[data-theme="dark"] .bento-card-item-tag {
   background: var(--color-bg-card);
   color: var(--color-text-muted);
   border: 1px solid var(--color-border-subtle);
@@ -1604,7 +1628,8 @@
 .timeline-card:hover {
   border-color: var(--color-border-default);
   transform: translateX(8px);
-  box-shadow: 0 8px 24px rgba(0, 217, 255, 0.15);
+  /* 浅色主题优化（2025-01）：使用主题变量，避免硬编码荧光色 */
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
 }
 
 .timeline-card-header {

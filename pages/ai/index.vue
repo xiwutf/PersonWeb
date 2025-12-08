@@ -194,8 +194,8 @@ const cooperationSteps = [
 .ai-lab-page {
   position: relative;
   min-height: 100vh;
-  background: var(--color-bg-body, #050505);
-  color: #fff;
+  background: var(--bg);
+  color: var(--text-main);
   padding-top: 80px;
   padding-bottom: 80px;
 }
@@ -298,7 +298,7 @@ const cooperationSteps = [
   font-size: 32px;
   font-weight: 400;
   margin-top: 8px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
 }
 
 @media (max-width: 640px) {
@@ -313,7 +313,7 @@ const cooperationSteps = [
 .ai-lab-hero-description {
   font-size: 18px;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   max-width: 700px;
   margin: 0 auto 40px;
 }
@@ -339,9 +339,9 @@ const cooperationSteps = [
 }
 
 .ai-lab-hero-button--primary {
-  background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
   color: #fff;
-  box-shadow: 0 4px 16px rgba(6, 182, 212, 0.3);
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
 }
 
 .ai-lab-hero-button--primary:hover {
@@ -350,9 +350,9 @@ const cooperationSteps = [
 }
 
 .ai-lab-hero-button--secondary {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
+  background: var(--primary-soft-bg);
+  border: 1px solid var(--border-color);
+  color: var(--primary);
 }
 
 .ai-lab-hero-button--secondary:hover {
@@ -374,7 +374,7 @@ const cooperationSteps = [
   align-items: center;
   justify-content: center;
   gap: 12px;
-  color: #fff;
+  color: var(--text-main);
 }
 
 .ai-lab-section-title i {
@@ -384,7 +384,7 @@ const cooperationSteps = [
 .ai-lab-section-description {
   font-size: 16px;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-secondary);
   max-width: 600px;
   margin: 0 auto;
 }
@@ -407,15 +407,15 @@ const cooperationSteps = [
 
 .ai-lab-tech-card {
   padding: 24px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-radius, 16px);
   transition: all 0.3s ease;
 }
 
 .ai-lab-tech-card:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(6, 182, 212, 0.3);
+  background: var(--bg-elevated);
+  border-color: var(--primary);
   transform: translateY(-4px);
 }
 
@@ -434,7 +434,7 @@ const cooperationSteps = [
 .ai-lab-tech-card-title {
   font-size: 18px;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-main);
   margin: 0;
 }
 
@@ -472,15 +472,15 @@ const cooperationSteps = [
   align-items: flex-start;
   gap: 24px;
   padding: 32px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-radius, 16px);
   transition: all 0.3s ease;
 }
 
 .ai-lab-cooperation-step:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(6, 182, 212, 0.3);
+  background: var(--bg-elevated);
+  border-color: var(--primary);
 }
 
 .ai-lab-cooperation-step-number {
@@ -490,7 +490,7 @@ const cooperationSteps = [
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
   border-radius: 12px;
   font-size: 20px;
   font-weight: 700;
@@ -504,14 +504,14 @@ const cooperationSteps = [
 .ai-lab-cooperation-step-title {
   font-size: 20px;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-main);
   margin: 0 0 8px 0;
 }
 
 .ai-lab-cooperation-step-description {
   font-size: 14px;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-secondary);
   margin: 0;
 }
 
@@ -538,7 +538,7 @@ const cooperationSteps = [
   align-items: center;
   gap: 12px;
   padding: 18px 40px;
-  background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
   border: none;
   border-radius: 12px;
   font-size: 18px;
@@ -547,7 +547,7 @@ const cooperationSteps = [
   text-decoration: none;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 16px rgba(6, 182, 212, 0.3);
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
 }
 
 .ai-lab-cooperation-button:hover {

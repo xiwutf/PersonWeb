@@ -33,7 +33,7 @@
   env:
     NODE_ENV: production
     NUXT_PUBLIC_API_BASE: https://api.xifg.com.cn/api
-  run: npm run build:prod  # 使用 build 而不是 generate
+  run: npm run build  # 使用 build 而不是 generate
 ```
 
 2. 部署时需要运行 Node.js 服务器：

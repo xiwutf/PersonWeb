@@ -33,7 +33,7 @@ Write-Host "  NUXT_PUBLIC_API_BASE: $env:NUXT_PUBLIC_API_BASE" -ForegroundColor 
 
 # 构建应用
 Write-Host "`n使用生产环境配置构建..." -ForegroundColor Yellow
-npm run build:prod
+npm run build
 if ($LASTEXITCODE -ne 0) {
     Write-Host "❌ 构建失败！" -ForegroundColor Red
     exit 1

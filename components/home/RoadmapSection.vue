@@ -10,7 +10,7 @@
         <!-- 最近完成的里程碑 -->
         <div class="milestone-group">
           <h3 class="milestone-group-title">
-            <i class="fas fa-check-circle milestone-group-title-icon" style="color: rgb(74, 222, 128);"></i>
+            <i class="fas fa-check-circle milestone-group-title-icon" style="color: var(--chart-secondary);"></i>
             最近完成
           </h3>
           <div class="milestone-list">
@@ -33,7 +33,7 @@
         <!-- 正在进行 / 计划中的事项 -->
         <div class="milestone-group">
           <h3 class="milestone-group-title">
-            <i class="fas fa-clock milestone-group-title-icon" style="color: rgb(250, 204, 21);"></i>
+            <i class="fas fa-clock milestone-group-title-icon" style="color: var(--chart-tertiary);"></i>
             进行中 / 计划中
           </h3>
           <div class="milestone-list">

@@ -10,7 +10,7 @@
  */
 
 import type { ThemeName, ThemeKey } from '~/constants/design/tokens'
-import { themeVariables, DEFAULT_THEME, THEME_STORAGE_KEY, resolveThemeTokens } from '~/constants/design/tokens'
+import { themeVariables, DEFAULT_THEME, THEME_STORAGE_KEY, resolveThemeTokens, normalizeTheme } from '~/constants/design/tokens'
 
 // 全局主题状态（单例模式，确保所有组件共享同一个主题状态）
 const globalThemeState = {
@@ -36,13 +36,20 @@ export const useTheme = () => {
    * 
    * 重要：设置 data-theme 属性，这样 CSS 选择器 html[data-theme='xxx'] 会生效
    * 这是新的样式架构的核心：通过 data-theme 驱动 tokens.css 中的主题变量
+   * 
+   * 重构说明（2024-12-XX）：
+   * - 现在只支持 light 和 dark 两个主题
+   * - 如果传入旧主题（tech-blue、paper、forest 等），会自动映射为 light 或 dark
    */
-  const applyTheme = (theme: ThemeName) => {
+  const applyTheme = (theme: ThemeName | string) => {
     if (!process.client) return
 
-    // 1. 设置 data-theme 属性，这样 CSS 选择器 html[data-theme='xxx'] 会生效
+    // 1. 标准化主题（兼容旧数据）
+    const normalizedTheme = normalizeTheme(theme) as ThemeName
+
+    // 2. 设置 data-theme 属性，这样 CSS 选择器 html[data-theme='xxx'] 会生效
     // 这是新的样式架构的核心：通过 data-theme 驱动 tokens.css 中的主题变量
-    document.documentElement.dataset.theme = theme
+    document.documentElement.dataset.theme = normalizedTheme
 
     // 2. 获取后端覆盖的 tokens（如果有）
     const backendOverrides = globalThemeState.backendTokens.value[theme]
@@ -52,7 +59,7 @@ export const useTheme = () => {
     // - 从 defaultThemeTokens 获取默认值
     // - 用 backendOverrides 覆盖默认值
     // - 返回 CSS 变量格式的键值对（--color-xxx: value）
-    const finalTokens = resolveThemeTokens(theme, backendOverrides)
+    const finalTokens = resolveThemeTokens(normalizedTheme, backendOverrides)
 
     // 4. 将每个变量写入 document.documentElement.style
     // 这样即使 CSS 文件还没加载，也能通过内联样式生效
@@ -64,16 +71,19 @@ export const useTheme = () => {
   /**
    * 从 localStorage 读取保存的主题
    * 如果读取失败或主题不存在，返回默认主题
+   * 
+   * 重构说明（2024-12-XX）：
+   * - 现在只支持 light 和 dark 两个主题
+   * - 如果读取到旧主题（tech-blue、paper、forest 等），会自动映射为 light 或 dark
    */
   const loadThemeFromStorage = (): ThemeName => {
     if (!process.client) return DEFAULT_THEME
 
     try {
       const saved = localStorage.getItem(THEME_STORAGE_KEY)
-      // 验证主题值是否在支持的列表中
-      const validThemes: ThemeName[] = ['light', 'dark', 'tech-blue', 'paper', 'forest', 'hybrid-super', 'hybrid-super-dark', 'hybrid-super-light']
-      if (saved && validThemes.includes(saved as ThemeName)) {
-        return saved as ThemeName
+      if (saved) {
+        // 使用 normalizeTheme 自动映射旧主题
+        return normalizeTheme(saved)
       }
     } catch (error) {
       console.warn('读取主题失败:', error)
@@ -98,11 +108,17 @@ export const useTheme = () => {
   /**
    * 设置主题
    * 这是对外暴露的主要方法，用于切换主题
+   * 
+   * 重构说明（2024-12-XX）：
+   * - 现在只支持 light 和 dark 两个主题
+   * - 如果传入旧主题（tech-blue、paper、forest 等），会自动映射为 light 或 dark
    */
-  const setTheme = (theme: ThemeName) => {
-    currentTheme.value = theme
-    applyTheme(theme)
-    saveThemeToStorage(theme)
+  const setTheme = (theme: ThemeName | string) => {
+    // 标准化主题（兼容旧数据）
+    const normalizedTheme = normalizeTheme(theme) as ThemeName
+    currentTheme.value = normalizedTheme
+    applyTheme(normalizedTheme)
+    saveThemeToStorage(normalizedTheme)
   }
 
   /**
@@ -126,15 +142,14 @@ export const useTheme = () => {
     // 使用 nextTick 让插件先执行，然后再读取 localStorage
     nextTick(() => {
       // 检查 DOM 是否已经有主题被设置（插件可能已经设置了）
-      const domTheme = document.documentElement.dataset.theme as ThemeName | undefined
-      // 验证主题值是否在支持的列表中
-      const validThemes: ThemeName[] = ['light', 'dark', 'tech-blue', 'paper', 'forest', 'hybrid-super', 'hybrid-super-dark', 'hybrid-super-light']
+      const domTheme = document.documentElement.dataset.theme
       
-      if (domTheme && validThemes.includes(domTheme)) {
-        // 如果 DOM 已经有主题（说明插件已经执行），使用 DOM 中的主题
-        currentTheme.value = domTheme
+      if (domTheme) {
+        // 如果 DOM 已经有主题（说明插件已经执行），使用 DOM 中的主题（自动映射）
+        const normalizedTheme = normalizeTheme(domTheme) as ThemeName
+        currentTheme.value = normalizedTheme
       } else {
-        // 如果 DOM 没有主题，从 localStorage 读取
+        // 如果 DOM 没有主题，从 localStorage 读取（自动映射）
         const savedTheme = loadThemeFromStorage()
         currentTheme.value = savedTheme
         applyTheme(savedTheme)

@@ -35,14 +35,15 @@ export default defineNuxtPlugin(async () => {
   try {
     const response = await api.get<{ theme: string }>('/Config/theme')
     if (response && response.theme) {
-      // 验证主题值是否在支持的列表中
-      const validThemes = ['light', 'dark', 'tech-blue', 'paper', 'forest', 'hybrid-super', 'hybrid-super-dark', 'hybrid-super-light'] as const
+      // 重构说明（2024-12-XX）：
+      // - 现在只支持 light 和 dark 两个主题
+      // - 如果后端返回旧主题（tech-blue、paper、forest 等），会自动映射为 light 或 dark
+      const { normalizeTheme } = await import('~/constants/design/tokens')
       const themeFromBackend = response.theme
-      if (validThemes.includes(themeFromBackend as any)) {
-        globalTheme = themeFromBackend
-        // 设置 data-theme 属性，驱动 tokens.css 中的主题变量
-        document.documentElement.dataset.theme = themeFromBackend
-      }
+      const normalizedTheme = normalizeTheme(themeFromBackend)
+      globalTheme = normalizedTheme
+      // 设置 data-theme 属性，驱动 tokens.css 中的主题变量
+      document.documentElement.dataset.theme = normalizedTheme
     }
   } catch (error) {
     // 获取全局主题失败，使用默认逻辑
@@ -105,8 +106,9 @@ export default defineNuxtPlugin(async () => {
 
     // 应用全局主题（如果获取成功）
     if (globalTheme) {
-      // 类型断言：globalTheme 已经在上面验证过，属于有效主题
-      setTheme(globalTheme as 'light' | 'dark' | 'tech-blue' | 'paper' | 'forest' | 'hybrid-super' | 'hybrid-super-dark' | 'hybrid-super-light')
+      // 重构说明（2024-12-XX）：
+      // - globalTheme 已经通过 normalizeTheme 标准化为 'light' 或 'dark'
+      setTheme(globalTheme)
     }
   } catch (error) {
     // 注入失败时的降级策略：不阻塞应用启动，使用默认逻辑

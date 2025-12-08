@@ -28,7 +28,7 @@ export NODE_ENV=production
 export NUXT_PUBLIC_API_BASE=https://api.xifg.com.cn/api
 
 # 构建应用
-npm run build:prod
+npm run build
 
 # 检查构建结果
 if [ -d ".output" ]; then

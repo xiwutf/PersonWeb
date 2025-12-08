@@ -127,7 +127,7 @@ onMounted(() => {
 
 <style scoped>
 .platform-cards {
-  background: linear-gradient(to bottom, #000000, #0a0a0a);
+  background: var(--bg);
 }
 
 .platform-card {
@@ -140,10 +140,10 @@ onMounted(() => {
 .card-inner {
   position: relative;
   height: 100%;
-  background: rgba(20, 20, 30, 0.6);
+  background: var(--bg-card);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-radius);
   padding: 2.5rem;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
@@ -151,8 +151,8 @@ onMounted(() => {
 
 .platform-card:hover .card-inner {
   transform: translateY(-8px);
-  border-color: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 20px 60px rgba(0, 217, 255, 0.2);
+  border-color: var(--divider-color);
+  box-shadow: var(--shadow-soft);
 }
 
 .card-glow {
@@ -187,8 +187,8 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  color: var(--text-main);
+  box-shadow: var(--shadow-md);
   transition: transform 0.4s ease;
 }
 
@@ -199,17 +199,17 @@ onMounted(() => {
 .card-title {
   font-size: 1.75rem;
   font-weight: 700;
-  color: white;
+  color: var(--text-main);
   margin-bottom: 1rem;
   transition: color 0.3s ease;
 }
 
 .platform-card:hover .card-title {
-  color: rgba(0, 217, 255, 1);
+  color: var(--primary);
 }
 
 .card-description {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   line-height: 1.6;
   flex-grow: 1;
   margin-bottom: 2rem;
@@ -218,14 +218,14 @@ onMounted(() => {
 .card-action {
   display: inline-flex;
   align-items: center;
-  color: rgba(0, 217, 255, 1);
+  color: var(--primary);
   font-weight: 600;
   font-size: 1rem;
   transition: all 0.3s ease;
 }
 
 .platform-card:hover .card-action {
-  color: rgba(0, 217, 255, 1);
+  color: var(--primary-hover);
   transform: translateX(4px);
 }
 </style>

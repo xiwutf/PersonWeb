@@ -187,7 +187,7 @@ onMounted(() => {
 
 <style scoped>
 .bento-grid-v3 {
-  background: linear-gradient(to bottom, #0a0a0a, #000000);
+  background: var(--bg);
 }
 
 .bento-card {
@@ -195,9 +195,9 @@ onMounted(() => {
 }
 
 .card-glass {
-  background: rgba(20, 20, 30, 0.6);
+  background: var(--bg-card);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
   border-radius: 1.5rem;
   padding: 2rem;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -207,8 +207,8 @@ onMounted(() => {
 
 .bento-card:hover .card-glass {
   transform: translateY(-4px);
-  border-color: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 20px 60px rgba(0, 217, 255, 0.15);
+  border-color: var(--divider-color);
+  box-shadow: var(--shadow-soft);
 }
 
 .card-badge {
@@ -224,19 +224,19 @@ onMounted(() => {
 .card-title {
   font-size: 1.5rem;
   font-weight: 700;
-  color: white;
+  color: var(--text-main);
   margin-bottom: 0.75rem;
 }
 
 .card-title-large {
   font-size: 2rem;
   font-weight: 700;
-  color: white;
+  color: var(--text-main);
   margin-bottom: 0.75rem;
 }
 
 .card-description {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   line-height: 1.6;
   font-size: 0.9375rem;
 }
@@ -244,33 +244,33 @@ onMounted(() => {
 .post-item {
   display: block;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.75rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-radius);
   transition: all 0.3s ease;
   margin-bottom: 0.5rem;
 }
 
 .post-item:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(0, 217, 255, 0.3);
+  background: var(--bg-card);
+  border-color: var(--primary);
   transform: translateX(4px);
 }
 
 .post-title {
   font-weight: 600;
-  color: white;
+  color: var(--text-main);
   font-size: 0.9375rem;
   transition: color 0.3s ease;
 }
 
 .post-item:hover .post-title {
-  color: rgba(0, 217, 255, 1);
+  color: var(--primary);
 }
 
 .post-meta {
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted);
   margin-top: 0.5rem;
 }
 

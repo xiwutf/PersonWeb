@@ -9,7 +9,12 @@
  * 使用方式：
  * - 在组件中使用 var(--color-primary) 等变量
  * - 在 Naive UI 的 themeOverrides 中使用 var(--color-primary) 等变量
- * - 通过 document.documentElement.dataset.theme = 'lab' 切换主题
+ * - 通过 document.documentElement.dataset.theme = 'light' 或 'dark' 切换主题
+ * 
+ * 重构说明（2024-12-XX）：
+ * - 精简为仅支持 light（浅色）和 dark（深色）两个主题
+ * - 旧主题（tech-blue、paper、forest、hybrid-super 等）已移除
+ * - 前端 useTheme 会自动将旧主题映射为 light 或 dark
  */
 
 /* ==================== 默认主题（:root） ==================== */
@@ -19,40 +24,41 @@
  */
 :root {
   /* ========== 背景色 ========== */
-  --color-bg-page: #f8fafc;
-  --color-bg-body: #f8fafc;
-  --color-bg-card: #ffffff;
-  --color-bg-elevated: #ffffff;
+  --bg: #f5f7fb;                    /* 页面主背景（浅色主题：柔和浅灰，不再纯白） */
+  --bg-elevated: #ffffff;           /* 卡片/模块背景（浅色主题：纯白） */
+  --bg-card: #ffffff;                /* 卡片背景（浅色主题：纯白） */
+  --header-bg: rgba(255, 255, 255, 0.92); /* 顶部导航背景（浅色主题：半透明白） */
   
   /* ========== 文字颜色 ========== */
-  --color-text-main: #0f172a;
-  --color-text-muted: #64748b;
-  --color-text-disabled: #94a3b8;
+  --text-main: #111827;             /* 主要文字（浅色主题：接近黑色，提高对比度） */
+  --text-secondary: #4b5563;        /* 次要文字（浅色主题：深灰） */
+  --text-muted: #6b7280;            /* 弱化文字（浅色主题：中灰） */
+  --text-disabled: #94a3b8;        /* 禁用文字（浅色主题：浅灰） */
   
-  /* ========== 主色调 ========== */
-  --color-primary: #2563eb;
-  --color-primary-base: #2563eb;
-  --color-primary-soft: #dbeafe;
-  --color-primary-hover: #1d4ed8;
+  /* ========== 品牌/主色 ========== */
+  --primary: #2563eb;               /* 主色调（浅色主题：正常蓝，不再荧光） */
+  --primary-hover: #1d4ed8;         /* 主色悬停（浅色主题：深蓝） */
+  --primary-soft-bg: #e0edff;       /* 主色柔和背景（浅色主题：浅浅蓝底） */
   
-  /* ========== 边框颜色 ========== */
-  --color-border-subtle: #e2e8f0;
-  --color-border-default: #cbd5e1;
-  --color-border-strong: #94a3b8;
+  /* ========== 边框/分割线 ========== */
+  --border-color: #e5e7eb;          /* 边框颜色（浅色主题：浅灰） */
+  --divider-color: #e5e7eb;         /* 分割线颜色（浅色主题：浅灰） */
   
   /* ========== 圆角 ========== */
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
+  --card-radius: 18px;               /* 卡片圆角（浅色主题：强调悬浮感） */
   
   /* ========== 阴影 ========== */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04);
-  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
-  --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.55);
+  --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.08); /* 柔和阴影（浅色主题：强调卡片悬浮感） */
+  
+  /* ========== 网格线颜色（浅色主题专用） ========== */
+  --grid-line-color: rgba(148, 163, 184, 0.25); /* 网格线：更淡，避免刺眼 */
   
   /* ========== 字体设置 ========== */
   --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", Arial, sans-serif;
@@ -83,238 +89,124 @@
   --chart-tertiary: #f59e0b;
   --chart-quaternary: #ef4444;
   --chart-quinary: #8b5cf6;
+  
+  /* ========== 兼容旧变量名（向后兼容） ========== */
+  --color-bg-page: var(--bg);
+  --color-bg-body: var(--bg);
+  --color-bg-card: var(--bg-card);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-text-main: var(--text-main);
+  --color-text-muted: var(--text-muted);
+  --color-text-disabled: var(--text-disabled);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-soft: var(--primary-soft-bg);
+  --color-border-subtle: var(--border-color);
+  --color-border-default: var(--border-color);
+  --color-border-strong: var(--divider-color);
+  --color-primary-base: var(--primary); /* 兼容 hero.css 中的变量名 */
 }
 
 /* ==================== 浅色主题（light） ==================== */
+/**
+ * 浅色主题优化（2025-01）：柔和、清晰、不刺眼
+ * - 背景从纯白改为柔和浅灰（#f5f7fb），减少刺眼感
+ * - 文字对比度提高（深色文字 #111827），确保清晰可读
+ * - 主色从荧光蓝改为正常蓝（#2563eb），更柔和
+ * - 卡片层次更明显（阴影 + 背景对比）
+ */
 html[data-theme="light"] {
-  --color-bg-page: #f8fafc;
-  --color-bg-body: #f8fafc;
-  --color-bg-card: #ffffff;
-  --color-bg-elevated: #ffffff;
+  /* ========== 背景色 ========== */
+  --bg: #f5f7fb;                    /* 页面主背景：柔和浅灰，不再纯白，减少刺眼 */
+  --bg-elevated: #ffffff;           /* 卡片/模块背景：纯白，与页面背景形成层次 */
+  --bg-card: #ffffff;               /* 卡片背景：纯白 */
+  --header-bg: rgba(255, 255, 255, 0.92); /* 顶部导航：半透明白，轻微模糊 */
   
-  --color-text-main: #0f172a;
-  --color-text-muted: #64748b;
-  --color-text-disabled: #94a3b8;
+  /* ========== 文字颜色 ========== */
+  --text-main: #111827;             /* 主要文字：接近黑色，确保对比度足够 */
+  --text-secondary: #4b5563;        /* 次要文字：深灰 */
+  --text-muted: #6b7280;            /* 弱化文字：中灰 */
+  --text-disabled: #94a3b8;         /* 禁用文字：浅灰 */
   
-  --color-primary: #2563eb;
-  --color-primary-base: #2563eb;
-  --color-primary-soft: #dbeafe;
-  --color-primary-hover: #1d4ed8;
+  /* ========== 品牌/主色 ========== */
+  --primary: #2563eb;               /* 主色调：正常蓝，不再荧光 */
+  --primary-hover: #1d4ed8;         /* 主色悬停：深蓝 */
+  --primary-soft-bg: #e0edff;       /* 主色柔和背景：浅浅蓝底，用于标签/浅色按钮 */
   
-  --color-border-subtle: #e2e8f0;
-  --color-border-default: #cbd5e1;
-  --color-border-strong: #94a3b8;
+  /* ========== 边框/分割线 ========== */
+  --border-color: #e5e7eb;         /* 边框：浅灰，要能看见但不要太重 */
+  --divider-color: #e5e7eb;         /* 分割线：浅灰 */
   
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.55);
+  /* ========== 圆角 ========== */
+  --card-radius: 18px;              /* 卡片圆角：稍微强调悬浮感 */
+  
+  /* ========== 阴影 ========== */
+  --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.08); /* 柔和阴影：强调卡片悬浮感 */
+  
+  /* ========== 网格线颜色（浅色主题专用） ========== */
+  --grid-line-color: rgba(148, 163, 184, 0.25); /* 网格线：更淡，避免刺眼 */
+  
+  /* ========== 兼容旧变量名 ========== */
+  --color-bg-page: var(--bg);
+  --color-bg-body: var(--bg);
+  --color-bg-card: var(--bg-card);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-text-main: var(--text-main);
+  --color-text-muted: var(--text-muted);
+  --color-text-disabled: var(--text-disabled);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-soft: var(--primary-soft-bg);
+  --color-border-subtle: var(--border-color);
+  --color-border-default: var(--border-color);
+  --color-border-strong: var(--divider-color);
+  --color-primary-base: var(--primary); /* 兼容 hero.css 中的变量名 */
 }
 
 /* ==================== 深色主题（dark） ==================== */
+/**
+ * 深色主题：深色实验室/科技感
+ * - 背景为深灰/接近黑色
+ * - 卡片背景略比主背景亮一点，有玻璃态/半透明感
+ * - 主色、按钮在深色背景下对比强烈，避免灰不溜秋
+ */
 html[data-theme="dark"] {
-  --color-bg-page: #020617;
-  --color-bg-body: #020617;
-  --color-bg-card: #020617;
-  --color-bg-elevated: #0f172a;
+  /* ========== 背景色 ========== */
+  --bg: #0a0e1a;                   /* 页面主背景：接近黑色，深蓝灰 */
+  --bg-elevated: #131720;          /* 卡片/模块背景：稍亮的深灰 */
+  --bg-card: rgba(19, 23, 32, 0.8); /* 卡片背景：半透明深灰（玻璃态） */
+  --header-bg: rgba(10, 14, 26, 0.85); /* 顶部导航：半透明深色，轻微模糊 */
   
-  --color-text-main: rgba(255, 255, 255, 0.85); /* 降低亮度，更柔和 */
-  --color-text-muted: rgba(255, 255, 255, 0.6);
-  --color-text-disabled: rgba(255, 255, 255, 0.4);
+  /* ========== 文字颜色 ========== */
+  --text-main: rgba(255, 255, 255, 0.92); /* 主要文字：高亮白色，确保可读性 */
+  --text-secondary: rgba(255, 255, 255, 0.75); /* 次要文字：半透明白 */
+  --text-muted: rgba(255, 255, 255, 0.6); /* 弱化文字：更透明的白 */
+  --text-disabled: rgba(255, 255, 255, 0.4); /* 禁用文字：低透明度白 */
   
-  --color-primary: #60a5fa;
-  --color-primary-base: #60a5fa;
-  --color-primary-soft: #0b1120;
-  --color-primary-hover: #3b82f6;
+  /* ========== 品牌/主色 ========== */
+  --primary: #60a5fa;              /* 主色调：亮蓝色，对比强烈 */
+  --primary-hover: #3b82f6;       /* 主色悬停：标准蓝 */
+  --primary-soft-bg: rgba(96, 165, 250, 0.15); /* 主色柔和背景：透明蓝 */
   
-  --color-border-subtle: #1e293b;
-  --color-border-default: #334155;
-  --color-border-strong: #475569;
+  /* ========== 边框/分割线 ========== */
+  --border-color: rgba(255, 255, 255, 0.1); /* 边框：极细白色边框 */
+  --divider-color: rgba(255, 255, 255, 0.15); /* 分割线：稍明显的白色 */
   
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
-  --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.8);
+  /* ========== 阴影 ========== */
+  --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05); /* 柔和阴影：深色阴影 + 微光边框 */
+  
+  /* ========== 兼容旧变量名 ========== */
+  --color-bg-page: var(--bg);
+  --color-bg-body: var(--bg);
+  --color-bg-card: var(--bg-card);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-text-main: var(--text-main);
+  --color-text-muted: var(--text-muted);
+  --color-text-disabled: var(--text-disabled);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-soft: var(--primary-soft-bg);
+  --color-border-subtle: var(--border-color);
+  --color-border-default: var(--border-color);
+  --color-border-strong: var(--divider-color);
 }
-
-/* ==================== 混合超级风格主题（hybrid-super） ==================== */
-html[data-theme="hybrid-super"] {
-  --color-bg-page: #000000;
-  --color-bg-body: #000000;
-  --color-bg-card: rgba(20, 20, 30, 0.6);
-  --color-bg-elevated: rgba(30, 30, 40, 0.8);
-  
-  --color-text-main: rgba(255, 255, 255, 0.85); /* 降低亮度，更柔和 */
-  --color-text-muted: rgba(255, 255, 255, 0.6);
-  --color-text-disabled: rgba(255, 255, 255, 0.4);
-  
-  --color-primary: #00d9ff;
-  --color-primary-base: #00d9ff;
-  --color-primary-soft: rgba(0, 217, 255, 0.15);
-  --color-primary-hover: #00b8d4;
-  
-  --color-border-subtle: rgba(255, 255, 255, 0.1);
-  --color-border-default: rgba(255, 255, 255, 0.2);
-  --color-border-strong: rgba(255, 255, 255, 0.4);
-  
-  --shadow-sm: 0 2px 8px rgba(0, 217, 255, 0.1);
-  --shadow-md: 0 8px 24px rgba(0, 217, 255, 0.15), 0 4px 12px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 16px 48px rgba(0, 217, 255, 0.2), 0 8px 24px rgba(0, 0, 0, 0.6);
-  --shadow-soft: 0 18px 45px rgba(0, 217, 255, 0.3);
-  
-  --radius-md: 0.75rem;
-  --radius-lg: 1rem;
-  --radius-xl: 1.5rem;
-}
-
-/* ==================== 其他主题（tech-blue, paper, forest 等） ==================== */
-html[data-theme="tech-blue"] {
-  --color-bg-page: #020617;
-  --color-bg-body: #020617;
-  --color-bg-card: rgba(15, 23, 42, 0.92);
-  --color-bg-elevated: rgba(30, 41, 59, 0.8);
-  
-  --color-text-main: rgba(255, 255, 255, 0.85); /* 降低亮度，更柔和 */
-  --color-text-muted: rgba(255, 255, 255, 0.6);
-  --color-text-disabled: rgba(255, 255, 255, 0.4);
-  
-  --color-primary: #38bdf8;
-  --color-primary-base: #38bdf8;
-  --color-primary-soft: rgba(56, 189, 248, 0.16);
-  --color-primary-hover: #0ea5e9;
-  
-  --color-border-subtle: rgba(148, 163, 184, 0.6);
-  --color-border-default: rgba(148, 163, 184, 0.8);
-  --color-border-strong: rgba(148, 163, 184, 1);
-  
-  --shadow-sm: 0 1px 2px 0 rgba(56, 189, 248, 0.1);
-  --shadow-md: 0 4px 6px -1px rgba(56, 189, 248, 0.2), 0 2px 4px -2px rgba(56, 189, 248, 0.2);
-  --shadow-lg: 0 10px 15px -3px rgba(56, 189, 248, 0.3), 0 4px 6px -4px rgba(56, 189, 248, 0.3);
-  --shadow-soft: 0 18px 45px rgba(56, 189, 248, 0.4);
-  
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
-}
-
-html[data-theme="paper"] {
-  --color-bg-page: #fdfaf3;
-  --color-bg-body: #fdfaf3;
-  --color-bg-card: #ffffff;
-  --color-bg-elevated: #ffffff;
-  
-  --color-text-main: #1f2933;
-  --color-text-muted: #7b8794;
-  --color-text-disabled: #9ca3af;
-  
-  --color-primary: #f97316;
-  --color-primary-base: #f97316;
-  --color-primary-soft: #fff3e0;
-  --color-primary-hover: #ea580c;
-  
-  --color-border-subtle: #e3e2dc;
-  --color-border-default: #d1d5db;
-  --color-border-strong: #9ca3af;
-  
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.08);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.1);
-  
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
-}
-
-html[data-theme="forest"] {
-  --color-bg-page: #020712;
-  --color-bg-body: #020712;
-  --color-bg-card: #071018;
-  --color-bg-elevated: #0f1a1f;
-  
-  --color-text-main: rgba(255, 255, 255, 0.85); /* 降低亮度，更柔和 */
-  --color-text-muted: rgba(255, 255, 255, 0.6);
-  --color-text-disabled: rgba(255, 255, 255, 0.4);
-  
-  --color-primary: #22c55e;
-  --color-primary-base: #22c55e;
-  --color-primary-soft: rgba(34, 197, 94, 0.18);
-  --color-primary-hover: #16a34a;
-  
-  --color-border-subtle: rgba(148, 163, 184, 0.5);
-  --color-border-default: rgba(148, 163, 184, 0.7);
-  --color-border-strong: rgba(148, 163, 184, 0.9);
-  
-  --shadow-sm: 0 1px 2px 0 rgba(34, 197, 94, 0.1);
-  --shadow-md: 0 4px 6px -1px rgba(34, 197, 94, 0.2), 0 2px 4px -2px rgba(34, 197, 94, 0.2);
-  --shadow-lg: 0 10px 15px -3px rgba(34, 197, 94, 0.3), 0 4px 6px -4px rgba(34, 197, 94, 0.3);
-  --shadow-soft: 0 18px 45px rgba(34, 197, 94, 0.3);
-  
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
-}
-
-html[data-theme="hybrid-super-dark"] {
-  --color-bg-page: #000000;
-  --color-bg-body: #000000;
-  --color-bg-card: rgba(20, 20, 30, 0.6);
-  --color-bg-elevated: rgba(30, 30, 40, 0.8);
-  
-  --color-text-main: rgba(255, 255, 255, 0.85); /* 降低亮度，更柔和 */
-  --color-text-muted: rgba(255, 255, 255, 0.7);
-  --color-text-disabled: rgba(255, 255, 255, 0.4);
-  
-  --color-primary: #00d9ff;
-  --color-primary-base: #00d9ff;
-  --color-primary-soft: rgba(0, 217, 255, 0.15);
-  --color-primary-hover: #00b8d4;
-  
-  --color-border-subtle: rgba(255, 255, 255, 0.1);
-  --color-border-default: rgba(255, 255, 255, 0.2);
-  --color-border-strong: rgba(255, 255, 255, 0.4);
-  
-  --shadow-sm: 0 2px 8px rgba(0, 217, 255, 0.1);
-  --shadow-md: 0 8px 24px rgba(0, 217, 255, 0.15), 0 4px 12px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 16px 48px rgba(0, 217, 255, 0.2), 0 8px 24px rgba(0, 0, 0, 0.6);
-  --shadow-soft: 0 18px 45px rgba(0, 217, 255, 0.3);
-  
-  --radius-sm: 0.5rem;
-  --radius-md: 0.75rem;
-  --radius-lg: 1rem;
-  --radius-xl: 1.5rem;
-}
-
-html[data-theme="hybrid-super-light"] {
-  --color-bg-page: #ffffff;
-  --color-bg-body: #ffffff;
-  --color-bg-card: rgba(255, 255, 255, 0.8);
-  --color-bg-elevated: rgba(250, 250, 255, 0.9);
-  
-  --color-text-main: #0f172a;
-  --color-text-muted: rgba(15, 23, 42, 0.7);
-  --color-text-disabled: rgba(15, 23, 42, 0.4);
-  
-  --color-primary: #0066cc;
-  --color-primary-base: #0066cc;
-  --color-primary-soft: rgba(0, 102, 204, 0.1);
-  --color-primary-hover: #0052a3;
-  
-  --color-border-subtle: rgba(15, 23, 42, 0.1);
-  --color-border-default: rgba(15, 23, 42, 0.2);
-  --color-border-strong: rgba(15, 23, 42, 0.4);
-  
-  --shadow-sm: 0 2px 8px rgba(0, 102, 204, 0.1);
-  --shadow-md: 0 8px 24px rgba(0, 102, 204, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 16px 48px rgba(0, 102, 204, 0.2), 0 8px 24px rgba(0, 0, 0, 0.15);
-  --shadow-soft: 0 18px 45px rgba(0, 102, 204, 0.2);
-  
-  --radius-sm: 0.5rem;
-  --radius-md: 0.75rem;
-  --radius-lg: 1rem;
-  --radius-xl: 1.5rem;
-}
-

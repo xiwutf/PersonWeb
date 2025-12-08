@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-[#0f172a] text-slate-200 relative overflow-hidden font-['Outfit']">
+  <div class="min-h-screen relative overflow-hidden font-['Outfit']" style="background-color: var(--bg); color: var(--text-main);">
     <!-- 全局背景噪点 -->
     <div class="fixed inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none z-50"
          style="background-image: url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E&quot;);">
@@ -30,7 +30,7 @@
         <h1 class="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-200 via-white to-pink-200 tracking-tight">
           小游戏
         </h1>
-        <p class="text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+        <p class="text-lg max-w-2xl mx-auto leading-relaxed" style="color: var(--text-secondary);">
           放松一下，玩个小游戏，测试你的反应能力和手速
         </p>
       </header>
@@ -168,19 +168,19 @@ useHead({
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  background: rgba(30, 41, 59, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 0.5rem;
-  color: rgb(148, 163, 184);
+  color: var(--text-secondary);
   text-decoration: none;
   transition: all 0.3s ease;
   font-size: 0.875rem;
 }
 
 .game-back-button:hover {
-  background: rgba(30, 41, 59, 0.7);
-  border-color: rgba(147, 51, 234, 0.3);
-  color: white;
+  background: var(--bg-elevated);
+  border-color: var(--primary);
+  color: var(--text-main);
 }
 
 .game-back-button-icon {
@@ -190,10 +190,10 @@ useHead({
 
 /* 游戏卡片 */
 .game-card {
-  background: rgba(30, 41, 59, 0.3);
+  background: var(--bg-card);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 1.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-radius, 1.5rem);
   padding: 1.5rem;
   transition: all 0.5s ease;
   display: flex;
@@ -201,9 +201,9 @@ useHead({
 }
 
 .game-card:hover {
-  background: rgba(30, 41, 59, 0.5);
-  border-color: rgba(147, 51, 234, 0.3);
-  box-shadow: 0 0 30px rgba(147, 51, 234, 0.1);
+  background: var(--bg-elevated);
+  border-color: var(--primary);
+  box-shadow: var(--shadow-soft);
   transform: translateY(-4px);
 }
 
@@ -234,13 +234,13 @@ useHead({
 .game-card-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: rgb(241, 245, 249);
+  color: var(--text-main);
   margin: 0 0 0.5rem 0;
 }
 
 .game-card-description {
   font-size: 0.875rem;
-  color: rgb(148, 163, 184);
+  color: var(--text-secondary);
   margin: 0;
   line-height: 1.5;
 }
@@ -267,13 +267,13 @@ useHead({
 
 .game-card-stat-label {
   font-size: 0.75rem;
-  color: rgb(148, 163, 184);
+  color: var(--text-secondary);
 }
 
 .game-card-stat-value {
   font-size: 1rem;
   font-weight: 700;
-  color: rgb(241, 245, 249);
+  color: var(--text-main);
 }
 
 .game-card-difficulty {

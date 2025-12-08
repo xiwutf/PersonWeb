@@ -188,30 +188,30 @@ const handleProjectClick = (project: AiProject) => {
   gap: 12px;
   margin-bottom: 32px;
   padding-bottom: 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--divider-color);
 }
 
 .ai-project-filter-tag {
   padding: 8px 20px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .ai-project-filter-tag:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(6, 182, 212, 0.3);
-  color: rgba(255, 255, 255, 0.9);
+  background: var(--bg-elevated);
+  border-color: var(--primary);
+  color: var(--text-main);
 }
 
 .ai-project-filter-tag--active {
-  background: rgba(6, 182, 212, 0.15);
-  border-color: rgba(6, 182, 212, 0.4);
-  color: #06b6d4;
+  background: var(--primary-soft-bg);
+  border-color: var(--primary);
+  color: var(--primary);
 }
 
 /* 项目网格 */
@@ -231,31 +231,31 @@ const handleProjectClick = (project: AiProject) => {
 .ai-project-card {
   position: relative;
   padding: 24px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-radius, 16px);
   cursor: pointer;
   transition: all 0.3s ease;
   overflow: hidden;
 }
 
 .ai-project-card:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(6, 182, 212, 0.4);
+  background: var(--bg-elevated);
+  border-color: var(--primary);
   transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(6, 182, 212, 0.2);
+  box-shadow: var(--shadow-soft);
 }
 
 .ai-project-card-bg {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+  background: linear-gradient(135deg, var(--primary-soft-bg) 0%, rgba(37, 99, 235, 0.05) 100%);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
 
 .ai-project-card:hover .ai-project-card-bg {
-  opacity: 1;
+  opacity: 0.3;
 }
 
 .ai-project-card-content {
@@ -275,25 +275,51 @@ const handleProjectClick = (project: AiProject) => {
   font-weight: 500;
 }
 
-.ai-project-status-badge--success {
+/* 浅色主题下的状态标签 */
+html[data-theme="light"] .ai-project-status-badge--success {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #16a34a;
+}
+
+html[data-theme="light"] .ai-project-status-badge--warning {
+  background: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  color: #ca8a04;
+}
+
+html[data-theme="light"] .ai-project-status-badge--info {
+  background: var(--primary-soft-bg);
+  border: 1px solid rgba(37, 99, 235, 0.3);
+  color: var(--primary);
+}
+
+html[data-theme="light"] .ai-project-status-badge--default {
+  background: var(--primary-soft-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+/* 深色主题下的状态标签 */
+html[data-theme="dark"] .ai-project-status-badge--success {
   background: rgba(34, 197, 94, 0.15);
   border: 1px solid rgba(34, 197, 94, 0.3);
   color: #22c55e;
 }
 
-.ai-project-status-badge--warning {
+html[data-theme="dark"] .ai-project-status-badge--warning {
   background: rgba(251, 191, 36, 0.15);
   border: 1px solid rgba(251, 191, 36, 0.3);
   color: #fbbf24;
 }
 
-.ai-project-status-badge--info {
+html[data-theme="dark"] .ai-project-status-badge--info {
   background: rgba(59, 130, 246, 0.15);
   border: 1px solid rgba(59, 130, 246, 0.3);
   color: #3b82f6;
 }
 
-.ai-project-status-badge--default {
+html[data-theme="dark"] .ai-project-status-badge--default {
   background: rgba(148, 163, 184, 0.15);
   border: 1px solid rgba(148, 163, 184, 0.3);
   color: #94a3b8;
@@ -302,7 +328,7 @@ const handleProjectClick = (project: AiProject) => {
 .ai-project-title {
   font-size: 20px;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-main);
   margin: 0 0 12px 0;
   line-height: 1.4;
 }
@@ -310,7 +336,7 @@ const handleProjectClick = (project: AiProject) => {
 .ai-project-summary {
   font-size: 14px;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-secondary);
   margin: 0 0 16px 0;
 }
 
@@ -323,25 +349,33 @@ const handleProjectClick = (project: AiProject) => {
 
 .ai-project-tag {
   padding: 4px 12px;
-  background: rgba(6, 182, 212, 0.1);
-  border: 1px solid rgba(6, 182, 212, 0.3);
   border-radius: 6px;
   font-size: 12px;
+  /* 浅色主题优化（2025-01）：标签使用主色柔和背景，提高可读性 */
+  background: var(--primary-soft-bg, rgba(6, 182, 212, 0.1));
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  color: var(--primary, #06b6d4);
+}
+
+/* 深色主题保持原有样式 */
+html[data-theme="dark"] .ai-project-tag {
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px solid rgba(6, 182, 212, 0.3);
   color: #06b6d4;
 }
 
 .ai-project-stack {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-secondary);
   line-height: 1.6;
 }
 
 .ai-project-stack-label {
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-muted);
 }
 
 .ai-project-stack-item {
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-secondary);
 }
 
 /* 空状态 */
@@ -362,7 +396,7 @@ const handleProjectClick = (project: AiProject) => {
 
 .ai-project-empty-text {
   font-size: 16px;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-secondary);
   margin: 0;
 }
 </style>

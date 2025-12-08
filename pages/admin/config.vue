@@ -21,16 +21,13 @@
               class="form-input flex-1"
               :disabled="savingTheme"
             >
-              <option value="light">浅色 (Light)</option>
-              <option value="dark">暗色 (Dark)</option>
-              <option value="lab">实验室 (Lab)</option>
-              <option value="tech-blue">科技蓝 (Tech Blue)</option>
-              <option value="paper">纸张阅读 (Paper)</option>
-              <option value="forest">墨绿自然 (Forest)</option>
-              <option value="hybrid-super">Hybrid Super</option>
-              <option value="hybrid-super-dark">Hybrid Super（深色）</option>
-              <option value="hybrid-super-light">Hybrid Super（浅色）</option>
+              <option value="light">浅色主题（light）</option>
+              <option value="dark">深色主题（dark）</option>
             </select>
+            <p class="text-xs text-text-muted mt-2">
+              <i class="fas fa-info-circle mr-1"></i>
+              目前仅保留两套稳定主题，后续如果有需要再新增。
+            </p>
             <button
               type="button"
               @click="saveTheme"
@@ -99,7 +96,8 @@ const newKey = ref('')
 const newValue = ref('')
 
 // 站点主题相关状态
-const siteTheme = ref<'light' | 'dark' | 'lab' | 'tech-blue' | 'paper' | 'forest' | 'hybrid-super' | 'hybrid-super-dark' | 'hybrid-super-light'>('light')
+// 重构说明（2024-12-XX）：现在只支持 light 和 dark 两个主题
+const siteTheme = ref<'light' | 'dark'>('light')
 const savingTheme = ref(false)
 
 const formatKey = (key: string | number) => {
@@ -133,13 +131,17 @@ const fetchConfigs = async () => {
 }
 
 // 获取当前主题
+// 重构说明（2024-12-XX）：现在只支持 light 和 dark 两个主题，后端会自动映射旧主题
 const fetchTheme = async () => {
   try {
     const res = await api.get<{ theme: string }>('/Config/theme')
     if (res && res.theme) {
-      const validThemes = ['light', 'dark', 'lab', 'tech-blue', 'paper', 'forest', 'hybrid-super', 'hybrid-super-dark', 'hybrid-super-light']
-      if (validThemes.includes(res.theme)) {
-        siteTheme.value = res.theme as any
+      // 后端已经标准化为 light 或 dark
+      if (res.theme === 'light' || res.theme === 'dark') {
+        siteTheme.value = res.theme
+      } else {
+        // 如果后端返回了意外的值，使用默认值
+        siteTheme.value = 'light'
       }
     }
   } catch (e: unknown) {

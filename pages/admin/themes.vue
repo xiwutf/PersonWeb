@@ -182,33 +182,33 @@ const { handleError } = useErrorHandler()
 
 /**
  * 主题选项列表
- * 注意：value 必须与后端 ThemeKey 字符串完全一致，与前端 ThemeKey 类型保持一致
- * label 使用中文描述 + 英文 key，方便用户理解
+ * 
+ * 重构说明（2024-12-XX）：
+ * - 现在只支持 light 和 dark 两个主题
+ * - 旧主题（tech-blue、paper、forest 等）已移除
  */
 const themeOptions = [
-  { label: '浅色（light）', value: 'light' },
-  { label: '深色（dark）', value: 'dark' },
-  { label: '科技蓝（tech-blue）', value: 'tech-blue' },
-  { label: '纸张阅读（paper）', value: 'paper' },
-  { label: '墨绿自然（forest）', value: 'forest' },
-  { label: 'Hybrid Super（深色）', value: 'hybrid-super-dark' },
-  { label: 'Hybrid Super（浅色）', value: 'hybrid-super-light' }
+  { label: '浅色主题（light）', value: 'light' },
+  { label: '深色主题（dark）', value: 'dark' }
 ] as const
 
 // 全局主题
-const globalTheme = ref<'light' | 'dark' | 'tech-blue' | 'paper' | 'forest' | 'hybrid-super-dark' | 'hybrid-super-light'>('light')
+// 重构说明（2024-12-XX）：现在只支持 light 和 dark 两个主题
+const globalTheme = ref<'light' | 'dark'>('light')
 const savingGlobalTheme = ref(false)
 
 // 模块主题
 const moduleList = ref(MODULE_DEFINITIONS)
 const moduleThemes = ref<Record<string, string | null>>({})
 // 默认主题列表（会从后端获取，这里只是初始值）
-const availableThemes = ref<string[]>(['light', 'dark', 'tech-blue', 'paper', 'forest', 'hybrid-super', 'hybrid-super-dark', 'hybrid-super-light'])
+// 重构说明（2024-12-XX）：现在只支持 light 和 dark 两个主题
+const availableThemes = ref<string[]>(['light', 'dark'])
 const loadingModules = ref(false)
 const savingModules = ref(false)
 
 // 主题 Tokens
-const selectedThemeForTokens = ref<'light' | 'dark' | 'tech-blue' | 'paper' | 'forest' | 'hybrid-super-dark' | 'hybrid-super-light'>('light')
+// 重构说明（2024-12-XX）：现在只支持 light 和 dark 两个主题
+const selectedThemeForTokens = ref<'light' | 'dark'>('light')
 const editingTokens = ref<Record<string, string>>({})
 const loadingTokens = ref(false)
 const savingTokens = ref(false)
@@ -247,14 +247,17 @@ const getDefaultTokenValue = (key: string) => {
 }
 
 // 获取全局主题
+// 重构说明（2024-12-XX）：现在只支持 light 和 dark 两个主题，后端会自动映射旧主题
 const fetchGlobalTheme = async () => {
   try {
     const res = await api.get<{ theme: string }>('/Config/theme')
     if (res && res.theme) {
-      // 验证主题值是否在支持的列表中
-      const validThemes = ['light', 'dark', 'tech-blue', 'paper', 'forest'] as const
-      if (validThemes.includes(res.theme as any)) {
-        globalTheme.value = res.theme as typeof globalTheme.value
+      // 后端已经标准化为 light 或 dark
+      if (res.theme === 'light' || res.theme === 'dark') {
+        globalTheme.value = res.theme
+      } else {
+        // 如果后端返回了意外的值，使用默认值
+        globalTheme.value = 'light'
       }
     }
   } catch (e: unknown) {

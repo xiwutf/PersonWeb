@@ -231,20 +231,33 @@ const handleProjectCardClick = (project: any) => {
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
-  background: rgba(6, 182, 212, 0.1);
-  border: 1px solid rgba(6, 182, 212, 0.3);
   border-radius: 999px;
   font-size: 14px;
-  color: #06b6d4;
   width: fit-content;
+  /* 浅色主题优化（2025-01）：使用主色柔和背景，提高可读性 */
+  background: var(--primary-soft-bg, rgba(6, 182, 212, 0.1));
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  color: var(--primary, #06b6d4);
 }
 
 .ai-capability-badge-dot {
   width: 8px;
   height: 8px;
-  background: #06b6d4;
   border-radius: 50%;
   animation: pulse 2s infinite;
+  /* 浅色主题优化（2025-01）：使用主色 */
+  background: var(--primary, #06b6d4);
+}
+
+/* 深色主题保持原有样式 */
+html[data-theme="dark"] .ai-capability-badge {
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  color: #06b6d4;
+}
+
+html[data-theme="dark"] .ai-capability-badge-dot {
+  background: #06b6d4;
 }
 
 @keyframes pulse {
@@ -260,11 +273,18 @@ const handleProjectCardClick = (project: any) => {
   font-size: 48px;
   font-weight: 700;
   line-height: 1.2;
+  margin: 0;
+  /* 浅色主题优化（2025-01）：使用主题文字颜色，避免渐变在浅色背景下看不清 */
+  color: var(--text-main, #fff);
+}
+
+/* 深色主题使用渐变效果 */
+html[data-theme="dark"] .ai-capability-title {
   background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin: 0;
+  color: transparent;
 }
 
 @media (max-width: 640px) {
@@ -276,8 +296,9 @@ const handleProjectCardClick = (project: any) => {
 .ai-capability-subtitle {
   font-size: 18px;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.7);
   margin: 0;
+  /* 浅色主题优化（2025-01）：使用主题文字颜色，确保清晰 */
+  color: var(--text-secondary, rgba(255, 255, 255, 0.7));
 }
 
 .ai-capability-features {
@@ -323,15 +344,17 @@ const handleProjectCardClick = (project: any) => {
 .ai-capability-feature-title {
   font-size: 18px;
   font-weight: 600;
-  color: #fff;
   margin: 0 0 8px 0;
+  /* 浅色主题优化（2025-01）：使用主题文字颜色，确保清晰 */
+  color: var(--text-main, #fff);
 }
 
 .ai-capability-feature-text {
   font-size: 14px;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.6);
   margin: 0;
+  /* 浅色主题优化（2025-01）：使用主题文字颜色，确保清晰 */
+  color: var(--text-secondary, rgba(255, 255, 255, 0.6));
 }
 
 /* 右侧流程图 */
@@ -410,9 +433,10 @@ const handleProjectCardClick = (project: any) => {
 .ai-capability-projects-title {
   font-size: 32px;
   font-weight: 600;
-  color: #fff;
   margin: 0 0 32px 0;
   text-align: center;
+  /* 浅色主题优化（2025-01）：使用主题文字颜色，确保清晰 */
+  color: var(--text-main, #fff);
 }
 
 .ai-capability-projects-grid {
@@ -459,15 +483,17 @@ const handleProjectCardClick = (project: any) => {
 .ai-capability-project-title {
   font-size: 18px;
   font-weight: 600;
-  color: #fff;
   margin: 0 0 12px 0;
+  /* 浅色主题优化（2025-01）：使用主题文字颜色，确保清晰 */
+  color: var(--text-main, #fff);
 }
 
 .ai-capability-project-description {
   font-size: 14px;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.6);
   margin: 0 0 16px 0;
+  /* 浅色主题优化（2025-01）：使用主题文字颜色，确保清晰 */
+  color: var(--text-secondary, rgba(255, 255, 255, 0.6));
 }
 
 .ai-capability-project-tags {
@@ -478,10 +504,18 @@ const handleProjectCardClick = (project: any) => {
 
 .ai-capability-project-tag {
   padding: 4px 12px;
-  background: rgba(6, 182, 212, 0.1);
-  border: 1px solid rgba(6, 182, 212, 0.3);
   border-radius: 6px;
   font-size: 12px;
+  /* 浅色主题优化（2025-01）：标签使用主色柔和背景，提高可读性 */
+  background: var(--primary-soft-bg, rgba(6, 182, 212, 0.1));
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  color: var(--primary, #06b6d4);
+}
+
+/* 深色主题保持原有样式 */
+html[data-theme="dark"] .ai-capability-project-tag {
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px solid rgba(6, 182, 212, 0.3);
   color: #06b6d4;
 }
 

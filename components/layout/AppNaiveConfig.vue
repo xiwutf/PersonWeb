@@ -39,20 +39,21 @@ const { currentTheme } = useTheme()
 
 /**
  * 将项目主题 key 映射到 Naive UI 的 theme
+ * 
+ * 重构说明（2024-12-XX）：
+ * - 现在只支持 light 和 dark 两个主题
  * - light: 使用 Naive 默认主题（null）
- * - 其他: 使用 darkTheme
+ * - dark: 使用 darkTheme
  */
 const naiveTheme = computed<GlobalTheme | null>(() => {
   if (!process.client) return null
   
   // 如果当前主题是 light，使用 Naive 默认主题
-  if (currentTheme.value === 'light' || 
-      currentTheme.value === 'paper' || 
-      currentTheme.value === 'hybrid-super-light') {
+  if (currentTheme.value === 'light') {
     return null
   }
   
-  // 其他主题都使用 darkTheme
+  // dark 主题使用 darkTheme
   // 注意：这里需要动态导入 darkTheme，避免 SSR 错误
   return null // 将在 onMounted 中设置
 })
@@ -186,12 +187,12 @@ onMounted(async () => {
       },
       setup(componentProps, { slots }) {
         // 计算实际的主题（考虑 light 主题使用默认）
+        // 重构说明（2024-12-XX）：现在只支持 light 和 dark 两个主题
         const actualTheme = computed(() => {
-          if (currentTheme.value === 'light' || 
-              currentTheme.value === 'paper' || 
-              currentTheme.value === 'hybrid-super-light') {
+          if (currentTheme.value === 'light') {
             return null
           }
+          // dark 主题使用 darkTheme
           return darkTheme
         })
         

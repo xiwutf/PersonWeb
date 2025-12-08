@@ -128,6 +128,10 @@ public class ConfigController : ControllerBase
     /// <summary>
     /// 获取当前全站主题
     /// 这是前台用来初始化全站主题的配置接口，允许匿名访问
+    /// 
+    /// 重构说明（2024-12-XX）：
+    /// - 现在只支持 light 和 dark 两个主题
+    /// - 如果数据库中是旧值（tech-blue、paper、forest 等），会自动映射为 light 或 dark
     /// </summary>
     /// <returns></returns>
     [HttpGet("theme")]
@@ -140,9 +144,11 @@ public class ConfigController : ControllerBase
         // 如果不存在，则返回默认主题 "light"
         var theme = config?.ConfigValue ?? "light";
         
-        // 只返回合法值，否则也回退到 "light"
-        var validThemes = new[] { "light", "dark", "tech-blue", "paper", "forest", "hybrid-super", "hybrid-super-dark", "hybrid-super-light" };
-        if (!validThemes.Contains(theme))
+        // 标准化主题（映射旧主题为 light 或 dark）
+        theme = NormalizeTheme(theme);
+        
+        // 如果映射后的主题不是 light 或 dark，回退到 light
+        if (theme != "light" && theme != "dark")
         {
             theme = "light";
         }
@@ -156,6 +162,10 @@ public class ConfigController : ControllerBase
     /// <summary>
     /// 设置当前全站主题
     /// 需要管理员权限，后台管理界面调用此接口修改全站主题
+    /// 
+    /// 重构说明（2024-12-XX）：
+    /// - 现在只支持 light 和 dark 两个主题
+    /// - 如果传入旧主题（tech-blue、paper、forest 等），会返回 400 错误
     /// </summary>
     /// <param name="dto"></param>
     /// <returns></returns>
@@ -163,11 +173,10 @@ public class ConfigController : ControllerBase
     [Authorize]
     public async Task<ActionResult<ApiResponse<ThemeResponse>>> SetTheme([FromBody] SetThemeDto dto)
     {
-        // 校验 theme 值必须在合法主题列表中
-        var validThemes = new[] { "light", "dark", "tech-blue", "paper", "forest", "hybrid-super", "hybrid-super-dark", "hybrid-super-light" };
-        if (!validThemes.Contains(dto.Theme))
+        // 校验 theme 值必须是 light 或 dark
+        if (dto.Theme != "light" && dto.Theme != "dark")
         {
-            return BadRequest(ApiResponse<ThemeResponse>.Error($"主题值必须是以下之一: {string.Join(", ", validThemes)}", 400));
+            return BadRequest(ApiResponse<ThemeResponse>.Error("主题值必须是 'light' 或 'dark'", 400));
         }
 
         // 使用 SiteConfig 表进行 Upsert：ConfigKey = "site_theme"，ConfigValue = theme
@@ -179,7 +188,7 @@ public class ConfigController : ControllerBase
             {
                 ConfigKey = "site_theme",
                 ConfigValue = dto.Theme,
-                Description = "全站主题配置（light/dark/tech-blue/paper/forest/hybrid-super/hybrid-super-dark/hybrid-super-light）",
+                Description = "全站主题配置（light/dark）",
                 UpdatedAt = DateTime.Now
             };
             _context.SiteConfigs.Add(config);
@@ -209,9 +218,9 @@ public class ConfigController : ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<ApiResponse<ModuleThemesResponse>>> GetModuleThemes()
     {
-        // 1. 获取全局主题
+        // 1. 获取全局主题（并标准化为 light 或 dark）
         var globalThemeConfig = await _context.SiteConfigs.FindAsync("site_theme");
-        var globalTheme = globalThemeConfig?.ConfigValue ?? "light";
+        var globalTheme = NormalizeTheme(globalThemeConfig?.ConfigValue ?? "light");
 
         // 2. 获取所有模块主题配置（ConfigKey 以 "module_theme:" 开头）
         var moduleThemeConfigs = await _context.SiteConfigs
@@ -223,17 +232,21 @@ public class ConfigController : ControllerBase
         {
             // 解析 ModuleId（冒号后的部分）
             var moduleId = config.ConfigKey!.Substring("module_theme:".Length);
+            // 标准化模块主题（映射旧主题为 light 或 dark）
+            var normalizedModuleTheme = string.IsNullOrEmpty(config.ConfigValue) 
+                ? null 
+                : NormalizeTheme(config.ConfigValue);
+            
             modules.Add(new ModuleThemeConfigDto
             {
                 ModuleId = moduleId,
-                Theme = string.IsNullOrEmpty(config.ConfigValue) ? null : config.ConfigValue
+                Theme = normalizedModuleTheme
             });
         }
 
         // 3. 可选主题列表
-        // 注意：这里必须与前端 ThemeKey 类型保持一致，包含所有支持的主题
-        // 当前支持：light（浅色）、dark（深色）、tech-blue（科技蓝）、paper（纸张阅读）、forest（自然墨绿）、hybrid-super（混合超级风格）、hybrid-super-dark（混合超级风格深色）、hybrid-super-light（混合超级风格浅色）
-        var availableThemes = new List<string> { "light", "dark", "tech-blue", "paper", "forest", "hybrid-super", "hybrid-super-dark", "hybrid-super-light" };
+        // 重构说明（2024-12-XX）：现在只支持 light 和 dark 两个主题
+        var availableThemes = new List<string> { "light", "dark" };
 
         return Ok(ApiResponse<ModuleThemesResponse>.Success(new ModuleThemesResponse
         {
@@ -254,8 +267,8 @@ public class ConfigController : ControllerBase
     public async Task<ActionResult<ApiResponse<ModuleThemesResponse>>> SetModuleThemes([FromBody] List<ModuleThemeConfigDto> dtoList)
     {
         // 可选主题列表（用于校验）
-        // 注意：必须与前端 ThemeKey 类型保持一致
-        var availableThemes = new List<string> { "light", "dark", "tech-blue", "paper", "forest", "hybrid-super", "hybrid-super-dark", "hybrid-super-light" };
+        // 重构说明（2024-12-XX）：现在只支持 light 和 dark 两个主题
+        var availableThemes = new List<string> { "light", "dark" };
 
         foreach (var dto in dtoList)
         {
@@ -321,8 +334,8 @@ public class ConfigController : ControllerBase
     public async Task<ActionResult<ApiResponse<ThemeTokensDto>>> GetThemeTokens(string themeKey)
     {
         // 校验 themeKey 是否合法
-        // 注意：必须与前端 ThemeKey 类型保持一致，包含所有支持的主题
-        var availableThemes = new List<string> { "light", "dark", "tech-blue", "paper", "forest", "hybrid-super", "hybrid-super-dark", "hybrid-super-light" };
+        // 重构说明（2024-12-XX）：现在只支持 light 和 dark 两个主题
+        var availableThemes = new List<string> { "light", "dark" };
         if (!availableThemes.Contains(themeKey))
         {
             return BadRequest(ApiResponse<ThemeTokensDto>.Error($"主题 '{themeKey}' 不在支持的主题列表中", 400));
@@ -367,8 +380,8 @@ public class ConfigController : ControllerBase
     public async Task<ActionResult<ApiResponse<ThemeTokensDto>>> SetThemeTokens(string themeKey, [FromBody] ThemeTokensDto dto)
     {
         // 校验 themeKey 是否合法
-        // 注意：必须与前端 ThemeKey 类型保持一致，包含所有支持的主题
-        var availableThemes = new List<string> { "light", "dark", "tech-blue", "paper", "forest", "hybrid-super", "hybrid-super-dark", "hybrid-super-light" };
+        // 重构说明（2024-12-XX）：现在只支持 light 和 dark 两个主题
+        var availableThemes = new List<string> { "light", "dark" };
         if (!availableThemes.Contains(themeKey))
         {
             return BadRequest(ApiResponse<ThemeTokensDto>.Error($"主题 '{themeKey}' 不在支持的主题列表中", 400));
@@ -422,6 +435,55 @@ public class ConfigController : ControllerBase
             ThemeKey = themeKey,
             Tokens = validTokens
         }));
+    }
+
+    /// <summary>
+    /// 主题映射函数：将旧主题名称映射为 light 或 dark
+    /// 
+    /// 映射规则：
+    /// - 如果主题名包含 "light" 或 "paper" → 映射为 "light"
+    /// - 如果主题名包含 "dark" 或 "tech" 或 "forest" 或 "hybrid" → 映射为 "dark"
+    /// - 其他情况 → 默认映射为 "dark"
+    /// 
+    /// 用途：
+    /// - 兼容数据库中的旧主题配置（tech-blue、paper、forest、hybrid-super 等）
+    /// - 避免因旧数据导致主题切换失败
+    /// </summary>
+    /// <param name="theme">主题名称（可能是旧主题名）</param>
+    /// <returns>标准化后的主题名称（"light" 或 "dark"）</returns>
+    private static string NormalizeTheme(string? theme)
+    {
+        if (string.IsNullOrWhiteSpace(theme))
+        {
+            return "light";
+        }
+
+        var themeLower = theme.ToLowerInvariant();
+
+        // 如果已经是 light 或 dark，直接返回
+        if (themeLower == "light" || themeLower == "dark")
+        {
+            return themeLower;
+        }
+
+        // 根据关键词映射
+        if (themeLower.Contains("light") || themeLower.Contains("paper"))
+        {
+            return "light";
+        }
+
+        // 深色主题关键词
+        if (themeLower.Contains("dark") ||
+            themeLower.Contains("tech") ||
+            themeLower.Contains("forest") ||
+            themeLower.Contains("hybrid") ||
+            themeLower.Contains("lab"))
+        {
+            return "dark";
+        }
+
+        // 默认返回 dark（更安全，避免浅色主题在深色背景下不可见）
+        return "dark";
     }
 }
 

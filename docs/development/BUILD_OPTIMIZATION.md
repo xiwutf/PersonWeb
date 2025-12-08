@@ -23,7 +23,7 @@ npm run dev
 
 **需要运行：**
 ```bash
-npm run generate:prod
+npm run generate
 ```
 
 **说明：**
@@ -138,7 +138,7 @@ git push
 
 # 2. CI/CD 自动运行构建
 # 或手动运行：
-npm run generate:prod
+npm run generate
 
 # 3. 检查构建输出
 ls .output/public/
@@ -147,7 +147,7 @@ ls .output/public/
 ## 🎯 总结
 
 - **开发时**：只运行 `npm run dev`，快速启动
-- **部署时**：运行 `npm run generate:prod`，生成静态文件
+- **部署时**：运行 `npm run generate`，生成静态文件
 - **构建慢是正常的**：只在部署前运行一次
 - **Admin 页面错误是正常的**：已配置自动忽略
 
