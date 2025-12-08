@@ -4,10 +4,23 @@
 .hero-super {
   position: relative;
   min-height: 100vh;
+  padding-top: 6rem; /* 为导航栏留出空间（导航栏高度约 3.5rem + top 1rem + 间距 1.5rem） */
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+}
+
+@media (min-width: 640px) {
+  .hero-super {
+    padding-top: 7rem; /* 大屏幕上稍微增加间距 */
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-super {
+    padding-top: 8rem; /* 大屏幕上更多间距，确保内容不被遮挡 */
+  }
 }
 
 /* 背景层 */

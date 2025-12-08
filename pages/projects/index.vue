@@ -235,9 +235,7 @@ const filteredProjects = computed(() => {
 
 // 切换3D视图处理函数
 const handleToggle3DView = () => {
-  console.log('切换3D视图，当前模式:', viewMode.value)
   viewMode.value = '3d'
-  console.log('切换后模式:', viewMode.value)
 }
 
 // 图表配置

@@ -9,10 +9,7 @@
     <!-- 2. 平台价值主张区 -->
     <PlatformValueSection />
     
-    <!-- 3. 平台入口 Hub（Blog / Projects / Tools / AI Lab） -->
-    <PlatformEntryHub />
-    
-    <!-- 4. 精选内容区（精选工具 / 项目 / 文章） -->
+    <!-- 3. 精选内容区（精选工具 / 项目 / 文章） -->
     <FeaturedSection />
     
     <!-- 5. AI Playground 预览区（可交互小块） -->
@@ -36,7 +33,6 @@
 import HeroSuper from './HeroSuper.vue'
 import AiCapabilitySection from '~/components/ai/AiCapabilitySection.vue'
 import PlatformValueSection from './PlatformValueSection.vue'
-import PlatformEntryHub from './PlatformEntryHub.vue'
 import FeaturedSection from './FeaturedSection.vue'
 import AIPlaygroundPreview from './AIPlaygroundPreview.vue'
 import BentoGridV4 from './BentoGridV4.vue'

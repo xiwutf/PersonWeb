@@ -1,32 +1,32 @@
 ﻿<template>
-  <div class="bg-gradient-to-br from-indigo-50 to-purple-50 min-h-screen">
+  <div class="search-page">
     <!-- 页面头部 -->
-    <section class="py-16 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
-      <div class="max-w-6xl mx-auto px-4 text-center">
-        <div class="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-          <span class="text-3xl">🔍</span>
+    <section class="search-header">
+      <div class="search-header-container">
+        <div class="search-header-icon">
+          <span class="search-header-icon-emoji">🔍</span>
         </div>
-        <h1 class="text-4xl lg:text-5xl font-bold mb-4">全站搜索</h1>
-        <p class="text-xl text-indigo-100 max-w-3xl mx-auto">
+        <h1 class="search-title">全站搜索</h1>
+        <p class="search-subtitle">
           搜索博客文章、项目作品、知识库等所有内容
         </p>
       </div>
     </section>
 
     <!-- 搜索内容 -->
-    <section class="py-20">
-      <div class="max-w-6xl mx-auto px-4">
+    <section class="search-content">
+      <div class="search-content-container">
         
         <!-- 搜索框 -->
-        <div class="max-w-3xl mx-auto mb-12">
-          <div class="card p-8">
-            <div class="flex items-center gap-4 mb-6">
-              <div class="flex-1 relative">
+        <div class="search-box-wrapper">
+          <div class="search-box-card">
+            <div class="search-input-group">
+              <div class="search-input-wrapper">
                 <input
                   v-model="searchQuery"
                   type="text"
                   placeholder="搜索文章、项目、知识库..."
-                  class="form-input w-full px-6 py-4 pl-14 text-lg focus:ring-2 focus:ring-indigo-500"
+                  class="search-input"
                   @keyup.enter="performSearch"
                   @input="handleInput"
                   @focus="showSuggestions = true"
@@ -34,8 +34,8 @@
                   @keydown.down.prevent="navigateSuggestions(1)"
                   @keydown.up.prevent="navigateSuggestions(-1)"
                 >
-                <div class="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400">
-                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="search-input-icon">
+                  <svg class="search-icon-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                   </svg>
                 </div>
@@ -43,40 +43,40 @@
                 <!-- 搜索建议下拉框 -->
                 <div
                   v-if="showSuggestions && (searchSuggestions.length > 0 || searchHistory.length > 0)"
-                  class="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-200 max-h-80 overflow-y-auto z-50"
+                  class="search-suggestions"
                 >
                   <!-- 搜索历史 -->
-                  <div v-if="searchHistory.length > 0 && !searchQuery" class="p-2">
-                    <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase">搜索历史</div>
+                  <div v-if="searchHistory.length > 0 && !searchQuery" class="search-suggestions-section">
+                    <div class="search-suggestions-title">搜索历史</div>
                     <div
                       v-for="(item, index) in searchHistory"
                       :key="index"
-                      class="w-full px-4 py-2 hover:bg-gray-100 rounded-lg flex items-center justify-between group cursor-pointer"
+                      class="search-history-item"
                     >
                       <button
                         @click="selectSuggestion(item)"
-                        class="flex-1 flex items-center gap-2 text-left"
+                        class="search-history-item-content"
                       >
-                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="search-history-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <span class="text-gray-700">{{ item }}</span>
+                        <span class="search-history-text">{{ item }}</span>
                       </button>
                       <button
                         @click.stop="removeFromHistory(item)"
-                        class="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 p-1 flex-shrink-0"
+                        class="search-history-delete"
                         type="button"
                         aria-label="删除"
                       >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="search-history-delete-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                       </button>
                     </div>
-                    <div class="px-3 py-2 border-t border-gray-100">
+                    <div class="search-suggestions-footer">
                       <button
                         @click="clearHistory"
-                        class="text-xs text-gray-500 hover:text-gray-700"
+                        class="search-clear-history-btn"
                       >
                         清空历史
                       </button>
@@ -84,21 +84,21 @@
                   </div>
                   
                   <!-- 搜索建议 -->
-                  <div v-if="searchSuggestions.length > 0" class="p-2">
-                    <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase">搜索建议</div>
+                  <div v-if="searchSuggestions.length > 0" class="search-suggestions-section">
+                    <div class="search-suggestions-title">搜索建议</div>
                     <button
                       v-for="(suggestion, index) in searchSuggestions"
                       :key="index"
                       @click="selectSuggestion(suggestion)"
                       :class="[
-                        'w-full px-4 py-2 text-left hover:bg-gray-100 rounded-lg flex items-center gap-2',
-                        selectedSuggestionIndex === index ? 'bg-indigo-50' : ''
+                        'search-suggestion-item',
+                        selectedSuggestionIndex === index ? 'search-suggestion-item-active' : ''
                       ]"
                     >
-                      <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg class="search-suggestion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                       </svg>
-                      <span class="text-gray-700" v-html="highlightText(suggestion, searchQuery)"></span>
+                      <span class="search-suggestion-text" v-html="highlightText(suggestion, searchQuery)"></span>
                     </button>
                   </div>
                 </div>
@@ -106,33 +106,33 @@
               <button
                 @click="performSearch"
                 :disabled="loading"
-                class="px-8 py-4 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                class="search-button"
               >
                 {{ loading ? '搜索中...' : '搜索' }}
               </button>
             </div>
             
             <!-- 搜索类型和排序选择 -->
-            <div class="flex flex-wrap items-center gap-4">
-              <div class="flex flex-wrap gap-3">
+            <div class="search-filters">
+              <div class="search-type-buttons">
                 <button
                   v-for="type in searchTypes"
                   :key="type.key"
                   @click="selectedType = type.key; performSearch()"
                   :class="getTypeButtonClass(type.key)"
                 >
-                  <span class="mr-2">{{ type.icon }}</span>
+                  <span class="search-type-icon">{{ type.icon }}</span>
                   {{ type.label }}
                 </button>
               </div>
               
               <!-- 排序选择 -->
-              <div class="flex items-center gap-2 ml-auto">
-                <span class="text-sm text-gray-600">排序：</span>
+              <div class="search-sort">
+                <span class="search-sort-label">排序：</span>
                 <select
                   v-model="sortBy"
                   @change="performSearch"
-                  class="px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  class="search-sort-select"
                 >
                   <option value="relevance">相关性</option>
                   <option value="time">时间</option>
@@ -143,8 +143,8 @@
         </div>
 
         <!-- 搜索结果统计 -->
-        <div v-if="hasSearched && !loading" class="text-center mb-8">
-          <p class="text-gray-600">
+        <div v-if="hasSearched && !loading" class="search-stats">
+          <p class="search-stats-text">
             <span v-if="searchQuery">
               关键词 "<strong>{{ searchQuery }}</strong>" 的搜索结果：
             </span>
@@ -153,49 +153,49 @@
         </div>
 
         <!-- 加载状态 -->
-        <div v-if="loading" class="text-center py-16">
-          <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mb-4"></div>
-          <p class="text-gray-600">正在搜索...</p>
+        <div v-if="loading" class="search-loading">
+          <div class="search-loading-spinner"></div>
+          <p class="search-loading-text">正在搜索...</p>
         </div>
 
         <!-- 搜索结果 -->
         <div v-else-if="hasSearched && searchResults">
           <!-- 博客文章结果 -->
-          <div v-if="searchResults.articles && searchResults.articles.length > 0" class="mb-12">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
-              <span class="text-3xl mr-3">📝</span>
+          <div v-if="searchResults.articles && searchResults.articles.length > 0" class="search-results-section">
+            <h2 class="search-results-title">
+              <span class="search-results-icon">📝</span>
               博客文章 ({{ searchResults.articles.length }})
             </h2>
-            <div class="grid gap-6">
+            <div class="search-results-grid">
               <article
                 v-for="article in searchResults.articles"
                 :key="article.id"
-                class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+                class="search-result-card"
               >
-                <div class="flex items-start gap-4">
-                  <div class="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <span class="text-blue-600 text-lg">📄</span>
+                <div class="search-result-content">
+                  <div class="search-result-icon search-result-icon-article">
+                    <span class="search-result-icon-emoji">📄</span>
                   </div>
-                  <div class="flex-1">
-                    <div class="flex items-center gap-2 mb-2">
-                      <span v-if="article.category" class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded">
+                  <div class="search-result-body">
+                    <div class="search-result-meta">
+                      <span v-if="article.category" class="search-result-tag search-result-tag-article">
                         {{ article.category }}
                       </span>
-                      <span class="text-gray-500 text-sm">{{ formatDate(article.createdAt) }}</span>
+                      <span class="search-result-date">{{ formatDate(article.createdAt) }}</span>
                     </div>
                     <NuxtLink
                       :to="article.url"
-                      class="text-xl font-semibold text-gray-800 mb-2 hover:text-blue-600 cursor-pointer block"
+                      class="search-result-title-link"
                       v-html="highlightText(article.title, searchQuery)"
                     ></NuxtLink>
                     <p 
-                      class="text-gray-600 mb-3 line-clamp-2"
+                      class="search-result-summary search-result-summary-2"
                       v-html="highlightText(article.summary || article.content.substring(0, 200), searchQuery)"
                     ></p>
-                    <div class="flex items-center justify-between">
+                    <div class="search-result-footer">
                       <NuxtLink
                         :to="article.url"
-                        class="text-blue-600 hover:text-blue-800 font-medium"
+                        class="search-result-link search-result-link-article"
                       >
                         阅读全文 →
                       </NuxtLink>
@@ -207,35 +207,35 @@
           </div>
 
           <!-- 项目结果 -->
-          <div v-if="searchResults.projects && searchResults.projects.length > 0" class="mb-12">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
-              <span class="text-3xl mr-3">🧪</span>
+          <div v-if="searchResults.projects && searchResults.projects.length > 0" class="search-results-section">
+            <h2 class="search-results-title">
+              <span class="search-results-icon">🧪</span>
               项目作品 ({{ searchResults.projects.length }})
             </h2>
-            <div class="grid md:grid-cols-2 gap-6">
+            <div class="search-results-grid search-results-grid-2">
               <article
                 v-for="project in searchResults.projects"
                 :key="project.id"
-                class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+                class="search-result-card"
               >
-                <div class="p-6">
-                  <div class="flex items-center gap-2 mb-2">
-                    <span class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded">
+                <div class="search-result-card-body">
+                  <div class="search-result-meta">
+                    <span class="search-result-tag search-result-tag-project">
                       项目
                     </span>
                   </div>
                   <h3 
-                    class="text-lg font-semibold text-gray-800 mb-2"
+                    class="search-result-card-title"
                     v-html="highlightText(project.title, searchQuery)"
                   ></h3>
                   <p 
-                    class="text-gray-600 mb-4 line-clamp-3"
+                    class="search-result-summary search-result-summary-3"
                     v-html="highlightText(project.summary || project.content.substring(0, 200), searchQuery)"
                   ></p>
-                  <div class="flex items-center justify-between">
+                  <div class="search-result-footer">
                     <NuxtLink
                       :to="project.url"
-                      class="text-green-600 hover:text-green-800 font-medium"
+                      class="search-result-link search-result-link-project"
                     >
                       查看详情 →
                     </NuxtLink>
@@ -246,41 +246,41 @@
           </div>
 
           <!-- 知识库结果 -->
-          <div v-if="searchResults.knowledgeBases && searchResults.knowledgeBases.length > 0" class="mb-12">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
-              <span class="text-3xl mr-3">📚</span>
+          <div v-if="searchResults.knowledgeBases && searchResults.knowledgeBases.length > 0" class="search-results-section">
+            <h2 class="search-results-title">
+              <span class="search-results-icon">📚</span>
               知识库 ({{ searchResults.knowledgeBases.length }})
             </h2>
-            <div class="grid gap-6">
+            <div class="search-results-grid">
               <article
                 v-for="knowledge in searchResults.knowledgeBases"
                 :key="knowledge.id"
-                class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+                class="search-result-card"
               >
-                <div class="flex items-start gap-4">
-                  <div class="flex-shrink-0 w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <span class="text-purple-600 text-lg">📖</span>
+                <div class="search-result-content">
+                  <div class="search-result-icon search-result-icon-knowledge">
+                    <span class="search-result-icon-emoji">📖</span>
                   </div>
-                  <div class="flex-1">
-                    <div class="flex items-center gap-2 mb-2">
-                      <span v-if="knowledge.category" class="text-xs bg-purple-100 text-purple-600 px-2 py-1 rounded">
+                  <div class="search-result-body">
+                    <div class="search-result-meta">
+                      <span v-if="knowledge.category" class="search-result-tag search-result-tag-knowledge">
                         {{ knowledge.category }}
                       </span>
-                      <span class="text-gray-500 text-sm">{{ formatDate(knowledge.createdAt) }}</span>
+                      <span class="search-result-date">{{ formatDate(knowledge.createdAt) }}</span>
                     </div>
                     <NuxtLink
                       :to="knowledge.url"
-                      class="text-xl font-semibold text-gray-800 mb-2 hover:text-purple-600 cursor-pointer block"
+                      class="search-result-title-link search-result-title-link-knowledge"
                       v-html="highlightText(knowledge.title, searchQuery)"
                     ></NuxtLink>
                     <p 
-                      class="text-gray-600 mb-3 line-clamp-2"
+                      class="search-result-summary search-result-summary-2"
                       v-html="highlightText(knowledge.content.substring(0, 200), searchQuery)"
                     ></p>
-                    <div class="flex items-center justify-between">
+                    <div class="search-result-footer">
                       <NuxtLink
                         :to="knowledge.url"
-                        class="text-purple-600 hover:text-purple-800 font-medium"
+                        class="search-result-link search-result-link-knowledge"
                       >
                         查看详情 →
                       </NuxtLink>
@@ -292,39 +292,39 @@
           </div>
 
           <!-- 工具结果 -->
-          <div v-if="searchResults.tools && searchResults.tools.length > 0" class="mb-12">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
-              <span class="text-3xl mr-3">🔧</span>
+          <div v-if="searchResults.tools && searchResults.tools.length > 0" class="search-results-section">
+            <h2 class="search-results-title">
+              <span class="search-results-icon">🔧</span>
               插件工具 ({{ searchResults.tools.length }})
             </h2>
-            <div class="grid md:grid-cols-2 gap-6">
+            <div class="search-results-grid search-results-grid-2">
               <article
                 v-for="tool in searchResults.tools"
                 :key="tool.id"
-                class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+                class="search-result-card"
               >
-                <div class="p-6">
-                  <div class="flex items-center gap-2 mb-2">
-                    <span class="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded">
+                <div class="search-result-card-body">
+                  <div class="search-result-meta">
+                    <span class="search-result-tag search-result-tag-tool">
                       工具
                     </span>
-                    <span v-if="tool.category" class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                    <span v-if="tool.category" class="search-result-tag search-result-tag-category">
                       {{ tool.category }}
                     </span>
-                    <span class="text-gray-500 text-sm ml-auto">{{ formatDate(tool.createdAt) }}</span>
+                    <span class="search-result-date search-result-date-right">{{ formatDate(tool.createdAt) }}</span>
                   </div>
                   <h3 
-                    class="text-lg font-semibold text-gray-800 mb-2"
+                    class="search-result-card-title"
                     v-html="highlightText(tool.title, searchQuery)"
                   ></h3>
                   <p 
-                    class="text-gray-600 mb-4 line-clamp-3"
+                    class="search-result-summary search-result-summary-3"
                     v-html="highlightText(tool.summary || tool.content.substring(0, 200), searchQuery)"
                   ></p>
-                  <div class="flex items-center justify-between">
+                  <div class="search-result-footer">
                     <NuxtLink
                       :to="tool.url"
-                      class="text-orange-600 hover:text-orange-800 font-medium"
+                      class="search-result-link search-result-link-tool"
                     >
                       查看详情 →
                     </NuxtLink>
@@ -335,39 +335,39 @@
           </div>
 
           <!-- 主题结果 -->
-          <div v-if="searchResults.themes && searchResults.themes.length > 0" class="mb-12">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
-              <span class="text-3xl mr-3">🎨</span>
+          <div v-if="searchResults.themes && searchResults.themes.length > 0" class="search-results-section">
+            <h2 class="search-results-title">
+              <span class="search-results-icon">🎨</span>
               主题商店 ({{ searchResults.themes.length }})
             </h2>
-            <div class="grid md:grid-cols-2 gap-6">
+            <div class="search-results-grid search-results-grid-2">
               <article
                 v-for="theme in searchResults.themes"
                 :key="theme.id"
-                class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+                class="search-result-card"
               >
-                <div class="p-6">
-                  <div class="flex items-center gap-2 mb-2">
-                    <span class="text-xs bg-pink-100 text-pink-600 px-2 py-1 rounded">
+                <div class="search-result-card-body">
+                  <div class="search-result-meta">
+                    <span class="search-result-tag search-result-tag-theme">
                       主题
                     </span>
-                    <span v-if="theme.category" class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                    <span v-if="theme.category" class="search-result-tag search-result-tag-category">
                       {{ theme.category }}
                     </span>
-                    <span class="text-gray-500 text-sm ml-auto">{{ formatDate(theme.createdAt) }}</span>
+                    <span class="search-result-date search-result-date-right">{{ formatDate(theme.createdAt) }}</span>
                   </div>
                   <h3 
-                    class="text-lg font-semibold text-gray-800 mb-2"
+                    class="search-result-card-title"
                     v-html="highlightText(theme.title, searchQuery)"
                   ></h3>
                   <p 
-                    class="text-gray-600 mb-4 line-clamp-3"
+                    class="search-result-summary search-result-summary-3"
                     v-html="highlightText(theme.summary || theme.content.substring(0, 200), searchQuery)"
                   ></p>
-                  <div class="flex items-center justify-between">
+                  <div class="search-result-footer">
                     <NuxtLink
                       :to="theme.url"
-                      class="text-pink-600 hover:text-pink-800 font-medium"
+                      class="search-result-link search-result-link-theme"
                     >
                       查看详情 →
                     </NuxtLink>
@@ -378,12 +378,12 @@
           </div>
 
           <!-- 无结果提示 -->
-          <div v-if="searchResults.total === 0" class="text-center py-16">
-            <div class="text-6xl mb-4">🔍</div>
-            <h3 class="text-2xl font-semibold text-gray-700 mb-4">未找到相关内容</h3>
-            <p class="text-gray-500 mb-6">试试调整搜索关键词或选择不同的内容类型</p>
-            <div class="space-y-2 text-sm text-gray-400">
-              <p>搜索建议：</p>
+          <div v-if="searchResults.total === 0" class="search-empty">
+            <div class="search-empty-icon">🔍</div>
+            <h3 class="search-empty-title">未找到相关内容</h3>
+            <p class="search-empty-text">试试调整搜索关键词或选择不同的内容类型</p>
+            <div class="search-empty-tips">
+              <p class="search-empty-tips-title">搜索建议：</p>
               <p>• 使用更简短的关键词</p>
               <p>• 检查拼写是否正确</p>
               <p>• 尝试使用同义词</p>
@@ -392,20 +392,20 @@
         </div>
 
         <!-- 初始状态 -->
-        <div v-else-if="!hasSearched" class="text-center py-16">
-          <div class="text-6xl mb-6">🚀</div>
-          <h2 class="text-2xl font-semibold text-gray-700 mb-4">开始搜索吧！</h2>
-          <p class="text-gray-500 mb-8">输入关键词，搜索博客、项目、知识库等内容</p>
+        <div v-else-if="!hasSearched" class="search-welcome">
+          <div class="search-welcome-icon">🚀</div>
+          <h2 class="search-welcome-title">开始搜索吧！</h2>
+          <p class="search-welcome-text">输入关键词，搜索博客、项目、知识库等内容</p>
           
           <!-- 快速搜索标签 -->
-          <div class="max-w-2xl mx-auto">
-            <p class="text-sm text-gray-400 mb-4">热门搜索：</p>
-            <div class="flex flex-wrap justify-center gap-2">
+          <div class="search-popular">
+            <p class="search-popular-label">热门搜索：</p>
+            <div class="search-popular-tags">
               <button
                 v-for="tag in popularSearchTags"
                 :key="tag"
                 @click="quickSearch(tag)"
-                class="px-4 py-2 bg-white text-gray-600 rounded-full text-sm hover:bg-gray-50 hover:text-gray-800 transition-colors border"
+                class="search-popular-tag"
               >
                 {{ tag }}
               </button>
@@ -414,8 +414,8 @@
         </div>
 
         <!-- 返回首页 -->
-        <div class="text-center mt-12">
-          <NuxtLink to="/" class="inline-flex items-center text-indigo-600 hover:text-indigo-800 font-medium">
+        <div class="search-back-home">
+          <NuxtLink to="/" class="search-back-link">
             ← 返回首页
           </NuxtLink>
         </div>
@@ -431,7 +431,7 @@ definePageMeta({
 })
 
 import { ref, computed } from 'vue'
-import type { SearchResults, SearchResultItem } from '~/types/api'
+import type { SearchResults } from '~/types/api'
 import { useNotification } from '~/composables/useToast'
 import { useErrorHandler } from '~/composables/useErrorHandler'
 
@@ -649,11 +649,11 @@ const quickSearch = (tag: string) => {
 
 // 获取类型按钮样式
 const getTypeButtonClass = (type: string) => {
-  const baseClass = 'px-4 py-2 rounded-full text-sm transition-colors'
+  const baseClass = 'search-type-button'
   if (type === selectedType.value) {
-    return `${baseClass} bg-indigo-600 text-white`
+    return `${baseClass} search-type-button-active`
   }
-  return `${baseClass} bg-gray-100 text-gray-600 hover:bg-gray-200`
+  return `${baseClass} search-type-button-inactive`
 }
 
 // 高亮文本（支持多个关键词）
@@ -670,7 +670,7 @@ const highlightText = (text: string, keyword: string): string => {
   
   // 创建匹配所有关键词的正则
   const regex = new RegExp(`(${keywords.join('|')})`, 'gi')
-  return text.replace(regex, '<mark class="bg-yellow-200 dark:bg-yellow-800 px-1 rounded">$1</mark>')
+  return text.replace(regex, '<mark class="search-highlight">$1</mark>')
 }
 
 // 格式化日期
@@ -705,38 +705,804 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* 搜索框动画效果 */
-input:focus {
+/* ==================== 页面容器 ==================== */
+.search-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--color-bg-page) 0%, var(--color-bg-elevated) 100%);
+}
+
+/* ==================== 页面头部 ==================== */
+.search-header {
+  padding: var(--spacing-2xl) 0;
+  background: linear-gradient(135deg, var(--color-primary) 0%, #8b5cf6 100%);
+  color: var(--color-text-main);
+}
+
+.search-header-container {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+  text-align: center;
+}
+
+.search-header-icon {
+  width: 5rem;
+  height: 5rem;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--spacing-lg);
+}
+
+.search-header-icon-emoji {
+  font-size: 1.875rem;
+}
+
+.search-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-md);
+  color: #ffffff;
+}
+
+@media (min-width: 1024px) {
+  .search-title {
+    font-size: 3rem;
+  }
+}
+
+.search-subtitle {
+  font-size: 1.25rem;
+  max-width: 48rem;
+  margin: 0 auto;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* ==================== 搜索内容区域 ==================== */
+.search-content {
+  padding: var(--spacing-2xl) 0;
+}
+
+.search-content-container {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+/* ==================== 搜索框 ==================== */
+.search-box-wrapper {
+  max-width: 48rem;
+  margin: 0 auto var(--spacing-xl);
+}
+
+.search-box-card {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-2xl);
+  box-shadow: var(--shadow-lg);
+}
+
+.search-input-group {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.search-input-wrapper {
+  flex: 1;
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+  padding: var(--spacing-md) var(--spacing-lg);
+  padding-left: 3.5rem;
+  font-size: var(--font-size-h4);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  color: var(--color-text-main);
+  transition: all 0.2s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary-soft);
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
-/* 结果卡片动画 */
-article {
-  transition: all 0.3s ease;
+.search-input::placeholder {
+  color: var(--color-text-muted);
 }
 
-article:hover {
-  transform: translateY(-5px);
+.search-input-icon {
+  position: absolute;
+  left: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-muted);
+  pointer-events: none;
 }
 
-/* 搜索按钮效果 */
-button:active {
+.search-icon-svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* ==================== 搜索建议 ==================== */
+.search-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: var(--spacing-sm);
+  background: var(--color-bg-card);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--color-border-subtle);
+  max-height: 20rem;
+  overflow-y: auto;
+  z-index: 50;
+}
+
+.search-suggestions-section {
+  padding: var(--spacing-sm);
+}
+
+.search-suggestions-title {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.search-history-item {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.search-history-item:hover {
+  background: var(--color-bg-elevated);
+}
+
+.search-history-item-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+}
+
+.search-history-icon {
+  width: 1rem;
+  height: 1rem;
+  color: var(--color-text-muted);
+}
+
+.search-history-text {
+  color: var(--color-text-main);
+}
+
+.search-history-delete {
+  opacity: 0;
+  padding: var(--spacing-xs);
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  transition: all 0.2s ease;
+}
+
+.search-history-item:hover .search-history-delete {
+  opacity: 1;
+}
+
+.search-history-delete:hover {
+  color: #ef4444;
+}
+
+.search-history-delete-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.search-suggestions-footer {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.search-clear-history-btn {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.search-clear-history-btn:hover {
+  color: var(--color-text-main);
+}
+
+.search-suggestion-item {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  text-align: left;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  color: var(--color-text-main);
+}
+
+.search-suggestion-item:hover {
+  background: var(--color-bg-elevated);
+}
+
+.search-suggestion-item-active {
+  background: var(--color-primary-soft);
+}
+
+.search-suggestion-icon {
+  width: 1rem;
+  height: 1rem;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.search-suggestion-text {
+  color: var(--color-text-main);
+}
+
+/* ==================== 搜索按钮 ==================== */
+.search-button {
+  padding: var(--spacing-md) var(--spacing-2xl);
+  background: var(--color-primary);
+  color: #ffffff;
+  border-radius: var(--radius-xl);
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: var(--font-size-body);
+}
+
+.search-button:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+  transform: translateY(-1px);
+}
+
+.search-button:active:not(:disabled) {
   transform: scale(0.98);
 }
 
-/* 文本截断 */
-.line-clamp-2 {
+.search-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ==================== 搜索筛选 ==================== */
+.search-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.search-type-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.search-type-button {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: 9999px;
+  font-size: var(--font-size-sm);
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.search-type-button-active {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+.search-type-button-inactive {
+  background: var(--color-bg-elevated);
+  color: var(--color-text-main);
+}
+
+.search-type-button-inactive:hover {
+  background: var(--color-bg-card);
+}
+
+.search-type-icon {
+  margin-right: var(--spacing-sm);
+}
+
+.search-sort {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-left: auto;
+}
+
+.search-sort-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.search-sort-select {
+  padding: var(--spacing-sm) var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-card);
+  color: var(--color-text-main);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.search-sort-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary-soft);
+}
+
+/* ==================== 搜索结果统计 ==================== */
+.search-stats {
+  text-align: center;
+  margin-bottom: var(--spacing-2xl);
+}
+
+.search-stats-text {
+  color: var(--color-text-muted);
+}
+
+.search-stats-text strong {
+  color: var(--color-text-main);
+  font-weight: 600;
+}
+
+/* ==================== 加载状态 ==================== */
+.search-loading {
+  text-align: center;
+  padding: var(--spacing-2xl) 0;
+}
+
+.search-loading-spinner {
+  display: inline-block;
+  width: 3rem;
+  height: 3rem;
+  border: 2px solid var(--color-border-subtle);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: var(--spacing-md);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.search-loading-text {
+  color: var(--color-text-muted);
+}
+
+/* ==================== 搜索结果 ==================== */
+.search-results-section {
+  margin-bottom: var(--spacing-xl);
+}
+
+.search-results-title {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  color: var(--color-text-main);
+  margin-bottom: var(--spacing-lg);
+  display: flex;
+  align-items: center;
+}
+
+.search-results-icon {
+  font-size: 1.875rem;
+  margin-right: var(--spacing-sm);
+}
+
+.search-results-grid {
+  display: grid;
+  gap: var(--spacing-lg);
+}
+
+.search-results-grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+@media (min-width: 768px) {
+  .search-results-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ==================== 结果卡片 ==================== */
+.search-result-card {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--spacing-lg);
+  transition: all 0.3s ease;
+}
+
+.search-result-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-5px);
+}
+
+.search-result-content {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+}
+
+.search-result-icon {
+  flex-shrink: 0;
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-result-icon-article {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.search-result-icon-knowledge {
+  background: rgba(139, 92, 246, 0.1);
+}
+
+.search-result-icon-emoji {
+  font-size: var(--font-size-h4);
+}
+
+.search-result-icon-article .search-result-icon-emoji {
+  color: #3b82f6;
+}
+
+.search-result-icon-knowledge .search-result-icon-emoji {
+  color: #8b5cf6;
+}
+
+.search-result-body {
+  flex: 1;
+}
+
+.search-result-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.search-result-tag {
+  font-size: var(--font-size-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+}
+
+.search-result-tag-article {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+
+.search-result-tag-project {
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+}
+
+.search-result-tag-knowledge {
+  background: rgba(139, 92, 246, 0.1);
+  color: #8b5cf6;
+}
+
+.search-result-tag-tool {
+  background: rgba(249, 115, 22, 0.1);
+  color: #f97316;
+}
+
+.search-result-tag-theme {
+  background: rgba(236, 72, 153, 0.1);
+  color: #ec4899;
+}
+
+.search-result-tag-category {
+  background: var(--color-bg-elevated);
+  color: var(--color-text-muted);
+}
+
+.search-result-date {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.search-result-date-right {
+  margin-left: auto;
+}
+
+.search-result-title-link {
+  font-size: var(--font-size-h3);
+  font-weight: 600;
+  color: var(--color-text-main);
+  margin-bottom: var(--spacing-sm);
+  display: block;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.search-result-title-link:hover {
+  color: var(--color-primary);
+}
+
+.search-result-title-link-knowledge:hover {
+  color: #8b5cf6;
+}
+
+.search-result-card-title {
+  font-size: var(--font-size-h4);
+  font-weight: 600;
+  color: var(--color-text-main);
+  margin-bottom: var(--spacing-sm);
+}
+
+.search-result-summary {
+  color: var(--color-text-muted);
+  margin-bottom: var(--spacing-md);
+}
+
+.search-result-summary-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.line-clamp-3 {
+.search-result-summary-3 {
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.search-result-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.search-result-link {
+  color: var(--color-primary);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.search-result-link:hover {
+  color: var(--color-primary-hover);
+}
+
+.search-result-link-project {
+  color: #22c55e;
+}
+
+.search-result-link-project:hover {
+  color: #16a34a;
+}
+
+.search-result-link-knowledge {
+  color: #8b5cf6;
+}
+
+.search-result-link-knowledge:hover {
+  color: #7c3aed;
+}
+
+.search-result-link-tool {
+  color: #f97316;
+}
+
+.search-result-link-tool:hover {
+  color: #ea580c;
+}
+
+.search-result-link-theme {
+  color: #ec4899;
+}
+
+.search-result-link-theme:hover {
+  color: #db2777;
+}
+
+.search-result-card-body {
+  padding: var(--spacing-lg);
+}
+
+/* ==================== 空状态 ==================== */
+.search-empty {
+  text-align: center;
+  padding: var(--spacing-2xl) 0;
+}
+
+.search-empty-icon {
+  font-size: 3.75rem;
+  margin-bottom: var(--spacing-md);
+}
+
+.search-empty-title {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  color: var(--color-text-main);
+  margin-bottom: var(--spacing-md);
+}
+
+.search-empty-text {
+  color: var(--color-text-muted);
+  margin-bottom: var(--spacing-lg);
+}
+
+.search-empty-tips {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-disabled);
+}
+
+.search-empty-tips-title {
+  margin-bottom: var(--spacing-xs);
+}
+
+/* ==================== 欢迎状态 ==================== */
+.search-welcome {
+  text-align: center;
+  padding: var(--spacing-2xl) 0;
+}
+
+.search-welcome-icon {
+  font-size: 3.75rem;
+  margin-bottom: var(--spacing-lg);
+}
+
+.search-welcome-title {
+  font-size: var(--font-size-h2);
+  font-weight: 600;
+  color: var(--color-text-main);
+  margin-bottom: var(--spacing-md);
+}
+
+.search-welcome-text {
+  color: var(--color-text-muted);
+  margin-bottom: var(--spacing-2xl);
+}
+
+.search-popular {
+  max-width: 42rem;
+  margin: 0 auto;
+}
+
+.search-popular-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-disabled);
+  margin-bottom: var(--spacing-md);
+}
+
+.search-popular-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-sm);
+}
+
+.search-popular-tag {
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-bg-card);
+  color: var(--color-text-muted);
+  border-radius: 9999px;
+  font-size: var(--font-size-sm);
+  border: 1px solid var(--color-border-subtle);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.search-popular-tag:hover {
+  background: var(--color-bg-elevated);
+  color: var(--color-text-main);
+}
+
+/* ==================== 返回首页 ==================== */
+.search-back-home {
+  text-align: center;
+  margin-top: var(--spacing-xl);
+}
+
+.search-back-link {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-primary);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.search-back-link:hover {
+  color: var(--color-primary-hover);
+}
+
+/* ==================== 高亮文本 ==================== */
+.search-highlight {
+  background: rgba(234, 179, 8, 0.2);
+  padding: 0 var(--spacing-xs);
+  border-radius: var(--radius-sm);
+}
+
+/* ==================== 响应式 ==================== */
+@media (max-width: 768px) {
+  .search-title {
+    font-size: 2rem;
+  }
+  
+  .search-input-group {
+    flex-direction: column;
+  }
+  
+  .search-button {
+    width: 100%;
+  }
+  
+  .search-filters {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .search-sort {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  .search-results-grid-2 {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

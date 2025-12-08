@@ -27,7 +27,7 @@
         <div class="footer-contact">
           <h4 class="contact-title text-lg font-semibold text-text-main mb-4">联系我</h4>
           <div class="contact-links space-y-2">
-            <a href="mailto:contact@xifg.com.cn" class="contact-link">
+            <a href="mailto:linxiwanting@gmail.com" class="contact-link">
               <i class="fas fa-envelope mr-2"></i>
               Email
             </a>

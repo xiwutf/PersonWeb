@@ -281,7 +281,7 @@
           <n-grid-item>
             <n-form-item label="是否公开" path="isPublic">
               <n-switch v-model:value="form.isPublic" />
-              <span style="margin-left: 8px;">{{ form.isPublic ? '公开' : '不公开' }}</span>
+              <span class="form-switch-label">{{ form.isPublic ? '公开' : '不公开' }}</span>
             </n-form-item>
           </n-grid-item>
         </n-grid>
@@ -469,8 +469,6 @@ const fetchProjects = async () => {
 
     const res = await api.get<any>('/side-projects', { params })
     
-    console.log('[Side Projects] API 响应:', res)
-    
     if (res && typeof res === 'object') {
       // 处理不同的响应格式
       let list: any[] = []
@@ -492,8 +490,6 @@ const fetchProjects = async () => {
         total = res.data.total ?? res.data.Total ?? 0
       }
       
-      console.log('[Side Projects] 解析后的数据:', { list, total, listLength: list.length })
-      
       projects.value = Array.isArray(list) ? list : []
       pagination.value.itemCount = total
       
@@ -503,8 +499,6 @@ const fetchProjects = async () => {
         if (p && p.category) categories.add(p.category)
       })
       categoryOptions.value = Array.from(categories).map(cat => ({ label: cat, value: cat }))
-      
-      console.log('[Side Projects] 最终项目列表:', projects.value)
     } else {
       projects.value = []
       pagination.value.itemCount = 0
@@ -875,6 +869,12 @@ onMounted(() => {
   color: var(--color-text-main);
   font-size: var(--font-size-sm);
   font-weight: 500;
+}
+
+.form-switch-label {
+  margin-left: var(--spacing-sm);
+  color: var(--color-text-main);
+  font-size: var(--font-size-sm);
 }
 </style>
 

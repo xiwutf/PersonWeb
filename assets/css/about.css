@@ -596,18 +596,23 @@
 }
 
 .about-contact-qr-image {
-  width: 8rem;
-  height: 8rem;
+  width: 12rem;
+  height: 12rem;
   background-color: #ffffff;
   padding: 0.5rem;
   border-radius: 0.75rem;
   margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .about-contact-qr-image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  display: block;
 }
 
 .about-contact-qr-text {

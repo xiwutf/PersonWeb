@@ -149,7 +149,7 @@
                 <div class="about-contact-icon about-contact-icon--blue">📧</div>
                 <div class="about-contact-info">
                   <div class="about-contact-label">Email</div>
-                  <div class="about-contact-value about-contact-value--blue">255106739@qq.com</div>
+                  <div class="about-contact-value about-contact-value--blue">linxiwanting@gmail.com</div>
                 </div>
               </div>
             </div>
@@ -176,7 +176,7 @@ definePageMeta({
 
 const socialLinks = [
   { name: 'GitHub', icon: 'fab fa-github', link: 'https://github.com/Lijing327' },
-  { name: 'Email', icon: 'fas fa-envelope', link: 'mailto:255106739@qq.com' },
+  { name: 'Email', icon: 'fas fa-envelope', link: 'mailto:linxiwanting@gmail.com' },
   { name: 'Bilibili', icon: 'fas fa-play-circle', link: '#' }
 ]
 

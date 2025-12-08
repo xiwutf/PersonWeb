@@ -55,7 +55,6 @@
 import { ref, onMounted } from 'vue'
 import { animate, inView, stagger } from '@motionone/dom'
 import BentoCardSection from './BentoCardSection.vue'
-import BentoCardItem from './BentoCardItem.vue'
 
 const sectionTitleRef = ref<HTMLElement | null>(null)
 const sectionRefs = ref<(HTMLElement | null)[]>([])

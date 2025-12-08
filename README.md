@@ -323,7 +323,7 @@ npm run preview
 
 ## 📧 联系方式
 
-- **邮箱**：255106739@qq.com
+- **邮箱**：linxiwanting@gmail.com
 - **微信**：LinXi-5152
 - **GitHub**：https://github.com/Lijing327
 
