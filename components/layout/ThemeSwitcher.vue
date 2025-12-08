@@ -196,8 +196,7 @@ const applyTheme = (themeCode: string) => {
     'theme-minimal',
     'theme-cyberpunk',
     'theme-dark-tech',
-    'theme-cartoon',
-    'theme-lab-3d'
+    'theme-cartoon'
   )
   
   // 添加新主题类

@@ -84,8 +84,7 @@ INSERT INTO `theme_style` (`name`, `code`, `display_name`, `description`, `is_en
 ('极简风', 'minimal', '极简风', '极简主义设计，留白丰富', 1, 0, 2, '{"primaryColor": "#000000", "bgColor": "#ffffff", "textColor": "#000000", "minimal": true}'),
 ('赛博朋克风', 'cyberpunk', '赛博朋克风', '霓虹灯效果，未来感十足', 1, 0, 3, '{"primaryColor": "#00ffff", "bgColor": "#0a0a0a", "textColor": "#00ffff", "neon": true}'),
 ('暗黑科技风', 'dark-tech', '暗黑科技风', '深色背景，科技感强', 1, 0, 4, '{"primaryColor": "#3b82f6", "bgColor": "#0f172a", "textColor": "#e2e8f0", "tech": true}'),
-('卡通手绘风', 'cartoon', '卡通/手绘风', '可爱的手绘风格，轻松活泼', 1, 0, 5, '{"primaryColor": "#f59e0b", "bgColor": "#fef3c7", "textColor": "#78350f", "handdrawn": true}'),
-('实验室3D风', 'lab-3d', '实验室 3D 风', '3D立体效果，实验室风格', 1, 0, 6, '{"primaryColor": "#8b5cf6", "bgColor": "#1e1b4b", "textColor": "#c7d2fe", "threeD": true}')
+('卡通手绘风', 'cartoon', '卡通/手绘风', '可爱的手绘风格，轻松活泼', 1, 0, 5, '{"primaryColor": "#f59e0b", "bgColor": "#fef3c7", "textColor": "#78350f", "handdrawn": true}')
 ON DUPLICATE KEY UPDATE `name`=`name`;
 
 -- ============================================

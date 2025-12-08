@@ -232,8 +232,8 @@ public class ConfigController : ControllerBase
 
         // 3. 可选主题列表
         // 注意：这里必须与前端 ThemeKey 类型保持一致，包含所有支持的主题
-        // 当前支持：light（浅色）、dark（深色）、tech-blue（科技蓝）、paper（纸张阅读）、forest（自然墨绿）
-        var availableThemes = new List<string> { "light", "dark", "tech-blue", "paper", "forest" };
+        // 当前支持：light（浅色）、dark（深色）、tech-blue（科技蓝）、paper（纸张阅读）、forest（自然墨绿）、hybrid-super（混合超级风格）、hybrid-super-dark（混合超级风格深色）、hybrid-super-light（混合超级风格浅色）
+        var availableThemes = new List<string> { "light", "dark", "tech-blue", "paper", "forest", "hybrid-super", "hybrid-super-dark", "hybrid-super-light" };
 
         return Ok(ApiResponse<ModuleThemesResponse>.Success(new ModuleThemesResponse
         {
@@ -255,7 +255,7 @@ public class ConfigController : ControllerBase
     {
         // 可选主题列表（用于校验）
         // 注意：必须与前端 ThemeKey 类型保持一致
-        var availableThemes = new List<string> { "light", "dark", "tech-blue", "paper", "forest" };
+        var availableThemes = new List<string> { "light", "dark", "tech-blue", "paper", "forest", "hybrid-super", "hybrid-super-dark", "hybrid-super-light" };
 
         foreach (var dto in dtoList)
         {
@@ -321,7 +321,8 @@ public class ConfigController : ControllerBase
     public async Task<ActionResult<ApiResponse<ThemeTokensDto>>> GetThemeTokens(string themeKey)
     {
         // 校验 themeKey 是否合法
-        var availableThemes = new List<string> { "light", "dark", "tech-blue" };
+        // 注意：必须与前端 ThemeKey 类型保持一致，包含所有支持的主题
+        var availableThemes = new List<string> { "light", "dark", "tech-blue", "paper", "forest", "hybrid-super", "hybrid-super-dark", "hybrid-super-light" };
         if (!availableThemes.Contains(themeKey))
         {
             return BadRequest(ApiResponse<ThemeTokensDto>.Error($"主题 '{themeKey}' 不在支持的主题列表中", 400));
@@ -366,7 +367,8 @@ public class ConfigController : ControllerBase
     public async Task<ActionResult<ApiResponse<ThemeTokensDto>>> SetThemeTokens(string themeKey, [FromBody] ThemeTokensDto dto)
     {
         // 校验 themeKey 是否合法
-        var availableThemes = new List<string> { "light", "dark", "tech-blue" };
+        // 注意：必须与前端 ThemeKey 类型保持一致，包含所有支持的主题
+        var availableThemes = new List<string> { "light", "dark", "tech-blue", "paper", "forest", "hybrid-super", "hybrid-super-dark", "hybrid-super-light" };
         if (!availableThemes.Contains(themeKey))
         {
             return BadRequest(ApiResponse<ThemeTokensDto>.Error($"主题 '{themeKey}' 不在支持的主题列表中", 400));

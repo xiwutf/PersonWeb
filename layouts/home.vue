@@ -6,7 +6,7 @@
     特点：主内容区域使用 pt-0（无顶部内边距），允许 Hero 区域延伸到顶部，包含粒子背景特效
   -->
   <!-- 首页布局：使用主题背景色和文字颜色 -->
-  <div class="min-h-screen flex flex-col relative bg-bg-body text-text-main">
+  <div class="min-h-screen flex flex-col relative" style="background-color: var(--color-bg-body); color: var(--color-text-main);">
     <!-- 动态粒子背景 -->
     <ParticleBackground />
     
