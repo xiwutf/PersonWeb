@@ -71,20 +71,37 @@
                   </span>
                 </div>
               </div>
+
+              <!-- 适合人群 / 不适合人群 -->
+              <div v-if="tool.fitFor || tool.notFitFor" class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- 适合人群 -->
+                <div v-if="tool.fitFor" class="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-green-800 mb-2 flex items-center">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    适合这些人
+                  </h4>
+                  <div class="text-sm text-green-700 whitespace-pre-line">{{ tool.fitFor }}</div>
+                </div>
+
+                <!-- 不适合情况 -->
+                <div v-if="tool.notFitFor" class="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-red-800 mb-2 flex items-center">
+                    <i class="fas fa-times-circle mr-2"></i>
+                    不适合这些情况
+                  </h4>
+                  <div class="text-sm text-red-700 whitespace-pre-line">{{ tool.notFitFor }}</div>
+                </div>
+              </div>
               
-              <!-- 购买按钮 -->
+              <!-- 操作按钮 -->
               <div class="flex flex-wrap gap-4">
-                <a
-                  :href="tool.buy_link"
-                  target="_blank"
+                <!-- 咨询按钮（主按钮） -->
+                <button
+                  @click="showConsultationDialog = true"
                   class="bg-gradient-to-r from-orange-500 to-red-500 text-white px-8 py-3 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all font-medium inline-flex items-center gap-2 shadow-lg"
                 >
-                  <i class="fas fa-shopping-cart"></i>
-                  立即购买
-                </a>
-                <button class="border-2 border-orange-600 text-orange-600 px-8 py-3 rounded-xl hover:bg-orange-50 transition-colors font-medium inline-flex items-center gap-2">
-                  <i class="fas fa-envelope"></i>
-                  联系客服
+                  <i class="fas fa-comments"></i>
+                  咨询
                 </button>
               </div>
             </div>
@@ -117,6 +134,14 @@
         </div>
       </div>
     </div>
+
+    <!-- 咨询弹窗 -->
+    <ConsultationDialog
+      v-model:visible="showConsultationDialog"
+      :product-id="tool?.id || 0"
+      :product-name="tool?.title || ''"
+      @success="handleConsultationSuccess"
+    />
   </div>
 </template>
 
@@ -124,12 +149,16 @@
 import MarkdownIt from 'markdown-it'
 
 const route = useRoute()
+const router = useRouter()
 const api = useApi()
+const message = useSafeMessage()
 const slug = route.params.slug as string
 
 const tool = ref<any>(null)
+const toolId = ref<number>(0)
 const loading = ref(true)
 const error = ref<string | null>(null)
+const showConsultationDialog = ref(false)
 
 // 初始化 markdown 渲染器
 const md = new MarkdownIt({
@@ -151,13 +180,15 @@ const fetchTool = async () => {
     if (searchRes && searchRes.tools && searchRes.tools.length > 0) {
       // 找到匹配的工具（优先精确匹配 slug）
       const matchedTool = searchRes.tools.find((t: any) => t.slug === slug) || searchRes.tools[0]
-      const toolId = matchedTool.id
+      const currentToolId = matchedTool.id
       
       // 获取工具详情
-      const detailRes = await api.get<any>(`/Toolbox/${toolId}`)
+      const detailRes = await api.get<any>(`/Toolbox/${currentToolId}`)
       if (detailRes) {
+        toolId.value = currentToolId
         // 转换为页面需要的格式
         tool.value = {
+          id: detailRes.id,
           title: detailRes.name,
           description: detailRes.description || '',
           price: detailRes.price || 0,
@@ -165,8 +196,17 @@ const fetchTool = async () => {
           tags: detailRes.tags || [],
           buy_link: detailRes.isFree ? '#' : '#',
           _path: `/tools/${detailRes.slug}`,
-          content: detailRes.detailedDescription || detailRes.description || ''
+          content: detailRes.detailedDescription || detailRes.description || '',
+          fitFor: detailRes.fitFor || null,
+          notFitFor: detailRes.notFitFor || null,
+          enableOnlineOrder: detailRes.enableOnlineOrder === true || detailRes.enableOnlineOrder === 1
         }
+        
+        console.log('工具详情加载完成:', {
+          id: tool.value.id,
+          enableOnlineOrder: tool.value.enableOnlineOrder,
+          detailResEnableOnlineOrder: detailRes.enableOnlineOrder
+        })
       }
     } else {
       error.value = '未找到工具数据'
@@ -193,6 +233,30 @@ const formatDate = (dateString: string) => {
 const renderMarkdown = (markdown: string) => {
   if (!markdown) return ''
   return md.render(markdown)
+}
+
+// 处理直接下单
+const handleDirectOrder = () => {
+  console.log('点击直接下单，工具信息:', {
+    id: tool.value?.id,
+    enableOnlineOrder: tool.value?.enableOnlineOrder
+  })
+  
+  if (tool.value?.id) {
+    // 使用 router.push 确保在当前窗口跳转，而不是新开窗口
+    const targetUrl = `/order/create?productId=${tool.value.id}`
+    console.log('跳转到:', targetUrl)
+    router.push(targetUrl)
+  } else {
+    console.error('工具 ID 不存在，无法跳转到下单页面')
+    message.error('工具信息不完整，请刷新页面重试')
+  }
+}
+
+// 处理咨询成功
+const handleConsultationSuccess = () => {
+  // 咨询提交成功后的处理（可以显示提示等）
+  console.log('咨询提交成功')
 }
 
 onMounted(() => {

@@ -97,6 +97,10 @@ public class AppDbContext : DbContext
     public DbSet<DocumentChunk> DocumentChunks { get; set; }
     public DbSet<DocumentQuery> DocumentQueries { get; set; }
     public DbSet<SideProject> SideProjects { get; set; }
+    
+    // 订单和咨询相关表
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<PreSaleConsultation> PreSaleConsultations { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

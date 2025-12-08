@@ -100,21 +100,35 @@
             <div class="tools-card-footer">
               <div class="tools-card-actions">
                 <NuxtLink
-                  :to="`/tools/detail-${tool.slug || tool._path.split('/').pop()}`"
+                  :to="`/tools/detail-${tool.slug || tool._path?.split('/').pop() || ''}`"
                   class="tools-card-button tools-card-button--secondary"
                 >
-                  查看详情
+                  <svg class="tools-card-button-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                  </svg>
+                  <span>查看详情</span>
                 </NuxtLink>
-                <a
-                  :href="tool.buy_link"
-                  target="_blank"
-                  class="tools-card-button tools-card-button--primary"
+                <button
+                  v-if="tool.id"
+                  @click="handleOrder(tool)"
+                  class="tools-card-button tools-card-button--primary tools-card-button--order"
                 >
-                  <span>立即购买</span>
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="tools-card-button-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                   </svg>
-                </a>
+                  <span>立即下单</span>
+                </button>
+                <button
+                  v-else
+                  @click="handleConsultation(tool)"
+                  class="tools-card-button tools-card-button--primary tools-card-button--consult"
+                >
+                  <svg class="tools-card-button-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                  </svg>
+                  <span>咨询</span>
+                </button>
               </div>
             </div>
           </div>
@@ -182,21 +196,37 @@
         </div>
       </div>
     </div>
+
+    <!-- 咨询弹窗 -->
+    <ConsultationDialog
+      v-if="selectedTool"
+      v-model:visible="showConsultationDialog"
+      :product-id="selectedTool.id || 0"
+      :product-name="selectedTool.title || selectedTool.name || ''"
+      @success="handleConsultationSuccess"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useSafeMessage } from '~/composables/useToast'
 
 // 确保使用 default 布局（包含 Header）
 definePageMeta({
   layout: 'default'
 })
+
 const api = useApi()
+const router = useRouter()
+const message = useSafeMessage()
 const tools = ref<any[]>([])
 const pending = ref(true)
 const error = ref<string | null>(null)
 const showWeChatQR = ref(false)
+const showConsultationDialog = ref(false)
+const selectedTool = ref<any>(null)
 
 // 从API获取工具数据
 const fetchTools = async () => {
@@ -204,11 +234,43 @@ const fetchTools = async () => {
     pending.value = true
     error.value = null
     
-    // 优先从API获取
-    const res = await api.get<any[]>('/MockData/tools')
-    if (res && res.length > 0) {
-      tools.value = res
-      return
+    // 优先从 Toolbox API 获取
+    try {
+      const res = await api.get<any>('/Toolbox/marketplace', {
+        params: { page: 1, pageSize: 100 }
+      })
+      
+      console.log('Toolbox API 响应:', res)
+      
+      // useApi 已经处理了响应格式，返回的是 data 部分
+      // 检查不同的响应格式
+      let toolsList: any[] = []
+      if (res && res.tools && Array.isArray(res.tools)) {
+        toolsList = res.tools
+      } else if (res && res.data && res.data.tools && Array.isArray(res.data.tools)) {
+        toolsList = res.data.tools
+      } else if (Array.isArray(res)) {
+        toolsList = res
+      }
+      
+      if (toolsList.length > 0) {
+        // 转换为页面需要的格式
+        tools.value = toolsList.map((t: any) => ({
+          id: t.id,
+          title: t.name || t.title,
+          name: t.name || t.title,
+          slug: t.slug,
+          description: t.description || '',
+          price: t.price || 0,
+          tags: t.tags || t.tagsJson || [],
+          _path: `/tools/${t.slug}`,
+          enableOnlineOrder: t.enableOnlineOrder || false
+        }))
+        console.log('转换后的工具列表:', tools.value)
+        return
+      }
+    } catch (e) {
+      console.warn('从 Toolbox API 获取工具失败，尝试其他方式:', e)
     }
     
     // 如果API没有数据，尝试从 @nuxt/content 获取
@@ -228,6 +290,39 @@ const fetchTools = async () => {
   } finally {
     pending.value = false
   }
+}
+
+// 处理下单
+const handleOrder = (tool: any) => {
+  if (tool.id) {
+    router.push(`/order/create?productId=${tool.id}`)
+  } else {
+    message.error('工具信息不完整，请刷新页面重试')
+  }
+}
+
+// 处理咨询
+const handleConsultation = (tool: any) => {
+  // 如果有 ID，显示咨询弹窗；否则跳转到详情页
+  if (tool.id) {
+    selectedTool.value = tool
+    showConsultationDialog.value = true
+  } else {
+    const slug = tool.slug || tool._path?.split('/').pop()
+    if (slug) {
+      router.push(`/tools/detail-${slug}`)
+    } else {
+      message.error('工具信息不完整，请刷新页面重试')
+    }
+  }
+}
+
+// 处理咨询成功
+const handleConsultationSuccess = () => {
+  console.log('咨询提交成功')
+  showConsultationDialog.value = false
+  selectedTool.value = null
+  message.success('咨询提交成功，我们会尽快联系您！')
 }
 
 onMounted(() => {

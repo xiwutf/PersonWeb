@@ -1,0 +1,518 @@
+<template>
+  <div class="admin-consultations-page">
+    <div class="page-header">
+      <h1 class="page-title">咨询管理</h1>
+    </div>
+
+    <!-- 筛选栏 -->
+    <div class="filters-bar">
+      <n-input
+        v-model:value="searchKeyword"
+        placeholder="搜索客户名、联系方式、商品名..."
+        clearable
+        style="width: 300px;"
+        @keyup.enter="handleSearch"
+      >
+        <template #prefix>
+          <i class="fas fa-search"></i>
+        </template>
+      </n-input>
+      <n-select
+        v-model:value="filterStatus"
+        placeholder="状态筛选"
+        clearable
+        style="width: 150px;"
+        :options="statusOptions"
+      />
+      <n-button type="primary" @click="handleSearch">搜索</n-button>
+      <n-button @click="handleReset">重置</n-button>
+    </div>
+
+    <!-- 数据表格 -->
+    <div class="table-container">
+      <div v-if="loading" class="table-loading">加载中...</div>
+      <div v-else-if="consultations.length === 0" class="table-empty">暂无咨询数据</div>
+      <table v-else class="data-table">
+        <thead class="table-header">
+          <tr>
+            <th>ID</th>
+            <th>商品名称</th>
+            <th>客户姓名</th>
+            <th>联系方式</th>
+            <th>预算范围</th>
+            <th>期望时间</th>
+            <th>状态</th>
+            <th>创建时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody class="table-body">
+          <tr v-for="consultation in consultations" :key="consultation.id" class="table-row">
+            <td class="table-cell">#{{ consultation.id }}</td>
+            <td class="table-cell">{{ consultation.productNameSnapshot }}</td>
+            <td class="table-cell">{{ consultation.customerName }}</td>
+            <td class="table-cell">
+              <div class="text-sm">
+                <div v-if="consultation.customerPhone">📱 {{ consultation.customerPhone }}</div>
+                <div v-if="consultation.customerWeChat">💬 {{ consultation.customerWeChat }}</div>
+                <div v-if="consultation.customerEmail">📧 {{ consultation.customerEmail }}</div>
+              </div>
+            </td>
+            <td class="table-cell">{{ consultation.budgetRange || '-' }}</td>
+            <td class="table-cell">{{ consultation.expectedDeadline || '-' }}</td>
+            <td class="table-cell">
+              <span :class="getStatusTagClass(consultation.status)" class="tag">
+                {{ getStatusText(consultation.status) }}
+              </span>
+            </td>
+            <td class="table-cell">{{ formatDate(consultation.createdAt) }}</td>
+            <td class="table-cell">
+              <div class="action-buttons">
+                <button @click="handleViewDetail(consultation)" class="btn-link btn-link-blue">查看</button>
+                <button
+                  v-if="consultation.status !== 2"
+                  @click="handleConvertToOrder(consultation)"
+                  class="btn-link btn-link-green"
+                >
+                  转为订单
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 分页 -->
+      <div v-if="pagination.itemCount > 0" class="table-pagination">
+        <div class="pagination-info">共 {{ pagination.itemCount }} 条记录</div>
+        <div class="pagination-controls">
+          <select v-model="pagination.pageSize" @change="handlePageSizeChange" class="pagination-select">
+            <option :value="10">10/页</option>
+            <option :value="20">20/页</option>
+            <option :value="50">50/页</option>
+          </select>
+          <div class="pagination-buttons">
+            <button @click="pagination.page = 1; fetchConsultations()" :disabled="pagination.page === 1" class="pagination-btn">首页</button>
+            <button @click="pagination.page--; fetchConsultations()" :disabled="pagination.page === 1" class="pagination-btn">上一页</button>
+            <span class="pagination-info">{{ pagination.page }} / {{ pagination.totalPages }}</span>
+            <button @click="pagination.page++; fetchConsultations()" :disabled="pagination.page >= pagination.totalPages" class="pagination-btn">下一页</button>
+            <button @click="pagination.page = pagination.totalPages; fetchConsultations()" :disabled="pagination.page >= pagination.totalPages" class="pagination-btn">末页</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 详情/编辑弹窗 -->
+    <n-modal v-model:show="showDetailModal" preset="card" title="咨询详情" style="width: 800px;">
+      <div v-if="currentConsultation" class="consultation-detail">
+        <n-descriptions :column="2" bordered>
+          <n-descriptions-item label="咨询ID">#{{ currentConsultation.id }}</n-descriptions-item>
+          <n-descriptions-item label="商品名称">{{ currentConsultation.productNameSnapshot }}</n-descriptions-item>
+          <n-descriptions-item label="客户姓名">{{ currentConsultation.customerName }}</n-descriptions-item>
+          <n-descriptions-item label="手机号">{{ currentConsultation.customerPhone || '-' }}</n-descriptions-item>
+          <n-descriptions-item label="微信号">{{ currentConsultation.customerWeChat || '-' }}</n-descriptions-item>
+          <n-descriptions-item label="邮箱">{{ currentConsultation.customerEmail || '-' }}</n-descriptions-item>
+          <n-descriptions-item label="预算范围">{{ currentConsultation.budgetRange || '-' }}</n-descriptions-item>
+          <n-descriptions-item label="期望完成时间">{{ currentConsultation.expectedDeadline || '-' }}</n-descriptions-item>
+          <n-descriptions-item label="咨询状态">
+            <n-select v-model:value="editForm.status" :options="statusOptions" />
+          </n-descriptions-item>
+          <n-descriptions-item label="创建时间">{{ formatDate(currentConsultation.createdAt) }}</n-descriptions-item>
+          <n-descriptions-item label="需求描述" :span="2">
+            <div class="whitespace-pre-line bg-gray-50 p-3 rounded">{{ currentConsultation.requirementDescription }}</div>
+          </n-descriptions-item>
+          <n-descriptions-item label="内部备注" :span="2">
+            <n-input
+              v-model:value="editForm.internalNote"
+              type="textarea"
+              :rows="3"
+              placeholder="请输入内部备注"
+            />
+          </n-descriptions-item>
+        </n-descriptions>
+
+        <div class="mt-4 flex justify-end gap-2">
+          <n-button @click="showDetailModal = false">取消</n-button>
+          <n-button type="primary" @click="handleSaveStatus">保存</n-button>
+        </div>
+      </div>
+    </n-modal>
+  </div>
+</template>
+
+<script setup lang="ts">
+const api = useApi()
+const message = useSafeMessage()
+
+const loading = ref(false)
+const consultations = ref<any[]>([])
+const searchKeyword = ref('')
+const filterStatus = ref<number | null>(null)
+
+const pagination = ref({
+  page: 1,
+  pageSize: 20,
+  itemCount: 0,
+  totalPages: 0
+})
+
+const statusOptions = [
+  { label: '新咨询', value: 0 },
+  { label: '已联系', value: 1 },
+  { label: '已转为订单', value: 2 },
+  { label: '已关闭', value: 3 }
+]
+
+const showDetailModal = ref(false)
+const currentConsultation = ref<any>(null)
+const editForm = ref({
+  status: 0,
+  internalNote: ''
+})
+
+// 获取咨询列表
+const fetchConsultations = async () => {
+  loading.value = true
+  try {
+    const res = await api.get<any>('/AdminConsultations', {
+      params: {
+        status: filterStatus.value,
+        keyword: searchKeyword.value,
+        page: pagination.value.page,
+        pageSize: pagination.value.pageSize
+      }
+    })
+
+    console.log('获取咨询列表响应:', res)
+    
+    // useApi 已经处理了响应格式，返回的是 data 部分
+    // 如果响应是 { code: 0, data: { list: [], total: 0, ... } }，则 res 就是 data
+    if (res) {
+      // 检查 res 是否包含 list 字段（标准格式）
+      if (res.list && Array.isArray(res.list)) {
+        consultations.value = res.list
+        pagination.value.itemCount = res.total || 0
+        pagination.value.totalPages = res.totalPages || 0
+      } else if (Array.isArray(res)) {
+        // 如果直接返回数组
+        consultations.value = res
+        pagination.value.itemCount = res.length
+        pagination.value.totalPages = 1
+      } else {
+        // 其他格式，尝试从 data 字段获取
+        consultations.value = res.data?.list || res.list || []
+        pagination.value.itemCount = res.data?.total || res.total || 0
+        pagination.value.totalPages = res.data?.totalPages || res.totalPages || 0
+      }
+      
+      console.log('解析后的咨询列表:', {
+        count: consultations.value.length,
+        itemCount: pagination.value.itemCount,
+        totalPages: pagination.value.totalPages
+      })
+    } else {
+      consultations.value = []
+      pagination.value.itemCount = 0
+      pagination.value.totalPages = 0
+    }
+  } catch (e: any) {
+    console.error('获取咨询列表失败:', e)
+    message.error('获取咨询列表失败')
+  } finally {
+    loading.value = false
+  }
+}
+
+// 搜索
+const handleSearch = () => {
+  pagination.value.page = 1
+  fetchConsultations()
+}
+
+// 重置
+const handleReset = () => {
+  searchKeyword.value = ''
+  filterStatus.value = null
+  pagination.value.page = 1
+  fetchConsultations()
+}
+
+// 查看详情
+const handleViewDetail = async (consultation: any) => {
+  try {
+    const res = await api.get<any>(`/AdminConsultations/${consultation.id}`)
+    console.log('获取咨询详情响应:', res)
+    
+    // useApi 已经处理了响应格式，返回的是 data 部分
+    if (res && (res.id || res.productId)) {
+      currentConsultation.value = res
+      editForm.value = {
+        status: res.status,
+        internalNote: res.internalNote || ''
+      }
+      showDetailModal.value = true
+    } else {
+      message.error('获取咨询详情失败')
+    }
+  } catch (e: any) {
+    console.error('获取咨询详情失败:', e)
+    message.error(e.response?.data?.message || e.message || '获取咨询详情失败')
+  }
+}
+
+// 转为订单
+const handleConvertToOrder = async (consultation: any) => {
+  try {
+    const res = await api.post<any>(`/AdminConsultations/${consultation.id}/convert-to-order`)
+    if (res && res.code === 0 && res.data) {
+      message.success(`转换成功！新订单号：${res.data.orderNo}`)
+      fetchConsultations()
+    } else {
+      message.error(res?.message || '转换失败')
+    }
+  } catch (e: any) {
+    console.error('转换咨询为订单失败:', e)
+    message.error('转换失败')
+  }
+}
+
+// 保存状态
+const handleSaveStatus = async () => {
+  if (!currentConsultation.value) return
+
+  try {
+    const res = await api.put<any>(`/AdminConsultations/${currentConsultation.value.id}`, {
+      status: editForm.value.status,
+      internalNote: editForm.value.internalNote
+    })
+
+    if (res && res.code === 0) {
+      message.success('保存成功')
+      showDetailModal.value = false
+      fetchConsultations()
+    } else {
+      message.error(res?.message || '保存失败')
+    }
+  } catch (e: any) {
+    console.error('保存咨询状态失败:', e)
+    message.error('保存失败')
+  }
+}
+
+// 分页大小改变
+const handlePageSizeChange = () => {
+  pagination.value.page = 1
+  fetchConsultations()
+}
+
+// 获取状态文本
+const getStatusText = (status: number): string => {
+  const statusMap: Record<number, string> = {
+    0: '新咨询',
+    1: '已联系',
+    2: '已转为订单',
+    3: '已关闭'
+  }
+  return statusMap[status] || '未知'
+}
+
+// 获取状态标签类
+const getStatusTagClass = (status: number): string => {
+  const classMap: Record<number, string> = {
+    0: 'tag tag-info',
+    1: 'tag tag-warning',
+    2: 'tag tag-success',
+    3: 'tag tag-default'
+  }
+  return classMap[status] || 'tag tag-default'
+}
+
+// 格式化日期
+const formatDate = (dateString: string) => {
+  if (!dateString) return '-'
+  return new Date(dateString).toLocaleString('zh-CN')
+}
+
+onMounted(() => {
+  fetchConsultations()
+})
+
+// 设置页面标题
+useHead({
+  title: '咨询管理 - 后台管理',
+  meta: [
+    { name: 'description', content: '咨询管理页面' }
+  ]
+})
+</script>
+
+<style scoped>
+.admin-consultations-page {
+  padding: 24px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.filters-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.table-container {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table-loading,
+.table-empty {
+  padding: 40px;
+  text-align: center;
+  color: #64748b;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-header {
+  background: #f8fafc;
+}
+
+.table-header th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #475569;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.table-body .table-row:hover {
+  background: #f8fafc;
+}
+
+.table-cell {
+  padding: 12px;
+  border-bottom: 1px solid #e2e8f0;
+  color: #334155;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-link {
+  padding: 4px 12px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.btn-link-blue {
+  color: #3b82f6;
+}
+
+.btn-link-blue:hover {
+  background: #eff6ff;
+}
+
+.btn-link-green {
+  color: #10b981;
+}
+
+.btn-link-green:hover {
+  background: #ecfdf5;
+}
+
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.tag-warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.tag-info {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.tag-success {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.tag-default {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.table-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.pagination-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.pagination-select {
+  padding: 4px 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+}
+
+.pagination-buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.pagination-btn {
+  padding: 4px 12px;
+  border: 1px solid #d1d5db;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: #f8fafc;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.consultation-detail {
+  padding: 16px 0;
+}
+</style>
+

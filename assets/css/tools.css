@@ -381,6 +381,18 @@
   font-weight: 500;
   font-size: 0.875rem;
   border: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.tools-card-button-icon {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex-shrink: 0;
 }
 
 .tools-card-button--secondary {
@@ -389,28 +401,42 @@
 }
 
 .tools-card-button--secondary:hover {
-  background-color: rgba(71, 85, 105, 0.5);
-  border-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(71, 85, 105, 0.7);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
 }
 
 .tools-card-button--primary {
-  background: linear-gradient(to right, #ea580c, #dc2626);
+  background: linear-gradient(135deg, #ea580c, #dc2626);
   color: #ffffff;
-  box-shadow: 0 10px 15px -3px rgba(180, 83, 9, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.25rem;
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
+  border: none;
 }
 
 .tools-card-button--primary:hover {
-  background: linear-gradient(to right, #f97316, #ef4444);
-  box-shadow: 0 0 20px rgba(249, 115, 22, 0.4);
+  background: linear-gradient(135deg, #f97316, #ef4444);
+  box-shadow: 0 6px 20px rgba(249, 115, 22, 0.5);
+  transform: translateY(-2px);
 }
 
-.tools-card-button--primary svg {
-  width: 1rem;
-  height: 1rem;
+.tools-card-button--order {
+  background: linear-gradient(135deg, #059669, #047857);
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+}
+
+.tools-card-button--order:hover {
+  background: linear-gradient(135deg, #10b981, #059669);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+}
+
+.tools-card-button--consult {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.tools-card-button--consult:hover {
+  background: linear-gradient(135deg, #60a5fa, #3b82f6);
+  box-shadow: 0 6px 20px rgba(96, 165, 250, 0.5);
 }
 
 /* ========== 快速导航 ========== */

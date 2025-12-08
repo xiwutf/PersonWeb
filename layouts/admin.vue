@@ -235,9 +235,13 @@
               <i class="fas fa-crown w-5 text-center mr-3"></i>
               <span>会员</span>
             </NuxtLink>
-            <NuxtLink to="/admin/commercial/orders" class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm" active-class="admin-sidebar-link-active">
+            <NuxtLink to="/admin/orders" class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm" active-class="admin-sidebar-link-active">
               <i class="fas fa-shopping-cart w-5 text-center mr-3"></i>
-              <span>订单</span>
+              <span>订单管理</span>
+            </NuxtLink>
+            <NuxtLink to="/admin/consultations" class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm" active-class="admin-sidebar-link-active">
+              <i class="fas fa-comments w-5 text-center mr-3"></i>
+              <span>咨询管理</span>
             </NuxtLink>
             <NuxtLink to="/admin/skill-tree" class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm" active-class="admin-sidebar-link-active">
               <i class="fas fa-sitemap w-5 text-center mr-3"></i>
@@ -506,7 +510,7 @@ const isMenuActive = (menuKey: string): boolean => {
     case 'personal':
       return path === '/admin/tasks' || path === '/admin/goals' || path === '/admin/toolbox'
     case 'commercial':
-      return path.startsWith('/admin/commercial') || path === '/admin/skill-tree'
+      return path.startsWith('/admin/commercial') || path === '/admin/skill-tree' || path === '/admin/orders' || path === '/admin/consultations'
     case 'system':
       return path.startsWith('/admin/settings') && !path.startsWith('/admin/settings/styles') && !path.startsWith('/admin/settings/themes') && path !== '/admin/settings/modules' ||
              path === '/admin/config' || 
@@ -550,7 +554,7 @@ const autoExpandMenu = () => {
   if (path === '/admin/tasks' || path === '/admin/goals' || path === '/admin/toolbox') {
     expandedMenus.value.personal = true
   }
-  if (path.startsWith('/admin/commercial') || path === '/admin/skill-tree') {
+  if (path.startsWith('/admin/commercial') || path === '/admin/skill-tree' || path === '/admin/orders' || path === '/admin/consultations') {
     expandedMenus.value.commercial = true
   }
   if (path.startsWith('/admin/settings') && !path.startsWith('/admin/settings/styles') && !path.startsWith('/admin/settings/themes') && path !== '/admin/settings/modules' ||

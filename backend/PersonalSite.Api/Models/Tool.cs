@@ -56,6 +56,12 @@ public class Tool
     [Column("is_premium")]
     public bool IsPremium { get; set; } = false;
 
+    /// <summary>
+    /// 是否支持在线下单
+    /// </summary>
+    [Column("enable_online_order")]
+    public bool EnableOnlineOrder { get; set; } = false;
+
     [Column("purchase_count")]
     public int PurchaseCount { get; set; } = 0;
 
@@ -87,6 +93,32 @@ public class Tool
 
     [Column("requirements", TypeName = "text")]
     public string? Requirements { get; set; }
+
+    /// <summary>
+    /// 适合人群（文本或JSON）
+    /// </summary>
+    [Column("fit_for", TypeName = "text")]
+    public string? FitFor { get; set; }
+
+    /// <summary>
+    /// 不适合情况（文本或JSON）
+    /// </summary>
+    [Column("not_fit_for", TypeName = "text")]
+    public string? NotFitFor { get; set; }
+
+    /// <summary>
+    /// 交付类型（如：即时交付、定制开发等）
+    /// </summary>
+    [MaxLength(50)]
+    [Column("delivery_type")]
+    public string? DeliveryType { get; set; }
+
+    /// <summary>
+    /// 预计交付时间（如：1-3天、一周内等）
+    /// </summary>
+    [MaxLength(100)]
+    [Column("estimated_delivery_time")]
+    public string? EstimatedDeliveryTime { get; set; }
 
     [MaxLength(50)]
     [Column("version")]

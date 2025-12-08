@@ -227,14 +227,14 @@ const mainNavigationItems = computed(() => {
     }
   ]
 
-  if (isModuleEnabled('tools')) {
-    items.push({
-      title: '插件工具',
-      path: '/tools',
-      icon: '🔧',
-      moduleKey: 'tools'
-    })
-  }
+  // 插件工具：始终显示，不依赖模块系统状态
+  // 这样可以确保用户始终可以访问工具页面
+  items.push({
+    title: '插件工具',
+    path: '/tools',
+    icon: '🔧',
+    moduleKey: 'tools'
+  })
 
   if (isModuleEnabled('projects')) {
     items.push({
