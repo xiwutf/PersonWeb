@@ -1233,6 +1233,255 @@
 }
 
 /* ========================================
+   ShowcaseWall 样式（时间胶囊和留言板滚动展示）
+   ======================================== */
+
+.showcase-wall {
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+  position: relative;
+  background-color: var(--color-bg-body);
+}
+
+@media (min-width: 640px) {
+  .showcase-wall {
+    padding-top: 8rem;
+    padding-bottom: 8rem;
+  }
+}
+
+.showcase-wall-container {
+  max-width: 90rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .showcase-wall-container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .showcase-wall-container {
+    max-width: 100rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .showcase-wall-container {
+    max-width: 120rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}
+
+@media (min-width: 1536px) {
+  .showcase-wall-container {
+    max-width: 140rem;
+    padding-left: 4rem;
+    padding-right: 4rem;
+  }
+}
+
+.showcase-wall-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.showcase-wall-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  margin-bottom: 0.5rem;
+}
+
+@media (min-width: 1024px) {
+  .showcase-wall-title {
+    font-size: 3rem;
+  }
+}
+
+.showcase-wall-subtitle {
+  font-size: 1.125rem;
+  color: var(--color-text-muted);
+}
+
+.showcase-wall-content {
+  position: relative;
+  height: 24rem;
+  overflow: hidden;
+  border-radius: 1rem;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-subtle);
+  backdrop-filter: blur(8px);
+}
+
+@media (min-width: 640px) {
+  .showcase-wall-content {
+    height: 28rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .showcase-wall-content {
+    height: 32rem;
+  }
+}
+
+.showcase-wall-track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+}
+
+.showcase-wall-item {
+  position: absolute;
+  white-space: nowrap;
+  animation: showcase-scroll linear;
+  animation-duration: var(--animation-duration, 20s);
+  animation-delay: var(--animation-delay, 0s);
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+.showcase-wall-item:hover {
+  animation-play-state: paused;
+}
+
+.showcase-wall-item-inner {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 9999px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.showcase-wall-item:hover .showcase-wall-item-inner {
+  background: var(--color-bg-card);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  transform: scale(1.05);
+}
+
+/* 时间胶囊样式 */
+.showcase-wall-item-inner--capsule {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.showcase-wall-item:hover .showcase-wall-item-inner--capsule {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+.showcase-wall-item-icon--capsule {
+  color: #3b82f6;
+}
+
+/* 留言样式 */
+.showcase-wall-item-inner--message {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.showcase-wall-item:hover .showcase-wall-item-inner--message {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.5);
+}
+
+.showcase-wall-item-icon--message {
+  color: #10b981;
+}
+
+.showcase-wall-item-icon {
+  margin-right: 0.5rem;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+.showcase-wall-item-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: nowrap;
+}
+
+.showcase-wall-item-visitor {
+  color: var(--color-primary-base);
+  font-weight: 500;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+.showcase-wall-item-label {
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.showcase-wall-item-label--capsule {
+  background: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+}
+
+.showcase-wall-item-label--message {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.showcase-wall-item-text {
+  color: var(--color-text-main);
+  font-size: 0.875rem;
+  max-width: 20rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (min-width: 640px) {
+  .showcase-wall-item-text {
+    max-width: 30rem;
+  }
+}
+
+.showcase-wall-empty {
+  text-align: center;
+  padding: 4rem 1rem;
+}
+
+.showcase-wall-empty-icon {
+  font-size: 4rem;
+  color: var(--color-text-muted);
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.showcase-wall-empty-text {
+  font-size: 1rem;
+  color: var(--color-text-muted);
+}
+
+@keyframes showcase-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-100vw - 300px));
+  }
+}
+
+/* ========================================
    TimelineSuper 样式
    ======================================== */
 

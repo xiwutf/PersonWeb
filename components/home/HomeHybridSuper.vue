@@ -24,8 +24,11 @@
     <!-- 8. TimelineSuper（个人成长时间线，位置靠下） -->
     <TimelineSuper />
     
+    <!-- 8.5. 作品展示墙（时间胶囊与留言板滚动展示） -->
+    <ShowcaseWall />
+    
     <!-- 9. 增强版 Footer -->
-    <FooterPro />
+    <!-- <FooterPro /> -->
   </div>
 </template>
 
@@ -36,6 +39,7 @@ import PlatformValueSection from './PlatformValueSection.vue'
 import FeaturedSection from './FeaturedSection.vue'
 import AIPlaygroundPreview from './AIPlaygroundPreview.vue'
 import BentoGridV4 from './BentoGridV4.vue'
+import ShowcaseWall from './ShowcaseWall.vue'
 import RoadmapSection from './RoadmapSection.vue'
 import TimelineSuper from './TimelineSuper.vue'
 import FooterPro from '~/components/common/FooterPro.vue'
