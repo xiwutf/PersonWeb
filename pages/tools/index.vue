@@ -149,15 +149,35 @@
           <div class="tools-cta-overlay"></div>
           
           <div class="tools-cta-content">
-            <h3 class="tools-cta-title">需要定制化插件？</h3>
-            <p class="tools-cta-description">我们提供专业的Revit插件定制开发服务，为您量身打造提升效率的专属工具。</p>
-            <a
-              href="mailto:contact@溪午听风.com"
+            <h3 class="tools-cta-title">需要定制化开发？</h3>
+            <p class="tools-cta-description">我们提供专业的软件开发服务，包括软件二次开发（Revit、AutoCAD、Office、浏览器插件等）、独立工具开发、自动化脚本、效率工具等，为您量身打造提升工作效率的专属解决方案。</p>
+            <button
+              @click="showWeChatQR = true"
               class="tools-cta-button"
             >
-              <span>📧</span>
+              <span>💬</span>
               联系定制
-            </a>
+            </button>
+          </div>
+          
+          <!-- 微信二维码弹窗 -->
+          <div v-if="showWeChatQR" class="wechat-qr-modal" @click="showWeChatQR = false">
+            <div class="wechat-qr-content" @click.stop>
+              <button class="wechat-qr-close" @click="showWeChatQR = false">
+                <i class="fas fa-times"></i>
+              </button>
+              <div class="wechat-qr-header">
+                <h3 class="wechat-qr-title">联系定制开发</h3>
+                <p class="wechat-qr-subtitle">扫码添加微信，详聊您的需求</p>
+              </div>
+              <div class="wechat-qr-image-wrapper">
+                <img src="/images/wechat-qr.png" alt="微信二维码" class="wechat-qr-image" />
+              </div>
+              <div class="wechat-qr-info">
+                <p class="wechat-qr-text">微信号：LinXi-5152</p>
+                <p class="wechat-qr-hint">扫码加好友，请注明来意</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -166,6 +186,8 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
+
 // 确保使用 default 布局（包含 Header）
 definePageMeta({
   layout: 'default'
@@ -174,6 +196,7 @@ const api = useApi()
 const tools = ref<any[]>([])
 const pending = ref(true)
 const error = ref<string | null>(null)
+const showWeChatQR = ref(false)
 
 // 从API获取工具数据
 const fetchTools = async () => {
@@ -222,4 +245,122 @@ useHead({
 <style scoped>
 /* 页面特有样式已移至 assets/css/tools.css */
 /* 这里只保留组件特有的样式（如果有） */
+
+/* 微信二维码弹窗 */
+.wechat-qr-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.wechat-qr-content {
+  position: relative;
+  background: var(--color-bg-card, #1e293b);
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.3s ease-out;
+  max-width: 90vw;
+  width: 100%;
+  max-width: 400px;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.wechat-qr-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted, #94a3b8);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  line-height: 1;
+  transition: color 0.2s ease;
+  z-index: 1;
+}
+
+.wechat-qr-close:hover {
+  color: var(--color-text-main, #ffffff);
+}
+
+.wechat-qr-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.wechat-qr-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text-main, #ffffff);
+  margin: 0 0 0.5rem 0;
+}
+
+.wechat-qr-subtitle {
+  font-size: 0.875rem;
+  color: var(--color-text-muted, #94a3b8);
+  margin: 0;
+}
+
+.wechat-qr-image-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.wechat-qr-image {
+  width: auto;
+  height: auto;
+  max-width: 250px;
+  max-height: 250px;
+  border-radius: 0.5rem;
+  border: 2px solid var(--color-border-subtle, rgba(255, 255, 255, 0.1));
+  object-fit: contain;
+}
+
+.wechat-qr-info {
+  text-align: center;
+}
+
+.wechat-qr-text {
+  font-size: 1rem;
+  color: var(--color-text-main, #ffffff);
+  font-weight: 500;
+  margin: 0 0 0.5rem 0;
+}
+
+.wechat-qr-hint {
+  font-size: 0.875rem;
+  color: var(--color-text-muted, #94a3b8);
+  margin: 0;
+}
 </style>
