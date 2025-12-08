@@ -64,7 +64,7 @@ NUXT_PUBLIC_API_BASE=http://localhost:5234/api
 NUXT_PUBLIC_API_BASE=https://api.xifg.com.cn/api
 ```
 
-#### 后端环境变量
+#### 后端环境变量1
 
 编辑 `backend/PersonalSite.Api/appsettings.Development.json`：
 
