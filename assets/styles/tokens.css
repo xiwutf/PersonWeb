@@ -40,11 +40,17 @@
 
 [data-theme='dark'] {
   --color-bg-body: #020617;
-  --color-bg-card: #020617;
+  --color-bg-card: rgba(255, 255, 255, 0.95);
   --color-text-main: #F9FAFB;
   --color-text-sec: #CBD5F5;
   --color-text-sub: #CBD5F5;
   --color-text-muted: #94A3B8;
+  
+  /* 浅色卡片上的文字颜色（新增） */
+  --color-text-on-light-main: #0F172A;
+  --color-text-on-light-sec: #475569;
+  --color-text-on-light-sub: #475569;
+  --color-text-on-light-muted: #64748B;
   --color-border: rgba(255, 255, 255, 0.08);
   --color-primary: #3B82F6;
 

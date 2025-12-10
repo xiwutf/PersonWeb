@@ -123,24 +123,29 @@
 :root[data-theme='dark'] {
   /* 背景色 */
   --color-bg-body: #020617;
-  --color-bg-card: #020617;
-  --color-bg-elevated: #0f172a;
+  --color-bg-card: rgba(255, 255, 255, 0.95);
+  --color-bg-elevated: rgba(248, 250, 252, 0.9);
   
-  /* 文字颜色 - 提升对比度 */
+  /* 文字颜色 - 深色背景上的文字（保持原样） */
   --color-text-main: #F9FAFB;
   --color-text-sub: #CBD5F5;
   --color-text-muted: #94A3B8;
   --color-text-disabled: #64748b;
+  
+  /* 文字颜色 - 浅色卡片上的文字（新增） */
+  --color-text-on-light-main: #0F172A;
+  --color-text-on-light-sub: #475569;
+  --color-text-on-light-muted: #64748B;
   
   /* 主色调 */
   --color-primary: #60a5fa;
   --color-primary-soft: #0b1120;
   --color-primary-hover: #3b82f6;
   
-  /* 边框颜色 */
-  --color-border-subtle: #1e293b;
-  --color-border-default: #334155;
-  --color-border-strong: #475569;
+  /* 边框颜色 - 浅色卡片使用深色边框 */
+  --color-border-subtle: rgba(0, 0, 0, 0.08);
+  --color-border-default: rgba(0, 0, 0, 0.12);
+  --color-border-strong: rgba(0, 0, 0, 0.2);
   
   /* 阴影 */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);

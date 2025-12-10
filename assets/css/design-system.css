@@ -73,24 +73,29 @@ html.dark {
 
     /* Surface Colors (Glassmorphism Bases) */
     /* 使用 RGB 值以便配合 tailwind 的 opacity 工具类 */
-    --bg-surface-1-rgb: 2, 6, 23;
-    --bg-surface-1: rgba(2, 6, 23, 0.8);
-    /* 卡片背景：使用深色背景，确保与文字对比明显 */
+    --bg-surface-1-rgb: 255, 255, 255;
+    --bg-surface-1: rgba(255, 255, 255, 0.95);
+    /* 卡片背景：使用浅色背景，与深色页面背景形成对比 */
 
-    --bg-surface-2-rgb: 15, 23, 42;
-    --bg-surface-2: rgba(15, 23, 42, 0.6);
-    /* 抬起层背景 */
+    --bg-surface-2-rgb: 248, 250, 252;
+    --bg-surface-2: rgba(248, 250, 252, 0.9);
+    /* 抬起层背景：浅灰色 */
 
     /* Borders */
-    --border-subtle: rgba(255, 255, 255, 0.08);
-    /* 极细玻璃边框 */
+    --border-subtle: rgba(0, 0, 0, 0.08);
+    /* 浅色卡片边框：使用深色边框 */
     --border-focus: rgba(41, 151, 255, 0.5);
     /* 聚焦时光晕 */
 
-    /* Typography Colors - 提升对比度 */
+    /* Typography Colors - 深色背景上的文字（保持原样） */
     --text-primary: #F9FAFB;
     --text-secondary: #CBD5F5;
     --text-tertiary: #94A3B8;
+    
+    /* Typography Colors - 浅色卡片上的文字（新增） */
+    --text-on-light-primary: #0F172A;
+    --text-on-light-secondary: #475569;
+    --text-on-light-tertiary: #64748B;
 
     /* Shadows & Glows */
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);

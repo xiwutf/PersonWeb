@@ -757,7 +757,6 @@ useHead({
 .text-muted {
   color: #94a3b8;
 }
-}
 
 .btn-link-green:hover {
   background: #ecfdf5;
