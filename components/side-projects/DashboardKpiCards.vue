@@ -1,8 +1,11 @@
 <template>
   <n-grid :cols="4" :x-gap="16" :y-gap="16">
     <n-grid-item v-for="(card, index) in cards" :key="index">
-      <n-card class="dashboard-card kpi-card" hoverable>
-        <div class="kpi-card-content">
+      <n-card class="dashboard-card kpi-card overflow-hidden relative group" hoverable>
+        <!-- 背景光效 -->
+        <div class="absolute top-0 right-0 w-24 h-24 bg-primary/10 rounded-full blur-2xl -mr-8 -mt-8 transition-opacity group-hover:opacity-100 opacity-60 pointer-events-none"></div>
+        
+        <div class="kpi-card-content relative z-10">
           <div class="kpi-card-header">
             <span class="kpi-card-label">{{ card.label }}</span>
             <n-icon :component="card.icon" :size="20" class="kpi-card-icon" />
@@ -134,6 +137,10 @@ const cards = computed(() => {
   background: linear-gradient(90deg, var(--color-primary), var(--color-primary-soft));
   border-radius: var(--radius-sm);
   transition: width 0.5s ease;
+}
+
+.bg-primary\/10 {
+  background-color: var(--n-primary-color-suppl);
 }
 </style>
 

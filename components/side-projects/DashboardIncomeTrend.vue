@@ -121,7 +121,7 @@ const chartOption = computed(() => {
       }
     },
     series: [
-      buildNeonLineOptions('--chart-neon-cyan', {
+      buildNeonLineOptions('--color-primary', {
         name: '收入',
         data: props.data.map(item => item.income),
         emphasis: {

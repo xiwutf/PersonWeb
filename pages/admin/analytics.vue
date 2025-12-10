@@ -129,62 +129,159 @@
       <div v-if="trendLoading" class="text-center py-8 text-text-muted">
         加载中...
       </div>
-      <div v-else-if="hasTrendData && trendChartData.labels.length > 0" class="h-80">
-        <Line :data="trendChartData" :options="trendChartOptions" />
-      </div>
-      <div v-else class="text-center py-8 text-text-muted">
-        暂无趋势数据
-      </div>
+      <ClientOnly>
+        <template v-if="hasTrendData && trendLineOption">
+          <div class="h-80 relative">
+            <v-chart :option="trendLineOption" :theme="chartTheme" autoresize />
+          </div>
+        </template>
+        <template v-else>
+          <div class="text-center py-8 text-text-muted">
+            暂无趋势数据
+          </div>
+        </template>
+        <template #fallback>
+          <div class="h-80 flex items-center justify-center">
+            <n-spin size="large" />
+          </div>
+        </template>
+      </ClientOnly>
     </AppCard>
 
-    <!-- 饼状图统计区域 -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6 mb-6">
-      <!-- 访问区域饼状图 -->
+    <!-- 图表统计区域 -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      <!-- 访问区域条形图 -->
       <AppCard class="p-6">
         <h2 class="text-lg font-bold text-text-main mb-4">访问区域分布</h2>
-        <div v-if="hasRegionData && regionChartData.labels.length > 0" class="h-64">
-          <component :is="Pie" v-if="Pie && chartLoaded" :data="regionChartData" :options="chartOptions" />
-          <div v-else class="flex items-center justify-center h-full">
-            <n-spin size="small" />
-          </div>
-        </div>
-        <div v-else class="text-center text-text-muted py-8">暂无数据</div>
+        <ClientOnly>
+          <template v-if="hasRegionData && regionBarOption">
+            <div class="h-80">
+              <v-chart :option="regionBarOption" :theme="chartTheme" autoresize />
+            </div>
+          </template>
+          <template v-else>
+            <div class="text-center text-text-muted py-8">暂无数据</div>
+          </template>
+          <template #fallback>
+            <div class="h-80 flex items-center justify-center">
+              <n-spin size="small" />
+            </div>
+          </template>
+        </ClientOnly>
       </AppCard>
 
-      <!-- 设备类型饼状图 -->
+      <!-- 设备类型 Donut -->
       <AppCard class="p-6">
         <h2 class="text-lg font-bold text-text-main mb-4">设备类型分布</h2>
-        <div v-if="hasDeviceData && deviceChartData.labels.length > 0" class="h-64">
-          <component :is="Pie" v-if="Pie && chartLoaded" :data="deviceChartData" :options="chartOptions" />
-          <div v-else class="flex items-center justify-center h-full">
-            <n-spin size="small" />
-          </div>
-        </div>
-        <div v-else class="text-center text-text-muted py-8">暂无数据</div>
+        <ClientOnly>
+          <template v-if="deviceDonutOption">
+            <div class="h-64 relative">
+              <v-chart :option="deviceDonutOption.option" :theme="chartTheme" autoresize />
+              <div class="donut-center">
+                <div class="donut-center-value">{{ deviceDonutOption.mainPercent }}%</div>
+                <div class="donut-center-label">{{ deviceDonutOption.mainLabel }}</div>
+              </div>
+              <!-- 底部图例 -->
+              <div class="mt-4 flex flex-wrap gap-3 justify-center">
+                <div
+                  v-for="(item, idx) in (clientDistribution.devices || [])"
+                  :key="idx"
+                  class="flex items-center gap-2"
+                >
+                  <div
+                    class="w-2 h-2 rounded-full"
+                    :style="{ backgroundColor: donutPalette[idx % donutPalette.length] }"
+                  ></div>
+                  <span class="text-xs text-text-muted">{{ item.name || '未知' }}</span>
+                </div>
+              </div>
+            </div>
+          </template>
+          <template v-else>
+            <div class="text-center text-text-muted py-8">暂无数据</div>
+          </template>
+          <template #fallback>
+            <div class="h-64 flex items-center justify-center">
+              <n-spin size="small" />
+            </div>
+          </template>
+        </ClientOnly>
       </AppCard>
 
-      <!-- 浏览器饼状图 -->
+      <!-- 浏览器 Donut -->
       <AppCard class="p-6">
         <h2 class="text-lg font-bold text-text-main mb-4">浏览器分布</h2>
-        <div v-if="hasBrowserData && browserChartData.labels.length > 0" class="h-64">
-          <component :is="Pie" v-if="Pie && chartLoaded" :data="browserChartData" :options="chartOptions" />
-          <div v-else class="flex items-center justify-center h-full">
-            <n-spin size="small" />
-          </div>
-        </div>
-        <div v-else class="text-center text-text-muted py-8">暂无数据</div>
+        <ClientOnly>
+          <template v-if="browserDonutOption">
+            <div class="h-64 relative">
+              <v-chart :option="browserDonutOption.option" :theme="chartTheme" autoresize />
+              <div class="donut-center">
+                <div class="donut-center-value">{{ browserDonutOption.mainPercent }}%</div>
+                <div class="donut-center-label">{{ browserDonutOption.mainLabel }}</div>
+              </div>
+              <!-- 底部图例 -->
+              <div class="mt-4 flex flex-wrap gap-3 justify-center">
+                <div
+                  v-for="(item, idx) in (clientDistribution.browsers || [])"
+                  :key="idx"
+                  class="flex items-center gap-2"
+                >
+                  <div
+                    class="w-2 h-2 rounded-full"
+                    :style="{ backgroundColor: donutPalette[idx % donutPalette.length] }"
+                  ></div>
+                  <span class="text-xs text-text-muted">{{ item.name || '未知' }}</span>
+                </div>
+              </div>
+            </div>
+          </template>
+          <template v-else>
+            <div class="text-center text-text-muted py-8">暂无数据</div>
+          </template>
+          <template #fallback>
+            <div class="h-64 flex items-center justify-center">
+              <n-spin size="small" />
+            </div>
+          </template>
+        </ClientOnly>
       </AppCard>
 
-      <!-- 操作系统饼状图 -->
+      <!-- 操作系统 Donut -->
       <AppCard class="p-6">
         <h2 class="text-lg font-bold text-text-main mb-4">操作系统分布</h2>
-        <div v-if="hasOsData && osChartData.labels.length > 0" class="h-64">
-          <component :is="Pie" v-if="Pie && chartLoaded" :data="osChartData" :options="chartOptions" />
-          <div v-else class="flex items-center justify-center h-full">
-            <n-spin size="small" />
-          </div>
-        </div>
-        <div v-else class="text-center text-text-muted py-8">暂无数据</div>
+        <ClientOnly>
+          <template v-if="osDonutOption">
+            <div class="h-64 relative">
+              <v-chart :option="osDonutOption.option" :theme="chartTheme" autoresize />
+              <div class="donut-center">
+                <div class="donut-center-value">{{ osDonutOption.mainPercent }}%</div>
+                <div class="donut-center-label">{{ osDonutOption.mainLabel }}</div>
+              </div>
+              <!-- 底部图例 -->
+              <div class="mt-4 flex flex-wrap gap-3 justify-center">
+                <div
+                  v-for="(item, idx) in (clientDistribution.os || [])"
+                  :key="idx"
+                  class="flex items-center gap-2"
+                >
+                  <div
+                    class="w-2 h-2 rounded-full"
+                    :style="{ backgroundColor: donutPalette[idx % donutPalette.length] }"
+                  ></div>
+                  <span class="text-xs text-text-muted">{{ item.name || '未知' }}</span>
+                </div>
+              </div>
+            </div>
+          </template>
+          <template v-else>
+            <div class="text-center text-text-muted py-8">暂无数据</div>
+          </template>
+          <template #fallback>
+            <div class="h-64 flex items-center justify-center">
+              <n-spin size="small" />
+            </div>
+          </template>
+        </ClientOnly>
       </AppCard>
     </div>
 
@@ -327,8 +424,8 @@
       </AppCard>
     </div>
 
-    <!-- 第三行：三列布局 -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+    <!-- 第三行：双列布局 -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
       <!-- 左列：Top 页面 + 来源分析 -->
       <div class="space-y-6">
         <!-- Top 页面列表 -->
@@ -372,19 +469,34 @@
           <div v-if="sourcesLoading" class="text-center py-4 text-text-muted">加载中...</div>
           <div v-else-if="!sources.items || sources.items.length === 0" class="text-center py-4 text-text-muted">暂无数据</div>
           <div v-else>
-            <div class="h-48 mb-4">
-              <component :is="Pie" v-if="Pie && chartLoaded && sourcesChartData && sourcesChartData.labels.length > 0" :data="sourcesChartData" :options="chartOptions" />
-              <div v-else-if="!chartLoaded" class="flex items-center justify-center h-full">
-                <n-spin size="small" />
-              </div>
-            </div>
-            <div class="space-y-2">
+            <ClientOnly>
+              <template v-if="sourceDonutOption">
+                <div class="h-48 relative mb-4">
+                  <v-chart :option="sourceDonutOption.option" :theme="chartTheme" autoresize />
+                  <div class="donut-center">
+                    <div class="donut-center-value">{{ sourceDonutOption.mainPercent }}%</div>
+                    <div class="donut-center-label">{{ sourceDonutOption.mainLabel }}</div>
+                  </div>
+                </div>
+              </template>
+              <template v-else>
+                <div class="text-center text-text-muted py-8 h-48 flex items-center justify-center">暂无数据</div>
+              </template>
+            </ClientOnly>
+            
+            <div class="space-y-2 max-h-48 overflow-y-auto">
               <div
                 v-for="(item, index) in sources.items"
                 :key="index"
                 class="flex items-center justify-between p-2 bg-bg-elevated rounded"
               >
-                <span class="text-sm text-text-main">{{ item.name }}</span>
+                <div class="flex items-center gap-2">
+                   <div 
+                     class="w-2 h-2 rounded-full" 
+                     :style="{ backgroundColor: donutPalette[index % donutPalette.length] }"
+                   ></div>
+                   <span class="text-sm text-text-main">{{ item.name }}</span>
+                </div>
                 <span class="text-xs text-text-muted">{{ item.count }}</span>
               </div>
             </div>
@@ -392,69 +504,8 @@
         </AppCard>
       </div>
 
-      <!-- 中列：设备/浏览器/操作系统分布 -->
+      <!-- 右列：行为路径 -->
       <div class="space-y-6">
-        <!-- 设备类型分布 -->
-        <AppCard class="p-6">
-          <h2 class="text-lg font-bold text-text-main mb-4">设备类型</h2>
-          <div v-if="clientDistributionLoading" class="text-center py-4 text-text-muted">加载中...</div>
-          <div v-else-if="!clientDistribution.devices || clientDistribution.devices.length === 0" class="text-center py-4 text-text-muted">暂无数据</div>
-          <div v-else class="h-48">
-            <component :is="Pie" v-if="Pie && chartLoaded && deviceChartData && deviceChartData.labels.length > 0" :data="deviceChartData" :options="chartOptions" />
-            <div v-else-if="!chartLoaded" class="flex items-center justify-center h-full">
-              <n-spin size="small" />
-            </div>
-          </div>
-        </AppCard>
-
-        <!-- 浏览器分布 -->
-        <AppCard class="p-6">
-          <h2 class="text-lg font-bold text-text-main mb-4">浏览器</h2>
-          <div v-if="clientDistributionLoading" class="text-center py-4 text-text-muted">加载中...</div>
-          <div v-else-if="!clientDistribution.browsers || clientDistribution.browsers.length === 0" class="text-center py-4 text-text-muted">暂无数据</div>
-          <div v-else class="h-48">
-            <component :is="Pie" v-if="Pie && chartLoaded && browserChartData && browserChartData.labels.length > 0" :data="browserChartData" :options="chartOptions" />
-            <div v-else-if="!chartLoaded" class="flex items-center justify-center h-full">
-              <n-spin size="small" />
-            </div>
-          </div>
-        </AppCard>
-
-        <!-- 操作系统分布 -->
-        <AppCard class="p-6">
-          <h2 class="text-lg font-bold text-text-main mb-4">操作系统</h2>
-          <div v-if="clientDistributionLoading" class="text-center py-4 text-text-muted">加载中...</div>
-          <div v-else-if="!clientDistribution.os || clientDistribution.os.length === 0" class="text-center py-4 text-text-muted">暂无数据</div>
-          <div v-else class="h-48">
-            <component :is="Pie" v-if="Pie && chartLoaded && osChartData && osChartData.labels.length > 0" :data="osChartData" :options="chartOptions" />
-            <div v-else-if="!chartLoaded" class="flex items-center justify-center h-full">
-              <n-spin size="small" />
-            </div>
-          </div>
-        </AppCard>
-      </div>
-
-      <!-- 右列：地区分布 + 行为路径 -->
-      <div class="space-y-6">
-        <!-- 地区分布 -->
-        <AppCard class="p-6">
-          <h2 class="text-lg font-bold text-text-main mb-4">地区分布</h2>
-          <div v-if="regionsLoading" class="text-center py-4 text-text-muted">加载中...</div>
-          <div v-else-if="!regions.items || regions.items.length === 0" class="text-center py-4 text-text-muted">暂无数据</div>
-          <div v-else class="space-y-2 max-h-64 overflow-y-auto">
-            <div
-              v-for="(region, index) in (regions.items || []).slice(0, 10)"
-              :key="index"
-              class="flex items-center justify-between p-2 bg-bg-elevated rounded"
-            >
-              <div class="flex-1">
-                <div class="text-sm text-text-main">{{ region.country }}{{ region.province ? ' - ' + region.province : '' }}</div>
-              </div>
-              <span class="text-xs text-text-muted">{{ region.count }}</span>
-            </div>
-          </div>
-        </AppCard>
-
         <!-- 行为路径 -->
         <AppCard class="p-6">
           <div class="flex items-center justify-between mb-4">
@@ -463,9 +514,9 @@
           </div>
           <div v-if="pageFlowLoading" class="text-center py-4 text-text-muted">加载中...</div>
           <div v-else-if="!pageFlow.edges || pageFlow.edges.length === 0" class="text-center py-4 text-text-muted">暂无数据</div>
-          <div v-else class="space-y-2 max-h-64 overflow-y-auto">
+          <div v-else class="space-y-2 max-h-[600px] overflow-y-auto">
             <div
-              v-for="(edge, index) in pageFlow.edges.slice(0, 10)"
+              v-for="(edge, index) in pageFlow.edges.slice(0, 15)"
               :key="index"
               class="p-3 bg-bg-elevated rounded text-sm hover:bg-bg-hover transition-colors"
             >
@@ -672,50 +723,68 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, onUnmounted, defineAsyncComponent } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
+import { use } from 'echarts/core'
+import { CanvasRenderer } from 'echarts/renderers'
+import { LineChart, PieChart, BarChart } from 'echarts/charts'
+import {
+  TitleComponent,
+  TooltipComponent,
+  LegendComponent,
+  GridComponent
+} from 'echarts/components'
+import VChart from 'vue-echarts'
+import { useEChartsTheme } from '~/composables/useEChartsTheme'
+import { registerTheme } from 'echarts/core'
 
-// 延迟加载 Chart.js，减少初始包大小
-let ChartJS: any = null
-let Pie: any = null
-let Line: any = null
-let chartLoaded = false
+const { isDark } = useEChartsTheme()
+const chartTheme = computed(() => (isDark.value ? 'dark-custom' : 'light-custom'))
 
-const loadChartJS = async () => {
-  if (chartLoaded) return
-  
-  const chartModule = await import(/* webpackChunkName: "chartjs" */ 'chart.js')
-  const vueChartModule = await import(/* webpackChunkName: "vue-chartjs" */ 'vue-chartjs')
-  
-  ChartJS = chartModule.Chart
-  const {
-    ArcElement,
-    Tooltip,
-    Legend,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement
-  } = chartModule
-  
-  ChartJS.register(
-    ArcElement,
-    Tooltip,
-    Legend,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement
-  )
-  
-  Pie = vueChartModule.Pie
-  Line = vueChartModule.Line
-  chartLoaded = true
-}
+// 注册 ECharts 组件
+use([
+  CanvasRenderer,
+  LineChart,
+  PieChart,
+  BarChart,
+  TitleComponent,
+  TooltipComponent,
+  LegendComponent,
+  GridComponent
+])
 
-// 在组件挂载时加载 Chart.js
-onMounted(() => {
-  loadChartJS()
+// 注册自定义主题
+// 注册自定义主题
+registerTheme('dark-custom', {
+  backgroundColor: 'transparent',
+  textStyle: { color: 'rgba(255, 255, 255, 0.92)' },
+  title: { textStyle: { color: 'rgba(255, 255, 255, 0.92)' } },
+  legend: { textStyle: { color: 'rgba(255, 255, 255, 0.7)' } },
+  tooltip: {
+    backgroundColor: 'rgba(15, 23, 42, 0.95)',
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+    textStyle: { color: 'rgba(255, 255, 255, 0.92)' },
+    padding: [10, 16],
+    borderRadius: 12,
+    extraCssText: 'backdrop-filter: blur(12px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);'
+  }
 })
+
+registerTheme('light-custom', {
+  backgroundColor: 'transparent',
+  textStyle: { color: '#0f172a' },
+  title: { textStyle: { color: '#0f172a' } },
+  legend: { textStyle: { color: '#445062' } },
+  tooltip: {
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderColor: 'rgba(0, 0, 0, 0.05)',
+    textStyle: { color: '#0f172a' },
+    padding: [10, 16],
+    borderRadius: 12,
+    extraCssText: 'backdrop-filter: blur(12px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);'
+  }
+})
+
+
 
 definePageMeta({
   layout: 'admin',
@@ -811,414 +880,372 @@ const pageFlow = ref<any>({
 })
 const pageFlowLoading = ref(false)
 
-// 图表配置
-// 获取主题变量中的颜色值
-const getThemeColor = (cssVar: string): string => {
-  if (!process.client) return '#3b82f6' // 默认值
-  return getComputedStyle(document.documentElement).getPropertyValue(cssVar).trim() || '#3b82f6'
-}
-
-const chartOptions = computed(() => {
-  // 使用主题变量获取颜色
-  const textColor = getThemeColor('--color-text-main')
-  const legendColor = getThemeColor('--color-text-muted')
-  const tooltipBg = getThemeColor('--color-bg-card')
-  const tooltipText = getThemeColor('--color-text-main')
-  const tooltipBorder = getThemeColor('--color-border-subtle')
-  
-  return {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'bottom' as const,
-        labels: {
-          padding: 15,
-          usePointStyle: true,
-          color: legendColor,
-          font: {
-            size: 13,
-            weight: 'normal' as const
-          }
-        }
-      },
-      tooltip: {
-        backgroundColor: tooltipBg,
-        borderColor: tooltipBorder,
-        borderWidth: 1,
-        titleColor: tooltipText,
-        bodyColor: tooltipText,
-        padding: 12,
-        callbacks: {
-          label: function(context: any) {
-            const label = context.label || ''
-            const value = context.parsed || 0
-            const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0)
-            const percentage = ((value / total) * 100).toFixed(2)
-            return `${label}: ${value} (${percentage}%)`
-          }
-        }
-      }
-    }
-  }
-})
-
-// 标准配色（与图片中的配色一致）
-const standardColors = [
-  '#3b82f6', // 蓝色
-  '#10b981', // 绿色
-  '#f59e0b', // 橙色
-  '#ef4444', // 红色
-  '#8b5cf6', // 紫色
-  '#ec4899', // 粉色
-  '#06b6d4', // 青色
-  '#84cc16', // 黄绿色
-  '#f97316', // 深橙色
-  '#6366f1'  // 靛蓝色
-]
-
-const generateColors = (count: number): string[] => {
-  // 如果颜色不够，循环使用标准配色
-  const colors: string[] = []
-  for (let i = 0; i < count; i++) {
-    colors.push(standardColors[i % standardColors.length])
-  }
-  return colors
-}
-
-// 访问区域图表数据（使用新的 regions 接口）
-const regionChartData = computed(() => {
-  if (!regions.value || !regions.value.items || regions.value.items.length === 0) {
-    return { labels: [], datasets: [] }
-  }
-  const labels = regions.value.items.map((r: any) => {
-    const country = r.country || '未知'
-    const province = r.province || ''
-    return province ? `${country} - ${province}` : country
-  })
-  const data = regions.value.items.map((r: any) => r.count || 0)
-  const colors = generateColors(labels.length)
-  
-  return {
-    labels,
-    datasets: [{
-      data,
-      backgroundColor: colors,
-      borderColor: '#ffffff',
-      borderWidth: 2
-    }]
-  }
-})
-
-// 来源分析图表数据
-const sourcesChartData = computed(() => {
-  if (!sources.value.items || sources.value.items.length === 0) {
-    return { labels: [], datasets: [] }
-  }
-  const labels = sources.value.items.map((item: any) => item.name)
-  const data = sources.value.items.map((item: any) => item.count)
-  const colors = generateColors(labels.length)
-  
-  return {
-    labels,
-    datasets: [{
-      data,
-      backgroundColor: colors,
-      borderColor: '#ffffff',
-      borderWidth: 2
-    }]
-  }
-})
-
-// 设备类型图表数据（使用新的 client-distribution 接口）
-const deviceChartData = computed(() => {
-  if (!clientDistribution.value || !clientDistribution.value.devices || clientDistribution.value.devices.length === 0) {
-    return { labels: [], datasets: [] }
-  }
-  const labels = clientDistribution.value.devices.map((d: any) => d.name || '未知')
-  const data = clientDistribution.value.devices.map((d: any) => d.count || 0)
-  const colors = generateColors(labels.length)
-  
-  return {
-    labels,
-    datasets: [{
-      data,
-      backgroundColor: colors,
-      borderColor: '#ffffff',
-      borderWidth: 2
-    }]
-  }
-})
-
-// 浏览器图表数据（使用新的 client-distribution 接口）
-const browserChartData = computed(() => {
-  if (!clientDistribution.value || !clientDistribution.value.browsers || clientDistribution.value.browsers.length === 0) {
-    return { labels: [], datasets: [] }
-  }
-  const labels = clientDistribution.value.browsers.map((b: any) => b.name || '未知')
-  const data = clientDistribution.value.browsers.map((b: any) => b.count || 0)
-  const colors = generateColors(labels.length)
-  
-  return {
-    labels,
-    datasets: [{
-      data,
-      backgroundColor: colors,
-      borderColor: '#ffffff',
-      borderWidth: 2
-    }]
-  }
-})
-
-// 操作系统图表数据（使用新的 client-distribution 接口）
-const osChartData = computed(() => {
-  if (!clientDistribution.value || !clientDistribution.value.os || clientDistribution.value.os.length === 0) {
-    return { labels: [], datasets: [] }
-  }
-  const labels = clientDistribution.value.os.map((o: any) => o.name || '未知')
-  const data = clientDistribution.value.os.map((o: any) => o.count || 0)
-  const colors = generateColors(labels.length)
-  
-  return {
-    labels,
-    datasets: [{
-      data,
-      backgroundColor: colors,
-      borderColor: '#ffffff',
-      borderWidth: 2
-    }]
-  }
-})
 
 // 趋势图数据（使用新的 trend 接口）
-const trendChartData = computed(() => {
+// 趋势图配置 (ECharts)
+const trendLineOption = computed(() => {
   // 后端返回的是 points（小写），不是 Points
   const points = trendData.value?.points || trendData.value?.Points || []
   if (!trendData.value || points.length === 0) {
-    return { labels: [], datasets: [] }
+    return {}
   }
+  
   // 辅助函数：格式化日期标签
   const formatDateLabel = (dateStr: string, fallbackIndex: number): string => {
-    if (!dateStr || dateStr.trim() === '') {
-      return `第${fallbackIndex + 1}天`
-    }
+    if (!dateStr || dateStr.trim() === '') return `第${fallbackIndex + 1}天`
     
-    // 尝试解析 yyyy-MM-dd 格式
-    const dateParts = dateStr.split('-')
+    const dateParts = dateStr.split(' ')[0].split('-') // 忽略时间部分
     if (dateParts.length >= 3) {
-      const year = parseInt(dateParts[0], 10)
-      const month = parseInt(dateParts[1], 10)
-      const day = parseInt(dateParts[2], 10)
-      
-      // 验证日期有效性
-      if (!isNaN(year) && !isNaN(month) && !isNaN(day) && 
-          year > 0 && month >= 1 && month <= 12 && day >= 1 && day <= 31) {
-        // 格式化：M月D日
-        return `${month}月${day}日`
-      }
-    }
-    
-    // 如果解析失败，尝试使用 Date 构造函数
-    const date = new Date(dateStr)
-    if (!isNaN(date.getTime()) && date.getFullYear() > 1970) {
-      // 使用 Date 对象格式化，确保不会返回 NaN
-      const month = date.getMonth() + 1
-      const day = date.getDate()
-      if (!isNaN(month) && !isNaN(day)) {
-        return `${month}月${day}日`
-      }
-    }
-    
-    // 如果所有方法都失败，返回索引标签
-    return `第${fallbackIndex + 1}天`
-  }
-
-  const labels = points.map((p: any, index: number) => {
-    // 兼容 date（小写）和 Date（大写）
-    const dateStr = p.date || p.Date || ''
-    if (!dateStr || dateStr.trim() === '') {
-      return `第${index + 1}天`
+      return `${parseInt(dateParts[1])}月${parseInt(dateParts[2])}日`
     }
     
     try {
-      // 格式化日期显示
-      if (dateStr.includes(' ')) {
-        // 包含时间（小时粒度），格式：yyyy-MM-dd HH:mm
-        const parts = dateStr.split(' ')
-        if (parts.length >= 2 && parts[1]) {
-          // 只显示时间部分（HH:mm）
-          const timePart = parts[1]
-          const timeMatch = timePart.match(/^(\d{1,2}):(\d{2})/)
-          if (timeMatch) {
-            return timeMatch[0] // 返回 "HH:mm" 格式
-          }
-        }
-        // 如果时间部分解析失败，尝试解析日期部分
-        const datePart = parts[0]
-        return formatDateLabel(datePart, index)
-      } else {
-        // 只有日期，格式：yyyy-MM-dd
-        return formatDateLabel(dateStr, index)
-      }
+      const date = new Date(dateStr)
+      return `${date.getMonth() + 1}月${date.getDate()}日`
     } catch (e) {
-      // 如果解析出错，返回索引标签
-      console.warn('日期格式化失败:', dateStr, e)
-      return `第${index + 1}天`
+      return `第${fallbackIndex + 1}天`
     }
+  }
+
+  const labels = points.map((p: any, index: number) => {
+    return formatDateLabel(p.date || p.Date, index)
   })
 
-  // 使用霓虹色板
   // 使用标准配色
   const pvColor = '#06b6d4' // 青色
   const uvColor = '#10b981' // 绿色
 
   return {
-    labels,
-    datasets: [
+    backgroundColor: 'transparent',
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'cross',
+        label: {
+          backgroundColor: '#6a7985'
+        }
+      }
+    },
+    legend: {
+      data: ['浏览量', '访客数'],
+      bottom: 0
+    },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '10%',
+      containLabel: true
+    },
+    xAxis: [
       {
-        label: '浏览量',
-        data: points.map((p: any) => p.pv || p.Pv || 0),
-        borderColor: pvColor,
-        backgroundColor: (() => {
-          // 创建渐变填充（上深下浅）
-          if (!process.client) return pvColor + '33'
-          const canvas = document.createElement('canvas')
-          const ctx = canvas.getContext('2d')
-          if (!ctx) return pvColor + '33'
-          const gradient = ctx.createLinearGradient(0, 0, 0, 400)
-          gradient.addColorStop(0, pvColor + '55') // 33% 透明度
-          gradient.addColorStop(1, 'rgba(15,23,42,0.0)')
-          return gradient
-        })(),
-        borderWidth: 3,
-        tension: 0.4,
-        fill: true,
-        pointRadius: 6,
-        pointHoverRadius: 8,
-        pointBackgroundColor: pvColor,
-        pointBorderColor: pvColor,
-        pointBorderWidth: 0,
-        // 添加阴影效果（霓虹发光）
-        shadowOffsetX: 0,
-        shadowOffsetY: 0,
-        shadowBlur: 12,
-        shadowColor: pvColor + 'aa'
+        type: 'category',
+        boundaryGap: false,
+        data: labels,
+        axisLine: {
+          lineStyle: {
+            color: isDark.value ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'
+          }
+        }
+      }
+    ],
+    yAxis: [
+      {
+        type: 'value',
+        axisLine: {
+          show: false
+        },
+        splitLine: {
+          lineStyle: {
+            color: isDark.value ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'
+          }
+        }
+      }
+    ],
+    series: [
+      {
+        name: '浏览量',
+        type: 'line',
+        smooth: true,
+        lineStyle: {
+          width: 3,
+          color: pvColor
+        },
+        showSymbol: false,
+        areaStyle: {
+          opacity: 0.8,
+          color: {
+            type: 'linear',
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            colorStops: [
+              { offset: 0, color: pvColor + '55' },
+              { offset: 1, color: 'rgba(6, 182, 212, 0.01)' }
+            ]
+          }
+        },
+        emphasis: {
+          focus: 'series'
+        },
+        data: points.map((p: any) => p.pv || p.Pv || 0)
       },
       {
-        label: '访客数',
-        data: points.map((p: any) => p.uv || p.Uv || 0),
-        borderColor: uvColor,
-        backgroundColor: (() => {
-          // 创建渐变填充（上深下浅）
-          if (!process.client) return uvColor + '33'
-          const canvas = document.createElement('canvas')
-          const ctx = canvas.getContext('2d')
-          if (!ctx) return uvColor + '33'
-          const gradient = ctx.createLinearGradient(0, 0, 0, 400)
-          gradient.addColorStop(0, uvColor + '55') // 33% 透明度
-          gradient.addColorStop(1, 'rgba(15,23,42,0.0)')
-          return gradient
-        })(),
-        borderWidth: 3,
-        tension: 0.4,
-        fill: true,
-        pointRadius: 6,
-        pointHoverRadius: 8,
-        pointBackgroundColor: uvColor,
-        pointBorderColor: uvColor,
-        pointBorderWidth: 0,
-        // 添加阴影效果（霓虹发光）
-        shadowOffsetX: 0,
-        shadowOffsetY: 0,
-        shadowBlur: 12,
-        shadowColor: uvColor + 'aa'
+        name: '访客数',
+        type: 'line',
+        smooth: true,
+        lineStyle: {
+          width: 3,
+          color: uvColor
+        },
+        showSymbol: false,
+        areaStyle: {
+          opacity: 0.8,
+          color: {
+            type: 'linear',
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            colorStops: [
+              { offset: 0, color: uvColor + '55' },
+              { offset: 1, color: 'rgba(16, 185, 129, 0.01)' }
+            ]
+          }
+        },
+        emphasis: {
+          focus: 'series'
+        },
+        data: points.map((p: any) => p.uv || p.Uv || 0)
       }
     ]
   }
 })
 
-// 趋势图配置
-const trendChartOptions = computed(() => {
-  const textColor = getThemeColor('--color-text-main')
-  const legendColor = getThemeColor('--color-text-muted')
-  const gridColor = getThemeColor('--color-border-subtle')
-  const tooltipBg = getThemeColor('--color-bg-card')
-  const tooltipText = getThemeColor('--color-text-main')
-  const tooltipBorder = getThemeColor('--color-border-subtle')
+// Donut 色板
+// Donut 色板
+const donutPalette = [
+  '#ec4899', // pink
+  '#f97316', // orange
+  '#10b981', // green
+  '#06b6d4', // cyan
+  '#3b82f6', // blue
+  '#8b5cf6'  // purple
+]
+
+// 构建细环 Donut 选项
+const buildDonutOption = (data: Array<{ name: string; value: number }>, mainLabel: string, mainPercent: number) => {
+  const chartData = data.map((item, idx) => ({
+    value: item.value,
+    name: item.name,
+    itemStyle: {
+      color: donutPalette[idx % donutPalette.length]
+    }
+  }))
 
   return {
-    responsive: true,
-    maintainAspectRatio: false,
-    interaction: {
-      mode: 'index' as const,
-      intersect: false
+    backgroundColor: 'transparent',
+    tooltip: {
+      trigger: 'item',
+      formatter: '{b}: {c} ({d}%)'
     },
-    plugins: {
-      legend: {
-        display: true,
-        position: 'top' as const,
-        labels: {
-          color: legendColor,
-          padding: 15,
-          usePointStyle: true,
-          font: {
-            size: 13
-          }
-        }
+    series: [
+      {
+        type: 'pie',
+        radius: ['70%', '82%'],
+        avoidLabelOverlap: false,
+        label: {
+          show: false
+        },
+        labelLine: {
+          show: false
+        },
+        data: chartData
+      }
+    ]
+  }
+}
+
+// 访问区域条形图选项
+const regionBarOption = computed(() => {
+  if (!regions.value || !regions.value.items || regions.value.items.length === 0) {
+    return null
+  }
+  
+  const items = regions.value.items.map((r: any) => ({
+    name: r.province ? `${r.country} - ${r.province}` : r.country,
+    value: r.count || 0
+  }))
+  
+  const total = items.reduce((sum: number, item: any) => sum + item.value, 0)
+  const sortedItems = [...items].sort((a, b) => b.value - a.value).slice(0, 10) // 只显示前10个
+  
+  const colors = sortedItems.map((_, idx) => donutPalette[idx % donutPalette.length])
+  
+  return {
+    backgroundColor: 'transparent',
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'shadow'
       },
-      tooltip: {
-        backgroundColor: tooltipBg,
-        borderColor: tooltipBorder,
-        borderWidth: 1,
-        titleColor: tooltipText,
-        bodyColor: tooltipText,
-        padding: 12,
-        callbacks: {
-          label: function(context: any) {
-            const label = context.dataset.label || ''
-            const value = context.parsed.y || 0
-            return `${label}: ${value}`
-          }
+      formatter: (params: any) => {
+        const param = params[0]
+        const percent = total > 0 ? ((param.value / total) * 100).toFixed(1) : '0'
+        return `${param.name}<br/>${param.value} (${percent}%)`
+      }
+    },
+    grid: {
+      left: '25%',
+      right: '10%',
+      top: 20,
+      bottom: 20,
+      containLabel: false
+    },
+    xAxis: {
+      type: 'value',
+      axisLine: {
+        show: false
+      },
+      axisTick: {
+        show: false
+      },
+      axisLabel: {
+        color: 'rgba(148, 163, 184, 0.7)',
+        fontSize: 11
+      },
+      splitLine: {
+        show: true,
+        lineStyle: {
+          color: 'rgba(148, 163, 184, 0.15)',
+          type: 'dashed'
         }
       }
     },
-    scales: {
-      x: {
-        grid: {
-          display: false // 霓虹风格：隐藏 X 轴网格
-        },
-        ticks: {
-          color: getThemeColor('--color-text-muted'),
-          maxRotation: 45,
-          minRotation: 0,
-          font: {
-            size: 11
-          }
-        },
-        border: {
-          display: false // 隐藏轴线
-        }
+    yAxis: {
+      type: 'category',
+      data: sortedItems.map(item => item.name),
+      axisLine: {
+        show: false
       },
-      y: {
-        beginAtZero: true,
-        grid: {
-          color: 'rgba(148, 163, 184, 0.18)', // 弱网格
-          display: true,
-          lineWidth: 1,
-          drawBorder: false
-        },
-        ticks: {
-          color: getThemeColor('--color-text-muted'),
-          stepSize: 1,
-          font: {
-            size: 11
+      axisTick: {
+        show: false
+      },
+      axisLabel: {
+        color: 'rgba(148, 163, 184, 0.7)',
+        fontSize: 11
+      }
+    },
+    series: [
+      {
+        type: 'bar',
+        data: sortedItems.map((item, idx) => ({
+          value: item.value,
+          itemStyle: {
+            color: colors[idx],
+            borderRadius: [0, 4, 4, 0]
           }
-        },
-        border: {
-          display: false // 隐藏轴线
+        })),
+        label: {
+          show: true,
+          position: 'right',
+          formatter: (params: any) => {
+            const percent = total > 0 ? ((params.value / total) * 100).toFixed(1) : '0'
+            return `${params.value} (${percent}%)`
+          },
+          color: 'rgba(148, 163, 184, 0.8)',
+          fontSize: 11
         }
       }
-    }
+    ]
+  }
+})
+
+// 设备类型 Donut
+const deviceDonutOption = computed(() => {
+  if (!clientDistribution.value || !clientDistribution.value.devices || clientDistribution.value.devices.length === 0) {
+    return null
+  }
+  
+  const devices = clientDistribution.value.devices.map((d: any) => ({
+    name: d.name || '未知',
+    value: d.count || 0
+  }))
+  
+  const total = devices.reduce((sum: number, d: any) => sum + d.value, 0)
+  const mainItem = devices.reduce((max: any, item: any) => item.value > max.value ? item : max, devices[0])
+  const mainPercent = total > 0 ? ((mainItem.value / total) * 100).toFixed(1) : '0'
+  
+  return {
+    option: buildDonutOption(devices, mainItem.name, parseFloat(mainPercent)),
+    mainLabel: mainItem.name,
+    mainPercent
+  }
+})
+
+// 浏览器 Donut
+const browserDonutOption = computed(() => {
+  if (!clientDistribution.value || !clientDistribution.value.browsers || clientDistribution.value.browsers.length === 0) {
+    return null
+  }
+  
+  const browsers = clientDistribution.value.browsers.map((b: any) => ({
+    name: b.name || '未知',
+    value: b.count || 0
+  }))
+  
+  const total = browsers.reduce((sum: number, b: any) => sum + b.value, 0)
+  const mainItem = browsers.reduce((max: any, item: any) => item.value > max.value ? item : max, browsers[0])
+  const mainPercent = total > 0 ? ((mainItem.value / total) * 100).toFixed(1) : '0'
+  
+  return {
+    option: buildDonutOption(browsers, mainItem.name, parseFloat(mainPercent)),
+    mainLabel: mainItem.name,
+    mainPercent
+  }
+})
+
+// 来源分析 Donut
+const sourceDonutOption = computed(() => {
+  if (!sources.value.items || sources.value.items.length === 0) {
+    return null
+  }
+  
+  const items = sources.value.items.map((item: any) => ({
+    name: item.name || '未知',
+    value: item.count || 0
+  }))
+  
+  const total = items.reduce((sum: number, item: any) => sum + item.value, 0)
+  const mainItem = items.reduce((max: any, item: any) => item.value > max.value ? item : max, items[0])
+  const mainPercent = total > 0 ? ((mainItem.value / total) * 100).toFixed(1) : '0'
+
+  return {
+    option: buildDonutOption(items, mainItem.name, parseFloat(mainPercent)),
+    mainLabel: mainItem.name,
+    mainPercent
+  }
+})
+
+// 操作系统 Donut
+const osDonutOption = computed(() => {
+  if (!clientDistribution.value || !clientDistribution.value.os || clientDistribution.value.os.length === 0) {
+    return null
+  }
+  
+  const os = clientDistribution.value.os.map((o: any) => ({
+    name: o.name || '未知',
+    value: o.count || 0
+  }))
+  
+  const total = os.reduce((sum: number, o: any) => sum + o.value, 0)
+  const mainItem = os.reduce((max: any, item: any) => item.value > max.value ? item : max, os[0])
+  const mainPercent = total > 0 ? ((mainItem.value / total) * 100).toFixed(1) : '0'
+  
+  return {
+    option: buildDonutOption(os, mainItem.name, parseFloat(mainPercent)),
+    mainLabel: mainItem.name,
+    mainPercent
   }
 })
 
@@ -1805,4 +1832,27 @@ onUnmounted(() => {
   }
 })
 </script>
+
+<style scoped>
+.donut-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.donut-center-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+.donut-center-label {
+  font-size: 12px;
+  opacity: 0.7;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+</style>
 

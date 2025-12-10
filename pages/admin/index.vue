@@ -30,27 +30,24 @@
 
     <template v-else>
       <!-- 核心指标区域 -->
-      <div class="mt-10">
-        <div class="section-title">核心指标</div>
-        <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
-          <n-card
+      <div class="mt-8">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-base font-semibold text-main opacity-90">核心指标</h3>
+          <n-button text size="tiny" class="opacity-60 hover:opacity-100">
+            <template #icon>⟳</template>
+            刷新数据
+          </n-button>
+        </div>
+        
+        <div class="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+          <AdminDashboardKpiCard
             v-for="kpi in kpiCards"
             :key="kpi.key"
-            class="dashboard-card kpi-card"
-          >
-            <div class="kpi-card-inner">
-              <div class="kpi-label">{{ kpi.label }}</div>
-          <div class="kpi-value-row">
-            <div class="kpi-value">{{ formatValue(kpi.value) }}</div>
-            <div v-if="kpi.trend !== null" class="kpi-trend" :class="kpi.trend > 0 ? 'kpi-trend-up' : 'kpi-trend-down'">
-              {{ kpi.trend > 0 ? '↑' : '↓' }} {{ Math.abs(kpi.trend).toFixed(1) }}%
-            </div>
-            <div v-else class="kpi-trend-empty">--</div>
-          </div>
-          <!-- 右上角柔光小圆点 -->
-          <div class="kpi-glow-dot"></div>
-            </div>
-          </n-card>
+            :label="kpi.label"
+            :value="kpi.value"
+            :trend="kpi.trend"
+            :loading="isLoading"
+          />
         </div>
       </div>
 
@@ -163,6 +160,9 @@ const AdminDashboardTopPagesCard = defineAsyncComponent(() =>
 )
 const AdminDashboardTimeline = defineAsyncComponent(() => 
   import('~/components/admin/dashboard/Timeline.vue')
+)
+const AdminDashboardKpiCard = defineAsyncComponent(() => 
+  import('~/components/admin/dashboard/KpiCard.vue')
 )
 
 definePageMeta({
@@ -289,6 +289,7 @@ const timelineItems = computed(() => {
 })
 
 const formatValue = (value: number) => {
+  // Deprecated: KpiCard handles formatting now
   if (value >= 10000) {
     return (value / 10000).toFixed(1) + 'w'
   }

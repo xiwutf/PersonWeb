@@ -40,7 +40,7 @@ import type { GlobalTheme, GlobalThemeOverrides } from 'naive-ui'
 const ProvidersComponent = ref<any>(null)
 
 // 使用全局主题管理 composable
-const { currentTheme } = useTheme()
+const { currentTheme } = useNaiveTheme()
 
 /**
  * 将项目主题 key 映射到 Naive UI 的 theme
@@ -72,270 +72,83 @@ const naiveTheme = computed<GlobalTheme | null>(() => {
  * - 保留少量必要的 CSS 变量（如圆角、阴影等）
  */
 const naiveThemeOverrides = computed<GlobalThemeOverrides>(() => {
-  const isDark = currentTheme.value === 'dark'
+  const isDark = currentTheme.value?.name === 'dark' // Naive UI dark theme has name='dark'
   
-  // 深色模式颜色（Vision Pro × 玻璃拟态风格）
-  const darkColors = {
-    // 背景色 - 深空渐变
-    bodyColor: 'radial-gradient(circle at top, #0b1220 0%, #020617 45%, #020617 100%)',
-    cardColor: 'rgba(15, 23, 42, 0.78)', // 半透明深色玻璃
-    hoverColor: 'rgba(15, 23, 42, 0.95)',
-    // 文字颜色
-    textColorBase: 'rgba(255, 255, 255, 0.92)',
-    textColor1: 'rgba(255, 255, 255, 0.92)',
-    textColor2: 'rgba(255, 255, 255, 0.6)',
-    textColor3: 'rgba(255, 255, 255, 0.4)',
-    // 边框颜色 - 微亮描边
-    borderColor: 'rgba(148, 163, 184, 0.35)',
-    // 主色调 - 电光蓝（Vision Pro 风格）
-    primaryColor: '#3b82f6',
-    primaryColorHover: '#60a5fa',
-    primaryColorPressed: '#2563eb',
-    primaryColorSuppl: 'rgba(59, 130, 246, 0.15)',
-    // 状态色
-    successColor: '#34d399',
-    errorColor: '#f87171',
-    warningColor: '#fbbf24',
-    infoColor: '#60a5fa',
-  }
-  
-  // 浅色模式颜色
-  const lightColors = {
-    // 背景色
-    bodyColor: '#ffffff',
-    cardColor: '#ffffff',
-    hoverColor: '#f8fafc',
-    // 文字颜色
-    textColorBase: '#0f172a',
-    textColor1: '#0f172a',
-    textColor2: '#64748b',
-    textColor3: '#94a3b8',
-    // 边框颜色
-    borderColor: '#e2e8f0',
-    // 主色调
-    primaryColor: '#2563eb',
-    primaryColorHover: '#1d4ed8',
-    primaryColorPressed: '#1e40af',
-    primaryColorSuppl: '#dbeafe',
-    // 状态色
-    successColor: '#22c55e',
-    errorColor: '#ef4444',
-    warningColor: '#f59e0b',
-    infoColor: '#3b82f6',
-  }
-  
-  const colors = isDark ? darkColors : lightColors
-  
+  // Design System V2: Fintech Blue + High Contrast
+  const colors = isDark 
+    ? {
+        primary: '#3B82F6',
+        primaryHover: '#60A5FA',
+        primaryPressed: '#2563EB',
+        primarySuppl: 'rgba(59, 130, 246, 0.15)',
+        bgBody: '#0B0E14', // Deep space dark
+        bgCard: '#151B28', // Slightly lighter dark
+        textMain: '#F5F7FA',
+        textSec: '#94A3B8',
+        border: 'rgba(255, 255, 255, 0.08)',
+        borderHover: 'rgba(59, 130, 246, 0.4)',
+      }
+    : {
+        primary: '#0052FF',
+        primaryHover: '#0040D6',
+        primaryPressed: '#0030A0',
+        primarySuppl: 'rgba(0, 82, 255, 0.08)',
+        bgBody: '#F5F7FA', // Cold grey-white
+        bgCard: '#FFFFFF',
+        textMain: '#0F172A',
+        textSec: '#64748B',
+        border: 'rgba(0, 0, 0, 0.06)',
+        borderHover: 'rgba(0, 82, 255, 0.2)',
+      }
+
   return {
     common: {
-      // 主色调
-      primaryColor: colors.primaryColor,
-      primaryColorHover: colors.primaryColorHover,
-      primaryColorPressed: colors.primaryColorPressed,
-      primaryColorSuppl: colors.primaryColorSuppl,
+      primaryColor: colors.primary,
+      primaryColorHover: colors.primaryHover,
+      primaryColorPressed: colors.primaryPressed,
+      primaryColorSuppl: colors.primarySuppl,
+
+      baseColor: colors.bgBody,
+      bodyColor: colors.bgBody,
+      cardColor: colors.bgCard,
       
-      // 文字颜色
-      textColorBase: colors.textColorBase,
-      textColor1: colors.textColor1,
-      textColor2: colors.textColor2,
-      textColor3: colors.textColor3,
+      textColorBase: colors.textMain,
+      textColor1: colors.textMain,
+      textColor2: colors.textSec,
       
-      // 背景色
-      bodyColor: colors.bodyColor,
-      cardColor: colors.cardColor,
-      hoverColor: colors.hoverColor,
-      
-      // 边框颜色
-      borderColor: colors.borderColor,
-      
-      // 状态色
-      successColor: colors.successColor,
-      errorColor: colors.errorColor,
-      warningColor: colors.warningColor,
-      infoColor: colors.infoColor,
-      
-      // 圆角：使用 CSS 变量（这些是布局相关的，保留变量）
-      borderRadius: 'var(--radius-md)',
-      borderRadiusSmall: 'var(--radius-sm)',
-      borderRadiusLarge: 'var(--radius-lg)',
-    },
-    Button: {
-      borderRadiusSmall: 'var(--radius-sm)',
-      borderRadiusMedium: 'var(--radius-md)',
-      borderRadiusLarge: 'var(--radius-lg)',
-      // 默认按钮
-      textColor: colors.textColor1,
-      textColorHover: colors.textColor1,
-      textColorPressed: colors.textColor1,
-      textColorFocus: colors.textColor1,
-      textColorDisabled: colors.textColor3,
-      // 主要按钮文字颜色（白色）
-      textColorPrimary: '#ffffff',
-      textColorPrimaryHover: '#ffffff',
-      textColorPrimaryPressed: '#ffffff',
-      // 成功按钮文字颜色
-      textColorSuccess: '#ffffff',
-      textColorSuccessHover: '#ffffff',
-      // 警告按钮文字颜色
-      textColorWarning: '#ffffff',
-      textColorWarningHover: '#ffffff',
-      // 错误按钮文字颜色
-      textColorError: '#ffffff',
-      textColorErrorHover: '#ffffff',
-      // 次要按钮（secondary）
-      colorSecondary: isDark ? 'rgba(255, 255, 255, 0.1)' : '#f1f5f9',
-      colorSecondaryHover: isDark ? 'rgba(255, 255, 255, 0.15)' : '#e2e8f0',
-      colorSecondaryPressed: isDark ? 'rgba(255, 255, 255, 0.2)' : '#cbd5e1',
-      // 三级按钮（tertiary）
-      colorTertiary: 'transparent',
-      colorTertiaryHover: isDark ? 'rgba(255, 255, 255, 0.05)' : '#f8fafc',
-      colorTertiaryPressed: isDark ? 'rgba(255, 255, 255, 0.1)' : '#e2e8f0',
-      // 四级按钮（quaternary）- 用于取消等操作
-      colorQuaternary: 'transparent',
-      colorQuaternaryHover: isDark ? 'rgba(255, 255, 255, 0.05)' : '#f8fafc',
-      colorQuaternaryPressed: isDark ? 'rgba(255, 255, 255, 0.1)' : '#e2e8f0',
+      borderColor: colors.border,
+      borderRadius: '8px',
+      borderRadiusSmall: '6px',
     },
     Card: {
-      borderRadius: '18px', // Vision Pro 风格圆角
-      color: colors.cardColor,
+      color: colors.bgCard,
+      borderRadius: '16px',
+      borderColor: colors.border,
+      // Design System V2: Lighter shadows for glassmorphism feel
       boxShadow: isDark 
-        ? '0 24px 60px rgba(15, 23, 42, 0.85), 0 0 0 1px rgba(148, 163, 184, 0.1)' // 柔和下投影 + 微弱内发光
-        : '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-      borderColor: colors.borderColor,
-      paddingMedium: '20px 24px', // Vision Pro 风格内边距
+        ? '0 8px 32px rgba(0, 0, 0, 0.4)' 
+        : '0 4px 20px rgba(0, 0, 0, 0.03)',
+    },
+    Button: {
+      borderRadius: '8px',
+      fontWeight: '600',
+      // Primary button gradient effect (simulated via shadows/borders if needed, but keeping simple here)
+      textColorPrimary: '#FFFFFF',
     },
     Input: {
-      borderRadius: 'var(--radius-md)',
-      // 边框颜色
-      borderColor: colors.borderColor,
-      borderColorHover: isDark ? 'rgba(255, 255, 255, 0.25)' : '#cbd5e1',
-      borderColorFocus: colors.primaryColor,
-      borderColorDisabled: isDark ? 'rgba(255, 255, 255, 0.05)' : '#e2e8f0',
-      // 背景颜色
-      color: isDark ? 'rgba(255, 255, 255, 0.05)' : '#ffffff',
-      colorDisabled: isDark ? 'rgba(255, 255, 255, 0.02)' : '#f8fafc',
-      colorFocus: isDark ? 'rgba(255, 255, 255, 0.08)' : '#ffffff',
-      // 文字颜色
-      textColor: colors.textColor1,
-      textColorDisabled: colors.textColor3,
-      // placeholder 颜色（增强对比度）
-      placeholderColor: isDark ? 'rgba(255, 255, 255, 0.5)' : '#94a3b8',
-      // 图标颜色
-      iconColor: colors.textColor2,
-      iconColorHover: colors.textColor1,
-    },
-    Select: {
-      borderRadius: 'var(--radius-md)',
-      // 边框颜色
-      borderColor: colors.borderColor,
-      borderColorHover: isDark ? 'rgba(255, 255, 255, 0.25)' : '#cbd5e1',
-      borderColorActive: colors.primaryColor,
-      borderColorDisabled: isDark ? 'rgba(255, 255, 255, 0.05)' : '#e2e8f0',
-      // 背景颜色
-      color: isDark ? 'rgba(255, 255, 255, 0.05)' : '#ffffff',
-      colorDisabled: isDark ? 'rgba(255, 255, 255, 0.02)' : '#f8fafc',
-      colorActive: isDark ? 'rgba(255, 255, 255, 0.08)' : '#ffffff',
-      // 文字颜色
-      textColor: colors.textColor1,
-      textColorDisabled: colors.textColor3,
-      // placeholder 颜色
-      placeholderColor: isDark ? 'rgba(255, 255, 255, 0.5)' : '#94a3b8',
-      // 箭头颜色
-      arrowColor: colors.textColor2,
-      arrowColorHover: colors.textColor1,
-      arrowColorActive: colors.primaryColor,
-    },
-    Form: {
-      labelTextColor: colors.textColor1,
-      labelFontWeight: '500',
-      labelFontSize: '14px',
-      // 错误提示颜色
-      feedbackTextColor: isDark ? '#f87171' : '#ef4444',
-      feedbackTextColorWarning: isDark ? '#fbbf24' : '#f59e0b',
-      feedbackTextColorError: isDark ? '#f87171' : '#ef4444',
+      borderRadius: '8px',
+      borderColor: colors.border,
+      color: isDark ? 'rgba(255,255,255,0.03)' : '#FFFFFF',
+      colorFocus: isDark ? 'rgba(0,0,0,0.2)' : '#FFFFFF',
+      boxShadowFocus: `0 0 0 2px ${colors.primarySuppl}`,
     },
     DataTable: {
-      borderRadius: '16px', // 霓虹渐变玻璃风格圆角
-      // 整体背景透明，让 Card 当背景（深色玻璃面板风格）
-      color: 'transparent',
-      // 表头（苍白一点）
-      thColor: 'transparent',
-      thTextColor: isDark ? 'rgba(248, 250, 252, 0.72)' : '#374151',
-      thFontWeight: '500',
-      // 行（正文稍亮）
+      borderRadius: '12px',
+      borderColor: colors.border,
+      thColor: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.01)',
       tdColor: 'transparent',
-      tdTextColor: isDark ? 'rgba(226, 232, 240, 0.88)' : '#111827',
-      // 行 hover 效果（轻微亮度变化）
-      tdColorHover: isDark ? 'rgba(148, 163, 184, 0.08)' : '#f8fafc',
-      // 斑马纹（弱化）
-      tdColorStriped: isDark ? 'rgba(15, 23, 42, 0.0)' : '#fafbfc',
-      // 边框线尽量弱化
-      borderColor: isDark ? 'rgba(148, 163, 184, 0.24)' : '#e2e8f0',
-      thBorderColor: isDark ? 'rgba(148, 163, 184, 0.24)' : '#cbd5e1',
-      tdBorderColor: isDark ? 'rgba(148, 163, 184, 0.16)' : '#e2e8f0',
-    },
-    Layout: {
-      // 深色模式下使用深空渐变背景（Vision Pro 风格）
-      color: isDark 
-        ? 'radial-gradient(circle at top, #0b1220 0%, #020617 45%, #020617 100%)'
-        : colors.bodyColor,
-      headerColor: colors.cardColor,
-      footerColor: colors.cardColor,
-      siderColor: isDark ? 'rgba(15, 23, 42, 0.85)' : '#f8fafc',
-      siderBorderColor: colors.borderColor,
-      // 增强层级感
-      headerBorderColor: isDark ? 'rgba(148, 163, 184, 0.2)' : '#e2e8f0',
-      footerBorderColor: isDark ? 'rgba(148, 163, 184, 0.2)' : '#e2e8f0',
-    },
-    Menu: {
-      borderRadius: 'var(--radius-md)',
-      // 菜单项背景
-      itemColor: 'transparent',
-      itemColorActive: colors.primaryColorSuppl,
-      itemColorHover: colors.hoverColor,
-      // 菜单项文字
-      itemTextColor: colors.textColor1,
-      itemTextColorActive: colors.primaryColor,
-      itemTextColorHover: colors.textColor1,
-      // 菜单项图标
-      itemIconColor: colors.textColor2,
-      itemIconColorActive: colors.primaryColor,
-      itemIconColorHover: colors.textColor1,
-      // 菜单项分组标题
-      groupTextColor: colors.textColor2,
-      // 增强激活状态
-      itemColorActiveHover: isDark 
-        ? 'rgba(96, 165, 250, 0.25)' 
-        : 'rgba(37, 99, 235, 0.12)',
-    },
-    Message: {
-      borderRadius: 'var(--radius-lg)',
-      boxShadow: isDark
-        ? '0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5)'
-        : '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
-    },
-    Notification: {
-      borderRadius: 'var(--radius-lg)',
-      boxShadow: isDark
-        ? '0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5)'
-        : '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
-    },
-    Dialog: {
-      borderRadius: 'var(--radius-xl)',
-      boxShadow: isDark
-        ? '0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5)'
-        : '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
-    },
-    Drawer: {
-      color: colors.cardColor,
-      headerBorderBottom: `1px solid ${colors.borderColor}`,
-    },
-    Tag: {
-      borderRadius: 'var(--radius-md)',
-    },
-    Divider: {
-      color: colors.borderColor,
-    },
+      tdColorHover: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
+    }
   }
 })
 

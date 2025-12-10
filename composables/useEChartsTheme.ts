@@ -17,13 +17,10 @@ const getCssVar = (varName: string): string => {
 }
 
 export const useEChartsTheme = () => {
-  // 使用全局主题系统（前台和后台共用）
-  const { currentTheme } = useTheme()
-  
-  // 检测深色模式
-  const isDark = computed(() => {
-    return currentTheme.value === 'dark'
-  })
+  // 使用全局主题管理 composable（前台和后台共用）
+  const { isDark } = useNaiveTheme()
+
+
 
   // ECharts 深色主题配置（Vision Pro × 柔光感）
   const darkTheme = {
@@ -201,37 +198,37 @@ export const useEChartsTheme = () => {
         ...theme.grid,
         ...option.grid
       },
-      xAxis: Array.isArray(option.xAxis) 
+      xAxis: Array.isArray(option.xAxis)
         ? option.xAxis.map((axis: any) => ({
-            ...axis,
-            axisLine: { ...theme.categoryAxis.axisLine, ...axis.axisLine },
-            axisLabel: { ...theme.categoryAxis.axisLabel, ...axis.axisLabel },
-            splitLine: { ...theme.categoryAxis.splitLine, ...axis.splitLine }
-          }))
+          ...axis,
+          axisLine: { ...theme.categoryAxis.axisLine, ...axis.axisLine },
+          axisLabel: { ...theme.categoryAxis.axisLabel, ...axis.axisLabel },
+          splitLine: { ...theme.categoryAxis.splitLine, ...axis.splitLine }
+        }))
         : option.xAxis ? {
-            ...option.xAxis,
-            axisLine: { ...theme.categoryAxis.axisLine, ...option.xAxis.axisLine },
-            axisLabel: { ...theme.categoryAxis.axisLabel, ...option.xAxis.axisLabel },
-            splitLine: { ...theme.categoryAxis.splitLine, ...option.xAxis.splitLine }
-          } : undefined,
+          ...option.xAxis,
+          axisLine: { ...theme.categoryAxis.axisLine, ...option.xAxis.axisLine },
+          axisLabel: { ...theme.categoryAxis.axisLabel, ...option.xAxis.axisLabel },
+          splitLine: { ...theme.categoryAxis.splitLine, ...option.xAxis.splitLine }
+        } : undefined,
       yAxis: Array.isArray(option.yAxis)
         ? option.yAxis.map((axis: any) => ({
-            ...axis,
-            axisLine: { ...theme.valueAxis.axisLine, ...axis.axisLine },
-            axisLabel: { ...theme.valueAxis.axisLabel, ...axis.axisLabel },
-            splitLine: { ...theme.valueAxis.splitLine, ...axis.splitLine }
-          }))
+          ...axis,
+          axisLine: { ...theme.valueAxis.axisLine, ...axis.axisLine },
+          axisLabel: { ...theme.valueAxis.axisLabel, ...axis.axisLabel },
+          splitLine: { ...theme.valueAxis.splitLine, ...axis.splitLine }
+        }))
         : option.yAxis ? {
-            ...option.yAxis,
-            axisLine: { ...theme.valueAxis.axisLine, ...option.yAxis.axisLine },
-            axisLabel: { ...theme.valueAxis.axisLabel, ...option.yAxis.axisLabel },
-            splitLine: { ...theme.valueAxis.splitLine, ...option.yAxis.splitLine }
-          } : undefined
+          ...option.yAxis,
+          axisLine: { ...theme.valueAxis.axisLine, ...option.yAxis.axisLine },
+          axisLabel: { ...theme.valueAxis.axisLabel, ...option.yAxis.axisLabel },
+          splitLine: { ...theme.valueAxis.splitLine, ...option.yAxis.splitLine }
+        } : undefined
     }
   }
 
   // ==================== 霓虹渐变玻璃风格辅助函数 ====================
-  
+
   /**
    * 构建霓虹折线/面积图配置
    * @param colorVar CSS 变量名，如 '--chart-neon-red'
@@ -240,7 +237,7 @@ export const useEChartsTheme = () => {
   const buildNeonLineOptions = (colorVar: string, options: any = {}) => {
     const color = getCssVar(colorVar) || colorVar
     const colorWithAlpha = `${color}55` // 33% 透明度
-    
+
     return {
       type: 'line',
       smooth: true,
@@ -274,7 +271,7 @@ export const useEChartsTheme = () => {
       ...options
     }
   }
-  
+
   /**
    * 构建霓虹柱状图配置
    * @param colorStartVar 起始颜色 CSS 变量名
@@ -284,7 +281,7 @@ export const useEChartsTheme = () => {
   const buildNeonBarOptions = (colorStartVar: string, colorEndVar: string, options: any = {}) => {
     const start = getCssVar(colorStartVar) || colorStartVar
     const end = getCssVar(colorEndVar) || colorEndVar
-    
+
     return {
       type: 'bar',
       barWidth: 10,
@@ -307,7 +304,7 @@ export const useEChartsTheme = () => {
       ...options
     }
   }
-  
+
   /**
    * 构建霓虹环形图（Donut）配置
    * @param data 数据数组，每个元素包含 { value, name, colorVar }
@@ -323,7 +320,7 @@ export const useEChartsTheme = () => {
         borderColor: 'rgba(15, 23, 42, 1)' // 深色背景卡片
       }
     }))
-    
+
     return {
       type: 'pie',
       radius: ['58%', '78%'], // 中间留空，外环较粗

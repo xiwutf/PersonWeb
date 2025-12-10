@@ -1,240 +1,52 @@
-/**
- * 设计 Token：全局 CSS 变量定义
- * 
- * 职责：
- * - 统一管理结构类 Token：圆角、阴影、间距、字号、z-index、布局尺寸
- * - 通过 data-theme 属性为不同主题设置不同的变量值
- * - 颜色相关的 Token 已迁移到 AppNaiveConfig.vue 的 themeOverrides
- * 
- * 使用方式：
- * - 在组件中使用 var(--radius-md) 等结构类变量
- * - 颜色相关的变量（--color-*）仅用于向后兼容，新代码应使用 themeOverrides
- * - 通过 document.documentElement.dataset.theme = 'light' 或 'dark' 切换主题
- * 
- * 重构说明（2024-12-XX）：
- * - 精简为仅支持 light（浅色）和 dark（深色）两个主题
- * - 旧主题（tech-blue、paper、forest、hybrid-super 等）已移除
- * - 前端 useTheme 会自动将旧主题映射为 light 或 dark
- * 
- * 颜色迁移说明（2024-12-XX）：
- * - 所有颜色相关的 Token 已迁移到 AppNaiveConfig.vue 的 themeOverrides
- * - 保留 --color-* 变量仅用于向后兼容，新代码不应使用
- * - 结构类 Token（圆角、阴影、间距）保留在此文件中
- */
+/* Design System V2 Tokens */
+/* 
+  仅保留结构性 Token，颜色 Token 请优先使用 Naive Theme Overrides 
+  或使用语义化的 --color-v2-* 变量
+*/
 
-/* ==================== 默认主题（:root） ==================== */
-/**
- * 默认主题使用 light 主题的变量值
- * 这样即使没有设置 data-theme，也能正常显示
- */
 :root {
-  /* ========== 背景色（已迁移到 themeOverrides，保留用于向后兼容）========== */
-  /* ⚠️ 注意：这些颜色变量已迁移到 AppNaiveConfig.vue 的 themeOverrides */
-  /* 新代码应使用 themeOverrides，不要直接使用这些变量 */
-  --bg: #f5f7fb;                    /* 页面主背景 → themeOverrides.Layout.color */
-  --bg-elevated: #ffffff;           /* 卡片/模块背景 → themeOverrides.Layout.hoverColor */
-  --bg-card: #ffffff;                /* 卡片背景 → themeOverrides.Card.color */
-  --header-bg: rgba(255, 255, 255, 0.92); /* 顶部导航背景 → themeOverrides.Layout.headerColor */
-  
-  /* ========== 文字颜色（已迁移到 themeOverrides，保留用于向后兼容）========== */
-  --text-main: #111827;             /* 主要文字 → themeOverrides.common.textColor1 */
-  --text-secondary: #4b5563;        /* 次要文字 → themeOverrides.common.textColor2 */
-  --text-muted: #6b7280;            /* 弱化文字 → themeOverrides.common.textColor2 */
-  --text-disabled: #94a3b8;        /* 禁用文字 → themeOverrides.common.textColor3 */
-  
-  /* ========== 品牌/主色（已迁移到 themeOverrides，保留用于向后兼容）========== */
-  --primary: #2563eb;               /* 主色调 → themeOverrides.common.primaryColor */
-  --primary-hover: #1d4ed8;         /* 主色悬停 → themeOverrides.common.primaryColorHover */
-  --primary-soft-bg: #e0edff;       /* 主色柔和背景 → themeOverrides.common.primaryColorSuppl */
-  
-  /* ========== 边框/分割线（已迁移到 themeOverrides，保留用于向后兼容）========== */
-  --border-color: #e5e7eb;          /* 边框颜色 → themeOverrides.common.borderColor */
-  --divider-color: #e5e7eb;         /* 分割线颜色 → themeOverrides.common.borderColor */
-  
-  /* ========== 圆角 ========== */
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
-  --card-radius: 18px;               /* 卡片圆角（浅色主题：强调悬浮感） */
-  
-  /* ========== 阴影 ========== */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.08); /* 柔和阴影（浅色主题：强调卡片悬浮感） */
-  
-  /* ========== 网格线颜色（浅色主题专用） ========== */
-  --grid-line-color: rgba(148, 163, 184, 0.25); /* 网格线：更淡，避免刺眼 */
-  
-  /* ========== 字体设置 ========== */
-  --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", Arial, sans-serif;
-  --font-size-base: 16px;
-  --font-weight-base: 400;
-  --line-height-base: 1.6;
-  
-  /* ========== 字号等级 ========== */
-  --font-size-h1: 2rem;
-  --font-size-h2: 1.5rem;
-  --font-size-h3: 1.25rem;
-  --font-size-h4: 1.125rem;
-  --font-size-body: 0.875rem;
-  --font-size-sm: 0.75rem;
-  --font-size-xs: 0.625rem;
-  
-  /* ========== 间距 ========== */
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
-  --spacing-2xl: 3rem;
-  
-  /* ========== 图表颜色（保留，图表专用）========== */
-  /* 注意：图表颜色保留在此，因为 ECharts 需要直接使用颜色值 */
-  --chart-primary: #3b82f6;
-  --chart-secondary: #10b981;
-  --chart-tertiary: #f59e0b;
-  --chart-quaternary: #ef4444;
-  --chart-quinary: #8b5cf6;
-  
-  /* ========== 霓虹渐变色板（浅色模式 - 降饱和版本）========== */
-  --chart-neon-red: #ff6b8a;
-  --chart-neon-orange: #ffb366;
-  --chart-neon-green: #4ade80;
-  --chart-neon-cyan: #38bdf8;
-  --chart-neon-blue: #3b82f6;
-  --chart-neon-purple: #a855f7;
-  
-  /* ========== 兼容旧变量名（向后兼容，逐步迁移中）========== */
-  /* ⚠️ 注意：这些变量仅用于向后兼容，新代码应使用 themeOverrides */
-  /* 计划：在确认所有使用位置已迁移后，删除这些兼容变量 */
-  --color-bg-page: var(--bg);
-  --color-bg-body: var(--bg);
-  --color-bg-card: var(--bg-card);
-  --color-bg-elevated: var(--bg-elevated);
-  --color-text-main: var(--text-main);
-  --color-text-muted: var(--text-muted);
-  --color-text-disabled: var(--text-disabled);
-  --color-primary: var(--primary);
-  --color-primary-hover: var(--primary-hover);
-  --color-primary-soft: var(--primary-soft-bg);
-  --color-border-subtle: var(--border-color);
-  --color-border-default: var(--border-color);
-  --color-border-strong: var(--divider-color);
-  --color-primary-base: var(--primary); /* 兼容 hero.css 中的变量名 */
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* Fonts */
+  --font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* ==================== 浅色主题（light） ==================== */
-/**
- * 浅色主题优化（2025-01）：柔和、清晰、不刺眼
- * - 背景从纯白改为柔和浅灰（#f5f7fb），减少刺眼感
- * - 文字对比度提高（深色文字 #111827），确保清晰可读
- * - 主色从荧光蓝改为正常蓝（#2563eb），更柔和
- * - 卡片层次更明显（阴影 + 背景对比）
- */
-html[data-theme="light"] {
-  /* ========== 背景色（已迁移到 themeOverrides，保留用于向后兼容）========== */
-  /* ⚠️ 注意：这些颜色变量已迁移到 AppNaiveConfig.vue 的 themeOverrides */
-  --bg: #f5f7fb;                    /* → themeOverrides.Layout.color */
-  --bg-elevated: #ffffff;           /* → themeOverrides.Layout.hoverColor */
-  --bg-card: #ffffff;               /* → themeOverrides.Card.color */
-  --header-bg: rgba(255, 255, 255, 0.92); /* → themeOverrides.Layout.headerColor */
-  
-  /* ========== 文字颜色（已迁移到 themeOverrides，保留用于向后兼容）========== */
-  --text-main: #111827;             /* → themeOverrides.common.textColor1 */
-  --text-secondary: #4b5563;        /* → themeOverrides.common.textColor2 */
-  --text-muted: #6b7280;            /* → themeOverrides.common.textColor2 */
-  --text-disabled: #94a3b8;         /* → themeOverrides.common.textColor3 */
-  
-  /* ========== 品牌/主色（已迁移到 themeOverrides，保留用于向后兼容）========== */
-  --primary: #2563eb;               /* → themeOverrides.common.primaryColor */
-  --primary-hover: #1d4ed8;         /* → themeOverrides.common.primaryColorHover */
-  --primary-soft-bg: #e0edff;       /* → themeOverrides.common.primaryColorSuppl */
-  
-  /* ========== 边框/分割线（已迁移到 themeOverrides，保留用于向后兼容）========== */
-  --border-color: #e5e7eb;         /* → themeOverrides.common.borderColor */
-  --divider-color: #e5e7eb;         /* → themeOverrides.common.borderColor */
-  
-  /* ========== 圆角 ========== */
-  --card-radius: 18px;              /* 卡片圆角：稍微强调悬浮感 */
-  
-  /* ========== 阴影 ========== */
-  --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.08); /* 柔和阴影：强调卡片悬浮感 */
-  
-  /* ========== 网格线颜色（浅色主题专用） ========== */
-  --grid-line-color: rgba(148, 163, 184, 0.25); /* 网格线：更淡，避免刺眼 */
-  
-  /* ========== 兼容旧变量名 ========== */
-  --color-bg-page: var(--bg);
-  --color-bg-body: var(--bg);
-  --color-bg-card: var(--bg-card);
-  --color-bg-elevated: var(--bg-elevated);
-  --color-text-main: var(--text-main);
-  --color-text-muted: var(--text-muted);
-  --color-text-disabled: var(--text-disabled);
-  --color-primary: var(--primary);
-  --color-primary-hover: var(--primary-hover);
-  --color-primary-soft: var(--primary-soft-bg);
-  --color-border-subtle: var(--border-color);
-  --color-border-default: var(--border-color);
-  --color-border-strong: var(--divider-color);
-  --color-primary-base: var(--primary); /* 兼容 hero.css 中的变量名 */
+[data-theme='light'] {
+  --color-bg-body: #F5F7FA;
+  --color-bg-card: #FFFFFF;
+  --color-text-main: #0F172A;
+  --color-text-sec: #64748B;
+  --color-border: rgba(0, 0, 0, 0.06);
+  --color-primary: #0052FF;
+  --color-success: #00D18B;
+  --color-warning: #FFAA00;
+  --color-error: #FF3B30;
+
+  /* Charts */
+  --chart-grid: rgba(0, 0, 0, 0.05);
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 
-/* ==================== 深色主题（dark） ==================== */
-/**
- * 深色主题：深色实验室/科技感
- * - 背景为深灰/接近黑色
- * - 卡片背景略比主背景亮一点，有玻璃态/半透明感
- * - 主色、按钮在深色背景下对比强烈，避免灰不溜秋
- */
-html[data-theme="dark"] {
-  /* ========== 背景色（已迁移到 themeOverrides，保留用于向后兼容）========== */
-  /* ⚠️ 注意：这些颜色变量已迁移到 AppNaiveConfig.vue 的 themeOverrides */
-  --bg: #0a0e1a;                   /* → themeOverrides.Layout.color */
-  --bg-elevated: #131720;          /* → themeOverrides.Layout.hoverColor */
-  --bg-card: rgba(19, 23, 32, 0.8); /* → themeOverrides.Card.color */
-  --header-bg: rgba(10, 14, 26, 0.85); /* → themeOverrides.Layout.headerColor */
-  
-  /* ========== 文字颜色（已迁移到 themeOverrides，保留用于向后兼容）========== */
-  --text-main: rgba(255, 255, 255, 0.92); /* → themeOverrides.common.textColor1 */
-  --text-secondary: rgba(255, 255, 255, 0.75); /* → themeOverrides.common.textColor2 */
-  --text-muted: rgba(255, 255, 255, 0.6); /* → themeOverrides.common.textColor2 */
-  --text-disabled: rgba(255, 255, 255, 0.4); /* → themeOverrides.common.textColor3 */
-  
-  /* ========== 品牌/主色（已迁移到 themeOverrides，保留用于向后兼容）========== */
-  --primary: #60a5fa;              /* → themeOverrides.common.primaryColor */
-  --primary-hover: #3b82f6;       /* → themeOverrides.common.primaryColorHover */
-  --primary-soft-bg: rgba(96, 165, 250, 0.15); /* → themeOverrides.common.primaryColorSuppl */
-  
-  /* ========== 边框/分割线（已迁移到 themeOverrides，保留用于向后兼容）========== */
-  --border-color: rgba(255, 255, 255, 0.1); /* → themeOverrides.common.borderColor */
-  --divider-color: rgba(255, 255, 255, 0.15); /* → themeOverrides.common.borderColor */
-  
-  /* ========== 阴影 ========== */
-  --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05); /* 柔和阴影：深色阴影 + 微光边框 */
-  
-  /* ========== 霓虹渐变色板（深色模式 - 高饱和版本）========== */
-  --chart-neon-red: #ff4b6a;
-  --chart-neon-orange: #ff9b50;
-  --chart-neon-green: #22f2a2;
-  --chart-neon-cyan: #22d3ee;
-  --chart-neon-blue: #3b82f6;
-  --chart-neon-purple: #a855f7;
-  
-  /* ========== 兼容旧变量名 ========== */
-  --color-bg-page: var(--bg);
-  --color-bg-body: var(--bg);
-  --color-bg-card: var(--bg-card);
-  --color-bg-elevated: var(--bg-elevated);
-  --color-text-main: var(--text-main);
-  --color-text-muted: var(--text-muted);
-  --color-text-disabled: var(--text-disabled);
-  --color-primary: var(--primary);
-  --color-primary-hover: var(--primary-hover);
-  --color-primary-soft: var(--primary-soft-bg);
-  --color-border-subtle: var(--border-color);
-  --color-border-default: var(--border-color);
-  --color-border-strong: var(--divider-color);
+[data-theme='dark'] {
+  --color-bg-body: #0B0E14;
+  --color-bg-card: #151B28;
+  --color-text-main: #F5F7FA;
+  --color-text-sec: #94A3B8;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-primary: #3B82F6;
+
+  /* Charts */
+  --chart-grid: rgba(255, 255, 255, 0.05);
+  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.4);
 }

@@ -115,8 +115,8 @@ const renderTrendChart = () => {
 
   // 使用霓虹色板 CSS 变量获取颜色
   const root = document.documentElement
-  const primaryColor = getComputedStyle(root).getPropertyValue('--chart-neon-cyan').trim() || '#22d3ee'
-  const successColor = getComputedStyle(root).getPropertyValue('--chart-neon-green').trim() || '#22f2a2'
+  const primaryColor = getComputedStyle(root).getPropertyValue('--color-primary').trim() || '#0052FF'
+  const successColor = getComputedStyle(root).getPropertyValue('--color-success').trim() || '#00D18B'
   const textMutedColor = getComputedStyle(root).getPropertyValue('--color-text-muted').trim() || '#9ca3af'
   const borderColor = 'rgba(148, 163, 184, 0.18)' // 弱网格颜色
 
