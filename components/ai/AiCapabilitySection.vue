@@ -165,7 +165,11 @@ const handleProjectCardClick = (project: any) => {
   position: relative;
   padding: 80px 0;
   overflow: hidden;
-  background: var(--color-bg-body, #0a0a0a);
+  /* 背景透明，融入全局背景 */
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .ai-capability-bg {
@@ -173,6 +177,7 @@ const handleProjectCardClick = (project: any) => {
   inset: 0;
   pointer-events: none;
   z-index: 0;
+  opacity: 0.5; /* 降低不透明度 */
 }
 
 .ai-capability-bg-gradient {

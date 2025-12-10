@@ -28,23 +28,38 @@
   position: absolute;
   inset: 0;
   z-index: 0;
+  overflow: hidden;
 }
 
 .hero-background-bg {
   position: absolute;
   inset: 0;
+  background: radial-gradient(circle at 50% 0%, var(--bg-surface-2), var(--bg-app));
 }
 
 .hero-background-grid {
   position: absolute;
-  inset: 0;
-  /* 浅色主题优化（2025-01）：降低网格透明度，避免刺眼 */
+  inset: -50%;
+  width: 200%;
+  height: 200%;
   opacity: 0.2;
+  transform: perspective(1000px) rotateX(60deg) translateY(-100px) translateZ(-200px);
+  animation: grid-move 20s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes grid-move {
+  0% {
+    transform: perspective(1000px) rotateX(60deg) translateY(0) translateZ(-200px);
+  }
+  100% {
+    transform: perspective(1000px) rotateX(60deg) translateY(50px) translateZ(-200px);
+  }
 }
 
 /* 浅色主题下网格线更淡 */
 html[data-theme="light"] .hero-background-grid {
-  opacity: 0.15;
+  opacity: 0.1;
 }
 
 .hero-background-grid-pattern {
@@ -54,47 +69,54 @@ html[data-theme="light"] .hero-background-grid {
   background-image: 
     linear-gradient(var(--grid-line-color, rgba(148, 163, 184, 0.25)) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid-line-color, rgba(148, 163, 184, 0.25)) 1px, transparent 1px);
-  background-size: 50px 50px;
+  background-size: 60px 60px;
 }
 
 /* 深色主题保持原有网格样式 */
 html[data-theme="dark"] .hero-background-grid-pattern {
   background-image: 
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
 }
 
 /* 角落光晕 */
 .hero-glow-cyan {
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 24rem;
-  height: 24rem;
-  border-radius: 9999px;
-  filter: blur(64px);
+  top: -10%;
+  right: -5%;
+  width: 35rem;
+  height: 35rem;
+  border-radius: 50%;
+  filter: blur(80px);
   /* 浅色主题优化（2025-01）：减弱光效，避免刺眼 */
-  background: rgba(6, 182, 212, 0.05);
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.15), transparent 70%);
+  animation: pulse-glow 8s ease-in-out infinite alternate;
 }
 
 html[data-theme="dark"] .hero-glow-cyan {
-  background: rgba(6, 182, 212, 0.1);
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.2), transparent 70%);
 }
 
 .hero-glow-purple {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 24rem;
-  height: 24rem;
-  border-radius: 9999px;
-  filter: blur(64px);
+  bottom: -10%;
+  left: -5%;
+  width: 35rem;
+  height: 35rem;
+  border-radius: 50%;
+  filter: blur(80px);
   /* 浅色主题优化（2025-01）：减弱光效，避免刺眼 */
-  background: rgba(168, 85, 247, 0.05);
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.15), transparent 70%);
+  animation: pulse-glow 8s ease-in-out infinite alternate-reverse;
 }
 
 html[data-theme="dark"] .hero-glow-purple {
-  background: rgba(168, 85, 247, 0.1);
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.2), transparent 70%);
+}
+
+@keyframes pulse-glow {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.1); opacity: 1; }
 }
 
 .hero-particle-overlay {
@@ -179,11 +201,15 @@ html[data-theme="dark"] .hero-particle-overlay {
   display: inline-flex;
   align-items: center;
   padding: 0.5rem 1rem;
-  background: var(--color-bg-card);
+  background: var(--bg-surface-2);
   backdrop-filter: blur(12px);
   border-radius: 9999px;
-  border: 1px solid var(--color-border-subtle);
+  border: 1px solid transparent;
+  background-image: linear-gradient(var(--bg-surface-2), var(--bg-surface-2)), linear-gradient(to right, var(--primary), var(--secondary));
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
   margin-bottom: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
 .hero-welcome-indicator {
@@ -274,10 +300,19 @@ html[data-theme="dark"] .hero-particle-overlay {
 .hero-title-gradient {
   display: block;
   margin-top: 0.75rem;
-  color: var(--color-text-main); /* 使用主题文字颜色，更柔和 */
-  /* 如果需要渐变效果，可以使用更柔和的渐变 */
-  /* background-clip: text;
-  background-image: linear-gradient(to right, var(--color-text-main), var(--color-primary-base), var(--color-text-main)); */
+  /* color: var(--color-text-main); 使用主题文字颜色，更柔和 */
+  background: linear-gradient(135deg, var(--color-text-main) 30%, var(--primary) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 200%;
+  animation: gradient-shift 5s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 /* 副标题 */
@@ -405,19 +440,41 @@ html[data-theme="dark"] .hero-tag {
   font-size: 1rem;
   font-weight: 600;
   border-radius: var(--radius-md);
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
   /* 浅色主题优化（2025-01）：主按钮使用主色背景 + 白色文字，对比更清晰 */
   background: var(--primary);
   color: #ffffff;
   border: 1px solid var(--primary);
+  box-shadow: 0 4px 6px -1px rgba(var(--primary-rgb, 37, 99, 235), 0.2), 0 2px 4px -1px rgba(var(--primary-rgb, 37, 99, 235), 0.1);
+}
+
+.hero-button-primary::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 25%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 75%
+  );
+  transform: rotate(45deg) translate(-100%, -100%);
+  transition: transform 0.6s;
+}
+
+.hero-button-primary:hover::after {
+  transform: rotate(45deg) translate(100%, 100%);
 }
 
 .hero-button-primary::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: var(--primary-hover);
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.1));
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -523,11 +580,18 @@ html[data-theme="dark"] .hero-button-secondary:hover {
 .hero-visual-card-bg {
   position: absolute;
   inset: 0;
-  background: var(--color-bg-card);
+  background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border-radius: 1.5rem;
-  border: 1px solid var(--color-border-subtle);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  transition: all 0.5s ease;
+}
+
+html[data-theme="light"] .hero-visual-card-bg {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .hero-visual-card-glow {

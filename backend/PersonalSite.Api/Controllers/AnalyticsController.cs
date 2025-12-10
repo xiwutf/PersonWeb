@@ -555,7 +555,7 @@ public class AnalyticsController : ControllerBase
             // 确保时间范围有效
             if (startDate >= endDate)
             {
-                Console.WriteLine($"[Analytics Trend] Invalid date range: {startDate} >= {endDate}");
+                _logger.LogWarning("无效的时间范围: {StartDate} >= {EndDate}", startDate, endDate);
                 return Ok(ApiResponse.Success(new
                 {
                     range = normalizedRange,
@@ -582,7 +582,7 @@ public class AnalyticsController : ControllerBase
                     var hasData = await analyticsQuery.AnyAsync();
                     if (!hasData)
                     {
-                        Console.WriteLine("[Analytics Trend] No VisitorAnalytics data found");
+                        _logger.LogDebug("VisitorAnalytics 中没有找到数据");
                     }
                     else
                     {
@@ -605,8 +605,7 @@ public class AnalyticsController : ControllerBase
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"[Analytics Trend] Error querying VisitorAnalytics: {ex.Message}");
-                    Console.WriteLine(ex.StackTrace);
+                    _logger.LogError(ex, "查询 VisitorAnalytics 时出错");
                     // 继续尝试从 VisitLogs 获取
                 }
             }
@@ -622,7 +621,7 @@ public class AnalyticsController : ControllerBase
                     var hasData = await analyticsQuery.AnyAsync();
                     if (!hasData)
                     {
-                        Console.WriteLine("[Analytics Trend] No VisitorAnalytics hourly data found");
+                        _logger.LogDebug("VisitorAnalytics 中没有找到按小时的数据");
                     }
                     else
                     {
@@ -647,8 +646,7 @@ public class AnalyticsController : ControllerBase
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"[Analytics Trend] Error querying VisitorAnalytics hourly: {ex.Message}");
-                    Console.WriteLine(ex.StackTrace);
+                    _logger.LogError(ex, "查询 VisitorAnalytics 按小时数据时出错");
                 }
             }
 
@@ -663,7 +661,7 @@ public class AnalyticsController : ControllerBase
                     var hasData = await logsQuery.AnyAsync();
                     if (!hasData)
                     {
-                        Console.WriteLine("[Analytics Trend] No VisitLogs data found");
+                        _logger.LogDebug("VisitLogs 中没有找到数据");
                     }
                     else
                     {
@@ -713,8 +711,7 @@ public class AnalyticsController : ControllerBase
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"[Analytics Trend] Error querying VisitLogs: {ex.Message}");
-                    Console.WriteLine(ex.StackTrace);
+                    _logger.LogError(ex, "查询 VisitLogs 时出错");
                     // 即使出错也返回空数组，不抛异常
                 }
             }
@@ -757,8 +754,7 @@ public class AnalyticsController : ControllerBase
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"[Analytics Trend] Error filling dates: {ex.Message}");
-                    Console.WriteLine(ex.StackTrace);
+                    _logger.LogError(ex, "填充日期数据时出错");
                     // 即使填充失败，也返回已有数据
                 }
             }
@@ -779,16 +775,7 @@ public class AnalyticsController : ControllerBase
         catch (Exception ex)
         {
             // 详细错误日志
-            Console.WriteLine("=== Analytics Trend Error ===");
-            Console.WriteLine($"Range: {range}, Granularity: {granularity}");
-            Console.WriteLine($"Exception: {ex.GetType().Name}");
-            Console.WriteLine($"Message: {ex.Message}");
-            Console.WriteLine($"Stack: {ex.StackTrace}");
-            if (ex.InnerException != null)
-            {
-                Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
-            }
-            Console.WriteLine("============================");
+            _logger.LogError(ex, "获取趋势数据时发生错误: Range={Range}, Granularity={Granularity}", range, granularity);
 
             // 返回 200，但包含错误信息（方便调试）
             // 注意：ApiResponse.Error 不支持 data 参数，所以直接返回 Success 但包含错误信息
@@ -817,7 +804,8 @@ public class AnalyticsController : ControllerBase
         {
             // 优先从 VisitorAnalytics 获取
             var analyticsCount = await _context.VisitorAnalytics.CountAsync();
-            Console.WriteLine($"[Analytics Visitors] VisitorAnalytics count: {analyticsCount}, onlineOnly: {onlineOnly}, page: {page}, pageSize: {pageSize}");
+            _logger.LogDebug("获取访客列表: VisitorAnalytics count={Count}, onlineOnly={OnlineOnly}, page={Page}, pageSize={PageSize}", 
+                analyticsCount, onlineOnly, page, pageSize);
             
             if (analyticsCount > 0)
             {
@@ -831,24 +819,12 @@ public class AnalyticsController : ControllerBase
                 if (onlineOnly)
                 {
                     query = query.Where(v => v.UpdatedAt >= fiveMinutesAgo);
-                    Console.WriteLine($"[Analytics Visitors] Filtering online visitors (UpdatedAt >= {fiveMinutesAgo})");
                 }
 
                 // 按更新时间倒序排列
                 query = query.OrderByDescending(v => v.UpdatedAt);
 
                 var total = await query.CountAsync();
-                Console.WriteLine($"[Analytics Visitors] Total visitors after filter: {total}");
-                
-                // 如果 total > 0，打印一些示例数据用于调试
-                if (total > 0)
-                {
-                    var sampleVisitors = await query
-                        .Take(3)
-                        .Select(v => new { v.VisitorId, v.Ip, v.Path, v.UpdatedAt, v.IsOnline })
-                        .ToListAsync();
-                    Console.WriteLine($"[Analytics Visitors] Sample visitors: {System.Text.Json.JsonSerializer.Serialize(sampleVisitors)}");
-                }
                 
                 // 修复访客列表 IP 一直显示未知的问题：确保字段映射正确，并计算在线状态
                 var visitors = await query
@@ -877,15 +853,6 @@ public class AnalyticsController : ControllerBase
                         IsOnline = v.UpdatedAt >= fiveMinutesAgo // 修复在线状态：最近5分钟有活动即为在线
                     })
                     .ToListAsync();
-                
-                Console.WriteLine($"[Analytics Visitors] Returning {visitors.Count} visitors");
-                
-                // 修复访客列表 IP 一直显示未知的问题：添加调试日志，记录返回的 IP 字段
-                if (visitors.Count > 0)
-                {
-                    var firstVisitor = visitors.First();
-                    Console.WriteLine($"[Analytics Visitors] First visitor IP: {firstVisitor.Ip ?? "null"}, Path: {firstVisitor.Path ?? "null"}");
-                }
 
                 return Ok(ApiResponse.Success(new
                 {
@@ -905,7 +872,6 @@ public class AnalyticsController : ControllerBase
                 {
                     var fiveMinutesAgo = DateTime.Now.AddMinutes(-5);
                     query = query.Where(v => v.Timestamp >= fiveMinutesAgo);
-                    Console.WriteLine($"[Analytics Visitors] Filtering online visitors from VisitLogs (Timestamp >= {fiveMinutesAgo})");
                 }
 
                 // 按时间倒序排列
@@ -991,13 +957,6 @@ public class AnalyticsController : ControllerBase
                         IsOnline = isOnline // 修复在线状态：最近5分钟有活动即为在线
                     };
                 }).ToList();
-                
-                // 修复访客列表 IP 一直显示未知的问题：添加调试日志，记录返回的 IP 字段
-                if (visitors.Count > 0)
-                {
-                    var firstVisitor = visitors.First();
-                    Console.WriteLine($"[Analytics Visitors] First visitor IP: {firstVisitor.Ip ?? "null"}, Path: {firstVisitor.Path ?? "null"}");
-                }
 
                 return Ok(ApiResponse.Success(new
                 {

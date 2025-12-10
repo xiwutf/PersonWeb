@@ -82,6 +82,13 @@
             <td class="table-cell">
               <div class="action-buttons">
                 <button 
+                  @click="handleAiGenerate(project)" 
+                  class="btn-link btn-link-purple"
+                  title="AI 生成展示文案"
+                >
+                  <i class="fas fa-magic"></i> AI
+                </button>
+                <button 
                   @click="router.push(`/admin/projects/edit/${project.id}`)" 
                   class="btn-link btn-link-blue"
                 >
@@ -99,11 +106,68 @@
         </tbody>
       </table>
     </div>
+
+    <!-- AI 生成 Dialog -->
+    <n-modal
+      v-model:show="showAiDialog"
+      preset="dialog"
+      title="AI 生成展示文案"
+      positive-text="生成"
+      negative-text="取消"
+      @positive-click="handleGenerateConfirm"
+      :loading="generating"
+    >
+      <n-form
+        ref="aiFormRef"
+        :model="aiForm"
+        label-placement="left"
+        label-width="100"
+        style="margin-top: 20px;"
+      >
+        <n-form-item label="项目名称">
+          <n-input v-model:value="aiForm.name" placeholder="项目名称" />
+        </n-form-item>
+        <n-form-item label="技术栈">
+          <n-input
+            v-model:value="aiForm.techStackText"
+            placeholder="用逗号分隔，例如：Vue3, TypeScript, Node.js"
+          />
+        </n-form-item>
+        <n-form-item label="用途">
+          <n-input
+            v-model:value="aiForm.usage"
+            type="textarea"
+            :rows="3"
+            placeholder="项目的主要用途和功能"
+          />
+        </n-form-item>
+        <n-form-item label="目标用户">
+          <n-input
+            v-model:value="aiForm.targetAudience"
+            placeholder="例如：前端开发者、产品经理等"
+          />
+        </n-form-item>
+        <n-form-item label="价格提示">
+          <n-input
+            v-model:value="aiForm.priceHint"
+            placeholder="例如：免费、付费、定制开发等"
+          />
+        </n-form-item>
+        <n-form-item label="额外说明">
+          <n-input
+            v-model:value="aiForm.extraNotes"
+            type="textarea"
+            :rows="2"
+            placeholder="补充说明，帮助 AI 更好地理解项目"
+          />
+        </n-form-item>
+      </n-form>
+    </n-modal>
   </div>
 </template>
 
 <script setup lang="ts">
-import { NButton } from 'naive-ui'
+import { NButton, NModal, NForm, NFormItem, NInput } from 'naive-ui'
 import type { Project } from '~/types/api'
 import { useSafeMessage } from '~/composables/useNaiveUI'
 import { useErrorHandler } from '~/composables/useErrorHandler'
@@ -123,6 +187,20 @@ const message = useSafeMessage()
 
 const projects = ref<Project[]>([])
 const loading = ref(false)
+
+// AI 生成相关
+const showAiDialog = ref(false)
+const generating = ref(false)
+const aiFormRef = ref<any>(null)
+const currentProject = ref<Project | null>(null)
+const aiForm = ref({
+  name: '',
+  techStackText: '',
+  usage: '',
+  targetAudience: '',
+  priceHint: '',
+  extraNotes: ''
+})
 
 const fetchProjects = async () => {
   loading.value = true
@@ -162,6 +240,56 @@ const handleDelete = async (id: string) => {
     await fetchProjects()
   } catch (e: unknown) {
     handleError(e, '删除失败')
+  }
+}
+
+const handleAiGenerate = (project: Project) => {
+  currentProject.value = project
+  aiForm.value = {
+    name: project.title || '',
+    techStackText: project.techStack ? (typeof project.techStack === 'string' ? project.techStack : JSON.stringify(project.techStack)) : '',
+    usage: project.description || '',
+    targetAudience: '',
+    priceHint: '',
+    extraNotes: ''
+  }
+  showAiDialog.value = true
+}
+
+const handleGenerateConfirm = async () => {
+  if (!currentProject.value) return false
+
+  generating.value = true
+  try {
+    const techStack = aiForm.value.techStackText
+      ? aiForm.value.techStackText.split(',').map(s => s.trim()).filter(s => s)
+      : null
+
+    const res = await api.post('/ai/demo/describe', {
+      projectId: currentProject.value.id,
+      name: aiForm.value.name || undefined,
+      techStack: techStack || undefined,
+      usage: aiForm.value.usage || undefined,
+      targetAudience: aiForm.value.targetAudience || undefined,
+      priceHint: aiForm.value.priceHint || undefined,
+      extraNotes: aiForm.value.extraNotes || undefined
+    })
+
+    if (res && res.success) {
+      message.success('展示文案生成成功！已自动保存到项目')
+      showAiDialog.value = false
+      await fetchProjects() // 刷新列表
+      return true
+    } else {
+      message.error(res?.errorMessage || '生成失败')
+      return false
+    }
+  } catch (e: any) {
+    console.error('生成展示文案失败:', e)
+    message.error(e.response?.data?.message || e.message || '生成失败')
+    return false
+  } finally {
+    generating.value = false
   }
 }
 
@@ -345,5 +473,13 @@ onMounted(() => {
 
 .btn-link-red:hover {
   color: #fca5a5;
+}
+
+.btn-link-purple {
+  color: #a78bfa;
+}
+
+.btn-link-purple:hover {
+  color: #c4b5fd;
 }
 </style>

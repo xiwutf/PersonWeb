@@ -50,6 +50,8 @@ export const useTheme = () => {
     // 2. 设置 data-theme 属性，这样 CSS 选择器 html[data-theme='xxx'] 会生效
     // 这是新的样式架构的核心：通过 data-theme 驱动 tokens.css 中的主题变量
     document.documentElement.dataset.theme = normalizedTheme
+    // [New] 必须同步 toggle 'dark' class，以确保 Tailwind 的 darkMode: 'class' 生效
+    document.documentElement.classList.toggle('dark', normalizedTheme === 'dark')
 
     // 2. 获取后端覆盖的 tokens（如果有）
     const backendOverrides = globalThemeState.backendTokens.value[theme]
@@ -137,13 +139,13 @@ export const useTheme = () => {
   if (process.client && !globalThemeState.initialized) {
     // 标记已初始化，避免重复初始化
     globalThemeState.initialized = true
-    
+
     // 延迟初始化，确保插件有机会先执行
     // 使用 nextTick 让插件先执行，然后再读取 localStorage
     nextTick(() => {
       // 检查 DOM 是否已经有主题被设置（插件可能已经设置了）
       const domTheme = document.documentElement.dataset.theme
-      
+
       if (domTheme) {
         // 如果 DOM 已经有主题（说明插件已经执行），使用 DOM 中的主题（自动映射）
         const normalizedTheme = normalizeTheme(domTheme) as ThemeName
@@ -178,7 +180,7 @@ export const useTheme = () => {
     tokensFromBackend: Partial<Record<ThemeKey, Record<string, string>>>
   ) => {
     globalThemeState.backendTokens.value = tokensFromBackend
-    
+
     // 如果当前主题有 tokens 覆盖，重新应用主题以生效
     if (process.client && currentTheme.value) {
       applyTheme(currentTheme.value)

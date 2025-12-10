@@ -31,6 +31,22 @@ public class Project
 
     public int ViewCount { get; set; } = 0; // 访问量统计
 
+    // AI 生成字段
+    [MaxLength(200)]
+    public string? AiTitle { get; set; }
+
+    public string? AiHighlights { get; set; } // JSON 或分号分隔字符串
+
+    public string? AiDescription { get; set; } // Markdown 格式
+
+    public string? AiScenarios { get; set; }
+
+    [MaxLength(500)]
+    public string? AiTargetUsers { get; set; }
+
+    [MaxLength(200)]
+    public string? AiShortCardText { get; set; }
+
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime UpdatedAt { get; set; } = DateTime.Now;
 }

@@ -1,27 +1,35 @@
 <template>
   <!-- 
-    访客分析模块
+    访客分析模块 - Aurora Design System
     moduleId: analytics_dashboard
-    
-    如何在后台配置中控制这个模块的主题：
-    1. 登录后台，进入主题管理页面
-    2. 找到"访客分析模块"配置项
-    3. 选择"跟随全局"或指定独立主题（如 "tech-blue"）
-    4. 保存后，刷新页面即可看到效果
   -->
-  <div :data-module-theme="moduleTheme || undefined">
-    <div class="flex justify-between items-center mb-6">
+  <div 
+    :data-module-theme="moduleTheme || undefined"
+    class="min-h-screen p-6 lg:p-10 text-text-main transition-colors duration-500"
+  >
+    <!-- Header: 渐变色标题 + 实时刷新开关和刷新按钮 -->
+    <div class="flex justify-between items-center mb-8">
       <div>
-        <!-- 标题和描述：使用主题文字颜色，替换写死的 gray 和 dark: 前缀 -->
-        <h1 class="text-2xl font-bold text-text-main">访客分析</h1>
-        <p class="text-sm text-text-muted mt-1">
+        <h1 class="text-3xl font-bold bg-gradient-to-r from-primary via-purple-500 to-secondary text-transparent bg-clip-text">
+          访客分析
+        </h1>
+        <p class="text-sm text-text-muted mt-2">
           查看网站访问统计和访客数据
         </p>
       </div>
-      <!-- 按钮：使用 AppButton 或主题主色，替换写死的 bg-blue-600 -->
-      <AppButton variant="primary" @click="refreshStats">
-        刷新数据
-      </AppButton>
+      <div class="flex items-center gap-3">
+        <label class="flex items-center gap-2 text-sm text-text-muted cursor-pointer">
+          <input
+            type="checkbox"
+            v-model="autoRefreshEnabled"
+            class="rounded"
+          />
+          实时刷新
+        </label>
+        <AppButton variant="primary" @click="refreshStats">
+          刷新数据
+        </AppButton>
+      </div>
     </div>
 
     <!-- 初始加载状态：只在首次加载时显示，避免闪烁 -->
@@ -70,38 +78,66 @@
         </div>
       </AppCard>
 
-      <!-- 第一行：概览卡片区 -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-      <AppCard class="p-4">
-        <div class="text-sm text-text-muted mb-1">今日浏览量</div>
-        <div class="text-2xl font-bold text-primary">{{ overview.todayPv || 0 }}</div>
-        <div class="text-xs text-text-muted mt-1">
-          昨日: {{ overview.yesterdayPv || 0 }} | 总计: {{ overview.totalPv || 0 }}
+    <!-- 第1行：概览数据卡片 (Bento Grid) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+      <!-- PV 卡片 -->
+      <AppCard hover class="relative overflow-hidden group backdrop-blur-xl">
+        <!-- 装饰性模糊圆点 -->
+        <div class="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl -mr-16 -mt-16 opacity-60 group-hover:opacity-100 transition-opacity"></div>
+        <div class="relative z-10 p-6">
+          <div class="text-sm text-text-muted mb-2">今日浏览量</div>
+          <div class="text-3xl font-bold text-primary mb-2">
+            <n-number-animation :from="0" :to="overview.todayPv || 0" :precision="0" />
+          </div>
+          <div class="text-xs text-text-muted">
+            昨日: {{ overview.yesterdayPv || 0 }} | 总计: {{ overview.totalPv || 0 }}
+          </div>
         </div>
       </AppCard>
-      <AppCard class="p-4">
-        <div class="text-sm text-text-muted mb-1">今日访客数</div>
-        <div class="text-2xl font-bold text-chart-secondary">{{ overview.todayUv || 0 }}</div>
-        <div class="text-xs text-text-muted mt-1">
-          昨日: {{ overview.yesterdayUv || 0 }} | 总计: {{ overview.totalUv || 0 }}
+
+      <!-- UV 卡片 -->
+      <AppCard hover class="relative overflow-hidden group backdrop-blur-xl">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-chart-secondary/10 blur-3xl -mr-16 -mt-16 opacity-60 group-hover:opacity-100 transition-opacity"></div>
+        <div class="relative z-10 p-6">
+          <div class="text-sm text-text-muted mb-2">今日访客数</div>
+          <div class="text-3xl font-bold text-chart-secondary mb-2">
+            <n-number-animation :from="0" :to="overview.todayUv || 0" :precision="0" />
+          </div>
+          <div class="text-xs text-text-muted">
+            昨日: {{ overview.yesterdayUv || 0 }} | 总计: {{ overview.totalUv || 0 }}
+          </div>
         </div>
       </AppCard>
-      <AppCard class="p-4">
-        <div class="text-sm text-text-muted mb-1">在线人数</div>
-        <div class="text-2xl font-bold text-chart-tertiary">{{ overview.onlineUsers || 0 }}</div>
-        <div class="text-xs text-text-muted mt-1">最近5分钟活跃</div>
+
+      <!-- 在线人数卡片 -->
+      <AppCard hover class="relative overflow-hidden group backdrop-blur-xl">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-chart-tertiary/10 blur-3xl -mr-16 -mt-16 opacity-60 group-hover:opacity-100 transition-opacity"></div>
+        <div class="relative z-10 p-6">
+          <div class="text-sm text-text-muted mb-2">在线人数</div>
+          <div class="text-3xl font-bold text-chart-tertiary mb-2">
+            <n-number-animation :from="0" :to="overview.onlineUsers || 0" :precision="0" />
+          </div>
+          <div class="text-xs text-text-muted">最近5分钟活跃</div>
+        </div>
       </AppCard>
-      <AppCard class="p-4">
-        <div class="text-sm text-text-muted mb-1">热门文章数</div>
-        <div class="text-2xl font-bold text-chart-quinary">{{ overview.hotArticleCount || 0 }}</div>
-        <div class="text-xs text-text-muted mt-1">访问次数 > 1</div>
+
+      <!-- 总访问卡片 -->
+      <AppCard hover class="relative overflow-hidden group backdrop-blur-xl">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-chart-quinary/10 blur-3xl -mr-16 -mt-16 opacity-60 group-hover:opacity-100 transition-opacity"></div>
+        <div class="relative z-10 p-6">
+          <div class="text-sm text-text-muted mb-2">热门文章数</div>
+          <div class="text-3xl font-bold text-chart-quinary mb-2">
+            <n-number-animation :from="0" :to="overview.hotArticleCount || 0" :precision="0" />
+          </div>
+          <div class="text-xs text-text-muted">访问次数 > 1</div>
+        </div>
       </AppCard>
     </div>
 
-    <!-- 浏览量/访客数趋势图 -->
-    <AppCard class="mb-6 p-6">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-lg font-bold text-text-main">浏览量/访客数趋势</h2>
+    <!-- 第2行：趋势图 (全宽) -->
+    <AppCard hover class="mb-6 p-6 backdrop-blur-xl">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold text-text-main">浏览量/访客数趋势</h2>
         <div class="flex gap-2">
           <AppButton
             :variant="trendRange === '7d' ? 'primary' : 'secondary'"
@@ -131,348 +167,37 @@
       </div>
       <ClientOnly>
         <template v-if="hasTrendData && trendLineOption">
-          <div class="h-80 relative">
-            <v-chart :option="trendLineOption" :theme="chartTheme" autoresize />
+          <div class="h-[500px] relative w-full">
+            <v-chart :option="trendLineOption" :theme="chartTheme" autoresize class="w-full h-full" />
           </div>
         </template>
         <template v-else>
-          <div class="text-center py-8 text-text-muted">
-            暂无趋势数据
+          <div class="text-center py-8 text-text-muted h-[500px] flex items-center justify-center">
+            {{ trendLoading ? '加载中...' : '暂无趋势数据' }}
           </div>
         </template>
         <template #fallback>
-          <div class="h-80 flex items-center justify-center">
+          <div class="h-[500px] flex items-center justify-center">
             <n-spin size="large" />
           </div>
         </template>
       </ClientOnly>
     </AppCard>
 
-    <!-- 图表统计区域 -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-      <!-- 访问区域条形图 -->
-      <AppCard class="p-6">
-        <h2 class="text-lg font-bold text-text-main mb-4">访问区域分布</h2>
-        <ClientOnly>
-          <template v-if="hasRegionData && regionBarOption">
-            <div class="h-80">
-              <v-chart :option="regionBarOption" :theme="chartTheme" autoresize />
-            </div>
-          </template>
-          <template v-else>
-            <div class="text-center text-text-muted py-8">暂无数据</div>
-          </template>
-          <template #fallback>
-            <div class="h-80 flex items-center justify-center">
-              <n-spin size="small" />
-            </div>
-          </template>
-        </ClientOnly>
-      </AppCard>
-
-      <!-- 设备类型 Donut -->
-      <AppCard class="p-6">
-        <h2 class="text-lg font-bold text-text-main mb-4">设备类型分布</h2>
-        <ClientOnly>
-          <template v-if="deviceDonutOption">
-            <div class="h-64 relative">
-              <v-chart :option="deviceDonutOption.option" :theme="chartTheme" autoresize />
-              <div class="donut-center">
-                <div class="donut-center-value">{{ deviceDonutOption.mainPercent }}%</div>
-                <div class="donut-center-label">{{ deviceDonutOption.mainLabel }}</div>
-              </div>
-              <!-- 底部图例 -->
-              <div class="mt-4 flex flex-wrap gap-3 justify-center">
-                <div
-                  v-for="(item, idx) in (clientDistribution.devices || [])"
-                  :key="idx"
-                  class="flex items-center gap-2"
-                >
-                  <div
-                    class="w-2 h-2 rounded-full"
-                    :style="{ backgroundColor: donutPalette[idx % donutPalette.length] }"
-                  ></div>
-                  <span class="text-xs text-text-muted">{{ item.name || '未知' }}</span>
-                </div>
-              </div>
-            </div>
-          </template>
-          <template v-else>
-            <div class="text-center text-text-muted py-8">暂无数据</div>
-          </template>
-          <template #fallback>
-            <div class="h-64 flex items-center justify-center">
-              <n-spin size="small" />
-            </div>
-          </template>
-        </ClientOnly>
-      </AppCard>
-
-      <!-- 浏览器 Donut -->
-      <AppCard class="p-6">
-        <h2 class="text-lg font-bold text-text-main mb-4">浏览器分布</h2>
-        <ClientOnly>
-          <template v-if="browserDonutOption">
-            <div class="h-64 relative">
-              <v-chart :option="browserDonutOption.option" :theme="chartTheme" autoresize />
-              <div class="donut-center">
-                <div class="donut-center-value">{{ browserDonutOption.mainPercent }}%</div>
-                <div class="donut-center-label">{{ browserDonutOption.mainLabel }}</div>
-              </div>
-              <!-- 底部图例 -->
-              <div class="mt-4 flex flex-wrap gap-3 justify-center">
-                <div
-                  v-for="(item, idx) in (clientDistribution.browsers || [])"
-                  :key="idx"
-                  class="flex items-center gap-2"
-                >
-                  <div
-                    class="w-2 h-2 rounded-full"
-                    :style="{ backgroundColor: donutPalette[idx % donutPalette.length] }"
-                  ></div>
-                  <span class="text-xs text-text-muted">{{ item.name || '未知' }}</span>
-                </div>
-              </div>
-            </div>
-          </template>
-          <template v-else>
-            <div class="text-center text-text-muted py-8">暂无数据</div>
-          </template>
-          <template #fallback>
-            <div class="h-64 flex items-center justify-center">
-              <n-spin size="small" />
-            </div>
-          </template>
-        </ClientOnly>
-      </AppCard>
-
-      <!-- 操作系统 Donut -->
-      <AppCard class="p-6">
-        <h2 class="text-lg font-bold text-text-main mb-4">操作系统分布</h2>
-        <ClientOnly>
-          <template v-if="osDonutOption">
-            <div class="h-64 relative">
-              <v-chart :option="osDonutOption.option" :theme="chartTheme" autoresize />
-              <div class="donut-center">
-                <div class="donut-center-value">{{ osDonutOption.mainPercent }}%</div>
-                <div class="donut-center-label">{{ osDonutOption.mainLabel }}</div>
-              </div>
-              <!-- 底部图例 -->
-              <div class="mt-4 flex flex-wrap gap-3 justify-center">
-                <div
-                  v-for="(item, idx) in (clientDistribution.os || [])"
-                  :key="idx"
-                  class="flex items-center gap-2"
-                >
-                  <div
-                    class="w-2 h-2 rounded-full"
-                    :style="{ backgroundColor: donutPalette[idx % donutPalette.length] }"
-                  ></div>
-                  <span class="text-xs text-text-muted">{{ item.name || '未知' }}</span>
-                </div>
-              </div>
-            </div>
-          </template>
-          <template v-else>
-            <div class="text-center text-text-muted py-8">暂无数据</div>
-          </template>
-          <template #fallback>
-            <div class="h-64 flex items-center justify-center">
-              <n-spin size="small" />
-            </div>
-          </template>
-        </ClientOnly>
-      </AppCard>
-    </div>
-
-    <!-- 统计表格区域 -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-      <!-- 访问区域统计表格 -->
-      <AppCard class="p-6">
-        <h2 class="text-lg font-bold text-text-main mb-4">访问区域统计</h2>
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead class="bg-bg-elevated">
-              <tr>
-                <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase">排名</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase">国家/地区</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase">访问次数</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase">占比</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-border-subtle">
-              <tr
-                v-for="(region, index) in (regions.items || [])"
-                :key="index"
-                class="hover:bg-bg-elevated transition-colors"
-              >
-                <td class="px-4 py-3 text-text-main font-bold">{{ index + 1 }}</td>
-                <td class="px-4 py-3 text-text-main">
-                  {{ region.country || '未知' }}{{ region.province ? ' - ' + region.province : '' }}
-                </td>
-                <td class="px-4 py-3 text-text-main">{{ region.count || 0 }}</td>
-                <td class="px-4 py-3 text-text-main">
-                  {{ totalRegionCount > 0 ? ((region.count / totalRegionCount) * 100).toFixed(2) : '0.00' }}%
-                </td>
-              </tr>
-              <tr v-if="!regions.items || regions.items.length === 0">
-                <td colspan="4" class="px-4 py-8 text-center text-text-muted">暂无数据</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </AppCard>
-
-      <!-- 设备类型统计表格 -->
-      <AppCard class="p-6">
-        <h2 class="text-lg font-bold text-text-main mb-4">设备类型统计</h2>
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead class="bg-bg-elevated">
-              <tr>
-                <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase">设备类型</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase">访问次数</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase">占比</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-border-subtle">
-              <tr
-                v-for="(device, index) in (clientDistribution.devices || [])"
-                :key="index"
-                class="hover:bg-bg-elevated transition-colors"
-              >
-                <td class="px-4 py-3 text-text-main">{{ device.name || '未知' }}</td>
-                <td class="px-4 py-3 text-text-main">{{ device.count || 0 }}</td>
-                <td class="px-4 py-3 text-text-main">
-                  {{ totalDeviceCount > 0 ? ((device.count / totalDeviceCount) * 100).toFixed(2) : '0.00' }}%
-                </td>
-              </tr>
-              <tr v-if="!clientDistribution.devices || clientDistribution.devices.length === 0">
-                <td colspan="3" class="px-4 py-8 text-center text-text-muted">暂无数据</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </AppCard>
-
-      <!-- 浏览器统计表格 -->
-      <AppCard class="p-6">
-        <h2 class="text-lg font-bold text-text-main mb-4">浏览器统计</h2>
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead class="bg-bg-elevated">
-              <tr>
-                <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase">排名</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase">浏览器</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase">访问次数</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase">占比</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-border-subtle">
-              <tr
-                v-for="(browser, index) in (clientDistribution.browsers || [])"
-                :key="index"
-                class="hover:bg-bg-elevated transition-colors"
-              >
-                <td class="px-4 py-3 text-text-main font-bold">{{ index + 1 }}</td>
-                <td class="px-4 py-3 text-text-main">{{ browser.name || '未知' }}</td>
-                <td class="px-4 py-3 text-text-main">{{ browser.count || 0 }}</td>
-                <td class="px-4 py-3 text-text-main">
-                  {{ totalBrowserCount > 0 ? ((browser.count / totalBrowserCount) * 100).toFixed(2) : '0.00' }}%
-                </td>
-              </tr>
-              <tr v-if="!clientDistribution.browsers || clientDistribution.browsers.length === 0">
-                <td colspan="4" class="px-4 py-8 text-center text-text-muted">暂无数据</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </AppCard>
-
-      <!-- 操作系统统计表格 -->
-      <AppCard class="p-6">
-        <h2 class="text-lg font-bold text-text-main mb-4">操作系统统计</h2>
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead class="bg-bg-elevated">
-              <tr>
-                <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase">排名</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase">操作系统</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase">访问次数</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase">占比</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-border-subtle">
-              <tr
-                v-for="(os, index) in (clientDistribution.os || [])"
-                :key="index"
-                class="hover:bg-bg-elevated transition-colors"
-              >
-                <td class="px-4 py-3 text-text-main font-bold">{{ index + 1 }}</td>
-                <td class="px-4 py-3 text-text-main">{{ os.name || '未知' }}</td>
-                <td class="px-4 py-3 text-text-main">{{ os.count || 0 }}</td>
-                <td class="px-4 py-3 text-text-main">
-                  {{ totalOsCount > 0 ? ((os.count / totalOsCount) * 100).toFixed(2) : '0.00' }}%
-                </td>
-              </tr>
-              <tr v-if="!clientDistribution.os || clientDistribution.os.length === 0">
-                <td colspan="4" class="px-4 py-8 text-center text-text-muted">暂无数据</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </AppCard>
-    </div>
-
-    <!-- 第三行：双列布局 -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-      <!-- 左列：Top 页面 + 来源分析 -->
-      <div class="space-y-6">
-        <!-- Top 页面列表 -->
-        <AppCard class="p-6">
-          <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-bold text-text-main">热门页面</h2>
-            <select v-model="selectedRange" class="text-sm px-2 py-1 rounded border border-border-subtle bg-bg-card text-text-main">
-              <option value="today">今日</option>
-              <option value="7d">7天</option>
-              <option value="30d">30天</option>
-              <option value="90d">90天</option>
-            </select>
-          </div>
-          <div v-if="topPagesLoading" class="text-center py-4 text-text-muted">加载中...</div>
-          <div v-else-if="topPages.length === 0" class="text-center py-4 text-text-muted">暂无数据</div>
-          <div v-else class="space-y-2 max-h-64 overflow-y-auto">
-            <div
-              v-for="(page, index) in topPages.slice(0, 10)"
-              :key="index"
-              class="flex items-center justify-between p-3 bg-bg-elevated rounded hover:bg-bg-hover transition-colors"
-            >
-              <div class="flex-1 min-w-0">
-                <div class="text-sm font-medium text-text-main truncate" :title="formatPageUrl(page.url)">
-                  {{ formatPageUrl(page.url) }}
-                </div>
-                <div class="text-xs text-text-muted mt-1.5 flex items-center gap-3">
-                  <span>浏览量: <span class="font-semibold text-primary">{{ page.pv }}</span></span>
-                  <span>访客数: <span class="font-semibold text-chart-secondary">{{ page.uv }}</span></span>
-                </div>
-              </div>
-              <div class="w-8 h-8 rounded-full bg-primary-soft flex items-center justify-center text-primary font-bold text-sm ml-3 flex-shrink-0">
-                {{ index + 1 }}
-              </div>
-            </div>
-          </div>
-        </AppCard>
-
-        <!-- 来源分析 -->
-        <AppCard class="p-6">
+    <!-- 第3行：详细数据 (Bento Grid: 左侧4列 + 右侧8列) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
+      <!-- 左侧：4列 - 两个 Donut 图表 -->
+      <div class="lg:col-span-4 space-y-6">
+        <!-- 来源分析 Donut -->
+        <AppCard hover class="p-6 backdrop-blur-xl">
           <h2 class="text-lg font-bold text-text-main mb-4">访问来源</h2>
           <div v-if="sourcesLoading" class="text-center py-4 text-text-muted">加载中...</div>
           <div v-else-if="!sources.items || sources.items.length === 0" class="text-center py-4 text-text-muted">暂无数据</div>
           <div v-else>
             <ClientOnly>
               <template v-if="sourceDonutOption">
-                <div class="h-48 relative mb-4">
-                  <v-chart :option="sourceDonutOption.option" :theme="chartTheme" autoresize />
+                <div class="h-48 relative mb-4 w-full">
+                  <v-chart :option="sourceDonutOption.option" :theme="chartTheme" autoresize class="w-full h-full" />
                   <div class="donut-center">
                     <div class="donut-center-value">{{ sourceDonutOption.mainPercent }}%</div>
                     <div class="donut-center-label">{{ sourceDonutOption.mainLabel }}</div>
@@ -484,49 +209,272 @@
               </template>
             </ClientOnly>
             
-            <div class="space-y-2 max-h-48 overflow-y-auto">
+            <div class="space-y-2 max-h-32 overflow-y-auto">
               <div
                 v-for="(item, index) in sources.items"
                 :key="index"
-                class="flex items-center justify-between p-2 bg-bg-elevated rounded"
+                class="flex items-center justify-between p-2 bg-bg-surface-2 rounded"
               >
                 <div class="flex items-center gap-2">
-                   <div 
-                     class="w-2 h-2 rounded-full" 
-                     :style="{ backgroundColor: donutPalette[index % donutPalette.length] }"
-                   ></div>
-                   <span class="text-sm text-text-main">{{ item.name }}</span>
+                  <div 
+                    class="w-2 h-2 rounded-full" 
+                    :style="{ backgroundColor: getDonutColor(index) }"
+                  ></div>
+                  <span class="text-sm text-text-main">{{ item.name }}</span>
                 </div>
                 <span class="text-xs text-text-muted">{{ item.count }}</span>
               </div>
             </div>
           </div>
         </AppCard>
+
+        <!-- 设备分布 Donut -->
+        <AppCard hover class="p-6 backdrop-blur-xl">
+          <h2 class="text-lg font-bold text-text-main mb-4">设备类型分布</h2>
+          <ClientOnly>
+            <template v-if="deviceDonutOption">
+              <div class="h-64 relative w-full">
+                <v-chart :option="deviceDonutOption.option" :theme="chartTheme" autoresize class="w-full h-full" />
+                <div class="donut-center">
+                  <div class="donut-center-value">{{ deviceDonutOption.mainPercent }}%</div>
+                  <div class="donut-center-label">{{ deviceDonutOption.mainLabel }}</div>
+                </div>
+                <!-- 底部图例 -->
+                <div class="mt-4 flex flex-wrap gap-3 justify-center">
+                  <div
+                    v-for="(item, idx) in (clientDistribution.devices || [])"
+                    :key="idx"
+                    class="flex items-center gap-2"
+                  >
+                    <div
+                      class="w-2 h-2 rounded-full"
+                      :style="{ backgroundColor: getDonutColor(idx) }"
+                    ></div>
+                    <span class="text-xs text-text-muted">{{ item.name || '未知' }}</span>
+                  </div>
+                </div>
+              </div>
+            </template>
+            <template v-else>
+              <div class="text-center text-text-muted py-8">暂无数据</div>
+            </template>
+            <template #fallback>
+              <div class="h-64 flex items-center justify-center">
+                <n-spin size="small" />
+              </div>
+            </template>
+          </ClientOnly>
+        </AppCard>
       </div>
 
-      <!-- 右列：行为路径 -->
-      <div class="space-y-6">
-        <!-- 行为路径 -->
-        <AppCard class="p-6">
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-bold text-text-main">访问路径</h2>
-            <span class="text-xs text-text-muted">了解用户浏览路径</span>
-          </div>
-          <div v-if="pageFlowLoading" class="text-center py-4 text-text-muted">加载中...</div>
-          <div v-else-if="!pageFlow.edges || pageFlow.edges.length === 0" class="text-center py-4 text-text-muted">暂无数据</div>
-          <div v-else class="space-y-2 max-h-[600px] overflow-y-auto">
-            <div
-              v-for="(edge, index) in pageFlow.edges.slice(0, 15)"
-              :key="index"
-              class="p-3 bg-bg-elevated rounded text-sm hover:bg-bg-hover transition-colors"
-            >
-              <div class="flex items-center gap-2 text-text-main">
-                <span class="font-medium text-primary">{{ formatPathName(edge.from) }}</span>
-                <span class="text-text-muted">→</span>
-                <span class="font-medium text-primary">{{ formatPathName(edge.to) }}</span>
+      <!-- 右侧：8列 - 上部双列 + 下部表格 -->
+      <div class="lg:col-span-8 space-y-6">
+        <!-- 上部：双列布局 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Top 10 页面 -->
+          <AppCard hover class="p-6 backdrop-blur-xl">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-lg font-bold text-text-main">Top 10 页面</h2>
+              <select v-model="selectedRange" class="text-sm px-2 py-1 rounded border border-border-subtle bg-bg-surface-2 text-text-main">
+                <option value="today">今日</option>
+                <option value="7d">7天</option>
+                <option value="30d">30天</option>
+                <option value="90d">90天</option>
+              </select>
+            </div>
+            <div v-if="topPagesLoading" class="text-center py-4 text-text-muted">加载中...</div>
+            <div v-else-if="topPages.length === 0" class="text-center py-4 text-text-muted">暂无数据</div>
+            <div v-else class="space-y-2 max-h-64 overflow-y-auto">
+              <div
+                v-for="(page, index) in topPages.slice(0, 10)"
+                :key="index"
+                class="flex items-center justify-between p-3 bg-bg-surface-2 rounded hover:bg-bg-surface-1 transition-colors"
+              >
+                <div class="flex-1 min-w-0">
+                  <div class="text-sm font-medium text-text-main truncate" :title="formatPageUrl(page.url)">
+                    {{ formatPageUrl(page.url) }}
+                  </div>
+                  <div class="text-xs text-text-muted mt-1.5 flex items-center gap-3">
+                    <span>浏览量: <span class="font-semibold text-primary">{{ page.pv }}</span></span>
+                    <span>访客数: <span class="font-semibold text-chart-secondary">{{ page.uv }}</span></span>
+                  </div>
+                </div>
+                <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm ml-3 flex-shrink-0">
+                  {{ index + 1 }}
+                </div>
               </div>
-              <div class="text-xs text-text-muted mt-1.5">
-                <span class="font-semibold text-text-main">{{ edge.count }}</span> 次访问
+            </div>
+          </AppCard>
+
+          <!-- 地区分布条形图 -->
+          <AppCard hover class="p-6 backdrop-blur-xl">
+            <h2 class="text-lg font-bold text-text-main mb-4">地区分布</h2>
+            <ClientOnly>
+              <template v-if="hasRegionData && regionBarOption">
+                <div class="h-64 w-full">
+                  <v-chart :option="regionBarOption" :theme="chartTheme" autoresize class="w-full h-full" />
+                </div>
+              </template>
+              <template v-else>
+                <div class="text-center text-text-muted py-8 h-64 flex items-center justify-center">暂无数据</div>
+              </template>
+              <template #fallback>
+                <div class="h-64 flex items-center justify-center">
+                  <n-spin size="small" />
+                </div>
+              </template>
+            </ClientOnly>
+          </AppCard>
+        </div>
+
+        <!-- 下部：实时访客表格 -->
+        <AppCard hover class="p-6 backdrop-blur-xl">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-bold text-text-main">实时访客</h2>
+            <div class="flex items-center gap-4">
+              <label class="flex items-center gap-2 text-sm text-text-muted">
+                <input
+                  type="checkbox"
+                  v-model="onlineOnly"
+                  @change="fetchVisitors"
+                  class="rounded"
+                />
+                仅显示在线访客
+              </label>
+              <AppButton variant="secondary" size="sm" @click="fetchVisitors">
+                刷新列表
+              </AppButton>
+            </div>
+          </div>
+
+          <div v-if="visitorsLoading" class="text-center py-8 text-text-muted">
+            加载中...
+          </div>
+          <div v-else-if="visitors.length === 0" class="text-center py-8 text-text-muted">
+            暂无访客数据
+          </div>
+          <div v-else class="overflow-x-auto -mx-6 px-6">
+            <table class="w-full text-sm border-collapse">
+              <thead>
+                <tr class="border-b border-border-subtle">
+                  <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase whitespace-nowrap">访客ID</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase whitespace-nowrap">IP地址</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase whitespace-nowrap">地理位置</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase whitespace-nowrap">设备信息</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase whitespace-nowrap">当前页面</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase whitespace-nowrap">浏览量</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase whitespace-nowrap">最后活跃</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase whitespace-nowrap">状态</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-border-subtle">
+                <tr
+                  v-for="visitor in visitors"
+                  :key="visitor.id || visitor.Id"
+                  class="border-b border-border-subtle hover:bg-bg-surface-2/50 transition-colors"
+                >
+                  <td class="px-4 py-3 text-text-main font-mono text-xs">
+                    {{ (visitor.visitorId || visitor.VisitorId)?.substring(0, 8) }}...
+                  </td>
+                  <td class="px-4 py-3 text-text-main font-mono text-xs">
+                    {{ (visitor.ip || visitor.Ip) && (visitor.ip || visitor.Ip) !== '-' ? (visitor.ip || visitor.Ip) : '未知' }}
+                  </td>
+                  <td class="px-4 py-3 text-text-main">
+                    <div class="text-xs">
+                      <div v-if="visitor.country || visitor.Country">{{ visitor.country || visitor.Country }}</div>
+                      <div v-if="visitor.region || visitor.Region" class="text-text-muted">{{ visitor.region || visitor.Region }}</div>
+                      <div v-if="visitor.city || visitor.City" class="text-text-muted">{{ visitor.city || visitor.City }}</div>
+                      <div v-if="!(visitor.country || visitor.Country) && !(visitor.region || visitor.Region) && !(visitor.city || visitor.City)" class="text-text-disabled">未知</div>
+                    </div>
+                  </td>
+                  <td class="px-4 py-3 text-text-main">
+                    <div class="text-xs">
+                      <div>{{ (visitor.deviceType || visitor.DeviceType) && (visitor.deviceType || visitor.DeviceType) !== 'unknown' ? (visitor.deviceType || visitor.DeviceType) : '-' }}</div>
+                      <div class="text-text-muted">
+                        {{ (visitor.browser || visitor.Browser) && (visitor.browser || visitor.Browser) !== 'unknown' ? (visitor.browser || visitor.Browser) : '-' }} / 
+                        {{ (visitor.os || visitor.Os) && (visitor.os || visitor.Os) !== 'unknown' ? (visitor.os || visitor.Os) : '-' }}
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-4 py-3 text-text-main">
+                    <div class="flex items-center gap-1.5">
+                      <span class="text-text-muted text-xs">
+                        <svg v-if="(visitor.path || visitor.Path) === '/'" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                        </svg>
+                        <svg v-else-if="(visitor.path || visitor.Path)?.includes('/admin')" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                        <svg v-else-if="(visitor.path || visitor.Path)?.includes('/blog') || (visitor.path || visitor.Path)?.includes('/article')" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                        </svg>
+                        <svg v-else class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                      </span>
+                      <div class="flex-1 min-w-0">
+                        <div class="text-xs font-medium truncate" :title="(visitor.path || visitor.Path) || '/'">
+                          {{ formatPathName((visitor.path || visitor.Path) || '/') }}
+                        </div>
+                      </div>
+                    </div>
+                    <div v-if="visitor.searchKeyword || visitor.SearchKeyword" class="text-xs text-primary mt-1.5 flex items-center gap-1">
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                      搜索: {{ visitor.searchKeyword || visitor.SearchKeyword }}
+                    </div>
+                  </td>
+                  <td class="px-4 py-3 text-text-main text-center">
+                    {{ ((visitor.pageViews || visitor.PageViews) || 0) > 0 ? (visitor.pageViews || visitor.PageViews) : 1 }}
+                  </td>
+                  <td class="px-4 py-3 text-text-main text-xs">
+                    {{ (visitor.updatedAt || visitor.UpdatedAt) ? formatTime(visitor.updatedAt || visitor.UpdatedAt) : '-' }}
+                  </td>
+                  <td class="px-4 py-3">
+                    <span
+                      v-if="(visitor.isOnline || visitor.IsOnline) === true"
+                      class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-chart-secondary/20 text-chart-secondary"
+                    >
+                      <span class="w-1.5 h-1.5 bg-chart-secondary rounded-full mr-1"></span>
+                      在线
+                    </span>
+                    <span
+                      v-else
+                      class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-bg-surface-2 text-text-muted"
+                    >
+                      离线
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <!-- 分页 -->
+            <div v-if="visitorsTotal > pageSize" class="mt-4 flex items-center justify-between">
+              <div class="text-sm text-text-muted">
+                共 {{ visitorsTotal }} 条记录
+              </div>
+              <div class="flex gap-2">
+                <AppButton
+                  variant="secondary"
+                  size="sm"
+                  @click="changePage(visitorsPage - 1)"
+                  :disabled="visitorsPage <= 1"
+                >
+                  上一页
+                </AppButton>
+                <span class="px-3 py-1 text-sm text-text-main">
+                  第 {{ visitorsPage }} / {{ Math.ceil(visitorsTotal / pageSize) }} 页
+                </span>
+                <AppButton
+                  variant="secondary"
+                  size="sm"
+                  @click="changePage(visitorsPage + 1)"
+                  :disabled="visitorsPage >= Math.ceil(visitorsTotal / pageSize)"
+                >
+                  下一页
+                </AppButton>
               </div>
             </div>
           </div>
@@ -534,190 +482,6 @@
       </div>
     </div>
 
-    <!-- 搜索关键词（单独一行） -->
-    <AppCard class="mb-6 p-6">
-      <h2 class="text-lg font-bold text-text-main mb-4">搜索关键词</h2>
-      <div v-if="searchKeywordsLoading" class="text-center py-4 text-text-muted">加载中...</div>
-      <div v-else-if="searchKeywords.length === 0" class="text-center py-4 text-text-muted">暂无搜索数据</div>
-      <div v-else class="flex flex-wrap gap-2">
-        <span
-          v-for="(keyword, index) in searchKeywords"
-          :key="index"
-          class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-primary-soft text-primary"
-        >
-          {{ keyword.keyword }} ({{ keyword.count }})
-        </span>
-      </div>
-    </AppCard>
-
-    <!-- 访客列表 -->
-    <AppCard class="mt-6 p-6">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-lg font-bold text-text-main">访客列表</h2>
-        <div class="flex items-center gap-4">
-          <label class="flex items-center gap-2 text-sm text-text-muted">
-            <input
-              type="checkbox"
-              v-model="onlineOnly"
-              @change="fetchVisitors"
-              class="rounded"
-            />
-            仅显示在线访客
-          </label>
-          <AppButton variant="secondary" size="sm" @click="fetchVisitors">
-            刷新列表
-          </AppButton>
-        </div>
-      </div>
-
-      <div v-if="visitorsLoading" class="text-center py-8 text-text-muted">
-        加载中...
-      </div>
-      <div v-else-if="visitors.length === 0" class="text-center py-8 text-text-muted">
-        暂无访客数据
-      </div>
-      <div v-else class="overflow-x-auto">
-        <table class="w-full text-sm">
-          <thead class="bg-bg-elevated">
-            <tr>
-              <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase">访客ID</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase">IP地址</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase">地理位置</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase">设备信息</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase">当前页面</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase">浏览量</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase">最后活跃</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase">状态</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-border-subtle">
-            <tr
-              v-for="visitor in visitors"
-              :key="visitor.id || visitor.Id"
-              class="hover:bg-bg-elevated transition-colors"
-            >
-              <!-- 修复访客列表 IP 一直显示未知的问题：后端返回的是小写字段名 -->
-              <td class="px-4 py-3 text-text-main font-mono text-xs">
-                {{ (visitor.visitorId || visitor.VisitorId)?.substring(0, 8) }}...
-              </td>
-              <!-- 修复访客列表 IP 一直显示未知的问题：后端返回的是小写字段名 ip，不是 Ip -->
-              <td class="px-4 py-3 text-text-main font-mono text-xs">
-                {{ (visitor.ip || visitor.Ip) && (visitor.ip || visitor.Ip) !== '-' ? (visitor.ip || visitor.Ip) : '未知' }}
-              </td>
-              <!-- 修复访客列表 IP 一直显示未知的问题：后端返回的是小写字段名 -->
-              <td class="px-4 py-3 text-text-main">
-                <div class="text-xs">
-                  <div v-if="visitor.country || visitor.Country">{{ visitor.country || visitor.Country }}</div>
-                  <div v-if="visitor.region || visitor.Region" class="text-text-muted">{{ visitor.region || visitor.Region }}</div>
-                  <div v-if="visitor.city || visitor.City" class="text-text-muted">{{ visitor.city || visitor.City }}</div>
-                  <div v-if="!(visitor.country || visitor.Country) && !(visitor.region || visitor.Region) && !(visitor.city || visitor.City)" class="text-text-disabled">未知</div>
-                </div>
-              </td>
-              <!-- 修复访客列表 IP 一直显示未知的问题：后端返回的是小写字段名 -->
-              <td class="px-4 py-3 text-text-main">
-                <div class="text-xs">
-                  <div>{{ (visitor.deviceType || visitor.DeviceType) && (visitor.deviceType || visitor.DeviceType) !== 'unknown' ? (visitor.deviceType || visitor.DeviceType) : '-' }}</div>
-                  <div class="text-text-muted">
-                    {{ (visitor.browser || visitor.Browser) && (visitor.browser || visitor.Browser) !== 'unknown' ? (visitor.browser || visitor.Browser) : '-' }} / 
-                    {{ (visitor.os || visitor.Os) && (visitor.os || visitor.Os) !== 'unknown' ? (visitor.os || visitor.Os) : '-' }}
-                  </div>
-                </div>
-              </td>
-              <!-- 修复访客列表 IP 一直显示未知的问题：后端返回的是小写字段名 -->
-              <!-- 优化路径显示：添加图标和更好的格式 -->
-              <td class="px-4 py-3 text-text-main">
-                <div class="flex items-center gap-1.5">
-                  <!-- 根据路径类型显示不同图标 -->
-                  <span class="text-text-muted text-xs">
-                    <svg v-if="(visitor.path || visitor.Path) === '/'" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                    </svg>
-                    <svg v-else-if="(visitor.path || visitor.Path)?.includes('/admin')" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
-                    <svg v-else-if="(visitor.path || visitor.Path)?.includes('/blog') || (visitor.path || visitor.Path)?.includes('/article')" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-                    </svg>
-                    <svg v-else class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    </svg>
-                  </span>
-                  <div class="flex-1 min-w-0">
-                    <div class="text-xs font-medium truncate" :title="(visitor.path || visitor.Path) || '/'">
-                      {{ formatPathName((visitor.path || visitor.Path) || '/') }}
-                    </div>
-                    <!-- 显示原始路径（如果格式化后的名称与原始路径不同） -->
-                    <div v-if="(visitor.path || visitor.Path) && formatPathName((visitor.path || visitor.Path) || '/') !== (visitor.path || visitor.Path)?.replace(/^\//, '')" 
-                         class="text-xs text-text-muted truncate mt-0.5" 
-                         :title="(visitor.path || visitor.Path) || '/'">
-                      {{ (visitor.path || visitor.Path)?.replace(/^\//, '') || '/' }}
-                    </div>
-                  </div>
-                </div>
-                <div v-if="visitor.searchKeyword || visitor.SearchKeyword" class="text-xs text-primary mt-1.5 flex items-center gap-1">
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                  搜索: {{ visitor.searchKeyword || visitor.SearchKeyword }}
-                </div>
-              </td>
-              <!-- 修复访客列表 IP 一直显示未知的问题：后端返回的是小写字段名 -->
-              <td class="px-4 py-3 text-text-main text-center">
-                {{ ((visitor.pageViews || visitor.PageViews) || 0) > 0 ? (visitor.pageViews || visitor.PageViews) : 1 }}
-              </td>
-              <!-- 修复访客列表 IP 一直显示未知的问题：后端返回的是小写字段名 -->
-              <td class="px-4 py-3 text-text-main text-xs">
-                {{ (visitor.updatedAt || visitor.UpdatedAt) ? formatTime(visitor.updatedAt || visitor.UpdatedAt) : '-' }}
-              </td>
-              <!-- 修复访客列表 IP 一直显示未知的问题：后端返回的是小写字段名 -->
-              <td class="px-4 py-3">
-                <span
-                  v-if="(visitor.isOnline || visitor.IsOnline) === true"
-                  class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-chart-secondary/20 text-chart-secondary"
-                >
-                  <span class="w-1.5 h-1.5 bg-chart-secondary rounded-full mr-1"></span>
-                  在线
-                </span>
-                <span
-                  v-else
-                  class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-bg-elevated text-text-muted"
-                >
-                  离线
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <!-- 分页 -->
-        <div v-if="visitorsTotal > pageSize" class="mt-4 flex items-center justify-between">
-          <div class="text-sm text-text-muted">
-            共 {{ visitorsTotal }} 条记录
-          </div>
-          <div class="flex gap-2">
-            <AppButton
-              variant="secondary"
-              size="sm"
-              @click="changePage(visitorsPage - 1)"
-              :disabled="visitorsPage <= 1"
-            >
-              上一页
-            </AppButton>
-            <span class="px-3 py-1 text-sm text-text-main">
-              第 {{ visitorsPage }} / {{ Math.ceil(visitorsTotal / pageSize) }} 页
-            </span>
-            <AppButton
-              variant="secondary"
-              size="sm"
-              @click="changePage(visitorsPage + 1)"
-              :disabled="visitorsPage >= Math.ceil(visitorsTotal / pageSize)"
-            >
-              下一页
-            </AppButton>
-          </div>
-        </div>
-      </div>
-    </AppCard>
     </template>
   </div>
 </template>
@@ -737,7 +501,9 @@ import VChart from 'vue-echarts'
 import { useEChartsTheme } from '~/composables/useEChartsTheme'
 import { registerTheme } from 'echarts/core'
 
-const { isDark } = useEChartsTheme()
+// 在 setup 顶层调用 useEChartsTheme，避免在 computed 中重复调用
+// 由于页面已设置 ssr: false，这些函数只在客户端使用
+const { isDark, buildNeonLineOptions, buildNeonBarOptions, buildNeonDonutOptions, getCssVar } = useEChartsTheme()
 const chartTheme = computed(() => (isDark.value ? 'dark-custom' : 'light-custom'))
 
 // 注册 ECharts 组件
@@ -882,370 +648,205 @@ const pageFlowLoading = ref(false)
 
 
 // 趋势图数据（使用新的 trend 接口）
-// 趋势图配置 (ECharts)
+// 趋势图配置 (ECharts) - Aurora DS Neon Style
 const trendLineOption = computed(() => {
-  // 后端返回的是 points（小写），不是 Points
   const points = trendData.value?.points || trendData.value?.Points || []
-  if (!trendData.value || points.length === 0) {
-    return {}
-  }
+  if (!trendData.value || points.length === 0) return null
   
-  // 辅助函数：格式化日期标签
-  const formatDateLabel = (dateStr: string, fallbackIndex: number): string => {
-    if (!dateStr || dateStr.trim() === '') return `第${fallbackIndex + 1}天`
-    
-    const dateParts = dateStr.split(' ')[0].split('-') // 忽略时间部分
-    if (dateParts.length >= 3) {
-      return `${parseInt(dateParts[1])}月${parseInt(dateParts[2])}日`
-    }
-    
-    try {
-      const date = new Date(dateStr)
-      return `${date.getMonth() + 1}月${date.getDate()}日`
-    } catch (e) {
-      return `第${fallbackIndex + 1}天`
-    }
-  }
-
-  const labels = points.map((p: any, index: number) => {
-    return formatDateLabel(p.date || p.Date, index)
+  const labels = points.map((p: any) => {
+    const dateStr = p.date || p.Date || ''
+    return dateStr.split(' ')[0].slice(5) // MM-DD
   })
 
-  // 使用标准配色
-  const pvColor = '#06b6d4' // 青色
-  const uvColor = '#10b981' // 绿色
+  const primaryColor = getCssVar('--chart-primary') || 'var(--primary)'
+  const secondaryColor = getCssVar('--chart-secondary') || 'var(--secondary)'
 
-  return {
-    backgroundColor: 'transparent',
-    tooltip: {
-      trigger: 'axis',
-      axisPointer: {
-        type: 'cross',
-        label: {
-          backgroundColor: '#6a7985'
-        }
-      }
-    },
-    legend: {
-      data: ['浏览量', '访客数'],
-      bottom: 0
-    },
-    grid: {
-      left: '3%',
-      right: '4%',
-      bottom: '10%',
-      containLabel: true
-    },
-    xAxis: [
-      {
-        type: 'category',
-        boundaryGap: false,
-        data: labels,
-        axisLine: {
-          lineStyle: {
-            color: isDark.value ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'
-          }
-        }
-      }
-    ],
-    yAxis: [
-      {
-        type: 'value',
-        axisLine: {
-          show: false
-        },
-        splitLine: {
-          lineStyle: {
-            color: isDark.value ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'
-          }
-        }
-      }
-    ],
-    series: [
-      {
-        name: '浏览量',
-        type: 'line',
-        smooth: true,
-        lineStyle: {
-          width: 3,
-          color: pvColor
-        },
-        showSymbol: false,
-        areaStyle: {
-          opacity: 0.8,
-          color: {
-            type: 'linear',
-            x: 0,
-            y: 0,
-            x2: 0,
-            y2: 1,
-            colorStops: [
-              { offset: 0, color: pvColor + '55' },
-              { offset: 1, color: 'rgba(6, 182, 212, 0.01)' }
-            ]
-          }
-        },
-        emphasis: {
-          focus: 'series'
-        },
-        data: points.map((p: any) => p.pv || p.Pv || 0)
-      },
-      {
-        name: '访客数',
-        type: 'line',
-        smooth: true,
-        lineStyle: {
-          width: 3,
-          color: uvColor
-        },
-        showSymbol: false,
-        areaStyle: {
-          opacity: 0.8,
-          color: {
-            type: 'linear',
-            x: 0,
-            y: 0,
-            x2: 0,
-            y2: 1,
-            colorStops: [
-              { offset: 0, color: uvColor + '55' },
-              { offset: 1, color: 'rgba(16, 185, 129, 0.01)' }
-            ]
-          }
-        },
-        emphasis: {
-          focus: 'series'
-        },
-        data: points.map((p: any) => p.uv || p.Uv || 0)
-      }
-    ]
-  }
-})
-
-// Donut 色板
-// Donut 色板
-const donutPalette = [
-  '#ec4899', // pink
-  '#f97316', // orange
-  '#10b981', // green
-  '#06b6d4', // cyan
-  '#3b82f6', // blue
-  '#8b5cf6'  // purple
-]
-
-// 构建细环 Donut 选项
-const buildDonutOption = (data: Array<{ name: string; value: number }>, mainLabel: string, mainPercent: number) => {
-  const chartData = data.map((item, idx) => ({
-    value: item.value,
-    name: item.name,
-    itemStyle: {
-      color: donutPalette[idx % donutPalette.length]
-    }
-  }))
-
-  return {
-    backgroundColor: 'transparent',
-    tooltip: {
-      trigger: 'item',
-      formatter: '{b}: {c} ({d}%)'
-    },
-    series: [
-      {
-        type: 'pie',
-        radius: ['70%', '82%'],
-        avoidLabelOverlap: false,
-        label: {
-          show: false
-        },
-        labelLine: {
-          show: false
-        },
-        data: chartData
-      }
-    ]
-  }
-}
-
-// 访问区域条形图选项
-const regionBarOption = computed(() => {
-  if (!regions.value || !regions.value.items || regions.value.items.length === 0) {
-    return null
-  }
-  
-  const items = regions.value.items.map((r: any) => ({
-    name: r.province ? `${r.country} - ${r.province}` : r.country,
-    value: r.count || 0
-  }))
-  
-  const total = items.reduce((sum: number, item: any) => sum + item.value, 0)
-  const sortedItems = [...items].sort((a, b) => b.value - a.value).slice(0, 10) // 只显示前10个
-  
-  const colors = sortedItems.map((_, idx) => donutPalette[idx % donutPalette.length])
-  
-  return {
-    backgroundColor: 'transparent',
-    tooltip: {
-      trigger: 'axis',
-      axisPointer: {
-        type: 'shadow'
-      },
-      formatter: (params: any) => {
-        const param = params[0]
-        const percent = total > 0 ? ((param.value / total) * 100).toFixed(1) : '0'
-        return `${param.name}<br/>${param.value} (${percent}%)`
-      }
-    },
-    grid: {
-      left: '25%',
-      right: '10%',
-      top: 20,
-      bottom: 20,
-      containLabel: false
-    },
+  // 构建基础配置
+  const baseConfig = buildNeonLineOptions('--chart-primary', {
     xAxis: {
-      type: 'value',
-      axisLine: {
-        show: false
-      },
-      axisTick: {
-        show: false
-      },
-      axisLabel: {
-        color: 'rgba(148, 163, 184, 0.7)',
-        fontSize: 11
-      },
-      splitLine: {
-        show: true,
-        lineStyle: {
-          color: 'rgba(148, 163, 184, 0.15)',
-          type: 'dashed'
-        }
-      }
+      type: 'category',
+      data: labels,
+      boundaryGap: false
     },
     yAxis: {
-      type: 'category',
-      data: sortedItems.map(item => item.name),
-      axisLine: {
-        show: false
-      },
-      axisTick: {
-        show: false
-      },
-      axisLabel: {
-        color: 'rgba(148, 163, 184, 0.7)',
-        fontSize: 11
-      }
+      type: 'value'
     },
+    series: []
+  })
+
+  // 手动构建多系列霓虹效果
+  return {
+    ...baseConfig,
     series: [
+      // 浏览量 - 主色
       {
-        type: 'bar',
-        data: sortedItems.map((item, idx) => ({
-          value: item.value,
-          itemStyle: {
-            color: colors[idx],
-            borderRadius: [0, 4, 4, 0]
+        name: '浏览量',
+        data: points.map((p: any) => p.pv || p.Pv || 0),
+        type: 'line',
+        smooth: true,
+        symbol: 'circle',
+        symbolSize: 8,
+        lineStyle: {
+          width: 3,
+          color: primaryColor,
+          shadowBlur: 12,
+          shadowColor: `${primaryColor}aa`
+        },
+        itemStyle: {
+          color: primaryColor,
+          shadowBlur: 12,
+          shadowColor: `${primaryColor}aa`
+        },
+        areaStyle: {
+          color: {
+            type: 'linear',
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            colorStops: [
+              { offset: 0, color: `${primaryColor}55` },
+              { offset: 1, color: 'rgba(15,23,42,0.0)' }
+            ]
           }
-        })),
-        label: {
-          show: true,
-          position: 'right',
-          formatter: (params: any) => {
-            const percent = total > 0 ? ((params.value / total) * 100).toFixed(1) : '0'
-            return `${params.value} (${percent}%)`
-          },
-          color: 'rgba(148, 163, 184, 0.8)',
-          fontSize: 11
+        }
+      },
+      // 访客数 - 次色
+      {
+        name: '访客数',
+        data: points.map((p: any) => p.uv || p.Uv || 0),
+        type: 'line',
+        smooth: true,
+        symbol: 'circle',
+        symbolSize: 8,
+        lineStyle: {
+          width: 3,
+          color: secondaryColor,
+          shadowBlur: 12,
+          shadowColor: `${secondaryColor}aa`
+        },
+        itemStyle: {
+          color: secondaryColor,
+          shadowBlur: 12,
+          shadowColor: `${secondaryColor}aa`
+        },
+        areaStyle: {
+          color: {
+            type: 'linear',
+            x: 0,
+            y: 0,
+            x2: 0,
+            y2: 1,
+            colorStops: [
+              { offset: 0, color: `${secondaryColor}55` },
+              { offset: 1, color: 'rgba(15,23,42,0.0)' }
+            ]
+          }
         }
       }
     ]
   }
 })
 
-// 设备类型 Donut
+// 访问区域条形图选项 - Aurora Neon
+const regionBarOption = computed(() => {
+  if (!regions.value?.items?.length) return null
+  
+  const items = regions.value.items.map((r: any) => ({
+    name: r.province ? `${r.country}-${r.province}` : r.country,
+    value: r.count || 0
+  })).sort((a: any, b: any) => b.value - a.value).slice(0, 10)
+
+  // 使用渐变柱状图辅助函数
+  const baseConfig = buildNeonBarOptions('--chart-primary', '--chart-secondary', {
+    xAxis: { type: 'value' },
+    yAxis: { type: 'category', data: items.map((i: any) => i.name).reverse() },
+    series: []
+  })
+
+  return {
+    ...baseConfig,
+    series: [{
+      ...baseConfig.series,
+      data: items.map((i: any) => i.value).reverse(),
+      label: { show: true, position: 'right', color: 'var(--text-muted)' }
+    }]
+  }
+})
+
+// 设备类型 Donut - Aurora Neon
 const deviceDonutOption = computed(() => {
-  if (!clientDistribution.value || !clientDistribution.value.devices || clientDistribution.value.devices.length === 0) {
-    return null
-  }
-  
-  const devices = clientDistribution.value.devices.map((d: any) => ({
+  if (!clientDistribution.value?.devices?.length) return null
+  const data = clientDistribution.value.devices.map((d: any, idx: number) => ({
     name: d.name || '未知',
-    value: d.count || 0
+    value: d.count || 0,
+    colorVar: `--chart-${['primary','secondary','tertiary','quaternary','quinary'][idx % 5]}`
   }))
   
-  const total = devices.reduce((sum: number, d: any) => sum + d.value, 0)
-  const mainItem = devices.reduce((max: any, item: any) => item.value > max.value ? item : max, devices[0])
-  const mainPercent = total > 0 ? ((mainItem.value / total) * 100).toFixed(1) : '0'
+  const total = data.reduce((s: number, i: any) => s + i.value, 0)
+  const max = data.reduce((m: any, i: any) => i.value > m.value ? i : m, data[0])
   
   return {
-    option: buildDonutOption(devices, mainItem.name, parseFloat(mainPercent)),
-    mainLabel: mainItem.name,
-    mainPercent
+    option: buildNeonDonutOptions(data),
+    mainLabel: max.name,
+    mainPercent: total > 0 ? ((max.value / total) * 100).toFixed(1) : '0'
   }
 })
 
-// 浏览器 Donut
+// 浏览器 Donut - Aurora Neon
 const browserDonutOption = computed(() => {
-  if (!clientDistribution.value || !clientDistribution.value.browsers || clientDistribution.value.browsers.length === 0) {
-    return null
-  }
-  
-  const browsers = clientDistribution.value.browsers.map((b: any) => ({
-    name: b.name || '未知',
-    value: b.count || 0
+  if (!clientDistribution.value?.browsers?.length) return null
+  const data = clientDistribution.value.browsers.map((d: any, idx: number) => ({
+    name: d.name || '未知',
+    value: d.count || 0,
+    colorVar: `--chart-${['quaternary','quinary','primary','secondary','tertiary'][idx % 5]}`
   }))
   
-  const total = browsers.reduce((sum: number, b: any) => sum + b.value, 0)
-  const mainItem = browsers.reduce((max: any, item: any) => item.value > max.value ? item : max, browsers[0])
-  const mainPercent = total > 0 ? ((mainItem.value / total) * 100).toFixed(1) : '0'
+  const total = data.reduce((s: number, i: any) => s + i.value, 0)
+  const max = data.reduce((m: any, i: any) => i.value > m.value ? i : m, data[0])
   
   return {
-    option: buildDonutOption(browsers, mainItem.name, parseFloat(mainPercent)),
-    mainLabel: mainItem.name,
-    mainPercent
+    option: buildNeonDonutOptions(data),
+    mainLabel: max.name,
+    mainPercent: total > 0 ? ((max.value / total) * 100).toFixed(1) : '0'
   }
 })
 
-// 来源分析 Donut
-const sourceDonutOption = computed(() => {
-  if (!sources.value.items || sources.value.items.length === 0) {
-    return null
-  }
-  
-  const items = sources.value.items.map((item: any) => ({
-    name: item.name || '未知',
-    value: item.count || 0
-  }))
-  
-  const total = items.reduce((sum: number, item: any) => sum + item.value, 0)
-  const mainItem = items.reduce((max: any, item: any) => item.value > max.value ? item : max, items[0])
-  const mainPercent = total > 0 ? ((mainItem.value / total) * 100).toFixed(1) : '0'
-
-  return {
-    option: buildDonutOption(items, mainItem.name, parseFloat(mainPercent)),
-    mainLabel: mainItem.name,
-    mainPercent
-  }
-})
-
-// 操作系统 Donut
+// 操作系统 Donut - Aurora Neon
 const osDonutOption = computed(() => {
-  if (!clientDistribution.value || !clientDistribution.value.os || clientDistribution.value.os.length === 0) {
-    return null
-  }
-  
-  const os = clientDistribution.value.os.map((o: any) => ({
-    name: o.name || '未知',
-    value: o.count || 0
+  if (!clientDistribution.value?.os?.length) return null
+  const data = clientDistribution.value.os.map((d: any, idx: number) => ({
+    name: d.name || '未知',
+    value: d.count || 0,
+    colorVar: `--chart-${['tertiary','quaternary','quinary','primary','secondary'][idx % 5]}`
   }))
   
-  const total = os.reduce((sum: number, o: any) => sum + o.value, 0)
-  const mainItem = os.reduce((max: any, item: any) => item.value > max.value ? item : max, os[0])
-  const mainPercent = total > 0 ? ((mainItem.value / total) * 100).toFixed(1) : '0'
+  const total = data.reduce((s: number, i: any) => s + i.value, 0)
+  const max = data.reduce((m: any, i: any) => i.value > m.value ? i : m, data[0])
   
   return {
-    option: buildDonutOption(os, mainItem.name, parseFloat(mainPercent)),
-    mainLabel: mainItem.name,
-    mainPercent
+    option: buildNeonDonutOptions(data),
+    mainLabel: max.name,
+    mainPercent: total > 0 ? ((max.value / total) * 100).toFixed(1) : '0'
+  }
+})
+
+// 来源分析 Donut - Aurora Neon
+const sourceDonutOption = computed(() => {
+  if (!sources.value?.items?.length) return null
+  const data = sources.value.items.map((d: any, idx: number) => ({
+    name: d.name || '未知',
+    value: d.count || 0,
+    colorVar: `--chart-${['secondary','tertiary','quaternary','quinary','primary'][idx % 5]}`
+  }))
+  
+  const total = data.reduce((s: number, i: any) => s + i.value, 0)
+  const max = data.reduce((m: any, i: any) => i.value > m.value ? i : m, data[0])
+  
+  return {
+    option: buildNeonDonutOptions(data),
+    mainLabel: max.name,
+    mainPercent: total > 0 ? ((max.value / total) * 100).toFixed(1) : '0'
   }
 })
 
@@ -1786,6 +1387,41 @@ const refreshStats = () => {
 }
 
 const autoRefreshInterval = ref<NodeJS.Timeout | null>(null)
+const autoRefreshEnabled = ref(true) // 实时刷新开关
+
+// 获取 Donut 图表颜色的辅助函数
+const getDonutColor = (index: number): string => {
+  const colorVars = ['--chart-primary', '--chart-secondary', '--chart-tertiary', '--chart-quaternary', '--chart-quinary']
+  const colorVar = colorVars[index % colorVars.length]
+  return getCssVar(colorVar) || 'var(--primary)'
+}
+
+// 监听实时刷新开关
+watch(autoRefreshEnabled, (enabled) => {
+  if (enabled) {
+    // 开启实时刷新
+    if (process.client && !autoRefreshInterval.value) {
+      autoRefreshInterval.value = setInterval(() => {
+        if (rateLimitRetryCount.value >= 3) {
+          if (autoRefreshInterval.value) {
+            clearInterval(autoRefreshInterval.value)
+            autoRefreshInterval.value = null
+          }
+          return
+        }
+        fetchOverview()
+        fetchStats()
+        fetchVisitors()
+      }, 60000)
+    }
+  } else {
+    // 关闭实时刷新
+    if (autoRefreshInterval.value) {
+      clearInterval(autoRefreshInterval.value)
+      autoRefreshInterval.value = null
+    }
+  }
+})
 
 onMounted(() => {
   if (process.client) {
@@ -1803,9 +1439,8 @@ onMounted(() => {
     refreshAll()
   }, 500)
   
-  // 每60秒自动刷新（从30秒改为60秒，减少请求频率）
-  // 如果遇到速率限制，会自动停止
-  if (process.client) {
+  // 如果实时刷新开关开启，启动自动刷新
+  if (process.client && autoRefreshEnabled.value) {
     autoRefreshInterval.value = setInterval(() => {
       // 检查是否遇到速率限制
       if (rateLimitRetryCount.value >= 3) {
@@ -1820,7 +1455,7 @@ onMounted(() => {
       fetchStats()
       // 自动刷新访客列表（无论是否勾选"仅显示在线访客"）
       fetchVisitors()
-    }, 60000) // 改为 60 秒
+    }, 60000) // 60 秒
   }
 })
 

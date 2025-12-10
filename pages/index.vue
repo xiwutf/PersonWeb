@@ -17,20 +17,22 @@ import { ref, computed, onMounted } from 'vue'
 import HomeDarkLab from '~/components/home/HomeDarkLab.vue'
 import HomeLightPortfolio from '~/components/home/HomeLightPortfolio.vue'
 import HomeHybridSuper from '~/components/home/HomeHybridSuper.vue'
+import HomeCreative from '~/components/home/HomeCreative.vue'
 
 const api = useApi()
-const style = ref<string>('hybrid-super') // 默认使用新的混合超级风格
+const style = ref<string>('creative') // 默认使用新的创意堆叠风格
 
 // 风格组件映射
 const componentMap: Record<string, any> = {
   'dark-lab': HomeDarkLab,
   'light-portfolio': HomeLightPortfolio,
-  'hybrid-super': HomeHybridSuper
+  'hybrid-super': HomeHybridSuper,
+  'creative': HomeCreative // 新增风格
 }
 
 // 当前组件
 const currentComponent = computed(() => {
-  return componentMap[style.value] || componentMap['dark-lab']
+  return componentMap[style.value] || componentMap['creative']
 })
 
 // 获取当前启用的首页风格
@@ -38,17 +40,15 @@ const fetchHomeStyle = async () => {
   try {
     const res = await api.get<{ style: string }>('/config/home-style')
     if (res && res.style) {
-      // 强制使用 hybrid-super 风格（V2 重构版本）
-      // 如果需要使用后端配置，可以取消下面的注释并删除强制设置
-      // style.value = res.style
-      style.value = 'hybrid-super'
+      // 优先使用后端配置，如果没有则使用默认
+      style.value = res.style || 'creative'
     } else {
-      style.value = 'hybrid-super'
+      style.value = 'creative'
     }
   } catch (e) {
     console.error('Failed to fetch home style:', e)
-    // 默认使用 hybrid-super（新的混合超级风格）
-    style.value = 'hybrid-super'
+    // 默认使用 creative
+    style.value = 'creative'
   }
 }
 

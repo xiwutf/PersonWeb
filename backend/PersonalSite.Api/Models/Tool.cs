@@ -140,6 +140,28 @@ public class Tool
     [Column("published_at")]
     public DateTime? PublishedAt { get; set; }
 
+    // AI 生成字段
+    [MaxLength(200)]
+    [Column("ai_title")]
+    public string? AiTitle { get; set; }
+
+    [Column("ai_highlights", TypeName = "text")]
+    public string? AiHighlights { get; set; } // JSON 或分号分隔字符串
+
+    [Column("ai_description", TypeName = "longtext")]
+    public string? AiDescription { get; set; } // Markdown 格式
+
+    [Column("ai_scenarios", TypeName = "text")]
+    public string? AiScenarios { get; set; }
+
+    [MaxLength(500)]
+    [Column("ai_target_users")]
+    public string? AiTargetUsers { get; set; }
+
+    [MaxLength(200)]
+    [Column("ai_short_card_text")]
+    public string? AiShortCardText { get; set; }
+
     // 导航属性
     [ForeignKey("CategoryId")]
     public ToolCategory? Category { get; set; }

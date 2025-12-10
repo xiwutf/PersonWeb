@@ -101,6 +101,7 @@ export default defineNuxtConfig({
 
   // CSS 配置
   css: [
+    '~/assets/css/design-system.css', // 极光设计系统 Design Token (V3)
     '~/assets/styles/tokens.css', // 设计 Token：全局 CSS 变量
     '~/assets/styles/base.css', // 基础样式和 Reset
     '~/assets/styles/ui-patch-naive.css', // Naive UI 补丁样式
@@ -135,7 +136,7 @@ export default defineNuxtConfig({
       failOnError: false
     },
   },
-  
+
   // Vite 配置
   vite: {
     css: {

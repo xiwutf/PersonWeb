@@ -101,6 +101,9 @@ public class AppDbContext : DbContext
     // 订单和咨询相关表
     public DbSet<Order> Orders { get; set; }
     public DbSet<PreSaleConsultation> PreSaleConsultations { get; set; }
+    
+    // AI 智能体相关表
+    public DbSet<AiAgentLog> AiAgentLogs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

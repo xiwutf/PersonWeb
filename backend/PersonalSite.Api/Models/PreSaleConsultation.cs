@@ -103,6 +103,32 @@ public class PreSaleConsultation
     /// </summary>
     [Column("updated_at")]
     public DateTime UpdatedAt { get; set; } = DateTime.Now;
+
+    // AI 分析字段
+    /// <summary>
+    /// AI 生成的摘要
+    /// </summary>
+    [Column("summary", TypeName = "text")]
+    public string? Summary { get; set; }
+
+    /// <summary>
+    /// AI 生成的标签（JSON 数组或逗号分隔字符串）
+    /// </summary>
+    [MaxLength(500)]
+    [Column("tags")]
+    public string? Tags { get; set; }
+
+    /// <summary>
+    /// AI 评分（0-100）
+    /// </summary>
+    [Column("score")]
+    public int? Score { get; set; }
+
+    /// <summary>
+    /// AI 推荐建议
+    /// </summary>
+    [Column("ai_recommendation", TypeName = "text")]
+    public string? AiRecommendation { get; set; }
 }
 
 /// <summary>

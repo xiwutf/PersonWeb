@@ -40,7 +40,7 @@ import type { GlobalTheme, GlobalThemeOverrides } from 'naive-ui'
 const ProvidersComponent = ref<any>(null)
 
 // 使用全局主题管理 composable
-const { currentTheme } = useNaiveTheme()
+const { currentTheme } = useTheme()
 
 /**
  * 将项目主题 key 映射到 Naive UI 的 theme
@@ -66,39 +66,39 @@ const naiveTheme = computed<GlobalTheme | null>(() => {
 /**
  * Naive UI 主题覆盖配置
  * 
- * 重构说明（2024-12-XX）：
- * - 优先使用具体颜色值，减少对 CSS 变量的依赖
- * - 根据 currentTheme 动态计算深色/浅色模式的颜色
- * - 保留少量必要的 CSS 变量（如圆角、阴影等）
+ * Aurora Design System (V3)
+ * 极光设计系统覆盖
  */
 const naiveThemeOverrides = computed<GlobalThemeOverrides>(() => {
-  const isDark = currentTheme.value?.name === 'dark' // Naive UI dark theme has name='dark'
+  const isDark = currentTheme.value === 'dark'
   
-  // Design System V2: Fintech Blue + High Contrast
+  // Aurora Design System V3
   const colors = isDark 
     ? {
-        primary: '#3B82F6',
+        // Dark Mode (Deep Space)
+        primary: '#2997FF',        // Electric Blue
         primaryHover: '#60A5FA',
-        primaryPressed: '#2563EB',
-        primarySuppl: 'rgba(59, 130, 246, 0.15)',
-        bgBody: '#0B0E14', // Deep space dark
-        bgCard: '#151B28', // Slightly lighter dark
-        textMain: '#F5F7FA',
-        textSec: '#94A3B8',
-        border: 'rgba(255, 255, 255, 0.08)',
-        borderHover: 'rgba(59, 130, 246, 0.4)',
+        primaryPressed: '#1E40AF',
+        primarySuppl: 'rgba(41, 151, 255, 0.15)',
+        bgBody: '#050510',         // Abyss Black
+        bgCard: 'rgba(20, 25, 40, 0.6)', // Glass Base
+        textMain: '#FFFFFF',
+        textSec: 'rgba(255, 255, 255, 0.7)',
+        border: 'rgba(255, 255, 255, 0.1)',
+        borderHover: 'rgba(41, 151, 255, 0.5)',
       }
     : {
-        primary: '#0052FF',
-        primaryHover: '#0040D6',
-        primaryPressed: '#0030A0',
-        primarySuppl: 'rgba(0, 82, 255, 0.08)',
-        bgBody: '#F5F7FA', // Cold grey-white
-        bgCard: '#FFFFFF',
-        textMain: '#0F172A',
-        textSec: '#64748B',
-        border: 'rgba(0, 0, 0, 0.06)',
-        borderHover: 'rgba(0, 82, 255, 0.2)',
+        // Light Mode (Zen Workshop)
+        primary: '#000000',        // Sure Black
+        primaryHover: '#333333',
+        primaryPressed: '#000000',
+        primarySuppl: 'rgba(0, 0, 0, 0.08)',
+        bgBody: '#F7F7F7',         // Off White
+        bgCard: '#FFFFFF',         // Pure White
+        textMain: '#171717',
+        textSec: '#525252',
+        border: 'rgba(0, 0, 0, 0.08)',
+        borderHover: 'rgba(0, 0, 0, 0.2)',
       }
 
   return {
@@ -124,7 +124,6 @@ const naiveThemeOverrides = computed<GlobalThemeOverrides>(() => {
       color: colors.bgCard,
       borderRadius: '16px',
       borderColor: colors.border,
-      // Design System V2: Lighter shadows for glassmorphism feel
       boxShadow: isDark 
         ? '0 8px 32px rgba(0, 0, 0, 0.4)' 
         : '0 4px 20px rgba(0, 0, 0, 0.03)',
@@ -132,8 +131,7 @@ const naiveThemeOverrides = computed<GlobalThemeOverrides>(() => {
     Button: {
       borderRadius: '8px',
       fontWeight: '600',
-      // Primary button gradient effect (simulated via shadows/borders if needed, but keeping simple here)
-      textColorPrimary: '#FFFFFF',
+      textColorPrimary: '#FFFFFF', // Light mode uses Black bg, so text is White
     },
     Input: {
       borderRadius: '8px',
@@ -145,7 +143,7 @@ const naiveThemeOverrides = computed<GlobalThemeOverrides>(() => {
     DataTable: {
       borderRadius: '12px',
       borderColor: colors.border,
-      thColor: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.01)',
+      thColor: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)',
       tdColor: 'transparent',
       tdColorHover: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)',
     }

@@ -42,6 +42,8 @@
             <th>联系方式</th>
             <th>预算范围</th>
             <th>期望时间</th>
+            <th>AI 评分</th>
+            <th>AI 标签</th>
             <th>状态</th>
             <th>创建时间</th>
             <th>操作</th>
@@ -62,6 +64,26 @@
             <td class="table-cell">{{ consultation.budgetRange || '-' }}</td>
             <td class="table-cell">{{ consultation.expectedDeadline || '-' }}</td>
             <td class="table-cell">
+              <span v-if="consultation.score !== null && consultation.score !== undefined" 
+                    :class="getScoreClass(consultation.score)" 
+                    class="score-badge">
+                {{ consultation.score }}
+              </span>
+              <span v-else class="text-muted">-</span>
+            </td>
+            <td class="table-cell">
+              <div v-if="consultation.tags" class="tags-container">
+                <span
+                  v-for="tag in parseTags(consultation.tags)"
+                  :key="tag"
+                  class="tag-small"
+                >
+                  {{ tag }}
+                </span>
+              </div>
+              <span v-else class="text-muted">-</span>
+            </td>
+            <td class="table-cell">
               <span :class="getStatusTagClass(consultation.status)" class="tag">
                 {{ getStatusText(consultation.status) }}
               </span>
@@ -69,6 +91,13 @@
             <td class="table-cell">{{ formatDate(consultation.createdAt) }}</td>
             <td class="table-cell">
               <div class="action-buttons">
+                <button
+                  @click="handleAiAnalyze(consultation)"
+                  class="btn-link btn-link-purple"
+                  title="AI 分析"
+                >
+                  <i class="fas fa-magic"></i> AI
+                </button>
                 <button @click="handleViewDetail(consultation)" class="btn-link btn-link-blue">查看</button>
                 <button
                   v-if="consultation.status !== 2"
@@ -121,6 +150,12 @@
           <n-descriptions-item label="创建时间">{{ formatDate(currentConsultation.createdAt) }}</n-descriptions-item>
           <n-descriptions-item label="需求描述" :span="2">
             <div class="whitespace-pre-line bg-gray-50 p-3 rounded">{{ currentConsultation.requirementDescription }}</div>
+          </n-descriptions-item>
+          <n-descriptions-item v-if="currentConsultation.summary" label="AI 摘要" :span="2">
+            <div class="whitespace-pre-line bg-blue-50 p-3 rounded">{{ currentConsultation.summary }}</div>
+          </n-descriptions-item>
+          <n-descriptions-item v-if="currentConsultation.aiRecommendation" label="AI 推荐建议" :span="2">
+            <div class="whitespace-pre-line bg-green-50 p-3 rounded">{{ currentConsultation.aiRecommendation }}</div>
           </n-descriptions-item>
           <n-descriptions-item label="内部备注" :span="2">
             <n-input
@@ -300,6 +335,58 @@ const handleConvertToOrder = async (consultation: any) => {
   }
 }
 
+// AI 分析
+const handleAiAnalyze = async (consultation: any) => {
+  try {
+    message.loading('正在分析线索...', { duration: 0 })
+    
+    const res = await api.post('/ai/leads/analyze', {
+      leadId: consultation.id,
+      rawText: consultation.requirementDescription,
+      meta: {
+        budget: consultation.budgetRange,
+        deadline: consultation.expectedDeadline,
+        channel: 'web'
+      }
+    })
+
+    message.destroyAll()
+    
+    if (res && res.success) {
+      message.success('AI 分析完成！已自动保存分析结果')
+      await fetchConsultations() // 刷新列表
+    } else {
+      message.error(res?.errorMessage || '分析失败')
+    }
+  } catch (e: any) {
+    message.destroyAll()
+    console.error('AI 分析失败:', e)
+    message.error(e.response?.data?.message || e.message || '分析失败')
+  }
+}
+
+// 解析标签（支持 JSON 数组和逗号分隔字符串）
+const parseTags = (tags: string): string[] => {
+  if (!tags) return []
+  try {
+    const parsed = JSON.parse(tags)
+    if (Array.isArray(parsed)) {
+      return parsed
+    }
+  } catch {
+    // 如果不是 JSON，尝试按逗号分隔
+    return tags.split(',').map(t => t.trim()).filter(t => t)
+  }
+  return []
+}
+
+// 获取评分样式类
+const getScoreClass = (score: number): string => {
+  if (score >= 80) return 'score-high'
+  if (score >= 60) return 'score-medium'
+  return 'score-low'
+}
+
 // 保存状态
 const handleSaveStatus = async () => {
   if (!currentConsultation.value) return
@@ -460,6 +547,60 @@ useHead({
 
 .btn-link-green {
   color: #10b981;
+}
+
+.btn-link-purple {
+  color: #a78bfa;
+}
+
+.btn-link-purple:hover {
+  background: #f3f4f6;
+}
+
+/* 评分徽章 */
+.score-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.score-high {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.score-medium {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.score-low {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* 标签容器 */
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.tag-small {
+  display: inline-block;
+  padding: 2px 8px;
+  background: #e0e7ff;
+  color: #4338ca;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.text-muted {
+  color: #94a3b8;
+}
 }
 
 .btn-link-green:hover {

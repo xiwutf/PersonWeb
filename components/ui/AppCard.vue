@@ -43,7 +43,10 @@ withDefaults(defineProps<Props>(), {
 <style scoped>
 .app-card {
   /* 使用主题变量控制背景、边框、圆角、阴影 */
-  @apply bg-bg-card border border-border-subtle rounded-lg shadow-md p-6 transition-all duration-300;
+  /* Aurora DS: 增加 backdrop-blur 实现毛玻璃效果 */
+  @apply bg-bg-card border border-border-subtle rounded-2xl shadow-sm p-6 transition-all duration-500 backdrop-blur-xl;
+  /* 确保在深色模式下有细腻的内描边 */
+  box-shadow: var(--shadow-sm);
 }
 
 .app-card--hover {
@@ -52,14 +55,15 @@ withDefaults(defineProps<Props>(), {
 }
 
 .app-card--hover:hover {
-  @apply shadow-lg -translate-y-1;
-  /* 使用主题变量中的 hover 阴影 */
-  box-shadow: var(--shadow-lg);
+  @apply -translate-y-1;
+  /* 使用主题变量中的 hover 阴影 (光晕) */
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
+  border-color: var(--border-focus);
 }
 
 .app-card--elevated {
   /* 使用 elevated 背景色，提供更明显的层次感 */
-  @apply bg-bg-elevated;
+  @apply bg-bg-elevated shadow-md;
 }
 </style>
 

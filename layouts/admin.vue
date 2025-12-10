@@ -28,6 +28,16 @@
           <i class="fas fa-chart-line w-5 text-center mr-3"></i>
           <span class="text-sm font-medium">仪表盘</span>
         </NuxtLink>
+
+        <!-- AI 智能体中心 -->
+        <NuxtLink 
+          to="/admin/ai" 
+          class="flex items-center px-4 py-2.5 rounded-lg transition-colors admin-sidebar-link"
+          :class="{ 'admin-sidebar-link-active': route.path.startsWith('/admin/ai') }"
+        >
+          <i class="fas fa-magic w-5 text-center mr-3"></i>
+          <span class="text-sm font-medium">AI 智能体</span>
+        </NuxtLink>
         
         <!-- 内容管理 -->
         <div class="menu-group">

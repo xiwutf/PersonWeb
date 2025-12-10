@@ -2,8 +2,8 @@
   <section class="bento-grid-v4">
     <div class="bento-grid-v4-container">
       <div class="bento-grid-v4-header" ref="sectionTitleRef">
-        <h2 class="bento-grid-v4-title">按功能分类展示</h2>
-        <p class="bento-grid-v4-subtitle">探索不同类别的创作内容</p>
+        <h2 class="bento-grid-v4-title">探索·发现</h2>
+        <p class="bento-grid-v4-subtitle">Exploring the Creative Universe</p>
       </div>
 
       <div class="bento-grid-v4-grid">

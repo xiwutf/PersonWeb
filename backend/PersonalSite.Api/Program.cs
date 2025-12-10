@@ -99,6 +99,11 @@ builder.Services.Configure<PersonalSite.Api.Services.AiServiceOptions>(
     builder.Configuration.GetSection("AiService"));
 builder.Services.AddHttpClient<PersonalSite.Api.Services.AiServiceClient>();
 
+// 注册 AI 智能体服务
+builder.Services.AddScoped<PersonalSite.Api.Services.ContentAgentService>();
+builder.Services.AddScoped<PersonalSite.Api.Services.DemoAgentService>();
+builder.Services.AddScoped<PersonalSite.Api.Services.LeadAgentService>();
+
 // 注册支付服务
 builder.Services.AddScoped<PersonalSite.Api.Services.Payment.WeChatPaymentService>();
 builder.Services.AddScoped<PersonalSite.Api.Services.Payment.AlipayPaymentService>();
