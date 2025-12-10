@@ -1,7 +1,7 @@
 <template>
   <n-grid :cols="4" :x-gap="16" :y-gap="16">
     <n-grid-item v-for="(card, index) in cards" :key="index">
-      <n-card class="kpi-card" hoverable>
+      <n-card class="dashboard-card" hoverable>
         <div class="kpi-card-content">
           <div class="kpi-card-header">
             <span class="kpi-card-label">{{ card.label }}</span>
@@ -79,19 +79,15 @@ const cards = computed(() => {
 </script>
 
 <style scoped>
-.kpi-card {
-  background-color: var(--color-bg-card);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--color-border-subtle);
-  transition: all 0.3s ease;
+/* kpi-card 的颜色、边框、阴影已移除，由 themeOverrides.Card 统一控制 */
+/* 只保留布局和动画相关的样式 */
+.dashboard-card {
+  transition: transform 0.3s ease;
   overflow: hidden;
 }
 
-.kpi-card:hover {
+.dashboard-card:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
-  border-color: var(--color-primary);
 }
 
 .kpi-card-content {

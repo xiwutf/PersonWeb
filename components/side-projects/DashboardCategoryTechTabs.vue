@@ -1,5 +1,5 @@
 <template>
-  <n-card class="dashboard-chart-card">
+  <n-card class="dashboard-card">
     <n-tabs v-model:value="activeTab" type="line" animated>
       <n-tab-pane name="category" tab="项目类型">
         <div v-if="!categoryData || categoryData.length === 0" class="chart-empty">
@@ -234,12 +234,7 @@ const techChartOption = computed(() => {
 </script>
 
 <style scoped>
-.dashboard-chart-card {
-  background-color: var(--color-bg-card);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--color-border-subtle);
-}
+/* dashboard-chart-card 的颜色、边框、阴影已移除，由 themeOverrides.Card 统一控制 */
 
 .chart-container {
   height: 320px;

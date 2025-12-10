@@ -1,5 +1,5 @@
 <template>
-  <n-card class="dashboard-table-card">
+  <n-card class="dashboard-card">
     <template #header>
       <div class="table-header">
         <h3 class="table-title">最近项目</h3>
@@ -83,12 +83,7 @@ const columns: DataTableColumns<SideProject> = [
 </script>
 
 <style scoped>
-.dashboard-table-card {
-  background-color: var(--color-bg-card);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--color-border-subtle);
-}
+/* dashboard-table-card 的颜色、边框、阴影已移除，由 themeOverrides.Card 统一控制 */
 
 .table-header {
   display: flex;

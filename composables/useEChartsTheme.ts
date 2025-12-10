@@ -6,20 +6,12 @@
 import { computed } from 'vue'
 
 export const useEChartsTheme = () => {
-  // 检测深色模式（优先使用 Naive UI 主题系统）
+  // 使用全局主题系统（前台和后台共用）
+  const { currentTheme } = useTheme()
+  
+  // 检测深色模式
   const isDark = computed(() => {
-    if (process.client) {
-      // 检查是否有 Naive UI 主题系统
-      try {
-        const { useNaiveTheme } = require('~/composables/useNaiveTheme')
-        const { isDark: naiveIsDark } = useNaiveTheme()
-        return naiveIsDark.value
-      } catch {
-        // 如果没有，回退到检查 DOM
-        return document.documentElement.classList.contains('dark')
-      }
-    }
-    return false
+    return currentTheme.value === 'dark'
   })
 
   // ECharts 深色主题配置（增强对比度）
@@ -45,31 +37,38 @@ export const useEChartsTheme = () => {
       }
     },
     tooltip: {
-      backgroundColor: 'rgba(17, 24, 39, 0.98)', // 更深的背景，更高对比度
-      borderColor: 'rgba(156, 163, 175, 0.5)',
+      backgroundColor: 'rgba(15, 23, 42, 0.98)', // 更深的背景，更高对比度
+      borderColor: 'rgba(255, 255, 255, 0.2)', // 增强边框可见性
       borderWidth: 1,
       textStyle: {
         color: '#ffffff', // 纯白色文字
         fontSize: 13,
-        fontWeight: 'normal'
+        fontWeight: 'normal',
+        lineHeight: 20
       },
       padding: [10, 14],
-      extraCssText: 'box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);' // 添加阴影增强可见性
+      extraCssText: 'box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.1);' // 增强阴影和边框
     },
     grid: {
-      borderColor: 'rgba(75, 85, 99, 0.3)', // 深色网格线
-      borderWidth: 1
+      borderColor: 'rgba(255, 255, 255, 0.15)', // 增强网格线可见性
+      borderWidth: 1,
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      top: '10%',
+      containLabel: true
     },
     categoryAxis: {
       axisLine: {
         lineStyle: {
-          color: 'rgba(156, 163, 175, 0.6)', // 更亮的轴线
+          color: 'rgba(255, 255, 255, 0.2)', // 增强轴线可见性
           width: 1
         }
       },
       axisLabel: {
-        color: '#e5e7eb', // 更亮的标签
-        fontSize: 12
+        color: 'rgba(255, 255, 255, 0.8)', // 增强标签对比度
+        fontSize: 12,
+        fontWeight: 'normal'
       },
       splitLine: {
         show: false // 隐藏分割线，减少视觉干扰
@@ -78,17 +77,18 @@ export const useEChartsTheme = () => {
     valueAxis: {
       axisLine: {
         lineStyle: {
-          color: 'rgba(156, 163, 175, 0.6)', // 更亮的轴线
+          color: 'rgba(255, 255, 255, 0.2)', // 增强轴线可见性
           width: 1
         }
       },
       axisLabel: {
-        color: '#e5e7eb', // 更亮的标签
-        fontSize: 12
+        color: 'rgba(255, 255, 255, 0.8)', // 增强标签对比度
+        fontSize: 12,
+        fontWeight: 'normal'
       },
       splitLine: {
         lineStyle: {
-          color: 'rgba(156, 163, 175, 0.3)', // 更明显的分割线
+          color: 'rgba(255, 255, 255, 0.1)', // 增强分割线可见性
           type: 'dashed',
           width: 1
         }
@@ -165,13 +165,13 @@ export const useEChartsTheme = () => {
   }
 
   // 获取当前主题配置
-  const currentTheme = computed(() => {
+  const echartsTheme = computed(() => {
     return isDark.value ? darkTheme : lightTheme
   })
 
   // 应用主题到图表配置
   const applyTheme = (option: any) => {
-    const theme = currentTheme.value
+    const theme = echartsTheme.value
     return {
       ...option,
       backgroundColor: theme.backgroundColor,
@@ -224,7 +224,7 @@ export const useEChartsTheme = () => {
     isDark,
     darkTheme,
     lightTheme,
-    currentTheme,
+    echartsTheme,
     applyTheme
   }
 }

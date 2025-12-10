@@ -12,7 +12,7 @@
 
     <!-- 列表 -->
     <div class="events-list">
-      <n-card v-for="event in events" :key="event.id" class="event-card">
+      <n-card v-for="event in events" :key="event.id">
         <div class="event-content">
           <div class="event-main">
             <div
@@ -254,9 +254,7 @@ onMounted(() => {
   gap: 1rem;
 }
 
-.event-card {
-  margin-bottom: 0;
-}
+/* event-card 样式已移除，由 themeOverrides.Card 统一控制 */
 
 .event-content {
   display: flex;

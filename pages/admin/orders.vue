@@ -25,7 +25,7 @@
         :options="statusOptions"
       />
       <n-button type="primary" @click="handleSearch">搜索</n-button>
-      <n-button @click="handleReset">重置</n-button>
+      <n-button quaternary @click="handleReset">重置</n-button>
     </div>
 
     <!-- 数据表格 -->
@@ -126,7 +126,7 @@
         </n-descriptions>
 
         <div class="mt-4 flex justify-end gap-2">
-          <n-button @click="showDetailModal = false">取消</n-button>
+          <n-button quaternary @click="showDetailModal = false">取消</n-button>
           <n-button type="primary" @click="handleSaveStatus">保存</n-button>
         </div>
       </div>

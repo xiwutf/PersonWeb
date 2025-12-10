@@ -16,9 +16,23 @@
   - 数据库规范
   - Git 提交规范
   - 最佳实践和禁止事项
+- **[设计系统 v1](./DESIGN_SYSTEM_V1.md)** ⭐ **必读** - 完整的设计系统文档（主题、色彩、组件规范）
+- **[UI 编码规范](./CODING_STYLE_UI.md)** ⭐ **必读** - UI 开发编码规范和最佳实践
 - **[代码规范检查报告](./quality/CODE_STANDARDS_CHECK.md)** - 代码规范符合度检查结果
 
 ## 📁 文档分类
+
+### 🎨 设计系统文档
+
+**UI 开发前必读：**
+
+- `DESIGN_SYSTEM_V1.md` ⭐ **必读** - 完整的设计系统文档（主题、色彩、组件规范）
+- `CODING_STYLE_UI.md` ⭐ **必读** - UI 编码规范和最佳实践
+- `COLOR_STATISTICS.md` - 颜色统计和迁移指南
+- `PHASE2_THEME_OPTIMIZATION.md` - 第二阶段主题优化报告
+- `PHASE3_THEME_OPTIMIZATION.md` - 第三阶段主题优化报告
+- `PHASE4_DESIGN_SYSTEM_FINALIZATION.md` - 第四阶段规范固化计划
+- `THEME_REFACTORING_COMPLETE.md` - 主题重构完成报告
 
 ### 💻 开发文档 (`development/`)
 开发相关的文档，包括开发规范、构建优化等。
@@ -125,6 +139,8 @@
 ### 开发相关
 - [项目概览](./PROJECT_OVERVIEW.md) ⭐ **必读**
 - [开发规范](./development/DEVELOPMENT_GUIDELINES.md) ⭐ **必读**
+- [设计系统 v1](./DESIGN_SYSTEM_V1.md) ⭐ **必读**
+- [UI 编码规范](./CODING_STYLE_UI.md) ⭐ **必读**
 - [代码规范检查](./quality/CODE_STANDARDS_CHECK.md)
 - [模块系统](./architecture/README_MODULES.md)
 - [功能开发状态](./features/IMPLEMENTATION_STATUS.md)

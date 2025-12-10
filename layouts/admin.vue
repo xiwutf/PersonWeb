@@ -427,14 +427,10 @@
 
     <!-- 主内容区：使用主题背景色和文字颜色 -->
     <main class="flex-1 ml-64 p-4 md:p-6 lg:p-8 admin-main" :style="mainContentStyle">
-      <ClientOnly>
-        <NaiveUIProviders :theme="currentTheme" :theme-overrides="themeOverrides">
-          <slot />
-        </NaiveUIProviders>
-        <template #fallback>
-          <slot />
-        </template>
-      </ClientOnly>
+      <!-- 使用统一的 AppNaiveConfig，确保前台和后台共用同一套主题配置 -->
+      <AppNaiveConfig>
+        <slot />
+      </AppNaiveConfig>
     </main>
 
     <!-- 鼠标轨迹特效 -->
@@ -462,8 +458,7 @@
 <script setup lang="ts">
 import { onMounted, computed, watch, ref, nextTick } from 'vue'
 import { useAdminGlobalStyle } from '~/composables/useAdminStyle'
-import { useNaiveTheme } from '~/composables/useNaiveTheme'
-import NaiveUIProviders from '~/components/layout/NaiveUIProviders.vue'
+import AppNaiveConfig from '~/components/layout/AppNaiveConfig.vue'
 import MouseTrail from '~/components/effects/MouseTrail.vue'
 import ThemeSwitcher from '~/components/layout/ThemeSwitcher.vue'
 
@@ -471,8 +466,8 @@ const router = useRouter()
 const route = useRoute()
 const { globalStyle, styleConfig, cssVariables, inlineStyle, fetchGlobalStyle } = useAdminGlobalStyle()
 
-// 使用 Naive UI 主题系统
-const { currentTheme, themeOverrides, isDark } = useNaiveTheme()
+// 使用全局主题系统（前台和后台共用）
+const { currentTheme } = useTheme()
 
 // 菜单折叠状态
 const expandedMenus = ref<Record<string, boolean>>({

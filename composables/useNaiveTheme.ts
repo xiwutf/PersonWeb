@@ -8,7 +8,7 @@ import { darkTheme, type GlobalTheme, type GlobalThemeOverrides } from 'naive-ui
 export const useNaiveTheme = () => {
   // 主题模式：'light' | 'dark' | 'auto'
   const themeMode = ref<'light' | 'dark' | 'auto'>('dark')
-  
+
   // 主题色配置
   const themeOverrides = ref<GlobalThemeOverrides>({
     common: {
@@ -31,7 +31,7 @@ export const useNaiveTheme = () => {
   const currentTheme = computed<GlobalTheme | null>(() => {
     if (process.client) {
       let shouldUseDark = false
-      
+
       if (themeMode.value === 'dark') {
         shouldUseDark = true
       } else if (themeMode.value === 'light') {
@@ -39,14 +39,16 @@ export const useNaiveTheme = () => {
       } else if (themeMode.value === 'auto') {
         shouldUseDark = prefersDark.value
       }
-      
+
       // 同步到 document.documentElement
       if (shouldUseDark) {
         document.documentElement.classList.add('dark')
+        document.documentElement.dataset.theme = 'dark'
       } else {
         document.documentElement.classList.remove('dark')
+        document.documentElement.dataset.theme = 'light'
       }
-      
+
       return shouldUseDark ? darkTheme : null
     }
     return null
@@ -64,7 +66,7 @@ export const useNaiveTheme = () => {
       if (savedMode) {
         themeMode.value = savedMode
       }
-      
+
       const savedOverrides = localStorage.getItem('naive-theme-overrides')
       if (savedOverrides) {
         try {
@@ -96,7 +98,7 @@ export const useNaiveTheme = () => {
         primaryColorSuppl: adjustBrightness(color, 0.2)
       }
     }
-    
+
     if (process.client) {
       localStorage.setItem('naive-theme-overrides', JSON.stringify(themeOverrides.value))
     }
@@ -105,19 +107,19 @@ export const useNaiveTheme = () => {
   // 调整颜色亮度（改进版）
   const adjustBrightness = (color: string, amount: number): string => {
     if (!color.startsWith('#')) return color
-    
+
     // 移除 # 并解析 RGB
     const hex = color.slice(1)
     const num = parseInt(hex, 16)
     const r = (num >> 16) & 0xff
     const g = (num >> 8) & 0xff
     const b = num & 0xff
-    
+
     // 计算新颜色值（amount: -1 到 1，负数变暗，正数变亮）
     const newR = Math.max(0, Math.min(255, Math.round(r + amount * 255)))
     const newG = Math.max(0, Math.min(255, Math.round(g + amount * 255)))
     const newB = Math.max(0, Math.min(255, Math.round(b + amount * 255)))
-    
+
     return `#${((newR << 16) | (newG << 8) | newB).toString(16).padStart(6, '0')}`
   }
 

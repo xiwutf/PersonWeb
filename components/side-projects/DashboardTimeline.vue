@@ -1,5 +1,5 @@
 <template>
-  <n-card class="dashboard-timeline-card">
+  <n-card class="dashboard-card">
     <template #header>
       <div class="timeline-header">
         <h3 class="timeline-title">项目时间轴</h3>
@@ -76,12 +76,7 @@ const getTimelineType = (status: number): 'default' | 'success' | 'warning' | 'e
 </script>
 
 <style scoped>
-.dashboard-timeline-card {
-  background-color: var(--color-bg-card);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--color-border-subtle);
-}
+/* dashboard-timeline-card 的颜色、边框、阴影已移除，由 themeOverrides.Card 统一控制 */
 
 .timeline-header {
   display: flex;

@@ -7,7 +7,8 @@
     "dev:prod": "cross-env SASS_SILENCE_DEPRECATIONS=legacy-js-api NODE_ENV=production nuxt dev",
     "build": "cross-env SASS_SILENCE_DEPRECATIONS=legacy-js-api NODE_ENV=production nuxt build",
     "generate": "cross-env SASS_SILENCE_DEPRECATIONS=legacy-js-api NODE_ENV=production nuxt generate",
-    "preview": "nuxt preview"
+    "preview": "nuxt preview",
+    "lint:colors": "node scripts/lint-colors.js"
   },
   "devDependencies": {
     "@nuxt/content": "^2.8.1",

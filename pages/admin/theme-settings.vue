@@ -7,7 +7,7 @@
 
     <div class="settings-grid">
       <!-- 主题模式设置 -->
-      <n-card title="主题模式" class="settings-card">
+      <n-card title="主题模式">
         <n-space vertical :size="16">
           <n-radio-group v-model:value="themeModeValue" @update:value="handleThemeModeChange">
             <n-space vertical>
@@ -23,12 +23,6 @@
                 </template>
                 深色模式
               </n-radio>
-              <n-radio value="auto">
-                <template #icon>
-                  <i class="fas fa-adjust text-gray-500"></i>
-                </template>
-                跟随系统
-              </n-radio>
             </n-space>
           </n-radio-group>
           <n-alert type="info" :show-icon="false">
@@ -38,7 +32,7 @@
       </n-card>
 
       <!-- 主题色设置 -->
-      <n-card title="主题色" class="settings-card">
+      <n-card title="主题色">
         <n-space vertical :size="16">
           <div class="preset-colors">
             <div 
@@ -69,11 +63,11 @@
       </n-card>
 
       <!-- 预览 -->
-      <n-card title="预览" class="settings-card preview-card">
+      <n-card title="预览" class="preview-card">
         <div class="preview-content">
           <div class="preview-buttons">
             <n-button type="primary">主要按钮</n-button>
-            <n-button>默认按钮</n-button>
+            <n-button secondary>默认按钮</n-button>
             <n-button type="success">成功按钮</n-button>
             <n-button type="warning">警告按钮</n-button>
             <n-button type="error">错误按钮</n-button>
@@ -101,9 +95,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { NCard, NSpace, NRadioGroup, NRadio, NAlert, NDivider, NColorPicker, NButton, NTag, NInput, NSelect } from 'naive-ui'
-import { useNaiveTheme } from '~/composables/useNaiveTheme'
 import { useSafeMessage } from '~/composables/useNaiveUI'
 
 definePageMeta({
@@ -114,28 +107,38 @@ definePageMeta({
 
 // 使用安全的 message composable，支持服务端渲染
 const message = useSafeMessage()
-const { themeMode, currentTheme, themeOverrides, setThemeMode, setThemeColor, applyPresetColor, presetColors } = useNaiveTheme()
 
-// 创建响应式的主题模式值（因为 themeMode 是 computed）
-const themeModeValue = ref(themeMode.value)
-watch(themeMode, (newVal) => {
-  themeModeValue.value = newVal
-}, { immediate: true })
+// 使用全局主题系统（前台和后台共用）
+const { currentTheme, setTheme, toggleDark } = useTheme()
 
-const customColor = ref(themeOverrides.value.common?.primaryColor || '#3b82f6')
+// 主题模式值（只支持 light 和 dark，不再支持 auto）
+const themeModeValue = ref<'light' | 'dark'>(currentTheme.value)
+
+// 预设主题色（保留用于后续扩展）
+const presetColors = {
+  blue: '#3b82f6',
+  green: '#10b981',
+  purple: '#8b5cf6',
+  orange: '#f59e0b',
+  red: '#ef4444',
+  cyan: '#06b6d4',
+  pink: '#ec4899',
+  indigo: '#6366f1'
+}
+
+const customColor = ref('#3b82f6')
 
 // 当前主题名称
 const currentThemeName = computed(() => {
-  const mode = themeModeValue.value
-  if (mode === 'light') return '浅色模式'
-  if (mode === 'dark') return '深色模式'
-  return '跟随系统'
+  if (currentTheme.value === 'light') return '浅色模式'
+  if (currentTheme.value === 'dark') return '深色模式'
+  return '浅色模式'
 })
 
-// 检查预设颜色是否激活
+// 检查预设颜色是否激活（暂时禁用，因为主题色设置功能需要后续实现）
 const isPresetColorActive = (name: string) => {
-  const currentColor = themeOverrides.value.common?.primaryColor
-  return presetColors[name as keyof typeof presetColors] === currentColor
+  // TODO: 后续可以实现主题色设置功能
+  return false
 }
 
 // 获取颜色中文名称
@@ -154,30 +157,25 @@ const getColorName = (name: string) => {
 }
 
 // 处理主题模式变化
-const handleThemeModeChange = (mode: 'light' | 'dark' | 'auto') => {
-  setThemeMode(mode)
+const handleThemeModeChange = (mode: 'light' | 'dark') => {
+  setTheme(mode)
+  themeModeValue.value = mode
   message.success(`已切换到${currentThemeName.value}`)
 }
 
-// 处理自定义颜色变化
+// 处理自定义颜色变化（暂时禁用，因为主题色设置功能需要后续实现）
 const handleCustomColorChange = (color: string) => {
-  setThemeColor(color)
-  message.success('主题色已更新')
+  customColor.value = color
+  // TODO: 后续可以实现主题色设置功能
+  message.info('主题色设置功能开发中')
 }
 
-// 应用预设颜色
+// 应用预设颜色（暂时禁用，因为主题色设置功能需要后续实现）
 const handlePresetColorClick = (name: keyof typeof presetColors) => {
-  applyPresetColor(name)
   customColor.value = presetColors[name]
-  message.success(`已应用${getColorName(name)}主题`)
+  // TODO: 后续可以实现主题色设置功能
+  message.info('主题色设置功能开发中')
 }
-
-// 监听主题色变化，更新自定义颜色选择器
-watch(() => themeOverrides.value.common?.primaryColor, (color) => {
-  if (color) {
-    customColor.value = color
-  }
-})
 </script>
 
 <style scoped>
@@ -208,10 +206,7 @@ watch(() => themeOverrides.value.common?.primaryColor, (color) => {
   gap: 1.5rem;
 }
 
-.settings-card {
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border-subtle);
-}
+/* settings-card 样式已移除，由 themeOverrides.Card 统一控制 */
 
 .preset-colors {
   display: grid;

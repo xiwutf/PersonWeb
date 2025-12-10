@@ -246,7 +246,7 @@
               <div v-else-if="recentProjects.length === 0" class="empty-container">
                 <n-empty description="当前筛选条件下暂无副业项目">
                   <template #extra>
-                    <n-button size="small" @click="loadAllData">刷新数据</n-button>
+                    <n-button size="small" type="primary" @click="loadAllData">刷新数据</n-button>
                   </template>
                 </n-empty>
               </div>

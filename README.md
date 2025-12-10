@@ -6,9 +6,11 @@
 
 ### 🎨 现代化设计
 - **统一品牌风格**：一致的颜色搭配和视觉元素
+- **设计系统 v1**：完整的设计系统，统一管理主题、色彩、组件规范
 - **响应式布局**：完美适配桌面端、平板和移动设备
 - **流畅动画**：页面淡入、悬停效果、浮动动画
 - **渐变背景**：每个页面都有独特的渐变背景色
+- **深色/浅色模式**：支持主题切换，所有组件自动适配
 
 ### 🏗️ 技术架构
 - **Nuxt 3**：Vue.js 的全栈框架
@@ -292,6 +294,8 @@ npm run preview
 
 - **[项目概览文档](./docs/PROJECT_OVERVIEW.md)** ⭐ **必读** - 项目整体架构、技术栈和目录结构
 - **[开发规范文档](./docs/development/DEVELOPMENT_GUIDELINES.md)** ⭐ **必读** - 项目开发规范和要求，包括样式管理、代码组织、命名规范等
+- **[设计系统 v1](./docs/DESIGN_SYSTEM_V1.md)** ⭐ **必读** - 完整的设计系统文档（主题、色彩、组件规范）
+- **[UI 编码规范](./docs/CODING_STYLE_UI.md)** ⭐ **必读** - UI 开发编码规范和最佳实践
 - **[代码规范检查报告](./docs/quality/CODE_STANDARDS_CHECK.md)** - 代码规范符合度检查结果和改进建议
 - [模块系统文档](./docs/architecture/README_MODULES.md) - 模块化系统说明
 - [Naive UI 使用指南](./docs/config/README_NAIVE_UI.md) - UI 组件库使用说明

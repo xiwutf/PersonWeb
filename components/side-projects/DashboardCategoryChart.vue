@@ -1,5 +1,5 @@
 <template>
-  <n-card class="dashboard-chart-card">
+  <n-card class="dashboard-card">
     <div class="card-header">
       <h3 class="card-title">项目类型</h3>
     </div>
@@ -144,11 +144,8 @@ const categoryChartOption = computed(() => {
 </script>
 
 <style scoped>
-.dashboard-chart-card {
-  background-color: var(--color-bg-card);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--color-border-subtle);
+/* dashboard-chart-card 的颜色、边框、阴影已移除，由 themeOverrides.Card 统一控制 */
+.dashboard-card {
   height: 100%;
   display: flex;
   flex-direction: column;
