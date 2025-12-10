@@ -104,6 +104,7 @@ export default defineNuxtConfig({
     '~/assets/styles/tokens.css', // 设计 Token：全局 CSS 变量
     '~/assets/styles/base.css', // 基础样式和 Reset
     '~/assets/styles/ui-patch-naive.css', // Naive UI 补丁样式
+    '~/assets/styles/glassmorphism.css', // Vision Pro × 玻璃拟态风格
     '~/assets/styles/theme.css', // 保留旧的主题文件（兼容性） // 统一主题样式文件（必须在最前面，定义 CSS 变量）
     '~/assets/css/main.css', // main.css 已经导入了 components.css
     '~/assets/css/themes.css',
@@ -154,6 +155,20 @@ export default defineNuxtConfig({
         protocol: 'ws',
         host: 'localhost'
       }
+    },
+    build: {
+      // 代码分割优化
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'naive-ui': ['naive-ui'],
+            'echarts': ['echarts', 'vue-echarts'],
+            'chartjs': ['chart.js', 'vue-chartjs']
+          }
+        }
+      },
+      // 减少 chunk 大小警告阈值
+      chunkSizeWarningLimit: 1000
     }
   },
 

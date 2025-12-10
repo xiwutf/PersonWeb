@@ -1,8 +1,8 @@
 <template>
-  <n-card class="dashboard-card">
+  <n-card class="dashboard-card chart-card">
     <template #header>
-      <div class="chart-header">
-        <h3 class="chart-title">收入趋势</h3>
+      <div class="chart-card-header">
+        <h3 class="chart-card-title">收入趋势</h3>
       </div>
     </template>
     <div v-if="loading" class="chart-loading">
@@ -76,7 +76,7 @@ const props = withDefaults(defineProps<Props>(), {
   loading: false
 })
 
-const { isDark, darkTheme, lightTheme } = useEChartsTheme()
+const { isDark, applyTheme, buildNeonLineOptions } = useEChartsTheme()
 const chartTheme = computed(() => (isDark.value ? 'dark-custom' : 'light-custom'))
 
 const chartOption = computed(() => {
@@ -84,8 +84,9 @@ const chartOption = computed(() => {
     return {}
   }
 
-  return {
-    backgroundColor: 'transparent',
+  // 使用霓虹主题构建折线图
+  const baseOption = {
+    backgroundColor: 'rgba(15,23,42,0.35)', // 玻璃背景，让曲线"浮起来"
     tooltip: {
       trigger: 'axis',
       axisPointer: {
@@ -97,101 +98,48 @@ const chartOption = computed(() => {
       }
     },
     grid: {
-      left: '3%',
-      right: '4%',
-      bottom: '3%',
+      left: 40,
+      right: 40,
+      top: 50,
+      bottom: 40,
       containLabel: true
     },
     xAxis: {
       type: 'category',
       boundaryGap: false,
-      data: props.data.map(item => item.date),
-      axisLine: {
-        lineStyle: {
-          color: isDark.value ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'
-        }
-      },
-      axisLabel: {
-        color: isDark.value ? '#e5e7eb' : '#6b7280'
-      }
+      data: props.data.map(item => item.date)
     },
     yAxis: {
       type: 'value',
-      axisLine: {
-        lineStyle: {
-          color: isDark.value ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'
-        }
-      },
       axisLabel: {
-        color: isDark.value ? '#e5e7eb' : '#6b7280',
         formatter: (value: number) => {
           if (value >= 10000) {
             return `¥${(value / 10000).toFixed(1)}万`
           }
           return `¥${value}`
         }
-      },
-      splitLine: {
-        lineStyle: {
-          color: isDark.value ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'
-        }
       }
     },
     series: [
-      {
+      buildNeonLineOptions('--chart-neon-cyan', {
         name: '收入',
-        type: 'line',
-        smooth: true,
         data: props.data.map(item => item.income),
-        areaStyle: {
-          color: {
-            type: 'linear',
-            x: 0,
-            y: 0,
-            x2: 0,
-            y2: 1,
-            colorStops: [
-              {
-                offset: 0,
-                color: isDark.value ? 'rgba(59, 130, 246, 0.3)' : 'rgba(59, 130, 246, 0.2)'
-              },
-              {
-                offset: 1,
-                color: isDark.value ? 'rgba(59, 130, 246, 0.05)' : 'rgba(59, 130, 246, 0.05)'
-              }
-            ]
-          }
-        },
-        lineStyle: {
-          color: '#3b82f6',
-          width: 3
-        },
-        itemStyle: {
-          color: '#3b82f6'
-        },
         emphasis: {
           focus: 'series'
         }
-      }
+      })
     ]
   }
+
+  // 应用主题（弱化网格、强化数据线）
+  return applyTheme(baseOption)
 })
 </script>
 
 <style scoped>
 /* dashboard-chart-card 的颜色、边框、阴影已移除，由 themeOverrides.Card 统一控制 */
 
-.chart-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.chart-title {
-  font-size: var(--font-size-h4);
-  font-weight: bold;
-  color: var(--color-text-main);
-}
+/* 使用全局 chart-card-header 和 chart-card-title 样式 */
 
 .chart-container {
   height: 320px;

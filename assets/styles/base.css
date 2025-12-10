@@ -16,8 +16,8 @@ body {
   font-size: var(--font-size-base, 16px);
   font-weight: var(--font-weight-base, 400);
   line-height: var(--line-height-base, 1.6);
-  background-color: var(--color-bg-page);
-  color: var(--color-text-main);
+  background-color: var(--color-bg-page, #020617);
+  color: var(--color-text-main, #e2e8f0);
   text-shadow: none !important; /* 移除荧光效果，使用 !important 确保优先级 */
   transition: background-color 0.3s ease, color 0.3s ease, font-family 0.3s ease, font-size 0.3s ease;
   -webkit-font-smoothing: antialiased;

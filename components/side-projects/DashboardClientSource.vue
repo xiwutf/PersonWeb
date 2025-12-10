@@ -71,7 +71,7 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const { isDark } = useEChartsTheme()
+const { isDark, echartsTheme, buildNeonBarOptions, buildNeonLineOptions, getCssVar } = useEChartsTheme()
 const chartTheme = computed(() => (isDark.value ? 'dark-custom' : 'light-custom'))
 
 const chartOption = computed(() => {
@@ -80,7 +80,7 @@ const chartOption = computed(() => {
   }
 
   return {
-    backgroundColor: 'transparent',
+    backgroundColor: 'rgba(15,23,42,0.35)', // 玻璃背景，让曲线"浮起来"
     tooltip: {
       trigger: 'axis',
       axisPointer: {
@@ -105,21 +105,23 @@ const chartOption = computed(() => {
       }
     },
     grid: {
-      left: '3%',
-      right: '4%',
-      bottom: '3%',
+      left: 40,
+      right: 40,
+      top: 50,
+      bottom: 40,
       containLabel: true
     },
     xAxis: {
       type: 'category',
       data: props.data.map(item => item.source || '未知'),
       axisLine: {
-        lineStyle: {
-          color: isDark.value ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'
-        }
+        show: false // 霓虹风格：隐藏轴线
+      },
+      axisTick: {
+        show: false // 隐藏刻度
       },
       axisLabel: {
-        color: isDark.value ? '#e5e7eb' : '#6b7280',
+        color: isDark.value ? 'rgba(148, 163, 184, 0.8)' : '#6b7280',
         rotate: props.data.length > 5 ? 45 : 0
       }
     },
@@ -170,23 +172,16 @@ const chartOption = computed(() => {
         name: '项目数',
         type: 'bar',
         data: props.data.map(item => item.count),
-        itemStyle: {
-          color: '#3b82f6'
-        }
+        ...buildNeonBarOptions(
+          '--chart-neon-blue',
+          '--chart-neon-cyan'
+        )
       },
-      {
+      buildNeonLineOptions('--chart-neon-green', {
         name: '收入',
-        type: 'line',
         yAxisIndex: 1,
-        data: props.data.map(item => item.income),
-        lineStyle: {
-          color: '#10b981',
-          width: 3
-        },
-        itemStyle: {
-          color: '#10b981'
-        }
-      }
+        data: props.data.map(item => item.income)
+      })
     ]
   }
 })

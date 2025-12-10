@@ -98,6 +98,14 @@
   --chart-quaternary: #ef4444;
   --chart-quinary: #8b5cf6;
   
+  /* ========== 霓虹渐变色板（浅色模式 - 降饱和版本）========== */
+  --chart-neon-red: #ff6b8a;
+  --chart-neon-orange: #ffb366;
+  --chart-neon-green: #4ade80;
+  --chart-neon-cyan: #38bdf8;
+  --chart-neon-blue: #3b82f6;
+  --chart-neon-purple: #a855f7;
+  
   /* ========== 兼容旧变量名（向后兼容，逐步迁移中）========== */
   /* ⚠️ 注意：这些变量仅用于向后兼容，新代码应使用 themeOverrides */
   /* 计划：在确认所有使用位置已迁移后，删除这些兼容变量 */
@@ -206,6 +214,14 @@ html[data-theme="dark"] {
   
   /* ========== 阴影 ========== */
   --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05); /* 柔和阴影：深色阴影 + 微光边框 */
+  
+  /* ========== 霓虹渐变色板（深色模式 - 高饱和版本）========== */
+  --chart-neon-red: #ff4b6a;
+  --chart-neon-orange: #ff9b50;
+  --chart-neon-green: #22f2a2;
+  --chart-neon-cyan: #22d3ee;
+  --chart-neon-blue: #3b82f6;
+  --chart-neon-purple: #a855f7;
   
   /* ========== 兼容旧变量名 ========== */
   --color-bg-page: var(--bg);

@@ -8,8 +8,8 @@
   >
     <slot />
   </component>
-  <div v-else>
-    <!-- 服务端渲染时的 fallback -->
+  <div v-else class="app-naive-config-fallback">
+    <!-- 服务端渲染时的 fallback，使用与主题一致的背景色 -->
     <slot />
   </div>
 </template>
@@ -74,24 +74,29 @@ const naiveTheme = computed<GlobalTheme | null>(() => {
 const naiveThemeOverrides = computed<GlobalThemeOverrides>(() => {
   const isDark = currentTheme.value === 'dark'
   
-  // 深色模式颜色
+  // 深色模式颜色（Vision Pro × 玻璃拟态风格）
   const darkColors = {
-    // 背景色
-    bodyColor: '#0a0e1a',
-    cardColor: 'rgba(19, 23, 32, 0.8)',
-    hoverColor: '#131720',
+    // 背景色 - 深空渐变
+    bodyColor: 'radial-gradient(circle at top, #0b1220 0%, #020617 45%, #020617 100%)',
+    cardColor: 'rgba(15, 23, 42, 0.78)', // 半透明深色玻璃
+    hoverColor: 'rgba(15, 23, 42, 0.95)',
     // 文字颜色
     textColorBase: 'rgba(255, 255, 255, 0.92)',
     textColor1: 'rgba(255, 255, 255, 0.92)',
     textColor2: 'rgba(255, 255, 255, 0.6)',
     textColor3: 'rgba(255, 255, 255, 0.4)',
-    // 边框颜色
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-    // 主色调
-    primaryColor: '#60a5fa',
-    primaryColorHover: '#3b82f6',
+    // 边框颜色 - 微亮描边
+    borderColor: 'rgba(148, 163, 184, 0.35)',
+    // 主色调 - 电光蓝（Vision Pro 风格）
+    primaryColor: '#3b82f6',
+    primaryColorHover: '#60a5fa',
     primaryColorPressed: '#2563eb',
-    primaryColorSuppl: 'rgba(96, 165, 250, 0.15)',
+    primaryColorSuppl: 'rgba(59, 130, 246, 0.15)',
+    // 状态色
+    successColor: '#34d399',
+    errorColor: '#f87171',
+    warningColor: '#fbbf24',
+    infoColor: '#60a5fa',
   }
   
   // 浅色模式颜色
@@ -112,6 +117,11 @@ const naiveThemeOverrides = computed<GlobalThemeOverrides>(() => {
     primaryColorHover: '#1d4ed8',
     primaryColorPressed: '#1e40af',
     primaryColorSuppl: '#dbeafe',
+    // 状态色
+    successColor: '#22c55e',
+    errorColor: '#ef4444',
+    warningColor: '#f59e0b',
+    infoColor: '#3b82f6',
   }
   
   const colors = isDark ? darkColors : lightColors
@@ -137,6 +147,12 @@ const naiveThemeOverrides = computed<GlobalThemeOverrides>(() => {
       
       // 边框颜色
       borderColor: colors.borderColor,
+      
+      // 状态色
+      successColor: colors.successColor,
+      errorColor: colors.errorColor,
+      warningColor: colors.warningColor,
+      infoColor: colors.infoColor,
       
       // 圆角：使用 CSS 变量（这些是布局相关的，保留变量）
       borderRadius: 'var(--radius-md)',
@@ -180,13 +196,13 @@ const naiveThemeOverrides = computed<GlobalThemeOverrides>(() => {
       colorQuaternaryPressed: isDark ? 'rgba(255, 255, 255, 0.1)' : '#e2e8f0',
     },
     Card: {
-      borderRadius: 'var(--radius-xl)',
+      borderRadius: '18px', // Vision Pro 风格圆角
       color: colors.cardColor,
       boxShadow: isDark 
-        ? '0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4)'
+        ? '0 24px 60px rgba(15, 23, 42, 0.85), 0 0 0 1px rgba(148, 163, 184, 0.1)' // 柔和下投影 + 微弱内发光
         : '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
       borderColor: colors.borderColor,
-      paddingMedium: '16px 20px',
+      paddingMedium: '20px 24px', // Vision Pro 风格内边距
     },
     Input: {
       borderRadius: 'var(--radius-md)',
@@ -239,29 +255,37 @@ const naiveThemeOverrides = computed<GlobalThemeOverrides>(() => {
       feedbackTextColorError: isDark ? '#f87171' : '#ef4444',
     },
     DataTable: {
-      borderRadius: 'var(--radius-lg)',
-      thColor: colors.hoverColor,
-      tdColor: colors.cardColor,
-      thTextColor: colors.textColor1,
-      tdTextColor: colors.textColor1,
-      borderColor: colors.borderColor,
-      // 增强深色模式可读性
-      thBorderColor: isDark ? 'rgba(255, 255, 255, 0.15)' : '#cbd5e1',
-      tdBorderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : '#e2e8f0',
-      // 行 hover 效果
-      tdColorHover: isDark ? 'rgba(255, 255, 255, 0.05)' : '#f8fafc',
-      // 斑马纹
-      tdColorStriped: isDark ? 'rgba(255, 255, 255, 0.02)' : '#fafbfc',
+      borderRadius: '16px', // 霓虹渐变玻璃风格圆角
+      // 整体背景透明，让 Card 当背景（深色玻璃面板风格）
+      color: 'transparent',
+      // 表头（苍白一点）
+      thColor: 'transparent',
+      thTextColor: isDark ? 'rgba(248, 250, 252, 0.72)' : '#374151',
+      thFontWeight: '500',
+      // 行（正文稍亮）
+      tdColor: 'transparent',
+      tdTextColor: isDark ? 'rgba(226, 232, 240, 0.88)' : '#111827',
+      // 行 hover 效果（轻微亮度变化）
+      tdColorHover: isDark ? 'rgba(148, 163, 184, 0.08)' : '#f8fafc',
+      // 斑马纹（弱化）
+      tdColorStriped: isDark ? 'rgba(15, 23, 42, 0.0)' : '#fafbfc',
+      // 边框线尽量弱化
+      borderColor: isDark ? 'rgba(148, 163, 184, 0.24)' : '#e2e8f0',
+      thBorderColor: isDark ? 'rgba(148, 163, 184, 0.24)' : '#cbd5e1',
+      tdBorderColor: isDark ? 'rgba(148, 163, 184, 0.16)' : '#e2e8f0',
     },
     Layout: {
-      color: colors.bodyColor,
+      // 深色模式下使用深空渐变背景（Vision Pro 风格）
+      color: isDark 
+        ? 'radial-gradient(circle at top, #0b1220 0%, #020617 45%, #020617 100%)'
+        : colors.bodyColor,
       headerColor: colors.cardColor,
       footerColor: colors.cardColor,
-      siderColor: isDark ? '#131720' : '#f8fafc',
+      siderColor: isDark ? 'rgba(15, 23, 42, 0.85)' : '#f8fafc',
       siderBorderColor: colors.borderColor,
       // 增强层级感
-      headerBorderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : '#e2e8f0',
-      footerBorderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : '#e2e8f0',
+      headerBorderColor: isDark ? 'rgba(148, 163, 184, 0.2)' : '#e2e8f0',
+      footerBorderColor: isDark ? 'rgba(148, 163, 184, 0.2)' : '#e2e8f0',
     },
     Menu: {
       borderRadius: 'var(--radius-md)',
@@ -333,7 +357,8 @@ onMounted(async () => {
   
   try {
     // 动态导入 Naive UI，避免 SSR 时执行
-    const naiveUI = await import('naive-ui')
+    // 使用动态 import 实现代码分割，减少初始包大小
+    const naiveUI = await import(/* webpackChunkName: "naive-ui" */ 'naive-ui')
     const { NMessageProvider, NDialogProvider, NNotificationProvider, NConfigProvider, darkTheme } = naiveUI
     
     // 创建包装组件
@@ -374,4 +399,15 @@ onMounted(async () => {
   }
 })
 </script>
+
+<style scoped>
+/* SSR fallback 样式，确保在客户端挂载前有正确的背景色 */
+.app-naive-config-fallback {
+  width: 100%;
+  height: 100%;
+  /* 使用与主题一致的背景色，避免蓝屏 */
+  background: var(--n-body-color, var(--color-bg-body, #020617));
+  color: var(--color-text-main, #e2e8f0);
+}
+</style>
 

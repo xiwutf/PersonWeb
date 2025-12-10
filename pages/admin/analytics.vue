@@ -143,7 +143,10 @@
       <AppCard class="p-6">
         <h2 class="text-lg font-bold text-text-main mb-4">访问区域分布</h2>
         <div v-if="hasRegionData && regionChartData.labels.length > 0" class="h-64">
-          <Pie :data="regionChartData" :options="chartOptions" />
+          <component :is="Pie" v-if="Pie && chartLoaded" :data="regionChartData" :options="chartOptions" />
+          <div v-else class="flex items-center justify-center h-full">
+            <n-spin size="small" />
+          </div>
         </div>
         <div v-else class="text-center text-text-muted py-8">暂无数据</div>
       </AppCard>
@@ -152,7 +155,10 @@
       <AppCard class="p-6">
         <h2 class="text-lg font-bold text-text-main mb-4">设备类型分布</h2>
         <div v-if="hasDeviceData && deviceChartData.labels.length > 0" class="h-64">
-          <Pie :data="deviceChartData" :options="chartOptions" />
+          <component :is="Pie" v-if="Pie && chartLoaded" :data="deviceChartData" :options="chartOptions" />
+          <div v-else class="flex items-center justify-center h-full">
+            <n-spin size="small" />
+          </div>
         </div>
         <div v-else class="text-center text-text-muted py-8">暂无数据</div>
       </AppCard>
@@ -161,7 +167,10 @@
       <AppCard class="p-6">
         <h2 class="text-lg font-bold text-text-main mb-4">浏览器分布</h2>
         <div v-if="hasBrowserData && browserChartData.labels.length > 0" class="h-64">
-          <Pie :data="browserChartData" :options="chartOptions" />
+          <component :is="Pie" v-if="Pie && chartLoaded" :data="browserChartData" :options="chartOptions" />
+          <div v-else class="flex items-center justify-center h-full">
+            <n-spin size="small" />
+          </div>
         </div>
         <div v-else class="text-center text-text-muted py-8">暂无数据</div>
       </AppCard>
@@ -170,7 +179,10 @@
       <AppCard class="p-6">
         <h2 class="text-lg font-bold text-text-main mb-4">操作系统分布</h2>
         <div v-if="hasOsData && osChartData.labels.length > 0" class="h-64">
-          <Pie :data="osChartData" :options="chartOptions" />
+          <component :is="Pie" v-if="Pie && chartLoaded" :data="osChartData" :options="chartOptions" />
+          <div v-else class="flex items-center justify-center h-full">
+            <n-spin size="small" />
+          </div>
         </div>
         <div v-else class="text-center text-text-muted py-8">暂无数据</div>
       </AppCard>
@@ -361,11 +373,10 @@
           <div v-else-if="!sources.items || sources.items.length === 0" class="text-center py-4 text-text-muted">暂无数据</div>
           <div v-else>
             <div class="h-48 mb-4">
-              <Pie
-                v-if="sourcesChartData && sourcesChartData.labels.length > 0"
-                :data="sourcesChartData"
-                :options="chartOptions"
-              />
+              <component :is="Pie" v-if="Pie && chartLoaded && sourcesChartData && sourcesChartData.labels.length > 0" :data="sourcesChartData" :options="chartOptions" />
+              <div v-else-if="!chartLoaded" class="flex items-center justify-center h-full">
+                <n-spin size="small" />
+              </div>
             </div>
             <div class="space-y-2">
               <div
@@ -389,11 +400,10 @@
           <div v-if="clientDistributionLoading" class="text-center py-4 text-text-muted">加载中...</div>
           <div v-else-if="!clientDistribution.devices || clientDistribution.devices.length === 0" class="text-center py-4 text-text-muted">暂无数据</div>
           <div v-else class="h-48">
-            <Pie
-              v-if="deviceChartData && deviceChartData.labels.length > 0"
-              :data="deviceChartData"
-              :options="chartOptions"
-            />
+            <component :is="Pie" v-if="Pie && chartLoaded && deviceChartData && deviceChartData.labels.length > 0" :data="deviceChartData" :options="chartOptions" />
+            <div v-else-if="!chartLoaded" class="flex items-center justify-center h-full">
+              <n-spin size="small" />
+            </div>
           </div>
         </AppCard>
 
@@ -403,11 +413,10 @@
           <div v-if="clientDistributionLoading" class="text-center py-4 text-text-muted">加载中...</div>
           <div v-else-if="!clientDistribution.browsers || clientDistribution.browsers.length === 0" class="text-center py-4 text-text-muted">暂无数据</div>
           <div v-else class="h-48">
-            <Pie
-              v-if="browserChartData && browserChartData.labels.length > 0"
-              :data="browserChartData"
-              :options="chartOptions"
-            />
+            <component :is="Pie" v-if="Pie && chartLoaded && browserChartData && browserChartData.labels.length > 0" :data="browserChartData" :options="chartOptions" />
+            <div v-else-if="!chartLoaded" class="flex items-center justify-center h-full">
+              <n-spin size="small" />
+            </div>
           </div>
         </AppCard>
 
@@ -417,11 +426,10 @@
           <div v-if="clientDistributionLoading" class="text-center py-4 text-text-muted">加载中...</div>
           <div v-else-if="!clientDistribution.os || clientDistribution.os.length === 0" class="text-center py-4 text-text-muted">暂无数据</div>
           <div v-else class="h-48">
-            <Pie
-              v-if="osChartData && osChartData.labels.length > 0"
-              :data="osChartData"
-              :options="chartOptions"
-            />
+            <component :is="Pie" v-if="Pie && chartLoaded && osChartData && osChartData.labels.length > 0" :data="osChartData" :options="chartOptions" />
+            <div v-else-if="!chartLoaded" class="flex items-center justify-center h-full">
+              <n-spin size="small" />
+            </div>
           </div>
         </AppCard>
       </div>
@@ -664,28 +672,50 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, onUnmounted } from 'vue'
-import {
-  Chart as ChartJS,
-  ArcElement,
-  Tooltip,
-  Legend,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement
-} from 'chart.js'
-import { Pie, Line } from 'vue-chartjs'
+import { computed, ref, onMounted, onUnmounted, defineAsyncComponent } from 'vue'
 
-ChartJS.register(
-  ArcElement,
-  Tooltip,
-  Legend,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement
-)
+// 延迟加载 Chart.js，减少初始包大小
+let ChartJS: any = null
+let Pie: any = null
+let Line: any = null
+let chartLoaded = false
+
+const loadChartJS = async () => {
+  if (chartLoaded) return
+  
+  const chartModule = await import(/* webpackChunkName: "chartjs" */ 'chart.js')
+  const vueChartModule = await import(/* webpackChunkName: "vue-chartjs" */ 'vue-chartjs')
+  
+  ChartJS = chartModule.Chart
+  const {
+    ArcElement,
+    Tooltip,
+    Legend,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement
+  } = chartModule
+  
+  ChartJS.register(
+    ArcElement,
+    Tooltip,
+    Legend,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement
+  )
+  
+  Pie = vueChartModule.Pie
+  Line = vueChartModule.Line
+  chartLoaded = true
+}
+
+// 在组件挂载时加载 Chart.js
+onMounted(() => {
+  loadChartJS()
+})
 
 definePageMeta({
   layout: 'admin',
@@ -833,31 +863,27 @@ const chartOptions = computed(() => {
   }
 })
 
-// 生成图表颜色（使用主题 tokens 中的 chart 色板）
+// 标准配色（与图片中的配色一致）
+const standardColors = [
+  '#3b82f6', // 蓝色
+  '#10b981', // 绿色
+  '#f59e0b', // 橙色
+  '#ef4444', // 红色
+  '#8b5cf6', // 紫色
+  '#ec4899', // 粉色
+  '#06b6d4', // 青色
+  '#84cc16', // 黄绿色
+  '#f97316', // 深橙色
+  '#6366f1'  // 靛蓝色
+]
+
 const generateColors = (count: number): string[] => {
-  if (!process.client) {
-    // SSR 时的默认颜色
-    return [
-      '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6',
-      '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#6366f1'
-    ].slice(0, count)
+  // 如果颜色不够，循环使用标准配色
+  const colors: string[] = []
+  for (let i = 0; i < count; i++) {
+    colors.push(standardColors[i % standardColors.length])
   }
-  
-  // 从 CSS 变量中获取 chart 颜色
-  const chartColors = [
-    getThemeColor('--chart-primary'),
-    getThemeColor('--chart-secondary'),
-    getThemeColor('--chart-tertiary'),
-    getThemeColor('--chart-quaternary'),
-    getThemeColor('--chart-quinary'),
-    getThemeColor('--chart-senary'),
-    getThemeColor('--chart-septenary'),
-    getThemeColor('--chart-octonary'),
-    getThemeColor('--chart-nonary'),
-    getThemeColor('--chart-denary')
-  ]
-  
-  return chartColors.slice(0, count)
+  return colors
 }
 
 // 访问区域图表数据（使用新的 regions 接口）
@@ -878,7 +904,7 @@ const regionChartData = computed(() => {
     datasets: [{
       data,
       backgroundColor: colors,
-      borderColor: colors.map((c: string) => c + '80'),
+      borderColor: '#ffffff',
       borderWidth: 2
     }]
   }
@@ -898,7 +924,7 @@ const sourcesChartData = computed(() => {
     datasets: [{
       data,
       backgroundColor: colors,
-      borderColor: colors.map((c: string) => c + '80'),
+      borderColor: '#ffffff',
       borderWidth: 2
     }]
   }
@@ -918,7 +944,7 @@ const deviceChartData = computed(() => {
     datasets: [{
       data,
       backgroundColor: colors,
-      borderColor: colors.map((c: string) => c + '80'),
+      borderColor: '#ffffff',
       borderWidth: 2
     }]
   }
@@ -938,7 +964,7 @@ const browserChartData = computed(() => {
     datasets: [{
       data,
       backgroundColor: colors,
-      borderColor: colors.map((c: string) => c + '80'),
+      borderColor: '#ffffff',
       borderWidth: 2
     }]
   }
@@ -958,7 +984,7 @@ const osChartData = computed(() => {
     datasets: [{
       data,
       backgroundColor: colors,
-      borderColor: colors.map((c: string) => c + '80'),
+      borderColor: '#ffffff',
       borderWidth: 2
     }]
   }
@@ -1041,8 +1067,10 @@ const trendChartData = computed(() => {
     }
   })
 
-  const pvColor = getThemeColor('--chart-primary')
-  const uvColor = getThemeColor('--chart-secondary')
+  // 使用霓虹色板
+  // 使用标准配色
+  const pvColor = '#06b6d4' // 青色
+  const uvColor = '#10b981' // 绿色
 
   return {
     labels,
@@ -1051,21 +1079,59 @@ const trendChartData = computed(() => {
         label: '浏览量',
         data: points.map((p: any) => p.pv || p.Pv || 0),
         borderColor: pvColor,
-        backgroundColor: pvColor + '20', // 20% 透明度
+        backgroundColor: (() => {
+          // 创建渐变填充（上深下浅）
+          if (!process.client) return pvColor + '33'
+          const canvas = document.createElement('canvas')
+          const ctx = canvas.getContext('2d')
+          if (!ctx) return pvColor + '33'
+          const gradient = ctx.createLinearGradient(0, 0, 0, 400)
+          gradient.addColorStop(0, pvColor + '55') // 33% 透明度
+          gradient.addColorStop(1, 'rgba(15,23,42,0.0)')
+          return gradient
+        })(),
+        borderWidth: 3,
         tension: 0.4,
         fill: true,
-        pointRadius: 3,
-        pointHoverRadius: 5
+        pointRadius: 6,
+        pointHoverRadius: 8,
+        pointBackgroundColor: pvColor,
+        pointBorderColor: pvColor,
+        pointBorderWidth: 0,
+        // 添加阴影效果（霓虹发光）
+        shadowOffsetX: 0,
+        shadowOffsetY: 0,
+        shadowBlur: 12,
+        shadowColor: pvColor + 'aa'
       },
       {
         label: '访客数',
         data: points.map((p: any) => p.uv || p.Uv || 0),
         borderColor: uvColor,
-        backgroundColor: uvColor + '20', // 20% 透明度
+        backgroundColor: (() => {
+          // 创建渐变填充（上深下浅）
+          if (!process.client) return uvColor + '33'
+          const canvas = document.createElement('canvas')
+          const ctx = canvas.getContext('2d')
+          if (!ctx) return uvColor + '33'
+          const gradient = ctx.createLinearGradient(0, 0, 0, 400)
+          gradient.addColorStop(0, uvColor + '55') // 33% 透明度
+          gradient.addColorStop(1, 'rgba(15,23,42,0.0)')
+          return gradient
+        })(),
+        borderWidth: 3,
         tension: 0.4,
         fill: true,
-        pointRadius: 3,
-        pointHoverRadius: 5
+        pointRadius: 6,
+        pointHoverRadius: 8,
+        pointBackgroundColor: uvColor,
+        pointBorderColor: uvColor,
+        pointBorderWidth: 0,
+        // 添加阴影效果（霓虹发光）
+        shadowOffsetX: 0,
+        shadowOffsetY: 0,
+        shadowBlur: 12,
+        shadowColor: uvColor + 'aa'
       }
     ]
   }
@@ -1119,24 +1185,37 @@ const trendChartOptions = computed(() => {
     scales: {
       x: {
         grid: {
-          color: gridColor,
-          display: true
+          display: false // 霓虹风格：隐藏 X 轴网格
         },
         ticks: {
-          color: legendColor,
+          color: getThemeColor('--color-text-muted'),
           maxRotation: 45,
-          minRotation: 0
+          minRotation: 0,
+          font: {
+            size: 11
+          }
+        },
+        border: {
+          display: false // 隐藏轴线
         }
       },
       y: {
         beginAtZero: true,
         grid: {
-          color: gridColor,
-          display: true
+          color: 'rgba(148, 163, 184, 0.18)', // 弱网格
+          display: true,
+          lineWidth: 1,
+          drawBorder: false
         },
         ticks: {
-          color: legendColor,
-          stepSize: 1
+          color: getThemeColor('--color-text-muted'),
+          stepSize: 1,
+          font: {
+            size: 11
+          }
+        },
+        border: {
+          display: false // 隐藏轴线
         }
       }
     }

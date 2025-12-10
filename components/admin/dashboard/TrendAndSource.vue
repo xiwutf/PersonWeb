@@ -1,36 +1,24 @@
 <template>
-  <div class="charts-container">
-    <!-- 访问趋势图表 -->
-    <div class="chart-card">
-      <div class="chart-header">
-        <h3 class="chart-title">访问趋势</h3>
-        <div class="chart-tabs">
-          <button
-            :class="['chart-tab', { active: selectedPeriod === '7d' }]"
-            @click="selectedPeriod = '7d'"
-          >
-            最近 7 天
-          </button>
-          <button
-            :class="['chart-tab', { active: selectedPeriod === '30d' }]"
-            @click="selectedPeriod = '30d'"
-          >
-            最近 30 天
-          </button>
-        </div>
+  <div class="chart-content">
+    <div class="chart-section">
+      <div class="chart-tabs">
+        <n-button
+          :type="selectedPeriod === '7d' ? 'primary' : 'default'"
+          size="small"
+          @click="selectedPeriod = '7d'"
+        >
+          最近 7 天
+        </n-button>
+        <n-button
+          :type="selectedPeriod === '30d' ? 'primary' : 'default'"
+          size="small"
+          @click="selectedPeriod = '30d'"
+        >
+          最近 30 天
+        </n-button>
       </div>
       <div class="chart-wrapper">
         <canvas ref="trendChartRef"></canvas>
-      </div>
-    </div>
-
-    <!-- 访问来源分布 -->
-    <div class="chart-card">
-      <div class="chart-header">
-        <h3 class="chart-title">访问来源</h3>
-      </div>
-      <div class="chart-wrapper">
-        <canvas ref="sourceChartRef"></canvas>
       </div>
     </div>
   </div>
@@ -58,7 +46,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 const selectedPeriod = ref<'7d' | '30d'>('7d')
 const trendChartRef = ref<HTMLCanvasElement | null>(null)
-const sourceChartRef = ref<HTMLCanvasElement | null>(null)
 
 // 渲染访问趋势图表
 const renderTrendChart = () => {
@@ -126,8 +113,15 @@ const renderTrendChart = () => {
 
   ctx.clearRect(0, 0, logicalWidth, logicalHeight)
 
+  // 使用霓虹色板 CSS 变量获取颜色
+  const root = document.documentElement
+  const primaryColor = getComputedStyle(root).getPropertyValue('--chart-neon-cyan').trim() || '#22d3ee'
+  const successColor = getComputedStyle(root).getPropertyValue('--chart-neon-green').trim() || '#22f2a2'
+  const textMutedColor = getComputedStyle(root).getPropertyValue('--color-text-muted').trim() || '#9ca3af'
+  const borderColor = 'rgba(148, 163, 184, 0.18)' // 弱网格颜色
+
   // 绘制背景
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.02)'
+  ctx.fillStyle = 'transparent'
   ctx.fillRect(0, 0, logicalWidth, logicalHeight)
 
   const maxValue = Math.max(...visitData, ...visitorData, 1)
@@ -135,9 +129,10 @@ const renderTrendChart = () => {
   const chartWidth = logicalWidth - padding * 2
   const chartHeight = logicalHeight - padding * 2
 
-  // 绘制网格线
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)'
+  // 绘制网格线（Vision Pro 风格 - 更暗，让主线更突出）
+  ctx.strokeStyle = 'rgba(148, 163, 184, 0.18)'
   ctx.lineWidth = 1
+  ctx.setLineDash([4, 4]) // 虚线
   for (let i = 0; i <= 5; i++) {
     const y = padding + (chartHeight / 5) * i
     ctx.beginPath()
@@ -145,10 +140,38 @@ const renderTrendChart = () => {
     ctx.lineTo(logicalWidth - padding, y)
     ctx.stroke()
   }
+  ctx.setLineDash([]) // 重置为实线
 
-  // 绘制访问量折线（带动画）
-  ctx.strokeStyle = '#60a5fa'
-  ctx.lineWidth = 2.5
+  // 绘制访问量折线（霓虹渐变效果）
+  // 先绘制渐变填充区域
+  ctx.beginPath()
+  visitData.forEach((value, index) => {
+    const x = padding + (chartWidth / (visitData.length - 1 || 1)) * index
+    const y = logicalHeight - padding - (value / maxValue) * chartHeight
+    if (index === 0) {
+      ctx.moveTo(x, logicalHeight - padding) // 从底部开始
+      ctx.lineTo(x, y)
+    } else {
+      ctx.lineTo(x, y)
+    }
+  })
+  // 闭合路径到底部
+  const lastX = padding + (chartWidth / (visitData.length - 1 || 1)) * (visitData.length - 1)
+  ctx.lineTo(lastX, logicalHeight - padding)
+  ctx.closePath()
+  
+  // 创建渐变填充（上深下浅）
+  const gradient1 = ctx.createLinearGradient(0, padding, 0, logicalHeight - padding)
+  gradient1.addColorStop(0, primaryColor + '55') // 33% 透明度
+  gradient1.addColorStop(1, 'rgba(15,23,42,0.0)')
+  ctx.fillStyle = gradient1
+  ctx.fill()
+  
+  // 绘制折线（霓虹发光效果）
+  ctx.shadowBlur = 12
+  ctx.shadowColor = primaryColor + 'aa' // 发光边缘
+  ctx.strokeStyle = primaryColor
+  ctx.lineWidth = 3
   ctx.lineCap = 'round'
   ctx.lineJoin = 'round'
   ctx.beginPath()
@@ -162,10 +185,38 @@ const renderTrendChart = () => {
     }
   })
   ctx.stroke()
+  ctx.shadowBlur = 0 // 重置阴影
 
-  // 绘制访客数折线
-  ctx.strokeStyle = '#86efac'
-  ctx.lineWidth = 2.5
+  // 绘制访客数折线（霓虹渐变效果）
+  // 先绘制渐变填充区域
+  ctx.beginPath()
+  visitorData.forEach((value, index) => {
+    const x = padding + (chartWidth / (visitorData.length - 1 || 1)) * index
+    const y = logicalHeight - padding - (value / maxValue) * chartHeight
+    if (index === 0) {
+      ctx.moveTo(x, logicalHeight - padding) // 从底部开始
+      ctx.lineTo(x, y)
+    } else {
+      ctx.lineTo(x, y)
+    }
+  })
+  // 闭合路径到底部
+  const lastX2 = padding + (chartWidth / (visitorData.length - 1 || 1)) * (visitorData.length - 1)
+  ctx.lineTo(lastX2, logicalHeight - padding)
+  ctx.closePath()
+  
+  // 创建渐变填充（上深下浅）
+  const gradient2 = ctx.createLinearGradient(0, padding, 0, logicalHeight - padding)
+  gradient2.addColorStop(0, successColor + '55') // 33% 透明度
+  gradient2.addColorStop(1, 'rgba(15,23,42,0.0)')
+  ctx.fillStyle = gradient2
+  ctx.fill()
+  
+  // 绘制折线（霓虹发光效果）
+  ctx.shadowBlur = 12
+  ctx.shadowColor = successColor + 'aa' // 发光边缘
+  ctx.strokeStyle = successColor
+  ctx.lineWidth = 3
   ctx.beginPath()
   visitorData.forEach((value, index) => {
     const x = padding + (chartWidth / (visitorData.length - 1 || 1)) * index
@@ -177,91 +228,15 @@ const renderTrendChart = () => {
     }
   })
   ctx.stroke()
+  ctx.shadowBlur = 0 // 重置阴影
 
   // 绘制标签
-  ctx.fillStyle = '#9ca3af'
+  ctx.fillStyle = textMutedColor
   ctx.font = '12px sans-serif'
   ctx.textAlign = 'center'
   labels.forEach((label, index) => {
     const x = padding + (chartWidth / (labels.length - 1 || 1)) * index
     ctx.fillText(label, x, logicalHeight - 10)
-  })
-}
-
-// 渲染来源分布图（占位数据）
-const renderSourceChart = () => {
-  if (!sourceChartRef.value) return
-
-  const ctx = sourceChartRef.value.getContext('2d')
-  if (!ctx) return
-
-  // 占位数据
-  const sourceData = [
-    { label: 'PC', value: 65, color: '#60a5fa' },
-    { label: 'Mobile', value: 30, color: '#86efac' },
-    { label: 'Tablet', value: 5, color: '#a78bfa' }
-  ]
-
-  const container = sourceChartRef.value.parentElement
-  const containerWidth = container ? container.clientWidth : 400
-  const containerHeight = 300
-
-  const dpr = window.devicePixelRatio || 1
-  const width = containerWidth
-  const height = containerHeight
-
-  sourceChartRef.value.width = width * dpr
-  sourceChartRef.value.height = height * dpr
-  sourceChartRef.value.style.width = `${width}px`
-  sourceChartRef.value.style.height = `${height}px`
-
-  ctx.scale(dpr, dpr)
-
-  const centerX = width / 2
-  const centerY = height / 2
-  const radius = Math.min(width, height) / 2 - 40
-
-  let currentAngle = -Math.PI / 2
-  const total = sourceData.reduce((sum, item) => sum + item.value, 0)
-
-  sourceData.forEach((item, index) => {
-    const sliceAngle = (item.value / total) * 2 * Math.PI
-
-    // 绘制扇形
-    ctx.beginPath()
-    ctx.moveTo(centerX, centerY)
-    ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + sliceAngle)
-    ctx.closePath()
-    ctx.fillStyle = item.color
-    ctx.fill()
-
-    // 绘制标签
-    const labelAngle = currentAngle + sliceAngle / 2
-    const labelX = centerX + Math.cos(labelAngle) * (radius * 0.7)
-    const labelY = centerY + Math.sin(labelAngle) * (radius * 0.7)
-
-    ctx.fillStyle = '#f3f4f6'
-    ctx.font = 'bold 14px sans-serif'
-    ctx.textAlign = 'center'
-    ctx.textBaseline = 'middle'
-    ctx.fillText(`${item.value}%`, labelX, labelY)
-
-    currentAngle += sliceAngle
-  })
-
-  // 绘制图例
-  const legendY = height - 60
-  sourceData.forEach((item, index) => {
-    const legendX = 20 + index * 100
-
-    ctx.fillStyle = item.color
-    ctx.fillRect(legendX, legendY, 12, 12)
-
-    ctx.fillStyle = '#9ca3af'
-    ctx.font = '12px sans-serif'
-    ctx.textAlign = 'left'
-    ctx.textBaseline = 'top'
-    ctx.fillText(item.label, legendX + 18, legendY)
   })
 }
 
@@ -274,7 +249,6 @@ watch(() => props.visitTrend, () => {
 }, { deep: true })
 
 watch(selectedPeriod, () => {
-  // TODO: 可以在这里调用不同的 API 获取不同时间段的数据
   renderTrendChart()
 })
 
@@ -282,15 +256,12 @@ onMounted(() => {
   nextTick(() => {
     setTimeout(() => {
       renderTrendChart()
-      renderSourceChart()
     }, 100)
   })
 
-  // 监听窗口大小变化
   const handleResize = () => {
     setTimeout(() => {
       renderTrendChart()
-      renderSourceChart()
     }, 200)
   }
   window.addEventListener('resize', handleResize)
@@ -302,70 +273,19 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.charts-container {
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+/* 只保留布局相关的样式，不写颜色 */
+.chart-content {
+  width: 100%;
 }
 
-@media (min-width: 1024px) {
-  .charts-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-.chart-card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1rem;
-  padding: 1.5rem;
-  transition: all 0.3s ease;
-}
-
-.chart-card:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.15);
-}
-
-.chart-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
-.chart-title {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #f3f4f6;
+.chart-section {
+  width: 100%;
 }
 
 .chart-tabs {
   display: flex;
-  gap: 0.5rem;
-}
-
-.chart-tab {
-  padding: 0.375rem 0.75rem;
-  border-radius: 0.5rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #9ca3af;
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.chart-tab:hover {
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.chart-tab.active {
-  background: rgba(59, 130, 246, 0.2);
-  border-color: rgba(59, 130, 246, 0.4);
-  color: #60a5fa;
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
 .chart-wrapper {
@@ -374,4 +294,3 @@ onMounted(() => {
   height: 300px;
 }
 </style>
-

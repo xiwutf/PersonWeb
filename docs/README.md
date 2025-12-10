@@ -16,23 +16,41 @@
   - 数据库规范
   - Git 提交规范
   - 最佳实践和禁止事项
-- **[设计系统 v1](./DESIGN_SYSTEM_V1.md)** ⭐ **必读** - 完整的设计系统文档（主题、色彩、组件规范）
-- **[UI 编码规范](./CODING_STYLE_UI.md)** ⭐ **必读** - UI 开发编码规范和最佳实践
+- **[设计系统 v1](./design-system/DESIGN_SYSTEM_V1.md)** ⭐ **必读** - 完整的设计系统文档（主题、色彩、组件规范）
+- **[UI 编码规范](./design-system/CODING_STYLE_UI.md)** ⭐ **必读** - UI 开发编码规范和最佳实践
 - **[代码规范检查报告](./quality/CODE_STANDARDS_CHECK.md)** - 代码规范符合度检查结果
 
 ## 📁 文档分类
 
-### 🎨 设计系统文档
+### 🎨 设计系统文档 (`design-system/`)
 
 **UI 开发前必读：**
 
-- `DESIGN_SYSTEM_V1.md` ⭐ **必读** - 完整的设计系统文档（主题、色彩、组件规范）
-- `CODING_STYLE_UI.md` ⭐ **必读** - UI 编码规范和最佳实践
-- `COLOR_STATISTICS.md` - 颜色统计和迁移指南
-- `PHASE2_THEME_OPTIMIZATION.md` - 第二阶段主题优化报告
-- `PHASE3_THEME_OPTIMIZATION.md` - 第三阶段主题优化报告
-- `PHASE4_DESIGN_SYSTEM_FINALIZATION.md` - 第四阶段规范固化计划
-- `THEME_REFACTORING_COMPLETE.md` - 主题重构完成报告
+- `design-system/DESIGN_SYSTEM_V1.md` ⭐ **必读** - 完整的设计系统文档（主题、色彩、组件规范）
+- `design-system/CODING_STYLE_UI.md` ⭐ **必读** - UI 编码规范和最佳实践
+- `design-system/DESIGN_SYSTEM_V1_SUMMARY.md` - 设计系统 v1 完成总结
+
+**主题系统演进：**
+
+- `design-system/THEME_REFACTORING_COMPLETE.md` - 第一阶段：主题重构完成
+- `design-system/PHASE2_THEME_OPTIMIZATION.md` - 第二阶段：主题优化
+- `design-system/PHASE3_THEME_OPTIMIZATION.md` - 第三阶段：视觉统一 & tokens 精简
+- `design-system/PHASE4_DESIGN_SYSTEM_FINALIZATION.md` - 第四阶段：规范固化 & 防回退
+
+**视觉升级：**
+
+- `design-system/VISION_PRO_GLASSMORPHISM_UPGRADE.md` - Vision Pro × 玻璃拟态风格升级
+- `design-system/NEON_GLASSMORPHISM_CHARTS_UPGRADE.md` - 图表 & 表格模块「霓虹渐变玻璃风」升级
+- `design-system/ADMIN_DASHBOARD_VISUAL_UPGRADE.md` - 后台仪表盘视觉升级
+- `design-system/DASHBOARD_REFACTORING_COMPLETE.md` - 仪表盘重构完成报告
+
+**辅助文档：**
+
+- `design-system/COLOR_STATISTICS.md` - 颜色统计和迁移指南
+- `design-system/THEME_REFACTOR_SUMMARY.md` - 主题重构总结
+- `design-system/THEME_SYSTEM_ANALYSIS.md` - 主题系统分析
+
+详见：[设计系统文档目录](./design-system/README.md)
 
 ### 💻 开发文档 (`development/`)
 开发相关的文档，包括开发规范、构建优化等。
@@ -139,8 +157,8 @@
 ### 开发相关
 - [项目概览](./PROJECT_OVERVIEW.md) ⭐ **必读**
 - [开发规范](./development/DEVELOPMENT_GUIDELINES.md) ⭐ **必读**
-- [设计系统 v1](./DESIGN_SYSTEM_V1.md) ⭐ **必读**
-- [UI 编码规范](./CODING_STYLE_UI.md) ⭐ **必读**
+- [设计系统 v1](./design-system/DESIGN_SYSTEM_V1.md) ⭐ **必读**
+- [UI 编码规范](./design-system/CODING_STYLE_UI.md) ⭐ **必读**
 - [代码规范检查](./quality/CODE_STANDARDS_CHECK.md)
 - [模块系统](./architecture/README_MODULES.md)
 - [功能开发状态](./features/IMPLEMENTATION_STATUS.md)
@@ -166,6 +184,7 @@
 ```
 docs/
 ├── PROJECT_OVERVIEW.md   # 项目概览（架构、技术栈、目录结构）⭐
+├── design-system/        # 设计系统文档（设计规范、主题系统、视觉升级）
 ├── development/          # 开发文档（开发规范、构建优化）
 ├── architecture/         # 架构文档（系统架构、模块系统）
 ├── config/               # 配置文档（API、环境、UI组件库）
@@ -173,5 +192,6 @@ docs/
 ├── features/             # 功能开发文档（功能状态、开发计划）
 ├── improvements/         # 改进文档（改进计划、优化记录）
 ├── quality/              # 代码质量文档（规范检查、质量报告）
+├── fixes/                # 修复文档（数据修复、问题修复）
 └── troubleshooting/      # 故障排除文档（问题排查、Bug修复）
 ```

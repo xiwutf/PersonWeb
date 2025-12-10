@@ -168,7 +168,7 @@ const editForm = ref({
 const fetchOrders = async () => {
   loading.value = true
   try {
-    const res = await api.get<any>('/AdminOrders', {
+    const res = await api.get<any>('/admin/orders', {
       params: {
         status: filterStatus.value,
         keyword: searchKeyword.value,
@@ -180,24 +180,18 @@ const fetchOrders = async () => {
     console.log('获取订单列表响应:', res)
     
     // useApi 已经处理了响应格式，返回的是 data 部分
-    // 如果响应是 { code: 0, data: { list: [], total: 0, ... } }，则 res 就是 data
+    // 后端返回格式：{ code: 0, data: { Total: 0, List: [], TotalPages: 0, ... } }
+    // useApi 处理后，res 就是 { Total: 0, List: [], TotalPages: 0, ... }
     if (res) {
-      // 检查 res 是否包含 list 字段（标准格式）
-      if (res.list && Array.isArray(res.list)) {
-        orders.value = res.list
-        pagination.value.itemCount = res.total || 0
-        pagination.value.totalPages = res.totalPages || 0
-      } else if (Array.isArray(res)) {
-        // 如果直接返回数组
-        orders.value = res
-        pagination.value.itemCount = res.length
-        pagination.value.totalPages = 1
-      } else {
-        // 其他格式，尝试从 data 字段获取
-        orders.value = res.data?.list || res.list || []
-        pagination.value.itemCount = res.data?.total || res.total || 0
-        pagination.value.totalPages = res.data?.totalPages || res.totalPages || 0
-      }
+      // 后端返回的是 PascalCase：Total, List, TotalPages
+      // 兼容处理：同时支持 PascalCase 和 camelCase
+      const list = res.List || res.list || []
+      const total = res.Total || res.total || 0
+      const totalPages = res.TotalPages || res.totalPages || 0
+      
+      orders.value = Array.isArray(list) ? list : []
+      pagination.value.itemCount = total
+      pagination.value.totalPages = totalPages
       
       console.log('解析后的订单列表:', {
         count: orders.value.length,
@@ -234,7 +228,7 @@ const handleReset = () => {
 // 查看详情
 const handleViewDetail = async (order: any) => {
   try {
-    const res = await api.get<any>(`/AdminOrders/${order.id}`)
+    const res = await api.get<any>(`/admin/orders/${order.id}`)
     console.log('获取订单详情响应:', res)
     
     // useApi 已经处理了响应格式，返回的是 data 部分
@@ -264,7 +258,7 @@ const handleSaveStatus = async () => {
   if (!currentOrder.value) return
 
   try {
-    const res = await api.put<any>(`/AdminOrders/${currentOrder.value.id}/status`, {
+    const res = await api.put<any>(`/admin/orders/${currentOrder.value.id}/status`, {
       status: editForm.value.status,
       internalNote: editForm.value.internalNote
     })

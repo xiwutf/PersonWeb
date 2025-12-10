@@ -1,7 +1,7 @@
 <template>
   <n-grid :cols="4" :x-gap="16" :y-gap="16">
     <n-grid-item v-for="(card, index) in cards" :key="index">
-      <n-card class="dashboard-card" hoverable>
+      <n-card class="dashboard-card kpi-card" hoverable>
         <div class="kpi-card-content">
           <div class="kpi-card-header">
             <span class="kpi-card-label">{{ card.label }}</span>

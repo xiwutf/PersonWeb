@@ -428,9 +428,18 @@
     <!-- 主内容区：使用主题背景色和文字颜色 -->
     <main class="flex-1 ml-64 p-4 md:p-6 lg:p-8 admin-main" :style="mainContentStyle">
       <!-- 使用统一的 AppNaiveConfig，确保前台和后台共用同一套主题配置 -->
-      <AppNaiveConfig>
-        <slot />
-      </AppNaiveConfig>
+      <!-- 使用 ClientOnly 避免 SSR 时的闪烁 -->
+      <ClientOnly>
+        <AppNaiveConfig>
+          <slot />
+        </AppNaiveConfig>
+        <template #fallback>
+          <!-- SSR 时的占位内容，使用与主题一致的背景色 -->
+          <div class="admin-main-fallback">
+            <slot />
+          </div>
+        </template>
+      </ClientOnly>
     </main>
 
     <!-- 鼠标轨迹特效 -->
@@ -605,13 +614,17 @@ const layoutStyle = computed(() => {
   }
 })
 
-// 主内容区样式（使用侧边栏背景色）
+// 主内容区样式（Vision Pro 风格 - 深色模式下使用渐变）
 const mainContentStyle = computed(() => {
   const vars = cssVariables.value
-  const bg = vars['--admin-sidebar-bg'] || '#1e293b'
+  const isDark = currentTheme.value === 'dark'
+  
+  // 深色模式下使用渐变背景（通过 themeOverrides.Layout.color 控制）
+  // 浅色模式使用纯色背景
   return {
-    backgroundColor: bg,
-    minHeight: '100vh'
+    minHeight: '100vh',
+    position: 'relative',
+    zIndex: 1
   }
 })
 
@@ -677,7 +690,12 @@ const logout = () => {
 <style scoped>
 /* 侧边栏基础样式 */
 .admin-sidebar {
-  color: var(--admin-sidebar-text, #ffffff) !important;
+  background-color: var(--color-bg-card) !important;
+  border-right: 1px solid var(--color-border-subtle);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-lg);
+  color: var(--color-text-main) !important;
 }
 
 .admin-sidebar * {
@@ -685,17 +703,20 @@ const logout = () => {
 }
 
 .admin-sidebar-header {
-  color: var(--admin-sidebar-text, #ffffff) !important;
-  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: var(--color-text-main) !important;
+  border-color: var(--color-border-subtle) !important;
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .admin-sidebar-header span {
-  color: var(--admin-sidebar-text, #ffffff) !important;
+  color: var(--color-text-main) !important;
+  font-weight: 700;
+  letter-spacing: 0.05em;
 }
 
 /* 侧边栏链接样式 */
 .admin-sidebar-link {
-  color: var(--admin-sidebar-text, #ffffff) !important;
+  color: var(--color-text-muted) !important;
   background-color: transparent;
   cursor: pointer;
   text-decoration: none;
@@ -706,52 +727,80 @@ const logout = () => {
   font-size: 0.875rem;
   line-height: 1.5;
   min-height: 2.25rem;
+  margin: 0.25rem 0.5rem;
+  border-radius: var(--radius-md);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .admin-sidebar-link span {
   color: inherit !important;
-}
-
-.admin-sidebar-link i {
-  color: rgba(255, 255, 255, 0.8) !important;
-}
-
-.admin-sidebar-link:hover {
-  background-color: var(--admin-sidebar-hover-bg, rgba(255, 255, 255, 0.08)) !important;
-  color: var(--admin-sidebar-text, #ffffff) !important;
-}
-
-.admin-sidebar-link:hover i {
-  color: rgba(255, 255, 255, 0.95) !important;
-}
-
-.admin-sidebar-link-active {
-  background-color: var(--admin-sidebar-active-bg, #3b82f6) !important;
-  color: #ffffff !important;
   font-weight: 500;
 }
 
-.admin-sidebar-link-active i,
+.admin-sidebar-link i {
+  color: var(--color-text-muted) !important;
+  opacity: 0.7;
+  transition: all 0.2s;
+}
+
+.admin-sidebar-link:hover {
+  background-color: var(--color-bg-elevated) !important;
+  color: var(--color-text-main) !important;
+  transform: translateX(4px);
+}
+
+.admin-sidebar-link:hover i {
+  color: var(--color-primary-hover) !important;
+  opacity: 1;
+}
+
+.admin-sidebar-link-active {
+  background: linear-gradient(90deg, var(--color-primary-soft), transparent) !important;
+  color: var(--color-primary) !important;
+  font-weight: 600;
+  border-left: 3px solid var(--color-primary);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  margin-left: 0; 
+  padding-left: calc(1rem + 3px); /* Compensate for margin removal */
+}
+
+.admin-sidebar-link-active i {
+  color: var(--color-primary) !important;
+  opacity: 1;
+}
+
 .admin-sidebar-link-active span {
-  color: #ffffff !important;
+  color: var(--color-primary) !important;
 }
 
 /* 菜单组标题样式 */
 .menu-group-title {
-  color: rgba(255, 255, 255, 0.9) !important;
-  font-weight: 500;
+  color: var(--color-text-muted) !important;
+  font-weight: 600;
+  font-size: 0.75rem;
+  opacity: 0.8;
 }
 
 .menu-group-header {
-  color: var(--admin-sidebar-text, #ffffff) !important;
+  color: var(--color-text-main) !important;
+  padding: 0.5rem 1rem;
+  margin-top: 0.5rem;
+  border-radius: var(--radius-sm);
+  transition: background-color 0.2s;
+}
+
+.menu-group-header:hover {
+  background-color: var(--color-bg-elevated);
 }
 
 .menu-group-header:hover .menu-group-title {
-  color: rgba(255, 255, 255, 0.8) !important;
+  color: var(--color-text-main) !important;
+  opacity: 1;
 }
 
 .menu-group-active .menu-group-title {
-  color: rgba(255, 255, 255, 0.9) !important;
+  color: var(--color-text-main) !important;
+  opacity: 1;
 }
 
 /* 确保链接可点击 */
@@ -768,34 +817,39 @@ const logout = () => {
 
 .admin-sidebar nav {
   pointer-events: auto !important;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-default) transparent;
 }
 
-/* 主内容区背景 - 使用侧边栏背景色 */
-.admin-main {
-  background: var(--admin-sidebar-bg, #1e293b) !important;
-  color: #e5e7eb !important; /* 柔和的浅灰色文字 */
+/* 主内容区背景 - Vision Pro 深空渐变（深色模式下） */
+.admin-main,
+.admin-main-fallback {
+  /* 深色模式下使用深空渐变，浅色模式使用纯色 */
+  /* 设置初始背景色，避免刷新时的蓝屏 */
+  background: var(--n-body-color, var(--color-bg-body, #020617)) !important;
+  color: var(--color-text-main, #e2e8f0) !important;
+  
+  /* 可选：在最底层加一层非常淡的噪点纹理（性能可接受前提下） */
+  /* 注意：这里使用伪元素实现，避免影响性能 */
+  position: relative;
 }
 
-/* 为后台管理区域设置深色主题的 CSS 变量，确保主题类正常工作 */
+/* 噪点纹理（可选，性能可接受前提下） */
+.admin-main::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.02) 0%, transparent 30%),
+    radial-gradient(circle at 80% 70%, rgba(96, 165, 250, 0.015) 0%, transparent 30%);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
+}
+
+/* 覆盖 Admin 内的 Naive UI 全局样式，使其更贴合后台风格 */
 .admin-main {
-  --color-text-main: #e2e8f0;
-  --color-text-muted: #94a3b8;
-  --color-text-disabled: #64748b;
-  --color-bg-body: var(--admin-sidebar-bg, #1e293b);
-  --color-bg-card: rgba(255, 255, 255, 0.05);
-  --color-bg-elevated: rgba(255, 255, 255, 0.08);
-  --color-border-subtle: rgba(255, 255, 255, 0.1);
-  --color-border-default: rgba(255, 255, 255, 0.2);
-  --color-border-strong: rgba(255, 255, 255, 0.3);
-  --color-primary: #3b82f6;
-  --color-primary-soft: rgba(59, 130, 246, 0.1);
-  --color-primary-hover: #2563eb;
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
+  /* 可以在这里微调 Admin 专属的变量覆盖 */
 }
 
 /* 如果配置了网格背景 */
