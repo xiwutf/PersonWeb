@@ -7,7 +7,7 @@
       暂无数据
     </div>
     <div v-else class="chart-container">
-      <v-chart :option="categoryChartOption" :theme="chartTheme" autoresize />
+      <v-chart :option="categoryChartOption" autoresize />
     </div>
   </n-card>
 </template>
@@ -24,31 +24,7 @@ import {
 } from 'echarts/components'
 import VChart from 'vue-echarts'
 import { useEChartsTheme } from '~/composables/useEChartsTheme'
-import { registerTheme } from 'echarts/core'
 import type { CategoryDistributionItemDto } from '~/types/api'
-
-// 注册自定义主题
-registerTheme('dark-custom', {
-  backgroundColor: 'transparent',
-  textStyle: { color: '#ffffff' },
-  title: { textStyle: { color: '#ffffff' } },
-  tooltip: {
-    backgroundColor: 'rgba(17, 24, 39, 0.98)',
-    borderColor: 'rgba(156, 163, 175, 0.5)',
-    textStyle: { color: '#ffffff' }
-  }
-})
-
-registerTheme('light-custom', {
-  backgroundColor: 'transparent',
-  textStyle: { color: '#374151' },
-  title: { textStyle: { color: '#111827' } },
-  tooltip: {
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    borderColor: 'rgba(209, 213, 219, 0.8)',
-    textStyle: { color: '#111827' }
-  }
-})
 
 use([
   CanvasRenderer,
@@ -64,13 +40,21 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const { isDark, applyTheme } = useEChartsTheme()
-const chartTheme = computed(() => (isDark.value ? 'dark-custom' : 'light-custom'))
+const { isDark, applyTheme, getCssVar: getChartCssVar } = useEChartsTheme()
 
-const colors = [
-  '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6',
-  '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#6366f1'
-]
+// 使用图表颜色变量（从 theme.css 中定义的 --chart-primary 到 --chart-denary）
+const colors = computed(() => [
+  getChartCssVar('--chart-primary'),
+  getChartCssVar('--chart-secondary'),
+  getChartCssVar('--chart-tertiary'),
+  getChartCssVar('--chart-quaternary'),
+  getChartCssVar('--chart-quinary'),
+  getChartCssVar('--chart-senary'),
+  getChartCssVar('--chart-septenary'),
+  getChartCssVar('--chart-octonary'),
+  getChartCssVar('--chart-nonary'),
+  getChartCssVar('--chart-denary')
+])
 
 const categoryChartOption = computed(() => {
   if (!props.categoryData || props.categoryData.length === 0) {
@@ -89,8 +73,10 @@ const categoryChartOption = computed(() => {
       orient: 'horizontal',
       bottom: 10,
       left: 'center',
+      type: 'scroll',
+      icon: 'circle',
       textStyle: {
-        color: isDark.value ? 'rgba(255, 255, 255, 0.7)' : '#6b7280',
+        color: getChartCssVar('--color-text-main'),
         fontSize: 12
       },
       itemGap: 15,
@@ -101,12 +87,12 @@ const categoryChartOption = computed(() => {
       {
         name: '项目类型',
         type: 'pie',
-        radius: '70%',
-        center: ['50%', '45%'],
+        radius: '65%',
+        center: ['50%', '42%'],
         avoidLabelOverlap: false,
         itemStyle: {
           borderRadius: 4,
-          borderColor: isDark.value ? 'rgba(15, 23, 42, 1)' : '#fff',
+          borderColor: getChartCssVar('--color-bg-card'),
           borderWidth: 2
         },
         label: {
@@ -119,7 +105,12 @@ const categoryChartOption = computed(() => {
           itemStyle: {
             shadowBlur: 10,
             shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)'
+            // 阴影颜色：深色主题使用更深的阴影，浅色主题使用较浅的阴影
+            // 注意：ECharts 的 shadowColor 需要具体颜色值，不能直接使用 CSS 变量
+            // 这里使用黑色半透明，在两种主题下都能提供良好的视觉效果
+            shadowColor: isDark.value 
+              ? 'rgba(0, 0, 0, 0.5)' 
+              : 'rgba(0, 0, 0, 0.2)'
           }
         },
         data: props.categoryData.map((item, index) => ({
@@ -127,7 +118,7 @@ const categoryChartOption = computed(() => {
           name: item.category || '未分类',
           income: item.income,
           itemStyle: {
-            color: colors[index % colors.length]
+            color: colors.value[index % colors.value.length]
           }
         }))
       }
@@ -148,20 +139,7 @@ const categoryChartOption = computed(() => {
 }
 
 /* 使用全局 chart-card-header 和 chart-card-title 样式 */
-
-.chart-container {
-  flex: 1;
-  height: 400px;
-  width: 100%;
-  min-height: 400px;
-}
-
-.chart-empty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 400px;
-  color: var(--color-text-muted);
-}
+/* 图表容器高度统一为 320px，由全局样式 glassmorphism.css 中的 .chart-container 控制 */
+/* 空状态样式由全局样式 glassmorphism.css 中的 .chart-empty 控制 */
 </style>
 

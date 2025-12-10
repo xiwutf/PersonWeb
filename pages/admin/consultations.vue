@@ -98,6 +98,13 @@
                 >
                   <i class="fas fa-magic"></i> AI
                 </button>
+                <button
+                  @click="handleAiQuotation(consultation)"
+                  class="btn-link btn-link-orange"
+                  title="AI 报价"
+                >
+                  <i class="fas fa-dollar-sign"></i> 报价
+                </button>
                 <button @click="handleViewDetail(consultation)" class="btn-link btn-link-blue">查看</button>
                 <button
                   v-if="consultation.status !== 2"
@@ -173,6 +180,59 @@
         </div>
       </div>
     </n-modal>
+
+    <!-- 报价方案弹窗 -->
+    <n-modal v-model:show="showQuotationModal" preset="card" title="AI 报价方案" style="width: 800px;">
+      <div v-if="currentQuotation" class="quotation-content">
+        <h3 class="quotation-title">{{ currentQuotation.title }}</h3>
+        <p v-if="currentQuotation.summary" class="quotation-summary">{{ currentQuotation.summary }}</p>
+        
+        <div v-if="currentQuotation.items && currentQuotation.items.length > 0" class="quotation-items">
+          <h4 class="quotation-section-title">报价明细</h4>
+          <table class="quotation-table">
+            <thead>
+              <tr>
+                <th>项目名称</th>
+                <th>描述</th>
+                <th>数量</th>
+                <th>单价</th>
+                <th>小计</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) in currentQuotation.items" :key="index">
+                <td>{{ item.name }}</td>
+                <td>{{ item.description }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>¥{{ item.unitPrice.toFixed(2) }}</td>
+                <td>¥{{ item.total.toFixed(2) }}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="4" class="text-right font-bold">总计：</td>
+                <td class="font-bold">¥{{ currentQuotation.totalAmount.toFixed(2) }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <div class="quotation-details">
+          <div v-if="currentQuotation.paymentTerms" class="detail-item">
+            <strong>付款方式：</strong>{{ currentQuotation.paymentTerms }}
+          </div>
+          <div v-if="currentQuotation.deliveryTime" class="detail-item">
+            <strong>交付时间：</strong>{{ currentQuotation.deliveryTime }}
+          </div>
+          <div v-if="currentQuotation.warranty" class="detail-item">
+            <strong>质保说明：</strong>{{ currentQuotation.warranty }}
+          </div>
+          <div v-if="currentQuotation.notes" class="detail-item">
+            <strong>备注：</strong>{{ currentQuotation.notes }}
+          </div>
+        </div>
+      </div>
+    </n-modal>
     </div>
     <template #fallback>
       <div class="admin-consultations-page">
@@ -222,6 +282,9 @@ const editForm = ref({
   status: 0,
   internalNote: ''
 })
+
+const showQuotationModal = ref(false)
+const currentQuotation = ref<any>(null)
 
 // 获取咨询列表
 const fetchConsultations = async () => {
@@ -385,6 +448,32 @@ const getScoreClass = (score: number): string => {
   if (score >= 80) return 'score-high'
   if (score >= 60) return 'score-medium'
   return 'score-low'
+}
+
+// AI 报价
+const handleAiQuotation = async (consultation: any) => {
+  try {
+    message.loading('正在生成报价方案...', { duration: 0 })
+    
+    const res = await api.post('/ai/quotation/generate', {
+      leadId: consultation.id,
+      projectId: null,
+      extraNotes: ''
+    })
+
+    message.destroyAll()
+    
+    if (res && res.success && res.quotation) {
+      showQuotationModal.value = true
+      currentQuotation.value = res.quotation
+    } else {
+      message.error(res?.errorMessage || '生成报价失败')
+    }
+  } catch (e: any) {
+    message.destroyAll()
+    console.error('AI 报价失败:', e)
+    message.error(e.response?.data?.message || e.message || '生成报价失败')
+  }
 }
 
 // 保存状态
@@ -555,6 +644,73 @@ useHead({
 
 .btn-link-purple:hover {
   background: #f3f4f6;
+}
+
+.btn-link-orange {
+  color: #f97316;
+}
+
+.btn-link-orange:hover {
+  background: #f3f4f6;
+}
+
+.quotation-content {
+  padding: 8px 0;
+}
+
+.quotation-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--n-text-color);
+}
+
+.quotation-summary {
+  color: var(--n-text-color-2);
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.quotation-section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 20px 0 12px 0;
+  color: var(--n-text-color);
+}
+
+.quotation-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.quotation-table th,
+.quotation-table td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--n-border-color);
+}
+
+.quotation-table th {
+  background: var(--n-color);
+  font-weight: 600;
+  color: var(--n-text-color);
+}
+
+.quotation-table tfoot {
+  border-top: 2px solid var(--n-border-color);
+}
+
+.quotation-details {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--n-border-color);
+}
+
+.detail-item {
+  margin-bottom: 12px;
+  line-height: 1.6;
+  color: var(--n-text-color);
 }
 
 /* 评分徽章 */

@@ -241,7 +241,7 @@ page_templates (
 - **权限组件**：基于角色的组件显示控制
 
 ### 数据库
-- **用户数据**：MySQL / PostgreSQL
+- **用户数据**：MySQL（项目统一使用 MySQL，所有 SQL 语句遵循 MySQL 语法标准）
 - **缓存**：Redis（API 限流、会话管理）
 - **文件存储**：OSS / S3（主题文件、资源文件）
 

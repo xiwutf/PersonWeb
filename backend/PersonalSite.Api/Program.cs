@@ -103,6 +103,9 @@ builder.Services.AddHttpClient<PersonalSite.Api.Services.AiServiceClient>();
 builder.Services.AddScoped<PersonalSite.Api.Services.ContentAgentService>();
 builder.Services.AddScoped<PersonalSite.Api.Services.DemoAgentService>();
 builder.Services.AddScoped<PersonalSite.Api.Services.LeadAgentService>();
+builder.Services.AddScoped<PersonalSite.Api.Services.SupportAgentService>();
+builder.Services.AddScoped<PersonalSite.Api.Services.PersonalAssistantService>();
+builder.Services.AddScoped<PersonalSite.Api.Services.QuotationAgentService>();
 
 // 注册支付服务
 builder.Services.AddScoped<PersonalSite.Api.Services.Payment.WeChatPaymentService>();

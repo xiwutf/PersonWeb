@@ -104,6 +104,9 @@ public class AppDbContext : DbContext
     
     // AI 智能体相关表
     public DbSet<AiAgentLog> AiAgentLogs { get; set; }
+    public DbSet<SupportConfig> SupportConfigs { get; set; }
+    public DbSet<AssistantSession> AssistantSessions { get; set; }
+    public DbSet<AssistantMessage> AssistantMessages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

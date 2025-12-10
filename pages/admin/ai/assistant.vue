@@ -1,0 +1,580 @@
+<template>
+  <ClientOnly>
+    <div class="admin-assistant-page">
+      <div class="assistant-container">
+        <!-- 左侧：会话列表 -->
+        <div class="sessions-sidebar">
+          <div class="sidebar-header">
+            <h3 class="sidebar-title">会话列表</h3>
+            <n-button
+              type="primary"
+              size="small"
+              @click="createNewSession"
+            >
+              <template #icon>
+                <i class="fas fa-plus"></i>
+              </template>
+              新建会话
+            </n-button>
+          </div>
+          <div class="sessions-list">
+            <div
+              v-for="session in sessions"
+              :key="session.id"
+              class="session-item"
+              :class="{ 'session-item-active': currentSessionId === session.id }"
+              @click="loadSession(session.id)"
+            >
+              <div class="session-title">{{ session.title }}</div>
+              <div class="session-meta">
+                <span class="session-time">{{ formatDate(session.updatedAt) }}</span>
+                <span class="session-count">{{ session.messageCount }} 条消息</span>
+              </div>
+            </div>
+            <div v-if="sessions.length === 0" class="sessions-empty">
+              暂无会话，点击「新建会话」开始
+            </div>
+          </div>
+        </div>
+
+        <!-- 右侧：对话区域 -->
+        <div class="chat-area">
+          <div class="chat-header">
+            <h2 class="chat-title">个人助理智能体</h2>
+            <p class="chat-subtitle">这是只为你服务的后台 AI 助理，可以帮你分析线索、规划学习、安排项目优先级等。</p>
+          </div>
+
+          <!-- 消息列表 -->
+          <div class="messages-container" ref="messagesContainer">
+            <div v-if="messages.length === 0" class="welcome-message">
+              <div class="welcome-content">
+                <i class="fas fa-robot welcome-icon"></i>
+                <p class="welcome-text">你好！我是你的个人 AI 助理，有什么可以帮你的吗？</p>
+              </div>
+            </div>
+
+            <div
+              v-for="(message, index) in messages"
+              :key="index"
+              class="message-wrapper"
+              :class="{ 'message-user': message.role === 'User', 'message-assistant': message.role === 'Assistant' }"
+            >
+              <div class="message-avatar">
+                <i v-if="message.role === 'User'" class="fas fa-user"></i>
+                <i v-else class="fas fa-robot"></i>
+              </div>
+              <div class="message-bubble">
+                <div class="message-content" v-html="formatMessage(message.content)"></div>
+                <div class="message-time">{{ formatTime(message.createdAt) }}</div>
+              </div>
+            </div>
+
+            <div v-if="loading" class="message-wrapper message-assistant">
+              <div class="message-avatar">
+                <i class="fas fa-robot"></i>
+              </div>
+              <div class="message-bubble">
+                <div class="message-content">
+                  <n-spin size="small" />
+                  <span class="ml-2">正在思考...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 快捷按钮 -->
+          <div v-if="suggestions.length > 0" class="quick-suggestions">
+            <n-button
+              v-for="(suggestion, index) in suggestions"
+              :key="index"
+              secondary
+              size="small"
+              @click="sendQuickMessage(suggestion)"
+              :disabled="loading"
+            >
+              {{ suggestion }}
+            </n-button>
+          </div>
+
+          <!-- 输入区域 -->
+          <div class="input-area">
+            <n-input
+              v-model:value="inputMessage"
+              type="textarea"
+              :rows="3"
+              placeholder="输入你的问题或指令..."
+              @keydown.enter.ctrl="sendMessage"
+              @keydown.enter.exact.prevent="sendMessage"
+            />
+            <div class="input-actions">
+              <span class="input-hint">按 Enter 发送，Ctrl+Enter 换行</span>
+              <n-button
+                type="primary"
+                :loading="loading"
+                :disabled="!inputMessage.trim()"
+                @click="sendMessage"
+              >
+                <template #icon>
+                  <i class="fas fa-paper-plane"></i>
+                </template>
+                发送
+              </n-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ClientOnly>
+</template>
+
+<script setup lang="ts">
+import { NCard, NButton, NInput, NSpin } from 'naive-ui'
+import { useMarkdown } from '~/composables/useMarkdown'
+
+definePageMeta({
+  layout: 'admin',
+  middleware: 'admin-auth',
+  ssr: false
+})
+
+const api = useApi()
+const message = useSafeMessage()
+const { markdownToHtml } = useMarkdown()
+
+const sessions = ref<any[]>([])
+const currentSessionId = ref<number | null>(null)
+const messages = ref<any[]>([])
+const inputMessage = ref('')
+const loading = ref(false)
+const suggestions = ref<string[]>([])
+const messagesContainer = ref<HTMLElement | null>(null)
+
+// 当前用户 ID（应从登录状态获取）
+const currentUserId = ref(1) // TODO: 从认证状态获取
+
+// 加载会话列表
+const loadSessions = async () => {
+  try {
+    const res = await api.get('/ai/assistant/sessions', {
+      params: { userId: currentUserId.value }
+    })
+    if (res && res.sessions) {
+      sessions.value = res.sessions
+    }
+  } catch (e: any) {
+    console.error('加载会话列表失败:', e)
+  }
+}
+
+// 创建新会话
+const createNewSession = () => {
+  currentSessionId.value = null
+  messages.value = []
+  suggestions.value = []
+  inputMessage.value = ''
+}
+
+// 加载会话
+const loadSession = async (sessionId: number) => {
+  currentSessionId.value = sessionId
+  try {
+    const res = await api.get(`/ai/assistant/sessions/${sessionId}/messages`, {
+      params: { userId: currentUserId.value }
+    })
+    if (res && res.messages) {
+      messages.value = res.messages
+      suggestions.value = []
+    }
+    scrollToBottom()
+  } catch (e: any) {
+    console.error('加载会话失败:', e)
+    message.error('加载会话失败')
+  }
+}
+
+// 发送消息
+const sendMessage = async () => {
+  if (!inputMessage.value.trim() || loading.value) return
+
+  const userMessage = inputMessage.value.trim()
+  inputMessage.value = ''
+
+  // 添加用户消息到界面
+  messages.value.push({
+    role: 'User',
+    content: userMessage,
+    createdAt: new Date().toISOString()
+  })
+
+  scrollToBottom()
+
+  loading.value = true
+  try {
+    const res = await api.post('/ai/assistant/chat', {
+      sessionId: currentSessionId.value,
+      message: userMessage,
+      contextType: 'general',
+      userId: currentUserId.value
+    })
+
+    if (res && res.success) {
+      // 更新会话 ID
+      if (!currentSessionId.value && res.sessionId) {
+        currentSessionId.value = res.sessionId
+        await loadSessions() // 刷新会话列表
+      }
+
+      // 添加 AI 回复
+      messages.value.push({
+        role: 'Assistant',
+        content: res.reply || '',
+        createdAt: new Date().toISOString()
+      })
+
+      // 更新建议
+      if (res.suggestions && res.suggestions.length > 0) {
+        suggestions.value = res.suggestions
+      }
+    } else {
+      message.error(res?.errorMessage || '发送消息失败')
+    }
+  } catch (e: any) {
+    console.error('发送消息失败:', e)
+    message.error(e.response?.data?.message || e.message || '发送消息失败')
+  } finally {
+    loading.value = false
+    scrollToBottom()
+  }
+}
+
+// 发送快捷消息
+const sendQuickMessage = (text: string) => {
+  inputMessage.value = text
+  sendMessage()
+}
+
+// 格式化消息（Markdown 转 HTML）
+const formatMessage = (content: string): string => {
+  return markdownToHtml(content)
+}
+
+// 格式化日期
+const formatDate = (dateString: string): string => {
+  if (!dateString) return '-'
+  const date = new Date(dateString)
+  const now = new Date()
+  const diff = now.getTime() - date.getTime()
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+  
+  if (days === 0) return '今天'
+  if (days === 1) return '昨天'
+  if (days < 7) return `${days} 天前`
+  return date.toLocaleDateString('zh-CN')
+}
+
+// 格式化时间
+const formatTime = (dateString: string): string => {
+  if (!dateString) return ''
+  return new Date(dateString).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+}
+
+// 滚动到底部
+const scrollToBottom = () => {
+  nextTick(() => {
+    if (messagesContainer.value) {
+      messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight
+    }
+  })
+}
+
+// 监听消息变化，自动滚动
+watch(messages, () => {
+  scrollToBottom()
+}, { deep: true })
+
+onMounted(() => {
+  loadSessions()
+})
+
+useHead({
+  title: '个人助理 - 后台管理',
+  meta: [
+    { name: 'description', content: '个人 AI 助理，帮助管理员分析线索、规划学习、安排项目优先级' }
+  ]
+})
+</script>
+
+<style scoped>
+.admin-assistant-page {
+  height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+}
+
+.assistant-container {
+  display: flex;
+  height: 100%;
+  gap: 0;
+}
+
+/* 左侧会话列表 */
+.sessions-sidebar {
+  width: 300px;
+  border-right: 1px solid var(--n-border-color);
+  display: flex;
+  flex-direction: column;
+  background: var(--n-color);
+}
+
+.sidebar-header {
+  padding: 16px;
+  border-bottom: 1px solid var(--n-border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sidebar-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--n-text-color);
+}
+
+.sessions-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.session-item {
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 8px;
+  border: 1px solid transparent;
+}
+
+.session-item:hover {
+  background: var(--n-color-hover);
+}
+
+.session-item-active {
+  background: var(--n-color-active);
+  border-color: var(--n-primary-color);
+}
+
+.session-title {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--n-text-color);
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.session-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--n-text-color-2);
+}
+
+.sessions-empty {
+  padding: 24px;
+  text-align: center;
+  color: var(--n-text-color-3);
+  font-size: 0.875rem;
+}
+
+/* 右侧对话区域 */
+.chat-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--n-color);
+}
+
+.chat-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--n-border-color);
+  background: var(--n-color);
+}
+
+.chat-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: var(--n-text-color);
+}
+
+.chat-subtitle {
+  font-size: 0.875rem;
+  color: var(--n-text-color-2);
+  margin: 0;
+  line-height: 1.6;
+}
+
+.messages-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  background: var(--n-color);
+}
+
+.welcome-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 300px;
+}
+
+.welcome-content {
+  text-align: center;
+}
+
+.welcome-icon {
+  font-size: 3rem;
+  color: var(--n-text-color-3);
+  margin-bottom: 16px;
+}
+
+.welcome-text {
+  font-size: 1rem;
+  color: var(--n-text-color-2);
+  margin: 0;
+}
+
+.message-wrapper {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message-user {
+  flex-direction: row-reverse;
+}
+
+.message-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1rem;
+  background: var(--n-color);
+  border: 1px solid var(--n-border-color);
+  color: var(--n-text-color-2);
+}
+
+.message-user .message-avatar {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: transparent;
+  color: white;
+}
+
+.message-bubble {
+  max-width: 70%;
+  display: flex;
+  flex-direction: column;
+}
+
+.message-user .message-bubble {
+  align-items: flex-end;
+}
+
+.message-assistant .message-bubble {
+  align-items: flex-start;
+}
+
+.message-content {
+  padding: 12px 16px;
+  border-radius: 12px;
+  word-wrap: break-word;
+  line-height: 1.6;
+}
+
+.message-user .message-content {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.message-assistant .message-content {
+  background: var(--n-color);
+  border: 1px solid var(--n-border-color);
+  color: var(--n-text-color);
+  border-bottom-left-radius: 4px;
+}
+
+.message-time {
+  font-size: 0.75rem;
+  color: var(--n-text-color-3);
+  margin-top: 4px;
+  padding: 0 4px;
+}
+
+.quick-suggestions {
+  padding: 12px 24px;
+  border-top: 1px solid var(--n-border-color);
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  background: var(--n-color);
+}
+
+.input-area {
+  padding: 16px 24px;
+  border-top: 1px solid var(--n-border-color);
+  background: var(--n-color);
+}
+
+.input-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.input-hint {
+  font-size: 0.75rem;
+  color: var(--n-text-color-3);
+}
+
+@media (max-width: 1024px) {
+  .sessions-sidebar {
+    width: 250px;
+  }
+}
+
+@media (max-width: 768px) {
+  .assistant-container {
+    flex-direction: column;
+  }
+
+  .sessions-sidebar {
+    width: 100%;
+    height: 200px;
+    border-right: none;
+    border-bottom: 1px solid var(--n-border-color);
+  }
+}
+</style>
+

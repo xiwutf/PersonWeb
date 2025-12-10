@@ -141,18 +141,7 @@ const chartOption = computed(() => {
 
 /* 使用全局 chart-card-header 和 chart-card-title 样式 */
 
-.chart-container {
-  height: 320px;
-  width: 100%;
-}
-
-.chart-loading,
-.chart-empty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 320px;
-  color: var(--color-text-muted);
-}
+/* 图表容器高度统一为 320px，由全局样式 glassmorphism.css 中的 .chart-container 控制 */
+/* 空状态和加载状态样式由全局样式 glassmorphism.css 中的 .chart-empty 和 .chart-loading 控制 */
 </style>
 

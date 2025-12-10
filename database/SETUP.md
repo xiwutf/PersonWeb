@@ -1,5 +1,11 @@
 # 数据库初始化指南
 
+## 📋 数据库标准
+
+**本项目统一使用 MySQL 数据库**，所有 SQL 语句遵循 MySQL 语法标准。
+
+详细规范请参考：[MYSQL_STANDARD.md](./MYSQL_STANDARD.md)
+
 ## 📋 数据库创建
 
 ```sql

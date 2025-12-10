@@ -2,6 +2,12 @@
 
 本目录包含手动维护数据库表的 SQL 脚本。
 
+## 📋 数据库标准
+
+**本项目统一使用 MySQL 数据库**，所有 SQL 语句遵循 MySQL 语法标准。
+
+详细规范请参考：[MYSQL_STANDARD.md](./MYSQL_STANDARD.md)
+
 ## Projects 表
 
 ### 创建表

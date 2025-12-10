@@ -202,17 +202,9 @@ const chartOption = computed(() => {
   color: var(--color-text-main);
 }
 
-.chart-container {
-  height: 320px;
-  width: 100%;
-}
+/* 图表容器高度统一为 320px，由全局样式 glassmorphism.css 中的 .chart-container 控制 */
 
-.chart-empty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 320px;
-  color: var(--color-text-muted);
-}
+/* 图表容器高度统一为 320px，由全局样式 glassmorphism.css 中的 .chart-container 控制 */
+/* 空状态样式由全局样式 glassmorphism.css 中的 .chart-empty 控制 */
 </style>
 

@@ -32,6 +32,9 @@
     <!-- AI 智能助手（独立，不放入抽屉） -->
     <AIAssistant />
     
+    <!-- 智能客服（前台访客使用） -->
+    <SupportChat />
+    
     <!-- 访客互动功能 -->
     <!-- 🔴 已禁用：z-index 过高，可能遮挡导航栏 -->
     <!-- VisitorDanmakuWall: z-index: 100 (和导航栏同级) -->
@@ -63,6 +66,7 @@ import MouseTrail from '~/components/effects/MouseTrail.vue'
 import ThemeSwitcher from '~/components/layout/ThemeSwitcher.vue'
 import Footer from '~/components/layout/Footer.vue'
 import AIAssistant from '~/components/ai/AIAssistant.vue'
+import SupportChat from '~/components/ai/SupportChat.vue'
 import VisitorInteractionPanel from '~/components/VisitorInteractionPanel.vue'
 import VisitorBehaviorListener from '~/components/VisitorBehaviorListener.vue'
 import VisitorSidebarDrawer from '~/components/VisitorSidebarDrawer.vue'
