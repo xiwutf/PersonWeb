@@ -51,6 +51,7 @@
     --error: #EF4444;
 }
 
+html[data-theme='dark'],
 html.dark {
     /* =========================================
      Color System (Dark Mode - Deep Space)

@@ -2096,30 +2096,36 @@ html[data-theme="dark"] .bento-card-item-tag {
   text-align: center;
 }
 
-/* 暗色主题 - 使用浅色背景（用户要求） */
+/* 暗色主题 - 页面背景保持深色，卡片使用浅色 */
 html[data-theme="dark"] .bento-grid-v3 {
-  background: #f8fafc !important;
+  background: var(--bg-app) !important;
 }
 
-html[data-theme="dark"] .bento-grid-v3-card-inner {
+html[data-theme="dark"] .bento-grid-v3-card-inner,
+html.dark .bento-grid-v3-card-inner,
+html[data-theme="dark"] .bento-grid-v3-card .bento-grid-v3-card-inner,
+html.dark .bento-grid-v3-card .bento-grid-v3-card-inner {
   background: rgba(255, 255, 255, 0.95) !important;
   border-color: rgba(0, 0, 0, 0.08) !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
 }
 
 html[data-theme="dark"] .bento-grid-v3-card:hover .bento-grid-v3-card-inner {
   background: rgba(255, 255, 255, 1) !important;
-  border-color: rgba(37, 99, 235, 0.3) !important;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12) !important;
+  border-color: var(--primary) !important;
+  box-shadow: var(--shadow-lg) !important;
 }
 
 /* 标题 - 使用深色文字 */
-html[data-theme="dark"] .bento-grid-v3-card-title {
-  color: #0f172a !important;
+html[data-theme="dark"] .bento-grid-v3-card-title,
+html.dark .bento-grid-v3-card-title,
+html[data-theme="dark"] .bento-grid-v3-card .bento-grid-v3-card-title,
+html.dark .bento-grid-v3-card .bento-grid-v3-card-title {
+  color: #0F172A !important;
 }
 
 html[data-theme="dark"] .bento-grid-v3-title {
-  color: #0f172a !important;
+  color: var(--text-primary) !important;
 }
 
 html[data-theme="dark"] .bento-grid-v3-title-main {
@@ -2130,12 +2136,15 @@ html[data-theme="dark"] .bento-grid-v3-title-main {
 }
 
 /* 描述文字 - 使用深灰色 */
-html[data-theme="dark"] .bento-grid-v3-card-description {
+html[data-theme="dark"] .bento-grid-v3-card-description,
+html.dark .bento-grid-v3-card-description,
+html[data-theme="dark"] .bento-grid-v3-card .bento-grid-v3-card-description,
+html.dark .bento-grid-v3-card .bento-grid-v3-card-description {
   color: #475569 !important;
 }
 
 html[data-theme="dark"] .bento-grid-v3-subtitle {
-  color: #64748b !important;
+  color: var(--text-secondary) !important;
 }
 
 /* 徽章 - 浅色背景下的配色 */
@@ -2181,38 +2190,38 @@ html[data-theme="dark"] .bento-grid-v3-card-badge span {
 
 /* 文章列表项 - 浅色背景 */
 html[data-theme="dark"] .bento-grid-v3-post-item {
-  background: rgba(248, 250, 252, 0.8) !important;
-  border-color: rgba(0, 0, 0, 0.06) !important;
+  background: rgba(248, 250, 252, 0.9) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
 }
 
 html[data-theme="dark"] .bento-grid-v3-post-item:hover {
-  background: rgba(255, 255, 255, 1) !important;
-  border-color: rgba(37, 99, 235, 0.2) !important;
+  background: var(--bg-surface-1) !important;
+  border-color: var(--primary) !important;
 }
 
 /* 文章标题 - 使用深色 */
 html[data-theme="dark"] .bento-grid-v3-post-title {
-  color: #1e293b !important;
+  color: #0F172A !important;
 }
 
 html[data-theme="dark"] .bento-grid-v3-post-item:hover .bento-grid-v3-post-title {
-  color: #2563eb !important;
+  color: var(--primary) !important;
 }
 
 /* 文章元信息 - 使用中等深度灰色 */
 html[data-theme="dark"] .bento-grid-v3-post-meta {
-  color: #64748b !important;
+  color: #64748B !important;
 }
 
 html[data-theme="dark"] .bento-grid-v3-post-separator {
-  color: #94a3b8 !important;
+  color: #64748B !important;
 }
 
 /* 箭头图标 - 浅色背景 */
 html[data-theme="dark"] .bento-grid-v3-post-arrow {
-  background: rgba(248, 250, 252, 0.8) !important;
-  border-color: rgba(0, 0, 0, 0.06) !important;
-  color: #64748b !important;
+  background: rgba(248, 250, 252, 0.9) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  color: #64748B !important;
 }
 
 html[data-theme="dark"] .bento-grid-v3-post-item:hover .bento-grid-v3-post-arrow {
@@ -2244,7 +2253,7 @@ html[data-theme="dark"] .bento-grid-v3-card-link-orange {
 
 /* 空状态文字 */
 html[data-theme="dark"] .bento-grid-v3-empty {
-  color: #94a3b8 !important;
+  color: #64748B !important;
 }
 
 /* 图标颜色 - 浅色背景 */
@@ -2406,6 +2415,143 @@ html[data-theme="light"] .bento-grid-v3-post-item:hover {
   .home-section-title {
     font-size: 3rem;
   }
+}
+
+/* ==================== HomeDarkLab 深色主题覆盖 ==================== */
+/* 覆盖 Tailwind 硬编码类，在深色主题下使用浅色卡片背景和深色文字 */
+
+html[data-theme="dark"] #content.bg-slate-50,
+html.dark #content.bg-slate-50 {
+  background: var(--bg-app) !important;
+}
+
+/* 深色首页 Hero 主标题与副标题保持高对比度 */
+html[data-theme="dark"] .home-hybrid-super h1,
+html.dark .home-hybrid-super h1 {
+  color: #ffffff !important;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+}
+
+html[data-theme="dark"] .home-hybrid-super p,
+html.dark .home-hybrid-super p {
+  color: #e2e8f0 !important;
+}
+
+/* 深色主题下，"探索我的世界"标题使用浅色 */
+html[data-theme="dark"] #content.bg-slate-50 h2.text-slate-900,
+html.dark #content.bg-slate-50 h2.text-slate-900,
+html[data-theme="dark"] section#content.bg-slate-50 h2.text-4xl,
+html.dark section#content.bg-slate-50 h2.text-4xl {
+  color: #F9FAFB !important;
+}
+
+/* 深色主题下，页面背景上的其他文字使用浅色（排除卡片） */
+html[data-theme="dark"] #content.bg-slate-50 .text-slate-900:not(.bg-white .text-slate-900),
+html.dark #content.bg-slate-50 .text-slate-900:not(.bg-white .text-slate-900) {
+  color: #F9FAFB !important;
+}
+
+/* 深色主题下，卡片内的文字使用深色 */
+html[data-theme="dark"] .bg-white .text-slate-900,
+html.dark .bg-white .text-slate-900,
+html[data-theme="dark"] .bg-white h2.text-slate-900,
+html.dark .bg-white h2.text-slate-900,
+html[data-theme="dark"] .bg-white h3.text-slate-900,
+html.dark .bg-white h3.text-slate-900 {
+  color: #0F172A !important;
+}
+
+html[data-theme="dark"] .text-slate-800,
+html.dark .text-slate-800 {
+  color: #1E293B !important;
+}
+
+html[data-theme="dark"] .text-slate-700,
+html.dark .text-slate-700 {
+  color: #334155 !important;
+}
+
+/* 深色主题下，"这里有代码、有思考，也有生活"副标题使用浅色 */
+html[data-theme="dark"] #content.bg-slate-50 p.text-slate-600,
+html.dark #content.bg-slate-50 p.text-slate-600,
+html[data-theme="dark"] section#content.bg-slate-50 p.text-xl,
+html.dark section#content.bg-slate-50 p.text-xl {
+  color: #CBD5F5 !important;
+}
+
+/* 深色主题下，页面背景上的其他文字使用浅色（排除卡片） */
+html[data-theme="dark"] #content.bg-slate-50 .text-slate-600:not(.bg-white .text-slate-600),
+html.dark #content.bg-slate-50 .text-slate-600:not(.bg-white .text-slate-600) {
+  color: #CBD5F5 !important;
+}
+
+/* 深色主题下，卡片内的文字使用深色 */
+/* 使用更精确的选择器，确保卡片内的所有文字都是深色 */
+/* 深色主题下，确保卡片背景是浅色 */
+html[data-theme="dark"] .bg-white,
+html.dark .bg-white,
+html[data-theme="dark"] #content .bg-white,
+html.dark #content .bg-white {
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* 深色主题下，卡片内的描述文字使用深色（最高优先级） */
+html[data-theme="dark"] #content .bg-white p.text-slate-600,
+html.dark #content .bg-white p.text-slate-600,
+html[data-theme="dark"] #content .rounded-3xl.bg-white p.text-slate-600,
+html.dark #content .rounded-3xl.bg-white p.text-slate-600,
+html[data-theme="dark"] #content .bg-white .text-slate-600,
+html.dark #content .bg-white .text-slate-600 {
+  color: #475569 !important;
+}
+
+html[data-theme="dark"] .bg-white .text-slate-800,
+html.dark .bg-white .text-slate-800,
+html[data-theme="dark"] .rounded-3xl.bg-white .text-slate-800,
+html.dark .rounded-3xl.bg-white .text-slate-800 {
+  color: #1E293B !important;
+}
+
+html[data-theme="dark"] .bg-white .text-slate-500,
+html.dark .bg-white .text-slate-500,
+html[data-theme="dark"] .rounded-3xl.bg-white .text-slate-500,
+html.dark .rounded-3xl.bg-white .text-slate-500 {
+  color: #64748B !important;
+}
+
+html[data-theme="dark"] .text-slate-500,
+html.dark .text-slate-500 {
+  color: #64748B !important;
+}
+
+html[data-theme="dark"] .bg-white,
+html.dark .bg-white {
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+
+html[data-theme="dark"] .bg-slate-50,
+html.dark .bg-slate-50 {
+  background: var(--bg-app) !important;
+}
+
+html[data-theme="dark"] .bg-slate-100,
+html.dark .bg-slate-100 {
+  background: rgba(248, 250, 252, 0.9) !important;
+}
+
+html[data-theme="dark"] .bg-gray-100,
+html.dark .bg-gray-100 {
+  background: rgba(248, 250, 252, 0.9) !important;
+}
+
+html[data-theme="dark"] .border-slate-200,
+html.dark .border-slate-200 {
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+html[data-theme="dark"] .border-slate-100,
+html.dark .border-slate-100 {
+  border-color: rgba(0, 0, 0, 0.06) !important;
 }
 
 .home-section-subtitle {
