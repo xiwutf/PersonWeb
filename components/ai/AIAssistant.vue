@@ -10,7 +10,7 @@
     <svg class="w-6 h-6 text-white group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
     </svg>
-    <span class="absolute -top-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-white animate-pulse"></span>
+    <span class="absolute -top-0.5 -right-0.5 w-3 h-3 ai-assistant-status-dot rounded-full border-2 border-white animate-pulse"></span>
   </button>
 
   <!-- AI 助手对话框 -->
@@ -547,6 +547,11 @@ const sendMessage = async () => {
 .slide-up-leave-to {
   opacity: 0;
   transform: translateY(20px) scale(0.9);
+}
+
+/* AI 助手状态点样式 - 使用 CSS 变量 */
+.ai-assistant-status-dot {
+  background: var(--color-success, #10b981);
 }
 </style>
 

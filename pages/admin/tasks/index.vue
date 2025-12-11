@@ -52,15 +52,15 @@
     </div>
 
     <!-- 任务列表 -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-      <div v-if="loading" class="p-8 text-center text-gray-500 dark:text-gray-400">加载中...</div>
-      <div v-else-if="tasks.length === 0" class="p-8 text-center text-gray-500 dark:text-gray-400">暂无任务</div>
-      <div v-else class="divide-y divide-gray-200 dark:divide-gray-700">
-        <div v-for="task in tasks" :key="task.id" class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+    <div class="task-list-container">
+      <div v-if="loading" class="p-8 text-center task-list-loading">加载中...</div>
+      <div v-else-if="tasks.length === 0" class="p-8 text-center task-list-empty">暂无任务</div>
+      <div v-else class="task-list-divider">
+        <div v-for="task in tasks" :key="task.id" class="task-list-item">
           <div class="flex items-start justify-between">
             <div class="flex-1">
               <div class="flex items-center gap-3 mb-2">
-                <h3 class="text-lg font-semibold text-gray-800 dark:text-white">{{ task.title }}</h3>
+                <h3 class="text-lg font-semibold task-list-item-title">{{ task.title }}</h3>
                 <span :class="getPriorityClass(task.priority)" class="px-2 py-1 rounded text-xs font-medium">
                   {{ getPriorityText(task.priority) }}
                 </span>
@@ -68,14 +68,14 @@
                   {{ getStatusText(task.status) }}
                 </span>
               </div>
-              <p v-if="task.description" class="text-sm text-gray-600 dark:text-gray-400 mb-2">{{ task.description }}</p>
-              <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-                <span v-if="task.category" class="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded">{{ task.category }}</span>
+              <p v-if="task.description" class="text-sm task-list-item-description mb-2">{{ task.description }}</p>
+              <div class="flex items-center gap-4 text-sm task-list-item-meta">
+                <span v-if="task.category" class="px-2 py-1 task-list-item-category rounded">{{ task.category }}</span>
                 <span v-if="task.dueDate">截止: {{ formatDate(task.dueDate) }}</span>
                 <span>进度: {{ task.progress }}%</span>
               </div>
               <!-- 进度条 -->
-              <div class="mt-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+              <div class="mt-2 w-full task-list-progress-bg rounded-full h-2">
                 <div 
                   :class="getProgressColor(task.progress)"
                   class="h-2 rounded-full transition-all duration-300"
@@ -84,8 +84,8 @@
               </div>
             </div>
             <div class="flex gap-2 ml-4">
-              <button @click="editTask(task)" class="px-3 py-1 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">编辑</button>
-              <button @click="deleteTask(task.id)" class="px-3 py-1 text-sm text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">删除</button>
+              <button @click="editTask(task)" class="px-3 py-1 text-sm task-list-action-btn task-list-action-btn-primary">编辑</button>
+              <button @click="deleteTask(task.id)" class="px-3 py-1 text-sm task-list-action-btn task-list-action-btn-error">删除</button>
             </div>
           </div>
         </div>
@@ -93,70 +93,51 @@
     </div>
 
     <!-- 创建/编辑任务模态框 -->
-    <div v-if="showCreateModal || editingTask" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" @click.self="closeModal">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-        <div class="p-6">
-          <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-4">
-            {{ editingTask ? '编辑任务' : '新建任务' }}
-          </h2>
-          <form @submit.prevent="saveTask" class="space-y-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">任务标题 *</label>
-              <input v-model="taskForm.title" type="text" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">任务描述</label>
-              <textarea v-model="taskForm.description" rows="3" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"></textarea>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">状态</label>
-                <select v-model="taskForm.status" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-                  <option value="pending">待处理</option>
-                  <option value="in_progress">进行中</option>
-                  <option value="completed">已完成</option>
-                  <option value="cancelled">已取消</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">优先级</label>
-                <select v-model="taskForm.priority" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-                  <option :value="0">低</option>
-                  <option :value="1">中</option>
-                  <option :value="2">高</option>
-                  <option :value="3">紧急</option>
-                </select>
-              </div>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">分类</label>
-                <input v-model="taskForm.category" type="text" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">截止日期</label>
-                <input v-model="taskForm.dueDate" type="datetime-local" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
-              </div>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">进度 (%)</label>
-              <input v-model.number="taskForm.progress" type="number" min="0" max="100" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
-            </div>
-            <div class="flex justify-end gap-3 pt-4">
-              <button 
-                type="button" 
-                @click="closeModal" 
-                class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors font-bold border-2 border-gray-400 dark:border-gray-500 shadow-sm"
-                class="text-gray-900 dark:text-gray-100"
-              >
-                <span class="dark:text-gray-100" style="color: inherit;">取消</span>
-              </button>
-              <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors font-medium shadow-md">保存</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+    <n-modal v-model:show="showModal" preset="card" :title="editingTask ? '编辑任务' : '新建任务'" style="width: 800px; max-height: 90vh;">
+      <n-form :model="taskForm" @submit.prevent="saveTask">
+        <n-form-item label="任务标题" path="title">
+          <n-input v-model:value="taskForm.title" placeholder="请输入任务标题" />
+        </n-form-item>
+        <n-form-item label="任务描述" path="description">
+          <n-input v-model:value="taskForm.description" type="textarea" :rows="3" placeholder="请输入任务描述" />
+        </n-form-item>
+        <n-grid :cols="2" :x-gap="16">
+          <n-form-item-gi label="状态" path="status">
+            <n-select v-model:value="taskForm.status" :options="[
+              { label: '待处理', value: 'pending' },
+              { label: '进行中', value: 'in_progress' },
+              { label: '已完成', value: 'completed' },
+              { label: '已取消', value: 'cancelled' }
+            ]" />
+          </n-form-item-gi>
+          <n-form-item-gi label="优先级" path="priority">
+            <n-select v-model:value="taskForm.priority" :options="[
+              { label: '低', value: 0 },
+              { label: '中', value: 1 },
+              { label: '高', value: 2 },
+              { label: '紧急', value: 3 }
+            ]" />
+          </n-form-item-gi>
+        </n-grid>
+        <n-grid :cols="2" :x-gap="16">
+          <n-form-item-gi label="分类" path="category">
+            <n-input v-model:value="taskForm.category" placeholder="请输入分类" />
+          </n-form-item-gi>
+          <n-form-item-gi label="截止日期" path="dueDate">
+            <n-date-picker v-model:value="taskForm.dueDate" type="datetime" clearable />
+          </n-form-item-gi>
+        </n-grid>
+        <n-form-item label="进度 (%)" path="progress">
+          <n-input-number v-model:value="taskForm.progress" :min="0" :max="100" />
+        </n-form-item>
+        <n-form-item>
+          <n-space justify="end" style="width: 100%">
+            <n-button @click="closeModal">取消</n-button>
+            <n-button type="primary" attr-type="submit">保存</n-button>
+          </n-space>
+        </n-form-item>
+      </n-form>
+    </n-modal>
   </div>
 </template>
 
@@ -200,6 +181,17 @@ const filterStatus = ref('')
 const filterPriority = ref('')
 const showCreateModal = ref(false)
 const editingTask = ref<Task | null>(null)
+
+// 计算属性：模态框显示状态
+const showModal = computed({
+  get: () => showCreateModal.value || !!editingTask.value,
+  set: (value: boolean) => {
+    if (!value) {
+      showCreateModal.value = false
+      editingTask.value = null
+    }
+  }
+})
 
 const taskForm = ref({
   title: '',
@@ -590,6 +582,110 @@ html[data-theme="dark"] .task-filter-bar,
 html.dark .task-filter-bar {
   background: var(--color-bg-card, rgba(255, 255, 255, 0.05));
   border-color: var(--color-border-subtle, rgba(255, 255, 255, 0.1));
+}
+
+/* 任务列表样式 - 使用 CSS 变量 */
+.task-list-container {
+  background: var(--color-bg-card, #ffffff);
+  border: 1px solid var(--color-border-subtle, #e5e7eb);
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+  overflow: hidden;
+}
+
+.task-list-loading,
+.task-list-empty {
+  color: var(--color-text-muted, #6b7280);
+}
+
+.task-list-divider > * + * {
+  border-top: 1px solid var(--color-border-subtle, #e5e7eb);
+}
+
+.task-list-item {
+  padding: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.task-list-item:hover {
+  background-color: var(--color-bg-elevated, #f9fafb);
+}
+
+.task-list-item-title {
+  color: var(--color-text-main, #0f172a);
+}
+
+.task-list-item-description {
+  color: var(--color-text-sub, #4b5563);
+}
+
+.task-list-item-meta {
+  color: var(--color-text-muted, #6b7280);
+}
+
+.task-list-item-category {
+  background: var(--color-bg-elevated, #f3f4f6);
+  color: var(--color-text-muted, #6b7280);
+}
+
+.task-list-progress-bg {
+  background: var(--color-bg-elevated, #e5e7eb);
+}
+
+.task-list-action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.task-list-action-btn-primary {
+  color: var(--color-primary, #3b82f6);
+}
+
+.task-list-action-btn-primary:hover {
+  color: var(--color-primary-hover, #2563eb);
+}
+
+.task-list-action-btn-error {
+  color: var(--color-error, #ef4444);
+}
+
+.task-list-action-btn-error:hover {
+  color: var(--color-error-hover, #dc2626);
+}
+
+/* 深色主题适配 */
+html[data-theme="dark"] .task-list-container,
+html.dark .task-list-container {
+  background: var(--color-bg-card, rgba(255, 255, 255, 0.05));
+  border-color: var(--color-border-subtle, rgba(255, 255, 255, 0.1));
+}
+
+html[data-theme="dark"] .task-list-item:hover,
+html.dark .task-list-item:hover {
+  background-color: var(--color-bg-elevated, rgba(255, 255, 255, 0.05));
+}
+
+html[data-theme="dark"] .task-list-item-title,
+html.dark .task-list-item-title {
+  color: var(--color-text-main, #ffffff);
+}
+
+html[data-theme="dark"] .task-list-item-description,
+html.dark .task-list-item-description {
+  color: var(--color-text-sub, #9ca3af);
+}
+
+html[data-theme="dark"] .task-list-item-category,
+html.dark .task-list-item-category {
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.1));
+  color: var(--color-text-muted, #9ca3af);
+}
+
+html[data-theme="dark"] .task-list-progress-bg,
+html.dark .task-list-progress-bg {
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.1));
 }
 </style>
 

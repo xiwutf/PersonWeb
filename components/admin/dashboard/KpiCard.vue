@@ -5,13 +5,13 @@
     
     <div class="subtitle-text text-sm font-medium mb-3 flex items-center gap-2">
       {{ label }}
-      <div v-if="loading" class="animate-pulse w-4 h-4 rounded bg-gray-200 dark:bg-gray-800"></div>
+      <div v-if="loading" class="animate-pulse w-4 h-4 rounded kpi-loading-dot"></div>
     </div>
     
     <div class="flex items-baseline gap-2 mb-1">
       <div class="text-3xl font-bold tracking-tight text-main relative z-10">
         <template v-if="loading">
-          <div class="h-8 w-24 bg-gray-200 dark:bg-gray-800 rounded animate-pulse"></div>
+          <div class="h-8 w-24 kpi-loading-bar rounded animate-pulse"></div>
         </template>
         <template v-else>{{ formattedValue }}</template>
       </div>
@@ -84,4 +84,24 @@ const formattedValue = computed(() => {
 
 .text-error { color: var(--n-error-color); }
 .bg-error\/10 { background-color: rgba(239, 68, 68, 0.1); }
+
+/* 加载状态样式 - 使用 CSS 变量 */
+.kpi-loading-dot {
+  background: var(--color-bg-elevated, #e5e7eb);
+}
+
+.kpi-loading-bar {
+  background: var(--color-bg-elevated, #e5e7eb);
+}
+
+/* 深色主题适配 */
+html[data-theme="dark"] .kpi-loading-dot,
+html.dark .kpi-loading-dot {
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.1));
+}
+
+html[data-theme="dark"] .kpi-loading-bar,
+html.dark .kpi-loading-bar {
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.1));
+}
 </style>

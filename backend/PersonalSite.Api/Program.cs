@@ -14,7 +14,19 @@ var builder = WebApplication.CreateBuilder(args);
 // 1. 配置数据库 (MySQL)
 var connectionString = builder.Configuration.GetConnectionString("Default");
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), mySqlOptions =>
+    {
+        // 启用重试机制，处理瞬时连接失败
+        mySqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,                    // 最大重试次数
+            maxRetryDelay: TimeSpan.FromSeconds(30), // 最大重试延迟
+            errorNumbersToAdd: null);            // 要添加的错误代码列表（null 表示使用默认值）
+        
+        // 设置命令超时时间（秒）
+        mySqlOptions.CommandTimeout(60);
+    })
+    .EnableSensitiveDataLogging(builder.Environment.IsDevelopment()) // 仅在开发环境启用敏感数据日志
+    .EnableDetailedErrors(builder.Environment.IsDevelopment()));     // 仅在开发环境启用详细错误
 
 // 2. 配置 JWT 认证
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "YourSuperSecretKeyHere_MustBeAtLeast32BytesLong";

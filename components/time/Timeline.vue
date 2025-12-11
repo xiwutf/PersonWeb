@@ -1,14 +1,14 @@
 <template>
-  <div class="py-16 bg-gradient-to-b from-slate-50 to-white">
+  <div class="py-16 timeline-container">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-12">
-        <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">成长轨迹</h2>
-        <p class="text-lg text-slate-600">记录每一个重要的时刻</p>
+        <h2 class="text-3xl lg:text-4xl font-bold timeline-title mb-4">成长轨迹</h2>
+        <p class="text-lg timeline-subtitle">记录每一个重要的时刻</p>
       </div>
 
       <div class="relative">
         <!-- 时间线 -->
-        <div class="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500 via-purple-500 to-pink-500"></div>
+        <div class="absolute left-8 top-0 bottom-0 w-0.5 timeline-line-gradient"></div>
 
         <div class="space-y-8">
           <div
@@ -31,11 +31,11 @@
 
             <!-- 内容卡片 -->
             <div
-              class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-6 border-l-4"
+              class="timeline-card rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-6 border-l-4"
               :style="{ borderLeftColor: event.color || defaultColor }"
             >
               <div class="flex items-start justify-between mb-2">
-                <h3 class="text-xl font-bold text-slate-900">{{ event.title }}</h3>
+                <h3 class="text-xl font-bold timeline-card-title">{{ event.title }}</h3>
                 <span
                   class="px-3 py-1 rounded-full text-sm font-semibold text-white"
                   :style="{ backgroundColor: event.color || defaultColor }"
@@ -43,7 +43,7 @@
                   {{ event.year }}
                 </span>
               </div>
-              <p v-if="event.description" class="text-slate-600 leading-relaxed">
+              <p v-if="event.description" class="timeline-card-description leading-relaxed">
                 {{ event.description }}
               </p>
             </div>
@@ -51,8 +51,8 @@
         </div>
       </div>
 
-      <div v-if="loading" class="text-center py-8 text-slate-500">加载中...</div>
-      <div v-if="!loading && events.length === 0" class="text-center py-8 text-slate-500">
+      <div v-if="loading" class="text-center py-8 timeline-loading">加载中...</div>
+      <div v-if="!loading && events.length === 0" class="text-center py-8 timeline-empty">
         暂无成长记录
       </div>
     </div>
@@ -114,6 +114,71 @@ onMounted(() => {
 .animate-fade-in {
   animation: fade-in 0.6s ease-out forwards;
   opacity: 0;
+}
+
+/* 时间线容器样式 - 使用 CSS 变量 */
+.timeline-container {
+  background: linear-gradient(to bottom, var(--color-bg-body, #f8fafc), var(--color-bg-card, #ffffff));
+}
+
+.timeline-title {
+  color: var(--color-text-main, #0f172a);
+}
+
+.timeline-subtitle {
+  color: var(--color-text-sub, #475569);
+}
+
+.timeline-line-gradient {
+  background: linear-gradient(to bottom, var(--color-primary, #3b82f6), var(--color-purple, #a855f7), var(--color-error, #ec4899));
+}
+
+.timeline-card {
+  background: var(--color-bg-card, #ffffff);
+}
+
+.timeline-card-title {
+  color: var(--color-text-main, #0f172a);
+}
+
+.timeline-card-description {
+  color: var(--color-text-sub, #475569);
+}
+
+.timeline-loading,
+.timeline-empty {
+  color: var(--color-text-muted, #64748b);
+}
+
+/* 深色主题适配 */
+html[data-theme="dark"] .timeline-container,
+html.dark .timeline-container {
+  background: linear-gradient(to bottom, var(--color-bg-body, #020617), var(--color-bg-card, rgba(255, 255, 255, 0.05)));
+}
+
+html[data-theme="dark"] .timeline-title,
+html.dark .timeline-title {
+  color: var(--color-text-main, #ffffff);
+}
+
+html[data-theme="dark"] .timeline-subtitle,
+html.dark .timeline-subtitle {
+  color: var(--color-text-sub, #cbd5e1);
+}
+
+html[data-theme="dark"] .timeline-card,
+html.dark .timeline-card {
+  background: var(--color-bg-card, rgba(255, 255, 255, 0.05));
+}
+
+html[data-theme="dark"] .timeline-card-title,
+html.dark .timeline-card-title {
+  color: var(--color-text-main, #ffffff);
+}
+
+html[data-theme="dark"] .timeline-card-description,
+html.dark .timeline-card-description {
+  color: var(--color-text-sub, #cbd5e1);
 }
 </style>
 
