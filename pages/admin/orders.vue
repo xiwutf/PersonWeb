@@ -1,8 +1,9 @@
 <template>
-  <div class="admin-orders-page">
-    <div class="page-header">
-      <h1 class="page-title">订单管理</h1>
-    </div>
+  <ClientOnly>
+    <div class="admin-orders-page">
+      <div class="page-header">
+        <h1 class="page-title">订单管理</h1>
+      </div>
 
     <!-- 筛选栏 -->
     <div class="filters-bar">
@@ -131,10 +132,27 @@
         </div>
       </div>
     </n-modal>
-  </div>
+    </div>
+    <template #fallback>
+      <div class="admin-orders-page">
+        <div class="page-header">
+          <h1 class="page-title">订单管理</h1>
+        </div>
+        <div class="table-loading">加载中...</div>
+      </div>
+    </template>
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">
+import { NInput, NSelect, NButton, NModal, NDescriptions, NDescriptionsItem } from 'naive-ui'
+
+definePageMeta({
+  layout: 'admin',
+  middleware: 'admin-auth',
+  ssr: false // 禁用 SSR，避免 Naive UI 组件在服务端渲染时出错
+})
+
 const api = useApi()
 const message = useSafeMessage()
 

@@ -298,28 +298,12 @@
               <span>站点配置</span>
             </NuxtLink>
             <NuxtLink 
-              to="/admin/users" 
-              class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm"
-              :class="{ 'admin-sidebar-link-active': route.path === '/admin/users' }"
-            >
-              <i class="fas fa-users w-5 text-center mr-3"></i>
-              <span>用户</span>
-            </NuxtLink>
-            <NuxtLink 
               to="/admin/settings/change-password" 
               class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm"
               :class="{ 'admin-sidebar-link-active': route.path === '/admin/settings/change-password' }"
             >
               <i class="fas fa-key w-5 text-center mr-3"></i>
               <span>修改密码</span>
-            </NuxtLink>
-            <NuxtLink 
-              to="/admin/settings/modules" 
-              class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm"
-              :class="{ 'admin-sidebar-link-active': route.path === '/admin/settings/modules' }"
-            >
-              <i class="fas fa-puzzle-piece w-5 text-center mr-3"></i>
-              <span>模块</span>
             </NuxtLink>
           </div>
         </div>
@@ -344,45 +328,12 @@
               <span>首页风格</span>
             </NuxtLink>
             <NuxtLink 
-              to="/admin/admin-styles" 
-              class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm"
-              :class="{ 'admin-sidebar-link-active': route.path === '/admin/admin-styles' }"
-            >
-              <i class="fas fa-paint-brush w-5 text-center mr-3"></i>
-              <span>后台风格</span>
-            </NuxtLink>
-            <!-- 样式管理已简化，移除手动CSS配置功能 -->
-            <!-- <NuxtLink 
-              to="/admin/settings/styles" 
-              class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm"
-              :class="{ 'admin-sidebar-link-active': route.path === '/admin/settings/styles' }"
-            >
-              <i class="fas fa-palette w-5 text-center mr-3"></i>
-              <span>样式</span>
-            </NuxtLink> -->
-            <NuxtLink 
-              to="/admin/settings/themes" 
-              class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm"
-              :class="{ 'admin-sidebar-link-active': route.path === '/admin/settings/themes' }"
-            >
-              <i class="fas fa-paint-brush w-5 text-center mr-3"></i>
-              <span>主题</span>
-            </NuxtLink>
-            <NuxtLink 
               to="/admin/theme-settings" 
               class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm"
               :class="{ 'admin-sidebar-link-active': route.path === '/admin/theme-settings' }"
             >
               <i class="fas fa-adjust w-5 text-center mr-3"></i>
               <span>UI主题</span>
-            </NuxtLink>
-            <NuxtLink 
-              to="/admin/settings/fonts" 
-              class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm"
-              :class="{ 'admin-sidebar-link-active': route.path === '/admin/settings/fonts' }"
-            >
-              <i class="fas fa-font w-5 text-center mr-3"></i>
-              <span>字体管理</span>
             </NuxtLink>
           </div>
         </div>
@@ -529,16 +480,10 @@ const isMenuActive = (menuKey: string): boolean => {
     case 'system':
       return path.startsWith('/admin/settings') && !path.startsWith('/admin/settings/styles') && !path.startsWith('/admin/settings/themes') && path !== '/admin/settings/modules' ||
              path === '/admin/config' || 
-             path === '/admin/users' ||
-             path === '/admin/settings/change-password' ||
-             path === '/admin/settings/modules'
+             path === '/admin/settings/change-password'
     case 'theme':
       return path === '/admin/home-styles' || 
-             path === '/admin/admin-styles' ||
-             // path === '/admin/settings/styles' || // 已简化，移除手动CSS配置
-             path === '/admin/settings/themes' ||
-             path === '/admin/theme-settings' ||
-             path === '/admin/settings/fonts'
+             path === '/admin/theme-settings'
     case 'other':
       return path.startsWith('/admin/friend-links') || 
              path === '/admin/visitor-messages' ||
@@ -574,17 +519,11 @@ const autoExpandMenu = () => {
   }
   if (path.startsWith('/admin/settings') && !path.startsWith('/admin/settings/styles') && !path.startsWith('/admin/settings/themes') && path !== '/admin/settings/modules' ||
       path === '/admin/config' || 
-      path === '/admin/users' ||
-      path === '/admin/settings/change-password' ||
-      path === '/admin/settings/modules') {
+      path === '/admin/settings/change-password') {
     expandedMenus.value.system = true
   }
   if (path === '/admin/home-styles' || 
-      path === '/admin/admin-styles' ||
-      path === '/admin/settings/styles' ||
-      path === '/admin/settings/themes' ||
-      path === '/admin/theme-settings' ||
-      path === '/admin/settings/fonts') {
+      path === '/admin/theme-settings') {
     expandedMenus.value.theme = true
   }
   if (path.startsWith('/admin/friend-links') || 
