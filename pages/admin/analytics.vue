@@ -233,7 +233,7 @@
           <h2 class="text-lg font-bold text-text-main mb-4">设备类型分布</h2>
           <ClientOnly>
             <template v-if="deviceDonutOption">
-              <div class="h-64 relative w-full" style="margin-bottom: var(--analytics-chart-bottom-spacing, 3rem);">
+              <div class="h-64 relative w-full" style="margin-bottom: var(--analytics-chart-bottom-spacing);">
                 <v-chart :option="deviceDonutOption.option" autoresize class="w-full h-full" />
                 <div class="donut-center">
                   <div class="donut-center-value">{{ deviceDonutOption.mainPercent }}%</div>
@@ -610,8 +610,8 @@ const trendLineOption = computed(() => {
     return dateStr.split(' ')[0].slice(5) // MM-DD
   })
 
-  const primaryColor = getCssVar('--chart-primary') || 'var(--primary)'
-  const secondaryColor = getCssVar('--chart-secondary') || 'var(--secondary)'
+  const primaryColor = getCssVar('--chart-primary')
+  const secondaryColor = getCssVar('--chart-secondary')
 
   // 构建基础配置
   const baseConfig = buildNeonLineOptions('--chart-primary', {
@@ -724,7 +724,7 @@ const regionBarOption = computed(() => {
     series: [{
       ...baseConfig.series,
       data: items.map((i: any) => i.value).reverse(),
-      label: { show: true, position: 'right', color: getCssVar('--color-text-muted') || 'var(--color-text-muted)' }
+      label: { show: true, position: 'right', ...(getCssVar('--color-text-muted') ? { color: getCssVar('--color-text-muted') } : {}) }
     }]
   }
   
@@ -746,40 +746,44 @@ const deviceDonutOption = computed(() => {
   
   // 构建完整的 ECharts option
   const donutSeries = buildNeonDonutOptions(data)
-  const textColor = getCssVar('--color-text-main') || getCssVar('--n-text-color') || ''
-  const tooltipBg = getCssVar('--color-bg-card') || getCssVar('--n-card-color') || ''
-  const tooltipBorder = getCssVar('--color-border-default') || getCssVar('--n-border-color') || ''
+  const textColor = getCssVar('--color-text-main') || getCssVar('--n-text-color')
+  const tooltipBg = getCssVar('--color-bg-card') || getCssVar('--n-card-color')
+  const tooltipBorder = getCssVar('--color-border-default') || getCssVar('--n-border-color')
   
-  const legendTextColor = getCssVar('--color-text-main') || getCssVar('--n-text-color') || ''
-  const legendBottom = getCssVar('--analytics-legend-bottom') || '0%'
-  const legendItemGap = parseInt(getCssVar('--analytics-legend-item-gap') || '20', 10)
-  const legendFontSize = parseInt(getCssVar('--analytics-legend-font-size') || '12', 10)
-  const legendIconWidth = parseInt(getCssVar('--analytics-legend-icon-width') || '12', 10)
-  const legendIconHeight = parseInt(getCssVar('--analytics-legend-icon-height') || '12', 10)
+  const legendTextColor = getCssVar('--color-text-main') || getCssVar('--n-text-color')
+  const legendBottom = getCssVar('--analytics-legend-bottom')
+  const legendItemGapStr = getCssVar('--analytics-legend-item-gap')
+  const legendFontSizeStr = getCssVar('--analytics-legend-font-size')
+  const legendIconWidthStr = getCssVar('--analytics-legend-icon-width')
+  const legendIconHeightStr = getCssVar('--analytics-legend-icon-height')
+  const legendItemGap = legendItemGapStr ? parseInt(legendItemGapStr, 10) : undefined
+  const legendFontSize = legendFontSizeStr ? parseInt(legendFontSizeStr, 10) : undefined
+  const legendIconWidth = legendIconWidthStr ? parseInt(legendIconWidthStr, 10) : undefined
+  const legendIconHeight = legendIconHeightStr ? parseInt(legendIconHeightStr, 10) : undefined
   
   const fullOption = {
     tooltip: {
       trigger: 'item',
       formatter: '{b}: {c} ({d}%)',
-      backgroundColor: tooltipBg || 'transparent',
-      borderColor: tooltipBorder || 'transparent',
+      ...(tooltipBg ? { backgroundColor: tooltipBg } : {}),
+      ...(tooltipBorder ? { borderColor: tooltipBorder } : {}),
       textStyle: {
-        color: textColor || 'inherit'
+        ...(textColor ? { color: textColor } : {})
       }
     },
     legend: {
       show: true,
       orient: 'horizontal',
-      bottom: legendBottom,
+      ...(legendBottom ? { bottom: legendBottom } : {}),
       left: 'center',
-      itemGap: legendItemGap,
+      ...(legendItemGap !== undefined ? { itemGap: legendItemGap } : {}),
       textStyle: {
-        color: legendTextColor || 'inherit',
-        fontSize: legendFontSize
+        ...(legendTextColor ? { color: legendTextColor } : {}),
+        ...(legendFontSize !== undefined ? { fontSize: legendFontSize } : {})
       },
       icon: 'rect',
-      itemWidth: legendIconWidth,
-      itemHeight: legendIconHeight
+      ...(legendIconWidth !== undefined ? { itemWidth: legendIconWidth } : {}),
+      ...(legendIconHeight !== undefined ? { itemHeight: legendIconHeight } : {})
     },
     series: [donutSeries]
   }
@@ -808,40 +812,44 @@ const browserDonutOption = computed(() => {
   
   // 构建完整的 ECharts option
   const donutSeries = buildNeonDonutOptions(data)
-  const textColor = getCssVar('--color-text-main') || getCssVar('--n-text-color') || ''
-  const tooltipBg = getCssVar('--color-bg-card') || getCssVar('--n-card-color') || ''
-  const tooltipBorder = getCssVar('--color-border-default') || getCssVar('--n-border-color') || ''
+  const textColor = getCssVar('--color-text-main') || getCssVar('--n-text-color')
+  const tooltipBg = getCssVar('--color-bg-card') || getCssVar('--n-card-color')
+  const tooltipBorder = getCssVar('--color-border-default') || getCssVar('--n-border-color')
   
-  const legendTextColor = getCssVar('--color-text-main') || getCssVar('--n-text-color') || ''
-  const legendBottom = getCssVar('--analytics-legend-bottom') || '0%'
-  const legendItemGap = parseInt(getCssVar('--analytics-legend-item-gap') || '20', 10)
-  const legendFontSize = parseInt(getCssVar('--analytics-legend-font-size') || '12', 10)
-  const legendIconWidth = parseInt(getCssVar('--analytics-legend-icon-width') || '12', 10)
-  const legendIconHeight = parseInt(getCssVar('--analytics-legend-icon-height') || '12', 10)
+  const legendTextColor = getCssVar('--color-text-main') || getCssVar('--n-text-color')
+  const legendBottom = getCssVar('--analytics-legend-bottom')
+  const legendItemGapStr = getCssVar('--analytics-legend-item-gap')
+  const legendFontSizeStr = getCssVar('--analytics-legend-font-size')
+  const legendIconWidthStr = getCssVar('--analytics-legend-icon-width')
+  const legendIconHeightStr = getCssVar('--analytics-legend-icon-height')
+  const legendItemGap = legendItemGapStr ? parseInt(legendItemGapStr, 10) : undefined
+  const legendFontSize = legendFontSizeStr ? parseInt(legendFontSizeStr, 10) : undefined
+  const legendIconWidth = legendIconWidthStr ? parseInt(legendIconWidthStr, 10) : undefined
+  const legendIconHeight = legendIconHeightStr ? parseInt(legendIconHeightStr, 10) : undefined
   
   const fullOption = {
     tooltip: {
       trigger: 'item',
       formatter: '{b}: {c} ({d}%)',
-      backgroundColor: tooltipBg || 'transparent',
-      borderColor: tooltipBorder || 'transparent',
+      ...(tooltipBg ? { backgroundColor: tooltipBg } : {}),
+      ...(tooltipBorder ? { borderColor: tooltipBorder } : {}),
       textStyle: {
-        color: textColor || 'inherit'
+        ...(textColor ? { color: textColor } : {})
       }
     },
     legend: {
       show: true,
       orient: 'horizontal',
-      bottom: legendBottom,
+      ...(legendBottom ? { bottom: legendBottom } : {}),
       left: 'center',
-      itemGap: legendItemGap,
+      ...(legendItemGap !== undefined ? { itemGap: legendItemGap } : {}),
       textStyle: {
-        color: legendTextColor || 'inherit',
-        fontSize: legendFontSize
+        ...(legendTextColor ? { color: legendTextColor } : {}),
+        ...(legendFontSize !== undefined ? { fontSize: legendFontSize } : {})
       },
       icon: 'rect',
-      itemWidth: legendIconWidth,
-      itemHeight: legendIconHeight
+      ...(legendIconWidth !== undefined ? { itemWidth: legendIconWidth } : {}),
+      ...(legendIconHeight !== undefined ? { itemHeight: legendIconHeight } : {})
     },
     series: [donutSeries]
   }
@@ -870,40 +878,44 @@ const osDonutOption = computed(() => {
   
   // 构建完整的 ECharts option
   const donutSeries = buildNeonDonutOptions(data)
-  const textColor = getCssVar('--color-text-main') || getCssVar('--n-text-color') || ''
-  const tooltipBg = getCssVar('--color-bg-card') || getCssVar('--n-card-color') || ''
-  const tooltipBorder = getCssVar('--color-border-default') || getCssVar('--n-border-color') || ''
+  const textColor = getCssVar('--color-text-main') || getCssVar('--n-text-color')
+  const tooltipBg = getCssVar('--color-bg-card') || getCssVar('--n-card-color')
+  const tooltipBorder = getCssVar('--color-border-default') || getCssVar('--n-border-color')
   
-  const legendTextColor = getCssVar('--color-text-main') || getCssVar('--n-text-color') || ''
-  const legendBottom = getCssVar('--analytics-legend-bottom') || '0%'
-  const legendItemGap = parseInt(getCssVar('--analytics-legend-item-gap') || '20', 10)
-  const legendFontSize = parseInt(getCssVar('--analytics-legend-font-size') || '12', 10)
-  const legendIconWidth = parseInt(getCssVar('--analytics-legend-icon-width') || '12', 10)
-  const legendIconHeight = parseInt(getCssVar('--analytics-legend-icon-height') || '12', 10)
+  const legendTextColor = getCssVar('--color-text-main') || getCssVar('--n-text-color')
+  const legendBottom = getCssVar('--analytics-legend-bottom')
+  const legendItemGapStr = getCssVar('--analytics-legend-item-gap')
+  const legendFontSizeStr = getCssVar('--analytics-legend-font-size')
+  const legendIconWidthStr = getCssVar('--analytics-legend-icon-width')
+  const legendIconHeightStr = getCssVar('--analytics-legend-icon-height')
+  const legendItemGap = legendItemGapStr ? parseInt(legendItemGapStr, 10) : undefined
+  const legendFontSize = legendFontSizeStr ? parseInt(legendFontSizeStr, 10) : undefined
+  const legendIconWidth = legendIconWidthStr ? parseInt(legendIconWidthStr, 10) : undefined
+  const legendIconHeight = legendIconHeightStr ? parseInt(legendIconHeightStr, 10) : undefined
   
   const fullOption = {
     tooltip: {
       trigger: 'item',
       formatter: '{b}: {c} ({d}%)',
-      backgroundColor: tooltipBg || 'transparent',
-      borderColor: tooltipBorder || 'transparent',
+      ...(tooltipBg ? { backgroundColor: tooltipBg } : {}),
+      ...(tooltipBorder ? { borderColor: tooltipBorder } : {}),
       textStyle: {
-        color: textColor || 'inherit'
+        ...(textColor ? { color: textColor } : {})
       }
     },
     legend: {
       show: true,
       orient: 'horizontal',
-      bottom: legendBottom,
+      ...(legendBottom ? { bottom: legendBottom } : {}),
       left: 'center',
-      itemGap: legendItemGap,
+      ...(legendItemGap !== undefined ? { itemGap: legendItemGap } : {}),
       textStyle: {
-        color: legendTextColor || 'inherit',
-        fontSize: legendFontSize
+        ...(legendTextColor ? { color: legendTextColor } : {}),
+        ...(legendFontSize !== undefined ? { fontSize: legendFontSize } : {})
       },
       icon: 'rect',
-      itemWidth: legendIconWidth,
-      itemHeight: legendIconHeight
+      ...(legendIconWidth !== undefined ? { itemWidth: legendIconWidth } : {}),
+      ...(legendIconHeight !== undefined ? { itemHeight: legendIconHeight } : {})
     },
     series: [donutSeries]
   }
@@ -932,40 +944,44 @@ const sourceDonutOption = computed(() => {
   
   // 构建完整的 ECharts option
   const donutSeries = buildNeonDonutOptions(data)
-  const textColor = getCssVar('--color-text-main') || getCssVar('--n-text-color') || ''
-  const tooltipBg = getCssVar('--color-bg-card') || getCssVar('--n-card-color') || ''
-  const tooltipBorder = getCssVar('--color-border-default') || getCssVar('--n-border-color') || ''
+  const textColor = getCssVar('--color-text-main') || getCssVar('--n-text-color')
+  const tooltipBg = getCssVar('--color-bg-card') || getCssVar('--n-card-color')
+  const tooltipBorder = getCssVar('--color-border-default') || getCssVar('--n-border-color')
   
-  const legendTextColor = getCssVar('--color-text-main') || getCssVar('--n-text-color') || ''
-  const legendBottom = getCssVar('--analytics-legend-bottom') || '0%'
-  const legendItemGap = parseInt(getCssVar('--analytics-legend-item-gap') || '20', 10)
-  const legendFontSize = parseInt(getCssVar('--analytics-legend-font-size') || '12', 10)
-  const legendIconWidth = parseInt(getCssVar('--analytics-legend-icon-width') || '12', 10)
-  const legendIconHeight = parseInt(getCssVar('--analytics-legend-icon-height') || '12', 10)
+  const legendTextColor = getCssVar('--color-text-main') || getCssVar('--n-text-color')
+  const legendBottom = getCssVar('--analytics-legend-bottom')
+  const legendItemGapStr = getCssVar('--analytics-legend-item-gap')
+  const legendFontSizeStr = getCssVar('--analytics-legend-font-size')
+  const legendIconWidthStr = getCssVar('--analytics-legend-icon-width')
+  const legendIconHeightStr = getCssVar('--analytics-legend-icon-height')
+  const legendItemGap = legendItemGapStr ? parseInt(legendItemGapStr, 10) : undefined
+  const legendFontSize = legendFontSizeStr ? parseInt(legendFontSizeStr, 10) : undefined
+  const legendIconWidth = legendIconWidthStr ? parseInt(legendIconWidthStr, 10) : undefined
+  const legendIconHeight = legendIconHeightStr ? parseInt(legendIconHeightStr, 10) : undefined
   
   const fullOption = {
     tooltip: {
       trigger: 'item',
       formatter: '{b}: {c} ({d}%)',
-      backgroundColor: tooltipBg || 'transparent',
-      borderColor: tooltipBorder || 'transparent',
+      ...(tooltipBg ? { backgroundColor: tooltipBg } : {}),
+      ...(tooltipBorder ? { borderColor: tooltipBorder } : {}),
       textStyle: {
-        color: textColor || 'inherit'
+        ...(textColor ? { color: textColor } : {})
       }
     },
     legend: {
       show: true,
       orient: 'horizontal',
-      bottom: legendBottom,
+      ...(legendBottom ? { bottom: legendBottom } : {}),
       left: 'center',
-      itemGap: legendItemGap,
+      ...(legendItemGap !== undefined ? { itemGap: legendItemGap } : {}),
       textStyle: {
-        color: legendTextColor || 'inherit',
-        fontSize: legendFontSize
+        ...(legendTextColor ? { color: legendTextColor } : {}),
+        ...(legendFontSize !== undefined ? { fontSize: legendFontSize } : {})
       },
       icon: 'rect',
-      itemWidth: legendIconWidth,
-      itemHeight: legendIconHeight
+      ...(legendIconWidth !== undefined ? { itemWidth: legendIconWidth } : {}),
+      ...(legendIconHeight !== undefined ? { itemHeight: legendIconHeight } : {})
     },
     series: [donutSeries]
   }
@@ -1523,7 +1539,7 @@ const autoRefreshEnabled = ref(true) // 实时刷新开关
 const getDonutColor = (index: number): string => {
   const colorVars = ['--chart-primary', '--chart-secondary', '--chart-tertiary', '--chart-quaternary', '--chart-quinary']
   const colorVar = colorVars[index % colorVars.length]
-  return getCssVar(colorVar) || 'var(--primary)'
+  return getCssVar(colorVar)
 }
 
 // 监听实时刷新开关
