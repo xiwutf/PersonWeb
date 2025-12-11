@@ -196,8 +196,8 @@
           <div v-else>
             <ClientOnly>
               <template v-if="sourceDonutOption">
-                <div class="h-48 relative mb-10 w-full">
-                  <v-chart :option="sourceDonutOption.option" autoresize class="w-full h-full" />
+                <div class="relative w-full" style="height: var(--analytics-donut-chart-height, 20rem); padding-bottom: var(--analytics-legend-height, 3rem);">
+                  <v-chart :option="sourceDonutOption.option" autoresize class="w-full" style="height: var(--analytics-donut-chart-height, 20rem);" />
                   <div class="donut-center">
                     <div class="donut-center-value">{{ sourceDonutOption.mainPercent }}%</div>
                     <div class="donut-center-label">{{ sourceDonutOption.mainLabel }}</div>
@@ -233,8 +233,8 @@
           <h2 class="text-lg font-bold text-text-main mb-4">设备类型分布</h2>
           <ClientOnly>
             <template v-if="deviceDonutOption">
-              <div class="h-64 relative w-full" style="margin-bottom: var(--analytics-chart-bottom-spacing);">
-                <v-chart :option="deviceDonutOption.option" autoresize class="w-full h-full" />
+              <div class="relative w-full" style="height: var(--analytics-donut-chart-height, 20rem); padding-bottom: var(--analytics-legend-height, 3rem);">
+                <v-chart :option="deviceDonutOption.option" autoresize class="w-full" style="height: var(--analytics-donut-chart-height, 20rem);" />
                 <div class="donut-center">
                   <div class="donut-center-value">{{ deviceDonutOption.mainPercent }}%</div>
                   <div class="donut-center-label">{{ deviceDonutOption.mainLabel }}</div>
@@ -761,6 +761,13 @@ const deviceDonutOption = computed(() => {
   const legendIconWidth = legendIconWidthStr ? parseInt(legendIconWidthStr, 10) : undefined
   const legendIconHeight = legendIconHeightStr ? parseInt(legendIconHeightStr, 10) : undefined
   
+  // 调整 series 的 center，为图例留出空间
+  const adjustedSeries = {
+    ...donutSeries,
+    center: ['50%', '45%'], // 向上移动图表，为底部图例留空间
+    radius: ['50%', '70%'] // 稍微缩小半径，确保不超出
+  }
+  
   const fullOption = {
     tooltip: {
       trigger: 'item',
@@ -774,7 +781,7 @@ const deviceDonutOption = computed(() => {
     legend: {
       show: true,
       orient: 'horizontal',
-      ...(legendBottom ? { bottom: legendBottom } : {}),
+      bottom: '5%',
       left: 'center',
       ...(legendItemGap !== undefined ? { itemGap: legendItemGap } : {}),
       textStyle: {
@@ -785,7 +792,7 @@ const deviceDonutOption = computed(() => {
       ...(legendIconWidth !== undefined ? { itemWidth: legendIconWidth } : {}),
       ...(legendIconHeight !== undefined ? { itemHeight: legendIconHeight } : {})
     },
-    series: [donutSeries]
+    series: [adjustedSeries]
   }
   
   // 应用主题
@@ -827,6 +834,13 @@ const browserDonutOption = computed(() => {
   const legendIconWidth = legendIconWidthStr ? parseInt(legendIconWidthStr, 10) : undefined
   const legendIconHeight = legendIconHeightStr ? parseInt(legendIconHeightStr, 10) : undefined
   
+  // 调整 series 的 center，为图例留出空间
+  const adjustedSeries = {
+    ...donutSeries,
+    center: ['50%', '45%'], // 向上移动图表，为底部图例留空间
+    radius: ['50%', '70%'] // 稍微缩小半径，确保不超出
+  }
+  
   const fullOption = {
     tooltip: {
       trigger: 'item',
@@ -840,7 +854,7 @@ const browserDonutOption = computed(() => {
     legend: {
       show: true,
       orient: 'horizontal',
-      ...(legendBottom ? { bottom: legendBottom } : {}),
+      bottom: '5%',
       left: 'center',
       ...(legendItemGap !== undefined ? { itemGap: legendItemGap } : {}),
       textStyle: {
@@ -851,7 +865,7 @@ const browserDonutOption = computed(() => {
       ...(legendIconWidth !== undefined ? { itemWidth: legendIconWidth } : {}),
       ...(legendIconHeight !== undefined ? { itemHeight: legendIconHeight } : {})
     },
-    series: [donutSeries]
+    series: [adjustedSeries]
   }
   
   // 应用主题
@@ -893,6 +907,13 @@ const osDonutOption = computed(() => {
   const legendIconWidth = legendIconWidthStr ? parseInt(legendIconWidthStr, 10) : undefined
   const legendIconHeight = legendIconHeightStr ? parseInt(legendIconHeightStr, 10) : undefined
   
+  // 调整 series 的 center，为图例留出空间
+  const adjustedSeries = {
+    ...donutSeries,
+    center: ['50%', '45%'], // 向上移动图表，为底部图例留空间
+    radius: ['50%', '70%'] // 稍微缩小半径，确保不超出
+  }
+  
   const fullOption = {
     tooltip: {
       trigger: 'item',
@@ -906,7 +927,7 @@ const osDonutOption = computed(() => {
     legend: {
       show: true,
       orient: 'horizontal',
-      ...(legendBottom ? { bottom: legendBottom } : {}),
+      bottom: '5%',
       left: 'center',
       ...(legendItemGap !== undefined ? { itemGap: legendItemGap } : {}),
       textStyle: {
@@ -917,7 +938,7 @@ const osDonutOption = computed(() => {
       ...(legendIconWidth !== undefined ? { itemWidth: legendIconWidth } : {}),
       ...(legendIconHeight !== undefined ? { itemHeight: legendIconHeight } : {})
     },
-    series: [donutSeries]
+    series: [adjustedSeries]
   }
   
   // 应用主题
@@ -959,6 +980,13 @@ const sourceDonutOption = computed(() => {
   const legendIconWidth = legendIconWidthStr ? parseInt(legendIconWidthStr, 10) : undefined
   const legendIconHeight = legendIconHeightStr ? parseInt(legendIconHeightStr, 10) : undefined
   
+  // 调整 series 的 center，为图例留出空间
+  const adjustedSeries = {
+    ...donutSeries,
+    center: ['50%', '45%'], // 向上移动图表，为底部图例留空间
+    radius: ['50%', '70%'] // 稍微缩小半径，确保不超出
+  }
+  
   const fullOption = {
     tooltip: {
       trigger: 'item',
@@ -972,7 +1000,7 @@ const sourceDonutOption = computed(() => {
     legend: {
       show: true,
       orient: 'horizontal',
-      ...(legendBottom ? { bottom: legendBottom } : {}),
+      bottom: '5%',
       left: 'center',
       ...(legendItemGap !== undefined ? { itemGap: legendItemGap } : {}),
       textStyle: {
@@ -983,7 +1011,7 @@ const sourceDonutOption = computed(() => {
       ...(legendIconWidth !== undefined ? { itemWidth: legendIconWidth } : {}),
       ...(legendIconHeight !== undefined ? { itemHeight: legendIconHeight } : {})
     },
-    series: [donutSeries]
+    series: [adjustedSeries]
   }
   
   // 应用主题
@@ -1651,20 +1679,12 @@ onUnmounted(() => {
   --analytics-list-item-gap: 0.5rem;
   
   /* 图表图例样式变量 */
-  --analytics-legend-bottom: 0%;
+  --analytics-donut-chart-height: 20rem;
+  --analytics-legend-height: 3rem;
   --analytics-legend-item-gap: 20;
   --analytics-legend-font-size: 12;
   --analytics-legend-icon-width: 12;
   --analytics-legend-icon-height: 12;
-  --analytics-chart-bottom-spacing: 3rem;
-  
-  /* 图表图例样式变量 */
-  --analytics-legend-bottom: 0%;
-  --analytics-legend-item-gap: 20;
-  --analytics-legend-font-size: 12;
-  --analytics-legend-icon-width: 12;
-  --analytics-legend-icon-height: 12;
-  --analytics-chart-bottom-spacing: 3rem;
 }
 
 [data-theme='dark'] {
