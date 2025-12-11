@@ -196,7 +196,7 @@
           <div v-else>
             <ClientOnly>
               <template v-if="sourceDonutOption">
-                <div class="h-48 relative mb-4 w-full">
+                <div class="h-48 relative mb-10 w-full">
                   <v-chart :option="sourceDonutOption.option" autoresize class="w-full h-full" />
                   <div class="donut-center">
                     <div class="donut-center-value">{{ sourceDonutOption.mainPercent }}%</div>
@@ -209,18 +209,18 @@
               </template>
             </ClientOnly>
             
-            <div class="space-y-2 max-h-32 overflow-y-auto">
+            <div class="space-y-2 max-h-32 overflow-y-auto mt-6">
               <div
                 v-for="(item, index) in sources.items"
                 :key="index"
-                class="flex items-center justify-between p-2 bg-bg-surface-2 rounded"
+                class="analytics-source-item"
               >
                 <div class="flex items-center gap-2">
                   <div 
                     class="w-2 h-2 rounded-full" 
                     :style="{ backgroundColor: getDonutColor(index) }"
                   ></div>
-                  <span class="text-sm text-text-main">{{ item.name }}</span>
+                  <span class="text-sm font-medium text-text-main">{{ item.name }}</span>
                 </div>
                 <span class="text-xs text-text-muted">{{ item.count }}</span>
               </div>
@@ -233,25 +233,11 @@
           <h2 class="text-lg font-bold text-text-main mb-4">设备类型分布</h2>
           <ClientOnly>
             <template v-if="deviceDonutOption">
-              <div class="h-64 relative w-full">
+              <div class="h-64 relative w-full" style="margin-bottom: var(--analytics-chart-bottom-spacing, 3rem);">
                 <v-chart :option="deviceDonutOption.option" autoresize class="w-full h-full" />
                 <div class="donut-center">
                   <div class="donut-center-value">{{ deviceDonutOption.mainPercent }}%</div>
                   <div class="donut-center-label">{{ deviceDonutOption.mainLabel }}</div>
-                </div>
-                <!-- 底部图例 -->
-                <div class="mt-4 flex flex-wrap gap-3 justify-center">
-                  <div
-                    v-for="(item, idx) in (clientDistribution.devices || [])"
-                    :key="idx"
-                    class="flex items-center gap-2"
-                  >
-                    <div
-                      class="w-2 h-2 rounded-full"
-                      :style="{ backgroundColor: getDonutColor(idx) }"
-                    ></div>
-                    <span class="text-xs text-text-muted">{{ item.name || '未知' }}</span>
-                  </div>
                 </div>
               </div>
             </template>
@@ -288,7 +274,7 @@
               <div
                 v-for="(page, index) in topPages.slice(0, 10)"
                 :key="index"
-                class="flex items-center justify-between p-3 bg-bg-surface-2 rounded hover:bg-bg-surface-1 transition-colors"
+                class="analytics-page-item"
               >
                 <div class="flex-1 min-w-0">
                   <div class="text-sm font-medium text-text-main truncate" :title="formatPageUrl(page.url)">
@@ -758,8 +744,51 @@ const deviceDonutOption = computed(() => {
   const total = data.reduce((s: number, i: any) => s + i.value, 0)
   const max = data.reduce((m: any, i: any) => i.value > m.value ? i : m, data[0])
   
+  // 构建完整的 ECharts option
+  const donutSeries = buildNeonDonutOptions(data)
+  const textColor = getCssVar('--color-text-main') || getCssVar('--n-text-color') || ''
+  const tooltipBg = getCssVar('--color-bg-card') || getCssVar('--n-card-color') || ''
+  const tooltipBorder = getCssVar('--color-border-default') || getCssVar('--n-border-color') || ''
+  
+  const legendTextColor = getCssVar('--color-text-main') || getCssVar('--n-text-color') || ''
+  const legendBottom = getCssVar('--analytics-legend-bottom') || '0%'
+  const legendItemGap = parseInt(getCssVar('--analytics-legend-item-gap') || '20', 10)
+  const legendFontSize = parseInt(getCssVar('--analytics-legend-font-size') || '12', 10)
+  const legendIconWidth = parseInt(getCssVar('--analytics-legend-icon-width') || '12', 10)
+  const legendIconHeight = parseInt(getCssVar('--analytics-legend-icon-height') || '12', 10)
+  
+  const fullOption = {
+    tooltip: {
+      trigger: 'item',
+      formatter: '{b}: {c} ({d}%)',
+      backgroundColor: tooltipBg || 'transparent',
+      borderColor: tooltipBorder || 'transparent',
+      textStyle: {
+        color: textColor || 'inherit'
+      }
+    },
+    legend: {
+      show: true,
+      orient: 'horizontal',
+      bottom: legendBottom,
+      left: 'center',
+      itemGap: legendItemGap,
+      textStyle: {
+        color: legendTextColor || 'inherit',
+        fontSize: legendFontSize
+      },
+      icon: 'rect',
+      itemWidth: legendIconWidth,
+      itemHeight: legendIconHeight
+    },
+    series: [donutSeries]
+  }
+  
+  // 应用主题
+  const themedOption = applyTheme(fullOption)
+  
   return {
-    option: buildNeonDonutOptions(data),
+    option: themedOption,
     mainLabel: max.name,
     mainPercent: total > 0 ? ((max.value / total) * 100).toFixed(1) : '0'
   }
@@ -777,8 +806,51 @@ const browserDonutOption = computed(() => {
   const total = data.reduce((s: number, i: any) => s + i.value, 0)
   const max = data.reduce((m: any, i: any) => i.value > m.value ? i : m, data[0])
   
+  // 构建完整的 ECharts option
+  const donutSeries = buildNeonDonutOptions(data)
+  const textColor = getCssVar('--color-text-main') || getCssVar('--n-text-color') || ''
+  const tooltipBg = getCssVar('--color-bg-card') || getCssVar('--n-card-color') || ''
+  const tooltipBorder = getCssVar('--color-border-default') || getCssVar('--n-border-color') || ''
+  
+  const legendTextColor = getCssVar('--color-text-main') || getCssVar('--n-text-color') || ''
+  const legendBottom = getCssVar('--analytics-legend-bottom') || '0%'
+  const legendItemGap = parseInt(getCssVar('--analytics-legend-item-gap') || '20', 10)
+  const legendFontSize = parseInt(getCssVar('--analytics-legend-font-size') || '12', 10)
+  const legendIconWidth = parseInt(getCssVar('--analytics-legend-icon-width') || '12', 10)
+  const legendIconHeight = parseInt(getCssVar('--analytics-legend-icon-height') || '12', 10)
+  
+  const fullOption = {
+    tooltip: {
+      trigger: 'item',
+      formatter: '{b}: {c} ({d}%)',
+      backgroundColor: tooltipBg || 'transparent',
+      borderColor: tooltipBorder || 'transparent',
+      textStyle: {
+        color: textColor || 'inherit'
+      }
+    },
+    legend: {
+      show: true,
+      orient: 'horizontal',
+      bottom: legendBottom,
+      left: 'center',
+      itemGap: legendItemGap,
+      textStyle: {
+        color: legendTextColor || 'inherit',
+        fontSize: legendFontSize
+      },
+      icon: 'rect',
+      itemWidth: legendIconWidth,
+      itemHeight: legendIconHeight
+    },
+    series: [donutSeries]
+  }
+  
+  // 应用主题
+  const themedOption = applyTheme(fullOption)
+  
   return {
-    option: buildNeonDonutOptions(data),
+    option: themedOption,
     mainLabel: max.name,
     mainPercent: total > 0 ? ((max.value / total) * 100).toFixed(1) : '0'
   }
@@ -796,8 +868,51 @@ const osDonutOption = computed(() => {
   const total = data.reduce((s: number, i: any) => s + i.value, 0)
   const max = data.reduce((m: any, i: any) => i.value > m.value ? i : m, data[0])
   
+  // 构建完整的 ECharts option
+  const donutSeries = buildNeonDonutOptions(data)
+  const textColor = getCssVar('--color-text-main') || getCssVar('--n-text-color') || ''
+  const tooltipBg = getCssVar('--color-bg-card') || getCssVar('--n-card-color') || ''
+  const tooltipBorder = getCssVar('--color-border-default') || getCssVar('--n-border-color') || ''
+  
+  const legendTextColor = getCssVar('--color-text-main') || getCssVar('--n-text-color') || ''
+  const legendBottom = getCssVar('--analytics-legend-bottom') || '0%'
+  const legendItemGap = parseInt(getCssVar('--analytics-legend-item-gap') || '20', 10)
+  const legendFontSize = parseInt(getCssVar('--analytics-legend-font-size') || '12', 10)
+  const legendIconWidth = parseInt(getCssVar('--analytics-legend-icon-width') || '12', 10)
+  const legendIconHeight = parseInt(getCssVar('--analytics-legend-icon-height') || '12', 10)
+  
+  const fullOption = {
+    tooltip: {
+      trigger: 'item',
+      formatter: '{b}: {c} ({d}%)',
+      backgroundColor: tooltipBg || 'transparent',
+      borderColor: tooltipBorder || 'transparent',
+      textStyle: {
+        color: textColor || 'inherit'
+      }
+    },
+    legend: {
+      show: true,
+      orient: 'horizontal',
+      bottom: legendBottom,
+      left: 'center',
+      itemGap: legendItemGap,
+      textStyle: {
+        color: legendTextColor || 'inherit',
+        fontSize: legendFontSize
+      },
+      icon: 'rect',
+      itemWidth: legendIconWidth,
+      itemHeight: legendIconHeight
+    },
+    series: [donutSeries]
+  }
+  
+  // 应用主题
+  const themedOption = applyTheme(fullOption)
+  
   return {
-    option: buildNeonDonutOptions(data),
+    option: themedOption,
     mainLabel: max.name,
     mainPercent: total > 0 ? ((max.value / total) * 100).toFixed(1) : '0'
   }
@@ -815,8 +930,51 @@ const sourceDonutOption = computed(() => {
   const total = data.reduce((s: number, i: any) => s + i.value, 0)
   const max = data.reduce((m: any, i: any) => i.value > m.value ? i : m, data[0])
   
+  // 构建完整的 ECharts option
+  const donutSeries = buildNeonDonutOptions(data)
+  const textColor = getCssVar('--color-text-main') || getCssVar('--n-text-color') || ''
+  const tooltipBg = getCssVar('--color-bg-card') || getCssVar('--n-card-color') || ''
+  const tooltipBorder = getCssVar('--color-border-default') || getCssVar('--n-border-color') || ''
+  
+  const legendTextColor = getCssVar('--color-text-main') || getCssVar('--n-text-color') || ''
+  const legendBottom = getCssVar('--analytics-legend-bottom') || '0%'
+  const legendItemGap = parseInt(getCssVar('--analytics-legend-item-gap') || '20', 10)
+  const legendFontSize = parseInt(getCssVar('--analytics-legend-font-size') || '12', 10)
+  const legendIconWidth = parseInt(getCssVar('--analytics-legend-icon-width') || '12', 10)
+  const legendIconHeight = parseInt(getCssVar('--analytics-legend-icon-height') || '12', 10)
+  
+  const fullOption = {
+    tooltip: {
+      trigger: 'item',
+      formatter: '{b}: {c} ({d}%)',
+      backgroundColor: tooltipBg || 'transparent',
+      borderColor: tooltipBorder || 'transparent',
+      textStyle: {
+        color: textColor || 'inherit'
+      }
+    },
+    legend: {
+      show: true,
+      orient: 'horizontal',
+      bottom: legendBottom,
+      left: 'center',
+      itemGap: legendItemGap,
+      textStyle: {
+        color: legendTextColor || 'inherit',
+        fontSize: legendFontSize
+      },
+      icon: 'rect',
+      itemWidth: legendIconWidth,
+      itemHeight: legendIconHeight
+    },
+    series: [donutSeries]
+  }
+  
+  // 应用主题
+  const themedOption = applyTheme(fullOption)
+  
   return {
-    option: buildNeonDonutOptions(data),
+    option: themedOption,
     mainLabel: max.name,
     mainPercent: total > 0 ? ((max.value / total) * 100).toFixed(1) : '0'
   }
@@ -1449,17 +1607,89 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   pointer-events: none;
+  z-index: 1;
 }
 .donut-center-value {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--text-main);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-main, var(--n-text-color));
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  line-height: 1.2;
 }
 .donut-center-label {
-  font-size: 12px;
-  opacity: 0.7;
-  color: var(--text-muted);
-  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-main, var(--n-text-color));
+  opacity: 0.85;
+  margin-top: 6px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 }
+
+/* 分析页面列表项样式 - 使用 CSS 变量 */
+:root {
+  --analytics-list-item-bg: var(--color-bg-surface-2, var(--n-card-color));
+  --analytics-list-item-bg-hover: var(--color-bg-surface-1, var(--n-card-color-hover));
+  --analytics-list-item-padding-sm: 0.5rem;
+  --analytics-list-item-padding-md: 0.75rem;
+  --analytics-list-item-border-radius: 0.5rem;
+  --analytics-list-item-gap: 0.5rem;
+  
+  /* 图表图例样式变量 */
+  --analytics-legend-bottom: 0%;
+  --analytics-legend-item-gap: 20;
+  --analytics-legend-font-size: 12;
+  --analytics-legend-icon-width: 12;
+  --analytics-legend-icon-height: 12;
+  --analytics-chart-bottom-spacing: 3rem;
+  
+  /* 图表图例样式变量 */
+  --analytics-legend-bottom: 0%;
+  --analytics-legend-item-gap: 20;
+  --analytics-legend-font-size: 12;
+  --analytics-legend-icon-width: 12;
+  --analytics-legend-icon-height: 12;
+  --analytics-chart-bottom-spacing: 3rem;
+}
+
+[data-theme='dark'] {
+  --analytics-list-item-bg: rgba(30, 35, 50, 0.4);
+  --analytics-list-item-bg-hover: rgba(40, 45, 60, 0.6);
+}
+
+[data-theme='light'] {
+  --analytics-list-item-bg: rgba(248, 250, 252, 0.8);
+  --analytics-list-item-bg-hover: rgba(241, 245, 249, 0.9);
+}
+
+/* 访问来源列表项 */
+.analytics-source-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--analytics-list-item-padding-sm);
+  background-color: var(--analytics-list-item-bg);
+  border-radius: var(--analytics-list-item-border-radius);
+  transition: background-color 0.2s ease;
+}
+
+.analytics-source-item:hover {
+  background-color: var(--analytics-list-item-bg-hover);
+}
+
+/* Top 10 页面列表项 */
+.analytics-page-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--analytics-list-item-padding-md);
+  background-color: var(--analytics-list-item-bg);
+  border-radius: var(--analytics-list-item-border-radius);
+  transition: background-color 0.2s ease;
+}
+
+.analytics-page-item:hover {
+  background-color: var(--analytics-list-item-bg-hover);
+}
+
 </style>
 

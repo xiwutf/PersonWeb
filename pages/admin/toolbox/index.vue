@@ -348,13 +348,30 @@ const filteredTools = computed(() => {
   return result
 })
 
+// 防止重复请求
+let isFetchingTools = false
+
 // 获取工具列表
 const fetchTools = async () => {
+  // 如果正在请求中，直接返回
+  if (isFetchingTools) {
+    return
+  }
+  
+  isFetchingTools = true
   loading.value = true
+  
   try {
-    const res = await api.get('/Toolbox/marketplace?pageSize=1000')
+    // 管理后台使用 admin/list 接口，可以查看所有状态的工具
+    const res = await api.get('/Toolbox/admin/list?pageSize=1000')
     if (res && res.tools) {
       tools.value = res.tools as Tool[]
+      stats.value.totalTools = tools.value.length
+      stats.value.totalPurchases = tools.value.reduce((sum, t) => sum + t.purchaseCount, 0)
+      stats.value.totalUses = tools.value.reduce((sum, t) => sum + t.useCount, 0)
+    } else if (res && Array.isArray(res)) {
+      // 兼容直接返回数组的情况
+      tools.value = res as Tool[]
       stats.value.totalTools = tools.value.length
       stats.value.totalPurchases = tools.value.reduce((sum, t) => sum + t.purchaseCount, 0)
       stats.value.totalUses = tools.value.reduce((sum, t) => sum + t.useCount, 0)
@@ -362,6 +379,7 @@ const fetchTools = async () => {
   } catch (e) {
     handleError(e, '获取工具列表失败')
   } finally {
+    isFetchingTools = false
     loading.value = false
   }
 }

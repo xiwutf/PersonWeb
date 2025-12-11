@@ -116,6 +116,7 @@ const getBarWidth = (path: any) => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: var(--color-text-main, var(--n-text-color, #0f172a));
 }
 
 .page-bar-wrapper {
@@ -143,6 +144,8 @@ const getBarWidth = (path: any) => {
   min-width: 60px;
   text-align: right;
   font-variant-numeric: tabular-nums;
+  color: var(--color-text-main, var(--n-text-color, #0f172a));
+  opacity: 0.85;
 }
 
 .empty-state {

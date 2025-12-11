@@ -151,5 +151,35 @@ public class AppDbContext : DbContext
             .HasForeignKey(mc => mc.ModuleKey)
             .HasPrincipalKey(m => m.ModuleKey)
             .OnDelete(DeleteBehavior.Cascade);
+            
+        // 配置 Project 实体的列名映射（将驼峰命名映射到下划线命名）
+        // 数据库表名是 projects（小写），列名使用下划线命名
+        modelBuilder.Entity<Project>(entity =>
+        {
+            entity.ToTable("projects"); // 表名是小写的 projects
+            
+            // 配置所有字段的列名映射（从驼峰命名映射到下划线命名）
+            entity.Property(p => p.Id).HasColumnName("Id");
+            entity.Property(p => p.Title).HasColumnName("Title");
+            entity.Property(p => p.Description).HasColumnName("Description");
+            entity.Property(p => p.CoverUrl).HasColumnName("CoverUrl");
+            entity.Property(p => p.DemoUrl).HasColumnName("DemoUrl");
+            entity.Property(p => p.GithubUrl).HasColumnName("GithubUrl");
+            entity.Property(p => p.Status).HasColumnName("Status");
+            entity.Property(p => p.TechStack).HasColumnName("TechStack");
+            entity.Property(p => p.Content).HasColumnName("Content");
+            entity.Property(p => p.ViewCount).HasColumnName("view_count");
+            
+            // 配置 AI 相关字段的列名（下划线命名）
+            entity.Property(p => p.AiTitle).HasColumnName("ai_title");
+            entity.Property(p => p.AiHighlights).HasColumnName("ai_highlights");
+            entity.Property(p => p.AiDescription).HasColumnName("ai_description");
+            entity.Property(p => p.AiScenarios).HasColumnName("ai_scenarios");
+            entity.Property(p => p.AiTargetUsers).HasColumnName("ai_target_users");
+            entity.Property(p => p.AiShortCardText).HasColumnName("ai_short_card_text");
+            
+            entity.Property(p => p.CreatedAt).HasColumnName("CreatedAt");
+            entity.Property(p => p.UpdatedAt).HasColumnName("UpdatedAt");
+        });
     }
 }

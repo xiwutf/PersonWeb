@@ -298,7 +298,25 @@ public class AiServiceClient
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "AI 服务健康检查失败");
+            // 如果是连接被拒绝或超时等常见错误，使用 Debug 级别（服务可能未启动）
+            // 其他错误使用 Warning 级别
+            var isConnectionError = ex is HttpRequestException httpEx && 
+                (httpEx.InnerException?.GetType().Name == "SocketException" || 
+                 ex.Message.Contains("连接", StringComparison.OrdinalIgnoreCase) || 
+                 ex.Message.Contains("Connection", StringComparison.OrdinalIgnoreCase) ||
+                 ex.Message.Contains("timeout", StringComparison.OrdinalIgnoreCase) ||
+                 ex.Message.Contains("超时", StringComparison.OrdinalIgnoreCase) ||
+                 ex.Message.Contains("拒绝", StringComparison.OrdinalIgnoreCase) ||
+                 ex.Message.Contains("refused", StringComparison.OrdinalIgnoreCase));
+            
+            if (isConnectionError)
+            {
+                _logger.LogDebug(ex, "AI 服务健康检查失败（服务可能未启动）");
+            }
+            else
+            {
+                _logger.LogWarning(ex, "AI 服务健康检查失败");
+            }
             return false;
         }
     }

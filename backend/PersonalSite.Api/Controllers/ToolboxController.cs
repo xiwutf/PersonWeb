@@ -26,6 +26,117 @@ public class ToolboxController : ControllerBase
     }
 
     /// <summary>
+    /// 获取工具列表（管理后台 - 返回所有状态）
+    /// </summary>
+    [HttpGet("admin/list")]
+    [Microsoft.AspNetCore.Authorization.Authorize]
+    public async Task<ActionResult<ApiResponse<object>>> GetAdminTools(
+        [FromQuery] string? category = null,
+        [FromQuery] string? status = null,
+        [FromQuery] string? search = null,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 1000
+    )
+    {
+        try
+        {
+            var query = _context.Tools
+                .Include(t => t.Category)
+                .AsQueryable();
+
+            // 状态筛选（管理后台可以查看所有状态）
+            if (!string.IsNullOrEmpty(status))
+            {
+                query = query.Where(t => t.Status == status);
+            }
+
+            // 分类筛选
+            if (!string.IsNullOrEmpty(category))
+            {
+                query = query.Where(t => t.Category != null && t.Category.Slug == category);
+            }
+
+            // 搜索
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(t => 
+                    t.Name.Contains(search) || 
+                    (t.Description != null && t.Description.Contains(search)) ||
+                    (t.Slug != null && t.Slug.Contains(search)));
+            }
+
+            // 排序
+            query = query.OrderByDescending(t => t.CreatedAt);
+
+            var total = await query.CountAsync();
+            var toolsData = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(t => new
+                {
+                    t.Id,
+                    t.Name,
+                    t.Slug,
+                    t.Icon,
+                    t.Description,
+                    t.CoverImage,
+                    t.DemoUrl,
+                    t.Price,
+                    t.OriginalPrice,
+                    t.IsFree,
+                    t.IsPremium,
+                    t.PurchaseCount,
+                    t.UseCount,
+                    t.Rating,
+                    t.RatingCount,
+                    t.Status,
+                    Category = t.Category != null ? new { t.Category.Id, t.Category.Name, t.Category.Slug, t.Category.Icon } : null,
+                    TagsJson = t.Tags,
+                    FeaturesJson = t.Features
+                })
+                .ToListAsync();
+
+            // 在内存中反序列化 JSON 数据
+            var tools = toolsData.Select(t => new
+            {
+                t.Id,
+                t.Name,
+                t.Slug,
+                t.Icon,
+                t.Description,
+                t.CoverImage,
+                t.DemoUrl,
+                t.Price,
+                t.OriginalPrice,
+                t.IsFree,
+                t.IsPremium,
+                t.PurchaseCount,
+                t.UseCount,
+                t.Rating,
+                t.RatingCount,
+                t.Status,
+                t.Category,
+                Tags = !string.IsNullOrEmpty(t.TagsJson) ? JsonSerializer.Deserialize<string[]>(t.TagsJson) ?? Array.Empty<string>() : Array.Empty<string>(),
+                Features = !string.IsNullOrEmpty(t.FeaturesJson) ? JsonSerializer.Deserialize<string[]>(t.FeaturesJson) ?? Array.Empty<string>() : Array.Empty<string>()
+            }).ToList();
+
+            return Ok(ApiResponse.Success(new
+            {
+                Tools = tools,
+                Total = total,
+                Page = page,
+                PageSize = pageSize,
+                TotalPages = (int)Math.Ceiling(total / (double)pageSize)
+            }));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "获取工具列表失败");
+            return StatusCode(500, ApiResponse.Error($"获取工具列表失败: {ex.Message}", 500));
+        }
+    }
+
+    /// <summary>
     /// 获取工具列表（商城）
     /// </summary>
     [HttpGet("marketplace")]
@@ -626,6 +737,183 @@ public class ToolboxController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// 创建工具（管理后台）
+    /// </summary>
+    [HttpPost]
+    [Microsoft.AspNetCore.Authorization.Authorize]
+    public async Task<ActionResult<ApiResponse<object>>> CreateTool([FromBody] CreateToolRequest request)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(request.Name))
+            {
+                return BadRequest(ApiResponse.Error("工具名称不能为空", 400));
+            }
+
+            if (string.IsNullOrEmpty(request.Slug))
+            {
+                return BadRequest(ApiResponse.Error("工具别名不能为空", 400));
+            }
+
+            // 检查 slug 是否已存在
+            var existingTool = await _context.Tools
+                .FirstOrDefaultAsync(t => t.Slug == request.Slug);
+            
+            if (existingTool != null)
+            {
+                return BadRequest(ApiResponse.Error("工具别名已存在", 400));
+            }
+
+            var tool = new Tool
+            {
+                Name = request.Name,
+                Slug = request.Slug,
+                Icon = request.Icon,
+                Description = request.Description,
+                DemoUrl = request.DemoUrl,
+                Price = request.Price ?? 0,
+                OriginalPrice = request.OriginalPrice,
+                IsFree = request.IsFree ?? false,
+                IsPremium = request.IsPremium ?? false,
+                Status = request.Status ?? "draft",
+                CategoryId = request.CategoryId,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+
+            _context.Tools.Add(tool);
+            await _context.SaveChangesAsync();
+
+            return Ok(ApiResponse.Success(new
+            {
+                tool.Id,
+                tool.Name,
+                tool.Slug,
+                tool.Status
+            }));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "创建工具失败");
+            return StatusCode(500, ApiResponse.Error($"创建工具失败: {ex.Message}", 500));
+        }
+    }
+
+    /// <summary>
+    /// 更新工具（管理后台）
+    /// </summary>
+    [HttpPut("{id}")]
+    [Microsoft.AspNetCore.Authorization.Authorize]
+    public async Task<ActionResult<ApiResponse<object>>> UpdateTool(long id, [FromBody] UpdateToolRequest request)
+    {
+        try
+        {
+            var tool = await _context.Tools.FindAsync(id);
+            if (tool == null)
+            {
+                return NotFound(ApiResponse.Error("工具不存在", 404));
+            }
+
+            // 如果 slug 改变，检查是否冲突
+            if (!string.IsNullOrEmpty(request.Slug) && request.Slug != tool.Slug)
+            {
+                var existingTool = await _context.Tools
+                    .FirstOrDefaultAsync(t => t.Slug == request.Slug && t.Id != id);
+                
+                if (existingTool != null)
+                {
+                    return BadRequest(ApiResponse.Error("工具别名已存在", 400));
+                }
+                tool.Slug = request.Slug;
+            }
+
+            if (!string.IsNullOrEmpty(request.Name))
+            {
+                tool.Name = request.Name;
+            }
+            if (request.Icon != null)
+            {
+                tool.Icon = request.Icon;
+            }
+            if (request.Description != null)
+            {
+                tool.Description = request.Description;
+            }
+            if (request.DemoUrl != null)
+            {
+                tool.DemoUrl = request.DemoUrl;
+            }
+            if (request.Price.HasValue)
+            {
+                tool.Price = request.Price.Value;
+            }
+            if (request.OriginalPrice != null)
+            {
+                tool.OriginalPrice = request.OriginalPrice;
+            }
+            if (request.IsFree.HasValue)
+            {
+                tool.IsFree = request.IsFree.Value;
+            }
+            if (request.IsPremium.HasValue)
+            {
+                tool.IsPremium = request.IsPremium.Value;
+            }
+            if (!string.IsNullOrEmpty(request.Status))
+            {
+                tool.Status = request.Status;
+            }
+            if (request.CategoryId.HasValue)
+            {
+                tool.CategoryId = request.CategoryId;
+            }
+
+            tool.UpdatedAt = DateTime.Now;
+            await _context.SaveChangesAsync();
+
+            return Ok(ApiResponse.Success(new
+            {
+                tool.Id,
+                tool.Name,
+                tool.Slug,
+                tool.Status
+            }));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "更新工具失败");
+            return StatusCode(500, ApiResponse.Error($"更新工具失败: {ex.Message}", 500));
+        }
+    }
+
+    /// <summary>
+    /// 删除工具（管理后台）
+    /// </summary>
+    [HttpDelete("{id}")]
+    [Microsoft.AspNetCore.Authorization.Authorize]
+    public async Task<ActionResult<ApiResponse<object>>> DeleteTool(long id)
+    {
+        try
+        {
+            var tool = await _context.Tools.FindAsync(id);
+            if (tool == null)
+            {
+                return NotFound(ApiResponse.Error("工具不存在", 404));
+            }
+
+            _context.Tools.Remove(tool);
+            await _context.SaveChangesAsync();
+
+            return Ok(ApiResponse.Success(new { Message = "删除成功" }));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "删除工具失败");
+            return StatusCode(500, ApiResponse.Error($"删除工具失败: {ex.Message}", 500));
+        }
+    }
+
     // 辅助方法：生成安全的API密钥
     private string GenerateSecureApiKey()
     {
@@ -683,5 +971,35 @@ public class AnalyticsRequest
     public long ToolId { get; set; }
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
+}
+
+public class CreateToolRequest
+{
+    public string Name { get; set; } = string.Empty;
+    public string Slug { get; set; } = string.Empty;
+    public string? Icon { get; set; }
+    public string? Description { get; set; }
+    public string? DemoUrl { get; set; }
+    public decimal? Price { get; set; }
+    public decimal? OriginalPrice { get; set; }
+    public bool? IsFree { get; set; }
+    public bool? IsPremium { get; set; }
+    public string? Status { get; set; }
+    public long? CategoryId { get; set; }
+}
+
+public class UpdateToolRequest
+{
+    public string? Name { get; set; }
+    public string? Slug { get; set; }
+    public string? Icon { get; set; }
+    public string? Description { get; set; }
+    public string? DemoUrl { get; set; }
+    public decimal? Price { get; set; }
+    public decimal? OriginalPrice { get; set; }
+    public bool? IsFree { get; set; }
+    public bool? IsPremium { get; set; }
+    public string? Status { get; set; }
+    public long? CategoryId { get; set; }
 }
 
