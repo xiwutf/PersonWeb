@@ -1,18 +1,18 @@
 <template>
   <div>
     <div class="flex items-center gap-4 mb-6">
-      <NuxtLink to="/admin/goals" class="text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200">
+      <NuxtLink to="/admin/goals" class="kpi-page-link">
         ← 返回目标列表
       </NuxtLink>
-      <h1 class="text-2xl font-bold text-gray-800 dark:text-white">月度 KPI 管理</h1>
+      <h1 class="text-2xl font-bold kpi-page-title">月度 KPI 管理</h1>
     </div>
 
     <!-- 目标信息 -->
-    <div v-if="goal" class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
+    <div v-if="goal" class="kpi-goal-card rounded-lg shadow-sm p-6 mb-6">
       <div class="flex items-center justify-between">
         <div>
-          <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-2">{{ goal.title }}</h2>
-          <div class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+          <h2 class="text-xl font-bold kpi-goal-title mb-2">{{ goal.title }}</h2>
+          <div class="flex items-center gap-4 text-sm kpi-goal-meta">
             <span>{{ goal.year }}年</span>
             <span v-if="goal.targetValue">
               目标: {{ goal.targetValue }}{{ goal.unit || '' }}
@@ -21,73 +21,72 @@
               当前: {{ goal.currentValue }}{{ goal.unit || '' }}
             </span>
             <span>
-              进度: <span class="font-semibold text-blue-600 dark:text-blue-400">{{ goal.progress }}%</span>
+              进度: <span class="font-semibold kpi-progress-text">{{ goal.progress }}%</span>
             </span>
           </div>
         </div>
-        <button 
-          @click="showBatchCreateModal = true" 
+        <n-button 
           v-if="!kpis || kpis.length === 0"
-          class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+          type="success"
+          @click="showBatchCreateModal = true"
         >
           批量创建月度 KPI
-        </button>
+        </n-button>
       </div>
     </div>
 
     <!-- KPI 列表 -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-      <div v-if="loading" class="p-8 text-center text-gray-500 dark:text-gray-400">加载中...</div>
-      <div v-else-if="!kpis || kpis.length === 0" class="p-8 text-center text-gray-500 dark:text-gray-400">
+    <div class="kpi-list-container rounded-lg shadow-sm overflow-hidden">
+      <div v-if="loading" class="p-8 text-center kpi-list-loading">加载中...</div>
+      <div v-else-if="!kpis || kpis.length === 0" class="p-8 text-center kpi-list-empty">
         <p class="mb-4">暂无月度 KPI</p>
-        <button 
+        <n-button 
+          type="primary"
           @click="showBatchCreateModal = true"
-          class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
         >
           批量创建月度 KPI
-        </button>
+        </n-button>
       </div>
-      <div v-else class="divide-y divide-gray-200 dark:divide-gray-700">
-        <div v-for="kpi in kpis" :key="kpi.id" class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+      <div v-else>
+        <div v-for="kpi in kpis" :key="kpi.id" class="kpi-list-item p-4">
           <div class="flex items-start justify-between">
             <div class="flex-1">
               <div class="flex items-center gap-3 mb-2">
-                <h3 class="text-lg font-semibold text-gray-800 dark:text-white">{{ kpi.title }}</h3>
-                <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded text-xs font-medium">
+                <h3 class="text-lg font-semibold kpi-item-title">{{ kpi.title }}</h3>
+                <span class="px-2 py-1 kpi-month-badge rounded text-xs font-medium">
                   {{ kpi.year }}年{{ kpi.month }}月
                 </span>
-                <span :class="getStatusClass(kpi.status)" class="px-2 py-1 rounded text-xs font-medium">
+                <span :class="getStatusClass(kpi.status)">
                   {{ getStatusText(kpi.status) }}
                 </span>
               </div>
               
               <!-- KPI 数值 -->
-              <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 mb-2">
+              <div class="flex items-center gap-4 text-sm kpi-item-meta mb-2">
                 <span v-if="kpi.targetValue">
-                  目标: <span class="font-semibold text-gray-800 dark:text-white">{{ kpi.targetValue }}{{ kpi.unit || '' }}</span>
+                  目标: <span class="font-semibold kpi-item-value">{{ kpi.targetValue }}{{ kpi.unit || '' }}</span>
                 </span>
                 <span>
-                  当前: <span class="font-semibold text-gray-800 dark:text-white">{{ kpi.currentValue }}{{ kpi.unit || '' }}</span>
+                  当前: <span class="font-semibold kpi-item-value">{{ kpi.currentValue }}{{ kpi.unit || '' }}</span>
                 </span>
                 <span>
-                  进度: <span class="font-semibold text-gray-800 dark:text-white">{{ kpi.progress }}%</span>
+                  进度: <span class="font-semibold kpi-item-value">{{ kpi.progress }}%</span>
                 </span>
               </div>
 
               <!-- 进度条 -->
-              <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+              <div class="w-full kpi-progress-bg rounded-full h-2">
                 <div 
                   :class="getProgressColor(kpi.progress)"
-                  class="h-2 rounded-full transition-all duration-300"
                   :style="{ width: kpi.progress + '%' }"
                 ></div>
               </div>
 
-              <p v-if="kpi.notes" class="text-xs text-gray-500 dark:text-gray-400 mt-2">{{ kpi.notes }}</p>
+              <p v-if="kpi.notes" class="text-xs kpi-item-meta mt-2">{{ kpi.notes }}</p>
             </div>
             <div class="flex gap-2 ml-4">
-              <button @click="editKpi(kpi)" class="px-3 py-1 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">编辑</button>
-              <button @click="deleteKpi(kpi.id)" class="px-3 py-1 text-sm text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">删除</button>
+              <button @click="editKpi(kpi)" class="kpi-action-btn kpi-action-btn-primary">编辑</button>
+              <button @click="deleteKpi(kpi.id)" class="kpi-action-btn kpi-action-btn-error">删除</button>
             </div>
           </div>
         </div>
@@ -183,6 +182,8 @@
 </template>
 
 <script setup lang="ts">
+import { NButton } from 'naive-ui'
+
 interface Goal {
   id: number
   year: number
@@ -356,9 +357,9 @@ const closeModal = () => {
 
 const getStatusClass = (status: string) => {
   const classes: Record<string, string> = {
-    pending: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300',
-    in_progress: 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300',
-    completed: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300'
+    pending: 'kpi-status-badge kpi-status-pending',
+    in_progress: 'kpi-status-badge kpi-status-in-progress',
+    completed: 'kpi-status-badge kpi-status-completed'
   }
   return classes[status] || classes.pending
 }
@@ -373,10 +374,10 @@ const getStatusText = (status: string) => {
 }
 
 const getProgressColor = (progress: number) => {
-  if (progress === 100) return 'bg-green-500'
-  if (progress >= 50) return 'bg-blue-500'
-  if (progress >= 25) return 'bg-yellow-500'
-  return 'bg-gray-400'
+  if (progress === 100) return 'kpi-progress-bar kpi-progress-complete'
+  if (progress >= 50) return 'kpi-progress-bar kpi-progress-good'
+  if (progress >= 25) return 'kpi-progress-bar kpi-progress-fair'
+  return 'kpi-progress-bar kpi-progress-poor'
 }
 
 onMounted(() => {
@@ -384,4 +385,206 @@ onMounted(() => {
   fetchKpis()
 })
 </script>
+
+<style scoped>
+/* KPI 页面样式 - 使用 CSS 变量 */
+.kpi-page-link {
+  color: var(--color-text-sub, #4b5563);
+  transition: color 0.2s ease;
+}
+
+.kpi-page-link:hover {
+  color: var(--color-text-main, #111827);
+}
+
+.kpi-page-title {
+  color: var(--color-text-main, #111827);
+}
+
+.kpi-goal-card {
+  background: var(--color-bg-card, #ffffff);
+  border: 1px solid var(--color-border-subtle, #e5e7eb);
+  box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+}
+
+.kpi-goal-title {
+  color: var(--color-text-main, #111827);
+}
+
+.kpi-goal-meta {
+  color: var(--color-text-sub, #4b5563);
+}
+
+.kpi-progress-text {
+  color: var(--color-primary, #3b82f6);
+}
+
+.kpi-list-container {
+  background: var(--color-bg-card, #ffffff);
+  border: 1px solid var(--color-border-subtle, #e5e7eb);
+  box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+}
+
+.kpi-list-loading,
+.kpi-list-empty {
+  color: var(--color-text-muted, #6b7280);
+}
+
+.kpi-list-item {
+  transition: background-color 0.2s ease;
+}
+
+.kpi-list-item:hover {
+  background-color: var(--color-bg-elevated, #f9fafb);
+}
+
+.kpi-item-title {
+  color: var(--color-text-main, #111827);
+}
+
+.kpi-month-badge {
+  background: var(--color-primary-soft, rgba(59, 130, 246, 0.1));
+  color: var(--color-primary, #3b82f6);
+}
+
+.kpi-item-meta {
+  color: var(--color-text-muted, #6b7280);
+}
+
+.kpi-item-value {
+  color: var(--color-text-main, #111827);
+}
+
+.kpi-progress-bg {
+  background: var(--color-bg-elevated, #e5e7eb);
+}
+
+.kpi-progress-bar {
+  height: 0.5rem;
+  border-radius: 9999px;
+  transition: all 0.3s ease;
+}
+
+.kpi-progress-complete {
+  background: var(--color-success, #10b981);
+}
+
+.kpi-progress-good {
+  background: var(--color-primary, #3b82f6);
+}
+
+.kpi-progress-fair {
+  background: var(--color-warning, #f59e0b);
+}
+
+.kpi-progress-poor {
+  background: var(--color-text-muted, #9ca3af);
+}
+
+.kpi-status-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.kpi-status-pending {
+  background: var(--color-warning-soft, rgba(249, 115, 22, 0.1));
+  color: var(--color-warning, #f97316);
+}
+
+.kpi-status-in-progress {
+  background: var(--color-primary-soft, rgba(59, 130, 246, 0.1));
+  color: var(--color-primary, #3b82f6);
+}
+
+.kpi-status-completed {
+  background: var(--color-success-soft, rgba(34, 197, 94, 0.1));
+  color: var(--color-success, #22c55e);
+}
+
+.kpi-action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.kpi-action-btn-primary {
+  color: var(--color-primary, #3b82f6);
+}
+
+.kpi-action-btn-primary:hover {
+  color: var(--color-primary-hover, #2563eb);
+}
+
+.kpi-action-btn-error {
+  color: var(--color-error, #ef4444);
+}
+
+.kpi-action-btn-error:hover {
+  color: var(--color-error-hover, #dc2626);
+}
+
+.kpi-btn-primary {
+  background: var(--color-primary, #3b82f6);
+  color: var(--color-text-main, #ffffff);
+  transition: background-color 0.2s ease;
+}
+
+.kpi-btn-primary:hover {
+  background: var(--color-primary-hover, #2563eb);
+}
+
+.kpi-btn-success {
+  background: var(--color-success, #22c55e);
+  color: var(--color-text-main, #ffffff);
+  transition: background-color 0.2s ease;
+}
+
+.kpi-btn-success:hover {
+  background: var(--color-success-hover, #16a34a);
+}
+
+/* 深色主题适配 */
+html[data-theme="dark"] .kpi-page-link,
+html.dark .kpi-page-link {
+  color: var(--color-text-muted, #9ca3af);
+}
+
+html[data-theme="dark"] .kpi-page-link:hover,
+html.dark .kpi-page-link:hover {
+  color: var(--color-text-main, #f9fafb);
+}
+
+html[data-theme="dark"] .kpi-goal-card,
+html.dark .kpi-goal-card {
+  background: var(--color-bg-card, rgba(255, 255, 255, 0.05));
+  border-color: var(--color-border-subtle, rgba(255, 255, 255, 0.1));
+}
+
+html[data-theme="dark"] .kpi-list-container,
+html.dark .kpi-list-container {
+  background: var(--color-bg-card, rgba(255, 255, 255, 0.05));
+  border-color: var(--color-border-subtle, rgba(255, 255, 255, 0.1));
+}
+
+html[data-theme="dark"] .kpi-list-item:hover,
+html.dark .kpi-list-item:hover {
+  background-color: var(--color-bg-elevated, rgba(255, 255, 255, 0.05));
+}
+
+html[data-theme="dark"] .kpi-month-badge,
+html.dark .kpi-month-badge {
+  background: var(--color-primary-soft, rgba(59, 130, 246, 0.2));
+  color: var(--color-primary, #60a5fa);
+}
+
+html[data-theme="dark"] .kpi-progress-bg,
+html.dark .kpi-progress-bg {
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.1));
+}
+</style>
 

@@ -25,8 +25,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         // 设置命令超时时间（秒）
         mySqlOptions.CommandTimeout(60);
     })
-    .EnableSensitiveDataLogging(builder.Environment.IsDevelopment()) // 仅在开发环境启用敏感数据日志
-    .EnableDetailedErrors(builder.Environment.IsDevelopment()));     // 仅在开发环境启用详细错误
+    // 注意：以下配置仅在开发环境启用，生产环境会自动禁用
+    // 开发环境中可能会看到敏感数据日志警告，这是正常的预期行为
+    .EnableSensitiveDataLogging(builder.Environment.IsDevelopment()) // 仅在开发环境启用敏感数据日志（用于调试）
+    .EnableDetailedErrors(builder.Environment.IsDevelopment()));     // 仅在开发环境启用详细错误（用于调试）
 
 // 2. 配置 JWT 认证
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "YourSuperSecretKeyHere_MustBeAtLeast32BytesLong";

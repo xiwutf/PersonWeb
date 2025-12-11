@@ -2,7 +2,7 @@
   <div class="change-password-page">
     <div class="page-header">
       <h1 class="page-title">修改密码</h1>
-      <p class="text-gray-400 text-sm">修改当前管理员账户的登录密码</p>
+      <p class="change-password-subtitle text-sm">修改当前管理员账户的登录密码</p>
     </div>
 
     <div class="card max-w-2xl">
@@ -10,7 +10,7 @@
         <!-- 当前密码 -->
         <div class="form-group">
           <label class="form-label">
-            当前密码 <span class="text-red-500">*</span>
+            当前密码 <span class="change-password-required">*</span>
           </label>
           <div class="relative">
             <input
@@ -24,7 +24,7 @@
             <button
               type="button"
               @click="showOldPassword = !showOldPassword"
-              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              class="absolute right-3 top-1/2 -translate-y-1/2 change-password-toggle-btn"
             >
               <i :class="showOldPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
             </button>
@@ -34,7 +34,7 @@
         <!-- 新密码 -->
         <div class="form-group">
           <label class="form-label">
-            新密码 <span class="text-red-500">*</span>
+            新密码 <span class="change-password-required">*</span>
           </label>
           <div class="relative">
             <input
@@ -49,7 +49,7 @@
             <button
               type="button"
               @click="showNewPassword = !showNewPassword"
-              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              class="absolute right-3 top-1/2 -translate-y-1/2 change-password-toggle-btn"
             >
               <i :class="showNewPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
             </button>
@@ -60,7 +60,7 @@
         <!-- 确认新密码 -->
         <div class="form-group">
           <label class="form-label">
-            确认新密码 <span class="text-red-500">*</span>
+            确认新密码 <span class="change-password-required">*</span>
           </label>
           <div class="relative">
             <input
@@ -75,7 +75,7 @@
             <button
               type="button"
               @click="showConfirmPassword = !showConfirmPassword"
-              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              class="absolute right-3 top-1/2 -translate-y-1/2 change-password-toggle-btn"
             >
               <i :class="showConfirmPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
             </button>
@@ -102,14 +102,14 @@
           <button
             type="button"
             @click="$router.back()"
-            class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors font-bold border-2 border-gray-400 dark:border-gray-500 shadow-sm text-gray-900 dark:text-gray-100"
+            class="px-4 py-2 change-password-cancel-btn rounded transition-colors font-bold border-2 shadow-sm"
           >
             <span class="dark:text-gray-100" style="color: inherit;">取消</span>
           </button>
           <button
             type="submit"
             :disabled="loading || form.newPassword !== form.confirmPassword"
-            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors font-medium shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+            class="px-4 py-2 change-password-submit-btn rounded transition-colors font-medium shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {{ loading ? '修改中...' : '确认修改' }}
           </button>
@@ -288,6 +288,75 @@ const handleChangePassword = async () => {
   background: var(--color-success-soft, rgba(34, 197, 94, 0.1));
   border: 1px solid var(--color-success, rgba(34, 197, 94, 0.3));
   color: var(--color-success-hover, #86efac);
+}
+
+/* 修改密码页面样式 - 使用 CSS 变量 */
+.change-password-subtitle {
+  color: var(--color-text-muted, #9ca3af);
+}
+
+.change-password-required {
+  color: var(--color-error, #ef4444);
+}
+
+.change-password-toggle-btn {
+  color: var(--color-text-muted, #9ca3af);
+  transition: color 0.2s ease;
+}
+
+.change-password-toggle-btn:hover {
+  color: var(--color-text-sub, #6b7280);
+}
+
+.change-password-cancel-btn {
+  background: var(--color-bg-elevated, #e5e7eb);
+  border-color: var(--color-border-default, #9ca3af);
+  color: var(--color-text-main, #111827);
+  transition: all 0.2s ease;
+}
+
+.change-password-cancel-btn:hover {
+  background: var(--color-bg-elevated, #d1d5db);
+  border-color: var(--color-border-default, #6b7280);
+}
+
+.change-password-submit-btn {
+  background: var(--color-primary, #3b82f6);
+  color: var(--color-text-main, #ffffff);
+  transition: background-color 0.2s ease;
+}
+
+.change-password-submit-btn:hover:not(:disabled) {
+  background: var(--color-primary-hover, #2563eb);
+}
+
+/* 深色主题适配 */
+html[data-theme="dark"] .change-password-subtitle,
+html.dark .change-password-subtitle {
+  color: var(--color-text-muted, #9ca3af);
+}
+
+html[data-theme="dark"] .change-password-toggle-btn,
+html.dark .change-password-toggle-btn {
+  color: var(--color-text-muted, #9ca3af);
+}
+
+html[data-theme="dark"] .change-password-toggle-btn:hover,
+html.dark .change-password-toggle-btn:hover {
+  color: var(--color-text-sub, #d1d5db);
+}
+
+html[data-theme="dark"] .change-password-cancel-btn,
+html.dark .change-password-cancel-btn {
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.1));
+  border-color: var(--color-border-default, rgba(255, 255, 255, 0.2));
+  color: var(--color-text-main, #f9fafb);
+}
+
+html[data-theme="dark"] .change-password-cancel-btn:hover,
+html.dark .change-password-cancel-btn:hover {
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.15));
+  border-color: var(--color-border-default, rgba(255, 255, 255, 0.3));
 }
 </style>
 

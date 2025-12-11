@@ -77,7 +77,7 @@ const techChartOption = computed(() => {
       bottom: 10,
       left: 'center',
       textStyle: {
-        color: getCssVar('--color-text-muted') || (isDark.value ? 'rgba(255, 255, 255, 0.7)' : '#6b7280'),
+        color: getCssVar('--color-text-muted') || getCssVar('--color-text-sub') || (isDark.value ? 'rgba(255, 255, 255, 0.7)' : 'rgba(107, 114, 128, 1)'),
         fontSize: 12
       },
       itemGap: 15,
@@ -93,7 +93,7 @@ const techChartOption = computed(() => {
         avoidLabelOverlap: false,
         itemStyle: {
           borderRadius: 4,
-          borderColor: getCssVar('--color-bg-card') || (isDark.value ? 'rgba(15, 23, 42, 1)' : '#fff'),
+          borderColor: getCssVar('--color-bg-card') || (isDark.value ? 'rgba(15, 23, 42, 1)' : 'rgba(255, 255, 255, 1)'),
           borderWidth: 2
         },
         label: {

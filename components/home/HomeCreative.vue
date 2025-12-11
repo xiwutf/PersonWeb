@@ -28,9 +28,9 @@
             <div class="flex gap-4">
               <div class="flex -space-x-4">
                  <!-- 模拟头像组 -->
-                 <div class="w-12 h-12 rounded-full border-2 border-bg-app bg-gray-300"></div>
-                 <div class="w-12 h-12 rounded-full border-2 border-bg-app bg-gray-400"></div>
-                 <div class="w-12 h-12 rounded-full border-2 border-bg-app bg-gray-500 flex items-center justify-center text-xs font-bold text-white">+50</div>
+                 <div class="w-12 h-12 rounded-full border-2 border-bg-app home-creative-avatar home-creative-avatar-1"></div>
+                 <div class="w-12 h-12 rounded-full border-2 border-bg-app home-creative-avatar home-creative-avatar-2"></div>
+                 <div class="w-12 h-12 rounded-full border-2 border-bg-app home-creative-avatar home-creative-avatar-3 flex items-center justify-center text-xs font-bold text-white">+50</div>
               </div>
               <div class="flex flex-col justify-center">
                 <span class="font-bold text-lg">50+</span>
@@ -178,4 +178,44 @@ onMounted(() => {
 
 <style scoped>
 @import url('~/assets/css/home-creative.css');
+
+/* 头像样式 - 使用 CSS 变量 */
+.home-creative-avatar {
+  background: var(--color-bg-elevated, #d1d5db);
+}
+
+.home-creative-avatar-1 {
+  background: var(--color-bg-elevated, #d1d5db);
+}
+
+.home-creative-avatar-2 {
+  background: var(--color-bg-elevated, #9ca3af);
+}
+
+.home-creative-avatar-3 {
+  background: var(--color-bg-elevated, #6b7280);
+  color: var(--color-text-main, #ffffff);
+}
+
+/* 深色主题适配 */
+html[data-theme="dark"] .home-creative-avatar,
+html.dark .home-creative-avatar {
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.1));
+}
+
+html[data-theme="dark"] .home-creative-avatar-1,
+html.dark .home-creative-avatar-1 {
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.15));
+}
+
+html[data-theme="dark"] .home-creative-avatar-2,
+html.dark .home-creative-avatar-2 {
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.2));
+}
+
+html[data-theme="dark"] .home-creative-avatar-3,
+html.dark .home-creative-avatar-3 {
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.25));
+  color: var(--color-text-main, #ffffff);
+}
 </style>

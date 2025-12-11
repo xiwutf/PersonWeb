@@ -84,7 +84,7 @@ const chartOption = computed(() => {
         }
       },
       axisLabel: {
-        color: isDark.value ? '#e5e7eb' : '#6b7280'
+        color: getCssVar('--color-text-muted') || getCssVar('--color-text-sub') || (isDark.value ? 'rgba(229, 231, 235, 1)' : 'rgba(107, 114, 128, 1)')
       }
     },
     yAxis: {
@@ -95,7 +95,7 @@ const chartOption = computed(() => {
         }
       },
       axisLabel: {
-        color: getCssVar('--color-text-muted') || (isDark.value ? '#e5e7eb' : '#6b7280')
+        color: getCssVar('--color-text-muted') || getCssVar('--color-text-sub') || (isDark.value ? 'rgba(229, 231, 235, 1)' : 'rgba(107, 114, 128, 1)')
       },
       splitLine: {
         lineStyle: {
