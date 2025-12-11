@@ -17,7 +17,7 @@
           <div class="event-main">
             <div
               class="event-icon"
-              :style="{ backgroundColor: event.color || '#3b82f6' }"
+              :style="{ backgroundColor: event.color || 'var(--color-primary, #3b82f6)' }"
             >
               {{ event.icon || '⭐' }}
             </div>
@@ -87,7 +87,7 @@
       </n-form>
       <template #footer>
         <div style="display: flex; justify-content: flex-end; gap: 12px">
-          <n-button @click="cancelEdit">取消</n-button>
+          <n-button quaternary @click="cancelEdit">取消</n-button>
           <n-button type="primary" @click="saveEvent">保存</n-button>
         </div>
       </template>
@@ -123,7 +123,7 @@ const form = ref({
   title: '',
   description: '',
   icon: '⭐',
-  color: '#3b82f6'
+  color: 'var(--color-primary, #3b82f6)'
 })
 
 // 模态框显示状态（计算属性）
@@ -178,7 +178,7 @@ const editEvent = (event: TimelineEvent) => {
     title: event.title,
     description: event.description || '',
     icon: event.icon || '⭐',
-    color: event.color || '#3b82f6'
+    color: event.color || 'var(--color-primary, #3b82f6)'
   }
 }
 
@@ -234,7 +234,7 @@ const cancelEdit = () => {
     title: '',
     description: '',
     icon: '⭐',
-    color: '#3b82f6'
+    color: 'var(--color-primary, #3b82f6)'
   }
 }
 

@@ -715,7 +715,7 @@ const logout = () => {
 .admin-sidebar-header {
   color: var(--color-text-main) !important;
   border-color: var(--color-border-subtle) !important;
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.02));
 }
 
 .admin-sidebar-header span {
@@ -850,8 +850,8 @@ const logout = () => {
   position: fixed;
   inset: 0;
   background-image: 
-    radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.02) 0%, transparent 30%),
-    radial-gradient(circle at 80% 70%, rgba(96, 165, 250, 0.015) 0%, transparent 30%);
+    radial-gradient(circle at 20% 30%, var(--color-primary-soft, rgba(59, 130, 246, 0.02)) 0%, transparent 30%),
+    radial-gradient(circle at 80% 70%, var(--color-primary-soft, rgba(96, 165, 250, 0.015)) 0%, transparent 30%);
   pointer-events: none;
   z-index: 0;
   opacity: 0.6;
@@ -902,24 +902,24 @@ const logout = () => {
   }
 }
 
-/* 确保卡片在深色背景下可见 */
+/* 确保卡片在深色背景下可见 - 使用 CSS 变量 */
 .admin-main :deep(.card),
 .admin-main :deep(.page-container),
 .admin-main :deep(.app-card) {
-  background: rgba(255, 255, 255, 0.05) !important;
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.05)) !important;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.1)) !important;
   color: var(--color-text-main, #e2e8f0) !important;
 }
 
 .admin-main :deep(.card-hover) {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.1));
 }
 
 .admin-main :deep(.card-hover:hover) {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.1));
+  border-color: var(--color-border-default, rgba(255, 255, 255, 0.2));
 }
 
 /* 确保主题类正常工作 */
@@ -1015,89 +1015,89 @@ const logout = () => {
 
 .admin-main :deep(.table-row:hover),
 .admin-main :deep(tr:hover) {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.05));
 }
 
-/* 链接样式 */
+/* 链接样式 - 使用 CSS 变量 */
 .admin-main :deep(.btn-link),
 .admin-main :deep(a) {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-main, rgba(255, 255, 255, 0.9));
 }
 
 .admin-main :deep(.btn-link--blue),
 .admin-main :deep(.btn-link:hover) {
-  color: #60a5fa;
+  color: var(--color-primary, #60a5fa);
 }
 
 .admin-main :deep(.btn-link--red) {
-  color: #f87171;
+  color: var(--color-error, #f87171);
 }
 
-/* 标签和徽章 */
+/* 标签和徽章 - 使用 CSS 变量 */
 .admin-main :deep(.badge) {
-  color: #ffffff;
+  color: var(--color-text-main, #ffffff);
 }
 
-/* 模态框样式 */
+/* 模态框样式 - 使用 CSS 变量 */
 .admin-main :deep(.modal-overlay) {
-  background: rgba(0, 0, 0, 0.8);
+  background: var(--color-overlay, rgba(0, 0, 0, 0.8));
 }
 
 .admin-main :deep(.modal-content),
 .admin-main :deep(.modal-content-lg) {
-  background: rgba(30, 41, 59, 0.95);
+  background: var(--color-bg-card, rgba(30, 41, 59, 0.95));
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.1));
 }
 
 .admin-main :deep(.modal-header),
 .admin-main :deep(.modal-title) {
-  color: #ffffff;
+  color: var(--color-text-main, #ffffff);
 }
 
 .admin-main :deep(.modal-body) {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-main, rgba(255, 255, 255, 0.9));
 }
 
-/* 所有文本颜色统一 */
+/* 所有文本颜色统一 - 使用 CSS 变量 */
 .admin-main :deep(.text-gray-600),
 .admin-main :deep(.text-gray-500),
 .admin-main :deep(.text-gray-400) {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: var(--color-text-muted, rgba(255, 255, 255, 0.7)) !important;
 }
 
 .admin-main :deep(.text-gray-700) {
-  color: rgba(255, 255, 255, 0.8) !important;
+  color: var(--color-text-sub, rgba(255, 255, 255, 0.8)) !important;
 }
 
 .admin-main :deep(.text-gray-800),
 .admin-main :deep(.text-gray-900) {
-  color: #ffffff !important;
+  color: var(--color-text-main, #ffffff) !important;
 }
 
-/* 白色背景的卡片改为半透明 */
+/* 白色背景的卡片改为半透明 - 使用 CSS 变量 */
 .admin-main :deep(.bg-white),
 .admin-main :deep(.bg-white\/\*),
 .admin-main :deep([class*="bg-white"]) {
-  background: rgba(255, 255, 255, 0.05) !important;
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.05)) !important;
   backdrop-filter: blur(10px);
 }
 
-/* 深色模式下的背景也统一 */
+/* 深色模式下的背景也统一 - 使用 CSS 变量 */
 .admin-main :deep(.dark\:bg-gray-800),
 .admin-main :deep(.dark\:bg-gray-900) {
-  background: rgba(255, 255, 255, 0.05) !important;
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.05)) !important;
   backdrop-filter: blur(10px);
 }
 
-/* 边框颜色调整 */
+/* 边框颜色调整 - 使用 CSS 变量 */
 .admin-main :deep(.border-gray-200),
 .admin-main :deep(.border-gray-300) {
-  border-color: rgba(255, 255, 255, 0.1) !important;
+  border-color: var(--color-border-subtle, rgba(255, 255, 255, 0.1)) !important;
 }
 
 .admin-main :deep(.border-gray-700) {
-  border-color: rgba(255, 255, 255, 0.2) !important;
+  border-color: var(--color-border-default, rgba(255, 255, 255, 0.2)) !important;
 }
 
 /* 分割线 */

@@ -9,7 +9,7 @@
       暂无数据
     </div>
     <div v-else class="chart-container">
-      <v-chart :option="chartOption" :theme="chartTheme" autoresize />
+      <v-chart :option="chartOption" autoresize />
     </div>
   </n-card>
 </template>
@@ -26,33 +26,7 @@ import {
 } from 'echarts/components'
 import VChart from 'vue-echarts'
 import { useEChartsTheme } from '~/composables/useEChartsTheme'
-import { registerTheme } from 'echarts/core'
 import type { DurationBucketItemDto } from '~/types/api'
-
-// 注册自定义主题
-registerTheme('dark-custom', {
-  backgroundColor: 'transparent',
-  textStyle: { color: '#ffffff' },
-  title: { textStyle: { color: '#ffffff' } },
-  legend: { textStyle: { color: '#e5e7eb' } },
-  tooltip: {
-    backgroundColor: 'rgba(17, 24, 39, 0.98)',
-    borderColor: 'rgba(156, 163, 175, 0.5)',
-    textStyle: { color: '#ffffff' }
-  }
-})
-
-registerTheme('light-custom', {
-  backgroundColor: 'transparent',
-  textStyle: { color: '#374151' },
-  title: { textStyle: { color: '#111827' } },
-  legend: { textStyle: { color: '#6b7280' } },
-  tooltip: {
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    borderColor: 'rgba(209, 213, 219, 0.8)',
-    textStyle: { color: '#111827' }
-  }
-})
 
 use([
   CanvasRenderer,
@@ -68,8 +42,7 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const { isDark } = useEChartsTheme()
-const chartTheme = computed(() => (isDark.value ? 'dark-custom' : 'light-custom'))
+const { isDark, applyTheme, getCssVar, buildNeonBarOptions } = useEChartsTheme()
 
 const chartOption = computed(() => {
   if (!props.data || props.data.length === 0) {
@@ -84,7 +57,7 @@ const chartOption = computed(() => {
     return indexA - indexB
   })
 
-  return {
+  const option = {
     backgroundColor: 'transparent',
     tooltip: {
       trigger: 'axis',
@@ -118,15 +91,15 @@ const chartOption = computed(() => {
       type: 'value',
       axisLine: {
         lineStyle: {
-          color: isDark.value ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'
+          color: getCssVar('--color-border-default') || (isDark.value ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)')
         }
       },
       axisLabel: {
-        color: isDark.value ? '#e5e7eb' : '#6b7280'
+        color: getCssVar('--color-text-muted') || (isDark.value ? '#e5e7eb' : '#6b7280')
       },
       splitLine: {
         lineStyle: {
-          color: isDark.value ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'
+          color: getCssVar('--chart-grid') || (isDark.value ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)')
         }
       }
     },
@@ -135,36 +108,26 @@ const chartOption = computed(() => {
         name: '项目数',
         type: 'bar',
         data: sortedData.map(item => item.count),
-        itemStyle: {
-          color: {
-            type: 'linear',
-            x: 0,
-            y: 0,
-            x2: 0,
-            y2: 1,
-            colorStops: [
-              {
-                offset: 0,
-                color: '#8b5cf6'
-              },
-              {
-                offset: 1,
-                color: '#3b82f6'
-              }
-            ]
-          },
-          borderRadius: [4, 4, 0, 0]
-        },
-        emphasis: {
+        ...buildNeonBarOptions('--chart-quinary', '--chart-primary', {
           itemStyle: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)'
+            borderRadius: [4, 4, 0, 0]
+          },
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: getCssVar('--color-text-main') 
+                ? `${getCssVar('--color-text-main')}40` 
+                : 'rgba(0, 0, 0, 0.5)'
+            }
           }
-        }
+        })
       }
     ]
   }
+  
+  // 应用主题
+  return applyTheme(option)
 })
 </script>
 

@@ -459,46 +459,46 @@ onMounted(() => {
   display: block !important;
 }
 
-/* 独立悬浮导航栏样式 - 参考截图效果：浅灰色背景 */
+/* 独立悬浮导航栏样式 - 使用 CSS 变量 */
 .floating-nav {
-  background: #e2e8f0 !important; /* 浅灰色背景（参考截图） */
+  background: var(--color-bg-elevated, #e2e8f0) !important;
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(148, 163, 184, 0.3) !important;
+  border: 1px solid var(--color-border-default, rgba(148, 163, 184, 0.3)) !important;
   border-radius: 1rem !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+  box-shadow: var(--shadow-md, 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05)) !important;
   width: calc(100% - 2rem) !important;
   max-width: 1280px !important;
   transition: all 0.3s ease !important;
-  color: #0f172a !important; /* 浅色主题下使用深色文字 */
+  color: var(--color-text-main, #0f172a) !important;
   visibility: visible !important;
   opacity: 1 !important;
   display: block !important;
 }
 
-/* 暗色主题下的导航栏 - 深灰色背景 */
+/* 暗色主题下的导航栏 */
 :global(.dark) .floating-nav,
 :global([data-theme="dark"]) .floating-nav,
 :global([data-theme="hybrid-super-dark"]) .floating-nav {
-  background: #1e293b !important; /* 深灰色背景 */
+  background: var(--color-bg-card, #1e293b) !important;
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
-  border-color: rgba(148, 163, 184, 0.3) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.5) !important;
-  color: #ffffff !important; /* 暗色主题下使用白色文字 */
+  border-color: var(--color-border-default, rgba(148, 163, 184, 0.3)) !important;
+  box-shadow: var(--shadow-lg, 0 8px 32px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.5)) !important;
+  color: var(--color-text-main, #ffffff) !important;
   visibility: visible !important;
   opacity: 1 !important;
   display: block !important;
 }
 
-/* 确保暗色主题下导航栏内的所有文字清晰可见 - 使用纯白色 */
+/* 确保暗色主题下导航栏内的所有文字清晰可见 */
 :global(.dark) .floating-nav,
 :global([data-theme="dark"]) .floating-nav,
 :global([data-theme="hybrid-super-dark"]) .floating-nav {
-  color: #ffffff !important;
+  color: var(--color-text-main, #ffffff) !important;
 }
 
-/* 左侧 Logo 文字 - 纯白色，无阴影，确保最高优先级 */
+/* 左侧 Logo 文字 */
 :global(.dark) .floating-nav .text-text-main,
 :global([data-theme="dark"]) .floating-nav .text-text-main,
 :global([data-theme="hybrid-super-dark"]) .floating-nav .text-text-main,
@@ -508,132 +508,57 @@ onMounted(() => {
 :global(.dark) .floating-nav .flex.items-center span,
 :global([data-theme="dark"]) .floating-nav .flex.items-center span,
 :global([data-theme="hybrid-super-dark"]) .floating-nav .flex.items-center span {
-  color: #ffffff !important;
+  color: var(--color-text-main, #ffffff) !important;
   font-weight: 800 !important;
   opacity: 1 !important;
 }
 
-/* 导航链接文字 - 使用清晰可见的颜色 */
-/* 浅色主题下使用深灰色 */
+/* 导航链接文字 - 使用 CSS 变量 */
 .floating-nav .text-text-muted {
-  color: #64748b !important;
-}
-
-/* 暗色主题下使用浅灰色 */
-:global(.dark) .floating-nav .text-text-muted,
-:global([data-theme="dark"]) .floating-nav .text-text-muted,
-:global([data-theme="hybrid-super-dark"]) .floating-nav .text-text-muted {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: var(--color-text-muted, #64748b) !important;
 }
 
 /* 导航链接悬停状态 */
-/* 浅色主题下悬停使用深色 */
 .floating-nav a:hover {
-  color: #0f172a !important;
+  color: var(--color-text-main, #0f172a) !important;
 }
 
-/* 暗色主题下悬停使用白色 */
-:global(.dark) .floating-nav a:hover,
-:global([data-theme="dark"]) .floating-nav a:hover,
-:global([data-theme="hybrid-super-dark"]) .floating-nav a:hover {
-  color: #ffffff !important;
-}
-
-/* 搜索图标和主题切换图标 - 使用清晰可见的颜色 */
-/* 浅色主题下使用深色 */
+/* 搜索图标和主题切换图标 */
 .floating-nav svg {
-  color: #0f172a !important;
+  color: var(--color-text-main, #0f172a) !important;
 }
 
-/* 暗色主题下使用白色 */
-:global(.dark) .floating-nav svg,
-:global([data-theme="dark"]) .floating-nav svg,
-:global([data-theme="hybrid-super-dark"]) .floating-nav svg {
-  color: #ffffff !important;
-}
-
-/* 更多菜单按钮文字 - 使用清晰可见的颜色 */
-/* 浅色主题下使用深色 */
+/* 更多菜单按钮文字 */
 .floating-nav button {
-  color: #0f172a !important;
+  color: var(--color-text-main, #0f172a) !important;
 }
 
-/* 暗色主题下使用白色 */
-:global(.dark) .floating-nav button,
-:global([data-theme="dark"]) .floating-nav button,
-:global([data-theme="hybrid-super-dark"]) .floating-nav button {
-  color: #ffffff !important;
-}
-
-/* 移动端菜单按钮图标 - 使用清晰可见的颜色 */
-/* 浅色主题下使用深色 */
+/* 移动端菜单按钮图标 */
 .floating-nav .md\:hidden svg {
-  color: #0f172a !important;
+  color: var(--color-text-main, #0f172a) !important;
 }
 
-/* 暗色主题下使用白色 */
-:global(.dark) .floating-nav .md\:hidden svg,
-:global([data-theme="dark"]) .floating-nav .md\:hidden svg,
-:global([data-theme="hybrid-super-dark"]) .floating-nav .md\:hidden svg {
-  color: #ffffff !important;
-}
-
-/* 非激活状态的导航链接：浅灰色背景，浅灰色文字（参考截图效果） */
+/* 非激活状态的导航链接 - 使用 CSS 变量 */
 .floating-nav nav a:not(.header-nav-link-active) {
-  background-color: rgba(148, 163, 184, 0.2) !important; /* 浅灰色背景 */
-  color: #94a3b8 !important; /* 浅灰色文字 */
+  background-color: var(--color-bg-elevated, rgba(148, 163, 184, 0.2)) !important;
+  color: var(--color-text-muted, #94a3b8) !important;
 }
 
-/* 暗色主题下非激活状态 */
-:global(.dark) .floating-nav nav a:not(.header-nav-link-active),
-:global([data-theme="dark"]) .floating-nav nav a:not(.header-nav-link-active),
-:global([data-theme="hybrid-super-dark"]) .floating-nav nav a:not(.header-nav-link-active) {
-  background-color: rgba(148, 163, 184, 0.15) !important; /* 浅灰色背景 */
-  color: rgba(255, 255, 255, 0.6) !important; /* 浅灰色文字 */
-}
-
-/* 激活状态的导航链接：深蓝色背景，蓝色文字（参考截图效果） */
+/* 激活状态的导航链接 - 使用主色调 */
 .floating-nav nav a.header-nav-link-active {
-  background-color: #1e40af !important; /* 深蓝色背景 */
-  color: #3b82f6 !important; /* 蓝色文字 */
+  background-color: var(--color-primary-hover, #1e40af) !important;
+  color: var(--color-primary, #3b82f6) !important;
 }
 
-/* 暗色主题下激活状态 */
-:global(.dark) .floating-nav nav a.header-nav-link-active,
-:global([data-theme="dark"]) .floating-nav nav a.header-nav-link-active,
-:global([data-theme="hybrid-super-dark"]) .floating-nav nav a.header-nav-link-active {
-  background-color: #1e40af !important; /* 深蓝色背景 */
-  color: #60a5fa !important; /* 浅蓝色文字 */
-}
-
-/* 强制所有 span 文字使用清晰可见的颜色 */
-/* 浅色主题下使用深色 */
+/* 强制所有 span 文字使用 CSS 变量 */
 .floating-nav span {
-  color: #0f172a !important;
+  color: var(--color-text-main, #0f172a) !important;
   opacity: 1 !important;
 }
 
-/* 暗色主题下使用白色 */
-:global(.dark) .floating-nav span,
-:global([data-theme="dark"]) .floating-nav span,
-:global([data-theme="hybrid-super-dark"]) .floating-nav span {
-  color: #ffffff !important;
-  opacity: 1 !important;
-}
-
-/* 特别确保 Logo 区域的 span 文字清晰可见 */
-:global(.dark) .floating-nav a.flex.items-center span,
-:global([data-theme="dark"]) .floating-nav a.flex.items-center span,
-:global([data-theme="hybrid-super-dark"]) .floating-nav a.flex.items-center span {
-  color: var(--color-text-main) !important;
-  font-weight: 700 !important;
-  opacity: 1 !important;
-  text-shadow: none !important;
-}
-
-/* 直接针对 Logo 文字 - 参考截图效果：白色文字 */
+/* Logo 文字 - 使用 CSS 变量 */
 .floating-nav .logo-text {
-  color: #ffffff !important; /* 白色文字（参考截图） */
+  color: var(--color-text-main, #ffffff) !important;
   font-weight: 700 !important;
   opacity: 1 !important;
   text-shadow: none !important;
@@ -641,38 +566,9 @@ onMounted(() => {
   -moz-osx-font-smoothing: grayscale !important;
 }
 
-/* 暗色主题下也使用白色 */
-:global(.dark) .floating-nav .logo-text,
-:global([data-theme="dark"]) .floating-nav .logo-text,
-:global([data-theme="hybrid-super-dark"]) .floating-nav .logo-text {
-  color: #ffffff !important;
-  font-weight: 700 !important;
-  opacity: 1 !important;
-  text-shadow: none !important;
-  -webkit-font-smoothing: antialiased !important;
-  -moz-osx-font-smoothing: grayscale !important;
-}
-
-/* 确保在暗色主题下 Logo 文字始终可见 */
-:global(.dark) .logo-text,
-:global([data-theme="dark"]) .logo-text,
-:global([data-theme="hybrid-super-dark"]) .logo-text {
-  color: #ffffff !important;
-  font-weight: 700 !important;
-  opacity: 1 !important;
-}
-
-/* 确保图标 emoji 也清晰可见（通过父元素文字颜色） */
-/* 浅色主题下使用深色 */
+/* 确保图标 emoji 也清晰可见 */
 .floating-nav .mr-1\.5 {
-  color: #0f172a !important;
-}
-
-/* 暗色主题下使用白色 */
-:global(.dark) .floating-nav .mr-1\.5,
-:global([data-theme="dark"]) .floating-nav .mr-1\.5,
-:global([data-theme="hybrid-super-dark"]) .floating-nav .mr-1\.5 {
-  color: #ffffff !important;
+  color: var(--color-text-main, #0f172a) !important;
 }
 
 /* 响应式：小屏幕时全宽 */

@@ -23,13 +23,13 @@
             <h1 class="text-4xl font-bold mb-2" style="color: var(--text-main);">{{ doc.title }}</h1>
             <p class="text-lg" style="color: var(--text-secondary);">{{ doc.description }}</p>
             <div class="flex gap-3 mt-4">
-              <span class="px-2 py-1 rounded text-xs font-mono" style="background-color: var(--primary-soft-bg); border: 1px solid rgba(37, 99, 235, 0.2); color: var(--primary);">
+              <span class="px-2 py-1 rounded text-xs font-mono doc-badge" style="background-color: var(--primary-soft-bg); border: 1px solid var(--color-primary-soft, rgba(37, 99, 235, 0.2)); color: var(--primary);">
                 STATUS: {{ doc.status }}
               </span>
-              <span v-if="doc.role" class="px-2 py-1 rounded text-xs font-mono" style="background-color: var(--primary-soft-bg); border: 1px solid rgba(37, 99, 235, 0.2); color: var(--primary);">
+              <span v-if="doc.role" class="px-2 py-1 rounded text-xs font-mono doc-badge" style="background-color: var(--primary-soft-bg); border: 1px solid var(--color-primary-soft, rgba(37, 99, 235, 0.2)); color: var(--primary);">
                 ROLE: {{ doc.role }}
               </span>
-              <span v-if="doc.duration" class="px-2 py-1 rounded text-xs font-mono" style="background-color: var(--primary-soft-bg); border: 1px solid rgba(37, 99, 235, 0.2); color: var(--primary);">
+              <span v-if="doc.duration" class="px-2 py-1 rounded text-xs font-mono doc-badge" style="background-color: var(--primary-soft-bg); border: 1px solid var(--color-primary-soft, rgba(37, 99, 235, 0.2)); color: var(--primary);">
                 TIME: {{ doc.duration }}
               </span>
             </div>
@@ -67,7 +67,7 @@
                 <div class="p-4" style="border-top: 1px solid var(--border-color); background-color: var(--bg-card);">
                   <div class="flex gap-2">
                     <input type="text" placeholder="输入消息..." class="flex-1 rounded-lg px-3 py-2 text-sm focus:outline-none transition-colors" style="background-color: var(--bg-elevated); border: 1px solid var(--border-color); color: var(--text-main);" disabled>
-                    <button class="px-3 py-2 rounded-lg transition-colors disabled:opacity-50" style="background-color: var(--primary); color: #fff;" disabled>
+                    <button class="px-3 py-2 rounded-lg transition-colors disabled:opacity-50 text-white" style="background-color: var(--primary);" disabled>
                       <i class="fas fa-paper-plane"></i>
                     </button>
                   </div>
@@ -95,7 +95,7 @@
                     <i class="far fa-circle mr-2"></i> [WAITING] Awaiting user input
                   </div>
                 </div>
-                <button class="w-full mt-6 py-2 rounded-lg text-sm font-medium transition-colors" style="background-color: var(--primary); color: #fff;">
+                <button class="w-full mt-6 py-2 rounded-lg text-sm font-medium transition-colors text-white" style="background-color: var(--primary);">
                   运行演示
                 </button>
               </div>

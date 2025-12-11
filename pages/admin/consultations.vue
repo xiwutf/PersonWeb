@@ -561,8 +561,7 @@ useHead({
 .page-title {
   font-size: 24px;
   font-weight: 600;
-  color: #f3f4f6;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  color: var(--color-text-main);
 }
 
 .filters-bar {
@@ -573,7 +572,7 @@ useHead({
 }
 
 .table-container {
-  background: white;
+  background: var(--color-bg-card);
   border-radius: 8px;
   overflow: hidden;
 }
@@ -582,7 +581,7 @@ useHead({
 .table-empty {
   padding: 40px;
   text-align: center;
-  color: #64748b;
+  color: var(--color-text-muted);
 }
 
 .data-table {
@@ -591,25 +590,25 @@ useHead({
 }
 
 .table-header {
-  background: #f8fafc;
+  background: var(--color-bg-elevated);
 }
 
 .table-header th {
   padding: 12px;
   text-align: left;
   font-weight: 600;
-  color: #475569;
-  border-bottom: 1px solid #e2e8f0;
+  color: var(--color-text-main);
+  border-bottom: 1px solid var(--color-border-default);
 }
 
 .table-body .table-row:hover {
-  background: #f8fafc;
+  background: var(--color-bg-elevated);
 }
 
 .table-cell {
   padding: 12px;
-  border-bottom: 1px solid #e2e8f0;
-  color: #334155;
+  border-bottom: 1px solid var(--color-border-default);
+  color: var(--color-text-main);
 }
 
 .action-buttons {
@@ -627,31 +626,31 @@ useHead({
 }
 
 .btn-link-blue {
-  color: #3b82f6;
+  color: var(--color-primary);
 }
 
 .btn-link-blue:hover {
-  background: #eff6ff;
+  background: var(--color-primary-soft);
 }
 
 .btn-link-green {
-  color: #10b981;
+  color: var(--color-success);
 }
 
 .btn-link-purple {
-  color: #a78bfa;
+  color: var(--chart-quinary);
 }
 
 .btn-link-purple:hover {
-  background: #f3f4f6;
+  background: var(--color-bg-elevated);
 }
 
 .btn-link-orange {
-  color: #f97316;
+  color: var(--chart-tertiary);
 }
 
 .btn-link-orange:hover {
-  background: #f3f4f6;
+  background: var(--color-bg-elevated);
 }
 
 .quotation-content {
@@ -723,18 +722,21 @@ useHead({
 }
 
 .score-high {
-  background: #dcfce7;
-  color: #16a34a;
+  background: var(--color-success);
+  opacity: 0.1;
+  color: var(--color-success);
 }
 
 .score-medium {
-  background: #fef3c7;
-  color: #d97706;
+  background: var(--chart-tertiary);
+  opacity: 0.1;
+  color: var(--chart-tertiary);
 }
 
 .score-low {
-  background: #fee2e2;
-  color: #dc2626;
+  background: var(--color-error);
+  opacity: 0.1;
+  color: var(--color-error);
 }
 
 /* 标签容器 */
@@ -747,19 +749,20 @@ useHead({
 .tag-small {
   display: inline-block;
   padding: 2px 8px;
-  background: #e0e7ff;
-  color: #4338ca;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
   border-radius: 12px;
   font-size: 11px;
   font-weight: 500;
 }
 
 .text-muted {
-  color: #94a3b8;
+  color: var(--color-text-muted);
 }
 
 .btn-link-green:hover {
-  background: #ecfdf5;
+  background: var(--color-success);
+  opacity: 0.1;
 }
 
 .tag {
@@ -770,23 +773,25 @@ useHead({
 }
 
 .tag-warning {
-  background: #fef3c7;
-  color: #92400e;
+  background: var(--chart-tertiary);
+  opacity: 0.1;
+  color: var(--chart-tertiary);
 }
 
 .tag-info {
-  background: #dbeafe;
-  color: #1e40af;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
 }
 
 .tag-success {
-  background: #d1fae5;
-  color: #065f46;
+  background: var(--color-success);
+  opacity: 0.1;
+  color: var(--color-success);
 }
 
 .tag-default {
-  background: #f1f5f9;
-  color: #475569;
+  background: var(--color-bg-elevated);
+  color: var(--color-text-main);
 }
 
 .table-pagination {
@@ -794,7 +799,7 @@ useHead({
   justify-content: space-between;
   align-items: center;
   padding: 16px;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--color-border-default);
 }
 
 .pagination-controls {
@@ -805,7 +810,7 @@ useHead({
 
 .pagination-select {
   padding: 4px 8px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--color-border-default, #d1d5db);
   border-radius: 4px;
 }
 
@@ -817,14 +822,14 @@ useHead({
 
 .pagination-btn {
   padding: 4px 12px;
-  border: 1px solid #d1d5db;
-  background: white;
+  border: 1px solid var(--color-border-default, #d1d5db);
+  background: var(--color-bg-card, white);
   border-radius: 4px;
   cursor: pointer;
 }
 
 .pagination-btn:hover:not(:disabled) {
-  background: #f8fafc;
+  background: var(--color-bg-elevated);
 }
 
 .pagination-btn:disabled {

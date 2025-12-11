@@ -12,7 +12,7 @@
       暂无数据
     </div>
     <div v-else class="chart-container">
-      <v-chart :option="chartOption" :theme="chartTheme" autoresize />
+      <v-chart :option="chartOption" autoresize />
     </div>
   </n-card>
 </template>
@@ -30,33 +30,7 @@ import {
 } from 'echarts/components'
 import VChart from 'vue-echarts'
 import { useEChartsTheme } from '~/composables/useEChartsTheme'
-import { registerTheme } from 'echarts/core'
 import type { IncomeTrendPointDto } from '~/types/api'
-
-// 注册自定义主题
-registerTheme('dark-custom', {
-  backgroundColor: 'transparent',
-  textStyle: { color: '#ffffff' },
-  title: { textStyle: { color: '#ffffff' } },
-  legend: { textStyle: { color: '#e5e7eb' } },
-  tooltip: {
-    backgroundColor: 'rgba(17, 24, 39, 0.98)',
-    borderColor: 'rgba(156, 163, 175, 0.5)',
-    textStyle: { color: '#ffffff' }
-  }
-})
-
-registerTheme('light-custom', {
-  backgroundColor: 'transparent',
-  textStyle: { color: '#374151' },
-  title: { textStyle: { color: '#111827' } },
-  legend: { textStyle: { color: '#6b7280' } },
-  tooltip: {
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    borderColor: 'rgba(209, 213, 219, 0.8)',
-    textStyle: { color: '#111827' }
-  }
-})
 
 use([
   CanvasRenderer,
@@ -77,7 +51,6 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const { isDark, applyTheme, buildNeonLineOptions } = useEChartsTheme()
-const chartTheme = computed(() => (isDark.value ? 'dark-custom' : 'light-custom'))
 
 const chartOption = computed(() => {
   if (!props.data || props.data.length === 0) {
@@ -86,7 +59,7 @@ const chartOption = computed(() => {
 
   // 使用霓虹主题构建折线图
   const baseOption = {
-    backgroundColor: 'rgba(15,23,42,0.35)', // 玻璃背景，让曲线"浮起来"
+    backgroundColor: 'transparent',
     tooltip: {
       trigger: 'axis',
       axisPointer: {
@@ -121,7 +94,7 @@ const chartOption = computed(() => {
       }
     },
     series: [
-      buildNeonLineOptions('--color-primary', {
+      buildNeonLineOptions('--chart-primary', {
         name: '收入',
         data: props.data.map(item => item.income),
         emphasis: {

@@ -491,7 +491,7 @@
   font-size: 0.75rem;
   /* 浅色主题优化（2025-01）：标签使用主色柔和背景，提高可读性 */
   background: var(--primary-soft-bg);
-  border: 1px solid rgba(37, 99, 235, 0.2);
+  border: 1px solid var(--color-primary-soft, rgba(37, 99, 235, 0.2));
   color: var(--primary);
 }
 
@@ -785,7 +785,7 @@ html[data-theme="dark"] .platform-entry-card-tag {
   font-size: 0.75rem;
   /* 浅色主题优化（2025-01）：标签使用主色柔和背景，提高可读性 */
   background: var(--primary-soft-bg);
-  border: 1px solid rgba(37, 99, 235, 0.2);
+  border: 1px solid var(--color-primary-soft, rgba(37, 99, 235, 0.2));
   color: var(--primary);
 }
 
@@ -825,7 +825,7 @@ html[data-theme="dark"] .bento-card-item-tag {
   font-size: 0.75rem;
   /* 浅色主题优化（2025-01）：标签使用主色柔和背景，提高可读性 */
   background: var(--primary-soft-bg);
-  border: 1px solid rgba(37, 99, 235, 0.2);
+  border: 1px solid var(--color-primary-soft, rgba(37, 99, 235, 0.2));
   color: var(--primary);
 }
 
@@ -990,7 +990,7 @@ html[data-theme="dark"] .bento-card-item-tag {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: #ffffff;
+  color: var(--color-text-main, #ffffff);
   font-size: 1.25rem;
   box-shadow: 0 4px 12px rgba(var(--primary-rgb, 0, 0, 0), 0.2);
 }
@@ -1105,7 +1105,7 @@ html[data-theme="dark"] .bento-card-item-tag {
 .time-capsule-bg-gradient {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom right, #0f172a, rgba(147, 51, 234, 0.2), #0f172a);
+  background: linear-gradient(to bottom right, var(--color-bg-body, #0f172a), var(--color-purple-soft, rgba(147, 51, 234, 0.2)), var(--color-bg-body, #0f172a));
 }
 
 .time-capsule-glow-blue {
@@ -1114,7 +1114,7 @@ html[data-theme="dark"] .bento-card-item-tag {
   left: -2.5rem;
   width: 15rem;
   height: 15rem;
-  background: rgba(59, 130, 246, 0.2);
+  background: var(--color-primary-soft, rgba(59, 130, 246, 0.2));
   border-radius: 9999px;
   filter: blur(48px);
 }
@@ -1125,7 +1125,7 @@ html[data-theme="dark"] .bento-card-item-tag {
   right: 0;
   width: 18rem;
   height: 18rem;
-  background: rgba(168, 85, 247, 0.2);
+  background: var(--color-purple-soft, rgba(168, 85, 247, 0.2));
   border-radius: 9999px;
   filter: blur(48px);
 }
@@ -1430,34 +1430,34 @@ html[data-theme="dark"] .bento-card-item-tag {
   transform: scale(1.05);
 }
 
-/* 时间胶囊样式 */
+/* 时间胶囊样式 - 使用 CSS 变量 */
 .showcase-wall-item-inner--capsule {
-  background: rgba(59, 130, 246, 0.1);
-  border-color: rgba(59, 130, 246, 0.3);
+  background: var(--color-primary-soft, rgba(59, 130, 246, 0.1));
+  border-color: var(--color-primary, rgba(59, 130, 246, 0.3));
 }
 
 .showcase-wall-item:hover .showcase-wall-item-inner--capsule {
-  background: rgba(59, 130, 246, 0.15);
-  border-color: rgba(59, 130, 246, 0.5);
+  background: var(--color-primary-soft, rgba(59, 130, 246, 0.15));
+  border-color: var(--color-primary, rgba(59, 130, 246, 0.5));
 }
 
 .showcase-wall-item-icon--capsule {
-  color: #3b82f6;
+  color: var(--color-primary, #3b82f6);
 }
 
-/* 留言样式 */
+/* 留言样式 - 使用 CSS 变量 */
 .showcase-wall-item-inner--message {
-  background: rgba(16, 185, 129, 0.1);
-  border-color: rgba(16, 185, 129, 0.3);
+  background: var(--color-success-soft, rgba(16, 185, 129, 0.1));
+  border-color: var(--color-success, rgba(16, 185, 129, 0.3));
 }
 
 .showcase-wall-item:hover .showcase-wall-item-inner--message {
-  background: rgba(16, 185, 129, 0.15);
-  border-color: rgba(16, 185, 129, 0.5);
+  background: var(--color-success-soft, rgba(16, 185, 129, 0.15));
+  border-color: var(--color-success, rgba(16, 185, 129, 0.5));
 }
 
 .showcase-wall-item-icon--message {
-  color: #10b981;
+  color: var(--color-success, #10b981);
 }
 
 .showcase-wall-item-icon {
@@ -1489,13 +1489,13 @@ html[data-theme="dark"] .bento-card-item-tag {
 }
 
 .showcase-wall-item-label--capsule {
-  background: rgba(59, 130, 246, 0.2);
-  color: #3b82f6;
+  background: var(--color-primary-soft, rgba(59, 130, 246, 0.2));
+  color: var(--color-primary, #3b82f6);
 }
 
 .showcase-wall-item-label--message {
-  background: rgba(16, 185, 129, 0.2);
-  color: #10b981;
+  background: var(--color-success-soft, rgba(16, 185, 129, 0.2));
+  color: var(--color-success, #10b981);
 }
 
 .showcase-wall-item-text {
@@ -1613,7 +1613,7 @@ html[data-theme="dark"] .bento-card-item-tag {
   top: 0;
   bottom: 0;
   width: 2px;
-  background: linear-gradient(to bottom, #06b6d4, #3b82f6, #a855f7);
+  background: linear-gradient(to bottom, var(--color-info, #06b6d4), var(--color-primary, #3b82f6), var(--color-purple, #a855f7));
 }
 
 .timeline-items {
@@ -1642,7 +1642,7 @@ html[data-theme="dark"] .bento-card-item-tag {
   box-shadow: var(--shadow-lg);
   transform: scale(1);
   transition: all 0.3s ease;
-  border: 4px solid #000;
+  border: 4px solid var(--color-bg-body, #000);
 }
 
 .timeline-dot:hover {
@@ -1662,7 +1662,7 @@ html[data-theme="dark"] .bento-card-item-tag {
   border-color: var(--color-border-default);
   transform: translateX(8px);
   /* 浅色主题优化（2025-01）：使用主题变量，避免硬编码荧光色 */
-  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+  box-shadow: 0 8px 24px var(--color-primary-soft, rgba(37, 99, 235, 0.15));
 }
 
 /* ========================================
@@ -1884,27 +1884,27 @@ html[data-theme="dark"] .bento-card-item-tag {
 }
 
 .bento-grid-v3-card-icon-cyan {
-  background: rgba(6, 182, 212, 0.15);
-  color: #06b6d4;
-  border: 1px solid rgba(6, 182, 212, 0.3);
+  background: var(--color-info-soft, rgba(6, 182, 212, 0.15));
+  color: var(--color-info, #06b6d4);
+  border: 1px solid var(--color-info, rgba(6, 182, 212, 0.3));
 }
 
 .bento-grid-v3-card-icon-purple {
-  background: rgba(168, 85, 247, 0.15);
-  color: #a855f7;
-  border: 1px solid rgba(168, 85, 247, 0.3);
+  background: var(--color-purple-soft, rgba(168, 85, 247, 0.15));
+  color: var(--color-purple, #a855f7);
+  border: 1px solid var(--color-purple, rgba(168, 85, 247, 0.3));
 }
 
 .bento-grid-v3-card-icon-pink {
-  background: rgba(236, 72, 153, 0.15);
-  color: #ec4899;
-  border: 1px solid rgba(236, 72, 153, 0.3);
+  background: var(--color-error-soft, rgba(236, 72, 153, 0.15));
+  color: var(--color-error, #ec4899);
+  border: 1px solid var(--color-error, rgba(236, 72, 153, 0.3));
 }
 
 .bento-grid-v3-card-icon-orange {
-  background: rgba(249, 115, 22, 0.15);
-  color: #f97316;
-  border: 1px solid rgba(249, 115, 22, 0.3);
+  background: var(--color-warning-soft, rgba(249, 115, 22, 0.15));
+  color: var(--color-warning, #f97316);
+  border: 1px solid var(--color-warning, rgba(249, 115, 22, 0.3));
 }
 
 /* 徽章 */
@@ -1922,33 +1922,33 @@ html[data-theme="dark"] .bento-card-item-tag {
 }
 
 .bento-grid-v3-card-badge-blue {
-  background: rgba(59, 130, 246, 0.2);
-  color: #93c5fd;
-  border: 1px solid rgba(59, 130, 246, 0.4);
+  background: var(--color-primary-soft, rgba(59, 130, 246, 0.2));
+  color: var(--color-primary-hover, #93c5fd);
+  border: 1px solid var(--color-primary, rgba(59, 130, 246, 0.4));
 }
 
 .bento-grid-v3-card-badge-cyan {
-  background: rgba(6, 182, 212, 0.2);
-  color: #67e8f9;
-  border: 1px solid rgba(6, 182, 212, 0.4);
+  background: var(--color-info-soft, rgba(6, 182, 212, 0.2));
+  color: var(--color-info-hover, #67e8f9);
+  border: 1px solid var(--color-info, rgba(6, 182, 212, 0.4));
 }
 
 .bento-grid-v3-card-badge-purple {
-  background: rgba(168, 85, 247, 0.2);
-  color: #c084fc;
-  border: 1px solid rgba(168, 85, 247, 0.4);
+  background: var(--color-purple-soft, rgba(168, 85, 247, 0.2));
+  color: var(--color-purple-hover, #c084fc);
+  border: 1px solid var(--color-purple, rgba(168, 85, 247, 0.4));
 }
 
 .bento-grid-v3-card-badge-pink {
-  background: rgba(236, 72, 153, 0.2);
-  color: #f9a8d4;
-  border: 1px solid rgba(236, 72, 153, 0.4);
+  background: var(--color-error-soft, rgba(236, 72, 153, 0.2));
+  color: var(--color-error-hover, #f9a8d4);
+  border: 1px solid var(--color-error, rgba(236, 72, 153, 0.4));
 }
 
 .bento-grid-v3-card-badge-orange {
-  background: rgba(249, 115, 22, 0.2);
-  color: #fb923c;
-  border: 1px solid rgba(249, 115, 22, 0.4);
+  background: var(--color-warning-soft, rgba(249, 115, 22, 0.2));
+  color: var(--color-warning-hover, #fb923c);
+  border: 1px solid var(--color-warning, rgba(249, 115, 22, 0.4));
 }
 
 /* 标题和描述 */
@@ -1993,19 +1993,19 @@ html[data-theme="dark"] .bento-card-item-tag {
 }
 
 .bento-grid-v3-card-link-cyan {
-  color: #06b6d4;
+  color: var(--color-info, #06b6d4);
 }
 
 .bento-grid-v3-card-link-purple {
-  color: #a855f7;
+  color: var(--color-purple, #a855f7);
 }
 
 .bento-grid-v3-card-link-pink {
-  color: #ec4899;
+  color: var(--color-error, #ec4899);
 }
 
 .bento-grid-v3-card-link-orange {
-  color: #f97316;
+  color: var(--color-warning, #f97316);
 }
 
 /* 博客文章列表 */
@@ -2082,7 +2082,7 @@ html[data-theme="dark"] .bento-card-item-tag {
 .bento-grid-v3-post-item:hover .bento-grid-v3-post-arrow {
   background: var(--primary);
   border-color: var(--primary);
-  color: #ffffff;
+  color: var(--color-text-main, #ffffff);
   transform: rotate(-45deg);
 }
 
@@ -2121,7 +2121,7 @@ html[data-theme="dark"] .bento-grid-v3-card-title,
 html.dark .bento-grid-v3-card-title,
 html[data-theme="dark"] .bento-grid-v3-card .bento-grid-v3-card-title,
 html.dark .bento-grid-v3-card .bento-grid-v3-card-title {
-  color: #0F172A !important;
+  color: var(--color-text-main, #0F172A) !important;
 }
 
 html[data-theme="dark"] .bento-grid-v3-title {
@@ -2129,7 +2129,7 @@ html[data-theme="dark"] .bento-grid-v3-title {
 }
 
 html[data-theme="dark"] .bento-grid-v3-title-main {
-  background: linear-gradient(135deg, #0f172a 0%, #3b82f6 100%) !important;
+  background: linear-gradient(135deg, var(--color-bg-body, #0f172a) 0%, var(--color-primary, #3b82f6) 100%) !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
@@ -2140,7 +2140,7 @@ html[data-theme="dark"] .bento-grid-v3-card-description,
 html.dark .bento-grid-v3-card-description,
 html[data-theme="dark"] .bento-grid-v3-card .bento-grid-v3-card-description,
 html.dark .bento-grid-v3-card .bento-grid-v3-card-description {
-  color: #475569 !important;
+  color: var(--color-text-sub, #475569) !important;
 }
 
 html[data-theme="dark"] .bento-grid-v3-subtitle {
@@ -2153,27 +2153,27 @@ html[data-theme="dark"] .bento-grid-v3-card-badge {
 }
 
 html[data-theme="dark"] .bento-grid-v3-card-badge-blue {
-  background: rgba(59, 130, 246, 0.1) !important;
-  color: #2563eb !important;
-  border-color: rgba(59, 130, 246, 0.3) !important;
+  background: var(--color-primary-soft, rgba(59, 130, 246, 0.1)) !important;
+  color: var(--color-primary-hover, #2563eb) !important;
+  border-color: var(--color-primary, rgba(59, 130, 246, 0.3)) !important;
 }
 
 html[data-theme="dark"] .bento-grid-v3-card-badge-cyan {
-  background: rgba(6, 182, 212, 0.1) !important;
-  color: #0891b2 !important;
-  border-color: rgba(6, 182, 212, 0.3) !important;
+  background: var(--color-info-soft, rgba(6, 182, 212, 0.1)) !important;
+  color: var(--color-info-hover, #0891b2) !important;
+  border-color: var(--color-info, rgba(6, 182, 212, 0.3)) !important;
 }
 
 html[data-theme="dark"] .bento-grid-v3-card-badge-purple {
-  background: rgba(168, 85, 247, 0.1) !important;
-  color: #9333ea !important;
-  border-color: rgba(168, 85, 247, 0.3) !important;
+  background: var(--color-purple-soft, rgba(168, 85, 247, 0.1)) !important;
+  color: var(--color-purple-hover, #9333ea) !important;
+  border-color: var(--color-purple, rgba(168, 85, 247, 0.3)) !important;
 }
 
 html[data-theme="dark"] .bento-grid-v3-card-badge-pink {
-  background: rgba(236, 72, 153, 0.1) !important;
-  color: #db2777 !important;
-  border-color: rgba(236, 72, 153, 0.3) !important;
+  background: var(--color-error-soft, rgba(236, 72, 153, 0.1)) !important;
+  color: var(--color-error-hover, #db2777) !important;
+  border-color: var(--color-error, rgba(236, 72, 153, 0.3)) !important;
 }
 
 html[data-theme="dark"] .bento-grid-v3-card-badge-orange {
@@ -2225,9 +2225,9 @@ html[data-theme="dark"] .bento-grid-v3-post-arrow {
 }
 
 html[data-theme="dark"] .bento-grid-v3-post-item:hover .bento-grid-v3-post-arrow {
-  background: #2563eb !important;
-  border-color: #2563eb !important;
-  color: #ffffff !important;
+  background: var(--color-primary-hover, #2563eb) !important;
+  border-color: var(--color-primary-hover, #2563eb) !important;
+  color: var(--color-text-main, #ffffff) !important;
 }
 
 /* 链接文字 - 深色主题色 */
@@ -2428,7 +2428,7 @@ html.dark #content.bg-slate-50 {
 /* 深色首页 Hero 主标题与副标题保持高对比度 */
 html[data-theme="dark"] .home-hybrid-super h1,
 html.dark .home-hybrid-super h1 {
-  color: #ffffff !important;
+  color: var(--color-text-main, #ffffff) !important;
   text-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
 }
 

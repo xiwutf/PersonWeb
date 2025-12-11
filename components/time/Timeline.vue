@@ -22,8 +22,8 @@
             <div
               class="absolute left-0 top-2 w-16 h-16 rounded-full flex items-center justify-center text-2xl shadow-lg transform transition-all duration-300 hover:scale-110"
               :style="{
-                backgroundColor: event.color || '#3b82f6',
-                border: `4px solid white`
+                backgroundColor: event.color || defaultColor,
+                border: `4px solid var(--color-bg-card, white)`
               }"
             >
               {{ event.icon || '⭐' }}
@@ -32,13 +32,13 @@
             <!-- 内容卡片 -->
             <div
               class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-6 border-l-4"
-              :style="{ borderLeftColor: event.color || '#3b82f6' }"
+              :style="{ borderLeftColor: event.color || defaultColor }"
             >
               <div class="flex items-start justify-between mb-2">
                 <h3 class="text-xl font-bold text-slate-900">{{ event.title }}</h3>
                 <span
                   class="px-3 py-1 rounded-full text-sm font-semibold text-white"
-                  :style="{ backgroundColor: event.color || '#3b82f6' }"
+                  :style="{ backgroundColor: event.color || defaultColor }"
                 >
                   {{ event.year }}
                 </span>
@@ -64,6 +64,16 @@ const events = ref<any[]>([])
 const loading = ref(false)
 
 const api = useApi()
+
+// 获取默认颜色（从 CSS 变量）
+const getDefaultColor = () => {
+  if (process.client) {
+    return getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim() || '#3b82f6'
+  }
+  return '#3b82f6'
+}
+
+const defaultColor = getDefaultColor()
 
 const fetchEvents = async () => {
   loading.value = true

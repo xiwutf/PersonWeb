@@ -260,7 +260,7 @@ onMounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: var(--color-overlay, rgba(0, 0, 0, 0.7));
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -283,7 +283,7 @@ onMounted(() => {
   background: var(--color-bg-card, #1e293b);
   border-radius: 1rem;
   padding: 2rem;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow-xl, 0 20px 60px rgba(0, 0, 0, 0.5));
   animation: slideUp 0.3s ease-out;
   max-width: 90vw;
 }
@@ -348,7 +348,7 @@ onMounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: var(--color-overlay, rgba(0, 0, 0, 0.7));
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -362,7 +362,7 @@ onMounted(() => {
   background: var(--color-bg-card, #1e293b);
   border-radius: 1rem;
   padding: 2rem;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow-xl, 0 20px 60px rgba(0, 0, 0, 0.5));
   animation: slideUp 0.3s ease-out;
   min-width: 320px;
   max-width: 90vw;
@@ -466,6 +466,6 @@ onMounted(() => {
 
 .email-send-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  box-shadow: var(--shadow-primary, 0 4px 12px rgba(59, 130, 246, 0.4));
 }
 </style>

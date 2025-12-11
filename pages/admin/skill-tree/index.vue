@@ -1,26 +1,20 @@
 <template>
   <div>
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold text-gray-800 dark:text-white">技能树管理</h1>
+      <h1 class="text-2xl font-bold skill-tree-title">技能树管理</h1>
       <div class="flex gap-2">
-        <button
-          @click="showAddCategoryDialog = true"
-          class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-        >
+        <n-button type="primary" @click="showAddCategoryDialog = true">
           添加分类
-        </button>
-        <button
-          @click="showAddSkillDialog = true"
-          class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
-        >
+        </n-button>
+        <n-button type="success" @click="showAddSkillDialog = true">
           添加技能
-        </button>
+        </n-button>
       </div>
     </div>
 
     <!-- 加载状态 -->
     <div v-if="loading" class="text-center py-12">
-      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+      <n-spin size="large" />
     </div>
 
     <!-- 技能树展示 -->
@@ -28,19 +22,19 @@
       <div
         v-for="category in skillTree"
         :key="category.id"
-        class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6"
+        class="skill-category-card"
       >
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center gap-3">
             <span class="text-2xl">{{ category.icon }}</span>
             <div>
-              <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{{ category.name }}</h2>
-              <p class="text-sm text-gray-500 dark:text-gray-400">{{ category.skills?.length || 0 }} 个技能</p>
+              <h2 class="text-xl font-semibold category-name">{{ category.name }}</h2>
+              <p class="text-sm category-count">{{ category.skills?.length || 0 }} 个技能</p>
             </div>
           </div>
           <div
             class="w-4 h-4 rounded-full"
-            :style="{ backgroundColor: category.color || '#6b7280' }"
+            :style="{ backgroundColor: category.color || defaultCategoryColor }"
           ></div>
         </div>
 
@@ -49,51 +43,51 @@
           <div
             v-for="skill in category.skills"
             :key="skill.id"
-            class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow"
+            class="skill-item-card"
           >
             <div class="flex items-start justify-between mb-2">
               <div class="flex items-center gap-2">
                 <span v-if="skill.icon" class="text-lg">{{ skill.icon }}</span>
-                <h3 class="font-semibold text-gray-900 dark:text-white">{{ skill.name }}</h3>
+                <h3 class="font-semibold skill-name">{{ skill.name }}</h3>
               </div>
               <div class="flex gap-1">
                 <button
                   @click="openRatingDialog(skill)"
-                  class="text-blue-600 hover:text-blue-800 text-sm"
+                  class="skill-action-btn skill-action-btn-primary"
                   title="记录评级"
                 >
                   ⭐
                 </button>
                 <button
                   @click="openLearningLogDialog(skill)"
-                  class="text-green-600 hover:text-green-800 text-sm"
+                  class="skill-action-btn skill-action-btn-success"
                   title="添加学习日志"
                 >
                   📚
                 </button>
                 <button
                   @click="viewSkillDetail(skill.id)"
-                  class="text-gray-600 hover:text-gray-800 text-sm"
+                  class="skill-action-btn skill-action-btn-default"
                   title="查看详情"
                 >
                   👁️
                 </button>
               </div>
             </div>
-            <p v-if="skill.description" class="text-sm text-gray-600 dark:text-gray-400 mb-2 line-clamp-2">
+            <p v-if="skill.description" class="text-sm skill-description mb-2 line-clamp-2">
               {{ skill.description }}
             </p>
             <div class="flex items-center gap-2">
-              <span class="text-xs text-gray-500">当前评级：</span>
+              <span class="text-xs skill-label">当前评级：</span>
               <div class="flex items-center gap-1">
                 <span class="text-lg font-bold" :class="getRatingColor(skill.currentRating)">
                   {{ skill.currentRating || 0 }}
                 </span>
-                <span class="text-xs text-gray-500">/ 10</span>
+                <span class="text-xs skill-label">/ 10</span>
               </div>
               <div
                 v-if="skill.currentRating > 0"
-                class="flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden"
+                class="flex-1 h-2 skill-rating-bar-bg rounded-full overflow-hidden"
               >
                 <div
                   class="h-full rounded-full transition-all"
@@ -102,7 +96,7 @@
                 ></div>
               </div>
             </div>
-            <p v-if="skill.lastRatingDate" class="text-xs text-gray-400 mt-1">
+            <p v-if="skill.lastRatingDate" class="text-xs skill-last-update mt-1">
               最后更新：{{ formatDate(skill.lastRatingDate) }}
             </p>
           </div>
@@ -110,8 +104,8 @@
       </div>
 
       <!-- 空状态 -->
-      <div v-if="skillTree.length === 0" class="text-center py-12 bg-white dark:bg-gray-800 rounded-lg">
-        <p class="text-gray-500 dark:text-gray-400">暂无技能数据，请先添加分类和技能</p>
+      <div v-if="skillTree.length === 0" class="text-center py-12 empty-state">
+        <p class="empty-state-text">暂无技能数据，请先添加分类和技能</p>
       </div>
     </div>
 
@@ -405,6 +399,16 @@ const api = useApi()
 const { success } = useNotification()
 const { handleError } = useErrorHandler()
 
+// 获取默认颜色（从 CSS 变量）
+const getDefaultCategoryColor = () => {
+  if (process.client) {
+    return getComputedStyle(document.documentElement).getPropertyValue('--color-text-muted').trim() || '#6b7280'
+  }
+  return '#6b7280'
+}
+
+const defaultCategoryColor = getDefaultCategoryColor()
+
 const loading = ref(true)
 const skillTree = ref<any[]>([])
 const categories = ref<any[]>([])
@@ -418,7 +422,7 @@ const selectedSkill = ref<any>(null)
 const categoryForm = ref({
   name: '',
   icon: '',
-  color: '#3b82f6',
+  color: defaultCategoryColor,
   sortOrder: 0
 })
 
@@ -456,17 +460,17 @@ const formatDate = (dateString: string) => {
 }
 
 const getRatingColor = (rating: number) => {
-  if (rating >= 8) return 'text-green-600 dark:text-green-400'
-  if (rating >= 6) return 'text-blue-600 dark:text-blue-400'
-  if (rating >= 4) return 'text-yellow-600 dark:text-yellow-400'
-  return 'text-red-600 dark:text-red-400'
+  if (rating >= 8) return 'rating-color-excellent'
+  if (rating >= 6) return 'rating-color-good'
+  if (rating >= 4) return 'rating-color-fair'
+  return 'rating-color-poor'
 }
 
 const getRatingBarColor = (rating: number) => {
-  if (rating >= 8) return 'bg-green-500'
-  if (rating >= 6) return 'bg-blue-500'
-  if (rating >= 4) return 'bg-yellow-500'
-  return 'bg-red-500'
+  if (rating >= 8) return 'rating-bar-excellent'
+  if (rating >= 6) return 'rating-bar-good'
+  if (rating >= 4) return 'rating-bar-fair'
+  return 'rating-bar-poor'
 }
 
 const fetchSkillTree = async () => {
@@ -495,7 +499,7 @@ const addCategory = async () => {
     await api.post('/SkillTree/categories', categoryForm.value)
     success('分类添加成功')
     showAddCategoryDialog.value = false
-    categoryForm.value = { name: '', icon: '', color: '#3b82f6', sortOrder: 0 }
+    categoryForm.value = { name: '', icon: '', color: defaultCategoryColor, sortOrder: 0 }
     await fetchCategories()
     await fetchSkillTree()
   } catch (e: unknown) {
@@ -583,4 +587,184 @@ onMounted(() => {
   fetchSkillTree()
 })
 </script>
+
+<style scoped>
+/* 标题样式 - 使用 CSS 变量 */
+.skill-tree-title {
+  color: var(--color-text-main, #0f172a);
+}
+
+/* 分类卡片样式 - 使用 CSS 变量 */
+.skill-category-card {
+  background: var(--color-bg-card, #ffffff);
+  border: 1px solid var(--color-border-subtle, #e5e7eb);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+}
+
+.category-name {
+  color: var(--color-text-main, #0f172a);
+}
+
+.category-count {
+  color: var(--color-text-muted, #6b7280);
+}
+
+/* 技能项卡片样式 - 使用 CSS 变量 */
+.skill-item-card {
+  border: 1px solid var(--color-border-subtle, #e5e7eb);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  transition: box-shadow 0.2s ease;
+}
+
+.skill-item-card:hover {
+  box-shadow: var(--shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+}
+
+.skill-name {
+  color: var(--color-text-main, #0f172a);
+}
+
+.skill-description {
+  color: var(--color-text-sub, #4b5563);
+}
+
+.skill-label {
+  color: var(--color-text-muted, #6b7280);
+}
+
+.skill-rating-bar-bg {
+  background: var(--color-bg-elevated, #f3f4f6);
+}
+
+/* 技能操作按钮样式 - 使用 CSS 变量 */
+.skill-action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: color 0.2s ease;
+}
+
+.skill-action-btn-primary {
+  color: var(--color-primary, #3b82f6);
+}
+
+.skill-action-btn-primary:hover {
+  color: var(--color-primary-hover, #2563eb);
+}
+
+.skill-action-btn-success {
+  color: var(--color-success, #10b981);
+}
+
+.skill-action-btn-success:hover {
+  color: var(--color-success-hover, #059669);
+}
+
+.skill-action-btn-default {
+  color: var(--color-text-muted, #6b7280);
+}
+
+.skill-action-btn-default:hover {
+  color: var(--color-text-main, #0f172a);
+}
+
+/* 空状态样式 - 使用 CSS 变量 */
+.empty-state {
+  background: var(--color-bg-card, #ffffff);
+  border-radius: 0.5rem;
+}
+
+.empty-state-text {
+  color: var(--color-text-muted, #6b7280);
+}
+
+/* 深色主题适配 */
+html[data-theme="dark"] .skill-tree-title,
+html.dark .skill-tree-title {
+  color: var(--color-text-main, #ffffff);
+}
+
+html[data-theme="dark"] .skill-category-card,
+html.dark .skill-category-card {
+  background: var(--color-bg-card, rgba(255, 255, 255, 0.05));
+  border-color: var(--color-border-subtle, rgba(255, 255, 255, 0.1));
+}
+
+html[data-theme="dark"] .category-name,
+html.dark .category-name {
+  color: var(--color-text-main, #ffffff);
+}
+
+html[data-theme="dark"] .category-count,
+html.dark .category-count {
+  color: var(--color-text-muted, #9ca3af);
+}
+
+html[data-theme="dark"] .skill-item-card,
+html.dark .skill-item-card {
+  border-color: var(--color-border-subtle, rgba(255, 255, 255, 0.1));
+}
+
+html[data-theme="dark"] .skill-name,
+html.dark .skill-name {
+  color: var(--color-text-main, #ffffff);
+}
+
+html[data-theme="dark"] .skill-description,
+html.dark .skill-description {
+  color: var(--color-text-sub, #9ca3af);
+}
+
+html[data-theme="dark"] .skill-rating-bar-bg,
+html.dark .skill-rating-bar-bg {
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.05));
+}
+
+html[data-theme="dark"] .empty-state,
+html.dark .empty-state {
+  background: var(--color-bg-card, rgba(255, 255, 255, 0.05));
+}
+
+.skill-last-update {
+  color: var(--color-text-muted, #9ca3af);
+}
+
+/* 评级颜色样式 - 使用 CSS 变量 */
+.rating-color-excellent {
+  color: var(--color-success, #10b981);
+}
+
+.rating-color-good {
+  color: var(--color-primary, #3b82f6);
+}
+
+.rating-color-fair {
+  color: var(--color-warning, #f59e0b);
+}
+
+.rating-color-poor {
+  color: var(--color-error, #ef4444);
+}
+
+/* 评级进度条颜色样式 - 使用 CSS 变量 */
+.rating-bar-excellent {
+  background: var(--color-success, #10b981);
+}
+
+.rating-bar-good {
+  background: var(--color-primary, #3b82f6);
+}
+
+.rating-bar-fair {
+  background: var(--color-warning, #f59e0b);
+}
+
+.rating-bar-poor {
+  background: var(--color-error, #ef4444);
+}
+</style>
 

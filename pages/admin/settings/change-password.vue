@@ -103,7 +103,7 @@
             type="button"
             @click="$router.back()"
             class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors font-bold border-2 border-gray-400 dark:border-gray-500 shadow-sm"
-            style="color: #111827;"
+            class="text-gray-900 dark:text-gray-100"
           >
             <span class="dark:text-gray-100" style="color: inherit;">取消</span>
           </button>
@@ -214,14 +214,14 @@ const handleChangePassword = async () => {
 .page-title {
   font-size: 1.875rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-text-main, #ffffff);
   margin-bottom: 0.5rem;
 }
 
 .card {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.05));
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.1));
   border-radius: 0.75rem;
   padding: 2rem;
 }
@@ -234,41 +234,41 @@ const handleChangePassword = async () => {
   display: block;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--color-text-main, #ffffff);
   margin-bottom: 0.5rem;
 }
 
 .form-input {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.1));
+  border: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.2));
   border-radius: 0.5rem;
-  color: #ffffff;
+  color: var(--color-text-main, #ffffff);
   font-size: 1rem;
   transition: all 0.2s;
 }
 
 .form-input:focus {
   outline: none;
-  border-color: #3b82f6;
-  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--color-primary, #3b82f6);
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.15));
 }
 
 .form-input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--color-text-muted, rgba(255, 255, 255, 0.5));
 }
 
 .form-hint {
   margin-top: 0.5rem;
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--color-text-muted, rgba(255, 255, 255, 0.6));
 }
 
 .form-error {
   margin-top: 0.5rem;
   font-size: 0.75rem;
-  color: #ef4444;
+  color: var(--color-error, #ef4444);
 }
 
 .alert {
@@ -280,15 +280,15 @@ const handleChangePassword = async () => {
 }
 
 .alert-error {
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #fca5a5;
+  background: var(--color-error-soft, rgba(239, 68, 68, 0.1));
+  border: 1px solid var(--color-error, rgba(239, 68, 68, 0.3));
+  color: var(--color-error-hover, #fca5a5);
 }
 
 .alert-success {
-  background: rgba(34, 197, 94, 0.1);
-  border: 1px solid rgba(34, 197, 94, 0.3);
-  color: #86efac;
+  background: var(--color-success-soft, rgba(34, 197, 94, 0.1));
+  border: 1px solid var(--color-success, rgba(34, 197, 94, 0.3));
+  color: var(--color-success-hover, #86efac);
 }
 </style>
 

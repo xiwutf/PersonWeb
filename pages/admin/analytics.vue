@@ -168,7 +168,7 @@
       <ClientOnly>
         <template v-if="hasTrendData && trendLineOption">
           <div class="h-[500px] relative w-full">
-            <v-chart :option="trendLineOption" :theme="chartTheme" autoresize class="w-full h-full" />
+            <v-chart :option="trendLineOption" autoresize class="w-full h-full" />
           </div>
         </template>
         <template v-else>
@@ -197,7 +197,7 @@
             <ClientOnly>
               <template v-if="sourceDonutOption">
                 <div class="h-48 relative mb-4 w-full">
-                  <v-chart :option="sourceDonutOption.option" :theme="chartTheme" autoresize class="w-full h-full" />
+                  <v-chart :option="sourceDonutOption.option" autoresize class="w-full h-full" />
                   <div class="donut-center">
                     <div class="donut-center-value">{{ sourceDonutOption.mainPercent }}%</div>
                     <div class="donut-center-label">{{ sourceDonutOption.mainLabel }}</div>
@@ -234,7 +234,7 @@
           <ClientOnly>
             <template v-if="deviceDonutOption">
               <div class="h-64 relative w-full">
-                <v-chart :option="deviceDonutOption.option" :theme="chartTheme" autoresize class="w-full h-full" />
+                <v-chart :option="deviceDonutOption.option" autoresize class="w-full h-full" />
                 <div class="donut-center">
                   <div class="donut-center-value">{{ deviceDonutOption.mainPercent }}%</div>
                   <div class="donut-center-label">{{ deviceDonutOption.mainLabel }}</div>
@@ -312,7 +312,7 @@
             <ClientOnly>
               <template v-if="hasRegionData && regionBarOption">
                 <div class="h-64 w-full">
-                  <v-chart :option="regionBarOption" :theme="chartTheme" autoresize class="w-full h-full" />
+                  <v-chart :option="regionBarOption" autoresize class="w-full h-full" />
                 </div>
               </template>
               <template v-else>
@@ -499,12 +499,10 @@ import {
 } from 'echarts/components'
 import VChart from 'vue-echarts'
 import { useEChartsTheme } from '~/composables/useEChartsTheme'
-import { registerTheme } from 'echarts/core'
 
 // 在 setup 顶层调用 useEChartsTheme，避免在 computed 中重复调用
 // 由于页面已设置 ssr: false，这些函数只在客户端使用
-const { isDark, buildNeonLineOptions, buildNeonBarOptions, buildNeonDonutOptions, getCssVar } = useEChartsTheme()
-const chartTheme = computed(() => (isDark.value ? 'dark-custom' : 'light-custom'))
+const { isDark, applyTheme, buildNeonLineOptions, buildNeonBarOptions, buildNeonDonutOptions, getCssVar } = useEChartsTheme()
 
 // 注册 ECharts 组件
 use([
@@ -517,38 +515,6 @@ use([
   LegendComponent,
   GridComponent
 ])
-
-// 注册自定义主题
-// 注册自定义主题
-registerTheme('dark-custom', {
-  backgroundColor: 'transparent',
-  textStyle: { color: 'rgba(255, 255, 255, 0.92)' },
-  title: { textStyle: { color: 'rgba(255, 255, 255, 0.92)' } },
-  legend: { textStyle: { color: 'rgba(255, 255, 255, 0.7)' } },
-  tooltip: {
-    backgroundColor: 'rgba(15, 23, 42, 0.95)',
-    borderColor: 'rgba(255, 255, 255, 0.08)',
-    textStyle: { color: 'rgba(255, 255, 255, 0.92)' },
-    padding: [10, 16],
-    borderRadius: 12,
-    extraCssText: 'backdrop-filter: blur(12px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);'
-  }
-})
-
-registerTheme('light-custom', {
-  backgroundColor: 'transparent',
-  textStyle: { color: '#0f172a' },
-  title: { textStyle: { color: '#0f172a' } },
-  legend: { textStyle: { color: '#445062' } },
-  tooltip: {
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    borderColor: 'rgba(0, 0, 0, 0.05)',
-    textStyle: { color: '#0f172a' },
-    padding: [10, 16],
-    borderRadius: 12,
-    extraCssText: 'backdrop-filter: blur(12px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);'
-  }
-})
 
 
 
@@ -675,7 +641,7 @@ const trendLineOption = computed(() => {
   })
 
   // 手动构建多系列霓虹效果
-  return {
+  const option = {
     ...baseConfig,
     series: [
       // 浏览量 - 主色
@@ -706,7 +672,7 @@ const trendLineOption = computed(() => {
             y2: 1,
             colorStops: [
               { offset: 0, color: `${primaryColor}55` },
-              { offset: 1, color: 'rgba(15,23,42,0.0)' }
+              { offset: 1, color: 'transparent' }
             ]
           }
         }
@@ -739,13 +705,16 @@ const trendLineOption = computed(() => {
             y2: 1,
             colorStops: [
               { offset: 0, color: `${secondaryColor}55` },
-              { offset: 1, color: 'rgba(15,23,42,0.0)' }
+              { offset: 1, color: 'transparent' }
             ]
           }
         }
       }
     ]
   }
+  
+  // 应用主题
+  return applyTheme(option)
 })
 
 // 访问区域条形图选项 - Aurora Neon
@@ -764,14 +733,17 @@ const regionBarOption = computed(() => {
     series: []
   })
 
-  return {
+  const option = {
     ...baseConfig,
     series: [{
       ...baseConfig.series,
       data: items.map((i: any) => i.value).reverse(),
-      label: { show: true, position: 'right', color: 'var(--text-muted)' }
+      label: { show: true, position: 'right', color: getCssVar('--color-text-muted') || 'var(--color-text-muted)' }
     }]
   }
+  
+  // 应用主题
+  return applyTheme(option)
 })
 
 // 设备类型 Donut - Aurora Neon

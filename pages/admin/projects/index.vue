@@ -384,7 +384,7 @@ onMounted(() => {
   border-radius: 50%;
   margin-right: 0.75rem;
   object-fit: cover;
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  border: 2px solid var(--color-border-subtle, rgba(255, 255, 255, 0.1));
 }
 
 .project-details {
@@ -414,9 +414,9 @@ onMounted(() => {
 }
 
 .tag-success {
-  background: rgba(34, 197, 94, 0.2);
-  border: 1px solid rgba(34, 197, 94, 0.4);
-  color: #22c55e;
+  background: var(--color-success-soft, rgba(34, 197, 94, 0.2));
+  border: 1px solid var(--color-success, rgba(34, 197, 94, 0.4));
+  color: var(--color-success, #22c55e);
 }
 
 .tag-default {
@@ -460,26 +460,26 @@ onMounted(() => {
 }
 
 .btn-link-blue {
-  color: #60a5fa;
+  color: var(--color-primary, #60a5fa);
 }
 
 .btn-link-blue:hover {
-  color: #93c5fd;
+  color: var(--color-primary-hover, #93c5fd);
 }
 
 .btn-link-red {
-  color: #f87171;
+  color: var(--color-error, #f87171);
 }
 
 .btn-link-red:hover {
-  color: #fca5a5;
+  color: var(--color-error-hover, #fca5a5);
 }
 
 .btn-link-purple {
-  color: #a78bfa;
+  color: var(--color-purple, #a78bfa);
 }
 
 .btn-link-purple:hover {
-  color: #c4b5fd;
+  color: var(--color-purple-hover, #c4b5fd);
 }
 </style>

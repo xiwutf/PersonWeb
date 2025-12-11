@@ -356,16 +356,16 @@
   .admin-main .text-gray-600,
   .admin-main .text-gray-500,
   .admin-main .text-gray-400 {
-    color: rgba(229, 231, 235, 0.75) !important; /* 柔和的浅灰色 */
+    color: var(--color-text-muted, rgba(229, 231, 235, 0.75)) !important;
   }
 
   .admin-main .text-gray-700 {
-    color: rgba(229, 231, 235, 0.85) !important; /* 稍亮一点的灰色 */
+    color: var(--color-text-sub, rgba(229, 231, 235, 0.85)) !important;
   }
 
   .admin-main .text-gray-800,
   .admin-main .text-gray-900 {
-    color: #e5e7eb !important; /* 柔和的浅灰色，替代纯白色 */
+    color: var(--color-text-main, #e5e7eb) !important;
   }
 
   /* 标题文字 - 柔和但清晰 */
@@ -375,140 +375,225 @@
   .admin-main h4,
   .admin-main h5,
   .admin-main h6 {
-    color: #f3f4f6 !important; /* 非常柔和的白色 */
+    color: var(--color-text-main, #f3f4f6) !important;
   }
 
-  /* 白色背景改为半透明深色 */
+  /* 白色背景改为半透明深色 - 使用 CSS 变量 */
   .admin-main .bg-white {
-    background: rgba(255, 255, 255, 0.06) !important;
+    background: var(--color-bg-elevated, rgba(255, 255, 255, 0.06)) !important;
     backdrop-filter: blur(10px);
-    border-color: rgba(255, 255, 255, 0.12) !important;
+    border-color: var(--color-border-subtle, rgba(255, 255, 255, 0.12)) !important;
   }
 
   /* 深色背景下的卡片 - 使用更柔和的半透明 */
   .admin-main .dark\:bg-gray-800 {
-    background: rgba(255, 255, 255, 0.06) !important;
+    background: var(--color-bg-elevated, rgba(255, 255, 255, 0.06)) !important;
     backdrop-filter: blur(10px);
-    border-color: rgba(255, 255, 255, 0.12) !important;
+    border-color: var(--color-border-subtle, rgba(255, 255, 255, 0.12)) !important;
   }
 
   .admin-main .dark\:bg-gray-900 {
-    background: rgba(255, 255, 255, 0.04) !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
+    background: var(--color-bg-elevated, rgba(255, 255, 255, 0.04)) !important;
+    border-color: var(--color-border-subtle, rgba(255, 255, 255, 0.1)) !important;
   }
 
-  /* 渐变背景统一为黑色 */
+  /* ========== 后台管理浅色主题样式 - 使用 CSS 变量 ========== */
+  /* 目标：保证浅色主题下侧边栏、菜单项、正文文字有足够对比度 */
+  body[data-theme='light'] .admin-main,
+  html[data-theme='light'] .admin-main {
+    background-color: var(--color-bg-body, #f5f7fb);
+    color: var(--color-text-main, #0f172a);
+  }
+
+  /* 侧边栏背景与文字 */
+  body[data-theme='light'] .admin-main .n-layout-sider,
+  html[data-theme='light'] .admin-main .n-layout-sider {
+    background: var(--color-bg-card, #ffffff);
+    border-right: 1px solid var(--color-border-default, #e5e7eb);
+  }
+
+  body[data-theme='light'] .admin-main .n-menu,
+  html[data-theme='light'] .admin-main .n-menu {
+    color: var(--color-text-main, #0f172a);
+  }
+
+  body[data-theme='light'] .admin-main .n-menu-item-content__icon,
+  body[data-theme='light'] .admin-main .n-menu-item-content,
+  html[data-theme='light'] .admin-main .n-menu-item-content__icon,
+  html[data-theme='light'] .admin-main .n-menu-item-content {
+    color: var(--color-text-main, #0f172a);
+  }
+
+  /* 选中与悬停态 */
+  body[data-theme='light'] .admin-main .n-menu-item--selected .n-menu-item-content,
+  body[data-theme='light'] .admin-main .n-menu-item--selected .n-menu-item-content__icon,
+  html[data-theme='light'] .admin-main .n-menu-item--selected .n-menu-item-content,
+  html[data-theme='light'] .admin-main .n-menu-item--selected .n-menu-item-content__icon {
+    color: var(--color-text-main, #0f172a);
+    font-weight: 600;
+  }
+
+  body[data-theme='light'] .admin-main .n-menu-item--selected {
+    background: var(--color-primary-soft, rgba(59, 130, 246, 0.12));
+    border-radius: 8px;
+  }
+
+  body[data-theme='light'] .admin-main .n-menu-item:hover .n-menu-item-content,
+  body[data-theme='light'] .admin-main .n-menu-item:hover .n-menu-item-content__icon,
+  html[data-theme='light'] .admin-main .n-menu-item:hover .n-menu-item-content,
+  html[data-theme='light'] .admin-main .n-menu-item:hover .n-menu-item-content__icon {
+    color: var(--color-text-main, #0f172a);
+  }
+
+  /* 主区域卡片与文字 */
+  body[data-theme='light'] .admin-dashboard-page,
+  html[data-theme='light'] .admin-dashboard-page {
+    background: var(--color-bg-card, #ffffff);
+    color: var(--color-text-main, #0f172a);
+  }
+
+  body[data-theme='light'] .admin-dashboard-page h1,
+  body[data-theme='light'] .admin-dashboard-page h2,
+  body[data-theme='light'] .admin-dashboard-page h3,
+  html[data-theme='light'] .admin-dashboard-page h1,
+  html[data-theme='light'] .admin-dashboard-page h2,
+  html[data-theme='light'] .admin-dashboard-page h3 {
+    color: var(--color-text-main, #0f172a);
+  }
+
+  body[data-theme='light'] .admin-dashboard-page p,
+  html[data-theme='light'] .admin-dashboard-page p {
+    color: var(--color-text-sub, #475569);
+  }
+
+  /* KPI 小字、副标题 */
+  body[data-theme='light'] .admin-dashboard-page .subtitle-text,
+  body[data-theme='light'] .admin-dashboard-page .kpi-label,
+  body[data-theme='light'] .admin-dashboard-page .kpi-trend,
+  html[data-theme='light'] .admin-dashboard-page .subtitle-text,
+  html[data-theme='light'] .admin-dashboard-page .kpi-label,
+  html[data-theme='light'] .admin-dashboard-page .kpi-trend {
+    color: var(--color-text-muted, #64748b);
+  }
+
+  /* 图表标题 */
+  body[data-theme='light'] .admin-dashboard-page .chart-title,
+  html[data-theme='light'] .admin-dashboard-page .chart-title {
+    color: var(--color-text-main, #0f172a);
+  }
+
+  /* 渐变背景统一为黑色 - 使用 CSS 变量 */
   .admin-main .bg-gradient-to-br,
   .admin-main .bg-gradient-to-r,
   .admin-main .bg-gradient-to-l {
-    background: #0a0a0a !important;
+    background: var(--color-bg-body, #0a0a0a) !important;
   }
 
-  /* 深色背景下的文字 - 使用柔和的颜色 */
+  /* 深色背景下的文字 - 使用 CSS 变量 */
   .admin-main .dark\:text-white {
-    color: #e5e7eb !important; /* 柔和的浅灰色替代纯白色 */
+    color: var(--color-text-main, #e5e7eb) !important;
   }
 
   .admin-main .dark\:text-gray-200 {
-    color: rgba(229, 231, 235, 0.9) !important; /* 柔和的浅灰色 */
+    color: var(--color-text-sub, rgba(229, 231, 235, 0.9)) !important;
   }
 
   .admin-main .dark\:text-gray-300 {
-    color: rgba(229, 231, 235, 0.85) !important;
+    color: var(--color-text-sub, rgba(229, 231, 235, 0.85)) !important;
   }
 
   .admin-main .dark\:text-gray-400 {
-    color: rgba(229, 231, 235, 0.75) !important;
+    color: var(--color-text-muted, rgba(229, 231, 235, 0.75)) !important;
   }
 
-  /* 彩色文字 - 降低饱和度，使其更柔和 */
+  /* 彩色文字 - 使用 CSS 变量 */
   .admin-main .dark\:text-blue-400,
   .admin-main .text-blue-600.dark\:text-blue-400 {
-    color: #7dd3fc !important; /* 柔和的蓝色 */
+    color: var(--color-info, #7dd3fc) !important;
   }
 
   .admin-main .dark\:text-green-400,
   .admin-main .text-green-600.dark\:text-green-400 {
-    color: #86efac !important; /* 柔和的绿色 */
+    color: var(--color-success, #86efac) !important;
   }
 
   .admin-main .dark\:text-red-400,
   .admin-main .text-red-600.dark\:text-red-400 {
-    color: #fca5a5 !important; /* 柔和的红色 */
+    color: var(--color-error, #fca5a5) !important;
   }
 
   .admin-main .dark\:text-orange-400,
   .admin-main .text-orange-600.dark\:text-orange-400 {
-    color: #fdba74 !important; /* 柔和的橙色 */
+    color: var(--color-warning, #fdba74) !important;
   }
 
   .admin-main .dark\:text-purple-400,
   .admin-main .text-purple-600.dark\:text-purple-400 {
-    color: #c4b5fd !important; /* 柔和的紫色 */
+    color: var(--color-purple, #c4b5fd) !important;
   }
 
   .admin-main .dark\:text-yellow-400 {
-    color: #fde047 !important; /* 柔和的黄色 */
+    color: var(--color-warning, #fde047) !important;
   }
 
-  /* 边框颜色 - 柔和 */
+  /* 边框颜色 - 使用 CSS 变量 */
   .admin-main .dark\:border-gray-600,
   .admin-main .dark\:border-gray-700 {
-    border-color: rgba(255, 255, 255, 0.15) !important; /* 降低对比度 */
+    border-color: var(--color-border-default, rgba(255, 255, 255, 0.15)) !important;
   }
 
   .admin-main .border-gray-200,
   .admin-main .border-gray-300 {
-    border-color: rgba(255, 255, 255, 0.12) !important;
+    border-color: var(--color-border-subtle, rgba(255, 255, 255, 0.12)) !important;
   }
 
-  /* 分割线 */
+  /* 分割线 - 使用 CSS 变量 */
   .admin-main .dark\:divide-gray-700 {
-    border-color: rgba(255, 255, 255, 0.15) !important;
+    border-color: var(--color-border-default, rgba(255, 255, 255, 0.15)) !important;
   }
 
   .admin-main .divide-gray-200,
   .admin-main .divide-gray-300 {
-    border-color: rgba(255, 255, 255, 0.12) !important;
+    border-color: var(--color-border-subtle, rgba(255, 255, 255, 0.12)) !important;
   }
 
-  /* 悬停效果 - 柔和 */
+  /* 悬停效果 - 使用 CSS 变量 */
   .admin-main .dark\:hover\:bg-gray-700:hover {
-    background: rgba(255, 255, 255, 0.08) !important; /* 降低悬停对比度 */
+    background: var(--color-bg-elevated, rgba(255, 255, 255, 0.08)) !important;
   }
 
   .admin-main .hover\:bg-gray-50:hover {
-    background: rgba(255, 255, 255, 0.06) !important;
+    background: var(--color-bg-elevated, rgba(255, 255, 255, 0.06)) !important;
   }
 
-  /* 表格头部背景 */
+  /* 表格头部背景 - 使用 CSS 变量 */
   .admin-main .bg-gray-50,
   .admin-main .dark\:bg-gray-700\/50 {
-    background: rgba(255, 255, 255, 0.06) !important;
-    border-color: rgba(255, 255, 255, 0.12) !important;
+    background: var(--color-bg-elevated, rgba(255, 255, 255, 0.06)) !important;
+    border-color: var(--color-border-subtle, rgba(255, 255, 255, 0.12)) !important;
   }
 
-  /* 统计卡片文字颜色 */
+  /* 统计卡片文字颜色 - 使用 CSS 变量 */
   .admin-main .stat-label {
-    color: rgba(229, 231, 235, 0.75) !important;
+    color: var(--color-text-muted, rgba(229, 231, 235, 0.75)) !important;
   }
 
   .admin-main .stat-value {
-    color: #e5e7eb !important;
+    color: var(--color-text-main, #e5e7eb) !important;
   }
 
-  /* 按钮文字颜色 */
+  /* 按钮文字颜色 - 使用 CSS 变量 */
   .admin-main .btn-primary {
-    color: #ffffff !important; /* 按钮文字保持白色以确保对比度 */
+    color: var(--color-text-main, #ffffff) !important;
   }
 
   .admin-main .btn-secondary {
-    color: #e5e7eb !important;
-    background: rgba(255, 255, 255, 0.08) !important;
-    border-color: rgba(255, 255, 255, 0.15) !important;
+    color: var(--color-text-main, #e5e7eb) !important;
+    background: var(--color-bg-elevated, rgba(255, 255, 255, 0.08)) !important;
+    border-color: var(--color-border-default, rgba(255, 255, 255, 0.15)) !important;
   }
 
   .admin-main .btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.12) !important;
+    background: var(--color-bg-elevated, rgba(255, 255, 255, 0.12)) !important;
   }
 }

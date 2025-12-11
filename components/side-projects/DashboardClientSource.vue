@@ -9,7 +9,7 @@
       暂无数据
     </div>
     <div v-else class="chart-container">
-      <v-chart :option="chartOption" :theme="chartTheme" autoresize />
+      <v-chart :option="chartOption" autoresize />
     </div>
   </n-card>
 </template>
@@ -27,33 +27,7 @@ import {
 } from 'echarts/components'
 import VChart from 'vue-echarts'
 import { useEChartsTheme } from '~/composables/useEChartsTheme'
-import { registerTheme } from 'echarts/core'
 import type { ClientSourceItemDto } from '~/types/api'
-
-// 注册自定义主题
-registerTheme('dark-custom', {
-  backgroundColor: 'transparent',
-  textStyle: { color: '#ffffff' },
-  title: { textStyle: { color: '#ffffff' } },
-  legend: { textStyle: { color: '#e5e7eb' } },
-  tooltip: {
-    backgroundColor: 'rgba(17, 24, 39, 0.98)',
-    borderColor: 'rgba(156, 163, 175, 0.5)',
-    textStyle: { color: '#ffffff' }
-  }
-})
-
-registerTheme('light-custom', {
-  backgroundColor: 'transparent',
-  textStyle: { color: '#374151' },
-  title: { textStyle: { color: '#111827' } },
-  legend: { textStyle: { color: '#6b7280' } },
-  tooltip: {
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    borderColor: 'rgba(209, 213, 219, 0.8)',
-    textStyle: { color: '#111827' }
-  }
-})
 
 use([
   CanvasRenderer,
@@ -71,16 +45,15 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const { isDark, echartsTheme, buildNeonBarOptions, buildNeonLineOptions, getCssVar } = useEChartsTheme()
-const chartTheme = computed(() => (isDark.value ? 'dark-custom' : 'light-custom'))
+const { isDark, echartsTheme, applyTheme, buildNeonBarOptions, buildNeonLineOptions, getCssVar } = useEChartsTheme()
 
 const chartOption = computed(() => {
   if (!props.data || props.data.length === 0) {
     return {}
   }
 
-  return {
-    backgroundColor: 'rgba(15,23,42,0.35)', // 玻璃背景，让曲线"浮起来"
+  const baseOption = {
+    backgroundColor: 'transparent',
     tooltip: {
       trigger: 'axis',
       axisPointer: {
@@ -99,10 +72,7 @@ const chartOption = computed(() => {
       }
     },
     legend: {
-      data: ['项目数', '收入'],
-      textStyle: {
-        color: isDark.value ? '#e5e7eb' : '#6b7280'
-      }
+      data: ['项目数', '收入']
     },
     grid: {
       left: 40,
@@ -114,14 +84,7 @@ const chartOption = computed(() => {
     xAxis: {
       type: 'category',
       data: props.data.map(item => item.source || '未知'),
-      axisLine: {
-        show: false // 霓虹风格：隐藏轴线
-      },
-      axisTick: {
-        show: false // 隐藏刻度
-      },
       axisLabel: {
-        color: isDark.value ? 'rgba(148, 163, 184, 0.8)' : '#6b7280',
         rotate: props.data.length > 5 ? 45 : 0
       }
     },
@@ -130,31 +93,15 @@ const chartOption = computed(() => {
         type: 'value',
         name: '项目数',
         position: 'left',
-        axisLine: {
-          lineStyle: {
-            color: isDark.value ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'
-          }
-        },
-        axisLabel: {
-          color: isDark.value ? '#e5e7eb' : '#6b7280'
-        },
         splitLine: {
-          lineStyle: {
-            color: isDark.value ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'
-          }
+          show: true
         }
       },
       {
         type: 'value',
         name: '收入',
         position: 'right',
-        axisLine: {
-          lineStyle: {
-            color: isDark.value ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'
-          }
-        },
         axisLabel: {
-          color: isDark.value ? '#e5e7eb' : '#6b7280',
           formatter: (value: number) => {
             if (value >= 10000) {
               return `¥${(value / 10000).toFixed(1)}万`
@@ -173,17 +120,20 @@ const chartOption = computed(() => {
         type: 'bar',
         data: props.data.map(item => item.count),
         ...buildNeonBarOptions(
-          '--chart-neon-blue',
-          '--chart-neon-cyan'
+          '--chart-primary',
+          '--chart-septenary'
         )
       },
-      buildNeonLineOptions('--chart-neon-green', {
+      buildNeonLineOptions('--chart-secondary', {
         name: '收入',
         yAxisIndex: 1,
         data: props.data.map(item => item.income)
       })
     ]
   }
+
+  // 应用主题（自动处理颜色）
+  return applyTheme(baseOption)
 })
 </script>
 

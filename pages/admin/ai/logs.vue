@@ -24,7 +24,7 @@
             :options="successOptions"
           />
           <n-button type="primary" @click="handleSearch">搜索</n-button>
-          <n-button @click="handleReset">重置</n-button>
+          <n-button quaternary @click="handleReset">重置</n-button>
         </div>
       </n-card>
 
@@ -252,12 +252,12 @@ useHead({
 }
 
 .log-item:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm, 0 2px 8px rgba(0, 0, 0, 0.1));
 }
 
 .log-item-error {
-  border-color: #ef4444;
-  background: rgba(239, 68, 68, 0.05);
+  border-color: var(--color-error, #ef4444);
+  background: var(--color-error-soft, rgba(239, 68, 68, 0.05));
 }
 
 .log-header {
@@ -278,10 +278,10 @@ useHead({
 
 .log-error {
   padding: 12px;
-  background: rgba(239, 68, 68, 0.1);
-  border-left: 3px solid #ef4444;
+  background: var(--color-error-soft, rgba(239, 68, 68, 0.1));
+  border-left: 3px solid var(--color-error, #ef4444);
   border-radius: 4px;
-  color: #dc2626;
+  color: var(--color-error-hover, #dc2626);
   margin-bottom: 12px;
   display: flex;
   align-items: center;

@@ -105,12 +105,11 @@ const categoryChartOption = computed(() => {
           itemStyle: {
             shadowBlur: 10,
             shadowOffsetX: 0,
-            // 阴影颜色：深色主题使用更深的阴影，浅色主题使用较浅的阴影
-            // 注意：ECharts 的 shadowColor 需要具体颜色值，不能直接使用 CSS 变量
-            // 这里使用黑色半透明，在两种主题下都能提供良好的视觉效果
-            shadowColor: isDark.value 
-              ? 'rgba(0, 0, 0, 0.5)' 
-              : 'rgba(0, 0, 0, 0.2)'
+            // 阴影颜色：使用主题变量，但 ECharts 需要具体颜色值
+            // 通过 getCssVar 获取当前主题的阴影颜色
+            shadowColor: getChartCssVar('--color-text-main') 
+              ? `${getChartCssVar('--color-text-main')}40` // 添加透明度
+              : (isDark.value ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.2)')
           }
         },
         data: props.categoryData.map((item, index) => ({

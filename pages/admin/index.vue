@@ -436,6 +436,7 @@ onMounted(() => {
   font-weight: 600;
   margin-bottom: 12px;
   opacity: 0.8;
+  color: var(--color-text-main);
 }
 
 /* KPI 卡片 */
@@ -453,7 +454,7 @@ onMounted(() => {
   height: 6px;
   border-radius: 50%;
   background: var(--n-primary-color, #3b82f6);
-  box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+  box-shadow: var(--shadow-primary, 0 0 8px rgba(59, 130, 246, 0.6));
   opacity: 0.7;
 }
 
@@ -461,6 +462,7 @@ onMounted(() => {
   font-size: 12px;
   margin-bottom: 12px;
   opacity: 0.7;
+  color: var(--color-text-sub);
 }
 
 .kpi-value-row {
@@ -475,12 +477,14 @@ onMounted(() => {
   font-weight: 600;
   line-height: 1;
   flex: 1;
+  color: var(--color-text-main);
 }
 
 .kpi-trend {
   font-size: 12px;
   font-weight: 500;
   white-space: nowrap;
+  color: var(--color-text-sub);
 }
 
 .kpi-trend-up {
@@ -495,6 +499,7 @@ onMounted(() => {
 
 .subtitle-text {
   opacity: 0.7;
+  color: var(--color-text-sub);
 }
 
 .kpi-trend-empty {
@@ -513,6 +518,7 @@ onMounted(() => {
 .chart-title {
   font-size: 16px;
   font-weight: 600;
+  color: var(--color-text-main);
 }
 
 .chart-actions {
@@ -537,12 +543,12 @@ onMounted(() => {
   justify-content: space-between;
   height: 48px;
   padding: 0 4px;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.20);
+  border-bottom: 1px solid var(--color-border-subtle, rgba(148, 163, 184, 0.20));
   transition: background-color 0.2s ease;
 }
 
 .todo-item:hover {
-  background-color: rgba(148, 163, 184, 0.06);
+  background-color: var(--color-bg-elevated, rgba(148, 163, 184, 0.06));
 }
 
 .todo-item:last-child {

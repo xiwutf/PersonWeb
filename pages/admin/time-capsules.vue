@@ -9,21 +9,21 @@
       <n-gi>
         <n-statistic label="待审核" :value="stats.pending">
           <template #prefix>
-            <i class="fas fa-clock" style="color: #fb923c;"></i>
+            <i class="fas fa-clock stat-icon-pending"></i>
           </template>
         </n-statistic>
       </n-gi>
       <n-gi>
         <n-statistic label="已展示" :value="stats.approved">
           <template #prefix>
-            <i class="fas fa-check-circle" style="color: #86efac;"></i>
+            <i class="fas fa-check-circle stat-icon-approved"></i>
           </template>
         </n-statistic>
       </n-gi>
       <n-gi>
         <n-statistic label="已拒绝" :value="stats.rejected">
           <template #prefix>
-            <i class="fas fa-times-circle" style="color: #fca5a5;"></i>
+            <i class="fas fa-times-circle stat-icon-rejected"></i>
           </template>
         </n-statistic>
       </n-gi>
@@ -319,11 +319,11 @@ onMounted(() => {
   margin-bottom: 1.5rem;
 }
 
-/* 表格容器 */
+/* 表格容器 - 使用 CSS 变量 */
 .table-container {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.05));
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.1));
   border-radius: 0.5rem;
   overflow: hidden;
   margin-bottom: 1.5rem;
@@ -333,7 +333,7 @@ onMounted(() => {
 .table-empty {
   padding: 2rem;
   text-align: center;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--color-text-muted, rgba(255, 255, 255, 0.6));
 }
 
 /* 数据表格 */
@@ -344,15 +344,15 @@ onMounted(() => {
 }
 
 .table-header {
-  background: rgba(255, 255, 255, 0.05);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.05));
+  border-bottom: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.1));
 }
 
 .table-header th {
   padding: 0.75rem 1.5rem;
   font-size: 0.875rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--color-text-muted, rgba(255, 255, 255, 0.6));
 }
 
 .table-body {
@@ -360,12 +360,12 @@ onMounted(() => {
 }
 
 .table-row {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.1));
   transition: background-color 0.2s ease;
 }
 
 .table-row:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.05));
 }
 
 .table-row:last-child {
@@ -374,7 +374,7 @@ onMounted(() => {
 
 .table-cell {
   padding: 1rem 1.5rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-main, rgba(255, 255, 255, 0.9));
 }
 
 .table-cell-content {
@@ -397,21 +397,21 @@ onMounted(() => {
 }
 
 .tag-warning {
-  background: rgba(251, 191, 36, 0.3);
-  border: 1px solid rgba(251, 191, 36, 0.6);
-  color: #fde68a;
+  background: var(--color-warning-soft, rgba(251, 191, 36, 0.3));
+  border: 1px solid var(--color-warning, rgba(251, 191, 36, 0.6));
+  color: var(--color-warning-hover, #fde68a);
 }
 
 .tag-success {
-  background: rgba(34, 197, 94, 0.3);
-  border: 1px solid rgba(34, 197, 94, 0.6);
-  color: #a7f3d0;
+  background: var(--color-success-soft, rgba(34, 197, 94, 0.3));
+  border: 1px solid var(--color-success, rgba(34, 197, 94, 0.6));
+  color: var(--color-success-hover, #a7f3d0);
 }
 
 .tag-error {
-  background: rgba(239, 68, 68, 0.3);
-  border: 1px solid rgba(239, 68, 68, 0.6);
-  color: #fecaca;
+  background: var(--color-error-soft, rgba(239, 68, 68, 0.3));
+  border: 1px solid var(--color-error, rgba(239, 68, 68, 0.6));
+  color: var(--color-error-hover, #fecaca);
 }
 
 /* 操作按钮 */
@@ -431,42 +431,55 @@ onMounted(() => {
 }
 
 .btn-link-blue {
-  color: #60a5fa;
+  color: var(--color-primary, #60a5fa);
 }
 
 .btn-link-blue:hover {
-  color: #93c5fd;
+  color: var(--color-primary-hover, #93c5fd);
 }
 
 .filter-select-fallback {
   width: 200px;
   padding: 0.5rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.1));
   border-radius: 0.25rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-main, rgba(255, 255, 255, 0.9));
   font-size: 0.875rem;
 }
 
 .filter-select-fallback:focus {
   outline: none;
-  border-color: rgba(59, 130, 246, 0.5);
+  border-color: var(--color-primary, rgba(59, 130, 246, 0.5));
+}
+
+/* 统计图标颜色 - 使用 CSS 变量 */
+.stat-icon-pending {
+  color: var(--color-warning, #fb923c);
+}
+
+.stat-icon-approved {
+  color: var(--color-success, #86efac);
+}
+
+.stat-icon-rejected {
+  color: var(--color-error, #fca5a5);
 }
 
 .btn-link-green {
-  color: #34d399;
+  color: var(--color-success, #34d399);
 }
 
 .btn-link-green:hover {
-  color: #6ee7b7;
+  color: var(--color-success-hover, #6ee7b7);
 }
 
 .btn-link-red {
-  color: #f87171;
+  color: var(--color-error, #f87171);
 }
 
 .btn-link-red:hover {
-  color: #fca5a5;
+  color: var(--color-error-hover, #fca5a5);
 }
 </style>
 

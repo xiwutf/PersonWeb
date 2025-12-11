@@ -23,42 +23,43 @@ export const useEChartsTheme = () => {
 
 
   // ECharts 深色主题配置（Vision Pro × 柔光感）
-  const darkTheme = {
+  // 使用 CSS 变量，确保与主题系统一致
+  const darkTheme = computed(() => ({
     backgroundColor: 'transparent',
     textStyle: {
-      color: 'rgba(255, 255, 255, 0.92)', // 柔和白色文字
+      color: getCssVar('--color-text-main') || 'rgba(255, 255, 255, 0.92)',
       fontSize: 13,
       fontWeight: 'normal'
     },
     title: {
       textStyle: {
-        color: 'rgba(255, 255, 255, 0.92)', // 柔和白色标题
+        color: getCssVar('--color-text-main') || 'rgba(255, 255, 255, 0.92)',
         fontSize: 16,
         fontWeight: 'bold'
       }
     },
     legend: {
       textStyle: {
-        color: 'rgba(255, 255, 255, 0.7)', // 柔和灰色
+        color: getCssVar('--color-text-sec') || 'rgba(255, 255, 255, 0.7)',
         fontSize: 13,
         fontWeight: 'normal'
       }
     },
     tooltip: {
-      backgroundColor: 'rgba(15, 23, 42, 0.95)', // 玻璃态背景
-      borderColor: 'rgba(148, 163, 184, 0.35)', // 微亮描边
+      backgroundColor: getCssVar('--color-bg-card') || 'rgba(15, 23, 42, 0.95)',
+      borderColor: getCssVar('--color-border-default') || 'rgba(148, 163, 184, 0.35)',
       borderWidth: 1,
       textStyle: {
-        color: 'rgba(255, 255, 255, 0.92)', // 柔和白色文字
+        color: getCssVar('--color-text-main') || 'rgba(255, 255, 255, 0.92)',
         fontSize: 13,
         fontWeight: 'normal',
         lineHeight: 20
       },
       padding: [10, 14],
-      extraCssText: 'box-shadow: 0 24px 60px rgba(15, 23, 42, 0.85), 0 0 0 1px rgba(148, 163, 184, 0.2); backdrop-filter: blur(12px);' // Vision Pro 风格阴影和模糊
+      extraCssText: `box-shadow: ${getCssVar('--shadow-lg') || '0 24px 60px rgba(15, 23, 42, 0.85)'}, 0 0 0 1px ${getCssVar('--color-border-subtle') || 'rgba(148, 163, 184, 0.2)'}; backdrop-filter: blur(12px);`
     },
     grid: {
-      borderColor: 'rgba(148, 163, 184, 0.25)', // 柔和网格线
+      borderColor: getCssVar('--color-border-subtle') || 'rgba(148, 163, 184, 0.25)',
       borderWidth: 1,
       left: '3%',
       right: '4%',
@@ -68,87 +69,88 @@ export const useEChartsTheme = () => {
     },
     categoryAxis: {
       axisLine: {
-        show: false // 霓虹风格：隐藏轴线
+        show: false
       },
       axisTick: {
-        show: false // 隐藏刻度
+        show: false
       },
       axisLabel: {
-        color: 'rgba(148, 163, 184, 0.8)', // 弱化标签
+        color: getCssVar('--color-text-muted') || 'rgba(148, 163, 184, 0.8)',
         fontSize: 11
       },
       splitLine: {
-        show: false // 霓虹风格：隐藏分割线
+        show: false
       }
     },
     valueAxis: {
       axisLine: {
-        show: false // 霓虹风格：隐藏轴线
+        show: false
       },
       axisTick: {
-        show: false // 隐藏刻度
+        show: false
       },
       axisLabel: {
-        color: 'rgba(148, 163, 184, 0.7)', // 弱化标签
+        color: getCssVar('--color-text-muted') || 'rgba(148, 163, 184, 0.7)',
         fontSize: 11
       },
       splitLine: {
-        show: true, // 保留网格线，但弱化
+        show: true,
         lineStyle: {
-          color: 'rgba(148, 163, 184, 0.18)', // 弱网格
+          color: getCssVar('--chart-grid') || 'rgba(148, 163, 184, 0.18)',
           type: 'dashed',
           width: 1
         }
       }
     }
-  }
+  }))
 
   // ECharts 浅色主题配置
-  const lightTheme = {
+  // 使用 CSS 变量，确保与主题系统一致
+  const lightTheme = computed(() => ({
     backgroundColor: 'transparent',
     textStyle: {
-      color: '#374151', // 深灰色文字
+      color: getCssVar('--color-text-main') || '#374151',
       fontSize: 12
     },
     title: {
       textStyle: {
-        color: '#111827', // 深色文字
+        color: getCssVar('--color-text-main') || '#111827',
         fontSize: 14,
         fontWeight: 'bold'
       }
     },
     legend: {
       textStyle: {
-        color: '#6b7280', // 中等深度的文字
+        color: getCssVar('--color-text-muted') || '#6b7280',
         fontSize: 12
       }
     },
     tooltip: {
-      backgroundColor: 'rgba(255, 255, 255, 0.95)', // 浅色背景
-      borderColor: 'rgba(209, 213, 219, 0.8)',
+      backgroundColor: getCssVar('--color-bg-card') || 'rgba(255, 255, 255, 0.95)',
+      borderColor: getCssVar('--color-border-default') || 'rgba(209, 213, 219, 0.8)',
       borderWidth: 1,
       textStyle: {
-        color: '#111827', // 深色文字
+        color: getCssVar('--color-text-main') || '#111827',
         fontSize: 12
       },
       padding: [8, 12]
     },
     grid: {
-      borderColor: 'rgba(209, 213, 219, 0.5)', // 浅色网格线
+      borderColor: getCssVar('--color-border-subtle') || 'rgba(209, 213, 219, 0.5)',
       borderWidth: 1
     },
     categoryAxis: {
       axisLine: {
         lineStyle: {
-          color: 'rgba(209, 213, 219, 0.8)'
+          color: getCssVar('--color-border-default') || 'rgba(209, 213, 219, 0.8)'
         }
       },
       axisLabel: {
-        color: '#6b7280'
+        color: getCssVar('--color-text-muted') || '#6b7280'
       },
       splitLine: {
         lineStyle: {
-          color: 'rgba(209, 213, 219, 0.3)',
+          color: getCssVar('--chart-grid') || 'rgba(209, 213, 219, 0.3)',
           type: 'dashed'
         }
       }
@@ -156,24 +158,24 @@ export const useEChartsTheme = () => {
     valueAxis: {
       axisLine: {
         lineStyle: {
-          color: 'rgba(209, 213, 219, 0.8)'
+          color: getCssVar('--color-border-default') || 'rgba(209, 213, 219, 0.8)'
         }
       },
       axisLabel: {
-        color: '#6b7280'
+        color: getCssVar('--color-text-muted') || '#6b7280'
       },
       splitLine: {
         lineStyle: {
-          color: 'rgba(209, 213, 219, 0.3)',
+          color: getCssVar('--chart-grid') || 'rgba(209, 213, 219, 0.3)',
           type: 'dashed'
         }
       }
     }
-  }
+  }))
 
   // 获取当前主题配置
   const echartsTheme = computed(() => {
-    return isDark.value ? darkTheme : lightTheme
+    return isDark.value ? darkTheme.value : lightTheme.value
   })
 
   // 应用主题到图表配置

@@ -7,7 +7,7 @@
       暂无数据
     </div>
     <div v-else class="chart-container">
-      <v-chart :option="techChartOption" :theme="chartTheme" autoresize />
+      <v-chart :option="techChartOption" autoresize />
     </div>
   </n-card>
 </template>
@@ -24,31 +24,7 @@ import {
 } from 'echarts/components'
 import VChart from 'vue-echarts'
 import { useEChartsTheme } from '~/composables/useEChartsTheme'
-import { registerTheme } from 'echarts/core'
 import type { TechStackDistributionItemDto } from '~/types/api'
-
-// 注册自定义主题
-registerTheme('dark-custom', {
-  backgroundColor: 'transparent',
-  textStyle: { color: '#ffffff' },
-  title: { textStyle: { color: '#ffffff' } },
-  tooltip: {
-    backgroundColor: 'rgba(17, 24, 39, 0.98)',
-    borderColor: 'rgba(156, 163, 175, 0.5)',
-    textStyle: { color: '#ffffff' }
-  }
-})
-
-registerTheme('light-custom', {
-  backgroundColor: 'transparent',
-  textStyle: { color: '#374151' },
-  title: { textStyle: { color: '#111827' } },
-  tooltip: {
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    borderColor: 'rgba(209, 213, 219, 0.8)',
-    textStyle: { color: '#111827' }
-  }
-})
 
 use([
   CanvasRenderer,
@@ -64,13 +40,21 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const { isDark, applyTheme } = useEChartsTheme()
-const chartTheme = computed(() => (isDark.value ? 'dark-custom' : 'light-custom'))
+const { isDark, applyTheme, getCssVar } = useEChartsTheme()
 
-const colors = [
-  '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6',
-  '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#6366f1'
-]
+// 使用图表颜色变量（从 theme.css 中定义的 --chart-primary 到 --chart-denary）
+const colors = computed(() => [
+  getCssVar('--chart-primary'),
+  getCssVar('--chart-secondary'),
+  getCssVar('--chart-tertiary'),
+  getCssVar('--chart-quaternary'),
+  getCssVar('--chart-quinary'),
+  getCssVar('--chart-senary'),
+  getCssVar('--chart-septenary'),
+  getCssVar('--chart-octonary'),
+  getCssVar('--chart-nonary'),
+  getCssVar('--chart-denary')
+])
 
 const techChartOption = computed(() => {
   if (!props.techData || props.techData.length === 0) {
@@ -93,7 +77,7 @@ const techChartOption = computed(() => {
       bottom: 10,
       left: 'center',
       textStyle: {
-        color: isDark.value ? 'rgba(255, 255, 255, 0.7)' : '#6b7280',
+        color: getCssVar('--color-text-muted') || (isDark.value ? 'rgba(255, 255, 255, 0.7)' : '#6b7280'),
         fontSize: 12
       },
       itemGap: 15,
@@ -109,7 +93,7 @@ const techChartOption = computed(() => {
         avoidLabelOverlap: false,
         itemStyle: {
           borderRadius: 4,
-          borderColor: isDark.value ? 'rgba(15, 23, 42, 1)' : '#fff',
+          borderColor: getCssVar('--color-bg-card') || (isDark.value ? 'rgba(15, 23, 42, 1)' : '#fff'),
           borderWidth: 2
         },
         label: {
@@ -122,7 +106,9 @@ const techChartOption = computed(() => {
           itemStyle: {
             shadowBlur: 10,
             shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)'
+            shadowColor: getCssVar('--color-text-main') 
+              ? `${getCssVar('--color-text-main')}40` 
+              : 'rgba(0, 0, 0, 0.5)'
           }
         },
         data: topTech.map((item, index) => ({
@@ -130,7 +116,7 @@ const techChartOption = computed(() => {
           name: item.tech,
           income: item.income,
           itemStyle: {
-            color: colors[index % colors.length]
+            color: colors.value[index % colors.value.length]
           }
         }))
       }

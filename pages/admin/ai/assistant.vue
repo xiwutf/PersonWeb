@@ -485,9 +485,9 @@ useHead({
 }
 
 .message-user .message-avatar {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary, #667eea) 0%, var(--color-purple, #764ba2) 100%);
   border-color: transparent;
-  color: white;
+  color: var(--color-text-main, white);
 }
 
 .message-bubble {
@@ -512,8 +512,8 @@ useHead({
 }
 
 .message-user .message-content {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, var(--color-primary, #667eea) 0%, var(--color-purple, #764ba2) 100%);
+  color: var(--color-text-main, white);
   border-bottom-right-radius: 4px;
 }
 

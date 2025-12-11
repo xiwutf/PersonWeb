@@ -4,7 +4,7 @@
     v-if="!isOpen"
     @click="toggleAssistant"
     class="fixed bottom-2 right-2 w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 z-[1001] flex items-center justify-center group ai-assistant-button"
-    style="z-index: 10000 !important; position: fixed !important; bottom: 0.5rem !important; right: 0.5rem !important; visibility: visible !important; opacity: 1 !important; display: flex !important; pointer-events: auto !important; isolation: isolate; transform: translateZ(0); width: 3rem !important; height: 3rem !important; background: linear-gradient(to bottom right, rgb(59, 130, 246), rgb(147, 51, 234)) !important; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;"
+    style="z-index: 10000 !important; position: fixed !important; bottom: 0.5rem !important; right: 0.5rem !important; visibility: visible !important; opacity: 1 !important; display: flex !important; pointer-events: auto !important; isolation: isolate; transform: translateZ(0); width: 3rem !important; height: 3rem !important;"
     aria-label="打开 AI 助手"
   >
     <svg class="w-6 h-6 text-white group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -266,7 +266,7 @@ const sendMessage = async () => {
 </script>
 
 <style scoped>
-/* 对话框容器 */
+/* 对话框容器 - 使用 CSS 变量 */
 .ai-assistant-button {
   position: fixed !important;
   bottom: 0.5rem !important;
@@ -278,10 +278,11 @@ const sendMessage = async () => {
   pointer-events: auto !important;
   width: 3rem !important;
   height: 3rem !important;
-  background: linear-gradient(to bottom right, rgb(59, 130, 246), rgb(147, 51, 234)) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+  background: linear-gradient(to bottom right, var(--color-primary, rgb(59, 130, 246)), var(--color-purple, rgb(147, 51, 234))) !important;
+  box-shadow: var(--shadow-lg, 0 4px 12px rgba(0, 0, 0, 0.5)) !important;
 }
 
+/* 对话框容器 - 使用 CSS 变量 */
 .ai-assistant-dialog {
   position: fixed;
   bottom: 0.5rem;
@@ -290,26 +291,19 @@ const sendMessage = async () => {
   max-width: calc(100vw - 1rem);
   height: 28rem;
   max-height: calc(100vh - 1rem);
-  background: white;
+  background: var(--color-bg-card, white);
   border-radius: 1rem;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(229, 231, 235, 1);
+  box-shadow: var(--shadow-xl, 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04));
+  border: 1px solid var(--color-border-subtle, rgba(229, 231, 235, 1));
   z-index: 10000 !important; /* 确保对话框也在最上层 */
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
-@media (prefers-color-scheme: dark) {
-  .ai-assistant-dialog {
-    background: rgb(31, 41, 55);
-    border-color: rgb(55, 65, 81);
-  }
-}
-
-/* 头部 */
+/* 头部 - 使用 CSS 变量 */
 .ai-assistant-header {
-  background: linear-gradient(to right, rgb(59, 130, 246), rgb(147, 51, 234));
+  background: linear-gradient(to right, var(--color-primary, rgb(59, 130, 246)), var(--color-purple, rgb(147, 51, 234)));
   padding: 1rem;
   display: flex;
   align-items: center;
@@ -325,7 +319,7 @@ const sendMessage = async () => {
 .ai-assistant-avatar {
   width: 2.5rem;
   height: 2.5rem;
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.2));
   border-radius: 9999px;
   display: flex;
   align-items: center;
@@ -335,24 +329,24 @@ const sendMessage = async () => {
 .ai-assistant-avatar-icon {
   width: 1.5rem;
   height: 1.5rem;
-  color: white;
+  color: var(--color-text-main, white);
 }
 
 .ai-assistant-title {
-  color: white;
+  color: var(--color-text-main, white);
   font-weight: 700;
   font-size: 1rem;
   margin: 0;
 }
 
 .ai-assistant-status {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--color-text-sub, rgba(255, 255, 255, 0.8));
   font-size: 0.75rem;
   margin: 0;
 }
 
 .ai-assistant-close-btn {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--color-text-sub, rgba(255, 255, 255, 0.8));
   transition: color 0.2s;
   background: none;
   border: none;
@@ -361,7 +355,7 @@ const sendMessage = async () => {
 }
 
 .ai-assistant-close-btn:hover {
-  color: white;
+  color: var(--color-text-main, white);
 }
 
 .ai-assistant-close-icon {
@@ -369,18 +363,12 @@ const sendMessage = async () => {
   height: 1.5rem;
 }
 
-/* 消息区域 */
+/* 消息区域 - 使用 CSS 变量 */
 .ai-assistant-messages {
   flex: 1;
   overflow-y: auto;
   padding: 1rem;
-  background: rgb(249, 250, 251);
-}
-
-@media (prefers-color-scheme: dark) {
-  .ai-assistant-messages {
-    background: rgb(17, 24, 39);
-  }
+  background: var(--color-bg-body, rgb(249, 250, 251));
 }
 
 .ai-assistant-welcome {
@@ -408,25 +396,19 @@ const sendMessage = async () => {
   max-width: 80%;
 }
 
+/* 用户消息 - 使用 CSS 变量 */
 .ai-assistant-message-user {
-  background: rgb(59, 130, 246);
-  color: white;
+  background: var(--color-primary, rgb(59, 130, 246));
+  color: var(--color-text-main, white);
   border-top-right-radius: 0;
 }
 
+/* AI 消息 - 使用 CSS 变量 */
 .ai-assistant-message-assistant {
-  background: white;
-  color: rgb(31, 41, 55);
+  background: var(--color-bg-card, white);
+  color: var(--color-text-main, rgb(31, 41, 55));
   border-top-left-radius: 0;
-  border: 1px solid rgba(229, 231, 235, 1);
-}
-
-@media (prefers-color-scheme: dark) {
-  .ai-assistant-message-assistant {
-    background: rgb(31, 41, 55);
-    color: rgb(229, 231, 235);
-    border-color: rgb(55, 65, 81);
-  }
+  border: 1px solid var(--color-border-subtle, rgba(229, 231, 235, 1));
 }
 
 .ai-assistant-message-text {
@@ -437,7 +419,7 @@ const sendMessage = async () => {
 
 .ai-assistant-message-loading {
   font-size: 0.75rem;
-  color: rgb(107, 114, 128);
+  color: var(--color-text-muted, rgb(107, 114, 128));
   margin-top: 0.5rem;
   margin-bottom: 0;
 }
@@ -450,7 +432,7 @@ const sendMessage = async () => {
 .ai-assistant-loading-dot {
   width: 0.5rem;
   height: 0.5rem;
-  background: rgb(156, 163, 175);
+  background: var(--color-text-muted, rgb(156, 163, 175));
   border-radius: 9999px;
   animation: bounce 1.4s infinite;
 }
@@ -464,18 +446,11 @@ const sendMessage = async () => {
   }
 }
 
-/* 输入区域 */
+/* 输入区域 - 使用 CSS 变量 */
 .ai-assistant-input-area {
   padding: 0.75rem;
-  border-top: 1px solid rgba(229, 231, 235, 1);
-  background: white;
-}
-
-@media (prefers-color-scheme: dark) {
-  .ai-assistant-input-area {
-    background: rgb(31, 41, 55);
-    border-color: rgb(55, 65, 81);
-  }
+  border-top: 1px solid var(--color-border-subtle, rgba(229, 231, 235, 1));
+  background: var(--color-bg-card, white);
 }
 
 .ai-assistant-quick-actions {
@@ -488,8 +463,8 @@ const sendMessage = async () => {
 .ai-assistant-quick-action-btn {
   padding: 0.375rem 0.75rem;
   font-size: 0.75rem;
-  background: rgb(243, 244, 246);
-  color: rgb(55, 65, 81);
+  background: var(--color-bg-elevated, rgb(243, 244, 246));
+  color: var(--color-text-main, rgb(55, 65, 81));
   border-radius: 9999px;
   border: none;
   cursor: pointer;
@@ -497,23 +472,12 @@ const sendMessage = async () => {
 }
 
 .ai-assistant-quick-action-btn:hover:not(:disabled) {
-  background: rgb(229, 231, 235);
+  background: var(--color-bg-elevated, rgb(229, 231, 235));
 }
 
 .ai-assistant-quick-action-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-}
-
-@media (prefers-color-scheme: dark) {
-  .ai-assistant-quick-action-btn {
-    background: rgb(55, 65, 81);
-    color: rgb(209, 213, 219);
-  }
-  
-  .ai-assistant-quick-action-btn:hover:not(:disabled) {
-    background: rgb(75, 85, 99);
-  }
 }
 
 .ai-assistant-input-wrapper {
@@ -524,17 +488,17 @@ const sendMessage = async () => {
 .ai-assistant-input {
   flex: 1;
   padding: 0.5rem 1rem;
-  border: 1px solid rgba(209, 213, 219, 1);
+  border: 1px solid var(--color-border-default, rgba(209, 213, 219, 1));
   border-radius: 0.5rem;
-  background: white;
-  color: rgb(31, 41, 55);
+  background: var(--color-bg-card, white);
+  color: var(--color-text-main, rgb(31, 41, 55));
   font-size: 0.875rem;
 }
 
 .ai-assistant-input:focus {
   outline: none;
   ring: 2px;
-  ring-color: rgb(59, 130, 246);
+  ring-color: var(--color-primary, rgb(59, 130, 246));
 }
 
 .ai-assistant-input:disabled {
@@ -542,18 +506,10 @@ const sendMessage = async () => {
   cursor: not-allowed;
 }
 
-@media (prefers-color-scheme: dark) {
-  .ai-assistant-input {
-    background: rgb(17, 24, 39);
-    color: rgb(229, 231, 235);
-    border-color: rgb(75, 85, 99);
-  }
-}
-
 .ai-assistant-send-btn {
   padding: 0.5rem 1rem;
-  background: rgb(59, 130, 246);
-  color: white;
+  background: var(--color-primary, rgb(59, 130, 246));
+  color: var(--color-text-main, white);
   border-radius: 0.5rem;
   border: none;
   cursor: pointer;
@@ -564,7 +520,7 @@ const sendMessage = async () => {
 }
 
 .ai-assistant-send-btn:hover:not(:disabled) {
-  background: rgb(37, 99, 235);
+  background: var(--color-primary-hover, rgb(37, 99, 235));
 }
 
 .ai-assistant-send-btn:disabled {
