@@ -415,12 +415,14 @@
     
     <!-- AI 智能助手 -->
     <ClientOnly>
-      <AIAssistant />
+      <!-- 后台管理中隐藏 AI 助手 -->
+      <!-- <AIAssistant /> -->
     </ClientOnly>
     
     <!-- 访客互动功能 -->
     <ClientOnly>
-      <VisitorInteractionPanel />
+      <!-- 后台管理中隐藏访客互动面板 -->
+      <!-- <VisitorInteractionPanel /> -->
     </ClientOnly>
   </div>
 </template>
@@ -770,16 +772,11 @@ const logout = () => {
   scrollbar-color: var(--color-border-default) transparent;
 }
 
-/* 主内容区背景 - Vision Pro 深空渐变（深色模式下） */
+/* 主内容区背景 - 根据主题自动适配 */
 .admin-main,
 .admin-main-fallback {
-  /* 深色模式下使用深空渐变，浅色模式使用纯色 */
-  /* 设置初始背景色，避免刷新时的蓝屏 */
-  background: var(--n-body-color, var(--color-bg-body, #020617)) !important;
-  color: var(--color-text-main, #e2e8f0) !important;
-  
-  /* 可选：在最底层加一层非常淡的噪点纹理（性能可接受前提下） */
-  /* 注意：这里使用伪元素实现，避免影响性能 */
+  background: var(--n-body-color, var(--color-bg-body)) !important;
+  color: var(--color-text-main) !important;
   position: relative;
 }
 
@@ -841,61 +838,61 @@ const logout = () => {
   }
 }
 
-/* 确保卡片在深色背景下可见 - 使用 CSS 变量 */
+/* 确保卡片可见 - 使用 CSS 变量，自动适配主题 */
 .admin-main :deep(.card),
 .admin-main :deep(.page-container),
 .admin-main :deep(.app-card) {
-  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.05)) !important;
+  background: var(--color-bg-elevated, var(--color-bg-card)) !important;
   backdrop-filter: blur(10px);
-  border: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.1)) !important;
-  color: var(--color-text-main, #e2e8f0) !important;
+  border: 1px solid var(--color-border-subtle) !important;
+  color: var(--color-text-main) !important;
 }
 
 .admin-main :deep(.card-hover) {
-  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.05));
-  border: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.1));
+  background: var(--color-bg-elevated, var(--color-bg-card));
+  border: 1px solid var(--color-border-subtle);
 }
 
 .admin-main :deep(.card-hover:hover) {
-  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.1));
-  border-color: var(--color-border-default, rgba(255, 255, 255, 0.2));
+  background: var(--color-bg-elevated);
+  border-color: var(--color-border-default);
 }
 
-/* 确保主题类正常工作 */
+/* 确保主题类正常工作 - 使用 CSS 变量，自动适配主题 */
 .admin-main :deep(.text-text-main) {
-  color: var(--color-text-main, #e2e8f0) !important;
+  color: var(--color-text-main) !important;
 }
 
 .admin-main :deep(.text-text-muted) {
-  color: var(--color-text-muted, #94a3b8) !important;
+  color: var(--color-text-muted) !important;
 }
 
 .admin-main :deep(.text-text-disabled) {
-  color: var(--color-text-disabled, #64748b) !important;
+  color: var(--color-text-disabled) !important;
 }
 
-/* 文字颜色调整 */
+/* 文字颜色调整 - 使用 CSS 变量 */
 .admin-main :deep(.page-title),
 .admin-main :deep(h1),
 .admin-main :deep(h2),
 .admin-main :deep(h3) {
-  color: var(--color-text-main, #e2e8f0) !important;
+  color: var(--color-text-main) !important;
 }
 
 .admin-main :deep(.text-gray-600),
 .admin-main :deep(.text-gray-500) {
-  color: var(--color-text-muted, #94a3b8) !important;
+  color: var(--color-text-muted) !important;
 }
 
 .admin-main :deep(.text-gray-800) {
-  color: var(--color-text-main, #e2e8f0) !important;
+  color: var(--color-text-main) !important;
 }
 
 .admin-main :deep(.text-gray-900) {
-  color: var(--color-text-main, #e2e8f0) !important;
+  color: var(--color-text-main) !important;
 }
 
-/* 输入框和表单元素在深色背景下的样式 */
+/* 输入框和表单元素样式 - 使用 CSS 变量，自动适配主题 */
 .admin-main :deep(.input),
 .admin-main :deep(.form-input),
 .admin-main :deep(input[type="text"]),
@@ -906,55 +903,56 @@ const logout = () => {
 .admin-main :deep(input[type="datetime-local"]),
 .admin-main :deep(select),
 .admin-main :deep(textarea) {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
-  color: #ffffff !important;
+  background: var(--color-bg-elevated, var(--color-bg-card)) !important;
+  border-color: var(--color-border-default) !important;
+  color: var(--color-text-main) !important;
 }
 
 .admin-main :deep(.input::placeholder),
 .admin-main :deep(.form-input::placeholder),
 .admin-main :deep(input::placeholder),
 .admin-main :deep(textarea::placeholder) {
-  color: rgba(255, 255, 255, 0.5) !important;
+  color: var(--color-text-muted) !important;
 }
 
-/* 按钮在深色背景下的样式 */
+/* 按钮样式 - 使用 CSS 变量，自动适配主题 */
 .admin-main :deep(.btn-secondary) {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
-  color: #ffffff;
+  background: var(--color-bg-elevated, var(--color-bg-card));
+  border-color: var(--color-border-default);
+  color: var(--color-text-main);
 }
 
 .admin-main :deep(.btn-secondary:hover) {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--color-bg-elevated);
+  border-color: var(--color-border-strong);
 }
 
-/* 表格样式 */
+/* 表格样式 - 使用 CSS 变量，自动适配主题 */
 .admin-main :deep(.table),
 .admin-main :deep(table) {
-  color: #ffffff;
+  color: var(--color-text-main);
 }
 
 .admin-main :deep(.table-header),
 .admin-main :deep(thead) {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--color-bg-elevated, var(--color-bg-card));
 }
 
 .admin-main :deep(.table-header-cell),
 .admin-main :deep(th) {
-  color: rgba(255, 255, 255, 0.9);
-  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--color-text-main);
+  border-color: var(--color-border-subtle);
 }
 
 .admin-main :deep(.table-cell),
 .admin-main :deep(td) {
-  color: rgba(255, 255, 255, 0.8);
-  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--color-text-main);
+  border-color: var(--color-border-subtle);
 }
 
 .admin-main :deep(.table-row:hover),
 .admin-main :deep(tr:hover) {
-  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.05));
+  background: var(--color-bg-elevated);
 }
 
 /* 链接样式 - 使用 CSS 变量 */
@@ -1014,81 +1012,79 @@ const logout = () => {
   color: var(--color-text-main, #ffffff) !important;
 }
 
-/* 白色背景的卡片改为半透明 - 使用 CSS 变量 */
+/* 白色背景的卡片 - 使用 CSS 变量，自动适配主题 */
 .admin-main :deep(.bg-white),
 .admin-main :deep(.bg-white\/\*),
 .admin-main :deep([class*="bg-white"]) {
-  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.05)) !important;
-  backdrop-filter: blur(10px);
+  background: var(--color-bg-card) !important;
 }
 
-/* 深色模式下的背景也统一 - 使用 CSS 变量 */
+/* 深色模式下的背景 - 使用 CSS 变量 */
 .admin-main :deep(.dark\:bg-gray-800),
 .admin-main :deep(.dark\:bg-gray-900) {
-  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.05)) !important;
-  backdrop-filter: blur(10px);
+  background: var(--color-bg-elevated) !important;
 }
 
 /* 边框颜色调整 - 使用 CSS 变量 */
 .admin-main :deep(.border-gray-200),
 .admin-main :deep(.border-gray-300) {
-  border-color: var(--color-border-subtle, rgba(255, 255, 255, 0.1)) !important;
+  border-color: var(--color-border-subtle) !important;
 }
 
 .admin-main :deep(.border-gray-700) {
-  border-color: var(--color-border-default, rgba(255, 255, 255, 0.2)) !important;
+  border-color: var(--color-border-default) !important;
 }
 
-/* 分割线 */
+/* 分割线 - 使用 CSS 变量 */
 .admin-main :deep(.divide-gray-200),
 .admin-main :deep(.divide-gray-300) {
-  border-color: rgba(255, 255, 255, 0.1) !important;
+  border-color: var(--color-border-subtle) !important;
 }
 
 .admin-main :deep(.divide-gray-700) {
-  border-color: rgba(255, 255, 255, 0.2) !important;
+  border-color: var(--color-border-default) !important;
 }
 
-/* 悬停效果 */
+/* 悬停效果 - 使用 CSS 变量 */
 .admin-main :deep(.hover\:bg-gray-50:hover) {
-  background: rgba(255, 255, 255, 0.05) !important;
+  background: var(--color-bg-elevated) !important;
 }
 
-/* 加载和空状态 */
+/* 加载和空状态 - 使用 CSS 变量，自动适配主题 */
 .admin-main :deep(.loading),
 .admin-main :deep(.empty-state) {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-muted);
 }
 
-/* 统计卡片文字 */
+/* 统计卡片文字 - 使用 CSS 变量 */
 .admin-main :deep(.stat-label),
 .admin-main :deep(.stat-value) {
-  color: #ffffff;
+  color: var(--color-text-main);
 }
 
-/* 所有 h1-h6 标题 */
+/* 所有 h1-h6 标题 - 使用 CSS 变量 */
 .admin-main :deep(h1),
 .admin-main :deep(h2),
 .admin-main :deep(h3),
 .admin-main :deep(h4),
 .admin-main :deep(h5),
 .admin-main :deep(h6) {
-  color: #ffffff;
+  color: var(--color-text-main);
 }
 
-/* 段落文字 */
+/* 段落文字 - 使用 CSS 变量 */
 .admin-main :deep(p) {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-main);
 }
 
-/* 列表文字 */
+/* 列表文字 - 使用 CSS 变量 */
 .admin-main :deep(li) {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-main);
 }
 
-/* 标签文字 */
+/* 标签文字 - 使用 CSS 变量 */
 .admin-main :deep(label) {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-main);
 }
 
 /* 选择框选项 */
@@ -1103,277 +1099,283 @@ const logout = () => {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* 筛选栏 */
+/* 筛选栏 - 使用 CSS 变量，自动适配主题 */
 .admin-main :deep(.filter-bar) {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.1);
+  background: var(--color-bg-elevated, var(--color-bg-card));
+  border-color: var(--color-border-subtle);
 }
 
-/* Naive UI 组件深色主题样式 */
+/* Naive UI 组件样式 - 使用 CSS 变量，自动适配主题 */
 .admin-main :deep(.n-card) {
-  background: rgba(255, 255, 255, 0.05) !important;
+  background: var(--color-bg-card) !important;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  color: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid var(--color-border-subtle) !important;
+  color: var(--color-text-main) !important;
 }
 
 .admin-main :deep(.n-card .n-card-header) {
-  color: #ffffff !important;
-  border-bottom-color: rgba(255, 255, 255, 0.1) !important;
+  color: var(--color-text-main) !important;
+  border-bottom-color: var(--color-border-subtle) !important;
 }
 
 .admin-main :deep(.n-card .n-card-body) {
-  color: rgba(255, 255, 255, 0.9) !important;
+  color: var(--color-text-main) !important;
 }
 
-/* Naive UI 数据表格深色主题 */
+/* Naive UI 数据表格 - 使用 CSS 变量 */
 .admin-main :deep(.n-data-table) {
   background: transparent !important;
 }
 
 .admin-main :deep(.n-data-table .n-data-table-thead) {
-  background: rgba(255, 255, 255, 0.05) !important;
+  background: var(--color-bg-elevated) !important;
 }
 
 .admin-main :deep(.n-data-table .n-data-table-thead th) {
-  background: rgba(255, 255, 255, 0.05) !important;
-  color: rgba(255, 255, 255, 0.9) !important;
-  border-color: rgba(255, 255, 255, 0.1) !important;
+  background: var(--color-bg-elevated) !important;
+  color: var(--color-text-main) !important;
+  border-color: var(--color-border-subtle) !important;
 }
 
 .admin-main :deep(.n-data-table .n-data-table-tbody td) {
   background: transparent !important;
-  color: rgba(255, 255, 255, 0.8) !important;
-  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: var(--color-text-main) !important;
+  border-color: var(--color-border-subtle) !important;
 }
 
 .admin-main :deep(.n-data-table .n-data-table-tbody tr:hover td) {
-  background: rgba(255, 255, 255, 0.05) !important;
+  background: var(--color-bg-elevated) !important;
 }
 
 .admin-main :deep(.n-data-table .n-data-table-tbody tr:nth-child(even) td) {
-  background: rgba(255, 255, 255, 0.02) !important;
+  background: var(--color-bg-elevated);
+  opacity: 0.5;
 }
 
-/* Naive UI 输入框深色主题 */
+/* Naive UI 输入框 - 使用 CSS 变量 */
 .admin-main :deep(.n-input) {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
-  color: #ffffff !important;
+  background: var(--color-bg-elevated, var(--color-bg-card)) !important;
+  border-color: var(--color-border-default) !important;
+  color: var(--color-text-main) !important;
 }
 
 .admin-main :deep(.n-input .n-input__input-el) {
-  color: #ffffff !important;
+  color: var(--color-text-main) !important;
 }
 
 .admin-main :deep(.n-input .n-input__placeholder) {
-  color: rgba(255, 255, 255, 0.5) !important;
+  color: var(--color-text-muted) !important;
 }
 
-/* Naive UI 按钮深色主题 */
+/* Naive UI 按钮 - 使用 CSS 变量 */
 .admin-main :deep(.n-button) {
-  border-color: rgba(255, 255, 255, 0.2) !important;
+  border-color: var(--color-border-default) !important;
 }
 
 .admin-main :deep(.n-button--default-type) {
-  background: rgba(255, 255, 255, 0.1) !important;
-  color: #ffffff !important;
+  background: var(--color-bg-elevated, var(--color-bg-card)) !important;
+  color: var(--color-text-main) !important;
 }
 
 .admin-main :deep(.n-button--default-type:hover) {
-  background: rgba(255, 255, 255, 0.2) !important;
+  background: var(--color-bg-elevated) !important;
 }
 
-/* Naive UI 标签深色主题 */
+/* Naive UI 标签 - 使用 CSS 变量 */
 .admin-main :deep(.n-tag) {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
-  color: rgba(255, 255, 255, 0.9) !important;
+  background: var(--color-bg-elevated) !important;
+  border-color: var(--color-border-default) !important;
+  color: var(--color-text-main) !important;
 }
 
-/* Naive UI 分页深色主题 */
+/* Naive UI 分页 - 使用 CSS 变量 */
 .admin-main :deep(.n-pagination) {
-  color: rgba(255, 255, 255, 0.9) !important;
+  color: var(--color-text-main) !important;
 }
 
 .admin-main :deep(.n-pagination .n-pagination-item) {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
-  color: rgba(255, 255, 255, 0.9) !important;
+  background: var(--color-bg-elevated) !important;
+  border-color: var(--color-border-default) !important;
+  color: var(--color-text-main) !important;
 }
 
 .admin-main :deep(.n-pagination .n-pagination-item:hover) {
-  background: rgba(255, 255, 255, 0.2) !important;
+  background: var(--color-bg-elevated) !important;
 }
 
 .admin-main :deep(.n-pagination .n-pagination-item--active) {
-  background: rgba(59, 130, 246, 0.3) !important;
-  border-color: rgba(59, 130, 246, 0.5) !important;
-  color: #ffffff !important;
+  background: var(--color-primary-soft) !important;
+  border-color: var(--color-primary) !important;
+  color: var(--color-primary) !important;
 }
 
-/* Naive UI 模态框深色主题 */
+/* Naive UI 模态框 - 使用 CSS 变量 */
 .admin-main :deep(.n-modal) {
-  color: rgba(255, 255, 255, 0.9) !important;
+  color: var(--color-text-main) !important;
 }
 
 .admin-main :deep(.n-modal .n-card) {
-  background: rgba(30, 41, 59, 0.95) !important;
+  background: var(--color-bg-card) !important;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid var(--color-border-subtle) !important;
 }
 
-/* Naive UI 表单深色主题 */
+/* Naive UI 表单 - 使用 CSS 变量 */
 .admin-main :deep(.n-form-item-label) {
-  color: rgba(255, 255, 255, 0.9) !important;
+  color: var(--color-text-main) !important;
 }
 
 .admin-main :deep(.n-form-item-feedback-wrapper) {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: var(--color-text-muted) !important;
 }
 
-/* Naive UI 表格内嵌组件样式统一 */
+/* Naive UI 表格内嵌组件样式统一 - 使用 CSS 变量 */
 /* 表格内的按钮 - quaternary 类型 */
 .admin-main :deep(.n-data-table .n-button--quaternary) {
   background: transparent !important;
   border: none !important;
-  color: rgba(255, 255, 255, 0.8) !important;
+  color: var(--color-text-main) !important;
   transition: all 0.2s ease !important;
 }
 
 .admin-main :deep(.n-data-table .n-button--quaternary:hover) {
-  background: rgba(255, 255, 255, 0.1) !important;
-  color: #ffffff !important;
+  background: var(--color-bg-elevated) !important;
+  color: var(--color-text-main) !important;
 }
 
 .admin-main :deep(.n-data-table .n-button--primary-type.n-button--quaternary) {
-  color: #60a5fa !important;
+  color: var(--color-primary) !important;
 }
 
 .admin-main :deep(.n-data-table .n-button--primary-type.n-button--quaternary:hover) {
-  background: rgba(96, 165, 250, 0.2) !important;
-  color: #93c5fd !important;
+  background: var(--color-primary-soft) !important;
+  color: var(--color-primary-hover) !important;
 }
 
 .admin-main :deep(.n-data-table .n-button--error-type.n-button--quaternary) {
-  color: #f87171 !important;
+  color: var(--color-error, #f87171) !important;
 }
 
 .admin-main :deep(.n-data-table .n-button--error-type.n-button--quaternary:hover) {
-  background: rgba(248, 113, 113, 0.2) !important;
-  color: #fca5a5 !important;
+  background: var(--color-error);
+  opacity: 0.1;
+  color: var(--color-error) !important;
 }
 
 .admin-main :deep(.n-data-table .n-button--success-type.n-button--quaternary) {
-  color: #34d399 !important;
+  color: var(--color-success, #34d399) !important;
 }
 
 .admin-main :deep(.n-data-table .n-button--success-type.n-button--quaternary:hover) {
-  background: rgba(52, 211, 153, 0.2) !important;
-  color: #6ee7b7 !important;
+  background: var(--color-success);
+  opacity: 0.1;
+  color: var(--color-success) !important;
 }
 
-/* 表格内的标签样式 */
+/* 表格内的标签样式 - 使用 CSS 变量 */
 .admin-main :deep(.n-data-table .n-tag) {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  color: rgba(255, 255, 255, 0.9) !important;
+  background: var(--color-bg-elevated) !important;
+  border: 1px solid var(--color-border-default) !important;
+  color: var(--color-text-main) !important;
 }
 
 .admin-main :deep(.n-data-table .n-tag--info) {
-  background: rgba(59, 130, 246, 0.2) !important;
-  border-color: rgba(59, 130, 246, 0.4) !important;
-  color: #93c5fd !important;
+  background: var(--color-primary-soft) !important;
+  border-color: var(--color-primary) !important;
+  color: var(--color-primary) !important;
 }
 
 .admin-main :deep(.n-data-table .n-tag--success) {
-  background: rgba(34, 197, 94, 0.2) !important;
-  border-color: rgba(34, 197, 94, 0.4) !important;
-  color: #6ee7b7 !important;
+  background: var(--color-success);
+  opacity: 0.1;
+  border-color: var(--color-success) !important;
+  color: var(--color-success) !important;
 }
 
 .admin-main :deep(.n-data-table .n-tag--warning) {
-  background: rgba(251, 191, 36, 0.2) !important;
-  border-color: rgba(251, 191, 36, 0.4) !important;
-  color: #fcd34d !important;
+  background: var(--color-warning, rgba(251, 191, 36, 0.2));
+  border-color: var(--color-warning, rgba(251, 191, 36, 0.4)) !important;
+  color: var(--color-warning, #fcd34d) !important;
 }
 
 .admin-main :deep(.n-data-table .n-tag--error) {
-  background: rgba(239, 68, 68, 0.2) !important;
-  border-color: rgba(239, 68, 68, 0.4) !important;
-  color: #fca5a5 !important;
+  background: var(--color-error);
+  opacity: 0.1;
+  border-color: var(--color-error) !important;
+  color: var(--color-error) !important;
 }
 
-/* 表格内的头像 */
+/* 表格内的头像 - 使用 CSS 变量 */
 .admin-main :deep(.n-data-table .n-avatar) {
-  border: 2px solid rgba(255, 255, 255, 0.1) !important;
+  border: 2px solid var(--color-border-subtle) !important;
 }
 
-/* 表格内的链接 */
+/* 表格内的链接 - 使用 CSS 变量 */
 .admin-main :deep(.n-data-table a) {
-  color: #60a5fa !important;
+  color: var(--color-primary) !important;
   text-decoration: none !important;
   transition: color 0.2s ease !important;
 }
 
 .admin-main :deep(.n-data-table a:hover) {
-  color: #93c5fd !important;
+  color: var(--color-primary-hover) !important;
 }
 
-/* Popconfirm 深色主题 */
+/* Popconfirm - 使用 CSS 变量 */
 .admin-main :deep(.n-popover) {
-  background: rgba(30, 41, 59, 0.95) !important;
+  background: var(--color-bg-card) !important;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  color: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid var(--color-border-subtle) !important;
+  color: var(--color-text-main) !important;
 }
 
 .admin-main :deep(.n-popover .n-popover__content) {
-  color: rgba(255, 255, 255, 0.9) !important;
+  color: var(--color-text-main) !important;
 }
 
 .admin-main :deep(.n-popover .n-button) {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
-  color: rgba(255, 255, 255, 0.9) !important;
+  background: var(--color-bg-elevated) !important;
+  border-color: var(--color-border-default) !important;
+  color: var(--color-text-main) !important;
 }
 
 .admin-main :deep(.n-popover .n-button:hover) {
-  background: rgba(255, 255, 255, 0.2) !important;
+  background: var(--color-bg-elevated) !important;
 }
 
 .admin-main :deep(.n-popover .n-button--primary-type) {
-  background: rgba(59, 130, 246, 0.3) !important;
-  border-color: rgba(59, 130, 246, 0.5) !important;
-  color: #ffffff !important;
+  background: var(--color-primary-soft) !important;
+  border-color: var(--color-primary) !important;
+  color: var(--color-primary) !important;
 }
 
 .admin-main :deep(.n-popover .n-button--primary-type:hover) {
-  background: rgba(59, 130, 246, 0.4) !important;
+  background: var(--color-primary-soft) !important;
+  opacity: 0.8;
 }
 
-/* 表格内的自定义元素 */
+/* 表格内的自定义元素 - 使用 CSS 变量 */
 .admin-main :deep(.n-data-table .project-info),
 .admin-main :deep(.n-data-table .project-details),
 .admin-main :deep(.n-data-table .project-title),
 .admin-main :deep(.n-data-table .project-desc),
 .admin-main :deep(.n-data-table .view-count),
 .admin-main :deep(.n-data-table .action-buttons) {
-  color: rgba(255, 255, 255, 0.9) !important;
+  color: var(--color-text-main) !important;
 }
 
 .admin-main :deep(.n-data-table .project-desc) {
-  color: rgba(255, 255, 255, 0.6) !important;
+  color: var(--color-text-muted) !important;
 }
 
 .admin-main :deep(.n-data-table .view-count) {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: var(--color-text-muted) !important;
 }
 
-/* 表格内的图标颜色 */
+/* 表格内的图标颜色 - 使用 CSS 变量 */
 .admin-main :deep(.n-data-table .fas),
 .admin-main :deep(.n-data-table .fa) {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: var(--color-text-muted) !important;
 }
 
 /* 表格内的操作按钮容器 */
@@ -1383,66 +1385,69 @@ const logout = () => {
   align-items: center;
 }
 
-/* 确保表格内所有文字都是可见的 */
+/* 确保表格内所有文字都是可见的 - 使用 CSS 变量 */
 .admin-main :deep(.n-data-table td) {
-  color: rgba(255, 255, 255, 0.9) !important;
+  color: var(--color-text-main) !important;
 }
 
 .admin-main :deep(.n-data-table td .n-tag) {
   color: inherit !important;
 }
 
-/* 页面头部按钮统一样式 */
+/* 页面头部按钮统一样式 - 使用 CSS 变量 */
 .admin-main :deep(.page-header .n-button),
 .admin-main :deep(.header-actions .n-button) {
-  border-color: rgba(255, 255, 255, 0.2) !important;
+  border-color: var(--color-border-default) !important;
 }
 
 .admin-main :deep(.page-header .n-button--primary-type) {
-  background: rgba(59, 130, 246, 0.3) !important;
-  border-color: rgba(59, 130, 246, 0.5) !important;
-  color: #ffffff !important;
+  background: var(--color-primary-soft) !important;
+  border-color: var(--color-primary) !important;
+  color: var(--color-primary) !important;
 }
 
 .admin-main :deep(.page-header .n-button--primary-type:hover) {
-  background: rgba(59, 130, 246, 0.4) !important;
-  border-color: rgba(59, 130, 246, 0.6) !important;
+  background: var(--color-primary-soft) !important;
+  opacity: 0.8;
+  border-color: var(--color-primary-hover) !important;
 }
 
 .admin-main :deep(.page-header .n-button--success-type) {
-  background: rgba(34, 197, 94, 0.3) !important;
-  border-color: rgba(34, 197, 94, 0.5) !important;
-  color: #ffffff !important;
+  background: var(--color-success);
+  opacity: 0.1;
+  border-color: var(--color-success) !important;
+  color: var(--color-success) !important;
 }
 
 .admin-main :deep(.page-header .n-button--success-type:hover) {
-  background: rgba(34, 197, 94, 0.4) !important;
-  border-color: rgba(34, 197, 94, 0.6) !important;
+  background: var(--color-success);
+  opacity: 0.2;
+  border-color: var(--color-success) !important;
 }
 
 .admin-main :deep(.page-header .n-button--secondary) {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
-  color: rgba(255, 255, 255, 0.9) !important;
+  background: var(--color-bg-elevated) !important;
+  border-color: var(--color-border-default) !important;
+  color: var(--color-text-main) !important;
 }
 
 .admin-main :deep(.page-header .n-button--secondary:hover) {
-  background: rgba(255, 255, 255, 0.2) !important;
+  background: var(--color-bg-elevated) !important;
 }
 
-/* 筛选栏统一样式 */
+/* 筛选栏统一样式 - 使用 CSS 变量 */
 .admin-main :deep(.filter-bar) {
-  background: rgba(255, 255, 255, 0.05) !important;
+  background: var(--color-bg-elevated, var(--color-bg-card)) !important;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid var(--color-border-subtle) !important;
   border-radius: 0.5rem;
   padding: 1rem;
   margin-bottom: 1.5rem;
 }
 
-/* 页面标题统一样式 */
+/* 页面标题统一样式 - 使用 CSS 变量 */
 .admin-main :deep(.page-title) {
-  color: #ffffff !important;
+  color: var(--color-text-main) !important;
   font-weight: 600;
   margin-bottom: 1rem;
 }
@@ -1460,21 +1465,21 @@ const logout = () => {
   color: inherit !important;
 }
 
-/* 统一加载状态样式 */
+/* 统一加载状态样式 - 使用 CSS 变量 */
 .admin-main :deep(.n-spin) {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: var(--color-text-muted) !important;
 }
 
-/* 统一空状态样式 */
+/* 统一空状态样式 - 使用 CSS 变量 */
 .admin-main :deep(.n-empty) {
-  color: rgba(255, 255, 255, 0.6) !important;
+  color: var(--color-text-muted) !important;
 }
 
 .admin-main :deep(.n-empty .n-empty__description) {
-  color: rgba(255, 255, 255, 0.6) !important;
+  color: var(--color-text-muted) !important;
 }
 
-/* 确保所有页面容器都使用深色背景 */
+/* 确保所有页面容器背景透明，由主题变量控制 */
 .admin-main > * {
   background: transparent;
 }
@@ -1485,10 +1490,10 @@ const logout = () => {
   /* 不强制覆盖内联样式，但确保默认背景透明 */
 }
 
-/* 设置子菜单样式 */
+/* 设置子菜单样式 - 使用 CSS 变量 */
 .admin-sidebar .ml-4 {
   margin-left: 1rem;
-  border-left: 2px solid rgba(255, 255, 255, 0.1);
+  border-left: 2px solid var(--color-border-subtle);
   padding-left: 0.5rem;
 }
 
@@ -1513,12 +1518,12 @@ const logout = () => {
   cursor: pointer;
   transition: all 0.2s ease;
   border-radius: 0.5rem;
-  color: var(--admin-sidebar-text, #ffffff) !important;
+  color: var(--color-text-main) !important;
   margin-bottom: 0.25rem;
 }
 
 .menu-group-header:hover {
-  background-color: var(--admin-sidebar-hover-bg, rgba(255, 255, 255, 0.05)) !important;
+  background-color: var(--color-bg-elevated) !important;
 }
 
 .menu-group-header .fa-chevron-right {
@@ -1526,12 +1531,12 @@ const logout = () => {
   width: 0.875rem;
   transition: transform 0.2s ease;
   opacity: 0.6;
-  color: rgba(255, 255, 255, 0.6) !important;
+  color: var(--color-text-muted) !important;
 }
 
 .menu-group-header:hover .fa-chevron-right {
   opacity: 0.8;
-  color: rgba(255, 255, 255, 0.8) !important;
+  color: var(--color-text-main) !important;
 }
 
 .menu-group-header .fa-chevron-right.rotate-90 {
@@ -1539,34 +1544,34 @@ const logout = () => {
 }
 
 .menu-group-active {
-  background-color: var(--admin-sidebar-hover-bg, rgba(255, 255, 255, 0.1)) !important;
+  background-color: var(--color-bg-elevated) !important;
 }
 
 .menu-group-active .fa-chevron-right {
   opacity: 1;
-  color: rgba(255, 255, 255, 0.9) !important;
+  color: var(--color-text-main) !important;
 }
 
 .menu-group-items {
   margin-top: 0.25rem;
   margin-left: 0.75rem;
   padding-left: 0.75rem;
-  border-left: 2px solid rgba(255, 255, 255, 0.08);
+  border-left: 2px solid var(--color-border-subtle);
   animation: slideDown 0.2s ease;
   padding-bottom: 0.25rem;
 }
 
 .menu-group-items .admin-sidebar-link {
-  color: rgba(255, 255, 255, 0.95) !important;
+  color: var(--color-text-main) !important;
   font-weight: 400;
 }
 
 .menu-group-items .admin-sidebar-link:hover {
-  color: var(--admin-sidebar-text, #ffffff) !important;
+  color: var(--color-text-main) !important;
 }
 
 .menu-group-items .admin-sidebar-link i {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: var(--color-text-muted) !important;
 }
 
 .menu-group-items .admin-sidebar-link:hover i,

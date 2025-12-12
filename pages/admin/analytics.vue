@@ -86,11 +86,11 @@
         <div class="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl -mr-16 -mt-16 opacity-60 group-hover:opacity-100 transition-opacity"></div>
         <div class="relative z-10 p-6">
           <div class="text-sm text-text-muted mb-2">今日浏览量</div>
-          <div class="text-3xl font-bold text-primary mb-2">
-            <n-number-animation :from="0" :to="overview.todayPv || 0" :precision="0" />
+          <div class="text-3xl font-bold mb-2" style="color: var(--color-primary, #3b82f6);">
+            {{ overview.todayPv ?? 0 }}
           </div>
           <div class="text-xs text-text-muted">
-            昨日: {{ overview.yesterdayPv || 0 }} | 总计: {{ overview.totalPv || 0 }}
+            昨日: {{ overview.yesterdayPv ?? 0 }} | 总计: {{ overview.totalPv ?? 0 }}
           </div>
         </div>
       </AppCard>
@@ -100,8 +100,8 @@
         <div class="absolute top-0 right-0 w-32 h-32 bg-chart-secondary/10 blur-3xl -mr-16 -mt-16 opacity-60 group-hover:opacity-100 transition-opacity"></div>
         <div class="relative z-10 p-6">
           <div class="text-sm text-text-muted mb-2">今日访客数</div>
-          <div class="text-3xl font-bold text-chart-secondary mb-2">
-            <n-number-animation :from="0" :to="overview.todayUv || 0" :precision="0" />
+          <div class="text-3xl font-bold mb-2" style="color: var(--chart-secondary, #10b981);">
+            {{ overview.todayUv ?? 0 }}
           </div>
           <div class="text-xs text-text-muted">
             昨日: {{ overview.yesterdayUv || 0 }} | 总计: {{ overview.totalUv || 0 }}
@@ -114,8 +114,8 @@
         <div class="absolute top-0 right-0 w-32 h-32 bg-chart-tertiary/10 blur-3xl -mr-16 -mt-16 opacity-60 group-hover:opacity-100 transition-opacity"></div>
         <div class="relative z-10 p-6">
           <div class="text-sm text-text-muted mb-2">在线人数</div>
-          <div class="text-3xl font-bold text-chart-tertiary mb-2">
-            <n-number-animation :from="0" :to="overview.onlineUsers || 0" :precision="0" />
+          <div class="text-3xl font-bold mb-2" style="color: var(--chart-tertiary, #f59e0b);">
+            {{ overview.onlineUsers ?? 0 }}
           </div>
           <div class="text-xs text-text-muted">最近5分钟活跃</div>
         </div>
@@ -126,8 +126,8 @@
         <div class="absolute top-0 right-0 w-32 h-32 bg-chart-quinary/10 blur-3xl -mr-16 -mt-16 opacity-60 group-hover:opacity-100 transition-opacity"></div>
         <div class="relative z-10 p-6">
           <div class="text-sm text-text-muted mb-2">热门文章数</div>
-          <div class="text-3xl font-bold text-chart-quinary mb-2">
-            <n-number-animation :from="0" :to="overview.hotArticleCount || 0" :precision="0" />
+          <div class="text-3xl font-bold mb-2" style="color: var(--chart-quinary, #8b5cf6);">
+            {{ overview.hotArticleCount ?? 0 }}
           </div>
           <div class="text-xs text-text-muted">访问次数 > 1</div>
         </div>
@@ -178,7 +178,10 @@
         </template>
         <template #fallback>
           <div class="h-[500px] flex items-center justify-center">
-            <n-spin size="large" />
+            <div class="text-center">
+              <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-4"></div>
+              <p class="text-text-muted">加载中...</p>
+            </div>
           </div>
         </template>
       </ClientOnly>
@@ -246,7 +249,9 @@
             </template>
             <template #fallback>
               <div class="h-64 flex items-center justify-center">
-                <n-spin size="small" />
+                <div class="text-center">
+                  <div class="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                </div>
               </div>
             </template>
           </ClientOnly>
@@ -306,7 +311,9 @@
               </template>
               <template #fallback>
                 <div class="h-64 flex items-center justify-center">
-                  <n-spin size="small" />
+                  <div class="text-center">
+                    <div class="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                  </div>
                 </div>
               </template>
             </ClientOnly>
@@ -485,6 +492,9 @@ import {
 } from 'echarts/components'
 import VChart from 'vue-echarts'
 import { useEChartsTheme } from '~/composables/useEChartsTheme'
+import AppCard from '~/components/ui/AppCard.vue'
+import AppButton from '~/components/ui/AppButton.vue'
+// 不再使用 NNumberAnimation，直接显示数字
 
 // 在 setup 顶层调用 useEChartsTheme，避免在 computed 中重复调用
 // 由于页面已设置 ssr: false，这些函数只在客户端使用
@@ -1413,11 +1423,26 @@ const fetchTrend = async () => {
 const fetchOverview = async () => {
   try {
     const res = await api.get<any>('/Analytics/overview')
+    console.log('概览数据响应:', res) // 调试用
     if (res) {
-      overview.value = res
+      // 确保数据正确映射（后端返回的字段名）
+      overview.value = {
+        todayPv: res.todayPv ?? 0,
+        todayUv: res.todayUv ?? 0,
+        yesterdayPv: res.yesterdayPv ?? 0,
+        yesterdayUv: res.yesterdayUv ?? 0,
+        totalPv: res.totalPv ?? 0,
+        totalUv: res.totalUv ?? 0,
+        onlineUsers: res.onlineUsers ?? 0,
+        hotArticleCount: res.hotArticleCount ?? 0
+      }
+      console.log('概览数据已设置:', overview.value) // 调试用
+    } else {
+      console.warn('概览数据响应为空')
     }
   } catch (e: any) {
-    // 静默失败
+    console.error('获取概览数据失败:', e)
+    // 静默失败，保持默认值 0
   }
 }
 

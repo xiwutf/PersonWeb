@@ -196,7 +196,7 @@ definePageMeta({
 .page-title {
   font-size: 1.875rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-text-main);
   margin-bottom: 0.5rem;
 }
 
@@ -207,9 +207,9 @@ definePageMeta({
 }
 
 .settings-section {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--color-bg-elevated, var(--color-bg-card));
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-border-subtle);
   border-radius: 0.75rem;
   padding: 1.5rem;
 }
@@ -217,7 +217,7 @@ definePageMeta({
 .section-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--color-text-main);
   margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
@@ -234,8 +234,8 @@ definePageMeta({
   align-items: center;
   gap: 1rem;
   padding: 1.25rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--color-bg-elevated, var(--color-bg-card));
+  border: 1px solid var(--color-border-subtle);
   border-radius: 0.5rem;
   transition: all 0.3s ease;
   text-decoration: none;
@@ -244,8 +244,8 @@ definePageMeta({
 }
 
 .settings-card:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: var(--color-bg-elevated);
+  border-color: var(--color-border-default);
   transform: translateY(-2px);
 }
 
@@ -255,9 +255,9 @@ definePageMeta({
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(59, 130, 246, 0.2);
+  background: var(--color-primary-soft);
   border-radius: 0.5rem;
-  color: #60a5fa;
+  color: var(--color-primary);
   font-size: 1.5rem;
   flex-shrink: 0;
 }
@@ -270,24 +270,24 @@ definePageMeta({
 .card-title {
   font-size: 1rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--color-text-main);
   margin-bottom: 0.25rem;
 }
 
 .card-desc {
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--color-text-muted);
   line-height: 1.4;
 }
 
 .card-arrow {
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--color-text-muted);
   font-size: 0.875rem;
   flex-shrink: 0;
 }
 
 .settings-card:hover .card-arrow {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--color-text-main);
   transform: translateX(4px);
 }
 </style>

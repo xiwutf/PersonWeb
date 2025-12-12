@@ -564,24 +564,24 @@ html.dark .tasks-page-title {
 
 html[data-theme="dark"] .task-stat-card,
 html.dark .task-stat-card {
-  background: var(--color-bg-card, rgba(255, 255, 255, 0.05));
-  border-color: var(--color-border-subtle, rgba(255, 255, 255, 0.1));
+  background: var(--color-bg-card);
+  border-color: var(--color-border-subtle);
 }
 
 html[data-theme="dark"] .task-stat-label,
 html.dark .task-stat-label {
-  color: var(--color-text-muted, #9ca3af);
+  color: var(--color-text-muted);
 }
 
 html[data-theme="dark"] .task-stat-value,
 html.dark .task-stat-value {
-  color: var(--color-text-main, #ffffff);
+  color: var(--color-text-main);
 }
 
 html[data-theme="dark"] .task-filter-bar,
 html.dark .task-filter-bar {
-  background: var(--color-bg-card, rgba(255, 255, 255, 0.05));
-  border-color: var(--color-border-subtle, rgba(255, 255, 255, 0.1));
+  background: var(--color-bg-card);
+  border-color: var(--color-border-subtle);
 }
 
 /* 任务列表样式 - 使用 CSS 变量 */

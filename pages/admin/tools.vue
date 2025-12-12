@@ -297,12 +297,21 @@ const stats = computed(() => {
   }
 })
 
+// 获取 CSS 变量的辅助函数
+const getCssVar = (varName: string): string => {
+  if (process.client) {
+    const root = document.documentElement
+    return getComputedStyle(root).getPropertyValue(varName).trim()
+  }
+  return ''
+}
+
 // 状态分布饼图配置
 const statusChartOption = computed(() => {
   if (stats.value.total === 0) return null
   
-  const isDark = document.documentElement.classList.contains('dark')
-  const textColor = isDark ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)'
+  const textColor = getCssVar('--color-text-main') || getCssVar('--n-text-color')
+  const bgColor = getCssVar('--color-bg-card') || getCssVar('--n-card-color')
   
   return {
     tooltip: {
@@ -324,7 +333,7 @@ const statusChartOption = computed(() => {
         avoidLabelOverlap: false,
         itemStyle: {
           borderRadius: 8,
-          borderColor: isDark ? '#0a0e1a' : '#fff',
+          borderColor: bgColor,
           borderWidth: 2
         },
         label: {
@@ -340,9 +349,9 @@ const statusChartOption = computed(() => {
           }
         },
         data: [
-          { value: stats.value.published, name: '已发布', itemStyle: { color: '#10b981' } },
-          { value: stats.value.draft, name: '草稿', itemStyle: { color: '#f59e0b' } },
-          { value: stats.value.archived, name: '已归档', itemStyle: { color: '#6b7280' } }
+          { value: stats.value.published, name: '已发布', itemStyle: { color: getCssVar('--color-success') || '#10b981' } },
+          { value: stats.value.draft, name: '草稿', itemStyle: { color: getCssVar('--color-warning') || '#f59e0b' } },
+          { value: stats.value.archived, name: '已归档', itemStyle: { color: getCssVar('--color-text-muted') || '#6b7280' } }
         ]
       }
     ]
@@ -353,9 +362,8 @@ const statusChartOption = computed(() => {
 const priceChartOption = computed(() => {
   if (tools.value.length === 0) return null
   
-  const isDark = document.documentElement.classList.contains('dark')
-  const textColor = isDark ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.85)'
-  const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+  const textColor = getCssVar('--color-text-main') || getCssVar('--n-text-color')
+  const gridColor = getCssVar('--color-border-subtle') || getCssVar('--n-border-color')
   
   // 统计价格区间
   const freeCount = tools.value.filter(t => t.isFree).length
@@ -422,8 +430,8 @@ const priceChartOption = computed(() => {
             x2: 0,
             y2: 1,
             colorStops: [
-              { offset: 0, color: '#3b82f6' },
-              { offset: 1, color: '#8b5cf6' }
+              { offset: 0, color: getCssVar('--color-primary') || '#3b82f6' },
+              { offset: 1, color: getCssVar('--color-secondary') || getCssVar('--color-primary-hover') || '#8b5cf6' }
             ]
           },
           borderRadius: [4, 4, 0, 0]

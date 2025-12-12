@@ -2,20 +2,20 @@
   <div class="chart-content">
     <div class="chart-section">
       <div class="chart-tabs">
-        <n-button
-          :type="selectedPeriod === '7d' ? 'primary' : 'default'"
-          size="small"
+        <AppButton
+          :variant="selectedPeriod === '7d' ? 'primary' : 'secondary'"
+          size="sm"
           @click="selectedPeriod = '7d'"
         >
           最近 7 天
-        </n-button>
-        <n-button
-          :type="selectedPeriod === '30d' ? 'primary' : 'default'"
-          size="small"
+        </AppButton>
+        <AppButton
+          :variant="selectedPeriod === '30d' ? 'primary' : 'secondary'"
+          size="sm"
           @click="selectedPeriod = '30d'"
         >
           最近 30 天
-        </n-button>
+        </AppButton>
       </div>
       <div class="chart-wrapper">
         <canvas ref="trendChartRef"></canvas>
@@ -26,6 +26,7 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted, nextTick } from 'vue'
+import AppButton from '~/components/ui/AppButton.vue'
 
 interface VisitTrendItem {
   Date?: string

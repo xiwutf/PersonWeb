@@ -1,7 +1,7 @@
 ﻿<template>
   <div class="admin-dashboard-page">
     <!-- 顶部欢迎区 + 快捷入口 -->
-    <n-card class="dashboard-card hero-card mb-6">
+    <AppCard class="dashboard-card hero-card mb-6">
       <div class="flex flex-col md:flex-row justify-between items-center gap-3">
         <div class="flex-1">
           <h2 class="text-2xl font-semibold mb-1">欢迎回来，Admin</h2>
@@ -10,22 +10,25 @@
           </p>
         </div>
         <div class="flex flex-wrap gap-2">
-          <n-button type="primary" @click="navigateTo('/admin/articles/edit')">
+          <AppButton variant="primary" @click="navigateTo('/admin/articles/edit')">
             新建文章
-          </n-button>
-          <n-button secondary @click="navigateTo('/admin/projects')">
+          </AppButton>
+          <AppButton variant="secondary" @click="navigateTo('/admin/projects')">
             新建项目
-          </n-button>
-          <n-button secondary @click="navigateTo('/admin/side-projects/dashboard')">
+          </AppButton>
+          <AppButton variant="secondary" @click="navigateTo('/admin/side-projects/dashboard')">
             打开副业仪表盘
-          </n-button>
+          </AppButton>
         </div>
       </div>
-    </n-card>
+    </AppCard>
 
     <!-- 加载状态 -->
     <div v-if="isLoading" class="flex items-center justify-center min-h-60">
-      <n-spin size="large" />
+      <div class="text-center">
+        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-4"></div>
+        <p class="text-text-muted">加载中...</p>
+      </div>
     </div>
 
     <template v-else>
@@ -33,10 +36,10 @@
       <div class="mt-8">
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-base font-semibold text-main opacity-90">核心指标</h3>
-          <n-button text size="tiny" class="opacity-60 hover:opacity-100">
-            <template #icon>⟳</template>
+          <AppButton variant="secondary" size="sm" @click="fetchStats">
+            <i class="fas fa-sync-alt mr-1"></i>
             刷新数据
-          </n-button>
+          </AppButton>
         </div>
         
         <div class="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
@@ -55,7 +58,7 @@
       <div class="mt-10">
         <div class="section-title">内容分析</div>
         <div class="grid gap-4 md:grid-cols-2">
-          <n-card class="dashboard-card">
+          <AppCard class="dashboard-card">
             <template #header>
               <div class="chart-header">
                 <h3 class="chart-title">访问趋势</h3>
@@ -66,8 +69,8 @@
                 <AdminDashboardTrendAndSource :visit-trend="visitTrend" />
               </ClientOnly>
             </div>
-          </n-card>
-          <n-card class="dashboard-card">
+          </AppCard>
+          <AppCard class="dashboard-card">
             <template #header>
               <div class="chart-header">
                 <h3 class="chart-title">热门页面</h3>
@@ -78,7 +81,7 @@
                 <AdminDashboardTopPagesCard :top-paths="topPaths" />
               </ClientOnly>
             </div>
-          </n-card>
+          </AppCard>
         </div>
       </div>
 
@@ -86,15 +89,15 @@
       <div class="mt-10">
         <div class="section-title">活动与待办</div>
         <div class="grid gap-4 md:grid-cols-2">
-          <n-card class="dashboard-card">
+          <AppCard class="dashboard-card">
             <template #header>
               <h3 class="chart-title">最近活动</h3>
             </template>
             <div class="chart-container">
               <AdminDashboardTimeline :items="timelineItems" />
             </div>
-          </n-card>
-          <n-card class="dashboard-card">
+          </AppCard>
+          <AppCard class="dashboard-card">
             <template #header>
               <h3 class="chart-title">待办事项</h3>
             </template>
@@ -106,10 +109,12 @@
                     <div class="todo-desc">{{ stats.pendingConsultations }} 条新咨询</div>
                   </div>
                   <div class="todo-actions">
-                    <n-tag type="warning" size="small">{{ stats.pendingConsultations }}</n-tag>
-                    <n-button quaternary type="info" size="small" @click="navigateTo('/admin/consultations')">
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-warning/20 text-warning">
+                      {{ stats.pendingConsultations }}
+                    </span>
+                    <AppButton variant="secondary" size="sm" @click="navigateTo('/admin/consultations')">
                       查看
-                    </n-button>
+                    </AppButton>
                   </div>
                 </div>
                 <div v-if="stats.pendingOrders > 0" class="todo-item">
@@ -118,10 +123,12 @@
                     <div class="todo-desc">{{ stats.pendingOrders }} 个待处理订单</div>
                   </div>
                   <div class="todo-actions">
-                    <n-tag type="warning" size="small">{{ stats.pendingOrders }}</n-tag>
-                    <n-button quaternary type="info" size="small" @click="navigateTo('/admin/orders')">
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-warning/20 text-warning">
+                      {{ stats.pendingOrders }}
+                    </span>
+                    <AppButton variant="secondary" size="sm" @click="navigateTo('/admin/orders')">
                       查看
-                    </n-button>
+                    </AppButton>
                   </div>
                 </div>
                 <div v-if="stats.pendingMessages > 0" class="todo-item">
@@ -130,10 +137,12 @@
                     <div class="todo-desc">{{ stats.pendingMessages }} 条新留言</div>
                   </div>
                   <div class="todo-actions">
-                    <n-tag type="warning" size="small">{{ stats.pendingMessages }}</n-tag>
-                    <n-button quaternary type="info" size="small" @click="navigateTo('/admin/time-capsules')">
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-warning/20 text-warning">
+                      {{ stats.pendingMessages }}
+                    </span>
+                    <AppButton variant="secondary" size="sm" @click="navigateTo('/admin/time-capsules')">
                       查看
-                    </n-button>
+                    </AppButton>
                   </div>
                 </div>
                 <div v-if="stats.pendingConsultations === 0 && stats.pendingOrders === 0 && stats.pendingMessages === 0" class="todo-empty">
@@ -141,7 +150,7 @@
                 </div>
               </div>
             </div>
-          </n-card>
+          </AppCard>
         </div>
       </div>
     </template>
@@ -170,6 +179,10 @@ definePageMeta({
   middleware: 'admin-auth',
   ssr: false
 })
+
+// 显式导入组件，确保 Nuxt 自动导入正常工作
+import AppCard from '~/components/ui/AppCard.vue'
+import AppButton from '~/components/ui/AppButton.vue'
 
 const api = useApi()
 const stats = ref({
@@ -333,30 +346,25 @@ const fetchStats = async () => {
 
 const fetchOrderStats = async () => {
   try {
-    const [pendingRes, totalRes, todayRes] = await Promise.all([
-      api.get<any>('/admin/orders', {
-        params: { status: 0, page: 1, pageSize: 1 }
-      }),
-      api.get<any>('/admin/orders', {
-        params: { page: 1, pageSize: 1 }
-      }),
-      api.get<any>('/admin/orders', {
-        params: { page: 1, pageSize: 50 }
-      })
-    ])
+    // 只请求一次，获取所有需要的数据
+    const res = await api.get<any>('/admin/orders', {
+      params: { page: 1, pageSize: 50 }
+    })
     
-    if (pendingRes) {
-      stats.value.pendingOrders = pendingRes.Total ?? pendingRes.total ?? 0
-    }
-    
-    if (totalRes) {
-      stats.value.totalOrders = totalRes.Total ?? totalRes.total ?? 0
-    }
-    
-    if (todayRes) {
+    if (res) {
+      const total = res.Total ?? res.total ?? 0
+      const list = res.List ?? res.list ?? (Array.isArray(res) ? res : [])
+      
+      // 计算待处理订单数（status === 0）
+      const pendingOrders = list.filter((order: any) => (order.Status ?? order.status) === 0)
+      stats.value.pendingOrders = pendingOrders.length
+      
+      // 总订单数
+      stats.value.totalOrders = total
+      
+      // 今日订单数
       const today = new Date()
       today.setHours(0, 0, 0, 0)
-      const list = todayRes.List ?? todayRes.list ?? (Array.isArray(todayRes) ? todayRes : [])
       const todayOrders = list.filter((order: any) => {
         if (!order.CreatedAt && !order.createdAt) return false
         const orderDate = new Date(order.CreatedAt || order.createdAt)
@@ -373,31 +381,25 @@ const fetchOrderStats = async () => {
 
 const fetchConsultationStats = async () => {
   try {
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
+    // 只请求一次，获取所有需要的数据
+    const res = await api.get<any>('/admin/consultations', {
+      params: { page: 1, pageSize: 50 }
+    })
     
-    const [pendingRes, totalRes, todayRes] = await Promise.all([
-      api.get<any>('/admin/consultations', {
-        params: { status: 0, page: 1, pageSize: 1 }
-      }),
-      api.get<any>('/admin/consultations', {
-        params: { page: 1, pageSize: 1 }
-      }),
-      api.get<any>('/admin/consultations', {
-        params: { page: 1, pageSize: 50 }
-      })
-    ])
-    
-    if (pendingRes) {
-      stats.value.pendingConsultations = pendingRes.Total ?? pendingRes.total ?? 0
-    }
-    
-    if (totalRes) {
-      stats.value.totalConsultations = totalRes.Total ?? totalRes.total ?? 0
-    }
-    
-    if (todayRes) {
-      const list = todayRes.List ?? todayRes.list ?? (Array.isArray(todayRes) ? todayRes : [])
+    if (res) {
+      const total = res.Total ?? res.total ?? 0
+      const list = res.List ?? res.list ?? (Array.isArray(res) ? res : [])
+      
+      // 计算待处理咨询数（status === 0）
+      const pendingConsultations = list.filter((consultation: any) => (consultation.Status ?? consultation.status) === 0)
+      stats.value.pendingConsultations = pendingConsultations.length
+      
+      // 总咨询数
+      stats.value.totalConsultations = total
+      
+      // 今日咨询数
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
       const todayConsultations = list.filter((consultation: any) => {
         if (!consultation.CreatedAt && !consultation.createdAt) return false
         const consultationDate = new Date(consultation.CreatedAt || consultation.createdAt)

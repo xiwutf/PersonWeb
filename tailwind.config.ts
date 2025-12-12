@@ -26,9 +26,9 @@ export default <Partial<Config>>{
                     primary: 'var(--text-primary)',
                     secondary: 'var(--text-secondary)',
                     tertiary: 'var(--text-tertiary)',
-                    main: 'var(--text-primary)', // Alias for text-primary
-                    muted: 'var(--text-secondary)', // Alias for text-secondary
-                    disabled: 'var(--text-tertiary)', // Alias for text-tertiary
+                    main: 'var(--color-text-main)', // 使用新的 CSS 变量
+                    muted: 'var(--color-text-muted)', // 使用新的 CSS 变量
+                    disabled: 'var(--color-text-disabled)', // 使用新的 CSS 变量
                 },
 
                 // Borders - for direct usage: border-border-subtle, etc.
@@ -41,6 +41,20 @@ export default <Partial<Config>>{
                 success: 'var(--success)',
                 warning: 'var(--warning)',
                 error: 'var(--error)',
+
+                // Chart colors - for direct usage: text-chart-primary, bg-chart-secondary, etc.
+                chart: {
+                    primary: 'var(--chart-primary)',
+                    secondary: 'var(--chart-secondary)',
+                    tertiary: 'var(--chart-tertiary)',
+                    quaternary: 'var(--chart-quaternary)',
+                    quinary: 'var(--chart-quinary)',
+                    senary: 'var(--chart-senary)',
+                    septenary: 'var(--chart-septenary)',
+                    octonary: 'var(--chart-octonary)',
+                    nonary: 'var(--chart-nonary)',
+                    denary: 'var(--chart-denary)',
+                },
 
                 // Legacy Compatibility (Safety Fallback)
                 'primary-50': 'rgb(var(--color-primary-50, 239 246 255) / <alpha-value>)',

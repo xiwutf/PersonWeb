@@ -213,14 +213,14 @@ const handleChangePassword = async () => {
 .page-title {
   font-size: 1.875rem;
   font-weight: 700;
-  color: var(--color-text-main, #ffffff);
+  color: var(--color-text-main);
   margin-bottom: 0.5rem;
 }
 
 .card {
-  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.05));
+  background: var(--color-bg-elevated, var(--color-bg-card));
   backdrop-filter: blur(10px);
-  border: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.1));
+  border: 1px solid var(--color-border-subtle);
   border-radius: 0.75rem;
   padding: 2rem;
 }
@@ -233,35 +233,35 @@ const handleChangePassword = async () => {
   display: block;
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--color-text-main, #ffffff);
+  color: var(--color-text-main);
   margin-bottom: 0.5rem;
 }
 
 .form-input {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.1));
-  border: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.2));
+  background: var(--color-bg-elevated, var(--color-bg-card));
+  border: 1px solid var(--color-border-default);
   border-radius: 0.5rem;
-  color: var(--color-text-main, #ffffff);
+  color: var(--color-text-main);
   font-size: 1rem;
   transition: all 0.2s;
 }
 
 .form-input:focus {
   outline: none;
-  border-color: var(--color-primary, #3b82f6);
-  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.15));
+  border-color: var(--color-primary);
+  background: var(--color-bg-elevated);
 }
 
 .form-input::placeholder {
-  color: var(--color-text-muted, rgba(255, 255, 255, 0.5));
+  color: var(--color-text-muted);
 }
 
 .form-hint {
   margin-top: 0.5rem;
   font-size: 0.75rem;
-  color: var(--color-text-muted, rgba(255, 255, 255, 0.6));
+  color: var(--color-text-muted);
 }
 
 .form-error {
@@ -279,14 +279,14 @@ const handleChangePassword = async () => {
 }
 
 .alert-error {
-  background: var(--color-error-soft, rgba(239, 68, 68, 0.1));
-  border: 1px solid var(--color-error, rgba(239, 68, 68, 0.3));
+  background: var(--color-error-soft);
+  border: 1px solid var(--color-error);
   color: var(--color-error-hover, #fca5a5);
 }
 
 .alert-success {
-  background: var(--color-success-soft, rgba(34, 197, 94, 0.1));
-  border: 1px solid var(--color-success, rgba(34, 197, 94, 0.3));
+  background: var(--color-success-soft);
+  border: 1px solid var(--color-success);
   color: var(--color-success-hover, #86efac);
 }
 
@@ -317,46 +317,46 @@ const handleChangePassword = async () => {
 
 .change-password-cancel-btn:hover {
   background: var(--color-bg-elevated, #d1d5db);
-  border-color: var(--color-border-default, #6b7280);
+  border-color: var(--color-border-default);
 }
 
 .change-password-submit-btn {
-  background: var(--color-primary, #3b82f6);
-  color: var(--color-text-main, #ffffff);
+  background: var(--color-primary);
+  color: var(--color-text-main);
   transition: background-color 0.2s ease;
 }
 
 .change-password-submit-btn:hover:not(:disabled) {
-  background: var(--color-primary-hover, #2563eb);
+  background: var(--color-primary-hover);
 }
 
 /* 深色主题适配 */
 html[data-theme="dark"] .change-password-subtitle,
 html.dark .change-password-subtitle {
-  color: var(--color-text-muted, #9ca3af);
+  color: var(--color-text-muted);
 }
 
 html[data-theme="dark"] .change-password-toggle-btn,
 html.dark .change-password-toggle-btn {
-  color: var(--color-text-muted, #9ca3af);
+  color: var(--color-text-muted);
 }
 
 html[data-theme="dark"] .change-password-toggle-btn:hover,
 html.dark .change-password-toggle-btn:hover {
-  color: var(--color-text-sub, #d1d5db);
+  color: var(--color-text-sub);
 }
 
 html[data-theme="dark"] .change-password-cancel-btn,
 html.dark .change-password-cancel-btn {
-  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.1));
-  border-color: var(--color-border-default, rgba(255, 255, 255, 0.2));
-  color: var(--color-text-main, #f9fafb);
+  background: var(--color-bg-elevated);
+  border-color: var(--color-border-default);
+  color: var(--color-text-main);
 }
 
 html[data-theme="dark"] .change-password-cancel-btn:hover,
 html.dark .change-password-cancel-btn:hover {
-  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.15));
-  border-color: var(--color-border-default, rgba(255, 255, 255, 0.3));
+  background: var(--color-bg-elevated);
+  border-color: var(--color-border-default);
 }
 </style>
 

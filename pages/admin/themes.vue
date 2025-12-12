@@ -169,6 +169,8 @@
 import { MODULE_DEFINITIONS } from '~/constants/modules'
 import { defaultThemeTokens } from '~/constants/design/tokens'
 import { useNotification } from '~/composables/useToast'
+import AppCard from '~/components/ui/AppCard.vue'
+import AppButton from '~/components/ui/AppButton.vue'
 import { useErrorHandler } from '~/composables/useErrorHandler'
 
 definePageMeta({

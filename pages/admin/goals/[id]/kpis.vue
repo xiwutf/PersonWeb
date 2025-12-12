@@ -398,36 +398,36 @@ onMounted(() => {
 }
 
 .kpi-page-title {
-  color: var(--color-text-main, #111827);
+  color: var(--color-text-main);
 }
 
 .kpi-goal-card {
-  background: var(--color-bg-card, #ffffff);
-  border: 1px solid var(--color-border-subtle, #e5e7eb);
-  box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: var(--shadow-sm);
 }
 
 .kpi-goal-title {
-  color: var(--color-text-main, #111827);
+  color: var(--color-text-main);
 }
 
 .kpi-goal-meta {
-  color: var(--color-text-sub, #4b5563);
+  color: var(--color-text-sub);
 }
 
 .kpi-progress-text {
-  color: var(--color-primary, #3b82f6);
+  color: var(--color-primary);
 }
 
 .kpi-list-container {
-  background: var(--color-bg-card, #ffffff);
-  border: 1px solid var(--color-border-subtle, #e5e7eb);
-  box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: var(--shadow-sm);
 }
 
 .kpi-list-loading,
 .kpi-list-empty {
-  color: var(--color-text-muted, #6b7280);
+  color: var(--color-text-muted);
 }
 
 .kpi-list-item {
@@ -435,28 +435,28 @@ onMounted(() => {
 }
 
 .kpi-list-item:hover {
-  background-color: var(--color-bg-elevated, #f9fafb);
+  background-color: var(--color-bg-elevated);
 }
 
 .kpi-item-title {
-  color: var(--color-text-main, #111827);
+  color: var(--color-text-main);
 }
 
 .kpi-month-badge {
-  background: var(--color-primary-soft, rgba(59, 130, 246, 0.1));
-  color: var(--color-primary, #3b82f6);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
 }
 
 .kpi-item-meta {
-  color: var(--color-text-muted, #6b7280);
+  color: var(--color-text-muted);
 }
 
 .kpi-item-value {
-  color: var(--color-text-main, #111827);
+  color: var(--color-text-main);
 }
 
 .kpi-progress-bg {
-  background: var(--color-bg-elevated, #e5e7eb);
+  background: var(--color-bg-elevated);
 }
 
 .kpi-progress-bar {
@@ -466,19 +466,19 @@ onMounted(() => {
 }
 
 .kpi-progress-complete {
-  background: var(--color-success, #10b981);
+  background: var(--color-success);
 }
 
 .kpi-progress-good {
-  background: var(--color-primary, #3b82f6);
+  background: var(--color-primary);
 }
 
 .kpi-progress-fair {
-  background: var(--color-warning, #f59e0b);
+  background: var(--color-warning);
 }
 
 .kpi-progress-poor {
-  background: var(--color-text-muted, #9ca3af);
+  background: var(--color-text-muted);
 }
 
 .kpi-status-badge {
@@ -489,18 +489,18 @@ onMounted(() => {
 }
 
 .kpi-status-pending {
-  background: var(--color-warning-soft, rgba(249, 115, 22, 0.1));
-  color: var(--color-warning, #f97316);
+  background: var(--color-warning-soft);
+  color: var(--color-warning);
 }
 
 .kpi-status-in-progress {
-  background: var(--color-primary-soft, rgba(59, 130, 246, 0.1));
-  color: var(--color-primary, #3b82f6);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
 }
 
 .kpi-status-completed {
-  background: var(--color-success-soft, rgba(34, 197, 94, 0.1));
-  color: var(--color-success, #22c55e);
+  background: var(--color-success-soft);
+  color: var(--color-success);
 }
 
 .kpi-action-btn {
@@ -561,30 +561,30 @@ html.dark .kpi-page-link:hover {
 
 html[data-theme="dark"] .kpi-goal-card,
 html.dark .kpi-goal-card {
-  background: var(--color-bg-card, rgba(255, 255, 255, 0.05));
-  border-color: var(--color-border-subtle, rgba(255, 255, 255, 0.1));
+  background: var(--color-bg-card);
+  border-color: var(--color-border-subtle);
 }
 
 html[data-theme="dark"] .kpi-list-container,
 html.dark .kpi-list-container {
-  background: var(--color-bg-card, rgba(255, 255, 255, 0.05));
-  border-color: var(--color-border-subtle, rgba(255, 255, 255, 0.1));
+  background: var(--color-bg-card);
+  border-color: var(--color-border-subtle);
 }
 
 html[data-theme="dark"] .kpi-list-item:hover,
 html.dark .kpi-list-item:hover {
-  background-color: var(--color-bg-elevated, rgba(255, 255, 255, 0.05));
+  background-color: var(--color-bg-elevated);
 }
 
 html[data-theme="dark"] .kpi-month-badge,
 html.dark .kpi-month-badge {
-  background: var(--color-primary-soft, rgba(59, 130, 246, 0.2));
-  color: var(--color-primary, #60a5fa);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
 }
 
 html[data-theme="dark"] .kpi-progress-bg,
 html.dark .kpi-progress-bg {
-  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.1));
+  background: var(--color-bg-elevated);
 }
 </style>
 
