@@ -89,7 +89,12 @@ export const useApi = () => {
             // 1. 标准格式 { code: 0, data: ... }
             // 2. 直接返回数据 (code 为 undefined)
             if (response.code !== undefined && response.code !== 0) {
-                throw new Error(response.message || '请求失败')
+                // 后端返回错误时，message 字段包含错误信息
+                const errorMessage = response.message || '请求失败'
+                const error = new Error(errorMessage)
+                // 添加 code 属性，方便错误处理
+                ;(error as any).code = response.code
+                throw error
             }
 
             // 如果是标准格式，返回 data；否则直接返回 response

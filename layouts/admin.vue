@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <!-- 
     后台管理布局（admin.vue）
     用途：后台管理系统的专用布局，不包含前台顶部导航栏，使用侧边栏导航
@@ -161,6 +161,24 @@
               <i class="fas fa-chart-line w-5 text-center mr-3"></i>
               <span>投资仪表盘</span>
             </NuxtLink>
+            <a 
+              href="/admin/dca-plan"
+              class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm"
+              :class="{ 'admin-sidebar-link-active': route.path === '/admin/dca-plan' }"
+              @click.prevent="() => router.push('/admin/dca-plan')"
+            >
+              <i class="fas fa-calendar-check w-5 text-center mr-3"></i>
+              <span>定投计划</span>
+            </a>
+            <a 
+              href="/admin/price-alert"
+              class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm"
+              :class="{ 'admin-sidebar-link-active': route.path === '/admin/price-alert' }"
+              @click.prevent="() => router.push('/admin/price-alert')"
+            >
+              <i class="fas fa-bell w-5 text-center mr-3"></i>
+              <span>价格提醒</span>
+            </a>
           </div>
         </div>
 
@@ -472,7 +490,7 @@ const isMenuActive = (menuKey: string): boolean => {
     case 'knowledge':
       return path === '/admin/knowledge' || path === '/admin/timeline' || path === '/admin/time-capsules' || path === '/admin/document-agent'
     case 'analytics':
-      return path === '/admin/analytics' || path === '/admin/investment'
+      return path === '/admin/analytics' || path === '/admin/investment' || path === '/admin/dca-plan' || path === '/admin/price-alert'
     case 'sideBusiness':
       return path.startsWith('/admin/side-projects')
     case 'personal':
@@ -507,7 +525,7 @@ const autoExpandMenu = () => {
   if (path === '/admin/knowledge' || path === '/admin/timeline' || path === '/admin/time-capsules' || path === '/admin/document-agent') {
     expandedMenus.value.knowledge = true
   }
-  if (path === '/admin/analytics' || path === '/admin/investment') {
+  if (path === '/admin/analytics' || path === '/admin/investment' || path === '/admin/dca-plan' || path === '/admin/price-alert') {
     expandedMenus.value.analytics = true
   }
   if (path.startsWith('/admin/side-projects')) {

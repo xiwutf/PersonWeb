@@ -5,58 +5,57 @@
  * 这个插件在服务端运行时，为 css-render 和 vueuc 提供安全的 fallback
  */
 
+// 在模块级别就设置 document，确保在任何导入之前
+if (process.server && typeof global !== 'undefined') {
+  if (!global.document) {
+    global.document = {
+      head: {
+        appendChild: () => {},
+        removeChild: () => {},
+        querySelector: () => null,
+        querySelectorAll: () => [],
+        insertBefore: () => {},
+        remove: () => {},
+        append: () => {},
+        prepend: () => {},
+        children: [],
+        childNodes: []
+      },
+      documentElement: {
+        insertBefore: () => {},
+        firstChild: null
+      },
+      body: {},
+      createElement: () => ({
+        setAttribute: () => {},
+        appendChild: () => {},
+        removeChild: () => {},
+        style: {}
+      })
+    } as any
+  } else if (!global.document.head) {
+    // 如果 document 存在但没有 head，添加一个
+    global.document.head = {
+      appendChild: () => {},
+      removeChild: () => {},
+      querySelector: () => null,
+      querySelectorAll: () => [],
+      insertBefore: () => {},
+      remove: () => {},
+      append: () => {},
+      prepend: () => {},
+      children: [],
+      childNodes: []
+    } as any
+  }
+}
+
 export default defineNuxtPlugin({
   name: 'css-render-ssr-server-fix',
   enforce: 'pre', // 在其他插件之前运行
   setup() {
     // 只在服务端执行
     if (process.server) {
-      // 在服务端，创建一个模拟的 document 对象
-      // 这必须在任何模块导入之前完成
-      if (typeof global !== 'undefined') {
-        // 创建一个模拟的 document 对象（仅在服务端）
-        if (!global.document) {
-          global.document = {
-            head: {
-              appendChild: () => {},
-              removeChild: () => {},
-              querySelector: () => null,
-              querySelectorAll: () => [],
-              insertBefore: () => {},
-              remove: () => {},
-              append: () => {},
-              prepend: () => {},
-              children: [],
-              childNodes: []
-            },
-            documentElement: {
-              insertBefore: () => {},
-              firstChild: null
-            },
-            body: {},
-            createElement: () => ({
-              setAttribute: () => {},
-              appendChild: () => {},
-              removeChild: () => {},
-              style: {}
-            })
-          } as any
-        } else if (!global.document.head) {
-          // 如果 document 存在但没有 head，添加一个
-          global.document.head = {
-            appendChild: () => {},
-            removeChild: () => {},
-            querySelector: () => null,
-            querySelectorAll: () => [],
-            insertBefore: () => {},
-            remove: () => {},
-            append: () => {},
-            prepend: () => {},
-            children: [],
-            childNodes: []
-          } as any
-        }
-      }
 
       // 为 css-render 提供安全的 mount 函数
       // 这样即使组件在 SSR 时被渲染，也不会报错
