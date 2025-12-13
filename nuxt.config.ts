@@ -120,7 +120,8 @@ export default defineNuxtConfig({
     '~/assets/css/blog.css',
     '~/assets/css/projects.css',
     '~/assets/css/investment.css',
-    '~/assets/css/charts.css'
+    '~/assets/css/charts.css',
+    '~/assets/css/admin-asset-management.css'
   ],
 
   // Nitro 配置（用于静态生成优化）

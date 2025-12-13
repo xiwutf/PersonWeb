@@ -2,7 +2,12 @@
   <div class="price-alert-page">
     <!-- 页面头部 -->
     <div class="page-header">
-      <h1 class="page-title">价格提醒管理</h1>
+      <div class="header-left">
+        <NuxtLink to="/admin/asset-management" class="back-button" title="返回资产管理">
+          <i class="fas fa-arrow-left"></i>
+        </NuxtLink>
+        <h1 class="page-title">价格提醒管理</h1>
+      </div>
       <div class="header-actions">
         <button @click="refreshPrices" class="btn-secondary" :disabled="refreshing">
           {{ refreshing ? '刷新中...' : '刷新价格' }}
@@ -374,6 +379,29 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-right: var(--spacing-md);
+  color: var(--color-text-sec);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  transition: all 0.2s;
+}
+
+.back-button:hover {
+  background: var(--color-bg-body);
+  color: var(--color-primary);
 }
 
 .page-title {

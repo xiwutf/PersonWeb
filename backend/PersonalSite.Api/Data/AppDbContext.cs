@@ -31,6 +31,7 @@ public class AppDbContext : DbContext
     public DbSet<DcaPlan> DcaPlans { get; set; }
     public DbSet<DcaExecution> DcaExecutions { get; set; }
     public DbSet<PriceAlert> PriceAlerts { get; set; }
+    public DbSet<Asset> Assets { get; set; }
     public DbSet<ErrorLog> ErrorLogs { get; set; }
     public DbSet<FriendLink> FriendLinks { get; set; }
     public DbSet<SkillCategory> SkillCategories { get; set; }

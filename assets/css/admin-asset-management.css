@@ -1,0 +1,574 @@
+/* 资产管理模块统一样式 */
+/* 使用 CSS 变量，确保与主题系统联动 */
+
+/* 页面容器 */
+.asset-management-page {
+  padding: var(--spacing-lg);
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+/* 页面头部 */
+.asset-management-page .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.asset-management-page .page-title {
+  font-size: 28px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--color-text-main);
+}
+
+.asset-management-page .header-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+/* 标签页容器 */
+.asset-management-tabs-container {
+  margin-bottom: var(--spacing-lg);
+  border-bottom: 2px solid var(--color-border);
+}
+
+.asset-management-tabs {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.asset-management-tab-button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--color-text-sec);
+  transition: all 0.3s;
+  margin-bottom: -2px;
+}
+
+.asset-management-tab-button:hover {
+  color: var(--color-primary);
+}
+
+.asset-management-tab-button.active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+  font-weight: 500;
+}
+
+/* 标签页内容 */
+.asset-management-tab-content {
+  min-height: 400px;
+}
+
+.asset-management-tab-panel {
+  animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 按钮样式 */
+.asset-management-btn-primary,
+.asset-management-btn-secondary,
+.asset-management-btn-danger {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.asset-management-btn-primary {
+  background: var(--color-primary);
+  color: white;
+}
+
+.asset-management-btn-primary:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.asset-management-btn-primary:disabled {
+  background: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+.asset-management-btn-secondary {
+  background: var(--color-bg-card);
+  color: var(--color-text-main);
+  border: 1px solid var(--color-border);
+}
+
+.asset-management-btn-secondary:hover:not(:disabled) {
+  background: var(--color-bg-body);
+}
+
+.asset-management-btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.asset-management-btn-danger {
+  background: var(--color-error);
+  color: white;
+}
+
+.asset-management-btn-danger:hover {
+  opacity: 0.9;
+}
+
+/* 卡片样式 */
+.asset-management-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.asset-management-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.asset-management-card-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--color-text-main);
+}
+
+/* 统计卡片 */
+.asset-management-stat-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.asset-management-stat-card-large {
+  background: linear-gradient(135deg, var(--color-primary) 0%, rgba(118, 75, 162, 0.8) 100%);
+  color: white;
+  border: none;
+}
+
+.asset-management-stat-label {
+  font-size: 14px;
+  color: var(--color-text-sec);
+  margin-bottom: var(--spacing-sm);
+}
+
+.asset-management-stat-card.large .asset-management-stat-label {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.asset-management-stat-value-primary {
+  font-size: 32px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: var(--spacing-sm);
+}
+
+.asset-management-stat-value {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-text-main);
+}
+
+.asset-management-stat-value-blue {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.asset-management-stat-value-positive {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-success);
+}
+
+.asset-management-stat-value-negative {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-error);
+}
+
+.asset-management-stat-breakdown {
+  display: flex;
+  gap: var(--spacing-md);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* 网格布局 */
+.asset-management-stats-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.asset-management-charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.asset-management-assets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-md);
+}
+
+/* 表单样式 */
+.asset-management-form-group {
+  margin-bottom: var(--spacing-md);
+}
+
+.asset-management-form-label {
+  display: block;
+  margin-bottom: var(--spacing-sm);
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--color-text-main);
+}
+
+.asset-management-form-label .required {
+  color: var(--color-error);
+}
+
+.asset-management-form-input,
+.asset-management-form-select,
+.asset-management-form-textarea {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  background: var(--color-bg-card);
+  color: var(--color-text-main);
+}
+
+.asset-management-form-input:focus,
+.asset-management-form-select:focus,
+.asset-management-form-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+/* 模态框样式 */
+.asset-management-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.asset-management-modal-content {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-card);
+}
+
+.asset-management-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.asset-management-modal-header h2 {
+  margin: 0;
+  font-size: 20px;
+  color: var(--color-text-main);
+}
+
+.asset-management-modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--color-text-sec);
+}
+
+.asset-management-modal-body {
+  padding: var(--spacing-lg);
+}
+
+.asset-management-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+}
+
+/* 空状态 */
+.asset-management-empty-state {
+  text-align: center;
+  padding: 48px;
+  color: var(--color-text-sec);
+}
+
+.asset-management-loading {
+  text-align: center;
+  padding: 48px;
+  color: var(--color-text-sec);
+}
+
+/* 链接样式 */
+.asset-management-link {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.asset-management-link:hover {
+  text-decoration: underline;
+}
+
+/* 导入/导出特有样式 */
+.asset-management-import-export {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+}
+
+.asset-management-section-description {
+  color: var(--color-text-sec);
+  font-size: 14px;
+  margin-bottom: var(--spacing-md);
+}
+
+.asset-management-import-formats {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.asset-management-format-tag {
+  padding: 4px var(--spacing-md);
+  background: var(--color-bg-body);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  color: var(--color-text-sec);
+}
+
+.asset-management-import-actions,
+.asset-management-export-actions {
+  margin-bottom: var(--spacing-md);
+}
+
+.asset-management-btn-export {
+  width: 100%;
+  margin-bottom: var(--spacing-sm);
+  justify-content: center;
+}
+
+.asset-management-file-input {
+  display: none;
+}
+
+.asset-management-import-example {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--color-bg-body);
+  border-radius: var(--radius-sm);
+}
+
+.asset-management-import-example p {
+  margin: 0 0 var(--spacing-sm) 0;
+  font-size: 13px;
+  color: var(--color-text-main);
+}
+
+.asset-management-import-example pre {
+  margin: 0;
+  padding: var(--spacing-sm);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  overflow-x: auto;
+  color: var(--color-text-main);
+}
+
+/* 导入状态和结果样式 */
+.asset-management-import-status {
+  text-align: center;
+  padding: 2rem;
+}
+
+.asset-management-spinner {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid var(--color-bg-body);
+  border-top: 3px solid var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: var(--spacing-md);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.asset-management-import-result {
+  padding: var(--spacing-md) 0;
+}
+
+.asset-management-result-summary {
+  display: flex;
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-lg);
+}
+
+.asset-management-result-item {
+  flex: 1;
+  padding: var(--spacing-md);
+  border-radius: var(--radius-sm);
+}
+
+.asset-management-result-success {
+  background: rgba(82, 196, 26, 0.1);
+  border: 1px solid rgba(82, 196, 26, 0.3);
+}
+
+.asset-management-result-error {
+  background: rgba(255, 77, 79, 0.1);
+  border: 1px solid rgba(255, 77, 79, 0.3);
+}
+
+.asset-management-result-label {
+  font-weight: 500;
+  margin-right: var(--spacing-sm);
+  color: var(--color-text-main);
+}
+
+.asset-management-result-value {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text-main);
+}
+
+.asset-management-result-errors {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: rgba(255, 77, 79, 0.05);
+  border: 1px solid rgba(255, 77, 79, 0.2);
+  border-radius: var(--radius-sm);
+}
+
+.asset-management-result-errors h4 {
+  margin: 0 0 var(--spacing-sm) 0;
+  font-size: 0.875rem;
+  color: var(--color-error);
+}
+
+.asset-management-result-errors ul {
+  margin: 0;
+  padding-left: var(--spacing-lg);
+  font-size: 0.875rem;
+  color: var(--color-text-sec);
+}
+
+.asset-management-result-errors li {
+  margin-bottom: 4px;
+}
+
+/* 嵌入的 iframe 样式 */
+.asset-management-embedded-iframe {
+  width: 100%;
+  height: calc(100vh - 250px);
+  min-height: 600px;
+  border: none;
+  background: var(--color-bg-body);
+}
+
+/* 返回按钮样式 */
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-right: var(--spacing-md);
+  color: var(--color-text-sec);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  transition: all 0.2s;
+}
+
+.back-button:hover {
+  background: var(--color-bg-body);
+  color: var(--color-primary);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .asset-management-stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .asset-management-charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .asset-management-import-export {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .asset-management-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .asset-management-page {
+    padding: var(--spacing-md);
+  }
+
+  .asset-management-embedded-iframe {
+    height: calc(100vh - 200px);
+    min-height: 500px;
+  }
+}

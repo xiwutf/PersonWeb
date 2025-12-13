@@ -11,7 +11,9 @@
   >
     <!-- 侧边栏：使用主题颜色，替换写死的 text-white 和 border-slate-700 -->
     <!-- 注意：后台管理布局不包含前台 Header 组件，使用侧边栏导航 -->
+    <!-- 如果在 iframe 中嵌入，则隐藏侧边栏 -->
     <aside 
+      v-if="!isEmbedded"
       class="w-64 flex flex-col fixed h-full left-0 top-0 z-50 admin-sidebar"
       :style="sidebarStyle"
     >
@@ -162,22 +164,13 @@
               <span>投资仪表盘</span>
             </NuxtLink>
             <a 
-              href="/admin/dca-plan"
+              href="/admin/asset-management"
               class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm"
-              :class="{ 'admin-sidebar-link-active': route.path === '/admin/dca-plan' }"
-              @click.prevent="() => router.push('/admin/dca-plan')"
+              :class="{ 'admin-sidebar-link-active': route.path === '/admin/asset-management' || route.path.startsWith('/admin/asset-management') }"
+              @click.prevent="() => router.push('/admin/asset-management')"
             >
-              <i class="fas fa-calendar-check w-5 text-center mr-3"></i>
-              <span>定投计划</span>
-            </a>
-            <a 
-              href="/admin/price-alert"
-              class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm"
-              :class="{ 'admin-sidebar-link-active': route.path === '/admin/price-alert' }"
-              @click.prevent="() => router.push('/admin/price-alert')"
-            >
-              <i class="fas fa-bell w-5 text-center mr-3"></i>
-              <span>价格提醒</span>
+              <i class="fas fa-wallet w-5 text-center mr-3"></i>
+              <span>资产管理</span>
             </a>
           </div>
         </div>
@@ -405,7 +398,11 @@
     </aside>
 
     <!-- 主内容区：使用主题背景色和文字颜色 -->
-    <main class="flex-1 ml-64 p-4 md:p-6 lg:p-8 admin-main" :style="mainContentStyle">
+    <main 
+      class="flex-1 admin-main" 
+      :class="{ 'ml-64': !isEmbedded }"
+      :style="mainContentStyle"
+    >
       <!-- 使用统一的 AppNaiveConfig，确保前台和后台共用同一套主题配置 -->
       <!-- 使用 ClientOnly 避免 SSR 时的闪烁 -->
       <ClientOnly>
@@ -454,6 +451,9 @@ import ThemeSwitcher from '~/components/layout/ThemeSwitcher.vue'
 
 const router = useRouter()
 const route = useRoute()
+
+// 检测是否在 iframe 中嵌入（通过 URL 参数或 window 检测）
+const isEmbedded = ref(false)
 const { globalStyle, styleConfig, cssVariables, inlineStyle, fetchGlobalStyle } = useAdminGlobalStyle()
 
 // 使用全局主题系统（前台和后台共用）
@@ -490,7 +490,7 @@ const isMenuActive = (menuKey: string): boolean => {
     case 'knowledge':
       return path === '/admin/knowledge' || path === '/admin/timeline' || path === '/admin/time-capsules' || path === '/admin/document-agent'
     case 'analytics':
-      return path === '/admin/analytics' || path === '/admin/investment' || path === '/admin/dca-plan' || path === '/admin/price-alert'
+      return path === '/admin/analytics' || path === '/admin/investment' || path === '/admin/asset-management' || path.startsWith('/admin/asset-management')
     case 'sideBusiness':
       return path.startsWith('/admin/side-projects')
     case 'personal':
@@ -525,7 +525,7 @@ const autoExpandMenu = () => {
   if (path === '/admin/knowledge' || path === '/admin/timeline' || path === '/admin/time-capsules' || path === '/admin/document-agent') {
     expandedMenus.value.knowledge = true
   }
-  if (path === '/admin/analytics' || path === '/admin/investment' || path === '/admin/dca-plan' || path === '/admin/price-alert') {
+  if (path === '/admin/analytics' || path === '/admin/investment' || path === '/admin/asset-management' || path.startsWith('/admin/asset-management')) {
     expandedMenus.value.analytics = true
   }
   if (path.startsWith('/admin/side-projects')) {
@@ -585,6 +585,12 @@ const layoutStyle = computed(() => {
 
 // 主内容区样式（Vision Pro 风格 - 深色模式下使用渐变）
 const mainContentStyle = computed(() => {
+  // 如果在 iframe 中，减少 padding
+  if (isEmbedded.value) {
+    return {
+      padding: '0'
+    }
+  }
   const vars = cssVariables.value
   const isDark = currentTheme.value === 'dark'
   
@@ -600,6 +606,20 @@ const mainContentStyle = computed(() => {
 // 应用 CSS 变量到根元素
 onMounted(() => {
   fetchGlobalStyle()
+  
+  // 检测是否在 iframe 中嵌入（通过 URL 参数或 window 检测）
+  // 检测 URL 参数
+  if (route.query.embedded === 'true') {
+    isEmbedded.value = true
+  } else if (process.client) {
+    // 检测是否在 iframe 中
+    try {
+      isEmbedded.value = window.self !== window.top
+    } catch (e) {
+      // 跨域情况下会抛出异常，此时也认为是在 iframe 中
+      isEmbedded.value = true
+    }
+  }
 })
 
 // 监听 CSS 变量变化，应用到根元素
