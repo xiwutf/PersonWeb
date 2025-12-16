@@ -197,8 +197,33 @@ public class AssetController : ControllerBase
 
             // 计算总资产
             var totalAssets = assets.Sum(a => a.Amount);
-            var totalInvestments = investments.Sum(i => i.MarketValue);
+            
+            // 计算投资数据
+            var totalCost = investments.Sum(i => i.TotalCost);
+            // 计算实际市值：如果 MarketValue > 0 使用 MarketValue，否则使用 TotalCost（至少显示投资成本）
+            var actualMarketValue = investments.Sum(i => i.MarketValue > 0 ? i.MarketValue : i.TotalCost);
+            // 计算盈亏：如果 MarketValue > 0 使用实际盈亏，否则为 0（价格未知时无法计算盈亏）
+            var totalProfitLoss = investments.Sum(i => i.MarketValue > 0 ? i.ProfitLoss : 0);
+            
+            // 总投资使用实际市值（包含备用值）
+            var totalInvestments = actualMarketValue;
             var totalNetWorth = totalAssets + totalInvestments;
+            
+            // 记录详细调试信息
+            Console.WriteLine($"[Asset/overview] 资产数量: {assets.Count}, 投资数量: {investments.Count}");
+            Console.WriteLine($"[Asset/overview] 总资产: {totalAssets}, 投资成本: {totalCost}, 投资市值: {actualMarketValue}, 总净值: {totalNetWorth}");
+            if (investments.Count > 0)
+            {
+                Console.WriteLine($"[Asset/overview] 投资详情:");
+                foreach (var inv in investments)
+                {
+                    Console.WriteLine($"[Asset/overview]   - {inv.Code} {inv.Name}: Quantity={inv.Quantity}, CostPrice={inv.CostPrice}, CurrentPrice={inv.CurrentPrice}, TotalCost={inv.TotalCost}, MarketValue={inv.MarketValue}, ProfitLoss={inv.ProfitLoss}");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[Asset/overview] 警告: 没有找到任何投资记录");
+            }
 
             // 按资产类型统计
             var assetsByType = assets
@@ -213,14 +238,14 @@ public class AssetController : ControllerBase
                 })
                 .ToList();
 
-            // 投资统计
+            // 投资统计（使用上面计算的值）
             var investmentStats = new
             {
-                TotalCost = investments.Sum(i => i.TotalCost),
-                TotalMarketValue = totalInvestments,
-                TotalProfitLoss = investments.Sum(i => i.ProfitLoss),
-                TotalProfitRate = investments.Sum(i => i.TotalCost) > 0
-                    ? (investments.Sum(i => i.ProfitLoss) / investments.Sum(i => i.TotalCost)) * 100
+                TotalCost = totalCost,
+                TotalMarketValue = actualMarketValue,
+                TotalProfitLoss = totalProfitLoss,
+                TotalProfitRate = totalCost > 0
+                    ? (totalProfitLoss / totalCost) * 100
                     : 0,
                 Count = investments.Count
             };
@@ -235,9 +260,9 @@ public class AssetController : ControllerBase
                 AssetDistribution = new
                 {
                     Assets = totalAssets,
-                    Investments = totalInvestments,
+                    Investments = actualMarketValue, // 使用实际市值（包含备用值）
                     AssetsPercentage = totalNetWorth > 0 ? (totalAssets / totalNetWorth) * 100 : 0,
-                    InvestmentsPercentage = totalNetWorth > 0 ? (totalInvestments / totalNetWorth) * 100 : 0
+                    InvestmentsPercentage = totalNetWorth > 0 ? (actualMarketValue / totalNetWorth) * 100 : 0
                 }
             }));
         }

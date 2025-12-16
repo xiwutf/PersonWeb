@@ -276,21 +276,21 @@ const handleSaveStatus = async () => {
   if (!currentOrder.value) return
 
   try {
-    const res = await api.put<any>(`/admin/orders/${currentOrder.value.id}/status`, {
+    // useApi 已经处理了响应格式，如果成功会返回 data（可能为 null），如果失败会抛出异常
+    await api.put<any>(`/admin/orders/${currentOrder.value.id}/status`, {
       status: editForm.value.status,
       internalNote: editForm.value.internalNote
     })
 
-    if (res && res.code === 0) {
-      message.success('保存成功')
-      showDetailModal.value = false
-      fetchOrders()
-    } else {
-      message.error(res?.message || '保存失败')
-    }
+    // 如果没有抛出异常，说明保存成功
+    message.success('保存成功')
+    showDetailModal.value = false
+    fetchOrders()
   } catch (e: any) {
     console.error('保存订单状态失败:', e)
-    message.error('保存失败')
+    // 显示详细的错误信息
+    const errorMessage = e.response?.data?.message || e.message || '保存失败'
+    message.error(errorMessage)
   }
 }
 

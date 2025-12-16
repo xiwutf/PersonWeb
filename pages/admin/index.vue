@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="admin-dashboard-page">
     <!-- 顶部欢迎区 + 快捷入口 -->
     <AppCard class="dashboard-card hero-card mb-6">
@@ -140,7 +140,7 @@
                     <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-warning/20 text-warning">
                       {{ stats.pendingMessages }}
                     </span>
-                    <AppButton variant="secondary" size="sm" @click="navigateTo('/admin/time-capsules')">
+                    <AppButton variant="secondary" size="sm" @click="navigateTo('/admin/visitor-messages')">
                       查看
                     </AppButton>
                   </div>
@@ -275,10 +275,18 @@ const timelineItems = computed(() => {
       date: formatDate(now)
     },
     {
+      path: '/admin/visitor-messages',
+      icon: '💬',
+      title: '访客留言',
+      desc: stats.value.pendingMessages > 0 ? `${stats.value.pendingMessages} 条待审核留言` : '审核访客留言',
+      color: 'purple' as const,
+      date: formatDate(now)
+    },
+    {
       path: '/admin/time-capsules',
       icon: '⏰',
       title: '时间胶囊',
-      desc: '审核访客留言',
+      desc: '管理时间胶囊内容',
       color: 'purple' as const,
       date: formatDate(now)
     },

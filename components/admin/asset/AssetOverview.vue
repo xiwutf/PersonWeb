@@ -235,6 +235,11 @@ const props = defineProps<{
   loading: boolean
 }>()
 
+// 监听 overviewData 变化（移除调试日志，减少控制台输出）
+watch(() => props.overviewData, () => {
+  // 数据变化时的处理逻辑（如果需要）
+}, { immediate: false, deep: true })
+
 const emit = defineEmits<{
   refresh: []
 }>()

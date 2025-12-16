@@ -385,16 +385,20 @@ const handleViewDetail = async (consultation: any) => {
 // 转为订单
 const handleConvertToOrder = async (consultation: any) => {
   try {
+    // useApi 已经处理了响应格式，如果成功会返回 data，如果失败会抛出异常
     const res = await api.post<any>(`/admin/consultations/${consultation.id}/convert-to-order`)
-    if (res && res.code === 0 && res.data) {
-      message.success(`转换成功！新订单号：${res.data.orderNo}`)
+    // res 可能是 { orderNo: 'xxx' } 或 { OrderNo: 'xxx' } 格式
+    const orderNo = res?.orderNo || res?.OrderNo
+    if (orderNo) {
+      message.success(`转换成功！新订单号：${orderNo}`)
       fetchConsultations()
     } else {
-      message.error(res?.message || '转换失败')
+      message.error('转换失败：未返回订单号')
     }
   } catch (e: any) {
     console.error('转换咨询为订单失败:', e)
-    message.error('转换失败')
+    const errorMessage = e.response?.data?.message || e.message || '转换失败'
+    message.error(errorMessage)
   }
 }
 
@@ -481,21 +485,21 @@ const handleSaveStatus = async () => {
   if (!currentConsultation.value) return
 
   try {
-    const res = await api.put<any>(`/admin/consultations/${currentConsultation.value.id}`, {
+    // useApi 已经处理了响应格式，如果成功会返回 data（可能为 null），如果失败会抛出异常
+    await api.put<any>(`/admin/consultations/${currentConsultation.value.id}`, {
       status: editForm.value.status,
       internalNote: editForm.value.internalNote
     })
 
-    if (res && res.code === 0) {
-      message.success('保存成功')
-      showDetailModal.value = false
-      fetchConsultations()
-    } else {
-      message.error(res?.message || '保存失败')
-    }
+    // 如果没有抛出异常，说明保存成功
+    message.success('保存成功')
+    showDetailModal.value = false
+    fetchConsultations()
   } catch (e: any) {
     console.error('保存咨询状态失败:', e)
-    message.error('保存失败')
+    // 显示详细的错误信息
+    const errorMessage = e.response?.data?.message || e.message || '保存失败'
+    message.error(errorMessage)
   }
 }
 

@@ -7,7 +7,23 @@
         <p class="panel-subtitle">一个不依赖任何交易平台的个人投资分析系统</p>
       </div>
       <div class="header-actions">
-        <button @click="refreshPrices" class="btn-action-secondary">刷新价格</button>
+        <div class="auto-refresh-control">
+          <label class="auto-refresh-switch">
+            <input 
+              type="checkbox" 
+              v-model="autoRefreshEnabled"
+              class="auto-refresh-checkbox"
+            />
+            <span class="auto-refresh-label">自动刷新</span>
+          </label>
+          <span v-if="lastRefreshTime" class="last-refresh-time">
+            上次刷新: {{ formatRefreshTime(lastRefreshTime) }}
+          </span>
+        </div>
+        <button @click="refreshPrices" class="btn-action-secondary" :disabled="refreshingPrices">
+          <span v-if="refreshingPrices">刷新中...</span>
+          <span v-else>🔄 刷新价格</span>
+        </button>
         <div class="export-menu-container">
           <button @click="handleExportClick" class="btn-action-secondary">📥 导出数据</button>
           <div v-if="showExportMenu" class="export-menu">
@@ -472,11 +488,24 @@
                 </div>
               </div>
             </template>
-            <div v-if="form.currentPrice > 0" class="form-group">
-              <div class="form-info-box">
-                <span class="form-info-label">当前价格：</span>
-                <span class="form-info-value">¥{{ formatMoney(form.currentPrice) }}</span>
-                <span class="form-info-hint">（已自动获取）</span>
+            <div class="form-group">
+              <label class="form-label">当前价格 <span class="text-red-500">*</span></label>
+              <div class="input-with-unit">
+                <input 
+                  v-model.number="form.currentPrice" 
+                  type="number" 
+                  step="0.0001" 
+                  min="0"
+                  class="form-input" 
+                  placeholder="例如: 1.4012" 
+                  required
+                />
+                <span class="input-unit">元/份</span>
+              </div>
+              <div class="form-hint">
+                当前市场价格（元/股 或 元/份）
+                <br />
+                <span class="form-hint-tip">💡 <strong>如果自动获取失败</strong>：可以从支付宝等平台查看当前净值，手动填写。例如：金额995.34元 ÷ 持仓710.3282份 ≈ 1.4012元/份</span>
               </div>
             </div>
             <div class="form-group">
@@ -763,7 +792,9 @@ const transformInvestment = (item: any): Investment => {
   }
 }
 
+const loading = ref(false)
 const fetchList = async () => {
+  loading.value = true
   try {
     const res = await api.get<any>('/Investment')
     
@@ -841,19 +872,35 @@ const fetchList = async () => {
     if (process.env.NODE_ENV === 'development') {
       console.error('Failed to fetch investments:', e)
     }
+  } finally {
+    loading.value = false
   }
 }
 
+const refreshingPrices = ref(false)
 const refreshPrices = async () => {
   const { success } = useNotification()
   const { handleError } = useErrorHandler()
   
+  refreshingPrices.value = true
   try {
+    // useApi 已经处理了响应格式，如果成功会返回 data（可能为 null），如果失败会抛出异常
     await api.post('/Investment/refresh-prices')
-    success('价格刷新成功')
-    fetchList()
+    // 等待一小段时间确保后端数据已保存
+    await new Promise(resolve => setTimeout(resolve, 500))
+    // 重新获取列表和统计数据
+    await fetchList()
+    lastRefreshTime.value = new Date()
+    // 只在手动刷新时显示提示，自动刷新时不显示（避免打扰）
+    if (!autoRefreshInterval.value || !autoRefreshEnabled.value) {
+      success('价格刷新成功，数据已更新')
+    } else {
+      console.log('[自动刷新] 价格刷新成功')
+    }
   } catch (e: unknown) {
     handleError(e, '刷新失败')
+  } finally {
+    refreshingPrices.value = false
   }
 }
 
@@ -906,6 +953,11 @@ const saveItem = async () => {
     return
   }
   
+  if (!form.value.currentPrice || form.value.currentPrice <= 0) {
+    warning('请填写当前价格，必须大于0')
+    return
+  }
+  
   try {
     const payload: InvestmentRequest = {
       code: form.value.code.trim(),
@@ -913,6 +965,7 @@ const saveItem = async () => {
       type: form.value.type,
       quantity: form.value.quantity,
       costPrice: form.value.costPrice,
+      currentPrice: form.value.currentPrice, // 包含当前价格
       notes: form.value.notes || undefined
     }
     
@@ -1232,6 +1285,16 @@ const formatMoney = (value: number) => {
 
 const formatPercent = (value: number) => {
   return value.toFixed(2)
+}
+
+// 格式化刷新时间
+const formatRefreshTime = (time: Date | null) => {
+  if (!time) return ''
+  const now = new Date()
+  const diff = Math.floor((now.getTime() - time.getTime()) / 1000) // 秒
+  if (diff < 60) return `${diff}秒前`
+  if (diff < 3600) return `${Math.floor(diff / 60)}分钟前`
+  return time.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
 }
 
 // 生成图表颜色
@@ -1673,8 +1736,64 @@ const profitRankChartOption = computed(() => {
   }
 })
 
+// 自动刷新相关
+const autoRefreshEnabled = ref(true) // 默认开启自动刷新
+const autoRefreshInterval = ref<NodeJS.Timeout | null>(null)
+const lastRefreshTime = ref<Date | null>(null)
+
+// 自动刷新价格和数据
+const startAutoRefresh = () => {
+  // 清除旧的定时器
+  if (autoRefreshInterval.value) {
+    clearInterval(autoRefreshInterval.value)
+  }
+  
+  // 每5分钟自动刷新一次价格
+  autoRefreshInterval.value = setInterval(async () => {
+    if (!refreshingPrices.value) {
+      console.log('[自动刷新] 开始自动刷新价格...')
+      await refreshPrices()
+      lastRefreshTime.value = new Date()
+    }
+  }, 5 * 60 * 1000) // 5分钟
+}
+
+// 停止自动刷新
+const stopAutoRefresh = () => {
+  if (autoRefreshInterval.value) {
+    clearInterval(autoRefreshInterval.value)
+    autoRefreshInterval.value = null
+  }
+}
+
+// 监听自动刷新开关
+watch(autoRefreshEnabled, (enabled) => {
+  if (enabled) {
+    startAutoRefresh()
+  } else {
+    stopAutoRefresh()
+  }
+})
+
 onMounted(() => {
+  // 首次加载数据
   fetchList()
+  
+  // 页面加载后自动刷新一次价格（确保看到最新数据）
+  setTimeout(async () => {
+    if (autoRefreshEnabled.value) {
+      console.log('[页面加载] 自动刷新价格...')
+      await refreshPrices()
+      lastRefreshTime.value = new Date()
+      // 然后启动定时刷新
+      startAutoRefresh()
+    }
+  }, 2000) // 延迟2秒，避免页面加载时立即请求
+})
+
+// 页面卸载时清理定时器
+onUnmounted(() => {
+  stopAutoRefresh()
 })
 </script>
 
@@ -2689,6 +2808,42 @@ onMounted(() => {
 .export-menu-item:last-child {
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
+}
+
+/* 自动刷新控件 */
+.auto-refresh-control {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+  margin-right: 0.75rem;
+}
+
+.auto-refresh-switch {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.auto-refresh-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--color-primary, #3b82f6);
+}
+
+.auto-refresh-label {
+  font-size: 0.875rem;
+  color: var(--color-text-main, #374151);
+  font-weight: 500;
+}
+
+.last-refresh-time {
+  font-size: 0.75rem;
+  color: var(--color-text-muted, #6b7280);
+  font-style: italic;
 }
 </style>
 
