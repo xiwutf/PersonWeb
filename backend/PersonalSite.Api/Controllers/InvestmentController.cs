@@ -59,25 +59,13 @@ public class InvestmentController : ControllerBase
     {
         try
         {
-            // 记录请求参数，用于调试
-            Console.WriteLine($"[AutoFill] 收到请求: code={code}, type={type}");
-
             if (string.IsNullOrEmpty(code) || string.IsNullOrEmpty(type))
             {
-                Console.WriteLine($"[AutoFill] 参数验证失败: code={code}, type={type}");
                 return BadRequest(ApiResponse.Error("代码和类型不能为空", 400));
             }
 
-            Console.WriteLine($"[AutoFill] 开始获取价格和名称: code={code}, type={type}");
             var price = await GetCurrentPrice(code, type);
             var name = await GetNameFromCode(code, type);
-            Console.WriteLine($"[AutoFill] 获取结果: name={name}, price={price}");
-
-            // 如果名称和价格都为空，说明代码可能不存在或格式不对
-            if (string.IsNullOrEmpty(name) && price == 0)
-            {
-                Console.WriteLine($"[AutoFill] 警告：代码 {code} 无法获取数据，可能不存在或格式不正确");
-            }
 
             return Ok(ApiResponse.Success(new
             {
@@ -87,8 +75,8 @@ public class InvestmentController : ControllerBase
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[AutoFill] 异常: {ex.Message}");
-            Console.WriteLine($"[AutoFill] 堆栈: {ex.StackTrace}");
+            // 只记录错误日志
+            Console.Error.WriteLine($"[AutoFill] 异常: {ex.Message}");
             return StatusCode(500, ApiResponse.Error($"获取失败: {ex.Message}", 500));
         }
     }
@@ -163,12 +151,10 @@ public class InvestmentController : ControllerBase
                 if (request.CurrentPrice.HasValue && request.CurrentPrice.Value > 0)
                 {
                     updatedCurrentPrice = request.CurrentPrice.Value;
-                    Console.WriteLine($"[Create-合并持仓] 使用手动输入的价格: {updatedCurrentPrice}");
                 }
                 else
                 {
                     updatedCurrentPrice = await GetCurrentPrice(existingInvestment.Code, existingInvestment.Type);
-                    Console.WriteLine($"[Create-合并持仓] 自动获取的价格: {updatedCurrentPrice}");
                 }
                 existingInvestment.CurrentPrice = updatedCurrentPrice;
                 existingInvestment.MarketValue = existingInvestment.Quantity * updatedCurrentPrice;
@@ -196,13 +182,11 @@ public class InvestmentController : ControllerBase
             {
                 // 使用手动输入的价格
                 currentPrice = request.CurrentPrice.Value;
-                Console.WriteLine($"[Create] 使用手动输入的价格: {currentPrice}");
             }
             else
             {
                 // 自动获取价格
                 currentPrice = await GetCurrentPrice(request.Code, request.Type);
-                Console.WriteLine($"[Create] 自动获取的价格: {currentPrice}");
             }
 
             var investment = new Investment
@@ -271,13 +255,11 @@ public class InvestmentController : ControllerBase
             {
                 // 使用手动输入的价格
                 currentPrice = request.CurrentPrice.Value;
-                Console.WriteLine($"[Update] 使用手动输入的价格: {currentPrice}");
             }
             else
             {
                 // 自动获取价格
                 currentPrice = await GetCurrentPrice(request.Code ?? investment.Code, request.Type ?? investment.Type);
-                Console.WriteLine($"[Update] 自动获取的价格: {currentPrice}");
             }
 
             investment.Name = request.Name ?? investment.Name;
@@ -705,7 +687,7 @@ public class InvestmentController : ControllerBase
                 }
                 else
                 {
-                    Console.WriteLine($"[GetCurrentPrice] 不支持的基金代码: {code}");
+                    // 不支持的基金代码，静默处理
                     return 0;
                 }
             }
@@ -725,7 +707,7 @@ public class InvestmentController : ControllerBase
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"[GetCurrentPrice] API 响应内容: {content}");
+                // API 响应内容（已移除详细日志）
                 var result = JsonSerializer.Deserialize<JsonElement>(content);
                 
                 // 检查响应状态码（rc: 0 表示成功，其他值表示失败）
@@ -734,7 +716,7 @@ public class InvestmentController : ControllerBase
                     var rc = rcElement.GetInt32();
                     if (rc != 0)
                     {
-                        Console.WriteLine($"[GetCurrentPrice] API 返回错误码: rc={rc}, code={code}, secid={secid}");
+                        // API 返回错误码（已移除详细日志）
                         return 0;
                     }
                 }
@@ -751,34 +733,22 @@ public class InvestmentController : ControllerBase
                         {
                             // 价格单位是分，需要除以100
                             var finalPrice = price / 100;
-                            Console.WriteLine($"[GetCurrentPrice] 解析成功: {code} -> {finalPrice} (原始值: {price})");
+                            // 解析成功（已移除详细日志）
                             return finalPrice;
                         }
                         else
                         {
-                            Console.WriteLine($"[GetCurrentPrice] 价格解析失败: priceStr={priceStr}");
+                            // 价格解析失败（已移除详细日志）
                         }
                     }
-                    else
-                    {
-                        Console.WriteLine($"[GetCurrentPrice] f43 字段不存在或为 null");
-                    }
                 }
-                else
-                {
-                    Console.WriteLine($"[GetCurrentPrice] data 字段为空或不是对象: ValueKind={(result.TryGetProperty("data", out var d) ? d.ValueKind.ToString() : "不存在")}");
-                }
-            }
-            else
-            {
-                Console.WriteLine($"[GetCurrentPrice] HTTP 请求失败: StatusCode={response.StatusCode}");
             }
         }
         catch (Exception ex)
         {
             // 记录错误但不抛出异常，返回0让调用方处理
             // 可以在这里添加日志记录
-            Console.WriteLine($"获取价格失败 {code}: {ex.Message}");
+            // 获取价格失败（已移除详细日志）
         }
 
         // API 调用失败或解析失败，返回 0
@@ -833,7 +803,7 @@ public class InvestmentController : ControllerBase
                 }
                 else
                 {
-                    Console.WriteLine($"[GetNameFromCode] 不支持的基金代码: {code}");
+                    // 不支持的基金代码，静默处理
                     return string.Empty;
                 }
             }
@@ -849,7 +819,7 @@ public class InvestmentController : ControllerBase
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"[GetNameFromCode] API 响应内容: {content}");
+                // API 响应内容（已移除详细日志）
                 var result = JsonSerializer.Deserialize<JsonElement>(content);
                 
                 // 检查响应状态码（rc: 0 表示成功，其他值表示失败）
@@ -858,7 +828,7 @@ public class InvestmentController : ControllerBase
                     var rc = rcElement.GetInt32();
                     if (rc != 0)
                     {
-                        Console.WriteLine($"[GetNameFromCode] API 返回错误码: rc={rc}, code={code}");
+                        // API 返回错误码（已移除详细日志）
                         return string.Empty;
                     }
                 }
@@ -872,32 +842,20 @@ public class InvestmentController : ControllerBase
                         var name = nameElement.GetString();
                         if (!string.IsNullOrEmpty(name))
                         {
-                            Console.WriteLine($"[GetNameFromCode] 解析成功: {code} -> {name} (secid={secid})");
+                            // 解析成功（已移除详细日志）
                             return name;
                         }
                         else
                         {
-                            Console.WriteLine($"[GetNameFromCode] f58 字段值为空字符串");
+                            // f58 字段值为空字符串（已移除详细日志）
                         }
                     }
-                    else
-                    {
-                        Console.WriteLine($"[GetNameFromCode] f58 字段不存在或为 null");
-                    }
                 }
-                else
-                {
-                    Console.WriteLine($"[GetNameFromCode] data 字段为空或不是对象: ValueKind={(result.TryGetProperty("data", out var d) ? d.ValueKind.ToString() : "不存在")}");
-                }
-            }
-            else
-            {
-                Console.WriteLine($"[GetNameFromCode] HTTP 请求失败: StatusCode={response.StatusCode}");
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"获取名称失败 {code}: {ex.Message}");
+            // 获取名称失败（已移除详细日志）
         }
 
         // API 调用失败或解析失败，返回空字符串
@@ -922,8 +880,6 @@ public class InvestmentController : ControllerBase
             // 场外基金详情页面的 JS 数据文件
             var url = $"https://fund.eastmoney.com/pingzhongdata/{code.PadLeft(6, '0')}.js";
             
-            Console.WriteLine($"[GetOTCFundNameFromWeb] 请求场外基金数据: {url}");
-            
             var response = await client.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
@@ -942,13 +898,11 @@ public class InvestmentController : ControllerBase
                     var name = nameMatch.Groups[1].Value;
                     if (!string.IsNullOrEmpty(name))
                     {
-                        Console.WriteLine($"[GetOTCFundNameFromWeb] 解析成功: {code} -> {name}");
                         return name;
                     }
                 }
                 else
                 {
-                    Console.WriteLine($"[GetOTCFundNameFromWeb] 未找到基金名称，尝试其他格式");
                     // 尝试其他可能的格式
                     nameMatch = System.Text.RegularExpressions.Regex.Match(
                         content,
@@ -960,20 +914,15 @@ public class InvestmentController : ControllerBase
                         var name = nameMatch.Groups[1].Value;
                         if (!string.IsNullOrEmpty(name))
                         {
-                            Console.WriteLine($"[GetOTCFundNameFromWeb] 解析成功（备用格式）: {code} -> {name}");
                             return name;
                         }
                     }
                 }
             }
-            else
-            {
-                Console.WriteLine($"[GetOTCFundNameFromWeb] HTTP 请求失败: StatusCode={response.StatusCode}");
-            }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"[GetOTCFundNameFromWeb] 获取场外基金名称失败 {code}: {ex.Message}");
+            // 静默处理错误
         }
 
         return string.Empty;
@@ -1003,13 +952,11 @@ public class InvestmentController : ControllerBase
             {
                 // 使用基金实时估值 API
                 var gzUrl = $"https://fundgz.1234567.com.cn/js/{paddedCode}.js?rt={DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
-                Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法1: 请求基金实时估值API: {gzUrl}");
                 
                 var gzResponse = await client.GetAsync(gzUrl);
                 if (gzResponse.IsSuccessStatusCode)
                 {
                     var gzContent = await gzResponse.Content.ReadAsStringAsync();
-                    Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法1 API 响应内容: {gzContent.Substring(0, Math.Min(500, gzContent.Length))}");
                     
                     // 解析 JSONP 响应：jsonpgz({...})
                     var jsonMatch = System.Text.RegularExpressions.Regex.Match(
@@ -1045,16 +992,7 @@ public class InvestmentController : ControllerBase
                                 if (!string.IsNullOrEmpty(priceStr) && decimal.TryParse(priceStr, out var price) && price > 0)
                                 {
                                     gszValue = price;
-                                    Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法1 解析 gsz: {priceStr} -> {price}");
                                 }
-                                else
-                                {
-                                    Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法1 gsz 解析失败: {priceStr}");
-                                }
-                            }
-                            else
-                            {
-                                Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法1 未找到 gsz 字段");
                             }
                             
                             // 尝试获取 dwjz（最新净值）
@@ -1073,43 +1011,32 @@ public class InvestmentController : ControllerBase
                                 if (!string.IsNullOrEmpty(priceStr) && decimal.TryParse(priceStr, out var price) && price > 0)
                                 {
                                     dwjzValue = price;
-                                    Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法1 解析 dwjz: {priceStr} -> {price}");
                                 }
-                                else
-                                {
-                                    Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法1 dwjz 解析失败: {priceStr}");
-                                }
-                            }
-                            else
-                            {
-                                Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法1 未找到 dwjz 字段");
                             }
                             
                             // 优先使用实时估值（gsz），因为支付宝等平台显示的是实时估值，更接近实际市值
                             // 最新净值（dwjz）是历史确认净值，可能不够及时
                             if (gszValue.HasValue && gszValue.Value > 0)
                             {
-                                Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法1成功（实时估值）: {code} -> {gszValue.Value} (最新净值: {dwjzValue?.ToString() ?? "N/A"})");
                                 return gszValue.Value;
                             }
                             
                             // 如果没有实时估值，使用最新净值
                             if (dwjzValue.HasValue && dwjzValue.Value > 0)
                             {
-                                Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法1成功（最新净值）: {code} -> {dwjzValue.Value} (实时估值: {gszValue?.ToString() ?? "N/A"})");
                                 return dwjzValue.Value;
                             }
                         }
-                        catch (Exception jsonEx)
+                        catch (Exception)
                         {
-                            Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法1 JSON解析失败: {jsonEx.Message}");
+                            // 静默处理 JSON 解析错误
                         }
                     }
                 }
             }
-            catch (Exception ex1)
+            catch (Exception)
             {
-                Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法1失败: {ex1.Message}");
+                // 静默处理错误
             }
             
             // 方法1.5：使用基金净值查询 API（获取确认净值，验证日期）
@@ -1117,13 +1044,11 @@ public class InvestmentController : ControllerBase
             {
                 // 使用基金净值查询 API，获取最新确认净值（不是估值）
                 var url = $"https://fund.eastmoney.com/f10/F10DataApi.aspx?type=lsjz&code={paddedCode}&page=1&per=1&sdate=&edate=";
-                Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法1.5: 请求基金净值查询API: {url}");
                 
                 var response = await client.GetAsync(url);
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法1.5 API 响应内容（前1000字符）: {content.Substring(0, Math.Min(1000, content.Length))}");
                     
                     // 解析返回的 JavaScript 对象
                     var contentMatch = System.Text.RegularExpressions.Regex.Match(
@@ -1148,19 +1073,13 @@ public class InvestmentController : ControllerBase
                         if (dateMatch.Success && dateMatch.Groups.Count > 1)
                         {
                             var dateStr = dateMatch.Groups[1].Value;
-                            Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法1.5 提取的日期: {dateStr}");
                             
                             if (DateTime.TryParse(dateStr, out var netWorthDate))
                             {
                                 var daysDiff = (DateTime.Now.Date - netWorthDate.Date).Days;
-                                Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法1.5 净值日期与今天相差: {daysDiff} 天");
                                 
                                 // 如果日期超过3天，说明数据可能过旧，不采用
-                                if (daysDiff > 3)
-                                {
-                                    Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法1.5 净值日期过旧，跳过");
-                                }
-                                else
+                                if (daysDiff <= 3)
                                 {
                                     // 从 HTML 表格中提取单位净值（第一个 tor bold 类的 td）
                                     var priceMatches = System.Text.RegularExpressions.Regex.Matches(
@@ -1173,7 +1092,6 @@ public class InvestmentController : ControllerBase
                                         var priceStr = priceMatches[0].Groups[1].Value;
                                         if (decimal.TryParse(priceStr, out var price) && price > 0)
                                         {
-                                            Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法1.5成功（确认净值，日期: {dateStr}）: {code} -> {price}");
                                             return price;
                                         }
                                     }
@@ -1183,9 +1101,9 @@ public class InvestmentController : ControllerBase
                     }
                 }
             }
-            catch (Exception ex1_5)
+            catch (Exception)
             {
-                Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法1.5失败: {ex1_5.Message}");
+                // 静默处理错误
             }
             
             // 方法2：使用基金净值查询 API（备用，获取历史确认净值）
@@ -1193,13 +1111,11 @@ public class InvestmentController : ControllerBase
             {
                 // 使用基金净值查询 API，获取最新确认净值
                 var url = $"https://fund.eastmoney.com/f10/F10DataApi.aspx?type=lsjz&code={paddedCode}&page=1&per=1&sdate=&edate=";
-                Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法2: 请求基金净值查询API: {url}");
                 
                 var response = await client.GetAsync(url);
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法2 API 响应内容（前500字符）: {content.Substring(0, Math.Min(500, content.Length))}");
                     
                     // 解析返回的 JavaScript 对象
                     var contentMatch = System.Text.RegularExpressions.Regex.Match(
@@ -1220,21 +1136,19 @@ public class InvestmentController : ControllerBase
                             @"<td[^>]*class=['""]tor bold['""][^>]*>([\d.]+)</td>"
                         );
                         
-                        if (priceMatches.Count >= 1)
-                        {
-                            var priceStr = priceMatches[0].Groups[1].Value;
-                            if (decimal.TryParse(priceStr, out var price) && price > 0)
-                            {
-                                Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法2成功（确认净值）: {code} -> {price}");
-                                return price;
-                            }
-                        }
+                                    if (priceMatches.Count >= 1)
+                                    {
+                                        var priceStr = priceMatches[0].Groups[1].Value;
+                                        if (decimal.TryParse(priceStr, out var price) && price > 0)
+                                        {
+                                            return price;
+                                        }
+                                    }
                     }
                 }
                 
                 // 备用：使用基金JS数据文件
                 var jsUrl = $"https://fund.eastmoney.com/js/{paddedCode}.js";
-                Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法2（备用）: 请求基金JS数据: {jsUrl}");
                 
                 var jsResponse = await client.GetAsync(jsUrl);
                 if (jsResponse.IsSuccessStatusCode)
@@ -1254,7 +1168,6 @@ public class InvestmentController : ControllerBase
                         var priceStr = gzMatch.Groups[1].Value;
                         if (decimal.TryParse(priceStr, out var price) && price > 0)
                         {
-                            Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法2成功（估值）: {code} -> {price}");
                             return price;
                         }
                     }
@@ -1285,7 +1198,6 @@ public class InvestmentController : ControllerBase
                                 var priceStr = values[1].Trim().Trim('"', '\'');
                                 if (decimal.TryParse(priceStr, out var price) && price > 0)
                                 {
-                                    Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法2（净值趋势）成功: {code} -> {price}");
                                     return price;
                                 }
                             }
@@ -1309,23 +1221,21 @@ public class InvestmentController : ControllerBase
                             var priceStr = pingzhongGzMatch.Groups[1].Value;
                             if (decimal.TryParse(priceStr, out var price) && price > 0)
                             {
-                                Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法2（pingzhongdata）成功: {code} -> {price}");
                                 return price;
                             }
                         }
                     }
                 }
             }
-            catch (Exception ex2)
+            catch (Exception)
             {
-                Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法2失败: {ex2.Message}");
+                // 静默处理错误
             }
             
             // 方法3：使用基金详情页 API（最后备用方案）
             try
             {
                 var detailUrl = $"https://fund.eastmoney.com/{paddedCode}.html";
-                Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法3: 请求基金详情页: {detailUrl}");
                 
                 var detailResponse = await client.GetAsync(detailUrl);
                 if (detailResponse.IsSuccessStatusCode)
@@ -1344,23 +1254,21 @@ public class InvestmentController : ControllerBase
                         var priceStr = detailPriceMatch.Groups[1].Value;
                         if (decimal.TryParse(priceStr, out var price) && price > 0)
                         {
-                            Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法3成功: {code} -> {price}");
                             return price;
                         }
                     }
                 }
             }
-            catch (Exception ex3)
+            catch (Exception)
             {
-                Console.WriteLine($"[GetOTCFundPriceFromWeb] 方法3失败: {ex3.Message}");
+                // 静默处理错误
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            Console.WriteLine($"[GetOTCFundPriceFromWeb] 获取场外基金价格失败 {code}: {ex.Message}");
+            // 静默处理错误
         }
 
-        Console.WriteLine($"[GetOTCFundPriceFromWeb] 所有方法均失败，返回0: {code}");
         return 0;
     }
 }

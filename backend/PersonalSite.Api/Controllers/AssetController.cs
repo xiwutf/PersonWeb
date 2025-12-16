@@ -209,21 +209,7 @@ public class AssetController : ControllerBase
             var totalInvestments = actualMarketValue;
             var totalNetWorth = totalAssets + totalInvestments;
             
-            // 记录详细调试信息
-            Console.WriteLine($"[Asset/overview] 资产数量: {assets.Count}, 投资数量: {investments.Count}");
-            Console.WriteLine($"[Asset/overview] 总资产: {totalAssets}, 投资成本: {totalCost}, 投资市值: {actualMarketValue}, 总净值: {totalNetWorth}");
-            if (investments.Count > 0)
-            {
-                Console.WriteLine($"[Asset/overview] 投资详情:");
-                foreach (var inv in investments)
-                {
-                    Console.WriteLine($"[Asset/overview]   - {inv.Code} {inv.Name}: Quantity={inv.Quantity}, CostPrice={inv.CostPrice}, CurrentPrice={inv.CurrentPrice}, TotalCost={inv.TotalCost}, MarketValue={inv.MarketValue}, ProfitLoss={inv.ProfitLoss}");
-                }
-            }
-            else
-            {
-                Console.WriteLine($"[Asset/overview] 警告: 没有找到任何投资记录");
-            }
+            // 只在有错误时记录日志
 
             // 按资产类型统计
             var assetsByType = assets
