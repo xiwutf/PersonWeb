@@ -30,7 +30,7 @@
     <div class="asset-management-charts-grid">
       <div class="asset-management-card">
         <h3 class="asset-management-card-title">资产类型分布</h3>
-        <div v-if="overviewData?.AssetsByType && overviewData.AssetsByType.length > 0" class="asset-management-chart-wrapper">
+        <div v-if="hasAssetsTypeData" class="asset-management-chart-wrapper">
           <v-chart :option="assetsTypeChartOption" :theme="isDark ? 'dark-custom' : 'light-custom'" autoresize />
         </div>
         <div v-else class="asset-management-chart-empty">暂无数据</div>
@@ -38,7 +38,7 @@
 
       <div class="asset-management-card">
         <h3 class="asset-management-card-title">资产与投资占比</h3>
-        <div v-if="overviewData?.AssetDistribution" class="asset-management-chart-wrapper">
+        <div v-if="hasDistributionData" class="asset-management-chart-wrapper">
           <v-chart :option="assetDistributionChartOption" :theme="isDark ? 'dark-custom' : 'light-custom'" autoresize />
         </div>
         <div v-else class="asset-management-chart-empty">暂无数据</div>
@@ -240,6 +240,20 @@ watch(() => props.overviewData, () => {
   // 数据变化时的处理逻辑（如果需要）
 }, { immediate: false, deep: true })
 
+// 计算是否有资产类型数据
+const hasAssetsTypeData = computed(() => {
+  const assetsByType = props.overviewData?.AssetsByType || props.overviewData?.assetsByType || []
+  return assetsByType && assetsByType.length > 0
+})
+
+// 计算是否有占比数据（只要有投资数据就显示）
+const hasDistributionData = computed(() => {
+  const dist = props.overviewData?.AssetDistribution || props.overviewData?.assetDistribution
+  if (!dist) return false
+  const investments = dist.Investments ?? dist.investments ?? 0
+  return investments > 0
+})
+
 const emit = defineEmits<{
   refresh: []
 }>()
@@ -266,13 +280,14 @@ const formData = ref({
 
 // 资产类型分布图表
 const assetsTypeChartOption = computed(() => {
-  if (!props.overviewData?.AssetsByType || props.overviewData.AssetsByType.length === 0) {
+  const assetsByType = props.overviewData?.AssetsByType || props.overviewData?.assetsByType || []
+  if (!assetsByType || assetsByType.length === 0) {
     return {}
   }
 
-  const data = props.overviewData.AssetsByType.map((item: any) => ({
-    name: item.TypeName,
-    value: item.TotalAmount
+  const data = assetsByType.map((item: any) => ({
+    name: item.TypeName || item.typeName || item.Type || item.type || '未知',
+    value: item.TotalAmount || item.totalAmount || 0
   }))
 
   return {
@@ -317,14 +332,23 @@ const assetsTypeChartOption = computed(() => {
 
 // 资产与投资占比图表
 const assetDistributionChartOption = computed(() => {
-  if (!props.overviewData?.AssetDistribution) {
+  const dist = props.overviewData?.AssetDistribution || props.overviewData?.assetDistribution
+  if (!dist) {
     return {}
   }
 
-  const dist = props.overviewData.AssetDistribution
+  // 兼容大小写字段名
+  const assets = dist.Assets ?? dist.assets ?? 0
+  const investments = dist.Investments ?? dist.investments ?? 0
+  
+  // 如果两者都为0，不显示图表
+  if (assets === 0 && investments === 0) {
+    return {}
+  }
+
   const data = [
-    { name: '资产', value: dist.Assets },
-    { name: '投资', value: dist.Investments }
+    { name: '资产', value: assets },
+    { name: '投资', value: investments }
   ]
 
   return {
