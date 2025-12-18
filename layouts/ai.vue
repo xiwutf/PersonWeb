@@ -33,6 +33,9 @@
     <VisitorBehaviorListener />
     <!-- 访客侧边栏抽屉（包含留言、互动等功能） -->
     <VisitorSidebarDrawer />
+    
+    <!-- 智能客服（前台访客使用） -->
+    <SupportChat />
   </div>
 </template>
 
@@ -45,6 +48,7 @@ import AIAssistant from '~/components/ai/AIAssistant.vue'
 import VisitorInteractionPanel from '~/components/VisitorInteractionPanel.vue'
 import VisitorBehaviorListener from '~/components/VisitorBehaviorListener.vue'
 import VisitorSidebarDrawer from '~/components/VisitorSidebarDrawer.vue'
+import SupportChat from '~/components/ai/SupportChat.vue'
 
 const route = useRoute()
 const api = useApi()

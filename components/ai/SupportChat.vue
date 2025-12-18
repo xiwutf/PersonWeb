@@ -1,25 +1,26 @@
 <template>
-  <div class="support-chat-container">
-    <!-- 悬浮按钮 -->
-    <div
-      v-if="!showChat"
-      class="support-chat-button"
-      @click.stop="openChat"
-      role="button"
-      tabindex="0"
-      @keydown.enter="openChat"
-    >
-      <i class="fas fa-comments"></i>
-      <span class="button-text">智能客服</span>
-    </div>
+  <ClientOnly>
+    <div class="support-chat-container">
+      <!-- 悬浮按钮 -->
+      <div
+        v-if="!showChat"
+        class="support-chat-button"
+        @click.stop="openChat"
+        role="button"
+        tabindex="0"
+        @keydown.enter="openChat"
+      >
+        <i class="fas fa-comments"></i>
+        <span class="button-text">智能客服</span>
+      </div>
 
-    <!-- 聊天窗口 -->
-    <n-drawer
-      v-model:show="showChat"
-      :width="400"
-      placement="right"
-      :mask-closable="true"
-    >
+      <!-- 聊天窗口 -->
+      <n-drawer
+        v-model:show="showChat"
+        :width="400"
+        placement="right"
+        :mask-closable="true"
+      >
       <template #header>
         <div class="chat-header">
           <div class="header-info">
@@ -117,7 +118,16 @@
         </div>
       </div>
     </n-drawer>
-  </div>
+    </div>
+    <template #fallback>
+      <div class="support-chat-container">
+        <div class="support-chat-button" style="opacity: 0.5;">
+          <i class="fas fa-comments"></i>
+          <span class="button-text">智能客服</span>
+        </div>
+      </div>
+    </template>
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">
@@ -141,6 +151,7 @@ const messagesContainer = ref<HTMLElement | null>(null)
 
 // 打开聊天窗口
 const openChat = () => {
+  console.log('智能客服：点击打开聊天窗口')
   showChat.value = true
   // 添加欢迎消息
   if (messages.value.length === 0) {
@@ -149,6 +160,10 @@ const openChat = () => {
       content: '你好！我是智能客服，可以帮你解答关于服务内容、项目开发、工具使用等问题。有什么可以帮你的吗？'
     })
   }
+  // 确保 drawer 正确显示
+  nextTick(() => {
+    console.log('智能客服：drawer 状态', showChat.value)
+  })
 }
 
 // 关闭聊天窗口
@@ -271,9 +286,10 @@ watch(messages, () => {
 <style scoped>
 .support-chat-container {
   position: fixed;
-  bottom: 24px;
+  bottom: 80px; /* 调整位置，避免与小智按钮重叠 */
   right: 24px;
-  z-index: 1000;
+  z-index: 10000;
+  pointer-events: auto;
 }
 
 .support-chat-button {
