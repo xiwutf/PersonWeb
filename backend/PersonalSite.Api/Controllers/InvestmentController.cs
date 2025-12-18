@@ -744,7 +744,7 @@ public class InvestmentController : ControllerBase
                 }
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             // 记录错误但不抛出异常，返回0让调用方处理
             // 可以在这里添加日志记录
@@ -853,7 +853,7 @@ public class InvestmentController : ControllerBase
                 }
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             // 获取名称失败（已移除详细日志）
         }

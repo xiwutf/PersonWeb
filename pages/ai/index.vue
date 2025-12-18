@@ -1,130 +1,178 @@
 ﻿<template>
-  <div class="ai-lab-page">
+  <div class="ai-solutions-page">
     <!-- 背景特效 -->
-    <div class="ai-lab-bg">
-      <div class="ai-lab-bg-gradient-1"></div>
-      <div class="ai-lab-bg-gradient-2"></div>
-      <div class="ai-lab-bg-grid"></div>
+    <div class="ai-solutions-bg">
+      <div class="ai-solutions-bg-gradient-1"></div>
+      <div class="ai-solutions-bg-gradient-2"></div>
+      <div class="ai-solutions-bg-grid"></div>
     </div>
 
-    <div class="ai-lab-container">
-      <!-- 1. AI 能力概览 Hero -->
-      <section class="ai-lab-hero">
-        <div class="ai-lab-hero-content">
-          <div class="ai-lab-hero-badge">
-            <span class="ai-lab-hero-badge-dot"></span>
-            <span>AI 实验室 · 智能体与自动化</span>
-          </div>
-          
-          <h1 class="ai-lab-hero-title">
-            AI 实验室
-            <span class="ai-lab-hero-subtitle">
-              智能体与自动化
-            </span>
-          </h1>
-          
-          <p class="ai-lab-hero-description">
-            这里是我尝试用 AI 改造工作流、提升效率、做酷东西的地方，也是你可以把 AI 想法变成产品的起点。
-          </p>
+    <div class="ai-solutions-container">
+      <!-- 页面定位（写在页面最顶部） -->
+      <div class="ai-solutions-badge">
+        <span class="ai-solutions-badge-dot"></span>
+        <span>AI / 智能体解决方案</span>
+      </div>
 
-          <div class="ai-lab-hero-buttons">
-            <a href="#projects" class="ai-lab-hero-button ai-lab-hero-button--primary">
-              <span>查看 AI 项目案例</span>
-              <i class="fas fa-arrow-down"></i>
-            </a>
-            <a href="#cooperation" class="ai-lab-hero-button ai-lab-hero-button--secondary">
-              <span>我想做一个 AI 项目</span>
-              <i class="fas fa-arrow-right"></i>
-            </a>
+      <!-- 主标题（H1） -->
+      <h1 class="ai-solutions-title">
+        AI / 智能体解决方案
+      </h1>
+
+      <!-- 副标题（H2） -->
+      <h2 class="ai-solutions-subtitle">
+        为个人与中小团队打造可落地的 AI 应用与智能体系统
+      </h2>
+
+      <!-- 引导说明（小段文案） -->
+      <p class="ai-solutions-description">
+        我专注于将 AI 技术落地为真实可用的工具与系统，
+        覆盖智能体构建、知识库问答、流程自动化与 AI 工具开发，
+        适用于个人创作者、小团队与中小企业的实际业务场景。
+      </p>
+
+      <!-- 模块一：我能做什么（能力展示） -->
+      <section id="capabilities" class="ai-solutions-section">
+        <div class="ai-solutions-section-header">
+          <h2 class="ai-solutions-section-title">
+            <i class="fas fa-lightbulb"></i>
+            我能为你构建哪些 AI 能力
+          </h2>
+        </div>
+
+        <div class="ai-solutions-capabilities-grid">
+          <div
+            v-for="capability in capabilities"
+            :key="capability.id"
+            class="ai-solutions-capability-card"
+          >
+            <div class="ai-solutions-capability-icon">
+              <i :class="capability.icon"></i>
+            </div>
+            <h3 class="ai-solutions-capability-title">{{ capability.title }}</h3>
+            <ul class="ai-solutions-capability-features">
+              <li v-for="feature in capability.features" :key="feature">
+                {{ feature }}
+              </li>
+            </ul>
           </div>
         </div>
       </section>
 
-      <!-- 2. 智能体 / AI 项目案例列表 -->
-      <section id="projects" class="ai-lab-projects">
-        <div class="ai-lab-section-header">
-          <h2 class="ai-lab-section-title">
-            <i class="fas fa-robot"></i>
-            智能体 / AI 项目案例
+      <!-- 模块二：代表性 AI 项目（案例） -->
+      <section id="projects" class="ai-solutions-section">
+        <div class="ai-solutions-section-header">
+          <h2 class="ai-solutions-section-title">
+            <i class="fas fa-project-diagram"></i>
+            部分 AI 项目与实践
           </h2>
-          <p class="ai-lab-section-description">
-            以下是我实际开发或实验的 AI 项目，涵盖 RAG、多智能体、自动化等多个方向。
+          <p class="ai-solutions-section-description">
+            （可持续新增，不求多，但求真实）
           </p>
         </div>
-        <AiProjectList />
+
+        <div class="ai-solutions-projects-grid">
+          <div
+            v-for="project in featuredProjects"
+            :key="project.id"
+            class="ai-solutions-project-card"
+            @click="handleProjectClick(project)"
+          >
+            <div class="ai-solutions-project-header">
+              <div class="ai-solutions-project-icon">
+                <i :class="project.icon"></i>
+              </div>
+              <h3 class="ai-solutions-project-title">{{ project.title }}</h3>
+            </div>
+            <p class="ai-solutions-project-description">{{ project.description }}</p>
+            <div class="ai-solutions-project-highlights">
+              <h4 class="ai-solutions-project-highlights-title">能力亮点：</h4>
+              <ul class="ai-solutions-project-highlights-list">
+                <li v-for="highlight in project.highlights" :key="highlight">
+                  {{ highlight }}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <p class="ai-solutions-projects-note">
+          部分项目仍在持续迭代中，但核心能力已具备并可复用。
+        </p>
       </section>
 
-      <!-- 3. AI 技术栈与工具区块 -->
-      <section class="ai-lab-tech-stack">
-        <div class="ai-lab-section-header">
-          <h2 class="ai-lab-section-title">
-            <i class="fas fa-tools"></i>
-            我熟悉的 AI 技术栈
+      <!-- 模块三：技术栈与架构能力（专业信任） -->
+      <section id="tech-stack" class="ai-solutions-section">
+        <div class="ai-solutions-section-header">
+          <h2 class="ai-solutions-section-title">
+            <i class="fas fa-code"></i>
+            技术栈与架构能力
           </h2>
-          <p class="ai-lab-section-description">
-            不是只会"调用一个接口"，而是能完整落地 AI 系统的全栈能力。
-          </p>
         </div>
 
-        <div class="ai-lab-tech-grid">
+        <div class="ai-solutions-tech-grid">
           <div
             v-for="category in techStackCategories"
             :key="category.name"
-            class="ai-lab-tech-card"
+            class="ai-solutions-tech-card"
           >
-            <div class="ai-lab-tech-card-header">
+            <div class="ai-solutions-tech-header">
               <i :class="category.icon"></i>
-              <h3 class="ai-lab-tech-card-title">{{ category.name }}</h3>
+              <h3 class="ai-solutions-tech-title">{{ category.name }}</h3>
             </div>
-            <div class="ai-lab-tech-card-tags">
-              <span
-                v-for="item in category.items"
-                :key="item"
-                class="ai-lab-tech-tag"
-              >
+            <ul class="ai-solutions-tech-list">
+              <li v-for="item in category.items" :key="item">
                 {{ item }}
-              </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 模块四：合作方式（商业闭环） -->
+      <section id="cooperation" class="ai-solutions-section">
+        <div class="ai-solutions-section-header">
+          <h2 class="ai-solutions-section-title">
+            <i class="fas fa-handshake"></i>
+            合作流程
+          </h2>
+        </div>
+
+        <div class="ai-solutions-cooperation-steps">
+          <div
+            v-for="(step, index) in cooperationSteps"
+            :key="index"
+            class="ai-solutions-cooperation-step"
+          >
+            <div class="ai-solutions-cooperation-step-number">
+              {{ index + 1 }}️⃣
+            </div>
+            <div class="ai-solutions-cooperation-step-content">
+              <h3 class="ai-solutions-cooperation-step-title">{{ step.title }}</h3>
+              <p class="ai-solutions-cooperation-step-description">{{ step.description }}</p>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- 4. 合作流程 / 如何一起做 AI 项目 -->
-      <section id="cooperation" class="ai-lab-cooperation">
-        <div class="ai-lab-section-header">
-          <h2 class="ai-lab-section-title">
-            <i class="fas fa-handshake"></i>
-            如果你想找我做一个 AI 项目
-          </h2>
-          <p class="ai-lab-section-description">
-            从想法到落地，我会陪你走完整个流程。
+      <!-- 模块五：结尾 CTA（非常重要） -->
+      <section id="cta" class="ai-solutions-cta">
+        <div class="ai-solutions-cta-content">
+          <p class="ai-solutions-cta-text">
+            如果你正在寻找一个<br>
+            能真正把 AI 做成"工具"和"系统"的开发者<br>
+            欢迎与我交流你的想法。
           </p>
-        </div>
-
-        <div class="ai-lab-cooperation-steps">
-          <div
-            v-for="(step, index) in cooperationSteps"
-            :key="index"
-            class="ai-lab-cooperation-step"
-          >
-            <div class="ai-lab-cooperation-step-number">{{ index + 1 }}</div>
-            <div class="ai-lab-cooperation-step-content">
-              <h3 class="ai-lab-cooperation-step-title">{{ step.title }}</h3>
-              <p class="ai-lab-cooperation-step-description">{{ step.description }}</p>
-            </div>
-            <div v-if="index < cooperationSteps.length - 1" class="ai-lab-cooperation-step-arrow">
+          <div class="ai-solutions-cta-buttons">
+            <NuxtLink to="/about" class="ai-solutions-cta-button ai-solutions-cta-button--primary">
+              <span>联系我</span>
+              <i class="fas fa-arrow-right"></i>
+            </NuxtLink>
+            <a href="#projects" class="ai-solutions-cta-button ai-solutions-cta-button--secondary">
+              <span>查看项目</span>
               <i class="fas fa-arrow-down"></i>
-            </div>
+            </a>
           </div>
-        </div>
-
-        <!-- 联系入口 -->
-        <div class="ai-lab-cooperation-footer">
-          <a href="/about" class="ai-lab-cooperation-button">
-            <span>我有一个 AI 想法</span>
-            <span class="ai-lab-cooperation-button-text">联系我</span>
-            <i class="fas fa-arrow-right"></i>
-          </a>
         </div>
       </section>
     </div>
@@ -132,76 +180,179 @@
 </template>
 
 <script setup lang="ts">
-import AiProjectList from '~/components/ai/AiProjectList.vue'
-
 definePageMeta({
   layout: 'ai'
 })
 
 useHead({
-  title: 'AI 实验室 - 智能体与自动化 | 溪午听风',
+  title: 'AI / 智能体解决方案 | 溪午听风',
   meta: [
-    { name: 'description', content: '了解我的 AI 能力、查看项目案例、技术栈和合作流程。把 AI 想法变成产品。' }
+    { name: 'description', content: '为个人与中小团队打造可落地的 AI 应用与智能体系统。智能体构建、知识库问答、流程自动化与 AI 工具开发。' }
   ]
 })
+
+const router = useRouter()
+
+// 能力展示数据
+const capabilities = [
+  {
+    id: 'agent-system',
+    title: '智能体系统开发',
+    icon: 'fas fa-robot',
+    features: [
+      '多角色智能体设计',
+      '任务拆解与自动执行',
+      '工具调用与流程编排',
+      '支持长期记忆与上下文管理'
+    ]
+  },
+  {
+    id: 'ai-tools',
+    title: 'AI 工具 / 助手定制',
+    icon: 'fas fa-magic',
+    features: [
+      '智能取名、内容生成',
+      '表单 / 数据处理自动化',
+      '规则 + AI 混合逻辑',
+      '私有化部署支持'
+    ]
+  },
+  {
+    id: 'knowledge-qa',
+    title: '知识库智能问答',
+    icon: 'fas fa-database',
+    features: [
+      '文档 / 网站 / 私有数据接入',
+      '向量化与语义检索',
+      '多轮对话与精准引用',
+      '适用于企业内部或个人知识管理'
+    ]
+  },
+  {
+    id: 'integration',
+    title: 'AI + 网站 / 系统集成',
+    icon: 'fas fa-plug',
+    features: [
+      'AI 客服 / 网站聊天助手',
+      '管理后台 AI 辅助',
+      '与现有系统无缝集成',
+      '前后端完整交付'
+    ]
+  }
+]
+
+// 代表性项目案例
+const featuredProjects = [
+  {
+    id: 'name-tool',
+    title: '智能取名助手',
+    icon: 'fas fa-sparkles',
+    description: '基于规则与大模型的智能取名系统，支持行业、风格、禁用词等多维度控制。',
+    highlights: [
+      'Prompt 模板化管理',
+      '多轮生成与去重逻辑',
+      '可扩展为品牌命名 / 产品命名工具'
+    ],
+    path: '/tools/name'
+  },
+  {
+    id: 'website-chat',
+    title: '网站 AI 聊天助手',
+    icon: 'fas fa-comments',
+    description: '为个人网站与产品站点提供定制化 AI 问答能力。',
+    highlights: [
+      '系统 Prompt 与用户 Prompt 分离',
+      '支持上下文与历史消息',
+      '可对接知识库与业务接口'
+    ],
+    path: null
+  },
+  {
+    id: 'finance-assistant',
+    title: '个人理财 / 资产分析智能助手（规划中）',
+    icon: 'fas fa-chart-line',
+    description: '用于个人资产统计、分析与长期理财规划的 AI 辅助系统。',
+    highlights: [
+      '多资产类型建模',
+      '数据分析 + AI 解释',
+      '长期可演进为个人理财助手'
+    ],
+    path: null
+  }
+]
 
 // 技术栈分类
 const techStackCategories = [
   {
-    name: '模型与平台',
+    name: 'AI / 模型层',
     icon: 'fas fa-brain',
-    items: ['OpenAI API', '本地大模型', '各类国内模型', 'LangChain', 'LlamaIndex']
+    items: [
+      '主流大模型（OpenAI / 国产模型等）',
+      'Prompt Engineering',
+      '多模型策略与降本方案'
+    ]
   },
   {
     name: '后端与服务编排',
     icon: 'fas fa-server',
-    items: ['.NET', 'Java', 'Python (FastAPI)', 'Node.js', '微服务架构']
+    items: [
+      'Python / .NET WebAPI',
+      'LangChain / 向量数据库',
+      '工具调用、任务流设计',
+      '权限与安全控制'
+    ]
   },
   {
     name: '前端与交互',
     icon: 'fas fa-desktop',
-    items: ['Vue3', 'Nuxt3', '对话式 UI', '前后端联动', '实时通信']
-  },
-  {
-    name: '工具与能力',
-    icon: 'fas fa-cog',
-    items: ['RAG 检索', '向量数据库', '多智能体框架', 'API 调用', '任务调度']
+    items: [
+      'Vue 3 / Nuxt 3',
+      '管理后台与用户交互设计',
+      'AI 结果可视化'
+    ]
   }
 ]
 
 // 合作流程步骤
 const cooperationSteps = [
   {
-    title: '沟通需求',
-    description: '简单聊聊你现在的场景和想解决的问题。'
+    title: '需求沟通',
+    description: '明确你的业务场景与目标'
   },
   {
     title: '方案设计',
-    description: '我会给出可行性建议、技术路线和预估工作量。'
+    description: 'AI 能力拆解与技术方案制定'
   },
   {
-    title: '小步快跑实现',
-    description: '先做一个可用的 MVP，再逐步打磨。'
+    title: '开发实现',
+    description: '敏捷开发，阶段性可验收'
   },
   {
     title: '交付与迭代',
-    description: '根据你的反馈持续改进，让 AI 真正落地在你的业务里。'
+    description: '支持后期优化与功能扩展'
   }
 ]
+
+// 处理项目点击
+const handleProjectClick = (project: any) => {
+  if (project.path) {
+    router.push(project.path)
+  }
+}
 </script>
 
 <style scoped>
-.ai-lab-page {
+.ai-solutions-page {
   position: relative;
   min-height: 100vh;
   background: var(--bg);
   color: var(--text-main);
-  padding-top: 80px;
+  padding-top: 100px;
   padding-bottom: 80px;
 }
 
 /* 背景特效 */
-.ai-lab-bg {
+.ai-solutions-bg {
   position: fixed;
   inset: 0;
   pointer-events: none;
@@ -209,7 +360,7 @@ const cooperationSteps = [
   overflow: hidden;
 }
 
-.ai-lab-bg-gradient-1 {
+.ai-solutions-bg-gradient-1 {
   position: absolute;
   top: -20%;
   left: -10%;
@@ -220,7 +371,7 @@ const cooperationSteps = [
   filter: blur(80px);
 }
 
-.ai-lab-bg-gradient-2 {
+.ai-solutions-bg-gradient-2 {
   position: absolute;
   bottom: -20%;
   right: -10%;
@@ -231,7 +382,7 @@ const cooperationSteps = [
   filter: blur(80px);
 }
 
-.ai-lab-bg-grid {
+.ai-solutions-bg-grid {
   position: absolute;
   inset: 0;
   background-image: 
@@ -241,22 +392,16 @@ const cooperationSteps = [
   opacity: 0.3;
 }
 
-.ai-lab-container {
+.ai-solutions-container {
   position: relative;
   z-index: 1;
-  max-width: 1280px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
 }
 
-/* Hero 区块 */
-.ai-lab-hero {
-  text-align: center;
-  padding: 60px 0 80px;
-  margin-bottom: 80px;
-}
-
-.ai-lab-hero-badge {
+/* 页面定位 Badge */
+.ai-solutions-badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -269,7 +414,7 @@ const cooperationSteps = [
   margin-bottom: 24px;
 }
 
-.ai-lab-hero-badge-dot {
+.ai-solutions-badge-dot {
   width: 8px;
   height: 8px;
   background: #06b6d4;
@@ -282,50 +427,394 @@ const cooperationSteps = [
   50% { opacity: 0.5; }
 }
 
-.ai-lab-hero-title {
-  font-size: 64px;
+/* 主标题 */
+.ai-solutions-title {
+  font-size: 56px;
   font-weight: 700;
   line-height: 1.2;
-  margin: 0 0 16px 0;
+  margin: 0 0 24px 0;
   background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-.ai-lab-hero-subtitle {
-  display: block;
-  font-size: 32px;
-  font-weight: 400;
-  margin-top: 8px;
-  color: var(--text-secondary);
+@media (max-width: 640px) {
+  .ai-solutions-title {
+    font-size: 40px;
+  }
+}
+
+/* 副标题 */
+.ai-solutions-subtitle {
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text-main);
+  margin: 0 0 24px 0;
 }
 
 @media (max-width: 640px) {
-  .ai-lab-hero-title {
-    font-size: 48px;
-  }
-  .ai-lab-hero-subtitle {
-    font-size: 24px;
+  .ai-solutions-subtitle {
+    font-size: 20px;
   }
 }
 
-.ai-lab-hero-description {
+/* 引导说明 */
+.ai-solutions-description {
   font-size: 18px;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  max-width: 800px;
+  margin: 0 0 80px 0;
+}
+
+@media (max-width: 640px) {
+  .ai-solutions-description {
+    font-size: 16px;
+  }
+}
+
+/* 区块通用样式 */
+.ai-solutions-section {
+  margin-bottom: 120px;
+}
+
+.ai-solutions-section-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.ai-solutions-section-title {
+  font-size: 36px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--text-main);
+}
+
+.ai-solutions-section-title i {
+  color: #06b6d4;
+}
+
+.ai-solutions-section-description {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .ai-solutions-section-title {
+    font-size: 28px;
+  }
+}
+
+/* 能力展示卡片 */
+.ai-solutions-capabilities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.ai-solutions-capability-card {
+  padding: 32px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+}
+
+.ai-solutions-capability-card:hover {
+  background: var(--bg-elevated);
+  border-color: var(--primary);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(6, 182, 212, 0.15);
+}
+
+.ai-solutions-capability-icon {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(6, 182, 212, 0.1);
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.ai-solutions-capability-icon i {
+  font-size: 24px;
+  color: #06b6d4;
+}
+
+.ai-solutions-capability-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0 0 16px 0;
+}
+
+.ai-solutions-capability-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ai-solutions-capability-features li {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  padding-left: 20px;
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.ai-solutions-capability-features li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #06b6d4;
+  font-weight: bold;
+}
+
+/* 项目案例卡片 */
+.ai-solutions-projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.ai-solutions-project-card {
+  padding: 32px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.ai-solutions-project-card:hover {
+  background: var(--bg-elevated);
+  border-color: var(--primary);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(6, 182, 212, 0.15);
+}
+
+.ai-solutions-project-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.ai-solutions-project-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(6, 182, 212, 0.1);
+  border-radius: 12px;
+}
+
+.ai-solutions-project-icon i {
+  font-size: 20px;
+  color: #06b6d4;
+}
+
+.ai-solutions-project-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.ai-solutions-project-description {
+  font-size: 14px;
   line-height: 1.6;
   color: var(--text-secondary);
-  max-width: 700px;
-  margin: 0 auto 40px;
+  margin: 0 0 20px 0;
 }
 
-.ai-lab-hero-buttons {
+.ai-solutions-project-highlights {
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+.ai-solutions-project-highlights-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0 0 12px 0;
+}
+
+.ai-solutions-project-highlights-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ai-solutions-project-highlights-list li {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  padding-left: 20px;
+  position: relative;
+  margin-bottom: 6px;
+}
+
+.ai-solutions-project-highlights-list li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #06b6d4;
+  font-weight: bold;
+}
+
+.ai-solutions-projects-note {
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* 技术栈卡片 */
+.ai-solutions-tech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.ai-solutions-tech-card {
+  padding: 32px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+}
+
+.ai-solutions-tech-card:hover {
+  background: var(--bg-elevated);
+  border-color: var(--primary);
+  transform: translateY(-4px);
+}
+
+.ai-solutions-tech-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.ai-solutions-tech-header i {
+  font-size: 24px;
+  color: #06b6d4;
+}
+
+.ai-solutions-tech-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.ai-solutions-tech-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ai-solutions-tech-list li {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  padding-left: 20px;
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.ai-solutions-tech-list li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: #06b6d4;
+}
+
+/* 合作流程 */
+.ai-solutions-cooperation-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.ai-solutions-cooperation-step {
+  padding: 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+}
+
+.ai-solutions-cooperation-step:hover {
+  background: var(--bg-elevated);
+  border-color: var(--primary);
+}
+
+.ai-solutions-cooperation-step-number {
+  font-size: 32px;
+  margin-bottom: 16px;
+}
+
+.ai-solutions-cooperation-step-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0 0 8px 0;
+}
+
+.ai-solutions-cooperation-step-description {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* CTA 区块 */
+.ai-solutions-cta {
+  text-align: center;
+  padding: 80px 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  margin-top: 80px;
+}
+
+.ai-solutions-cta-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.ai-solutions-cta-text {
+  font-size: 20px;
+  line-height: 1.8;
+  color: var(--text-main);
+  margin: 0 0 40px 0;
+}
+
+.ai-solutions-cta-buttons {
   display: flex;
   gap: 16px;
   justify-content: center;
   flex-wrap: wrap;
 }
 
-.ai-lab-hero-button {
+.ai-solutions-cta-button {
   display: inline-flex;
   align-items: center;
   gap: 12px;
@@ -338,224 +827,25 @@ const cooperationSteps = [
   cursor: pointer;
 }
 
-.ai-lab-hero-button--primary {
+.ai-solutions-cta-button--primary {
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
   color: #fff;
   box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
 }
 
-.ai-lab-hero-button--primary:hover {
+.ai-solutions-cta-button--primary:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(6, 182, 212, 0.4);
 }
 
-.ai-lab-hero-button--secondary {
+.ai-solutions-cta-button--secondary {
   background: var(--primary-soft-bg);
   border: 1px solid var(--border-color);
   color: var(--primary);
 }
 
-.ai-lab-hero-button--secondary:hover {
+.ai-solutions-cta-button--secondary:hover {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(6, 182, 212, 0.4);
-}
-
-/* 区块通用样式 */
-.ai-lab-section-header {
-  text-align: center;
-  margin-bottom: 48px;
-}
-
-.ai-lab-section-title {
-  font-size: 40px;
-  font-weight: 600;
-  margin: 0 0 16px 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  color: var(--text-main);
-}
-
-.ai-lab-section-title i {
-  color: #06b6d4;
-}
-
-.ai-lab-section-description {
-  font-size: 16px;
-  line-height: 1.6;
-  color: var(--text-secondary);
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-/* 项目案例区块 */
-.ai-lab-projects {
-  margin-bottom: 120px;
-}
-
-/* 技术栈区块 */
-.ai-lab-tech-stack {
-  margin-bottom: 120px;
-}
-
-.ai-lab-tech-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px;
-}
-
-.ai-lab-tech-card {
-  padding: 24px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--card-radius, 16px);
-  transition: all 0.3s ease;
-}
-
-.ai-lab-tech-card:hover {
-  background: var(--bg-elevated);
-  border-color: var(--primary);
-  transform: translateY(-4px);
-}
-
-.ai-lab-tech-card-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.ai-lab-tech-card-header i {
-  font-size: 24px;
-  color: #06b6d4;
-}
-
-.ai-lab-tech-card-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text-main);
-  margin: 0;
-}
-
-.ai-lab-tech-card-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.ai-lab-tech-tag {
-  padding: 6px 14px;
-  background: rgba(6, 182, 212, 0.1);
-  border: 1px solid rgba(6, 182, 212, 0.3);
-  border-radius: 8px;
-  font-size: 13px;
-  color: #06b6d4;
-}
-
-/* 合作流程区块 */
-.ai-lab-cooperation {
-  margin-bottom: 80px;
-}
-
-.ai-lab-cooperation-steps {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  max-width: 800px;
-  margin: 0 auto 60px;
-}
-
-.ai-lab-cooperation-step {
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  gap: 24px;
-  padding: 32px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--card-radius, 16px);
-  transition: all 0.3s ease;
-}
-
-.ai-lab-cooperation-step:hover {
-  background: var(--bg-elevated);
-  border-color: var(--primary);
-}
-
-.ai-lab-cooperation-step-number {
-  flex-shrink: 0;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
-  border-radius: 12px;
-  font-size: 20px;
-  font-weight: 700;
-  color: #fff;
-}
-
-.ai-lab-cooperation-step-content {
-  flex: 1;
-}
-
-.ai-lab-cooperation-step-title {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--text-main);
-  margin: 0 0 8px 0;
-}
-
-.ai-lab-cooperation-step-description {
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--text-secondary);
-  margin: 0;
-}
-
-.ai-lab-cooperation-step-arrow {
-  position: absolute;
-  bottom: -40px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: rgba(6, 182, 212, 0.5);
-  font-size: 20px;
-}
-
-.ai-lab-cooperation-step:last-child .ai-lab-cooperation-step-arrow {
-  display: none;
-}
-
-.ai-lab-cooperation-footer {
-  display: flex;
-  justify-content: center;
-}
-
-.ai-lab-cooperation-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  padding: 18px 40px;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
-  border: none;
-  border-radius: 12px;
-  font-size: 18px;
-  font-weight: 600;
-  color: #fff;
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
-}
-
-.ai-lab-cooperation-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(6, 182, 212, 0.4);
-}
-
-.ai-lab-cooperation-button-text {
-  font-weight: 700;
 }
 </style>

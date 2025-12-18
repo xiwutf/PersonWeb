@@ -111,6 +111,9 @@ public class AppDbContext : DbContext
     public DbSet<SupportConfig> SupportConfigs { get; set; }
     public DbSet<AssistantSession> AssistantSessions { get; set; }
     public DbSet<AssistantMessage> AssistantMessages { get; set; }
+    
+    // 智能取名助手相关表
+    public DbSet<NameFavorite> NameFavorites { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -289,11 +289,19 @@ ai-service/
 │   │   ├── config.py        # 配置管理
 │   │   ├── llm_client.py    # 大模型客户端
 │   │   ├── auth.py          # 鉴权
-│   │   └── app_logging.py   # 日志
+│   │   ├── app_logging.py   # 日志
+│   │   └── prompt_loader.py # Prompt 加载工具
 │   ├── services/            # 服务层
 │   │   ├── chat_service.py  # 聊天服务
 │   │   ├── tools_service.py # 工具服务
 │   │   └── rag_service.py   # RAG 服务
+│   ├── prompts/             # Prompt 模板文件
+│   │   ├── name_tool/       # 智能取名 Prompt
+│   │   │   ├── system_v1.txt
+│   │   │   └── user_v1.txt
+│   │   └── website_chat/   # 网站聊天 Prompt
+│   │       ├── system_v1.txt
+│   │       └── user_v1.txt
 │   └── models/              # 数据模型
 │       └── dto.py           # 请求/响应模型
 ├── tests/                   # 测试
@@ -338,6 +346,60 @@ ai-service/
 3. **上下文管理**：
    - 基于 `session_id` 实现对话上下文
    - 使用 Redis 或其他存储管理会话
+
+## 📝 Prompt 文件管理
+
+### Prompt 文件位置
+
+所有 Prompt 模板文件存储在 `app/prompts/` 目录下，按场景（scene）组织：
+
+```
+app/prompts/
+├── name_tool/          # 智能取名助手
+│   ├── system_v1.txt   # 系统 Prompt（v1 版本）
+│   └── user_v1.txt     # 用户 Prompt（v1 版本）
+└── website_chat/       # 网站聊天
+    ├── system_v1.txt   # 系统 Prompt（v1 版本）
+    └── user_v1.txt     # 用户 Prompt（v1 版本）
+```
+
+### 如何调整 Prompt 版本
+
+1. **修改现有版本**：
+   - 直接编辑对应的 `*_v1.txt` 文件
+   - 修改后重启服务即可生效
+
+2. **创建新版本**：
+   - 复制现有版本文件，例如：`system_v1.txt` → `system_v2.txt`
+   - 修改服务代码中的加载路径，例如：`load_prompt("name_tool/system_v2.txt")`
+   - 这样可以保留旧版本，方便回滚
+
+3. **Prompt 变量说明**：
+   - Prompt 文件支持 Python `str.format()` 语法
+   - 变量使用 `{variable_name}` 占位符
+   - 例如：`name_tool/user_v1.txt` 支持 `{type}`, `{style}`, `{gender}` 等变量
+
+### 使用 Prompt 加载工具
+
+在服务代码中使用 `app.core.prompt_loader` 模块：
+
+```python
+from app.core.prompt_loader import load_prompt, render_prompt
+
+# 加载静态 Prompt（无变量）
+system_prompt = load_prompt("name_tool/system_v1.txt")
+
+# 加载并渲染 Prompt（有变量）
+template = load_prompt("name_tool/user_v1.txt")
+user_prompt = render_prompt(template, type="game", style="霸气", ...)
+```
+
+### 注意事项
+
+- Prompt 文件使用 UTF-8 编码
+- 文件路径相对于 `app/prompts/` 目录
+- 如果 Prompt 文件缺失或渲染失败，会抛出明确的异常，便于定位问题
+- 修改 Prompt 文件后需要重启服务才能生效
 
 ## 📄 许可证
 

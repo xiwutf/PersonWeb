@@ -1,0 +1,22 @@
+输入条件：
+type: {type}
+style: {style}
+gender: {gender}
+length: {length}
+keywords: {keywords}
+language: {language}
+banned: {banned}
+traceId: {traceId}
+
+输出要求：
+输出一个 JSON 对象，字段：
+traceId: string（沿用输入 traceId）
+items: array，长度 20
+items 每项字段：
+  name: string
+  totalScore: number
+  scores: {{ memorability:number, uniqueness:number, fit:number, aesthetics:number }}
+  reason: string（不超过 40 字）
+  tags: string[]（如['古风', '短', '偏霸气']）
+只输出 JSON。
+

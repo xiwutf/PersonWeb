@@ -113,6 +113,9 @@ builder.Services.Configure<PersonalSite.Api.Services.AiServiceOptions>(
     builder.Configuration.GetSection("AiService"));
 builder.Services.AddHttpClient<PersonalSite.Api.Services.AiServiceClient>();
 
+// 配置 NameTool AI Service（使用独立的 HttpClient）
+builder.Services.AddHttpClient<PersonalSite.Api.Services.INameToolAiService, PersonalSite.Api.Services.NameToolAiService>();
+
 // 注册 AI 智能体服务
 builder.Services.AddScoped<PersonalSite.Api.Services.ContentAgentService>();
 builder.Services.AddScoped<PersonalSite.Api.Services.DemoAgentService>();
@@ -120,6 +123,7 @@ builder.Services.AddScoped<PersonalSite.Api.Services.LeadAgentService>();
 builder.Services.AddScoped<PersonalSite.Api.Services.SupportAgentService>();
 builder.Services.AddScoped<PersonalSite.Api.Services.PersonalAssistantService>();
 builder.Services.AddScoped<PersonalSite.Api.Services.QuotationAgentService>();
+builder.Services.AddScoped<PersonalSite.Api.Services.INameToolAiService, PersonalSite.Api.Services.NameToolAiService>();
 
 // 注册支付服务
 builder.Services.AddScoped<PersonalSite.Api.Services.Payment.WeChatPaymentService>();

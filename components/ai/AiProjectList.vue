@@ -82,6 +82,7 @@ interface AiProject {
   tags: string[]
   stack: string[]
   status: string
+  path?: string  // 可选：项目路径，用于跳转
 }
 
 // Props
@@ -91,6 +92,15 @@ const props = defineProps<{
 
 // 默认项目数据（占位数据）
 const defaultProjects: AiProject[] = [
+  {
+    id: 'name-tool',
+    title: '智能取名助手',
+    summary: '游戏名、网名、英文名一键生成，支持多维度评分、风格筛选、收藏管理。',
+    tags: ['AI工具', '文本生成'],
+    stack: ['Python', 'FastAPI', 'OpenAI API', 'Vue3'],
+    status: '已上线',
+    path: '/tools/name'
+  },
   {
     id: '1',
     title: '个人知识库智能问答助手',
@@ -170,9 +180,15 @@ const getStatusClass = (status: string) => {
 }
 
 // 处理项目点击
+const router = useRouter()
 const handleProjectClick = (project: AiProject) => {
-  // 可以跳转到项目详情页或打开弹窗
-  console.log('点击项目:', project)
+  // 如果有 path，跳转到对应页面；否则显示详情
+  if (project.path) {
+    router.push(project.path)
+  } else {
+    // 可以跳转到项目详情页或打开弹窗
+    console.log('点击项目:', project)
+  }
 }
 </script>
 

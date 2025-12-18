@@ -40,9 +40,12 @@ class ChatRequest(BaseModel):
 
 class ChatUsage(BaseModel):
     """Token 使用量"""
-    prompt_tokens: int
-    completion_tokens: int
-    total_tokens: int
+    prompt_tokens: int = Field(..., alias="promptTokens")
+    completion_tokens: int = Field(..., alias="completionTokens")
+    total_tokens: int = Field(..., alias="totalTokens")
+    
+    class Config:
+        populate_by_name = True  # 允许使用字段名或别名
 
 
 class ChatResponseData(BaseModel):
@@ -50,6 +53,30 @@ class ChatResponseData(BaseModel):
     reply: str = Field(..., description="模型回复文本")
     model: str = Field(..., description="实际使用的模型名称")
     usage: Optional[ChatUsage] = Field(None, description="Token 使用量")
+
+
+# ==================== 网站聊天相关 ====================
+
+class WebsiteChatMessage(BaseModel):
+    """网站聊天消息"""
+    role: str = Field(..., description="角色: system | user | assistant")
+    content: str = Field(..., description="消息内容")
+
+
+class WebsiteChatRequest(BaseModel):
+    """网站聊天请求模型"""
+    messages: List[WebsiteChatMessage] = Field(..., min_items=1, description="消息列表（包含 system 和 user 消息）")
+    scene: str = Field("website-chat", description="场景标识")
+    extra: Optional[Dict[str, Any]] = Field(None, description="额外信息，如页面、traceId 等")
+
+
+class WebsiteChatResponseData(BaseModel):
+    """网站聊天响应数据"""
+    content: str = Field(..., description="AI 回复内容")
+    usage: Optional[ChatUsage] = Field(None, description="Token 使用量")
+    
+    class Config:
+        populate_by_name = True  # 允许使用字段名或别名
 
 
 # ==================== AI 工具相关 ====================
@@ -177,3 +204,40 @@ class DocumentQueryResponseData(BaseModel):
     answer: str = Field(..., description="AI 生成的答案")
     relevant_chunks: List[RelevantChunk] = Field(..., description="相关文档片段列表")
     confidence: Optional[float] = Field(None, ge=0.0, le=1.0, description="置信度")
+
+
+# ==================== 智能取名助手相关 ====================
+
+class NameScores(BaseModel):
+    """名字评分维度"""
+    memorability: int = Field(..., ge=0, le=100, description="好记度 0-100")
+    uniqueness: int = Field(..., ge=0, le=100, description="独特性 0-100")
+    fit: int = Field(..., ge=0, le=100, description="贴合度 0-100")
+    aesthetics: int = Field(..., ge=0, le=100, description="美观度 0-100")
+
+
+class NameItem(BaseModel):
+    """名字项"""
+    name: str = Field(..., description="名字")
+    totalScore: int = Field(..., ge=0, le=100, description="总分 0-100")
+    scores: NameScores = Field(..., description="评分维度")
+    reason: str = Field(..., max_length=40, description="评分理由（不超过40字）")
+    tags: Optional[List[str]] = Field(None, description="标签，如['古风', '短', '偏霸气']")
+
+
+class NameGenerateRequest(BaseModel):
+    """生成名字请求模型"""
+    type: str = Field(..., description="取名类型: game | nickname | english")
+    style: List[str] = Field(..., min_items=1, description="风格列表")
+    gender: Optional[str] = Field(None, description="性别: 男/女/中性")
+    length: Optional[str] = Field(None, description="名字长度: 短/中/长")
+    keywords: Optional[str] = Field(None, description="关键词，多个用逗号分隔")
+    language: Optional[str] = Field("自动", description="语言: 中文/英文/混合/自动")
+    banned: Optional[str] = Field(None, description="禁用词，多个用逗号分隔")
+    traceId: Optional[str] = Field(None, description="追踪ID，用于'再来一批'时保持风格一致")
+
+
+class NameGenerateResponseData(BaseModel):
+    """生成名字响应数据"""
+    traceId: str = Field(..., description="追踪ID")
+    items: List[NameItem] = Field(..., min_items=1, max_items=20, description="生成的名字列表（20个）")

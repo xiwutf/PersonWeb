@@ -4,7 +4,10 @@
     <div
       v-if="!showChat"
       class="support-chat-button"
-      @click="openChat"
+      @click.stop="openChat"
+      role="button"
+      tabindex="0"
+      @keydown.enter="openChat"
     >
       <i class="fas fa-comments"></i>
       <span class="button-text">智能客服</span>
@@ -174,7 +177,7 @@ const sendMessage = async () => {
   // 调用 API
   loading.value = true
   try {
-    const res = await api.post('/ai/support/answer', {
+    const res = await api.post('/AiAgent/support/answer', {
       question: userMessage,
       category: 'general',
       pageContext: getPageContext(),

@@ -6,9 +6,15 @@
  */
 
 // 在模块级别就设置 document，确保在任何导入之前
-if (process.server && typeof global !== 'undefined') {
-  if (!global.document) {
-    global.document = {
+// 使用立即执行函数确保在所有导入之前执行
+(function setupSSRDocument() {
+  if (typeof process !== 'undefined' && process.server) {
+    const globalObj = typeof global !== 'undefined' ? global : 
+                     typeof globalThis !== 'undefined' ? globalThis : 
+                     typeof window !== 'undefined' ? window : {}
+    
+    // 创建完整的 document mock
+    const createDocumentMock = () => ({
       head: {
         appendChild: () => {},
         removeChild: () => {},
@@ -19,36 +25,51 @@ if (process.server && typeof global !== 'undefined') {
         append: () => {},
         prepend: () => {},
         children: [],
-        childNodes: []
+        childNodes: [],
+        getElementsByTagName: () => [],
+        getElementsByClassName: () => []
       },
       documentElement: {
         insertBefore: () => {},
-        firstChild: null
+        firstChild: null,
+        appendChild: () => {},
+        removeChild: () => {}
       },
-      body: {},
+      body: {
+        appendChild: () => {},
+        removeChild: () => {}
+      },
       createElement: () => ({
         setAttribute: () => {},
         appendChild: () => {},
         removeChild: () => {},
-        style: {}
-      })
-    } as any
-  } else if (!global.document.head) {
-    // 如果 document 存在但没有 head，添加一个
-    global.document.head = {
-      appendChild: () => {},
-      removeChild: () => {},
+        style: {},
+        className: '',
+        classList: {
+          add: () => {},
+          remove: () => {},
+          contains: () => false
+        }
+      }),
+      createTextNode: () => ({}),
+      getElementById: () => null,
       querySelector: () => null,
-      querySelectorAll: () => [],
-      insertBefore: () => {},
-      remove: () => {},
-      append: () => {},
-      prepend: () => {},
-      children: [],
-      childNodes: []
-    } as any
+      querySelectorAll: () => []
+    })
+    
+    // 设置全局 document
+    if (!globalObj.document) {
+      globalObj.document = createDocumentMock() as any
+    } else if (!globalObj.document.head) {
+      globalObj.document.head = createDocumentMock().head as any
+    }
+    
+    // 确保 window.document 也存在（某些库可能检查 window）
+    if (typeof window !== 'undefined' && !window.document) {
+      window.document = globalObj.document as any
+    }
   }
-}
+})()
 
 export default defineNuxtPlugin({
   name: 'css-render-ssr-server-fix',

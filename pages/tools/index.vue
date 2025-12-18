@@ -44,6 +44,34 @@
         </div>
       </div>
 
+      <!-- 快速导航 -->
+      <div class="tools-navigation">
+        <NuxtLink
+          to="/tools/marketplace"
+          class="tools-nav-button tools-nav-button--primary"
+        >
+          🛒 工具商城
+        </NuxtLink>
+        <NuxtLink
+          to="/tools/collections"
+          class="tools-nav-button tools-nav-button--secondary"
+        >
+          📦 工具合集
+        </NuxtLink>
+        <NuxtLink
+          to="/tools/my-tools"
+          class="tools-nav-button tools-nav-button--secondary"
+        >
+          🎒 我的工具
+        </NuxtLink>
+        <NuxtLink
+          to="/order/query"
+          class="tools-nav-button tools-nav-button--secondary"
+        >
+          📦 订单查询
+        </NuxtLink>
+      </div>
+
       <!-- 工具列表 -->
       <div v-if="pending" class="tools-loading">
         <div class="tools-loading-spinner"></div>
@@ -133,34 +161,6 @@
             </div>
           </div>
         </TransitionGroup>
-      </div>
-
-      <!-- 快速导航 -->
-      <div class="tools-navigation">
-        <NuxtLink
-          to="/tools/marketplace"
-          class="tools-nav-button tools-nav-button--primary"
-        >
-          🛒 工具商城
-        </NuxtLink>
-        <NuxtLink
-          to="/tools/collections"
-          class="tools-nav-button tools-nav-button--secondary"
-        >
-          📦 工具合集
-        </NuxtLink>
-        <NuxtLink
-          to="/tools/my-tools"
-          class="tools-nav-button tools-nav-button--secondary"
-        >
-          🎒 我的工具
-        </NuxtLink>
-        <NuxtLink
-          to="/order/query"
-          class="tools-nav-button tools-nav-button--secondary"
-        >
-          📦 订单查询
-        </NuxtLink>
       </div>
 
       <!-- 底部CTA -->
