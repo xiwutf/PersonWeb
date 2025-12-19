@@ -213,6 +213,15 @@
               <i class="fas fa-columns w-5 text-center mr-3"></i>
               <span>看板视图</span>
             </a>
+            <a 
+              href="/admin/side-projects/analytics"
+              class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm"
+              :class="{ 'admin-sidebar-link-active': route.path === '/admin/side-projects/analytics' }"
+              @click.prevent="() => router.push('/admin/side-projects/analytics')"
+            >
+              <i class="fas fa-chart-bar w-5 text-center mr-3"></i>
+              <span>数据分析</span>
+            </a>
           </div>
         </div>
 
@@ -412,23 +421,32 @@
 
     <!-- 主内容区：使用主题背景色和文字颜色 -->
     <main 
-      class="flex-1 admin-main" 
+      class="flex-1 admin-main flex flex-col" 
       :class="{ 'ml-64': !isEmbedded }"
       :style="mainContentStyle"
     >
+      <!-- 顶部栏（包含铃铛入口） -->
+      <ClientOnly>
+        <div class="admin-topbar border-b border-border-subtle bg-bg-elevated px-6 py-4 flex items-center justify-end gap-4">
+          <NotificationBell />
+        </div>
+      </ClientOnly>
+
       <!-- 使用统一的 AppNaiveConfig，确保前台和后台共用同一套主题配置 -->
       <!-- 使用 ClientOnly 避免 SSR 时的闪烁 -->
-      <ClientOnly>
-        <AppNaiveConfig>
-          <slot />
-        </AppNaiveConfig>
-        <template #fallback>
-          <!-- SSR 时的占位内容，使用与主题一致的背景色 -->
-          <div class="admin-main-fallback">
+      <div class="flex-1 overflow-auto">
+        <ClientOnly>
+          <AppNaiveConfig>
             <slot />
-          </div>
-        </template>
-      </ClientOnly>
+          </AppNaiveConfig>
+          <template #fallback>
+            <!-- SSR 时的占位内容，使用与主题一致的背景色 -->
+            <div class="admin-main-fallback">
+              <slot />
+            </div>
+          </template>
+        </ClientOnly>
+      </div>
     </main>
 
     <!-- 鼠标轨迹特效 -->

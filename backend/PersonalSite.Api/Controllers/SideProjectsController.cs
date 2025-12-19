@@ -168,7 +168,22 @@ public class SideProjectsController : ControllerBase
         if (dto.BudgetMin.HasValue) project.BudgetMin = dto.BudgetMin;
         if (dto.BudgetMax.HasValue) project.BudgetMax = dto.BudgetMax;
         if (dto.PriceFinal.HasValue) project.PriceFinal = dto.PriceFinal;
-        if (dto.Status.HasValue) project.Status = dto.Status.Value;
+        // 处理状态变化：如果状态变为已完成，记录完成时间
+        if (dto.Status.HasValue)
+        {
+            var wasCompleted = project.Status == 1;
+            project.Status = dto.Status.Value;
+            // 如果从非已完成变为已完成，记录完成时间
+            if (!wasCompleted && project.Status == 1 && !project.CompletedAt.HasValue)
+            {
+                project.CompletedAt = DateTime.Now;
+            }
+            // 如果从已完成变为其他状态，清除完成时间
+            else if (wasCompleted && project.Status != 1)
+            {
+                project.CompletedAt = null;
+            }
+        }
         if (dto.StartTime.HasValue) project.StartTime = dto.StartTime;
         if (dto.EndTime.HasValue) project.EndTime = dto.EndTime;
         if (dto.IsPublic.HasValue) project.IsPublic = dto.IsPublic.Value;
@@ -178,7 +193,22 @@ public class SideProjectsController : ControllerBase
         if (dto.Priority.HasValue) project.Priority = dto.Priority;
         if (dto.DeadlineAt.HasValue) project.DeadlineAt = dto.DeadlineAt;
         if (dto.NextAction != null) project.NextAction = dto.NextAction;
-        if (dto.Blocked.HasValue) project.Blocked = dto.Blocked.Value;
+        // 处理阻塞状态：如果从非阻塞变为阻塞，记录阻塞时间
+        if (dto.Blocked.HasValue)
+        {
+            var wasBlocked = project.Blocked;
+            project.Blocked = dto.Blocked.Value;
+            // 如果从非阻塞变为阻塞，记录阻塞时间
+            if (!wasBlocked && project.Blocked && !project.BlockedAt.HasValue)
+            {
+                project.BlockedAt = DateTime.Now;
+            }
+            // 如果从阻塞变为非阻塞，清除阻塞时间
+            else if (wasBlocked && !project.Blocked)
+            {
+                project.BlockedAt = null;
+            }
+        }
         if (dto.BlockReason != null) project.BlockReason = dto.BlockReason;
         if (dto.TotalAmount.HasValue) project.TotalAmount = dto.TotalAmount;
         if (dto.ReceivedAmount.HasValue) project.ReceivedAmount = dto.ReceivedAmount;
@@ -747,7 +777,8 @@ public class SideProjectsController : ControllerBase
             TotalAmount = project.TotalAmount,
             ReceivedAmount = project.ReceivedAmount,
             CreatedAt = project.CreatedAt,
-            UpdatedAt = project.UpdatedAt
+            UpdatedAt = project.UpdatedAt,
+            CompletedAt = project.CompletedAt
         };
     }
 
@@ -898,6 +929,7 @@ public class SideProjectsController : ControllerBase
             ReceivedAmount = project.ReceivedAmount,
             CreatedAt = project.CreatedAt,
             UpdatedAt = project.UpdatedAt,
+            CompletedAt = project.CompletedAt,
             Requirements = project.Requirements.Select(r => new SideProjectRequirementDto
             {
                 Id = r.Id,

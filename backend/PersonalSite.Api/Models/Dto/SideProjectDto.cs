@@ -33,6 +33,7 @@ public class SideProjectDto
     public decimal? ReceivedAmount { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
+    public DateTime? CompletedAt { get; set; }
 }
 
 /// <summary>

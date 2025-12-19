@@ -106,6 +106,7 @@ public class AppDbContext : DbContext
     public DbSet<SideProjectMilestone> SideProjectMilestones { get; set; }
     public DbSet<SideProjectLog> SideProjectLogs { get; set; }
     public DbSet<SideProjectAttachment> SideProjectAttachments { get; set; }
+    public DbSet<SideNotification> SideNotifications { get; set; }
     
     // 订单和咨询相关表
     public DbSet<Order> Orders { get; set; }

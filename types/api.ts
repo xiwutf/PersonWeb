@@ -539,6 +539,134 @@ export interface SideProjectListResponse {
   List: SideProject[]
 }
 
+// ==================== 数据分析相关 ====================
+
+// 数据分析汇总
+export interface SideProjectAnalyticsSummary {
+  kpis: AnalyticsKpis
+  statusAgg: StatusAggregation[]
+  monthlyRevenue: MonthlyRevenue[]
+  deliveryCycle: DeliveryCycle[]
+  customerTop: CustomerTop[]
+  riskDueSoon: ProjectBrief[]
+  riskOverdue: ProjectBrief[]
+}
+
+// KPI 指标
+export interface AnalyticsKpis {
+  totals: number // 项目总数
+  inProgressCount: number // 进行中项目数
+  overdueCount: number // 逾期项目数
+  blockedCount: number // 卡住项目数
+  receivedSum: number // 本期已收金额
+  receivableSum: number // 本期待收金额
+}
+
+// 状态聚合
+export interface StatusAggregation {
+  status: number
+  statusName: string
+  count: number
+  amountSum: number
+}
+
+// 月度收入
+export interface MonthlyRevenue {
+  month: string // YYYY-MM
+  receivedSum: number
+}
+
+// 交付周期
+export interface DeliveryCycle {
+  groupName: string
+  avgDays: number
+  count: number
+}
+
+// 客户贡献 Top
+export interface CustomerTop {
+  customerName: string
+  projectCount: number
+  receivedSum: number
+}
+
+// 项目简要信息（用于风险列表）
+export interface ProjectBrief {
+  id: number
+  title: string
+  clientName?: string
+  deadlineAt?: string
+  daysRemaining?: number // 剩余天数（负数表示已逾期）
+  nextAction?: string
+  totalAmount?: number
+  blockReason?: string
+  overdueDays?: number // 逾期天数（仅逾期项目有值）
+}
+
+// ==================== 站内提醒相关 ====================
+
+// 提醒类型枚举
+export enum NotificationType {
+  ProjectDueSoon = 1, // 项目即将到期
+  TaskDueToday = 2, // 任务今天到期
+  ProjectBlockedTooLong = 3 // 项目卡住超过2天
+}
+
+// 提醒严重程度枚举
+export enum NotificationSeverity {
+  Info = 1, // 信息
+  Warning = 2, // 警告
+  Danger = 3 // 危险/紧急
+}
+
+// 站内提醒
+export interface SideNotification {
+  id: number
+  userId?: number
+  type: NotificationType
+  title: string
+  content?: string
+  severity: NotificationSeverity
+  entityType: string // SideProject / SideProjectTask
+  entityId: number
+  payloadJson?: string // JSON 格式的负载数据
+  isRead: boolean
+  readAt?: string
+  isDismissed: boolean
+  dismissedAt?: string
+  snoozeUntil?: string // 延后到某个时间再出现
+  occurDate: string // 发生日期（用于去重）
+  firstTriggeredAt: string
+  lastTriggeredAt: string
+  triggerCount: number
+  createdAt: string
+}
+
+// 提醒列表查询参数
+export interface NotificationQueryParams {
+  status?: 'unread' | 'all' | 'dismissed' // 状态筛选
+  severity?: 'info' | 'warning' | 'danger' // 严重程度筛选
+  type?: NotificationType // 类型筛选
+  keyword?: string // 关键字搜索
+  page?: number
+  pageSize?: number
+}
+
+// 提醒列表响应
+export interface NotificationListResponse {
+  items: SideNotification[]
+  total: number
+  page: number
+  pageSize: number
+  unreadCount: number
+}
+
+// 延后提醒请求
+export interface SnoozeNotificationRequest {
+  snoozeUntil?: string // 延后到指定时间
+  preset?: '1d' | '3d' | 'nextMon' // 预设延后选项
+}
+
 // ==================== API 响应格式 ====================
 
 export interface ApiResponse<T = any> {

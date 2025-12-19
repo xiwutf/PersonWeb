@@ -63,6 +63,9 @@ public class SideProject
     [Column("end_time", TypeName = "datetime")]
     public DateTime? EndTime { get; set; }
 
+    [Column("completed_at", TypeName = "datetime")]
+    public DateTime? CompletedAt { get; set; } // 完成时间（状态变为已完成时写入）
+
     [Column("is_public")]
     public bool IsPublic { get; set; } = false; // 是否公开展示
 
@@ -88,6 +91,9 @@ public class SideProject
 
     [Column("blocked")]
     public bool Blocked { get; set; } = false; // 是否阻塞
+
+    [Column("blocked_at", TypeName = "datetime")]
+    public DateTime? BlockedAt { get; set; } // 阻塞时间（用于计算卡住天数）
 
     [MaxLength(1000)]
     [Column("block_reason")]
