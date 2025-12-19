@@ -1,0 +1,76 @@
+请根据以下信息，生成“互动总结 + 下一步建议”，并按系统要求输出 JSON。
+
+【对象信息】
+- 昵称/称呼：{nickname}
+- 关系阶段：{stage}
+- 标签（可选）：{tags}
+- 上次联系时间（可选）：{last_contact_at}
+- 上次见面时间（可选）：{last_meet_at}
+- 当前下一步行动（可选）：{current_next_action}
+
+【历史关键信息（可选，可能为空）】
+{history_key_points}
+
+【本次互动】
+- 互动类型：{interaction_type}
+- 互动时间：{occurred_at}
+- 用户一句话摘要：{interaction_summary}
+
+【聊天片段（可选，可能为空；如为空请忽略）】
+{chat_text}
+
+【用户偏好（可选）】
+- 用户目标：{user_goal}  （例如：尽快约见/稳步推进/先观察/礼貌结束）
+- 用户风格：{user_style}（例如：幽默/认真/简洁/温柔）
+- 时间约束：{time_constraints}（例如：本周很忙/只能周末）
+
+现在请输出严格 JSON，字段如下：
+{
+  "summary": {
+    "one_line": "一句话总结本次互动",
+    "key_facts": ["本次互动中的关键事实（不超过5条）"],
+    "signals": {
+      "positive": ["积极信号（不超过4条）"],
+      "neutral": ["中性信号（不超过4条）"],
+      "negative": ["消极/降温/边界信号（不超过4条）"]
+    },
+    "preferences_updates": {
+      "likes": ["对方可能喜欢/在意的点（基于事实；不超过4条）"],
+      "dislikes": ["对方可能不喜欢/雷点（基于事实；不超过4条）"]
+    },
+    "my_commitments": ["我方承诺/待兑现事项（不超过4条）"],
+    "risks": ["潜在风险或需要注意的点（不超过4条）"]
+  },
+  "next_actions": [
+    {
+      "title": "下一步行动标题（短）",
+      "why": "为什么这样做（短）",
+      "when": "建议时间（例如：今晚/明天中午/本周末；不确定可写：近期）",
+      "priority": 1
+    }
+  ],
+  "message_drafts": [
+    {
+      "scene": "场景（例如：轻量问候/推进邀约/确认时间/降频观察/礼貌结束）",
+      "text": "可直接发送的一句话（自然、不油腻）"
+    }
+  ],
+  "followup_questions": [
+    "如果信息不足，最多问2个关键问题；否则返回空数组"
+  ],
+  "stage_suggestion": {
+    "current": "{stage}",
+    "suggested": "建议阶段（从：新认识/熟悉中/准备约见/已见面/升温中/观察期/已结束 中选）",
+    "reason": "如有调整，给出一句话原因；不调整可为空字符串"
+  },
+  "heat_score_hint": {
+    "delta": 0,
+    "reason": "热度变化原因（短）；无变化可为空"
+  }
+}
+
+约束：
+- next_actions 最多给 3 条，priority 用 1-3（1 最高）。
+- message_drafts 必须给 3 条，分别覆盖：轻量联系、推进/确认、保守/留余地（或降频）。
+- followup_questions 最多 2 条。
+- 不要输出任何 JSON 之外的文字。

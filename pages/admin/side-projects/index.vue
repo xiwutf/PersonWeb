@@ -1,5 +1,6 @@
 <template>
-  <div class="side-projects-admin-page">
+  <ClientOnly>
+    <div class="side-projects-admin-page">
     <div class="page-header">
       <h1 class="page-title">副业项目管理</h1>
       <n-button type="primary" @click="handleCreate">
@@ -72,7 +73,13 @@
           </tr>
         </thead>
         <tbody class="table-body">
-          <tr v-for="project in projects" :key="project.id" class="table-row">
+          <tr 
+            v-for="project in projects" 
+            :key="project.id" 
+            class="table-row"
+            @click="handleRowClick(project.id)"
+            style="cursor: pointer;"
+          >
             <td class="table-cell">
               <div class="project-title-cell">{{ project.title || '-' }}</div>
             </td>
@@ -100,7 +107,7 @@
             <td class="table-cell">{{ formatDate(project.startTime) }}</td>
             <td class="table-cell">{{ formatDate(project.endTime) }}</td>
             <td class="table-cell">
-              <div class="action-buttons">
+              <div class="action-buttons" @click.stop>
                 <button 
                   @click="handleEdit(project)" 
                   class="btn-link btn-link-blue"
@@ -317,11 +324,20 @@
         </div>
       </template>
     </n-modal>
-  </div>
+    </div>
+    <template #fallback>
+      <div class="side-projects-admin-page">
+        <div style="padding: 2rem; text-align: center; color: var(--color-text-muted);">
+          加载中...
+        </div>
+      </div>
+    </template>
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, h } from 'vue'
+import { useRouter } from 'vue-router'
 import {
   NButton,
   NInput,
@@ -343,9 +359,11 @@ import type { SideProject, CreateSideProjectDto, UpdateSideProjectDto } from '~/
 
 definePageMeta({
   layout: 'admin',
-  middleware: 'admin-auth'
+  middleware: 'admin-auth',
+  ssr: false
 })
 
+const router = useRouter()
 const api = useApi()
 const notification = useNotification()
 
@@ -354,6 +372,7 @@ const loading = ref(false)
 const projects = ref<SideProject[]>([])
 const searchKeyword = ref('')
 const filterStatus = ref<number | null>(null)
+const filterIncomeType = ref<string | null>(null)
 const filterCategory = ref<string | null>(null)
 
 // 分页
@@ -401,6 +420,12 @@ const statusOptions = [
   { label: '已完成', value: 1 },
   { label: '待付款', value: 2 },
   { label: '已取消', value: 3 }
+]
+
+// 收入类型选项
+const incomeTypeOptions = [
+  { label: '软件开发', value: 'development' },
+  { label: '投资', value: 'investment' }
 ]
 
 // 类型选项（从数据中提取）
@@ -462,6 +487,9 @@ const fetchProjects = async () => {
     }
     if (filterStatus.value !== null) {
       params.status = filterStatus.value
+    }
+    if (filterIncomeType.value) {
+      params.incomeType = filterIncomeType.value
     }
     if (filterCategory.value) {
       params.category = filterCategory.value
@@ -531,6 +559,11 @@ const handleCreate = () => {
     isPublic: false
   }
   showModal.value = true
+}
+
+// 行点击，跳转到详情页
+const handleRowClick = (id: number) => {
+  router.push(`/admin/side-projects/projects/${id}?from=list`)
 }
 
 // 编辑项目

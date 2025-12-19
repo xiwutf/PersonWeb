@@ -66,10 +66,50 @@ public class SideProject
     [Column("is_public")]
     public bool IsPublic { get; set; } = false; // 是否公开展示
 
+    [MaxLength(50)]
+    [Column("stage")]
+    public string? Stage { get; set; } // 阶段：待开始/进行中/卡住/待验收/已完成
+
+    [Column("progress")]
+    public int? Progress { get; set; } // 进度 0-100
+
+    [Column("is_progress_manual")]
+    public bool IsProgressManual { get; set; } = false; // 进度是否手动覆盖（false=自动计算，true=手动设置）
+
+    [Column("priority")]
+    public int? Priority { get; set; } // 优先级：0=低，1=中，2=高，3=紧急
+
+    [Column("deadline_at", TypeName = "datetime")]
+    public DateTime? DeadlineAt { get; set; } // 截止时间
+
+    [MaxLength(500)]
+    [Column("next_action")]
+    public string? NextAction { get; set; } // 下一步行动
+
+    [Column("blocked")]
+    public bool Blocked { get; set; } = false; // 是否阻塞
+
+    [MaxLength(1000)]
+    [Column("block_reason")]
+    public string? BlockReason { get; set; } // 阻塞原因
+
+    [Column("total_amount", TypeName = "decimal(18,2)")]
+    public decimal? TotalAmount { get; set; } // 总金额
+
+    [Column("received_amount", TypeName = "decimal(18,2)")]
+    public decimal? ReceivedAmount { get; set; } // 已收款金额
+
     [Column("created_at", TypeName = "datetime")]
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 
     [Column("updated_at", TypeName = "datetime")]
     public DateTime UpdatedAt { get; set; } = DateTime.Now;
+
+    // 导航属性
+    public virtual ICollection<SideProjectRequirement> Requirements { get; set; } = new List<SideProjectRequirement>();
+    public virtual ICollection<SideProjectTask> Tasks { get; set; } = new List<SideProjectTask>();
+    public virtual ICollection<SideProjectMilestone> Milestones { get; set; } = new List<SideProjectMilestone>();
+    public virtual ICollection<SideProjectLog> Logs { get; set; } = new List<SideProjectLog>();
+    public virtual ICollection<SideProjectAttachment> Attachments { get; set; } = new List<SideProjectAttachment>();
 }
 

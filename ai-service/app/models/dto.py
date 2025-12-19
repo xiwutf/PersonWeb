@@ -241,3 +241,99 @@ class NameGenerateResponseData(BaseModel):
     """生成名字响应数据"""
     traceId: str = Field(..., description="追踪ID")
     items: List[NameItem] = Field(..., min_items=1, max_items=20, description="生成的名字列表（20个）")
+
+
+# ==================== 关系跟进助理相关 ====================
+
+class RelationPersonInfo(BaseModel):
+    """关系对象信息"""
+    nickname: str = Field(..., description="昵称")
+    stage: Optional[int] = Field(None, description="阶段：0=新认识, 1=熟悉中, 2=准备约见, 3=已见面, 4=升温中, 5=观察期, 6=已结束")
+    tags: Optional[List[str]] = Field(None, description="标签列表")
+    last_contact_at: Optional[str] = Field(None, description="上次联系时间")
+    last_meet_at: Optional[str] = Field(None, description="上次见面时间")
+    current_next_action: Optional[str] = Field(None, description="当前下一步行动")
+
+
+class RelationInteractionInfo(BaseModel):
+    """互动信息"""
+    type: int = Field(..., description="互动类型：0=文字, 1=语音, 2=通话, 3=见面, 4=其他")
+    occurred_at: str = Field(..., description="发生时间")
+    summary: str = Field(..., description="摘要")
+    chat_text: Optional[str] = Field(None, description="聊天片段（可选）")
+
+
+class RelationUserPreference(BaseModel):
+    """用户偏好"""
+    user_goal: Optional[str] = Field(None, description="用户目标：例如：尽快约见/稳步推进/先观察/礼貌结束")
+    user_style: Optional[str] = Field(None, description="用户风格：例如：幽默/认真/简洁/温柔")
+    time_constraints: Optional[str] = Field(None, description="时间约束：例如：本周很忙/只能周末")
+
+
+class RelationFollowupRequest(BaseModel):
+    """关系跟进请求模型"""
+    person: RelationPersonInfo = Field(..., description="对象信息")
+    history_key_points: Optional[str] = Field(None, description="历史关键信息（可选）")
+    interaction: RelationInteractionInfo = Field(..., description="本次互动")
+    user_preference: Optional[RelationUserPreference] = Field(None, description="用户偏好（可选）")
+
+
+class RelationSignals(BaseModel):
+    """信号分类"""
+    positive: List[str] = Field(default_factory=list, description="积极信号")
+    neutral: List[str] = Field(default_factory=list, description="中性信号")
+    negative: List[str] = Field(default_factory=list, description="消极信号")
+
+
+class RelationPreferences(BaseModel):
+    """偏好更新"""
+    likes: List[str] = Field(default_factory=list, description="喜欢/在意的点")
+    dislikes: List[str] = Field(default_factory=list, description="不喜欢/雷点")
+
+
+class RelationSummary(BaseModel):
+    """互动总结"""
+    one_line: str = Field(..., description="一句话总结")
+    key_facts: List[str] = Field(default_factory=list, description="关键事实")
+    signals: RelationSignals = Field(default_factory=RelationSignals, description="信号分类")
+    preferences_updates: RelationPreferences = Field(default_factory=RelationPreferences, description="偏好更新")
+    my_commitments: List[str] = Field(default_factory=list, description="我方承诺")
+    risks: List[str] = Field(default_factory=list, description="潜在风险")
+
+
+class RelationNextAction(BaseModel):
+    """下一步行动"""
+    title: str = Field(..., description="行动标题")
+    why: str = Field(..., description="原因")
+    when: str = Field(..., description="建议时间")
+    priority: int = Field(..., ge=1, le=3, description="优先级 1-3（1最高）")
+
+
+class RelationMessageDraft(BaseModel):
+    """消息草案"""
+    scene: str = Field(..., description="场景")
+    text: str = Field(..., description="可直接发送的消息")
+
+
+class RelationStageSuggestion(BaseModel):
+    """阶段建议"""
+    current: str = Field(..., description="当前阶段")
+    suggested: str = Field(..., description="建议阶段")
+    reason: str = Field(default="", description="调整原因")
+
+
+class RelationHeatScoreHint(BaseModel):
+    """热度分数提示"""
+    delta: int = Field(default=0, description="热度变化")
+    reason: str = Field(default="", description="变化原因")
+
+
+class RelationFollowupResponseData(BaseModel):
+    """关系跟进响应数据"""
+    summary: RelationSummary = Field(..., description="互动总结")
+    next_actions: List[RelationNextAction] = Field(default_factory=list, description="下一步行动列表")
+    message_drafts: List[RelationMessageDraft] = Field(default_factory=list, description="消息草案列表")
+    followup_questions: List[str] = Field(default_factory=list, description="后续问题")
+    stage_suggestion: RelationStageSuggestion = Field(..., description="阶段建议")
+    heat_score_hint: RelationHeatScoreHint = Field(..., description="热度分数提示")
+    raw_text: Optional[str] = Field(None, description="原始回复文本（用于调试）")

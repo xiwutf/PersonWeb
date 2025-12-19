@@ -187,22 +187,31 @@
           </button>
           <div v-show="expandedMenus.sideBusiness" class="menu-group-items">
             <a 
-              href="/admin/side-projects"
-              class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm"
-              :class="{ 'admin-sidebar-link-active': route.path === '/admin/side-projects' }"
-              @click.prevent="() => router.push('/admin/side-projects')"
-            >
-              <i class="fas fa-list w-5 text-center mr-3"></i>
-              <span>副业项目管理</span>
-            </a>
-            <a 
               href="/admin/side-projects/dashboard"
               class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm"
               :class="{ 'admin-sidebar-link-active': route.path === '/admin/side-projects/dashboard' }"
               @click.prevent="() => router.push('/admin/side-projects/dashboard')"
             >
-              <i class="fas fa-chart-pie w-5 text-center mr-3"></i>
-              <span>数据分析看板</span>
+              <i class="fas fa-home w-5 text-center mr-3"></i>
+              <span>副业管理首页</span>
+            </a>
+            <a 
+              href="/admin/side-projects"
+              class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm"
+              :class="{ 'admin-sidebar-link-active': route.path === '/admin/side-projects' && !route.path.includes('/kanban') && !route.path.includes('/projects/') && route.path !== '/admin/side-projects/dashboard' }"
+              @click.prevent="() => router.push('/admin/side-projects')"
+            >
+              <i class="fas fa-list w-5 text-center mr-3"></i>
+              <span>项目列表</span>
+            </a>
+            <a 
+              href="/admin/side-projects/kanban"
+              class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm"
+              :class="{ 'admin-sidebar-link-active': route.path === '/admin/side-projects/kanban' }"
+              @click.prevent="() => router.push('/admin/side-projects/kanban')"
+            >
+              <i class="fas fa-columns w-5 text-center mr-3"></i>
+              <span>看板视图</span>
             </a>
           </div>
         </div>
@@ -225,6 +234,10 @@
             <NuxtLink to="/admin/goals" class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm" active-class="admin-sidebar-link-active">
               <i class="fas fa-bullseye w-5 text-center mr-3"></i>
               <span>年度目标</span>
+            </NuxtLink>
+            <NuxtLink to="/admin/relations" class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm" active-class="admin-sidebar-link-active">
+              <i class="fas fa-heart w-5 text-center mr-3"></i>
+              <span>关系跟进</span>
             </NuxtLink>
             <NuxtLink to="/admin/toolbox" class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm" active-class="admin-sidebar-link-active">
               <i class="fas fa-shopping-cart w-5 text-center mr-3"></i>
@@ -494,7 +507,7 @@ const isMenuActive = (menuKey: string): boolean => {
     case 'sideBusiness':
       return path.startsWith('/admin/side-projects')
     case 'personal':
-      return path === '/admin/tasks' || path === '/admin/goals' || path === '/admin/toolbox'
+      return path === '/admin/tasks' || path === '/admin/goals' || path === '/admin/relations' || path.startsWith('/admin/relations') || path === '/admin/toolbox'
     case 'commercial':
       return path.startsWith('/admin/commercial') || path === '/admin/skill-tree' || path === '/admin/orders' || path === '/admin/consultations'
     case 'system':
@@ -531,7 +544,7 @@ const autoExpandMenu = () => {
   if (path.startsWith('/admin/side-projects')) {
     expandedMenus.value.sideBusiness = true
   }
-  if (path === '/admin/tasks' || path === '/admin/goals' || path === '/admin/toolbox') {
+  if (path === '/admin/tasks' || path === '/admin/goals' || path === '/admin/relations' || path.startsWith('/admin/relations') || path === '/admin/toolbox') {
     expandedMenus.value.personal = true
   }
   if (path.startsWith('/admin/commercial') || path === '/admin/skill-tree' || path === '/admin/orders' || path === '/admin/consultations') {

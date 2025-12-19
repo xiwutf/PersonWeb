@@ -15,7 +15,9 @@
       </div>
 
       <!-- 聊天窗口 -->
-      <n-drawer
+      <component
+        v-if="NaiveComponents"
+        :is="NaiveComponents.NDrawer"
         v-model:show="showChat"
         :width="400"
         placement="right"
@@ -27,7 +29,9 @@
             <h3 class="header-title">智能客服</h3>
             <p class="header-subtitle">可以向我咨询服务内容、项目开发、工具使用等问题</p>
           </div>
-          <n-button
+          <component
+            v-if="NaiveComponents"
+            :is="NaiveComponents.NButton"
             text
             size="small"
             @click="closeChat"
@@ -35,7 +39,7 @@
             <template #icon>
               <i class="fas fa-times"></i>
             </template>
-          </n-button>
+          </component>
         </div>
       </template>
 
@@ -84,7 +88,11 @@
             </div>
             <div class="message-content">
               <div class="message-text">
-                <n-spin size="small" />
+                <component
+                  v-if="NaiveComponents"
+                  :is="NaiveComponents.NSpin"
+                  size="small"
+                />
                 <span class="ml-2">正在思考...</span>
               </div>
             </div>
@@ -93,7 +101,9 @@
 
         <!-- 输入区域 -->
         <div class="chat-input-area">
-          <n-input
+          <component
+            v-if="NaiveComponents"
+            :is="NaiveComponents.NInput"
             v-model:value="inputMessage"
             type="textarea"
             :rows="2"
@@ -103,7 +113,9 @@
           />
           <div class="input-actions">
             <span class="input-hint">按 Enter 发送，Ctrl+Enter 换行</span>
-            <n-button
+            <component
+              v-if="NaiveComponents"
+              :is="NaiveComponents.NButton"
               type="primary"
               :loading="loading"
               :disabled="!inputMessage.trim()"
@@ -113,11 +125,11 @@
                 <i class="fas fa-paper-plane"></i>
               </template>
               发送
-            </n-button>
+            </component>
           </div>
         </div>
       </div>
-    </n-drawer>
+    </component>
     </div>
     <template #fallback>
       <div class="support-chat-container">
@@ -131,8 +143,27 @@
 </template>
 
 <script setup lang="ts">
-import { NDrawer, NInput, NButton, NSpin } from 'naive-ui'
+import { ref, onMounted, defineComponent, h, markRaw } from 'vue'
 import { useMarkdown } from '~/composables/useMarkdown'
+
+// 动态导入 Naive UI 组件，避免 SSR 错误
+const NaiveComponents = ref<any>(null)
+
+onMounted(async () => {
+  if (typeof window === 'undefined') return
+  
+  try {
+    const naiveUI = await import('naive-ui')
+    NaiveComponents.value = markRaw({
+      NDrawer: naiveUI.NDrawer,
+      NInput: naiveUI.NInput,
+      NButton: naiveUI.NButton,
+      NSpin: naiveUI.NSpin
+    })
+  } catch (error) {
+    console.error('Failed to load Naive UI components:', error)
+  }
+})
 
 const api = useApi()
 const message = useSafeMessage()

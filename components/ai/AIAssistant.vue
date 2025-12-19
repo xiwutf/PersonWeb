@@ -1,6 +1,7 @@
 <template>
-  <!-- AI 助手按钮 -->
-  <button
+  <ClientOnly>
+    <!-- AI 助手按钮 -->
+    <button
     v-if="!isOpen"
     @click="toggleAssistant"
     class="fixed bottom-2 right-2 w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 z-[1001] flex items-center justify-center group ai-assistant-button"
@@ -120,6 +121,7 @@
       </div>
     </div>
   </Transition>
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">

@@ -70,6 +70,33 @@ public class TokenUsage
 }
 
 /// <summary>
+/// Python AI 服务的 WebsiteChat 响应格式
+/// </summary>
+internal class WebsiteChatResponseDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("content")]
+    public string Content { get; set; } = "";
+    
+    [System.Text.Json.Serialization.JsonPropertyName("usage")]
+    public WebsiteChatUsageDto? Usage { get; set; }
+    
+    [System.Text.Json.Serialization.JsonPropertyName("traceId")]
+    public string? TraceId { get; set; }
+}
+
+/// <summary>
+/// WebsiteChat 的 Usage 格式
+/// </summary>
+internal class WebsiteChatUsageDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("promptTokens")]
+    public int PromptTokens { get; set; }
+    
+    [System.Text.Json.Serialization.JsonPropertyName("completionTokens")]
+    public int CompletionTokens { get; set; }
+}
+
+/// <summary>
 /// 摘要请求模型
 /// </summary>
 public class SummarizeRequestDto
@@ -155,18 +182,78 @@ public class AiServiceClient
             _logger.LogInformation("调用 AI 聊天接口: UserId={UserId}, MessageLength={Length}",
                 request.UserId, request.Message.Length);
 
-            var response = await _httpClient.PostAsJsonAsync("/chat", request, cancellationToken);
-            response.EnsureSuccessStatusCode();
-
-            var result = await response.Content.ReadFromJsonAsync<AiServiceResponse<ChatResponseDto>>(
-                cancellationToken: cancellationToken);
-
-            if (result == null || !result.Success)
+            // Python AI 服务使用 /website-chat 端点，需要转换请求格式
+            var websiteChatRequest = new
             {
-                throw new Exception($"AI 服务返回错误: {result?.ErrorCode} - {result?.Message}");
+                user_input = request.Message,
+                model = request.Model,
+                extra = new Dictionary<string, object>
+                {
+                    ["userId"] = request.UserId,
+                    ["sessionId"] = request.SessionId ?? "",
+                }
+            };
+
+            // 如果有 Meta 数据，合并到 extra 中
+            if (request.Meta != null)
+            {
+                foreach (var kvp in request.Meta)
+                {
+                    websiteChatRequest.extra[kvp.Key] = kvp.Value;
+                }
             }
 
-            return result.Data ?? throw new Exception("AI 服务返回数据为空");
+            // 添加内部调用 Token（从配置中读取）
+            var internalToken = _options.InternalToken ?? "default-internal-token-change-in-production";
+            
+            // 使用相对路径（不带前导斜杠），让 HttpClient 自动处理 BaseAddress
+            // BaseAddress 是 http://localhost:8001/api/ai，相对路径是 "website-chat"
+            // 这样会得到 http://localhost:8001/api/ai/website-chat
+            var relativePath = "website-chat";
+            var fullUrl = $"{_httpClient.BaseAddress}{relativePath}";
+            _logger.LogInformation("BaseAddress: {BaseAddress}, 相对路径: {RelativePath}, 完整 URL 应该是: {FullUrl}", 
+                _httpClient.BaseAddress, relativePath, fullUrl);
+            
+            // 构建请求消息，添加内部 Token 请求头
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, relativePath)
+            {
+                Content = JsonContent.Create(websiteChatRequest)
+            };
+            requestMessage.Headers.Add("X-Internal-Key", internalToken);
+
+            var response = await _httpClient.SendAsync(requestMessage, cancellationToken);
+            
+            // 如果失败，记录详细信息
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync(cancellationToken);
+                _logger.LogError("AI 服务请求失败: StatusCode={StatusCode}, URL={RequestUri}, Response={Response}",
+                    response.StatusCode, fullUrl, errorContent);
+            }
+            
+            response.EnsureSuccessStatusCode();
+
+            // Python 服务直接返回 WebsiteChatResponse，不是包装在 AiServiceResponse 中
+            var result = await response.Content.ReadFromJsonAsync<WebsiteChatResponseDto>(
+                cancellationToken: cancellationToken);
+
+            if (result == null)
+            {
+                throw new Exception("AI 服务返回数据为空");
+            }
+
+            // 转换为 ChatResponseDto 格式
+            return new ChatResponseDto
+            {
+                Reply = result.Content,
+                Model = request.Model ?? "default",
+                Usage = result.Usage != null ? new TokenUsage
+                {
+                    PromptTokens = result.Usage.PromptTokens,
+                    CompletionTokens = result.Usage.CompletionTokens,
+                    TotalTokens = result.Usage.PromptTokens + result.Usage.CompletionTokens
+                } : null
+            };
         }
         catch (Exception ex)
         {

@@ -11,7 +11,7 @@ from contextlib import asynccontextmanager
 
 from app.core.config import settings
 from app.core.app_logging import setup_logging, logger
-from app.api import health, chat, tools, rag, document, name
+from app.api import health, chat, tools, rag, document, name, relation
 
 
 @asynccontextmanager
@@ -102,6 +102,7 @@ app.include_router(tools.router, prefix="/api/ai", tags=["AI 工具"])
 app.include_router(rag.router, prefix="/api/ai", tags=["RAG 知识库"])
 app.include_router(document.router, prefix="/api/ai", tags=["文档知识管家"])
 app.include_router(name.router, prefix="/api/ai", tags=["智能取名助手"])
+app.include_router(relation.router, prefix="/api/ai", tags=["关系跟进助理"])
 
 
 @app.get("/")

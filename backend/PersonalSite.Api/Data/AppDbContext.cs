@@ -101,6 +101,11 @@ public class AppDbContext : DbContext
     public DbSet<DocumentChunk> DocumentChunks { get; set; }
     public DbSet<DocumentQuery> DocumentQueries { get; set; }
     public DbSet<SideProject> SideProjects { get; set; }
+    public DbSet<SideProjectRequirement> SideProjectRequirements { get; set; }
+    public DbSet<SideProjectTask> SideProjectTasks { get; set; }
+    public DbSet<SideProjectMilestone> SideProjectMilestones { get; set; }
+    public DbSet<SideProjectLog> SideProjectLogs { get; set; }
+    public DbSet<SideProjectAttachment> SideProjectAttachments { get; set; }
     
     // 订单和咨询相关表
     public DbSet<Order> Orders { get; set; }
@@ -114,6 +119,11 @@ public class AppDbContext : DbContext
     
     // 智能取名助手相关表
     public DbSet<NameFavorite> NameFavorites { get; set; }
+    
+    // 关系跟进相关表
+    public DbSet<RelationPerson> RelationPersons { get; set; }
+    public DbSet<RelationInteraction> RelationInteractions { get; set; }
+    public DbSet<RelationTask> RelationTasks { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -188,5 +198,69 @@ public class AppDbContext : DbContext
             entity.Property(p => p.CreatedAt).HasColumnName("CreatedAt");
             entity.Property(p => p.UpdatedAt).HasColumnName("UpdatedAt");
         });
+
+        // 配置 SideProject 相关实体的关系
+        modelBuilder.Entity<SideProjectRequirement>()
+            .HasOne(r => r.Project)
+            .WithMany(p => p.Requirements)
+            .HasForeignKey(r => r.ProjectId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<SideProjectTask>()
+            .HasOne(t => t.Project)
+            .WithMany(p => p.Tasks)
+            .HasForeignKey(t => t.ProjectId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<SideProjectMilestone>()
+            .HasOne(m => m.Project)
+            .WithMany(p => p.Milestones)
+            .HasForeignKey(m => m.ProjectId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<SideProjectLog>()
+            .HasOne(l => l.Project)
+            .WithMany(p => p.Logs)
+            .HasForeignKey(l => l.ProjectId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<SideProjectAttachment>()
+            .HasOne(a => a.Project)
+            .WithMany(p => p.Attachments)
+            .HasForeignKey(a => a.ProjectId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // 配置索引
+        modelBuilder.Entity<SideProjectTask>()
+            .HasIndex(t => new { t.ProjectId, t.SortOrder });
+
+        modelBuilder.Entity<SideProjectLog>()
+            .HasIndex(l => new { l.ProjectId, l.CreatedAt });
+
+        // 配置关系跟进相关实体的关系
+        modelBuilder.Entity<RelationInteraction>()
+            .HasOne(i => i.Person)
+            .WithMany(p => p.Interactions)
+            .HasForeignKey(i => i.PersonId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<RelationTask>()
+            .HasOne(t => t.Person)
+            .WithMany(p => p.Tasks)
+            .HasForeignKey(t => t.PersonId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // 配置索引
+        modelBuilder.Entity<RelationPerson>()
+            .HasIndex(p => p.Stage);
+        
+        modelBuilder.Entity<RelationPerson>()
+            .HasIndex(p => p.LastContactAt);
+        
+        modelBuilder.Entity<RelationInteraction>()
+            .HasIndex(i => new { i.PersonId, i.OccurredAt });
+        
+        modelBuilder.Entity<RelationTask>()
+            .HasIndex(t => new { t.PersonId, t.Status });
     }
 }

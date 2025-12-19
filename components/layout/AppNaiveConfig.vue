@@ -1,17 +1,21 @@
 <template>
   <!-- 统一的 Naive UI 配置容器 -->
-  <component 
-    :is="ProvidersComponent" 
-    v-if="ProvidersComponent"
-    :theme="naiveTheme" 
-    :theme-overrides="naiveThemeOverrides"
-  >
-    <slot />
-  </component>
-  <div v-else class="app-naive-config-fallback">
-    <!-- 服务端渲染时的 fallback，使用与主题一致的背景色 -->
-    <slot />
-  </div>
+  <ClientOnly>
+    <component 
+      :is="ProvidersComponent" 
+      v-if="ProvidersComponent"
+      :theme="naiveTheme" 
+      :theme-overrides="naiveThemeOverrides"
+    >
+      <slot />
+    </component>
+    <template #fallback>
+      <!-- 服务端渲染时的 fallback，使用与主题一致的背景色 -->
+      <div class="app-naive-config-fallback">
+        <slot />
+      </div>
+    </template>
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">
@@ -152,7 +156,7 @@ const naiveThemeOverrides = computed<GlobalThemeOverrides>(() => {
 
 // 确保 data-theme 和 Naive UI 主题同步
 watch(currentTheme, (newTheme) => {
-  if (process.client) {
+  if (process.client && typeof document !== 'undefined' && document.documentElement) {
     // 确保 data-theme 属性与当前主题同步
     document.documentElement.setAttribute('data-theme', newTheme)
   }
@@ -161,10 +165,12 @@ watch(currentTheme, (newTheme) => {
 // 动态导入 Naive UI 组件，避免 SSR 错误
 onMounted(async () => {
   // 双重检查，确保在客户端
-  if (typeof window === 'undefined') return
+  if (typeof window === 'undefined' || typeof document === 'undefined') return
   
   // 确保 data-theme 属性已设置
-  document.documentElement.setAttribute('data-theme', currentTheme.value)
+  if (document && document.documentElement) {
+    document.documentElement.setAttribute('data-theme', currentTheme.value)
+  }
   
   try {
     // 动态导入 Naive UI，避免 SSR 时执行

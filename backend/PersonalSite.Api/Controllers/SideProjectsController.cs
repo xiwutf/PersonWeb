@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using PersonalSite.Api.Data;
 using PersonalSite.Api.Models;
 using PersonalSite.Api.Models.Dto;
+using PersonalSite.Api.Services;
 
 namespace PersonalSite.Api.Controllers;
 
@@ -15,10 +16,12 @@ namespace PersonalSite.Api.Controllers;
 public class SideProjectsController : ControllerBase
 {
     private readonly AppDbContext _context;
+    private readonly SideProjectService _projectService;
 
-    public SideProjectsController(AppDbContext context)
+    public SideProjectsController(AppDbContext context, SideProjectService projectService)
     {
         _context = context;
+        _projectService = projectService;
     }
 
     /// <summary>
@@ -62,32 +65,13 @@ public class SideProjectsController : ControllerBase
         }
 
         var total = await query.CountAsync();
-        var items = await query
+        var projects = await query
             .OrderByDescending(p => p.CreatedAt)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Select(p => new SideProjectDto
-            {
-                Id = p.Id,
-                Title = p.Title,
-                Description = p.Description,
-                ClientName = p.ClientName,
-                ClientContact = p.ClientContact,
-                Source = p.Source,
-                Category = p.Category,
-                IncomeType = p.IncomeType,
-                TechStack = p.TechStack,
-                BudgetMin = p.BudgetMin,
-                BudgetMax = p.BudgetMax,
-                PriceFinal = p.PriceFinal,
-                Status = p.Status,
-                StartTime = p.StartTime,
-                EndTime = p.EndTime,
-                IsPublic = p.IsPublic,
-                CreatedAt = p.CreatedAt,
-                UpdatedAt = p.UpdatedAt
-            })
             .ToListAsync();
+
+        var items = projects.Select(p => MapToDto(p)).ToList();
 
         return Ok(ApiResponse.Success(new { Total = total, List = items }));
     }
@@ -105,27 +89,7 @@ public class SideProjectsController : ControllerBase
             return Ok(ApiResponse<SideProjectDto>.Error("项目不存在", 404));
         }
 
-        var dto = new SideProjectDto
-        {
-            Id = project.Id,
-            Title = project.Title,
-            Description = project.Description,
-            ClientName = project.ClientName,
-            ClientContact = project.ClientContact,
-            Source = project.Source,
-            Category = project.Category,
-            IncomeType = project.IncomeType,
-            TechStack = project.TechStack,
-            BudgetMin = project.BudgetMin,
-            BudgetMax = project.BudgetMax,
-            PriceFinal = project.PriceFinal,
-            Status = project.Status,
-            StartTime = project.StartTime,
-            EndTime = project.EndTime,
-            IsPublic = project.IsPublic,
-            CreatedAt = project.CreatedAt,
-            UpdatedAt = project.UpdatedAt
-        };
+        var dto = MapToDto(project);
 
         return Ok(ApiResponse<SideProjectDto>.Success(dto));
     }
@@ -154,6 +118,16 @@ public class SideProjectsController : ControllerBase
             StartTime = dto.StartTime,
             EndTime = dto.EndTime,
             IsPublic = dto.IsPublic,
+            Stage = dto.Stage,
+            Progress = dto.Progress ?? 0,
+            IsProgressManual = dto.IsProgressManual,
+            Priority = dto.Priority,
+            DeadlineAt = dto.DeadlineAt,
+            NextAction = dto.NextAction,
+            Blocked = dto.Blocked,
+            BlockReason = dto.BlockReason,
+            TotalAmount = dto.TotalAmount,
+            ReceivedAmount = dto.ReceivedAmount,
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now
         };
@@ -161,27 +135,10 @@ public class SideProjectsController : ControllerBase
         _context.SideProjects.Add(project);
         await _context.SaveChangesAsync();
 
-        var result = new SideProjectDto
-        {
-            Id = project.Id,
-            Title = project.Title,
-            Description = project.Description,
-            ClientName = project.ClientName,
-            ClientContact = project.ClientContact,
-            Source = project.Source,
-            Category = project.Category,
-            IncomeType = project.IncomeType,
-            TechStack = project.TechStack,
-            BudgetMin = project.BudgetMin,
-            BudgetMax = project.BudgetMax,
-            PriceFinal = project.PriceFinal,
-            Status = project.Status,
-            StartTime = project.StartTime,
-            EndTime = project.EndTime,
-            IsPublic = project.IsPublic,
-            CreatedAt = project.CreatedAt,
-            UpdatedAt = project.UpdatedAt
-        };
+        // 同步状态和阶段
+        await _projectService.SyncStatusAndStageAsync(project.Id);
+
+        var result = MapToDto(project);
 
         return CreatedAtAction(nameof(GetDetail), new { id = project.Id }, ApiResponse<SideProjectDto>.Success(result));
     }
@@ -215,31 +172,24 @@ public class SideProjectsController : ControllerBase
         if (dto.StartTime.HasValue) project.StartTime = dto.StartTime;
         if (dto.EndTime.HasValue) project.EndTime = dto.EndTime;
         if (dto.IsPublic.HasValue) project.IsPublic = dto.IsPublic.Value;
+        if (dto.Stage != null) project.Stage = dto.Stage;
+        if (dto.Progress.HasValue) project.Progress = dto.Progress;
+        if (dto.IsProgressManual.HasValue) project.IsProgressManual = dto.IsProgressManual.Value;
+        if (dto.Priority.HasValue) project.Priority = dto.Priority;
+        if (dto.DeadlineAt.HasValue) project.DeadlineAt = dto.DeadlineAt;
+        if (dto.NextAction != null) project.NextAction = dto.NextAction;
+        if (dto.Blocked.HasValue) project.Blocked = dto.Blocked.Value;
+        if (dto.BlockReason != null) project.BlockReason = dto.BlockReason;
+        if (dto.TotalAmount.HasValue) project.TotalAmount = dto.TotalAmount;
+        if (dto.ReceivedAmount.HasValue) project.ReceivedAmount = dto.ReceivedAmount;
         project.UpdatedAt = DateTime.Now;
 
         await _context.SaveChangesAsync();
 
-        var result = new SideProjectDto
-        {
-            Id = project.Id,
-            Title = project.Title,
-            Description = project.Description,
-            ClientName = project.ClientName,
-            ClientContact = project.ClientContact,
-            Source = project.Source,
-            Category = project.Category,
-            IncomeType = project.IncomeType,
-            TechStack = project.TechStack,
-            BudgetMin = project.BudgetMin,
-            BudgetMax = project.BudgetMax,
-            PriceFinal = project.PriceFinal,
-            Status = project.Status,
-            StartTime = project.StartTime,
-            EndTime = project.EndTime,
-            IsPublic = project.IsPublic,
-            CreatedAt = project.CreatedAt,
-            UpdatedAt = project.UpdatedAt
-        };
+        // 同步状态和阶段
+        await _projectService.SyncStatusAndStageAsync(project.Id);
+
+        var result = MapToDto(project);
 
         return Ok(ApiResponse<SideProjectDto>.Success(result));
     }
@@ -757,6 +707,999 @@ public class SideProjectsController : ControllerBase
         };
 
         return Ok(ApiResponse.Success(result));
+    }
+
+    #endregion
+
+    #region 辅助方法
+
+    /// <summary>
+    /// 将实体映射为DTO
+    /// </summary>
+    private SideProjectDto MapToDto(SideProject project)
+    {
+        return new SideProjectDto
+        {
+            Id = project.Id,
+            Title = project.Title,
+            Description = project.Description,
+            ClientName = project.ClientName,
+            ClientContact = project.ClientContact,
+            Source = project.Source,
+            Category = project.Category,
+            IncomeType = project.IncomeType,
+            TechStack = project.TechStack,
+            BudgetMin = project.BudgetMin,
+            BudgetMax = project.BudgetMax,
+            PriceFinal = project.PriceFinal,
+            Status = project.Status,
+            StartTime = project.StartTime,
+            EndTime = project.EndTime,
+            IsPublic = project.IsPublic,
+            Stage = project.Stage,
+            Progress = project.Progress,
+            IsProgressManual = project.IsProgressManual,
+            Priority = project.Priority,
+            DeadlineAt = project.DeadlineAt,
+            NextAction = project.NextAction,
+            Blocked = project.Blocked,
+            BlockReason = project.BlockReason,
+            TotalAmount = project.TotalAmount,
+            ReceivedAmount = project.ReceivedAmount,
+            CreatedAt = project.CreatedAt,
+            UpdatedAt = project.UpdatedAt
+        };
+    }
+
+    #endregion
+
+    #region 新的Dashboard接口
+
+    /// <summary>
+    /// 获取副业管理首页数据
+    /// </summary>
+    [HttpGet("dashboard")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<SideProjectDashboardDto>>> GetDashboard()
+    {
+        var today = DateTime.Today;
+        var endOfWeek = today.AddDays(7 - (int)today.DayOfWeek);
+
+        // 今日待办（跨项目任务，截止日期为今天）
+        var todayTasks = await _context.SideProjectTasks
+            .Include(t => t.Project)
+            .Where(t => t.DueAt.HasValue && t.DueAt.Value.Date == today && t.Status != 2)
+            .OrderBy(t => t.Priority)
+            .ThenBy(t => t.DueAt)
+            .Select(t => new SideProjectTaskDto
+            {
+                Id = t.Id,
+                ProjectId = t.ProjectId,
+                Title = t.Title,
+                Description = t.Description,
+                Status = t.Status,
+                Priority = t.Priority,
+                DueAt = t.DueAt,
+                EstHours = t.EstHours,
+                ActHours = t.ActHours,
+                SortOrder = t.SortOrder,
+                CreatedAt = t.CreatedAt,
+                UpdatedAt = t.UpdatedAt
+            })
+            .ToListAsync();
+
+        // 进行中项目
+        var inProgressProjectEntities = await _context.SideProjects
+            .Where(p => p.Status == 0 && !p.Blocked)
+            .OrderByDescending(p => p.Priority)
+            .ThenByDescending(p => p.UpdatedAt)
+            .ToListAsync();
+        var inProgressProjects = inProgressProjectEntities.Select(p => MapToDto(p)).ToList();
+
+        // 卡住项目
+        var blockedProjectEntities = await _context.SideProjects
+            .Where(p => p.Blocked || (p.DeadlineAt.HasValue && p.DeadlineAt.Value < DateTime.Now && p.Status != 1))
+            .OrderBy(p => p.DeadlineAt)
+            .ToListAsync();
+        var blockedProjects = blockedProjectEntities.Select(p => MapToDto(p)).ToList();
+
+        // 本周里程碑
+        var thisWeekMilestones = await _context.SideProjectMilestones
+            .Include(m => m.Project)
+            .Where(m => m.DueAt.HasValue && m.DueAt.Value >= today && m.DueAt.Value <= endOfWeek)
+            .OrderBy(m => m.DueAt)
+            .Select(m => new SideProjectMilestoneDto
+            {
+                Id = m.Id,
+                ProjectId = m.ProjectId,
+                Title = m.Title,
+                DueAt = m.DueAt,
+                Status = m.Status,
+                Notes = m.Notes,
+                CreatedAt = m.CreatedAt,
+                UpdatedAt = m.UpdatedAt
+            })
+            .ToListAsync();
+
+        // 收入汇总（本月）
+        var startOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+        var totalIncome = await _context.SideProjects
+            .Where(p => p.Status == 1 && p.PriceFinal.HasValue && p.EndTime >= startOfMonth)
+            .SumAsync(p => p.PriceFinal ?? 0);
+
+        var thisMonthIncome = await _context.SideProjects
+            .Where(p => p.Status == 1 && p.PriceFinal.HasValue && p.EndTime >= startOfMonth && p.EndTime <= DateTime.Now)
+            .SumAsync(p => p.PriceFinal ?? 0);
+
+        var dashboard = new SideProjectDashboardDto
+        {
+            TodayTasks = todayTasks,
+            InProgressProjects = inProgressProjects,
+            BlockedProjects = blockedProjects,
+            ThisWeekMilestones = thisWeekMilestones,
+            TotalIncome = totalIncome,
+            ThisMonthIncome = thisMonthIncome
+        };
+
+        return Ok(ApiResponse<SideProjectDashboardDto>.Success(dashboard));
+    }
+
+    #endregion
+
+    #region 项目详情接口
+
+    /// <summary>
+    /// 获取项目详情（包含所有子实体）
+    /// </summary>
+    [HttpGet("{id}/detail")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<SideProjectDetailDto>>> GetProjectDetail(int id)
+    {
+        var project = await _context.SideProjects
+            .Include(p => p.Requirements)
+            .Include(p => p.Tasks)
+            .Include(p => p.Milestones)
+            .Include(p => p.Logs.OrderByDescending(l => l.CreatedAt))
+            .Include(p => p.Attachments)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (project == null)
+        {
+            return Ok(ApiResponse<SideProjectDetailDto>.Error("项目不存在", 404));
+        }
+
+        var detail = new SideProjectDetailDto
+        {
+            Id = project.Id,
+            Title = project.Title,
+            Description = project.Description,
+            ClientName = project.ClientName,
+            ClientContact = project.ClientContact,
+            Source = project.Source,
+            Category = project.Category,
+            IncomeType = project.IncomeType,
+            TechStack = project.TechStack,
+            BudgetMin = project.BudgetMin,
+            BudgetMax = project.BudgetMax,
+            PriceFinal = project.PriceFinal,
+            Status = project.Status,
+            StartTime = project.StartTime,
+            EndTime = project.EndTime,
+            IsPublic = project.IsPublic,
+            Stage = project.Stage,
+            Progress = project.Progress,
+            IsProgressManual = project.IsProgressManual,
+            Priority = project.Priority,
+            DeadlineAt = project.DeadlineAt,
+            NextAction = project.NextAction,
+            Blocked = project.Blocked,
+            BlockReason = project.BlockReason,
+            TotalAmount = project.TotalAmount,
+            ReceivedAmount = project.ReceivedAmount,
+            CreatedAt = project.CreatedAt,
+            UpdatedAt = project.UpdatedAt,
+            Requirements = project.Requirements.Select(r => new SideProjectRequirementDto
+            {
+                Id = r.Id,
+                ProjectId = r.ProjectId,
+                ScopeIn = r.ScopeIn,
+                ScopeOut = r.ScopeOut,
+                AcceptanceCriteria = r.AcceptanceCriteria,
+                Deliverables = r.Deliverables,
+                CreatedAt = r.CreatedAt,
+                UpdatedAt = r.UpdatedAt
+            }).ToList(),
+            Tasks = project.Tasks.OrderBy(t => t.SortOrder).Select(t => new SideProjectTaskDto
+            {
+                Id = t.Id,
+                ProjectId = t.ProjectId,
+                Title = t.Title,
+                Description = t.Description,
+                Status = t.Status,
+                Priority = t.Priority,
+                DueAt = t.DueAt,
+                EstHours = t.EstHours,
+                ActHours = t.ActHours,
+                SortOrder = t.SortOrder,
+                CreatedAt = t.CreatedAt,
+                UpdatedAt = t.UpdatedAt
+            }).ToList(),
+            Milestones = project.Milestones.Select(m => new SideProjectMilestoneDto
+            {
+                Id = m.Id,
+                ProjectId = m.ProjectId,
+                Title = m.Title,
+                DueAt = m.DueAt,
+                Status = m.Status,
+                Notes = m.Notes,
+                CreatedAt = m.CreatedAt,
+                UpdatedAt = m.UpdatedAt
+            }).ToList(),
+            Logs = project.Logs.Select(l => new SideProjectLogDto
+            {
+                Id = l.Id,
+                ProjectId = l.ProjectId,
+                Channel = l.Channel,
+                Content = l.Content,
+                NextTodo = l.NextTodo,
+                CreatedAt = l.CreatedAt
+            }).ToList(),
+            Attachments = project.Attachments.Select(a => new SideProjectAttachmentDto
+            {
+                Id = a.Id,
+                ProjectId = a.ProjectId,
+                Type = a.Type,
+                Name = a.Name,
+                Url = a.Url,
+                CreatedAt = a.CreatedAt
+            }).ToList()
+        };
+
+        return Ok(ApiResponse<SideProjectDetailDto>.Success(detail));
+    }
+
+    /// <summary>
+    /// 更新项目状态（状态流转）
+    /// </summary>
+    [HttpPatch("{id}/status")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<SideProjectDto>>> UpdateStatus(int id, [FromBody] int status)
+    {
+        var project = await _context.SideProjects.FindAsync(id);
+        if (project == null)
+        {
+            return Ok(ApiResponse<SideProjectDto>.Error("项目不存在", 404));
+        }
+
+        project.Status = status;
+        project.UpdatedAt = DateTime.Now;
+
+        await _context.SaveChangesAsync();
+
+        // 同步状态和阶段
+        await _projectService.SyncStatusAndStageAsync(project.Id);
+
+        return Ok(ApiResponse<SideProjectDto>.Success(MapToDto(project)));
+    }
+
+    /// <summary>
+    /// 更新项目进度（进度覆盖/取消覆盖）
+    /// </summary>
+    [HttpPatch("{id}/progress")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<SideProjectDto>>> UpdateProgress(int id, [FromBody] UpdateProgressDto dto)
+    {
+        var project = await _context.SideProjects.FindAsync(id);
+        if (project == null)
+        {
+            return Ok(ApiResponse<SideProjectDto>.Error("项目不存在", 404));
+        }
+
+        project.IsProgressManual = dto.IsManual;
+        if (dto.IsManual && dto.Progress.HasValue)
+        {
+            project.Progress = Math.Max(0, Math.Min(100, dto.Progress.Value));
+        }
+        else
+        {
+            // 自动计算进度
+            project.Progress = await _projectService.CalculateProgressAsync(id);
+        }
+
+        project.UpdatedAt = DateTime.Now;
+        await _context.SaveChangesAsync();
+
+        return Ok(ApiResponse<SideProjectDto>.Success(MapToDto(project)));
+    }
+
+    /// <summary>
+    /// 更新进度DTO
+    /// </summary>
+    public class UpdateProgressDto
+    {
+        public bool IsManual { get; set; }
+        public int? Progress { get; set; }
+    }
+
+    #endregion
+
+    #region 看板接口
+
+    /// <summary>
+    /// 获取看板数据（按状态分组）
+    /// </summary>
+    [HttpGet("kanban")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<object>>> GetKanban()
+    {
+        // 查询所有项目（包括已完成的），用于看板展示
+        var projectEntities = await _context.SideProjects
+            .OrderByDescending(p => p.Status == 1) // 已完成的排在后面
+            .ThenBy(p => p.Priority ?? 0) // 优先级排序（null值排在前面）
+            .ThenByDescending(p => p.UpdatedAt)
+            .ToListAsync();
+        
+        var projects = projectEntities.Select(p => MapToDto(p)).ToList();
+
+        // 按阶段分组
+        var kanban = new
+        {
+            Pending = projects.Where(p => (p.Stage == "待开始" || string.IsNullOrEmpty(p.Stage)) && p.Status != 1).ToList(),
+            InProgress = projects.Where(p => p.Stage == "进行中" && p.Status != 1).ToList(),
+            Blocked = projects.Where(p => (p.Stage == "卡住" || p.Blocked) && p.Status != 1).ToList(),
+            PendingReview = projects.Where(p => p.Stage == "待验收" && p.Status != 1).ToList(),
+            Completed = projects.Where(p => p.Stage == "已完成" || p.Status == 1).ToList() // 已完成的项目
+        };
+
+        return Ok(ApiResponse.Success(kanban));
+    }
+
+    #endregion
+
+    #region 需求管理接口
+
+    /// <summary>
+    /// 获取项目需求
+    /// </summary>
+    [HttpGet("{id}/requirement")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<SideProjectRequirementDto>>> GetRequirement(int id)
+    {
+        var requirement = await _context.SideProjectRequirements
+            .FirstOrDefaultAsync(r => r.ProjectId == id);
+
+        if (requirement == null)
+        {
+            return Ok(ApiResponse<SideProjectRequirementDto>.Error("需求不存在", 404));
+        }
+
+        var dto = new SideProjectRequirementDto
+        {
+            Id = requirement.Id,
+            ProjectId = requirement.ProjectId,
+            ScopeIn = requirement.ScopeIn,
+            ScopeOut = requirement.ScopeOut,
+            AcceptanceCriteria = requirement.AcceptanceCriteria,
+            Deliverables = requirement.Deliverables,
+            CreatedAt = requirement.CreatedAt,
+            UpdatedAt = requirement.UpdatedAt
+        };
+
+        return Ok(ApiResponse<SideProjectRequirementDto>.Success(dto));
+    }
+
+    /// <summary>
+    /// 创建或更新项目需求
+    /// </summary>
+    [HttpPut("{id}/requirement")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<SideProjectRequirementDto>>> UpsertRequirement(int id, [FromBody] UpsertRequirementDto dto)
+    {
+        var project = await _context.SideProjects.FindAsync(id);
+        if (project == null)
+        {
+            return Ok(ApiResponse<SideProjectRequirementDto>.Error("项目不存在", 404));
+        }
+
+        var requirement = await _context.SideProjectRequirements
+            .FirstOrDefaultAsync(r => r.ProjectId == id);
+
+        if (requirement == null)
+        {
+            requirement = new SideProjectRequirement
+            {
+                ProjectId = id,
+                ScopeIn = dto.ScopeIn,
+                ScopeOut = dto.ScopeOut,
+                AcceptanceCriteria = dto.AcceptanceCriteria,
+                Deliverables = dto.Deliverables,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+            _context.SideProjectRequirements.Add(requirement);
+        }
+        else
+        {
+            requirement.ScopeIn = dto.ScopeIn;
+            requirement.ScopeOut = dto.ScopeOut;
+            requirement.AcceptanceCriteria = dto.AcceptanceCriteria;
+            requirement.Deliverables = dto.Deliverables;
+            requirement.UpdatedAt = DateTime.Now;
+        }
+
+        await _context.SaveChangesAsync();
+
+        var result = new SideProjectRequirementDto
+        {
+            Id = requirement.Id,
+            ProjectId = requirement.ProjectId,
+            ScopeIn = requirement.ScopeIn,
+            ScopeOut = requirement.ScopeOut,
+            AcceptanceCriteria = requirement.AcceptanceCriteria,
+            Deliverables = requirement.Deliverables,
+            CreatedAt = requirement.CreatedAt,
+            UpdatedAt = requirement.UpdatedAt
+        };
+
+        return Ok(ApiResponse<SideProjectRequirementDto>.Success(result));
+    }
+
+    public class UpsertRequirementDto
+    {
+        public string? ScopeIn { get; set; }
+        public string? ScopeOut { get; set; }
+        public string? AcceptanceCriteria { get; set; }
+        public string? Deliverables { get; set; }
+    }
+
+    #endregion
+
+    #region 任务管理接口
+
+    /// <summary>
+    /// 获取项目任务列表
+    /// </summary>
+    [HttpGet("{id}/tasks")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<List<SideProjectTaskDto>>>> GetTasks(int id, [FromQuery] int? status = null)
+    {
+        var query = _context.SideProjectTasks.Where(t => t.ProjectId == id);
+
+        if (status.HasValue)
+        {
+            query = query.Where(t => t.Status == status.Value);
+        }
+
+        var tasks = await query
+            .OrderBy(t => t.SortOrder)
+            .ThenBy(t => t.DueAt)
+            .Select(t => new SideProjectTaskDto
+            {
+                Id = t.Id,
+                ProjectId = t.ProjectId,
+                Title = t.Title,
+                Description = t.Description,
+                Status = t.Status,
+                Priority = t.Priority,
+                DueAt = t.DueAt,
+                EstHours = t.EstHours,
+                ActHours = t.ActHours,
+                SortOrder = t.SortOrder,
+                CreatedAt = t.CreatedAt,
+                UpdatedAt = t.UpdatedAt
+            })
+            .ToListAsync();
+
+        return Ok(ApiResponse<List<SideProjectTaskDto>>.Success(tasks));
+    }
+
+    /// <summary>
+    /// 创建任务
+    /// </summary>
+    [HttpPost("{id}/tasks")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<SideProjectTaskDto>>> CreateTask(int id, [FromBody] CreateTaskDto dto)
+    {
+        var project = await _context.SideProjects.FindAsync(id);
+        if (project == null)
+        {
+            return Ok(ApiResponse<SideProjectTaskDto>.Error("项目不存在", 404));
+        }
+
+        // 获取最大排序值
+        var maxSortOrder = await _context.SideProjectTasks
+            .Where(t => t.ProjectId == id)
+            .Select(t => (int?)t.SortOrder)
+            .MaxAsync() ?? 0;
+
+        var task = new SideProjectTask
+        {
+            ProjectId = id,
+            Title = dto.Title,
+            Description = dto.Description,
+            Status = dto.Status ?? 0,
+            Priority = dto.Priority,
+            DueAt = dto.DueAt,
+            EstHours = dto.EstHours,
+            ActHours = dto.ActHours,
+            SortOrder = maxSortOrder + 1,
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
+        };
+
+        _context.SideProjectTasks.Add(task);
+        await _context.SaveChangesAsync();
+
+        // 如果项目不是手动覆盖进度，自动更新进度
+        if (!project.IsProgressManual)
+        {
+            await _projectService.UpdateProgressIfAutoAsync(id);
+        }
+
+        var result = new SideProjectTaskDto
+        {
+            Id = task.Id,
+            ProjectId = task.ProjectId,
+            Title = task.Title,
+            Description = task.Description,
+            Status = task.Status,
+            Priority = task.Priority,
+            DueAt = task.DueAt,
+            EstHours = task.EstHours,
+            ActHours = task.ActHours,
+            SortOrder = task.SortOrder,
+            CreatedAt = task.CreatedAt,
+            UpdatedAt = task.UpdatedAt
+        };
+
+        return CreatedAtAction(nameof(GetTasks), new { id }, ApiResponse<SideProjectTaskDto>.Success(result));
+    }
+
+    /// <summary>
+    /// 更新任务
+    /// </summary>
+    [HttpPut("{id}/tasks/{taskId}")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<SideProjectTaskDto>>> UpdateTask(int id, int taskId, [FromBody] UpdateTaskDto dto)
+    {
+        var task = await _context.SideProjectTasks
+            .FirstOrDefaultAsync(t => t.Id == taskId && t.ProjectId == id);
+
+        if (task == null)
+        {
+            return Ok(ApiResponse<SideProjectTaskDto>.Error("任务不存在", 404));
+        }
+
+        if (dto.Title != null) task.Title = dto.Title;
+        if (dto.Description != null) task.Description = dto.Description;
+        if (dto.Status.HasValue) task.Status = dto.Status.Value;
+        if (dto.Priority.HasValue) task.Priority = dto.Priority;
+        if (dto.DueAt.HasValue) task.DueAt = dto.DueAt;
+        if (dto.EstHours.HasValue) task.EstHours = dto.EstHours;
+        if (dto.ActHours.HasValue) task.ActHours = dto.ActHours;
+        if (dto.SortOrder.HasValue) task.SortOrder = dto.SortOrder.Value;
+        task.UpdatedAt = DateTime.Now;
+
+        await _context.SaveChangesAsync();
+
+        // 如果项目不是手动覆盖进度，自动更新进度
+        var project = await _context.SideProjects.FindAsync(id);
+        if (project != null && !project.IsProgressManual)
+        {
+            await _projectService.UpdateProgressIfAutoAsync(id);
+        }
+
+        var result = new SideProjectTaskDto
+        {
+            Id = task.Id,
+            ProjectId = task.ProjectId,
+            Title = task.Title,
+            Description = task.Description,
+            Status = task.Status,
+            Priority = task.Priority,
+            DueAt = task.DueAt,
+            EstHours = task.EstHours,
+            ActHours = task.ActHours,
+            SortOrder = task.SortOrder,
+            CreatedAt = task.CreatedAt,
+            UpdatedAt = task.UpdatedAt
+        };
+
+        return Ok(ApiResponse<SideProjectTaskDto>.Success(result));
+    }
+
+    /// <summary>
+    /// 删除任务
+    /// </summary>
+    [HttpDelete("{id}/tasks/{taskId}")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<bool>>> DeleteTask(int id, int taskId)
+    {
+        var task = await _context.SideProjectTasks
+            .FirstOrDefaultAsync(t => t.Id == taskId && t.ProjectId == id);
+
+        if (task == null)
+        {
+            return Ok(ApiResponse<bool>.Error("任务不存在", 404));
+        }
+
+        _context.SideProjectTasks.Remove(task);
+        await _context.SaveChangesAsync();
+
+        // 如果项目不是手动覆盖进度，自动更新进度
+        var project = await _context.SideProjects.FindAsync(id);
+        if (project != null && !project.IsProgressManual)
+        {
+            await _projectService.UpdateProgressIfAutoAsync(id);
+        }
+
+        return Ok(ApiResponse<bool>.Success(true));
+    }
+
+    public class CreateTaskDto
+    {
+        public string Title { get; set; } = string.Empty;
+        public string? Description { get; set; }
+        public int? Status { get; set; }
+        public int? Priority { get; set; }
+        public DateTime? DueAt { get; set; }
+        public decimal? EstHours { get; set; }
+        public decimal? ActHours { get; set; }
+    }
+
+    public class UpdateTaskDto
+    {
+        public string? Title { get; set; }
+        public string? Description { get; set; }
+        public int? Status { get; set; }
+        public int? Priority { get; set; }
+        public DateTime? DueAt { get; set; }
+        public decimal? EstHours { get; set; }
+        public decimal? ActHours { get; set; }
+        public int? SortOrder { get; set; }
+    }
+
+    #endregion
+
+    #region 里程碑管理接口
+
+    /// <summary>
+    /// 获取项目里程碑列表
+    /// </summary>
+    [HttpGet("{id}/milestones")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<List<SideProjectMilestoneDto>>>> GetMilestones(int id)
+    {
+        var milestones = await _context.SideProjectMilestones
+            .Where(m => m.ProjectId == id)
+            .OrderBy(m => m.DueAt)
+            .Select(m => new SideProjectMilestoneDto
+            {
+                Id = m.Id,
+                ProjectId = m.ProjectId,
+                Title = m.Title,
+                DueAt = m.DueAt,
+                Status = m.Status,
+                Notes = m.Notes,
+                CreatedAt = m.CreatedAt,
+                UpdatedAt = m.UpdatedAt
+            })
+            .ToListAsync();
+
+        return Ok(ApiResponse<List<SideProjectMilestoneDto>>.Success(milestones));
+    }
+
+    /// <summary>
+    /// 创建里程碑
+    /// </summary>
+    [HttpPost("{id}/milestones")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<SideProjectMilestoneDto>>> CreateMilestone(int id, [FromBody] CreateMilestoneDto dto)
+    {
+        var project = await _context.SideProjects.FindAsync(id);
+        if (project == null)
+        {
+            return Ok(ApiResponse<SideProjectMilestoneDto>.Error("项目不存在", 404));
+        }
+
+        var milestone = new SideProjectMilestone
+        {
+            ProjectId = id,
+            Title = dto.Title,
+            DueAt = dto.DueAt,
+            Status = dto.Status ?? 0,
+            Notes = dto.Notes,
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
+        };
+
+        _context.SideProjectMilestones.Add(milestone);
+        await _context.SaveChangesAsync();
+
+        var result = new SideProjectMilestoneDto
+        {
+            Id = milestone.Id,
+            ProjectId = milestone.ProjectId,
+            Title = milestone.Title,
+            DueAt = milestone.DueAt,
+            Status = milestone.Status,
+            Notes = milestone.Notes,
+            CreatedAt = milestone.CreatedAt,
+            UpdatedAt = milestone.UpdatedAt
+        };
+
+        return CreatedAtAction(nameof(GetMilestones), new { id }, ApiResponse<SideProjectMilestoneDto>.Success(result));
+    }
+
+    /// <summary>
+    /// 更新里程碑
+    /// </summary>
+    [HttpPut("{id}/milestones/{milestoneId}")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<SideProjectMilestoneDto>>> UpdateMilestone(int id, int milestoneId, [FromBody] UpdateMilestoneDto dto)
+    {
+        var milestone = await _context.SideProjectMilestones
+            .FirstOrDefaultAsync(m => m.Id == milestoneId && m.ProjectId == id);
+
+        if (milestone == null)
+        {
+            return Ok(ApiResponse<SideProjectMilestoneDto>.Error("里程碑不存在", 404));
+        }
+
+        if (dto.Title != null) milestone.Title = dto.Title;
+        if (dto.DueAt.HasValue) milestone.DueAt = dto.DueAt;
+        if (dto.Status.HasValue) milestone.Status = dto.Status.Value;
+        if (dto.Notes != null) milestone.Notes = dto.Notes;
+        milestone.UpdatedAt = DateTime.Now;
+
+        await _context.SaveChangesAsync();
+
+        var result = new SideProjectMilestoneDto
+        {
+            Id = milestone.Id,
+            ProjectId = milestone.ProjectId,
+            Title = milestone.Title,
+            DueAt = milestone.DueAt,
+            Status = milestone.Status,
+            Notes = milestone.Notes,
+            CreatedAt = milestone.CreatedAt,
+            UpdatedAt = milestone.UpdatedAt
+        };
+
+        return Ok(ApiResponse<SideProjectMilestoneDto>.Success(result));
+    }
+
+    /// <summary>
+    /// 删除里程碑
+    /// </summary>
+    [HttpDelete("{id}/milestones/{milestoneId}")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<bool>>> DeleteMilestone(int id, int milestoneId)
+    {
+        var milestone = await _context.SideProjectMilestones
+            .FirstOrDefaultAsync(m => m.Id == milestoneId && m.ProjectId == id);
+
+        if (milestone == null)
+        {
+            return Ok(ApiResponse<bool>.Error("里程碑不存在", 404));
+        }
+
+        _context.SideProjectMilestones.Remove(milestone);
+        await _context.SaveChangesAsync();
+
+        return Ok(ApiResponse<bool>.Success(true));
+    }
+
+    public class CreateMilestoneDto
+    {
+        public string Title { get; set; } = string.Empty;
+        public DateTime? DueAt { get; set; }
+        public int? Status { get; set; }
+        public string? Notes { get; set; }
+    }
+
+    public class UpdateMilestoneDto
+    {
+        public string? Title { get; set; }
+        public DateTime? DueAt { get; set; }
+        public int? Status { get; set; }
+        public string? Notes { get; set; }
+    }
+
+    #endregion
+
+    #region 沟通记录管理接口
+
+    /// <summary>
+    /// 获取项目沟通记录列表
+    /// </summary>
+    [HttpGet("{id}/logs")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<List<SideProjectLogDto>>>> GetLogs(int id)
+    {
+        var logs = await _context.SideProjectLogs
+            .Where(l => l.ProjectId == id)
+            .OrderByDescending(l => l.CreatedAt)
+            .Select(l => new SideProjectLogDto
+            {
+                Id = l.Id,
+                ProjectId = l.ProjectId,
+                Channel = l.Channel,
+                Content = l.Content,
+                NextTodo = l.NextTodo,
+                CreatedAt = l.CreatedAt
+            })
+            .ToListAsync();
+
+        return Ok(ApiResponse<List<SideProjectLogDto>>.Success(logs));
+    }
+
+    /// <summary>
+    /// 创建沟通记录
+    /// </summary>
+    [HttpPost("{id}/logs")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<SideProjectLogDto>>> CreateLog(int id, [FromBody] CreateLogDto dto)
+    {
+        var project = await _context.SideProjects.FindAsync(id);
+        if (project == null)
+        {
+            return Ok(ApiResponse<SideProjectLogDto>.Error("项目不存在", 404));
+        }
+
+        var log = new SideProjectLog
+        {
+            ProjectId = id,
+            Channel = dto.Channel,
+            Content = dto.Content,
+            NextTodo = dto.NextTodo,
+            CreatedAt = DateTime.Now
+        };
+
+        _context.SideProjectLogs.Add(log);
+        await _context.SaveChangesAsync();
+
+        // 如果有下一步行动，更新项目
+        if (!string.IsNullOrEmpty(dto.NextTodo))
+        {
+            project.NextAction = dto.NextTodo;
+            project.UpdatedAt = DateTime.Now;
+            await _context.SaveChangesAsync();
+        }
+
+        var result = new SideProjectLogDto
+        {
+            Id = log.Id,
+            ProjectId = log.ProjectId,
+            Channel = log.Channel,
+            Content = log.Content,
+            NextTodo = log.NextTodo,
+            CreatedAt = log.CreatedAt
+        };
+
+        return CreatedAtAction(nameof(GetLogs), new { id }, ApiResponse<SideProjectLogDto>.Success(result));
+    }
+
+    /// <summary>
+    /// 删除沟通记录
+    /// </summary>
+    [HttpDelete("{id}/logs/{logId}")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<bool>>> DeleteLog(int id, int logId)
+    {
+        var log = await _context.SideProjectLogs
+            .FirstOrDefaultAsync(l => l.Id == logId && l.ProjectId == id);
+
+        if (log == null)
+        {
+            return Ok(ApiResponse<bool>.Error("沟通记录不存在", 404));
+        }
+
+        _context.SideProjectLogs.Remove(log);
+        await _context.SaveChangesAsync();
+
+        return Ok(ApiResponse<bool>.Success(true));
+    }
+
+    public class CreateLogDto
+    {
+        public string? Channel { get; set; }
+        public string? Content { get; set; }
+        public string? NextTodo { get; set; }
+    }
+
+    #endregion
+
+    #region 附件管理接口
+
+    /// <summary>
+    /// 获取项目附件列表
+    /// </summary>
+    [HttpGet("{id}/attachments")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<List<SideProjectAttachmentDto>>>> GetAttachments(int id)
+    {
+        var attachments = await _context.SideProjectAttachments
+            .Where(a => a.ProjectId == id)
+            .OrderByDescending(a => a.CreatedAt)
+            .Select(a => new SideProjectAttachmentDto
+            {
+                Id = a.Id,
+                ProjectId = a.ProjectId,
+                Type = a.Type,
+                Name = a.Name,
+                Url = a.Url,
+                CreatedAt = a.CreatedAt
+            })
+            .ToListAsync();
+
+        return Ok(ApiResponse<List<SideProjectAttachmentDto>>.Success(attachments));
+    }
+
+    /// <summary>
+    /// 创建附件
+    /// </summary>
+    [HttpPost("{id}/attachments")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<SideProjectAttachmentDto>>> CreateAttachment(int id, [FromBody] CreateAttachmentDto dto)
+    {
+        var project = await _context.SideProjects.FindAsync(id);
+        if (project == null)
+        {
+            return Ok(ApiResponse<SideProjectAttachmentDto>.Error("项目不存在", 404));
+        }
+
+        var attachment = new SideProjectAttachment
+        {
+            ProjectId = id,
+            Type = dto.Type,
+            Name = dto.Name,
+            Url = dto.Url,
+            CreatedAt = DateTime.Now
+        };
+
+        _context.SideProjectAttachments.Add(attachment);
+        await _context.SaveChangesAsync();
+
+        var result = new SideProjectAttachmentDto
+        {
+            Id = attachment.Id,
+            ProjectId = attachment.ProjectId,
+            Type = attachment.Type,
+            Name = attachment.Name,
+            Url = attachment.Url,
+            CreatedAt = attachment.CreatedAt
+        };
+
+        return CreatedAtAction(nameof(GetAttachments), new { id }, ApiResponse<SideProjectAttachmentDto>.Success(result));
+    }
+
+    /// <summary>
+    /// 删除附件
+    /// </summary>
+    [HttpDelete("{id}/attachments/{attachmentId}")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<bool>>> DeleteAttachment(int id, int attachmentId)
+    {
+        var attachment = await _context.SideProjectAttachments
+            .FirstOrDefaultAsync(a => a.Id == attachmentId && a.ProjectId == id);
+
+        if (attachment == null)
+        {
+            return Ok(ApiResponse<bool>.Error("附件不存在", 404));
+        }
+
+        _context.SideProjectAttachments.Remove(attachment);
+        await _context.SaveChangesAsync();
+
+        return Ok(ApiResponse<bool>.Success(true));
+    }
+
+    public class CreateAttachmentDto
+    {
+        public string? Type { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Url { get; set; } = string.Empty;
     }
 
     #endregion

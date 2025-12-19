@@ -345,6 +345,16 @@ export interface SideProject {
   startTime?: string
   endTime?: string
   isPublic: boolean
+  stage?: string // 阶段：待开始/进行中/卡住/待验收/已完成
+  progress?: number // 进度 0-100
+  isProgressManual?: boolean // 进度是否手动覆盖
+  priority?: number // 优先级：0=低，1=中，2=高，3=紧急
+  deadlineAt?: string // 截止时间
+  nextAction?: string // 下一步行动
+  blocked?: boolean // 是否阻塞
+  blockReason?: string // 阻塞原因
+  totalAmount?: number // 总金额
+  receivedAmount?: number // 已收款金额
   createdAt: string
   updatedAt: string
 }
@@ -365,6 +375,16 @@ export interface CreateSideProjectDto {
   startTime?: string
   endTime?: string
   isPublic?: boolean
+  stage?: string
+  progress?: number
+  isProgressManual?: boolean
+  priority?: number
+  deadlineAt?: string
+  nextAction?: string
+  blocked?: boolean
+  blockReason?: string
+  totalAmount?: number
+  receivedAmount?: number
 }
 
 export interface UpdateSideProjectDto {
@@ -383,6 +403,95 @@ export interface UpdateSideProjectDto {
   startTime?: string
   endTime?: string
   isPublic?: boolean
+  stage?: string
+  progress?: number
+  isProgressManual?: boolean
+  priority?: number
+  deadlineAt?: string
+  nextAction?: string
+  blocked?: boolean
+  blockReason?: string
+  totalAmount?: number
+  receivedAmount?: number
+}
+
+// 项目需求
+export interface SideProjectRequirement {
+  id: number
+  projectId: number
+  scopeIn?: string
+  scopeOut?: string
+  acceptanceCriteria?: string
+  deliverables?: string
+  createdAt: string
+  updatedAt: string
+}
+
+// 项目任务
+export interface SideProjectTask {
+  id: number
+  projectId: number
+  title: string
+  description?: string
+  status: number // 0=未开始，1=进行中，2=已完成，3=已取消
+  priority?: number // 优先级：0=低，1=中，2=高，3=紧急
+  dueAt?: string
+  estHours?: number
+  actHours?: number
+  sortOrder: number
+  createdAt: string
+  updatedAt: string
+}
+
+// 项目里程碑
+export interface SideProjectMilestone {
+  id: number
+  projectId: number
+  title: string
+  dueAt?: string
+  status: number // 0=未完成，1=已完成
+  notes?: string
+  createdAt: string
+  updatedAt: string
+}
+
+// 项目沟通记录
+export interface SideProjectLog {
+  id: number
+  projectId: number
+  channel?: string // 沟通渠道：微信/邮件/电话/会议/其他
+  content?: string
+  nextTodo?: string
+  createdAt: string
+}
+
+// 项目附件
+export interface SideProjectAttachment {
+  id: number
+  projectId: number
+  type?: string // 附件类型：文档/图片/代码/其他
+  name: string
+  url: string
+  createdAt: string
+}
+
+// 项目详情（包含所有子实体）
+export interface SideProjectDetail extends SideProject {
+  requirements: SideProjectRequirement[]
+  tasks: SideProjectTask[]
+  milestones: SideProjectMilestone[]
+  logs: SideProjectLog[]
+  attachments: SideProjectAttachment[]
+}
+
+// 仪表盘数据
+export interface SideProjectDashboard {
+  todayTasks: SideProjectTask[] // 今日待办（跨项目任务）
+  inProgressProjects: SideProject[] // 进行中项目
+  blockedProjects: SideProject[] // 卡住项目
+  thisWeekMilestones: SideProjectMilestone[] // 本周里程碑
+  totalIncome: number // 收入汇总
+  thisMonthIncome: number // 本月收入
 }
 
 export interface ProjectDashboardSummaryDto {

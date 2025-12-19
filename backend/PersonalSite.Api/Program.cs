@@ -131,6 +131,9 @@ builder.Services.AddScoped<PersonalSite.Api.Services.Payment.AlipayPaymentServic
 builder.Services.AddScoped<PersonalSite.Api.Services.Payment.StripePaymentService>();
 builder.Services.AddScoped<PersonalSite.Api.Services.Payment.PaymentServiceFactory>();
 
+// 注册副业项目服务
+builder.Services.AddScoped<PersonalSite.Api.Services.SideProjectService>();
+
 // 4. 配置 Swagger
 builder.Services.AddSwaggerGen(c =>
 {
