@@ -65,10 +65,10 @@ import {
   NSelect,
   NDatePicker,
   NButton,
-  useMessage,
   type FormInst
 } from 'naive-ui'
 import type { RelationTask, CreateTaskDto, UpdateTaskDto } from '~/composables/useRelationsApi'
+import { useSafeMessage } from '~/composables/useNaiveUI'
 
 interface Props {
   show: boolean
@@ -81,7 +81,8 @@ const emit = defineEmits<{
   success: []
 }>()
 
-const message = useMessage()
+// 使用安全的 message composable，避免 Provider 未挂载时的错误
+const message = useSafeMessage()
 const formRef = ref<FormInst | null>(null)
 const loading = ref(false)
 
@@ -164,17 +165,17 @@ const handleSubmit = async () => {
           status: form.status
         }
         await relationsApi.updateTask(props.task.id, updateData)
-        message.success('更新成功')
+        showMessage.success('更新成功')
       } else {
         // 新增任务需要 personId，通过 emit 传递
-        message.error('新增任务需要在详情页操作')
+        showMessage.error('新增任务需要在详情页操作')
         return
       }
 
       emit('success')
       handleClose()
     } catch (error: any) {
-      message.error(error.message || '操作失败')
+      showMessage.error(error.message || '操作失败')
     } finally {
       loading.value = false
     }

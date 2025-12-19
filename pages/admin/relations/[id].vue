@@ -202,9 +202,29 @@ definePageMeta({
 
 const route = useRoute()
 const router = useRouter()
-const message = useMessage()
-const dialog = useDialog()
 const relationsApi = useRelationsApi()
+
+// 延迟初始化 message 和 dialog，避免 SSR 错误
+const message = ref<ReturnType<typeof useMessage> | null>(null)
+const dialog = ref<ReturnType<typeof useDialog> | null>(null)
+
+// 延迟初始化 message 和 dialog（在 onMounted 中初始化，确保在组件挂载后）
+
+// 辅助函数：安全地使用 message
+const showMessage = {
+  success: (content: string) => message.value?.success(content),
+  error: (content: string) => message.value?.error(content),
+  warning: (content: string) => message.value?.warning(content),
+  info: (content: string) => message.value?.info(content)
+}
+
+// 辅助函数：安全地使用 dialog
+const showDialog = {
+  warning: (options: any) => dialog.value?.warning(options),
+  info: (options: any) => dialog.value?.info(options),
+  error: (options: any) => dialog.value?.error(options),
+  success: (options: any) => dialog.value?.success(options)
+}
 
 const personId = computed(() => route.params.id as string)
 const loading = ref(false)
@@ -276,7 +296,7 @@ const loadPerson = async () => {
   try {
     person.value = await relationsApi.getPerson(personId.value)
   } catch (error: any) {
-    message.error(error.message || '加载失败')
+    showMessage.error(error.message || '加载失败')
   } finally {
     loading.value = false
   }
@@ -286,15 +306,27 @@ const loadInteractions = async () => {
   try {
     interactions.value = await relationsApi.getInteractions(personId.value)
   } catch (error: any) {
-    message.error(error.message || '加载互动记录失败')
+    showMessage.error(error.message || '加载互动记录失败')
   }
 }
 
 const loadTasks = async () => {
   try {
-    tasks.value = await relationsApi.getTasks(personId.value)
+    const result = await relationsApi.getTasks(personId.value)
+    // 确保 result 是数组
+    if (Array.isArray(result)) {
+      tasks.value = result
+    } else if (result && (result as any).data && Array.isArray((result as any).data)) {
+      // 兼容可能嵌套的响应格式
+      tasks.value = (result as any).data
+    } else {
+      tasks.value = []
+    }
+    console.log('加载任务成功:', tasks.value.length, '个任务')
   } catch (error: any) {
-    message.error(error.message || '加载任务失败')
+    console.error('加载任务失败:', error)
+    showMessage.error(error.message || '加载任务失败')
+    tasks.value = [] // 确保出错时是空数组
   }
 }
 
@@ -315,11 +347,11 @@ const handleEditInteraction = (interaction: RelationInteraction) => {
 const handleDeleteInteraction = async (id: string) => {
   try {
     await relationsApi.deleteInteraction(id)
-    message.success('删除成功')
+    showMessage.success('删除成功')
     await loadInteractions()
     await loadPerson() // 重新加载对象信息，因为最后联系时间可能变化
   } catch (error: any) {
-    message.error(error.message || '删除失败')
+    showMessage.error(error.message || '删除失败')
   }
 }
 
@@ -359,20 +391,22 @@ const handleSaveTask = async () => {
           dueAt: taskForm.dueAt ? new Date(taskForm.dueAt).toISOString() : undefined,
           priority: taskForm.priority
         })
-        message.success('更新成功')
+        showMessage.success('更新成功')
       } else {
         // 新增
-        await relationsApi.createTask(personId.value, {
+        const result = await relationsApi.createTask(personId.value, {
           title: taskForm.title,
           dueAt: taskForm.dueAt ? new Date(taskForm.dueAt).toISOString() : undefined,
           priority: taskForm.priority
         })
-        message.success('创建成功')
+        console.log('创建任务成功:', result)
+        showMessage.success('创建成功')
       }
       showTaskModal.value = false
       await loadTasks()
     } catch (error: any) {
-      message.error(error.message || '操作失败')
+      console.error('保存任务失败:', error)
+      showMessage.error(error.message || '操作失败')
     } finally {
       taskLoading.value = false
     }
@@ -382,10 +416,10 @@ const handleSaveTask = async () => {
 const handleDeleteTask = async (id: string) => {
   try {
     await relationsApi.deleteTask(id)
-    message.success('删除成功')
+    showMessage.success('删除成功')
     await loadTasks()
   } catch (error: any) {
-    message.error(error.message || '删除失败')
+    showMessage.error(error.message || '删除失败')
   }
 }
 
@@ -395,7 +429,7 @@ const handleToggleTask = async (task: RelationTask) => {
     await relationsApi.updateTask(task.id, { status: newStatus })
     await loadTasks()
   } catch (error: any) {
-    message.error(error.message || '操作失败')
+      showMessage.error(error.message || '操作失败')
   }
 }
 

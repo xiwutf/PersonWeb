@@ -40,6 +40,17 @@
         />
       </n-form-item>
 
+      <n-form-item label="提醒时间" path="remindAt">
+        <n-date-picker
+          v-model:value="form.remindAt"
+          type="datetime"
+          format="yyyy-MM-dd HH:mm"
+          placeholder="设置提醒时间（可选）"
+          style="width: 100%"
+          clearable
+        />
+      </n-form-item>
+
       <n-form-item label="备注" path="notes">
         <n-input
           v-model:value="form.notes"
@@ -63,7 +74,8 @@
 
 <script setup lang="ts">
 import { ref, watch, reactive, computed } from 'vue'
-import { NModal, NForm, NFormItem, NInput, NSelect, NButton, NDynamicTags, useMessage, type FormInst } from 'naive-ui'
+import { NModal, NForm, NFormItem, NInput, NSelect, NButton, NDynamicTags, NDatePicker, type FormInst } from 'naive-ui'
+import { useSafeMessage } from '~/composables/useNaiveUI'
 import type { RelationPerson, CreatePersonDto, UpdatePersonDto } from '~/composables/useRelationsApi'
 
 interface Props {
@@ -77,7 +89,8 @@ const emit = defineEmits<{
   success: []
 }>()
 
-const message = useMessage()
+// 使用安全的 message composable，避免 Provider 未挂载时的错误
+const message = useSafeMessage()
 const formRef = ref<FormInst | null>(null)
 const loading = ref(false)
 
@@ -98,22 +111,19 @@ const stageOptions = [
   { label: '已结束', value: 6 }
 ]
 
-const form = reactive<CreatePersonDto & { tags?: string[] }>({
+const form = reactive<CreatePersonDto & UpdatePersonDto & { tags?: string[]; remindAt?: number | null }>({
   nickname: '',
   source: '',
   city: '',
   tags: [],
   stage: 0,
   preferences: '',
+  remindAt: null,
   notes: ''
 })
 
 const rules = {
-  nickname: {
-    required: true,
-    message: '请输入昵称',
-    trigger: 'blur'
-  }
+  // 所有字段均为可选，降低使用门槛
 }
 
 watch(() => props.show, (show) => {
@@ -126,6 +136,7 @@ watch(() => props.show, (show) => {
       form.tags = props.person.tags || []
       form.stage = props.person.stage
       form.preferences = props.person.preferences || ''
+      form.remindAt = props.person.remindAt ? new Date(props.person.remindAt).getTime() : null
       form.notes = props.person.notes || ''
     } else {
       // 新增模式，重置表单
@@ -135,6 +146,7 @@ watch(() => props.show, (show) => {
       form.tags = []
       form.stage = 0
       form.preferences = ''
+      form.remindAt = null
       form.notes = ''
     }
   }
@@ -155,20 +167,27 @@ const handleSubmit = async () => {
       const relationsApi = useRelationsApi()
       
       if (isEdit.value && props.person) {
+        // 如果没有昵称，使用默认值
+        const nickname = form.nickname?.trim() || '未命名'
+        
         const updateData: UpdatePersonDto = {
-          nickname: form.nickname,
+          nickname: nickname,
           source: form.source || undefined,
           city: form.city || undefined,
           tags: form.tags,
           stage: form.stage,
           preferences: form.preferences || undefined,
+          remindAt: form.remindAt ? new Date(form.remindAt).toISOString() : undefined,
           notes: form.notes || undefined
         }
         await relationsApi.updatePerson(props.person.id, updateData)
-        message.success('更新成功')
+        showMessage.success('更新成功')
       } else {
+        // 如果没有昵称，使用默认值
+        const nickname = form.nickname?.trim() || '未命名'
+        
         const createData: CreatePersonDto = {
-          nickname: form.nickname,
+          nickname: nickname,
           source: form.source || undefined,
           city: form.city || undefined,
           tags: form.tags,
@@ -177,13 +196,13 @@ const handleSubmit = async () => {
           notes: form.notes || undefined
         }
         await relationsApi.createPerson(createData)
-        message.success('创建成功')
+        showMessage.success('创建成功')
       }
       
       emit('success')
       handleClose()
     } catch (error: any) {
-      message.error(error.message || '操作失败')
+      showMessage.error(error.message || '操作失败')
     } finally {
       loading.value = false
     }

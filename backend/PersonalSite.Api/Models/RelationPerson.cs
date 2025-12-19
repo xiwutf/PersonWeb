@@ -14,6 +14,13 @@ public class RelationPerson
     public Guid Id { get; set; } = Guid.NewGuid();
 
     /// <summary>
+    /// 用户ID（支持多租户，可为空以兼容单用户模式）
+    /// </summary>
+    [MaxLength(100)]
+    [Column("user_id")]
+    public string? UserId { get; set; }
+
+    /// <summary>
     /// 昵称（必填）
     /// </summary>
     [Required]

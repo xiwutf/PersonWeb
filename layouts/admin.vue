@@ -244,10 +244,15 @@
               <i class="fas fa-bullseye w-5 text-center mr-3"></i>
               <span>年度目标</span>
             </NuxtLink>
-            <NuxtLink to="/admin/relations" class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm" active-class="admin-sidebar-link-active">
+            <a
+              href="/admin/relations"
+              class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm"
+              :class="{ 'admin-sidebar-link-active': route.path === '/admin/relations' || route.path.startsWith('/admin/relations') }"
+              @click.prevent="() => router.push('/admin/relations')"
+            >
               <i class="fas fa-heart w-5 text-center mr-3"></i>
               <span>关系跟进</span>
-            </NuxtLink>
+            </a>
             <NuxtLink to="/admin/toolbox" class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm" active-class="admin-sidebar-link-active">
               <i class="fas fa-shopping-cart w-5 text-center mr-3"></i>
               <span>工具商城</span>

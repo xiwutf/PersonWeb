@@ -25,49 +25,49 @@
 - 时间约束：{time_constraints}（例如：本周很忙/只能周末）
 
 现在请输出严格 JSON，字段如下：
-{
-  "summary": {
+{{
+  "summary": {{
     "one_line": "一句话总结本次互动",
     "key_facts": ["本次互动中的关键事实（不超过5条）"],
-    "signals": {
+    "signals": {{
       "positive": ["积极信号（不超过4条）"],
       "neutral": ["中性信号（不超过4条）"],
       "negative": ["消极/降温/边界信号（不超过4条）"]
-    },
-    "preferences_updates": {
+    }},
+    "preferences_updates": {{
       "likes": ["对方可能喜欢/在意的点（基于事实；不超过4条）"],
       "dislikes": ["对方可能不喜欢/雷点（基于事实；不超过4条）"]
-    },
+    }},
     "my_commitments": ["我方承诺/待兑现事项（不超过4条）"],
     "risks": ["潜在风险或需要注意的点（不超过4条）"]
-  },
+  }},
   "next_actions": [
-    {
+    {{
       "title": "下一步行动标题（短）",
       "why": "为什么这样做（短）",
       "when": "建议时间（例如：今晚/明天中午/本周末；不确定可写：近期）",
       "priority": 1
-    }
+    }}
   ],
   "message_drafts": [
-    {
+    {{
       "scene": "场景（例如：轻量问候/推进邀约/确认时间/降频观察/礼貌结束）",
       "text": "可直接发送的一句话（自然、不油腻）"
-    }
+    }}
   ],
   "followup_questions": [
     "如果信息不足，最多问2个关键问题；否则返回空数组"
   ],
-  "stage_suggestion": {
+  "stage_suggestion": {{
     "current": "{stage}",
     "suggested": "建议阶段（从：新认识/熟悉中/准备约见/已见面/升温中/观察期/已结束 中选）",
     "reason": "如有调整，给出一句话原因；不调整可为空字符串"
-  },
-  "heat_score_hint": {
+  }},
+  "heat_score_hint": {{
     "delta": 0,
     "reason": "热度变化原因（短）；无变化可为空"
-  }
-}
+  }}
+}}
 
 约束：
 - next_actions 最多给 3 条，priority 用 1-3（1 最高）。

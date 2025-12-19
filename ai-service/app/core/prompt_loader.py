@@ -84,15 +84,32 @@ def render_prompt(template: str, **kwargs) -> str:
         PromptRenderError: 缺少必需变量时抛出
     """
     try:
+        # 安全地转义用户输入中的大括号，避免被误当作占位符
+        # 注意：Python 的 str.format 会将 {variable} 形式的字符串当作占位符
+        # 如果用户输入的内容包含大括号（如 {summary}），会被误解析
+        # 解决方案：转义所有用户输入中的大括号，但保留模板中的占位符
+        safe_kwargs = {}
+        for key, value in kwargs.items():
+            if isinstance(value, str):
+                # 转义字符串值中的大括号，避免被误当作占位符
+                # 将 { 替换为 {{，} 替换为 }}
+                # 这样在 format 时，这些大括号会被还原为单个大括号，而不是被当作占位符
+                safe_value = value.replace('{', '{{').replace('}', '}}')
+                safe_kwargs[key] = safe_value
+            else:
+                safe_kwargs[key] = value
+        
         # 使用 format 方法渲染
-        rendered = template.format(**kwargs)
+        # 模板中的占位符 {key} 会被替换为 safe_value
+        # safe_value 中的 {{ 和 }} 会被还原为 { 和 }
+        rendered = template.format(**safe_kwargs)
+        
         return rendered
     except KeyError as e:
         # 提取缺失的字段名
         missing_key = str(e).strip("'")
         raise PromptRenderError(
-            f"Prompt 模板缺少必需变量: {missing_key}，"
-            f"请检查模板和传入的参数是否匹配"
+            f"Prompt 模板缺少必需变量: \n  \"{missing_key}\"，请检查模板和传入的参数是否匹配"
         )
     except Exception as e:
         raise PromptRenderError(

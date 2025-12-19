@@ -201,11 +201,23 @@ public class RelationUserPreferenceDto
 public class RelationAiSummarizeResponse
 {
     public RelationSummaryDto? Summary { get; set; }
+    
+    [System.Text.Json.Serialization.JsonPropertyName("next_actions")]
     public List<RelationNextActionDto>? NextActions { get; set; }
+    
+    [System.Text.Json.Serialization.JsonPropertyName("message_drafts")]
     public List<RelationMessageDraftDto>? MessageDrafts { get; set; }
+    
+    [System.Text.Json.Serialization.JsonPropertyName("followup_questions")]
     public List<string>? FollowupQuestions { get; set; }
+    
+    [System.Text.Json.Serialization.JsonPropertyName("stage_suggestion")]
     public RelationStageSuggestionDto? StageSuggestion { get; set; }
+    
+    [System.Text.Json.Serialization.JsonPropertyName("heat_score_hint")]
     public RelationHeatScoreHintDto? HeatScoreHint { get; set; }
+    
+    [System.Text.Json.Serialization.JsonPropertyName("raw_text")]
     public string? RawText { get; set; }
 }
 
@@ -214,11 +226,20 @@ public class RelationAiSummarizeResponse
 /// </summary>
 public class RelationSummaryDto
 {
+    [System.Text.Json.Serialization.JsonPropertyName("one_line")]
     public string? OneLine { get; set; }
+    
+    [System.Text.Json.Serialization.JsonPropertyName("key_facts")]
     public List<string>? KeyFacts { get; set; }
+    
     public RelationSignalsDto? Signals { get; set; }
+    
+    [System.Text.Json.Serialization.JsonPropertyName("preferences_updates")]
     public RelationPreferencesDto? PreferencesUpdates { get; set; }
+    
+    [System.Text.Json.Serialization.JsonPropertyName("my_commitments")]
     public List<string>? MyCommitments { get; set; }
+    
     public List<string>? Risks { get; set; }
 }
 

@@ -611,7 +611,13 @@ public class RelationsController : ControllerBase
             }
 
             // 解析 Python 服务返回的响应
-            var result = await response.Content.ReadFromJsonAsync<Services.AiServiceResponse<RelationAiSummarizeResponse>>();
+            // Python 返回的是 snake_case，需要配置 JsonSerializerOptions 进行映射
+            var jsonOptions = new System.Text.Json.JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true, // 忽略大小写
+                PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase // 允许 camelCase 映射
+            };
+            var result = await response.Content.ReadFromJsonAsync<Services.AiServiceResponse<RelationAiSummarizeResponse>>(jsonOptions);
 
             if (result == null || !result.Success)
             {

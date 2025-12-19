@@ -55,8 +55,13 @@ class RelationFollowupService:
             max_tokens=3000
         )
         
+        # 记录 LLM 原始响应（用于调试）
+        llm_raw_reply = result["reply"]
+        logger.info(f"LLM 原始响应长度: {len(llm_raw_reply)}")
+        logger.debug(f"LLM 原始响应前 1000 字符: {llm_raw_reply[:1000]}")
+        
         # 解析 AI 返回的 JSON
-        response = self._parse_ai_response(result["reply"])
+        response = self._parse_ai_response(llm_raw_reply)
         
         logger.info(f"关系跟进总结生成完成: nickname={request.person.nickname}")
         
@@ -99,16 +104,39 @@ class RelationFollowupService:
             interaction_type_text = interaction_types[request.interaction.type] if 0 <= request.interaction.type < len(interaction_types) else "未知"
             
             # 准备变量
+            # 格式化日期时间
+            from datetime import datetime
+            last_contact_at_str = "无"
+            if request.person.last_contact_at:
+                if isinstance(request.person.last_contact_at, datetime):
+                    last_contact_at_str = request.person.last_contact_at.strftime("%Y-%m-%d %H:%M")
+                else:
+                    last_contact_at_str = str(request.person.last_contact_at)
+            
+            last_meet_at_str = "无"
+            if request.person.last_meet_at:
+                if isinstance(request.person.last_meet_at, datetime):
+                    last_meet_at_str = request.person.last_meet_at.strftime("%Y-%m-%d %H:%M")
+                else:
+                    last_meet_at_str = str(request.person.last_meet_at)
+            
+            occurred_at_str = "无"
+            if request.interaction.occurred_at:
+                if isinstance(request.interaction.occurred_at, datetime):
+                    occurred_at_str = request.interaction.occurred_at.strftime("%Y-%m-%d %H:%M")
+                else:
+                    occurred_at_str = str(request.interaction.occurred_at)
+            
             vars_dict = {
                 "nickname": request.person.nickname,
                 "stage": stage_text,
                 "tags": ", ".join(request.person.tags) if request.person.tags else "无",
-                "last_contact_at": request.person.last_contact_at or "无",
-                "last_meet_at": request.person.last_meet_at or "无",
+                "last_contact_at": last_contact_at_str,
+                "last_meet_at": last_meet_at_str,
                 "current_next_action": request.person.current_next_action or "无",
                 "history_key_points": request.history_key_points or "无",
                 "interaction_type": interaction_type_text,
-                "occurred_at": request.interaction.occurred_at,
+                "occurred_at": occurred_at_str,
                 "interaction_summary": request.interaction.summary,
                 "chat_text": request.interaction.chat_text or "",
                 "user_goal": request.user_preference.user_goal if request.user_preference else "未指定",
@@ -169,14 +197,26 @@ class RelationFollowupService:
                     raise ValueError("无法从响应中提取有效 JSON")
             
             # 验证并转换数据（使用 validate_json 方法确保字段齐全）
+            # _validate_json 已经将 camelCase 转换为 snake_case
             validated_data = self._validate_json(data)
             
+            logger.debug(f"验证后的数据顶层键: {list(validated_data.keys())}")
+            summary_dict = validated_data.get("summary", {})
+            logger.debug(f"summary_dict 的键: {list(summary_dict.keys()) if isinstance(summary_dict, dict) else 'not a dict'}")
+            logger.debug(f"summary_dict.one_line: {summary_dict.get('one_line')}")
+            logger.debug(f"summary_dict.key_facts: {summary_dict.get('key_facts')}")
+            
             # 构建响应对象
-            # 构建响应对象
+            # _validate_json 已经将字段名统一为 snake_case，所以直接使用即可
+            one_line = summary_dict.get("one_line", "") or summary_dict.get("oneLine", "") or ""
+            key_facts = summary_dict.get("key_facts", []) or summary_dict.get("keyFacts", []) or []
+            
+            logger.info(f"提取到的 one_line: '{one_line}', key_facts 数量: {len(key_facts) if isinstance(key_facts, list) else 0}")
+            
             response = RelationFollowupResponseData(
                 summary=RelationSummary(
-                    one_line=validated_data.get("summary", {}).get("one_line", ""),
-                    key_facts=validated_data.get("summary", {}).get("key_facts", []),
+                    one_line=one_line,
+                    key_facts=key_facts,
                     signals=RelationSignals(
                         positive=validated_data.get("summary", {}).get("signals", {}).get("positive", []),
                         neutral=validated_data.get("summary", {}).get("signals", {}).get("neutral", []),
@@ -236,14 +276,47 @@ class RelationFollowupService:
         """
         校验 JSON 字段齐全，缺失字段补默认空值
         禁止抛异常导致前端崩溃
+        同时处理 camelCase 和 snake_case 字段名映射
         
         Args:
             data: 解析后的 JSON 数据
             
         Returns:
-            Dict[str, Any]: 验证后的数据（确保所有必需字段都存在）
+            Dict[str, Any]: 验证后的数据（确保所有必需字段都存在，统一使用 snake_case）
         """
-        # 默认结构
+        # 字段名映射：camelCase -> snake_case
+        field_mapping = {
+            "oneLine": "one_line",
+            "keyFacts": "key_facts",
+            "nextActions": "next_actions",
+            "messageDrafts": "message_drafts",
+            "followupQuestions": "followup_questions",
+            "stageSuggestion": "stage_suggestion",
+            "heatScoreHint": "heat_score_hint",
+            "preferencesUpdates": "preferences_updates",
+            "myCommitments": "my_commitments"
+        }
+        
+        # 统一字段名的函数
+        def normalize_keys(obj: Any) -> Any:
+            """递归地将 camelCase 字段名转换为 snake_case"""
+            if isinstance(obj, dict):
+                result = {}
+                for key, value in obj.items():
+                    # 转换键名
+                    normalized_key = field_mapping.get(key, key)
+                    # 递归处理值
+                    result[normalized_key] = normalize_keys(value)
+                return result
+            elif isinstance(obj, list):
+                return [normalize_keys(item) for item in obj]
+            else:
+                return obj
+        
+        # 先统一字段名
+        normalized_data = normalize_keys(data)
+        
+        # 默认结构（使用 snake_case）
         fallback = {
             "summary": {
                 "one_line": "",
@@ -283,10 +356,13 @@ class RelationFollowupService:
                         result[key] = merge_dict(result[key], value)
                     else:
                         result[key] = value
+                else:
+                    # 如果字段不在默认结构中，也添加进来（可能是新增字段）
+                    result[key] = value
             return result
         
         try:
-            validated = merge_dict(fallback, data)
+            validated = merge_dict(fallback, normalized_data)
             return validated
         except Exception as e:
             logger.warning(f"验证 JSON 数据时出错，使用 fallback: {e}")
