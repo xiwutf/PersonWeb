@@ -416,7 +416,7 @@ class RelationFollowupService:
         result = drafts.copy() if drafts else []
         
         # 确保有 3 条
-        scenes = ["轻量联系", "推进/确认", "保守/留余地"]
+        scenes = ["随口一聊", "找个由头继续", "先放一放"]
         while len(result) < 3:
             index = len(result)
             result.append(RelationMessageDraft(

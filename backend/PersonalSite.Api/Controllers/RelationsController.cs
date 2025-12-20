@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Net.Http.Json;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,17 +24,20 @@ public class RelationsController : ControllerBase
     private readonly ILogger<RelationsController> _logger;
     private readonly HttpClient _httpClient;
     private readonly AiServiceOptions _aiServiceOptions;
+    private readonly ObservationPeriodService _observationService;
 
     public RelationsController(
         AppDbContext context, 
         ILogger<RelationsController> logger,
         IHttpClientFactory httpClientFactory,
-        IOptions<AiServiceOptions> aiServiceOptions)
+        IOptions<AiServiceOptions> aiServiceOptions,
+        ObservationPeriodService observationService)
     {
         _context = context;
         _logger = logger;
         _httpClient = httpClientFactory.CreateClient();
         _aiServiceOptions = aiServiceOptions.Value;
+        _observationService = observationService;
         
         // 配置 HttpClient
         _httpClient.BaseAddress = new Uri(_aiServiceOptions.BaseUrl);
@@ -102,6 +106,11 @@ public class RelationsController : ControllerBase
                 LastMeetAt = p.LastMeetAt,
                 NextAction = p.NextAction,
                 RemindAt = p.RemindAt,
+                ObservationStartedAt = p.ObservationStartedAt,
+                ObservationExpectedEndAt = p.ObservationExpectedEndAt,
+                ObservationLastRemindedAt = p.ObservationLastRemindedAt,
+                ObservationReason = p.ObservationReason,
+                ObservationDecisionPending = p.ObservationDecisionPending,
                 CreatedAt = p.CreatedAt,
                 UpdatedAt = p.UpdatedAt
             })
@@ -137,6 +146,11 @@ public class RelationsController : ControllerBase
             NextAction = person.NextAction,
             RemindAt = person.RemindAt,
             Notes = person.Notes,
+            ObservationStartedAt = person.ObservationStartedAt,
+            ObservationExpectedEndAt = person.ObservationExpectedEndAt,
+            ObservationLastRemindedAt = person.ObservationLastRemindedAt,
+            ObservationReason = person.ObservationReason,
+            ObservationDecisionPending = person.ObservationDecisionPending,
             CreatedAt = person.CreatedAt,
             UpdatedAt = person.UpdatedAt
         };
@@ -682,5 +696,133 @@ public class RelationsController : ControllerBase
             return null;
         }
     }
+
+    // ========== 观察期相关 API ==========
+
+    /// <summary>
+    /// 检查是否应该建议进入观察期
+    /// </summary>
+    [HttpGet("persons/{id}/observation/suggestion")]
+    public async Task<ActionResult<ApiResponse<object>>> GetObservationSuggestion(Guid id)
+    {
+        var userId = GetUserId();
+        var suggestion = await _observationService.CheckObservationSuggestionAsync(userId, id);
+        
+        if (suggestion == null)
+        {
+            return Ok(ApiResponse.Success(null, "无需进入观察期"));
+        }
+
+        return Ok(ApiResponse.Success(suggestion));
+    }
+
+    /// <summary>
+    /// 开始观察期
+    /// </summary>
+    [HttpPost("persons/{id}/observation/start")]
+    public async Task<ActionResult<ApiResponse<object>>> StartObservation(
+        Guid id,
+        [FromBody] StartObservationRequest request)
+    {
+        var userId = GetUserId();
+        var success = await _observationService.StartObservationPeriodAsync(
+            userId, 
+            id, 
+            request.Reason, 
+            request.DurationDays);
+
+        if (!success)
+        {
+            return Ok(ApiResponse<object>.Error("无法开始观察期", 400));
+        }
+
+        // 返回更新后的对象信息
+        var person = await _context.RelationPersons.FindAsync(id);
+        return Ok(ApiResponse.Success(new { message = "已进入观察期" }));
+    }
+
+    /// <summary>
+    /// 获取观察期提醒列表
+    /// </summary>
+    [HttpGet("observation/reminders")]
+    public async Task<ActionResult<ApiResponse<object>>> GetObservationReminders()
+    {
+        var userId = GetUserId();
+        
+        // 先标记需要决策的观察期
+        await _observationService.MarkDecisionPendingAsync(userId);
+        
+        // 获取提醒列表
+        var reminders = await _observationService.GetObservationRemindersAsync(userId);
+        
+        return Ok(ApiResponse.Success(reminders));
+    }
+
+    /// <summary>
+    /// 标记观察期提醒已查看
+    /// </summary>
+    [HttpPost("persons/{id}/observation/reminder/viewed")]
+    public async Task<ActionResult<ApiResponse<object>>> MarkReminderViewed(Guid id)
+    {
+        var userId = GetUserId();
+        await _observationService.MarkReminderViewedAsync(userId, id);
+        return Ok(ApiResponse.Success(new { message = "已标记为已查看" }));
+    }
+
+    /// <summary>
+    /// 处理观察期结束决策
+    /// </summary>
+    [HttpPost("persons/{id}/observation/decision")]
+    public async Task<ActionResult<ApiResponse<object>>> HandleObservationDecision(
+        Guid id,
+        [FromBody] ObservationDecisionRequest request)
+    {
+        var userId = GetUserId();
+        
+        if (!Enum.TryParse<ObservationDecision>(request.Decision, true, out var decision))
+        {
+            return Ok(ApiResponse<object>.Error("无效的决策类型", 400));
+        }
+
+        var success = await _observationService.HandleObservationDecisionAsync(
+            userId, 
+            id, 
+            decision, 
+            request.Reason);
+
+        if (!success)
+        {
+            return Ok(ApiResponse<object>.Error("无法处理决策", 400));
+        }
+
+        return Ok(ApiResponse.Success(new { message = "决策已保存" }));
+    }
+
+    /// <summary>
+    /// 获取用户ID（辅助方法）
+    /// </summary>
+    private string? GetUserId()
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        return userIdClaim?.Value;
+    }
+}
+
+/// <summary>
+/// 开始观察期请求
+/// </summary>
+public class StartObservationRequest
+{
+    public string? Reason { get; set; }
+    public int? DurationDays { get; set; }
+}
+
+/// <summary>
+/// 观察期决策请求
+/// </summary>
+public class ObservationDecisionRequest
+{
+    public string Decision { get; set; } = string.Empty; // "Continue", "Downgrade", "End"
+    public string? Reason { get; set; }
 }
 

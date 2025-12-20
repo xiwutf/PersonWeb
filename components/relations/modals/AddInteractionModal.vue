@@ -191,33 +191,73 @@
           </div>
           
           <div v-if="getMessageDrafts().length > 0" class="ai-message-drafts">
-            <strong class="ai-section-title">消息草案（点击复制）：</strong>
+            <strong class="ai-section-title">消息草案（可编辑）：</strong>
             <div
               v-for="(draft, index) in getMessageDrafts()"
               :key="index"
               class="message-draft-item"
-              :class="{ 'draft-empty': !((draft as any).text || (draft as any).Text) }"
-              @click="((draft as any).text || (draft as any).Text) && copyMessage((draft as any).text || (draft as any).Text)"
+              :class="{ 'draft-editing': editingDraftIndex === index, 'draft-empty': !getDraftText(draft, index) }"
             >
-              <div class="draft-scene">{{ (draft as any).scene || (draft as any).Scene }}</div>
-              <div class="draft-text">{{ (draft as any).text || (draft as any).Text || '（待生成）' }}</div>
-              <i v-if="(draft as any).text || (draft as any).Text" class="fas fa-copy copy-icon"></i>
+              <div class="draft-header">
+                <div class="draft-scene">{{ (draft as any).scene || (draft as any).Scene }}</div>
+                <div class="draft-actions" v-if="editingDraftIndex !== index">
+                  <n-button
+                    size="tiny"
+                    quaternary
+                    type="primary"
+                    @click.stop="startEditDraft(index, draft)"
+                  >
+                    <template #icon>
+                      <i class="fas fa-edit"></i>
+                    </template>
+                    编辑
+                  </n-button>
+                  <n-button
+                    size="tiny"
+                    quaternary
+                    type="info"
+                    @click.stop="regenerateDraft(index)"
+                    :loading="aiLoading"
+                  >
+                    <template #icon>
+                      <i class="fas fa-redo"></i>
+                    </template>
+                    换个更随意的说法
+                  </n-button>
+                </div>
+              </div>
+              <div v-if="editingDraftIndex === index" class="draft-edit-mode">
+                <n-input
+                  :value="draftEdits.get(index)"
+                  @update:value="(val: string) => draftEdits.set(index, val)"
+                  type="textarea"
+                  :rows="2"
+                  placeholder="输入消息内容..."
+                  @keydown.ctrl.enter="saveDraftEdit(index)"
+                  @keydown.meta.enter="saveDraftEdit(index)"
+                  @keydown.esc="cancelEditDraft(index)"
+                />
+                <div class="draft-edit-actions">
+                  <n-button size="small" @click="cancelEditDraft(index)">取消</n-button>
+                  <n-button size="small" type="primary" @click="saveDraftEdit(index)">保存</n-button>
+                </div>
+              </div>
+              <div v-else class="draft-text" @click.stop="copyMessage(getDraftText(draft, index))">
+                {{ getDraftText(draft, index) || '（待生成）' }}
+                <i v-if="getDraftText(draft, index)" class="fas fa-copy copy-icon"></i>
+              </div>
             </div>
           </div>
           
-          <div v-if="getFollowupQuestions().length > 0" class="ai-questions">
-            <strong class="ai-section-title">补充问题：</strong>
-            <div class="questions-list">
-              <div
-                v-for="(question, index) in getFollowupQuestions()"
-                :key="index"
-                class="question-item"
-              >
-                <span>{{ question }}</span>
-              </div>
+          <!-- 补充问题：轻提示形式，只在 AI 不确定时出现 -->
+          <div v-if="getFollowupQuestions().length > 0" class="ai-followup-prompt">
+            <div class="followup-prompt-content">
+              <i class="fas fa-question-circle"></i>
+              <span class="followup-question">{{ getFollowupQuestions()[0] }}</span>
             </div>
-            <div class="questions-hint">
-              请手动补充这些信息后，可再次点击"生成建议"按钮
+            <div class="followup-prompt-actions">
+              <n-button size="small" @click="handleFollowupAnswer('skip')">跳过</n-button>
+              <n-button size="small" type="primary" @click="handleFollowupAnswer('answer')">回答</n-button>
             </div>
           </div>
 
@@ -324,6 +364,14 @@ const loading = ref(false)
 const aiLoading = ref(false)
 const aiResult = ref<AiSummarizeResponse | null>(null)
 
+// 消息草案编辑状态
+const editingDraftIndex = ref<number | null>(null)
+const draftEdits = ref<Map<number, string>>(new Map())
+
+// 补充问题相关
+const followupQuestionAnswer = ref<string>('')
+const showFollowupPrompt = ref(false)
+
 const visible = computed({
   get: () => props.show,
   set: (value) => emit('update:show', value)
@@ -356,10 +404,111 @@ const getMessageDrafts = () => {
   return result.messageDrafts || result.message_drafts || result.MessageDrafts || []
 }
 
+// 获取当前正在编辑的草案文本
+const getDraftText = (draft: any, index: number): string => {
+  if (draftEdits.value.has(index)) {
+    return draftEdits.value.get(index)!
+  }
+  return (draft as any).text || (draft as any).Text || ''
+}
+
+// 开始编辑草案
+const startEditDraft = (index: number, draft: any) => {
+  editingDraftIndex.value = index
+  const currentText = (draft as any).text || (draft as any).Text || ''
+  draftEdits.value.set(index, currentText)
+}
+
+// 保存草案编辑
+const saveDraftEdit = (index: number) => {
+  editingDraftIndex.value = null
+  // 更新原始数据
+  if (aiResult.value) {
+    const result = aiResult.value as any
+    const drafts = result.messageDrafts || result.message_drafts || result.MessageDrafts || []
+    if (drafts[index] && draftEdits.value.has(index)) {
+      drafts[index].text = draftEdits.value.get(index)
+      drafts[index].Text = draftEdits.value.get(index)
+    }
+  }
+}
+
+// 取消编辑草案
+const cancelEditDraft = (index: number) => {
+  editingDraftIndex.value = null
+  draftEdits.value.delete(index)
+}
+
 const getFollowupQuestions = () => {
   if (!aiResult.value) return []
   const result = aiResult.value as any
-  return result.followupQuestions || result.followup_questions || result.FollowupQuestions || []
+  const questions = result.followupQuestions || result.followup_questions || result.FollowupQuestions || []
+  // 只返回第一个问题（最多1个）
+  return questions.slice(0, 1)
+}
+
+// 处理补充问题回答
+const handleFollowupAnswer = (action: 'skip' | 'answer') => {
+  if (action === 'skip') {
+    // 跳过补充问题，不显示提示
+    return
+  }
+  // TODO: 如果用户选择回答，可以展开输入框或跳转到相关位置
+  // 暂时先隐藏提示
+}
+
+// 重新生成单个消息草案（更随意的说法）
+const regenerateDraft = async (index: number) => {
+  if (!aiResult.value || !props.person) return
+  
+  try {
+    aiLoading.value = true
+    const relationsApi = useRelationsApi()
+    
+    // 获取最近的互动记录
+    const interactions = await relationsApi.getInteractions(props.personId)
+    const recentInteraction = interactions && interactions.length > 0 ? interactions[0] : null
+    
+    // 构建请求，添加提示要求更随意的说法
+    const request = {
+      person: {
+        nickname: props.person.nickname,
+        stage: props.person.stage,
+        tags: props.person.tags || [],
+        lastContactAt: props.person.lastContactAt,
+        lastMeetAt: props.person.lastMeetAt,
+        currentNextAction: props.person.nextAction
+      },
+      historyKeyPoints: undefined,
+      interaction: recentInteraction || {
+        type: form.type ?? 0,
+        occurredAt: new Date(form.occurredAt ?? Date.now()).toISOString(),
+        summary: form.summary || '互动记录',
+        chatText: undefined
+      },
+      userPreference: {
+        userStyle: '更随意、更口语化、像真人聊天'
+      }
+    }
+    
+    const response = await relationsApi.aiSummarize(request)
+    
+    // 更新对应位置的草案
+    if (aiResult.value) {
+      const result = aiResult.value as any
+      const drafts = result.messageDrafts || result.message_drafts || result.MessageDrafts || []
+      const newDrafts = response.messageDrafts || response.message_drafts || response.MessageDrafts || []
+      if (newDrafts[index]) {
+        drafts[index] = newDrafts[index]
+        message.success('已生成更随意的说法')
+      }
+    }
+  } catch (error: any) {
+    console.error('重新生成草案失败:', error)
+    message.error('重新生成失败，请稍后重试')
+  } finally {
+    aiLoading.value = false
+  }
 }
 
 const typeOptions = [

@@ -143,6 +143,9 @@ builder.Services.AddHostedService<PersonalSite.Api.Services.NotificationBackgrou
 // 注册数据分析服务
 builder.Services.AddScoped<PersonalSite.Api.Services.SideProjectAnalyticsService>();
 
+// 注册观察期服务
+builder.Services.AddScoped<PersonalSite.Api.Services.ObservationPeriodService>();
+
 // 4. 配置 Swagger
 builder.Services.AddSwaggerGen(c =>
 {

@@ -92,6 +92,37 @@ public class RelationPerson
     public DateTime? RemindAt { get; set; }
 
     /// <summary>
+    /// 观察期开始时间
+    /// </summary>
+    [Column("observation_started_at", TypeName = "datetime")]
+    public DateTime? ObservationStartedAt { get; set; }
+
+    /// <summary>
+    /// 观察期预计结束时间（默认开始后7天）
+    /// </summary>
+    [Column("observation_expected_end_at", TypeName = "datetime")]
+    public DateTime? ObservationExpectedEndAt { get; set; }
+
+    /// <summary>
+    /// 观察期上次提醒时间
+    /// </summary>
+    [Column("observation_last_reminded_at", TypeName = "datetime")]
+    public DateTime? ObservationLastRemindedAt { get; set; }
+
+    /// <summary>
+    /// 进入观察期的原因
+    /// </summary>
+    [MaxLength(500)]
+    [Column("observation_reason")]
+    public string? ObservationReason { get; set; }
+
+    /// <summary>
+    /// 是否等待观察期结束决策
+    /// </summary>
+    [Column("observation_decision_pending")]
+    public bool ObservationDecisionPending { get; set; } = false;
+
+    /// <summary>
     /// 备注
     /// </summary>
     [Column("notes", TypeName = "text")]

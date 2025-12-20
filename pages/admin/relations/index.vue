@@ -13,7 +13,18 @@
       </n-button>
     </div>
 
-    <!-- 视图切换 -->
+    <!-- 观察期提醒（仅在客户端渲染） -->
+    <ClientOnly>
+      <ObservationReminder
+        v-for="reminder in observationReminders"
+        :key="reminder.personId"
+        :reminder="reminder"
+        @close="handleReminderClose(reminder.personId)"
+        @decision="handleReminderDecision"
+      />
+    </ClientOnly>
+
+    <!-- 视图切换和筛选（合并到一个卡片，看板视图时隐藏筛选） -->
     <n-card class="view-switch-card">
       <div class="view-switch-buttons">
         <n-button
@@ -39,8 +50,8 @@
       </div>
     </n-card>
 
-    <!-- 筛选栏 -->
-    <n-card class="filter-card">
+    <!-- 筛选栏（看板视图时隐藏） -->
+    <n-card v-if="currentView !== 'kanban'" class="filter-card">
       <div class="filter-bar">
         <n-input
           v-model:value="filters.q"
@@ -291,9 +302,10 @@ import {
   useDialog
 } from 'naive-ui'
 import PersonCard from '~/components/relations/PersonCard.vue'
+import ObservationReminder from '~/components/relations/ObservationReminder.vue'
 import AddPersonModal from '~/components/relations/modals/AddPersonModal.vue'
 import AddInteractionModal from '~/components/relations/modals/AddInteractionModal.vue'
-import { useRelationsApi, type RelationPerson } from '~/composables/useRelationsApi'
+import { useRelationsApi, type RelationPerson, type ObservationReminder as ObservationReminderType } from '~/composables/useRelationsApi'
 
 definePageMeta({
   layout: 'admin',
@@ -339,6 +351,9 @@ const actionForm = reactive({
 // 批量操作相关（看板视图）
 const selectedPersons = ref<Set<string>>(new Set())
 
+// 观察期提醒相关
+const observationReminders = ref<ObservationReminderType[]>([])
+
 // PersonCard 引用管理
 const personCardRefs = ref<Map<string, ComponentPublicInstance>>(new Map())
 
@@ -350,6 +365,9 @@ const setPersonCardRef = (id: string, el: any) => {
 
 // 计算过滤后的对象列表
 const filteredPersons = computed(() => {
+  if (!allPersons.value) {
+    return []
+  }
   let result = [...allPersons.value]
 
   // 根据视图类型过滤
@@ -890,8 +908,31 @@ const handleModalSuccess = () => {
   loadPersons()
 }
 
-onMounted(() => {
+// 加载观察期提醒
+const loadObservationReminders = async () => {
+  try {
+    const reminders = await relationsApi.getObservationReminders()
+    observationReminders.value = reminders || []
+  } catch (error) {
+    console.error('加载观察期提醒失败:', error)
+  }
+}
+
+// 处理提醒关闭
+const handleReminderClose = (personId: string) => {
+  observationReminders.value = observationReminders.value.filter(r => r.personId !== personId)
+}
+
+// 处理提醒决策
+const handleReminderDecision = (decision: 'Continue' | 'Downgrade' | 'End') => {
+  // 决策后重新加载列表和提醒
   loadPersons()
+  loadObservationReminders()
+}
+
+onMounted(async () => {
+  await loadPersons()
+  await loadObservationReminders()
 })
 </script>
 
@@ -970,6 +1011,171 @@ onMounted(() => {
   .persons-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* ========== 看板视图样式 ========== */
+.kanban-view {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 8px 4px 8px 4px;
+  margin: 0 -4px;
+  min-height: calc(100vh - 350px);
+  /* 隐藏滚动条但保持滚动功能 */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-subtle) transparent;
+}
+
+.kanban-view::-webkit-scrollbar {
+  height: 8px;
+}
+
+.kanban-view::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.kanban-view::-webkit-scrollbar-thumb {
+  background: var(--color-border-subtle);
+  border-radius: 4px;
+}
+
+.kanban-view::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border-default);
+}
+
+.kanban-column {
+  flex: 0 0 300px;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.02));
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 10px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.kanban-column-header {
+  padding: 12px 14px;
+  background: var(--color-bg-card, rgba(255, 255, 255, 0.03));
+  border-bottom: 1px solid var(--color-border-subtle);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.column-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.column-count {
+  color: var(--color-text-muted);
+  font-weight: 400;
+  font-size: 13px;
+}
+
+.kanban-column-content {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  max-height: calc(100vh - 280px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  /* 隐藏滚动条但保持滚动功能 */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-subtle) transparent;
+}
+
+.kanban-column-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.kanban-column-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.kanban-column-content::-webkit-scrollbar-thumb {
+  background: var(--color-border-subtle);
+  border-radius: 3px;
+}
+
+.kanban-card {
+  flex-shrink: 0;
+  margin: 0;
+}
+
+.kanban-empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+/* 批量操作栏 */
+.batch-actions-card {
+  margin-bottom: 12px;
+}
+
+.batch-actions-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.selected-count {
+  font-size: 14px;
+  color: var(--color-text-main);
+}
+
+.batch-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* 响应式：小屏幕时看板列变窄 */
+@media (max-width: 768px) {
+  .kanban-column {
+    flex: 0 0 280px;
+  }
+  
+  .kanban-column-content {
+    max-height: calc(100vh - 250px);
+  }
+  
+  .batch-actions-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .batch-buttons {
+    width: 100%;
+  }
+  
+  .batch-buttons .n-button {
+    flex: 1;
+  }
+}
+
+/* 确保看板视图中的卡片样式正确 */
+.kanban-view :deep(.person-card) {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.kanban-view :deep(.n-card) {
+  border-radius: 8px;
 }
 </style>
 

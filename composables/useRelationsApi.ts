@@ -14,6 +14,12 @@ export interface RelationPerson {
   nextAction?: string
   remindAt?: string
   notes?: string
+  // 观察期相关字段
+  observationStartedAt?: string
+  observationExpectedEndAt?: string
+  observationLastRemindedAt?: string
+  observationReason?: string
+  observationDecisionPending?: boolean
   createdAt: string
   updatedAt: string
 }
@@ -254,6 +260,27 @@ export const useRelationsApi = () => {
     return await api.post<AiSummarizeResponse>('/relations/ai/summarize', data)
   }
 
+  // 观察期相关 API
+  const getObservationSuggestion = async (personId: string) => {
+    return await api.get(`/relations/persons/${personId}/observation/suggestion`)
+  }
+
+  const startObservation = async (personId: string, data: { reason?: string; durationDays?: number }) => {
+    return await api.post(`/relations/persons/${personId}/observation/start`, data)
+  }
+
+  const getObservationReminders = async () => {
+    return await api.get<ObservationReminder[]>('/relations/observation/reminders')
+  }
+
+  const markReminderViewed = async (personId: string) => {
+    return await api.post(`/relations/persons/${personId}/observation/reminder/viewed`)
+  }
+
+  const handleObservationDecision = async (personId: string, data: { decision: 'Continue' | 'Downgrade' | 'End'; reason?: string }) => {
+    return await api.post(`/relations/persons/${personId}/observation/decision`, data)
+  }
+
   return {
     getPersons,
     getPerson,
@@ -268,7 +295,28 @@ export const useRelationsApi = () => {
     createTask,
     updateTask,
     deleteTask,
-    aiSummarize
+    aiSummarize,
+    getObservationSuggestion,
+    startObservation,
+    getObservationReminders,
+    markReminderViewed,
+    handleObservationDecision
   }
+}
+
+// 观察期相关类型
+export interface ObservationSuggestion {
+  personId: string
+  reasons: string[]
+  suggestedDurationDays: number
+}
+
+export interface ObservationReminder {
+  personId: string
+  personNickname: string
+  type: 'OnGoing' | 'EndingSoon' | 'DecisionRequired'
+  daysInObservation: number
+  daysUntilEnd?: number
+  reason?: string
 }
 

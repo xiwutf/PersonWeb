@@ -16,6 +16,11 @@ public class RelationPersonListItemDto
     public DateTime? LastMeetAt { get; set; }
     public string? NextAction { get; set; }
     public DateTime? RemindAt { get; set; }
+    public DateTime? ObservationStartedAt { get; set; }
+    public DateTime? ObservationExpectedEndAt { get; set; }
+    public DateTime? ObservationLastRemindedAt { get; set; }
+    public string? ObservationReason { get; set; }
+    public bool ObservationDecisionPending { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 }
@@ -38,6 +43,11 @@ public class RelationPersonDetailDto
     public string? NextAction { get; set; }
     public DateTime? RemindAt { get; set; }
     public string? Notes { get; set; }
+    public DateTime? ObservationStartedAt { get; set; }
+    public DateTime? ObservationExpectedEndAt { get; set; }
+    public DateTime? ObservationLastRemindedAt { get; set; }
+    public string? ObservationReason { get; set; }
+    public bool ObservationDecisionPending { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 }
