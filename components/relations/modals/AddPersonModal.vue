@@ -31,6 +31,21 @@
         />
       </n-form-item>
 
+      <n-form-item label="热度分数" path="heatScore">
+        <n-input-number
+          v-model:value="form.heatScore"
+          :min="0"
+          :max="100"
+          placeholder="0-100"
+          style="width: 100%"
+        />
+        <template #feedback>
+          <span style="font-size: 12px; color: var(--text-color-3);">
+            热度分数范围：0-100，可通过记录互动让 AI 自动计算
+          </span>
+        </template>
+      </n-form-item>
+
       <n-form-item label="喜好/雷点" path="preferences">
         <n-input
           v-model:value="form.preferences"
@@ -74,9 +89,9 @@
 
 <script setup lang="ts">
 import { ref, watch, reactive, computed } from 'vue'
-import { NModal, NForm, NFormItem, NInput, NSelect, NButton, NDynamicTags, NDatePicker, type FormInst } from 'naive-ui'
+import { NModal, NForm, NFormItem, NInput, NSelect, NButton, NDynamicTags, NDatePicker, NInputNumber, type FormInst } from 'naive-ui'
 import { useSafeMessage } from '~/composables/useNaiveUI'
-import type { RelationPerson, CreatePersonDto, UpdatePersonDto } from '~/composables/useRelationsApi'
+import { useRelationsApi, type RelationPerson, type CreatePersonDto, type UpdatePersonDto } from '~/composables/useRelationsApi'
 
 interface Props {
   show: boolean
@@ -111,12 +126,13 @@ const stageOptions = [
   { label: '已结束', value: 6 }
 ]
 
-const form = reactive<CreatePersonDto & UpdatePersonDto & { tags?: string[]; remindAt?: number | null }>({
+const form = reactive<CreatePersonDto & UpdatePersonDto & { tags?: string[]; remindAt?: number | null; heatScore?: number | null }>({
   nickname: '',
   source: '',
   city: '',
   tags: [],
   stage: 0,
+  heatScore: null,
   preferences: '',
   remindAt: null,
   notes: ''
@@ -135,6 +151,7 @@ watch(() => props.show, (show) => {
       form.city = props.person.city || ''
       form.tags = props.person.tags || []
       form.stage = props.person.stage
+      form.heatScore = props.person.heatScore ?? null
       form.preferences = props.person.preferences || ''
       form.remindAt = props.person.remindAt ? new Date(props.person.remindAt).getTime() : null
       form.notes = props.person.notes || ''
@@ -145,6 +162,7 @@ watch(() => props.show, (show) => {
       form.city = ''
       form.tags = []
       form.stage = 0
+      form.heatScore = null
       form.preferences = ''
       form.remindAt = null
       form.notes = ''
@@ -176,12 +194,13 @@ const handleSubmit = async () => {
           city: form.city || undefined,
           tags: form.tags,
           stage: form.stage,
+          heatScore: form.heatScore !== null && form.heatScore !== undefined ? form.heatScore : undefined,
           preferences: form.preferences || undefined,
           remindAt: form.remindAt ? new Date(form.remindAt).toISOString() : undefined,
           notes: form.notes || undefined
         }
         await relationsApi.updatePerson(props.person.id, updateData)
-        showMessage.success('更新成功')
+        message.success('更新成功')
       } else {
         // 如果没有昵称，使用默认值
         const nickname = form.nickname?.trim() || '未命名'
@@ -192,17 +211,18 @@ const handleSubmit = async () => {
           city: form.city || undefined,
           tags: form.tags,
           stage: form.stage,
+          heatScore: form.heatScore !== null && form.heatScore !== undefined ? form.heatScore : undefined,
           preferences: form.preferences || undefined,
           notes: form.notes || undefined
         }
         await relationsApi.createPerson(createData)
-        showMessage.success('创建成功')
+        message.success('创建成功')
       }
       
       emit('success')
       handleClose()
     } catch (error: any) {
-      showMessage.error(error.message || '操作失败')
+      message.error(error.message || '操作失败')
     } finally {
       loading.value = false
     }

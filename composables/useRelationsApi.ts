@@ -54,6 +54,7 @@ export interface CreatePersonDto {
   tags?: string[]
   preferences?: string
   stage?: number
+  heatScore?: number
   notes?: string
 }
 

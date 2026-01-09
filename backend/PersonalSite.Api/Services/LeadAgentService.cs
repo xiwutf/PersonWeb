@@ -43,23 +43,48 @@ public class LeadAgentService : AiAgentService
         var meta = new Dictionary<string, object>
         {
             ["LeadId"] = request.LeadId.ToString(),
-            ["ProductId"] = consultation.ProductId.ToString(),
-            ["CustomerName"] = consultation.CustomerName
+            ["ProductId"] = consultation.ProductId > 0 ? consultation.ProductId.ToString() : "",
+            ["CustomerName"] = consultation.CustomerName ?? ""
         };
 
-        var aiResponse = await CallAiAsync("Lead", prompt, meta, cancellationToken);
+        string aiResponse;
+        try
+        {
+            aiResponse = await CallAiAsync("Lead", prompt, meta, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "调用 AI 服务失败: LeadId={LeadId}", request.LeadId);
+            return new LeadAnalysisResult
+            {
+                Success = false,
+                ErrorMessage = $"AI 服务调用失败: {ex.Message}。请检查 AI 服务是否正常运行。"
+            };
+        }
 
         // 解析响应
         var analysis = ParseAiResponse(aiResponse);
 
         // 写回数据库
-        consultation.Summary = analysis.Summary;
-        consultation.Tags = JsonSerializer.Serialize(analysis.Tags);
-        consultation.Score = analysis.Score;
-        consultation.AiRecommendation = analysis.Recommendation;
-        consultation.UpdatedAt = DateTime.Now;
+        try
+        {
+            consultation.Summary = analysis.Summary;
+            consultation.Tags = JsonSerializer.Serialize(analysis.Tags);
+            consultation.Score = analysis.Score;
+            consultation.AiRecommendation = analysis.Recommendation;
+            consultation.UpdatedAt = DateTime.Now;
 
-        await DbContext.SaveChangesAsync(cancellationToken);
+            await DbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "保存分析结果到数据库失败: LeadId={LeadId}", request.LeadId);
+            return new LeadAnalysisResult
+            {
+                Success = false,
+                ErrorMessage = $"保存分析结果失败: {ex.Message}。请检查数据库字段是否存在。"
+            };
+        }
 
         return new LeadAnalysisResult
         {

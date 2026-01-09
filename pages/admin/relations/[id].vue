@@ -434,6 +434,10 @@ const handleToggleTask = async (task: RelationTask) => {
 }
 
 onMounted(async () => {
+  // 初始化 message 和 dialog
+  message.value = useMessage()
+  dialog.value = useDialog()
+  
   await loadPerson()
   await loadInteractions()
   await loadTasks()

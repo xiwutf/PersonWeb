@@ -423,12 +423,19 @@ const handleAiAnalyze = async (consultation: any) => {
       message.success('AI 分析完成！已自动保存分析结果')
       await fetchConsultations() // 刷新列表
     } else {
-      message.error(res?.errorMessage || '分析失败')
+      const errorMsg = res?.errorMessage || res?.message || '分析失败'
+      message.error(`AI 分析失败: ${errorMsg}。请检查 AI 服务是否正常运行。`)
     }
   } catch (e: any) {
     message.destroyAll()
     console.error('AI 分析失败:', e)
-    message.error(e.response?.data?.message || e.message || '分析失败')
+    const errorMsg = e.response?.data?.errorMessage || e.response?.data?.message || e.message || '分析失败'
+    // 检查是否是连接错误
+    if (errorMsg.includes('连接') || errorMsg.includes('Connection') || errorMsg.includes('refused') || errorMsg.includes('timeout')) {
+      message.error(`AI 服务连接失败: ${errorMsg}。请确保 Python AI 服务正在运行（http://localhost:8001）。`)
+    } else {
+      message.error(`AI 分析失败: ${errorMsg}`)
+    }
   }
 }
 
@@ -471,12 +478,19 @@ const handleAiQuotation = async (consultation: any) => {
       showQuotationModal.value = true
       currentQuotation.value = res.quotation
     } else {
-      message.error(res?.errorMessage || '生成报价失败')
+      const errorMsg = res?.errorMessage || res?.message || '生成报价失败'
+      message.error(`AI 报价失败: ${errorMsg}。请检查 AI 服务是否正常运行。`)
     }
   } catch (e: any) {
     message.destroyAll()
     console.error('AI 报价失败:', e)
-    message.error(e.response?.data?.message || e.message || '生成报价失败')
+    const errorMsg = e.response?.data?.errorMessage || e.response?.data?.message || e.message || '生成报价失败'
+    // 检查是否是连接错误
+    if (errorMsg.includes('连接') || errorMsg.includes('Connection') || errorMsg.includes('refused') || errorMsg.includes('timeout')) {
+      message.error(`AI 服务连接失败: ${errorMsg}。请确保 Python AI 服务正在运行（http://localhost:8001）。`)
+    } else {
+      message.error(`AI 报价失败: ${errorMsg}`)
+    }
   }
 }
 

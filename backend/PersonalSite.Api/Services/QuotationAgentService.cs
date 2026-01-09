@@ -51,7 +51,20 @@ public class QuotationAgentService : AiAgentService
             ["BudgetRange"] = consultation.BudgetRange ?? ""
         };
 
-        var aiResponse = await CallAiAsync("Quotation", prompt, meta, cancellationToken);
+        string aiResponse;
+        try
+        {
+            aiResponse = await CallAiAsync("Quotation", prompt, meta, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "调用 AI 服务失败: LeadId={LeadId}", request.LeadId);
+            return new QuotationResult
+            {
+                Success = false,
+                ErrorMessage = $"AI 服务调用失败: {ex.Message}。请检查 AI 服务是否正常运行。"
+            };
+        }
 
         // 解析响应
         var result = ParseAiResponse(aiResponse, request);

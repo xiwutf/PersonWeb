@@ -168,6 +168,27 @@
             </ul>
           </div>
           
+          <!-- 热度分数变化提示 -->
+          <div v-if="getHeatScoreHint()" class="ai-heat-score-hint">
+            <strong class="ai-section-title">热度分数变化：</strong>
+            <div class="heat-score-content">
+              <span class="heat-score-delta" :class="{ 'positive': getHeatScoreHint()?.delta > 0, 'negative': getHeatScoreHint()?.delta < 0 }">
+                {{ getHeatScoreHint()?.delta > 0 ? '+' : '' }}{{ getHeatScoreHint()?.delta }}
+              </span>
+              <span v-if="getHeatScoreHint()?.reason" class="heat-score-reason">
+                （{{ getHeatScoreHint()?.reason }}）
+              </span>
+              <n-button
+                size="small"
+                type="primary"
+                style="margin-left: 8px;"
+                @click="applyHeatScoreChange"
+              >
+                应用变化
+              </n-button>
+            </div>
+          </div>
+          
           <div v-if="getNextActions().length > 0" class="ai-actions">
             <strong class="ai-section-title">下一步行动：</strong>
             <div
@@ -402,6 +423,55 @@ const getMessageDrafts = () => {
   if (!aiResult.value) return []
   const result = aiResult.value as any
   return result.messageDrafts || result.message_drafts || result.MessageDrafts || []
+}
+
+const getHeatScoreHint = () => {
+  if (!aiResult.value) return null
+  const result = aiResult.value as any
+  const hint = result.heatScoreHint || result.heat_score_hint || result.HeatScoreHint
+  if (!hint || (hint.delta === undefined && hint.delta === 0)) return null
+  return {
+    delta: hint.delta || hint.Delta || 0,
+    reason: hint.reason || hint.Reason || ''
+  }
+}
+
+const applyHeatScoreChange = async () => {
+  const hint = getHeatScoreHint()
+  if (!hint || hint.delta === 0) {
+    message.warning('没有热度分数变化可应用')
+    return
+  }
+  
+  try {
+    const relationsApi = useRelationsApi()
+    
+    // 获取当前对象信息
+    let personInfo = props.person
+    if (!personInfo) {
+      personInfo = await relationsApi.getPerson(props.personId)
+    }
+    
+    const currentHeatScore = personInfo?.heatScore || 0
+    const newHeatScore = Math.max(0, Math.min(100, currentHeatScore + hint.delta))
+    
+    await relationsApi.updatePerson(props.personId, {
+      heatScore: newHeatScore
+    })
+    
+    const deltaText = hint.delta > 0 ? `+${hint.delta}` : `${hint.delta}`
+    message.success(`热度分数已更新：${currentHeatScore} → ${newHeatScore} (${deltaText})`)
+    
+    // 更新本地 person 对象（如果存在）
+    if (props.person) {
+      props.person.heatScore = newHeatScore
+    }
+    
+    // 触发成功事件，刷新数据
+    emit('success')
+  } catch (error: any) {
+    message.error(error.message || '应用热度分数变化失败')
+  }
 }
 
 // 获取当前正在编辑的草案文本
@@ -892,6 +962,23 @@ const handleAiGenerateAfterSave = async (createdInteraction?: any) => {
     const response = await relationsApi.aiSummarize(request)
     aiResult.value = response
     
+    // 自动应用热度分数变化（如果有 AI 建议）
+    const heatScoreHint = response?.heatScoreHint || response?.heat_score_hint
+    if (heatScoreHint && heatScoreHint.delta !== undefined && heatScoreHint.delta !== 0 && personInfo) {
+      try {
+        const currentHeatScore = personInfo.heatScore || 0
+        const newHeatScore = Math.max(0, Math.min(100, currentHeatScore + heatScoreHint.delta))
+        await relationsApi.updatePerson(props.personId, {
+          heatScore: newHeatScore
+        })
+        const deltaText = heatScoreHint.delta > 0 ? `+${heatScoreHint.delta}` : `${heatScoreHint.delta}`
+        message.success(`热度分数已更新：${deltaText}（${heatScoreHint.reason || '基于本次互动'}）`)
+      } catch (e) {
+        console.error('更新热度分数失败:', e)
+        // 静默失败，不影响其他功能
+      }
+    }
+    
     // 自动填充 nextAction（如果有 AI 建议）
     const nextActions = getNextActions()
     if (nextActions && nextActions.length > 0) {
@@ -1306,6 +1393,51 @@ const handleSubmitWithAi = async () => {
 
 [data-theme="dark"] .message-draft-item:hover .copy-icon {
   color: #60a5fa;
+}
+
+.ai-heat-score-hint {
+  margin: 18px 0;
+  padding: 12px;
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: 6px;
+  border-left: 3px solid #3b82f6;
+}
+
+[data-theme="dark"] .ai-heat-score-hint {
+  background: rgba(59, 130, 246, 0.15);
+  border-left-color: #60a5fa;
+}
+
+.heat-score-content {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.heat-score-delta {
+  font-size: 18px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 4px;
+  background: rgba(59, 130, 246, 0.2);
+}
+
+.heat-score-delta.positive {
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.2);
+}
+
+.heat-score-delta.negative {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.2);
+}
+
+.heat-score-reason {
+  font-size: 14px;
+  color: var(--text-color-2);
+  flex: 1;
 }
 
 .ai-questions {
