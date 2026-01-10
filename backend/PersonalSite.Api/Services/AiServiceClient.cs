@@ -183,15 +183,11 @@ public class AiServiceClient
                 request.UserId, request.Message.Length);
 
             // Python AI 服务使用 /website-chat 端点，需要转换请求格式
-            var websiteChatRequest = new
+            // AI 服务期望的格式：{ messages: [{role, content}], scene, extra }
+            var extra = new Dictionary<string, object>
             {
-                user_input = request.Message,
-                model = request.Model,
-                extra = new Dictionary<string, object>
-                {
-                    ["userId"] = request.UserId,
-                    ["sessionId"] = request.SessionId ?? "",
-                }
+                ["userId"] = request.UserId,
+                ["sessionId"] = request.SessionId ?? "",
             };
 
             // 如果有 Meta 数据，合并到 extra 中
@@ -199,27 +195,50 @@ public class AiServiceClient
             {
                 foreach (var kvp in request.Meta)
                 {
-                    websiteChatRequest.extra[kvp.Key] = kvp.Value;
+                    extra[kvp.Key] = kvp.Value;
                 }
             }
+
+            // 构建 messages 数组（根据场景决定是否包含 system 消息）
+            var messages = new List<object>();
+            
+            // 如果有场景信息，可以添加 system 消息
+            var scene = extra.ContainsKey("scene") ? extra["scene"]?.ToString() : "website-chat";
+            
+            // 添加 user 消息
+            messages.Add(new
+            {
+                role = "user",
+                content = request.Message
+            });
+
+            var websiteChatRequest = new
+            {
+                messages = messages,
+                scene = scene,
+                extra = extra
+            };
 
             // 添加内部调用 Token（从配置中读取）
             var internalToken = _options.InternalToken ?? "default-internal-token-change-in-production";
             
-            // 使用相对路径（不带前导斜杠），让 HttpClient 自动处理 BaseAddress
-            // BaseAddress 是 http://localhost:8001/api/ai，相对路径是 "website-chat"
-            // 这样会得到 http://localhost:8001/api/ai/website-chat
-            var relativePath = "website-chat";
-            var fullUrl = $"{_httpClient.BaseAddress}{relativePath}";
-            _logger.LogInformation("BaseAddress: {BaseAddress}, 相对路径: {RelativePath}, 完整 URL 应该是: {FullUrl}", 
+            // 构建完整的相对路径，确保路径正确拼接
+            // BaseAddress 是 http://localhost:8001/api/ai，相对路径应该是 "/website-chat"（带前导斜杠）
+            // 或者使用 "website-chat" 但确保 BaseAddress 以斜杠结尾
+            // 使用前导斜杠的方式更可靠
+            var relativePath = "/website-chat";
+            var baseAddress = _httpClient.BaseAddress?.ToString().TrimEnd('/') ?? _options.BaseUrl.TrimEnd('/');
+            var fullUrl = $"{baseAddress}{relativePath}";
+            _logger.LogInformation("BaseAddress: {BaseAddress}, 相对路径: {RelativePath}, 完整 URL: {FullUrl}", 
                 _httpClient.BaseAddress, relativePath, fullUrl);
             
             // 构建请求消息，添加内部 Token 请求头
-            var requestMessage = new HttpRequestMessage(HttpMethod.Post, relativePath)
+            // 注意：使用完整 URL 而不是相对路径，避免 HttpClient 的 BaseAddress 拼接问题
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, fullUrl)
             {
                 Content = JsonContent.Create(websiteChatRequest)
             };
-            requestMessage.Headers.Add("X-Internal-Key", internalToken);
+            requestMessage.Headers.Add("X-Internal-Token", internalToken);
 
             var response = await _httpClient.SendAsync(requestMessage, cancellationToken);
             
@@ -233,19 +252,25 @@ public class AiServiceClient
             
             response.EnsureSuccessStatusCode();
 
-            // Python 服务直接返回 WebsiteChatResponse，不是包装在 AiServiceResponse 中
-            var result = await response.Content.ReadFromJsonAsync<WebsiteChatResponseDto>(
+            // AI 服务返回的是 BaseResponse 包装格式：{ success, data, error_code, message }
+            // 其中 data 是 WebsiteChatResponseDto
+            var baseResponse = await response.Content.ReadFromJsonAsync<AiServiceResponse<WebsiteChatResponseDto>>(
                 cancellationToken: cancellationToken);
 
-            if (result == null)
+            if (baseResponse == null || !baseResponse.Success || baseResponse.Data == null)
             {
-                throw new Exception("AI 服务返回数据为空");
+                var errorMsg = baseResponse?.Message ?? "AI 服务返回数据为空";
+                _logger.LogError("AI 服务返回错误: Success={Success}, Message={Message}, ErrorCode={ErrorCode}",
+                    baseResponse?.Success ?? false, errorMsg, baseResponse?.ErrorCode);
+                throw new Exception($"AI 服务返回错误: {errorMsg}");
             }
+
+            var result = baseResponse.Data;
 
             // 转换为 ChatResponseDto 格式
             return new ChatResponseDto
             {
-                Reply = result.Content,
+                Reply = result.Content ?? "",
                 Model = request.Model ?? "default",
                 Usage = result.Usage != null ? new TokenUsage
                 {

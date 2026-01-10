@@ -439,31 +439,35 @@ useHead({
 
 .tag {
   display: inline-block;
-  padding: 2px 8px;
+  padding: 4px 10px;
   border-radius: 4px;
   font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
 }
 
 .tag-warning {
-  background: var(--chart-tertiary);
-  opacity: 0.1;
-  color: var(--chart-tertiary);
+  background: rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.3);
 }
 
 .tag-info {
-  background: var(--color-primary-soft);
-  color: var(--color-primary);
+  background: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
 .tag-success {
-  background: var(--color-success);
-  opacity: 0.1;
-  color: var(--color-success);
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
 }
 
 .tag-default {
-  background: var(--color-bg-elevated);
-  color: var(--color-text-main);
+  background: rgba(107, 114, 128, 0.2);
+  color: #6b7280;
+  border: 1px solid rgba(107, 114, 128, 0.3);
 }
 
 .table-pagination {

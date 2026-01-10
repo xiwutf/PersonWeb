@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PersonalSite.Api.Data;
@@ -13,8 +14,28 @@ var builder = WebApplication.CreateBuilder(args);
 
 // 1. 配置数据库 (MySQL)
 var connectionString = builder.Configuration.GetConnectionString("Default");
+if (string.IsNullOrEmpty(connectionString))
+{
+    throw new InvalidOperationException("数据库连接字符串未配置");
+}
+
+// 尝试自动检测服务器版本，如果失败则使用 MySQL 8.0 版本（兼容大多数情况）
+ServerVersion serverVersion;
+try
+{
+    serverVersion = ServerVersion.AutoDetect(connectionString);
+}
+catch (Exception ex)
+{
+    // 如果自动检测失败，使用 MySQL 8.0.21 作为默认版本（兼容大多数 MySQL 服务器）
+    // 注意：这可能会在某些旧版本 MySQL 上导致兼容性问题，但通常可以正常工作
+    serverVersion = ServerVersion.Parse("8.0.21-mysql");
+    var logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
+    logger.LogWarning(ex, "无法自动检测 MySQL 服务器版本，使用默认版本 8.0.21");
+}
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), mySqlOptions =>
+    options.UseMySql(connectionString, serverVersion, mySqlOptions =>
     {
         // 启用重试机制，处理瞬时连接失败
         mySqlOptions.EnableRetryOnFailure(

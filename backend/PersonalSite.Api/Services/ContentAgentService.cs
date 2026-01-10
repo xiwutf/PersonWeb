@@ -41,8 +41,16 @@ public class ContentAgentService : AiAgentService
 
         var aiResponse = await CallAiAsync("Content", prompt, meta, cancellationToken);
 
+        // 记录 AI 响应内容（用于调试）
+        Logger.LogInformation("AI 响应内容（前500字符）: {ResponsePreview}", 
+            aiResponse.Length > 500 ? aiResponse.Substring(0, 500) : aiResponse);
+
         // 解析响应（假设 AI 返回 JSON 格式）
         var result = ParseAiResponse(aiResponse, request);
+        
+        // 记录解析结果
+        Logger.LogInformation("解析结果: Success={Success}, HasContent={HasContent}, Title={Title}, BodyLength={BodyLength}",
+            result.Success, result.Content != null, result.Content?.Title ?? "null", result.Content?.Body?.Length ?? 0);
 
         // 如果设置了自动保存草稿，则保存到数据库
         if (request.AutoSaveDraft == true)
@@ -105,35 +113,171 @@ public class ContentAgentService : AiAgentService
     /// </summary>
     private ContentGenerationResult ParseAiResponse(string aiResponse, ContentGenerationRequest request)
     {
+        if (string.IsNullOrWhiteSpace(aiResponse))
+        {
+            Logger.LogWarning("AI 响应为空");
+            return new ContentGenerationResult
+            {
+                Success = false,
+                ErrorMessage = "AI 返回内容为空"
+            };
+        }
+
         try
         {
-            // 尝试解析 JSON
-            var jsonStart = aiResponse.IndexOf('{');
-            var jsonEnd = aiResponse.LastIndexOf('}');
-            if (jsonStart >= 0 && jsonEnd > jsonStart)
+            string? jsonStr = null;
+            
+            // 方法1: 尝试查找 ```json 代码块（优先使用，更可靠）
+            var jsonBlockStart = aiResponse.IndexOf("```json", StringComparison.OrdinalIgnoreCase);
+            Logger.LogInformation("查找 ```json 代码块，位置: {Position}", jsonBlockStart);
+            
+            if (jsonBlockStart >= 0)
             {
-                var jsonStr = aiResponse.Substring(jsonStart, jsonEnd - jsonStart + 1);
+                // 找到代码块开始位置，查找内容开始（跳过 ```json 和可能的换行）
+                var contentStart = aiResponse.IndexOf('\n', jsonBlockStart);
+                if (contentStart < 0) 
+                {
+                    contentStart = jsonBlockStart + 7; // "```json" 的长度
+                }
+                else 
+                {
+                    contentStart++; // 跳过换行符
+                }
+                
+                Logger.LogInformation("JSON 内容开始位置: {ContentStart}", contentStart);
+                
+                // 查找代码块结束位置（查找下一个 ```，但要从 contentStart 之后开始查找）
+                // 注意：不能直接使用 IndexOf("```", contentStart)，因为可能会找到代码块开始标记
+                // 应该查找 contentStart 之后的第一个 ```
+                var searchStart = contentStart;
+                var blockEnd = -1;
+                while (true)
+                {
+                    var nextBacktick = aiResponse.IndexOf("```", searchStart);
+                    if (nextBacktick < 0) break;
+                    
+                    // 检查是否是代码块结束标记（前面应该是换行或空格，后面也应该是换行或字符串结束）
+                    var beforeChar = nextBacktick > 0 ? aiResponse[nextBacktick - 1] : '\n';
+                    var afterPos = nextBacktick + 3;
+                    var afterChar = afterPos < aiResponse.Length ? aiResponse[afterPos] : '\n';
+                    
+                    // 如果前面是换行或空格，且后面是换行或字符串结束，则认为是结束标记
+                    if ((beforeChar == '\n' || beforeChar == '\r' || char.IsWhiteSpace(beforeChar)) &&
+                        (afterChar == '\n' || afterChar == '\r' || afterPos >= aiResponse.Length))
+                    {
+                        blockEnd = nextBacktick;
+                        break;
+                    }
+                    
+                    searchStart = nextBacktick + 3; // 继续查找下一个 ```
+                }
+                
+                Logger.LogInformation("查找代码块结束位置，找到: {BlockEnd}", blockEnd);
+                
+                if (blockEnd > contentStart)
+                {
+                    jsonStr = aiResponse.Substring(contentStart, blockEnd - contentStart).Trim();
+                    Logger.LogInformation("✅ 从 markdown 代码块中提取到 JSON，长度: {Length}, 前100字符: {Preview}", 
+                        jsonStr.Length, jsonStr.Length > 100 ? jsonStr.Substring(0, 100) : jsonStr);
+                }
+                else
+                {
+                    Logger.LogWarning("未找到代码块结束标记 ```，blockEnd={BlockEnd}, contentStart={ContentStart}", blockEnd, contentStart);
+                }
+            }
+            else
+            {
+                Logger.LogWarning("未找到 ```json 代码块开始标记");
+            }
+            
+            // 方法2: 如果还没找到，尝试使用正则表达式匹配（处理嵌套大括号的情况）
+            if (string.IsNullOrWhiteSpace(jsonStr))
+            {
+                // 使用正则表达式匹配 ```json ... ``` 代码块
+                // 注意：这个正则可能无法正确处理嵌套的大括号，所以优先使用方法1
+                var jsonCodeBlockPattern = @"```json\s*(\{.*?\})\s*```";
+                var jsonCodeBlockMatch = System.Text.RegularExpressions.Regex.Match(
+                    aiResponse, 
+                    jsonCodeBlockPattern, 
+                    System.Text.RegularExpressions.RegexOptions.Singleline | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                
+                if (jsonCodeBlockMatch.Success && jsonCodeBlockMatch.Groups.Count > 1)
+                {
+                    jsonStr = jsonCodeBlockMatch.Groups[1].Value;
+                    Logger.LogInformation("✅ 从正则表达式匹配中提取到 JSON，长度: {Length}", jsonStr.Length);
+                }
+            }
+            
+            // 方法3: 如果还没找到，尝试直接查找 JSON 对象（查找第一个 { 到最后一个 }）
+            // 注意：这种方法可能不准确，因为可能有多个 JSON 对象
+            if (string.IsNullOrWhiteSpace(jsonStr))
+            {
+                var jsonStart = aiResponse.IndexOf('{');
+                var jsonEnd = aiResponse.LastIndexOf('}');
+                
+                if (jsonStart >= 0 && jsonEnd > jsonStart)
+                {
+                    jsonStr = aiResponse.Substring(jsonStart, jsonEnd - jsonStart + 1);
+                    Logger.LogInformation("✅ 从文本中直接提取到 JSON，长度: {Length}", jsonStr.Length);
+                }
+            }
+            
+            if (!string.IsNullOrWhiteSpace(jsonStr))
+            {
+                Logger.LogInformation("提取的 JSON 字符串（前300字符）: {JsonPreview}", 
+                    jsonStr.Length > 300 ? jsonStr.Substring(0, 300) + "..." : jsonStr);
+                
                 var jsonDoc = JsonDocument.Parse(jsonStr);
                 var root = jsonDoc.RootElement;
 
+                var title = request.Title ?? "未命名";
+                var summary = "";
+                var body = "";
+
+                // 尝试从 JSON 中提取字段
+                if (root.TryGetProperty("title", out var titleElement))
+                {
+                    var titleValue = titleElement.GetString();
+                    if (!string.IsNullOrWhiteSpace(titleValue))
+                    {
+                        title = titleValue;
+                    }
+                }
+                
+                if (root.TryGetProperty("summary", out var summaryElement))
+                {
+                    summary = summaryElement.GetString() ?? "";
+                }
+                
+                if (root.TryGetProperty("body", out var bodyElement))
+                {
+                    body = bodyElement.GetString() ?? "";
+                }
+
+                // 如果成功解析到 JSON，直接返回解析结果
+                // 不再检查内容是否"有效"，因为 AI 可能只返回部分字段
+                Logger.LogInformation("✅ 成功解析 JSON: Title={Title}, SummaryLength={SummaryLength}, BodyLength={BodyLength}",
+                    title, summary.Length, body.Length);
+                
                 return new ContentGenerationResult
                 {
                     Success = true,
                     Content = new ContentDto
                     {
-                        Title = root.TryGetProperty("title", out var title) ? title.GetString() ?? request.Title ?? "未命名" : request.Title ?? "未命名",
-                        Summary = root.TryGetProperty("summary", out var summary) ? summary.GetString() ?? "" : "",
-                        Body = root.TryGetProperty("body", out var body) ? body.GetString() ?? "" : ""
+                        Title = title,
+                        Summary = summary,
+                        Body = body
                     }
                 };
             }
         }
         catch (Exception ex)
         {
-            Logger.LogWarning(ex, "解析 AI 响应 JSON 失败，使用原始文本");
+            Logger.LogWarning(ex, "解析 AI 响应 JSON 失败: {Error}", ex.Message);
         }
 
-        // 如果解析失败，使用原始文本
+        // 如果解析失败，使用原始文本作为正文
+        Logger.LogInformation("JSON 解析失败，使用原始文本作为正文内容");
         return new ContentGenerationResult
         {
             Success = true,
@@ -141,7 +285,7 @@ public class ContentAgentService : AiAgentService
             {
                 Title = request.Title ?? "未命名",
                 Summary = "",
-                Body = aiResponse
+                Body = aiResponse.Trim()
             }
         };
     }
@@ -231,8 +375,13 @@ public class ContentGenerationRequest
 /// </summary>
 public class ContentGenerationResult
 {
+    [System.Text.Json.Serialization.JsonPropertyName("success")]
     public bool Success { get; set; }
+    
+    [System.Text.Json.Serialization.JsonPropertyName("content")]
     public ContentDto? Content { get; set; }
+    
+    [System.Text.Json.Serialization.JsonPropertyName("errorMessage")]
     public string? ErrorMessage { get; set; }
 }
 
@@ -241,8 +390,13 @@ public class ContentGenerationResult
 /// </summary>
 public class ContentDto
 {
+    [System.Text.Json.Serialization.JsonPropertyName("title")]
     public string Title { get; set; } = string.Empty;
+    
+    [System.Text.Json.Serialization.JsonPropertyName("summary")]
     public string Summary { get; set; } = string.Empty;
+    
+    [System.Text.Json.Serialization.JsonPropertyName("body")]
     public string Body { get; set; } = string.Empty; // Markdown 格式
 }
 

@@ -91,7 +91,7 @@ public abstract class AiAgentService : IAiAgentService
         }
         finally
         {
-            // 保存日志到数据库
+            // 保存日志到数据库（不阻塞主流程，失败不影响业务）
             try
             {
                 DbContext.AiAgentLogs.Add(log);
@@ -100,7 +100,8 @@ public abstract class AiAgentService : IAiAgentService
             catch (Exception ex)
             {
                 // 日志记录失败不应该影响主流程
-                Logger.LogWarning(ex, "保存 AI 智能体日志失败: AgentType={AgentType}", agentType);
+                Logger.LogWarning(ex, "保存 AI 智能体日志失败: AgentType={AgentType}, Error={Error}", 
+                    agentType, ex.Message);
             }
         }
     }

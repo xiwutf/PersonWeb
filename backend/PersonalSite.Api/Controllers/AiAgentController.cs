@@ -63,6 +63,34 @@ public class AiAgentController : ControllerBase
                 return BadRequest(new { Success = false, Message = "请求参数不能为空" });
             }
 
+            // 先检查 AI 服务是否可用
+            try
+            {
+                var isHealthy = await _aiServiceClient.HealthCheckAsync();
+                if (!isHealthy)
+                {
+                    _logger.LogWarning("AI 服务健康检查失败");
+                    return StatusCode(500, new
+                    {
+                        Success = false,
+                        Message = "AI 服务不可用，请检查 AI 服务是否正常运行",
+                        ErrorMessage = "AI 服务健康检查失败",
+                        ErrorType = "ServiceUnavailable"
+                    });
+                }
+            }
+            catch (Exception healthEx)
+            {
+                _logger.LogError(healthEx, "AI 服务健康检查异常");
+                return StatusCode(500, new
+                {
+                    Success = false,
+                    Message = "无法连接到 AI 服务，请检查 AI 服务是否启动",
+                    ErrorMessage = healthEx.Message,
+                    ErrorType = "ServiceConnectionError"
+                });
+            }
+
             var result = await _contentAgentService.GenerateContentAsync(request);
 
             if (result.Success)
@@ -74,14 +102,38 @@ public class AiAgentController : ControllerBase
                 return BadRequest(result);
             }
         }
+        catch (System.Net.Http.HttpRequestException httpEx)
+        {
+            _logger.LogError(httpEx, "内容生成失败：AI 服务连接错误");
+            return StatusCode(500, new
+            {
+                Success = false,
+                Message = "AI 服务连接失败，请检查 AI 服务是否正常运行",
+                ErrorMessage = httpEx.Message,
+                ErrorType = "ConnectionError"
+            });
+        }
+        catch (TaskCanceledException timeoutEx)
+        {
+            _logger.LogError(timeoutEx, "内容生成失败：请求超时");
+            return StatusCode(500, new
+            {
+                Success = false,
+                Message = "AI 服务请求超时，请稍后重试",
+                ErrorMessage = timeoutEx.Message,
+                ErrorType = "TimeoutError"
+            });
+        }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "内容生成失败");
+            _logger.LogError(ex, "内容生成失败：{ErrorType}, {ErrorMessage}", 
+                ex.GetType().Name, ex.Message);
             return StatusCode(500, new
             {
                 Success = false,
                 Message = "内容生成失败",
-                ErrorMessage = ex.Message
+                ErrorMessage = ex.Message,
+                ErrorType = ex.GetType().Name
             });
         }
     }

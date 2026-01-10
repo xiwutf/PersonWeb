@@ -74,6 +74,7 @@
             <n-button
               type="primary"
               :loading="generating"
+              :disabled="generating"
               @click="handleGenerate"
               size="large"
             >
@@ -94,10 +95,16 @@
       </n-card>
 
       <!-- 生成结果 -->
-      <n-card v-if="result" class="mt-6">
-        <template #header>
-          <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold">生成结果</h3>
+      <div v-if="result" class="mt-6 result-container">
+        <n-card class="result-card" :class="{ 'result-visible': result }">
+          <template #header>
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg font-semibold">
+                <i class="fas fa-file-alt mr-2"></i>
+                生成结果
+                <span v-if="result.success" class="ml-2 text-sm text-green-600 dark:text-green-400">✓ 成功</span>
+                <span v-else class="ml-2 text-sm text-red-600 dark:text-red-400">✗ 失败</span>
+              </h3>
             <n-button
               v-if="result.content"
               type="primary"
@@ -115,26 +122,62 @@
         <div v-if="result.content" class="space-y-4">
           <div>
             <h4 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">标题</h4>
-            <p class="text-lg font-semibold">{{ result.content.title }}</p>
+            <p class="text-lg font-semibold">{{ result.content.title || '未命名' }}</p>
           </div>
 
           <div v-if="result.content.summary">
             <h4 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">摘要</h4>
-            <p class="text-gray-700 dark:text-gray-300">{{ result.content.summary }}</p>
+            <p class="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{{ result.content.summary }}</p>
           </div>
 
           <div>
             <h4 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">正文内容</h4>
-            <div class="prose dark:prose-invert max-w-none">
-              <div v-html="markdownToHtml(result.content.body)"></div>
+            <div v-if="result.content.body" class="prose dark:prose-invert max-w-none">
+              <!-- 检查是否是 JSON 字符串（以 ```json 开头），如果是则尝试解析 -->
+              <div v-if="result.content.body.trim().startsWith('```json')" class="p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded">
+                <p class="text-sm text-yellow-800 dark:text-yellow-200 mb-2">
+                  ⚠️ 检测到 JSON 格式内容，正在解析...
+                </p>
+                <div v-html="markdownToHtml(extractMarkdownFromJson(result.content.body))"></div>
+              </div>
+              <div v-else>
+                <div v-html="markdownToHtml(result.content.body)"></div>
+              </div>
             </div>
+            <div v-else class="text-gray-500 italic">
+              暂无正文内容
+            </div>
+            <!-- 原始内容预览（调试用） -->
+            <details v-if="isDev && result.content.body" class="mt-4 text-xs">
+              <summary class="cursor-pointer text-gray-500">查看原始内容（调试）</summary>
+              <pre class="mt-2 p-2 bg-gray-100 dark:bg-gray-800 rounded overflow-auto max-h-40">{{ result.content.body }}</pre>
+            </details>
           </div>
         </div>
+        
+        <!-- 调试信息（开发环境显示） -->
+        <div v-if="result && isDev" class="mt-4 p-3 bg-gray-100 dark:bg-gray-800 rounded text-xs">
+          <strong>调试信息：</strong>
+          <pre class="mt-2 overflow-auto">{{ JSON.stringify(result, null, 2) }}</pre>
+        </div>
 
-        <n-alert v-else-if="result.errorMessage" type="error" class="mt-4">
-          {{ result.errorMessage }}
+        <n-alert 
+          v-else-if="result.errorMessage" 
+          type="error" 
+          class="mt-4 error-alert"
+          :show-icon="true"
+          :closable="false"
+        >
+          <div class="error-message">
+            <strong class="error-title">生成失败</strong>
+            <p class="error-detail">{{ result.errorMessage }}</p>
+            <p v-if="result.errorMessage.includes('localhost:8001')" class="error-hint">
+              💡 提示：请确保 AI 服务已启动，可以访问 <a href="http://localhost:8001/api/ai/health" target="_blank" class="error-link">http://localhost:8001/api/ai/health</a> 检查服务状态
+            </p>
+          </div>
         </n-alert>
-      </n-card>
+        </n-card>
+      </div>
     </div>
   </ClientOnly>
 </template>
@@ -142,6 +185,7 @@
 <script setup lang="ts">
 import { NCard, NForm, NFormItem, NInput, NSelect, NRadioGroup, NRadio, NButton, NSwitch, NAlert } from 'naive-ui'
 import { useMarkdown } from '~/composables/useMarkdown'
+import { nextTick } from 'vue'
 
 definePageMeta({
   layout: 'admin',
@@ -151,7 +195,10 @@ definePageMeta({
 
 const api = useApi()
 const message = useSafeMessage()
-const { markdownToHtml } = useMarkdown()
+const { parse: markdownToHtml } = useMarkdown()
+
+// 检查是否为开发环境（在 Nuxt 3 中）
+const isDev = import.meta.dev
 
 const formRef = ref<any>(null)
 const generating = ref(false)
@@ -189,19 +236,32 @@ const rules = {
 }
 
 const handleGenerate = async () => {
-  if (!formRef.value) return
-
-  try {
-    await formRef.value.validate()
-  } catch (e) {
+  console.log('=== 开始生成内容 ===')
+  console.log('handleGenerate 被调用')
+  console.log('generating 状态:', generating.value)
+  
+  if (!formRef.value) {
+    console.error('formRef 为空，无法验证表单')
+    message.error('表单引用未初始化，请刷新页面重试')
     return
   }
 
+  console.log('开始验证表单，表单数据:', form.value)
+  try {
+    await formRef.value.validate()
+    console.log('✅ 表单验证通过')
+  } catch (e) {
+    console.error('❌ 表单验证失败:', e)
+    message.error('请检查表单输入，确保已选择内容类型')
+    return
+  }
+
+  console.log('开始生成内容，表单数据:', JSON.stringify(form.value, null, 2))
   generating.value = true
   result.value = null
 
   try {
-    const res = await api.post('/ai/content/generate', {
+    const requestData = {
       type: form.value.type,
       title: form.value.title || undefined,
       tone: form.value.tone,
@@ -209,26 +269,95 @@ const handleGenerate = async () => {
       length: form.value.length,
       extraNotes: form.value.extraNotes || undefined,
       autoSaveDraft: form.value.autoSaveDraft
-    })
-
-    if (res && res.success) {
-      result.value = res
+    }
+    console.log('📤 发送请求到 /ai/content/generate')
+    console.log('请求数据:', JSON.stringify(requestData, null, 2))
+    
+    const res = await api.post('/ai/content/generate', requestData)
+    console.log('📥 收到 API 响应:', res)
+    console.log('响应类型:', typeof res)
+    console.log('响应内容:', JSON.stringify(res, null, 2))
+    console.log('success 字段:', res?.success, 'Success 字段:', res?.Success)
+    console.log('content 字段:', res?.content, 'Content 字段:', res?.Content)
+    
+    if (res && (res.success || res.Success)) {
+      // 兼容大小写
+      const content = res.content ?? res.Content ?? null
+      console.log('✅ 解析成功，content:', content)
+      console.log('content.title:', content?.title)
+      console.log('content.summary:', content?.summary)
+      console.log('content.body 长度:', content?.body?.length)
+      console.log('content.body 前200字符:', content?.body?.substring(0, 200))
+      
+      if (!content) {
+        console.error('❌ content 为 null 或 undefined')
+        message.error('响应中缺少内容数据')
+        return
+      }
+      
+      result.value = {
+        success: res.success ?? res.Success ?? true,
+        content: {
+          title: content.title || '未命名',
+          summary: content.summary || '',
+          body: content.body || ''
+        },
+        errorMessage: res.errorMessage ?? res.ErrorMessage
+      }
+      console.log('✅ 设置 result.value:', result.value)
+      console.log('result.value.content:', result.value.content)
       message.success('内容生成成功！')
+      
+      // 等待 DOM 更新后滚动到结果区域
+      await nextTick()
+      setTimeout(() => {
+        const resultCard = document.querySelector('.result-card')
+        if (resultCard) {
+          resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+      }, 100)
     } else {
+      console.warn('⚠️ 响应中没有 success 字段或为 false')
       result.value = {
         success: false,
-        errorMessage: res?.errorMessage || '生成失败，请重试'
+        errorMessage: res?.errorMessage || res?.ErrorMessage || '生成失败，请重试'
       }
       message.error('内容生成失败')
     }
   } catch (e: any) {
-    console.error('生成内容失败:', e)
+    console.error('❌ 生成内容失败:', e)
+    console.error('错误详情:', {
+      message: e.message,
+      response: e.response,
+      stack: e.stack
+    })
+    
+    // 提取更详细的错误信息
+    let errorMsg = '生成失败，请重试'
+    if (e.response?.data) {
+      const errorData = e.response.data
+      console.error('错误数据:', errorData)
+      errorMsg = errorData.message || errorData.errorMessage || errorMsg
+      
+      // 根据错误类型提供更友好的提示
+      if (errorData.errorType === 'ConnectionError' || errorData.errorType === 'ServiceConnectionError') {
+        errorMsg = 'AI 服务连接失败，请检查 AI 服务是否正常运行（http://localhost:8001）'
+      } else if (errorData.errorType === 'TimeoutError') {
+        errorMsg = 'AI 服务请求超时，请稍后重试'
+      } else if (errorData.errorType === 'ServiceUnavailable') {
+        errorMsg = 'AI 服务不可用，请检查 AI 服务是否启动'
+      }
+    } else if (e.message) {
+      errorMsg = e.message
+    }
+    
     result.value = {
       success: false,
-      errorMessage: e.response?.data?.message || e.message || '生成失败，请重试'
+      errorMessage: errorMsg
     }
-    message.error('内容生成失败')
+    message.error(`内容生成失败：${errorMsg}`)
   } finally {
+    console.log('生成流程结束，重置 generating 状态')
     generating.value = false
   }
 }
@@ -247,16 +376,64 @@ const handleReset = () => {
   formRef.value?.restoreValidation()
 }
 
+// 从 JSON 字符串中提取 Markdown 内容
+const extractMarkdownFromJson = (jsonStr: string): string => {
+  try {
+    // 尝试提取 ```json 代码块中的内容
+    const jsonBlockStart = jsonStr.indexOf('```json')
+    if (jsonBlockStart >= 0) {
+      const contentStart = jsonStr.indexOf('\n', jsonBlockStart)
+      const start = contentStart >= 0 ? contentStart + 1 : jsonBlockStart + 7
+      const blockEnd = jsonStr.indexOf('```', start)
+      if (blockEnd > start) {
+        const jsonContent = jsonStr.substring(start, blockEnd).trim()
+        try {
+          const parsed = JSON.parse(jsonContent)
+          // 如果解析成功，返回 body 字段的内容
+          if (parsed.body) {
+            return parsed.body
+          }
+          // 如果没有 body 字段，返回整个 JSON 的字符串表示
+          return JSON.stringify(parsed, null, 2)
+        } catch (e) {
+          console.warn('解析 JSON 失败:', e)
+        }
+      }
+    }
+    
+    // 如果提取失败，尝试直接解析整个字符串
+    try {
+      const parsed = JSON.parse(jsonStr)
+      if (parsed.body) {
+        return parsed.body
+      }
+    } catch (e) {
+      // 如果都失败了，返回原始字符串
+    }
+    
+    return jsonStr
+  } catch (e) {
+    console.error('提取 Markdown 失败:', e)
+    return jsonStr
+  }
+}
+
 const handleSaveArticle = async () => {
   if (!result.value?.content) return
 
   saving.value = true
 
   try {
+    // 提取实际的 body 内容
+    let bodyContent = result.value.content.body
+    if (bodyContent && bodyContent.trim().startsWith('```json')) {
+      bodyContent = extractMarkdownFromJson(bodyContent)
+    }
+    
     const res = await api.post('/Articles', {
       title: result.value.content.title,
       summary: result.value.content.summary,
-      contentMd: result.value.content.body,
+      contentMd: bodyContent,
       status: 0 // 草稿状态
     })
 
@@ -280,6 +457,85 @@ const handleSaveArticle = async () => {
 .admin-ai-content-page {
   max-width: 1200px;
   margin: 0 auto;
+}
+
+.error-alert {
+  font-size: 14px;
+}
+
+.error-message {
+  line-height: 1.6;
+}
+
+.error-title {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--n-error-color);
+}
+
+.error-detail {
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: var(--n-text-color);
+  word-break: break-word;
+}
+
+.error-hint {
+  font-size: 13px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--n-text-color-secondary);
+}
+
+.error-link {
+  color: var(--n-primary-color);
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.error-link:hover {
+  color: var(--n-primary-color-hover);
+}
+
+.result-container {
+  position: relative;
+}
+
+.result-card {
+  animation: fadeInUp 0.3s ease-out;
+  min-height: 200px;
+}
+
+.result-visible {
+  border: 2px solid var(--n-primary-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.result-card::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(135deg, var(--n-primary-color), var(--n-primary-color-hover));
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0.1;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>
 
