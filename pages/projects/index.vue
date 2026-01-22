@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="projects-page">
     <!-- 3D 旋转空间视图切换（移动端隐藏） -->
     <div class="projects-view-toggle-container">
@@ -67,7 +67,26 @@
         >
           <!-- 封面图 -->
           <div class="projects-card-cover">
-            <img :src="project.coverUrl || 'https://placehold.co/600x400'" :alt="project.title" />
+            <img 
+              v-if="project.coverUrl && !imageLoadErrors[project.id]" 
+              :src="project.coverUrl" 
+              :alt="project.title"
+              @error="handleImageError(project.id)"
+              @load="handleImageLoad(project.id)"
+              style="display: block;"
+            />
+            <div 
+              v-if="!project.coverUrl || imageLoadErrors[project.id]"
+              class="projects-card-cover-placeholder"
+              :class="getPlaceholderClass(project)"
+            >
+              <div class="projects-card-cover-placeholder-icon">
+                {{ getPlaceholderIcon(project) }}
+              </div>
+              <div class="projects-card-cover-placeholder-text">
+                {{ project.title }}
+              </div>
+            </div>
             <div class="projects-card-cover-overlay">
               <div class="projects-card-cover-actions">
                 <a 
@@ -163,6 +182,7 @@ const loading = ref(true)
 const error = ref('')
 const debugData = ref('')
 const viewMode = ref<'grid' | '3d'>('grid')
+const imageLoadErrors = ref<Record<number | string, boolean>>({})
 
 // 项目分类
 const projectCategories = ref(['全部', 'AI·智能体', 'Web 应用', '插件工具', '其他'])
@@ -346,6 +366,9 @@ const fetchProjects = async () => {
       
       projects.value = finalProjects
       
+      // 重置图片加载错误状态
+      imageLoadErrors.value = {}
+      
       // 异步加载 GitHub 数据
       loadGithubStats()
     } else {
@@ -419,6 +442,44 @@ const getTechIcon = (tech: string) => {
   if (techLower.includes('git')) return '📦'
   
   return '💻'
+}
+
+// 获取占位符样式类
+const getPlaceholderClass = (project: Project) => {
+  if (isAiProject(project)) {
+    return 'projects-card-cover-placeholder--ai'
+  }
+  if (isWebProject(project)) {
+    return 'projects-card-cover-placeholder--web'
+  }
+  if (isPluginProject(project)) {
+    return 'projects-card-cover-placeholder--plugin'
+  }
+  return 'projects-card-cover-placeholder--default'
+}
+
+// 获取占位符图标
+const getPlaceholderIcon = (project: Project) => {
+  if (isAiProject(project)) {
+    return '🤖'
+  }
+  if (isWebProject(project)) {
+    return '🌐'
+  }
+  if (isPluginProject(project)) {
+    return '🔧'
+  }
+  return '💻'
+}
+
+// 处理图片加载错误
+const handleImageError = (projectId: number | string) => {
+  imageLoadErrors.value[projectId] = true
+}
+
+// 处理图片加载成功
+const handleImageLoad = (projectId: number | string) => {
+  imageLoadErrors.value[projectId] = false
 }
 
 const loadGithubStats = async () => {

@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 py-8">
     <div class="container mx-auto px-4 max-w-4xl">
 
@@ -7,7 +7,7 @@
         <div class="flex items-center space-x-2 text-sm text-gray-600">
           <NuxtLink to="/" class="hover:text-purple-600 transition-colors">首页</NuxtLink>
           <span>/</span>
-          <NuxtLink to="/lab" class="hover:text-purple-600 transition-colors">AI实验室</NuxtLink>
+          <NuxtLink to="/projects" class="hover:text-purple-600 transition-colors">项目展示</NuxtLink>
           <span>/</span>
           <span class="text-gray-900">{{ project?.title || '加载中...' }}</span>
         </div>
@@ -16,11 +16,11 @@
       <!-- 返回按钮 -->
       <div class="mb-6">
         <NuxtLink
-          to="/lab"
+          to="/projects"
           class="inline-flex items-center px-4 py-2 bg-white/70 backdrop-blur-sm rounded-lg shadow-sm hover:shadow-md transition-all duration-200 text-purple-700 hover:text-purple-800 border border-purple-200"
         >
           <i class="fas fa-arrow-left mr-2"></i>
-          返回AI实验室
+          返回项目展示
         </NuxtLink>
       </div>
 

@@ -4,11 +4,11 @@
       <!-- 返回按钮 -->
       <div class="mb-6">
         <NuxtLink
-          to="/lab"
+          to="/projects"
           class="btn-secondary inline-flex items-center"
         >
           <i class="fas fa-arrow-left mr-2"></i>
-          返回AI实验室
+          返回项目展示
         </NuxtLink>
       </div>
 
@@ -109,10 +109,10 @@
         <h2 class="text-2xl font-bold text-slate-900 mb-2">项目不存在</h2>
         <p class="text-slate-600 mb-6">未找到该项目，可能已被删除或 ID 不正确。</p>
         <NuxtLink
-          to="/lab"
+          to="/projects"
           class="btn-primary inline-flex items-center"
         >
-          返回AI实验室
+          返回项目展示
         </NuxtLink>
       </div>
     </div>
