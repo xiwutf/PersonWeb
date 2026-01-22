@@ -186,6 +186,9 @@
 </template>
 
 <script setup lang="ts">
+// 显式导入 ModuleGuard 组件，避免自动导入问题
+import ModuleGuard from '~/components/admin/ModuleGuard.vue'
+
 definePageMeta({
   layout: 'default'
 })
