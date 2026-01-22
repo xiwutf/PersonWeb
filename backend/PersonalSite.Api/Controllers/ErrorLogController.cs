@@ -173,6 +173,70 @@ public class ErrorLogController : ControllerBase
             RecentErrors = recentErrors
         }));
     }
+
+    /// <summary>
+    /// 批量更新错误日志状态
+    /// </summary>
+    [HttpPut("batch/status")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse>> BatchUpdateStatus([FromBody] BatchUpdateStatusRequest request)
+    {
+        if (request.Ids == null || request.Ids.Count == 0)
+        {
+            return Ok(ApiResponse.Error("请选择要处理的错误日志", 400));
+        }
+
+        var logs = await _context.ErrorLogs
+            .Where(e => request.Ids.Contains(e.Id))
+            .ToListAsync();
+
+        if (logs.Count == 0)
+        {
+            return Ok(ApiResponse.Error("未找到要处理的错误日志", 404));
+        }
+
+        foreach (var log in logs)
+        {
+            log.Status = request.Status;
+            if (request.Status == 1) // 已处理
+            {
+                log.ResolvedAt = DateTime.Now;
+            }
+            else
+            {
+                log.ResolvedAt = null;
+            }
+        }
+
+        await _context.SaveChangesAsync();
+        return Ok(ApiResponse.Success(new { UpdatedCount = logs.Count }, $"已更新 {logs.Count} 条错误日志"));
+    }
+
+    /// <summary>
+    /// 批量删除错误日志
+    /// </summary>
+    [HttpDelete("batch")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse>> BatchDelete([FromBody] BatchDeleteRequest request)
+    {
+        if (request.Ids == null || request.Ids.Count == 0)
+        {
+            return Ok(ApiResponse.Error("请选择要删除的错误日志", 400));
+        }
+
+        var logs = await _context.ErrorLogs
+            .Where(e => request.Ids.Contains(e.Id))
+            .ToListAsync();
+
+        if (logs.Count == 0)
+        {
+            return Ok(ApiResponse.Error("未找到要删除的错误日志", 404));
+        }
+
+        _context.ErrorLogs.RemoveRange(logs);
+        await _context.SaveChangesAsync();
+        return Ok(ApiResponse.Success(new { DeletedCount = logs.Count }, $"已删除 {logs.Count} 条错误日志"));
+    }
 }
 
 public class ErrorLogRequest
@@ -188,5 +252,16 @@ public class ErrorLogRequest
 public class UpdateStatusRequest
 {
     public sbyte Status { get; set; }
+}
+
+public class BatchUpdateStatusRequest
+{
+    public List<long> Ids { get; set; } = new();
+    public sbyte Status { get; set; }
+}
+
+public class BatchDeleteRequest
+{
+    public List<long> Ids { get; set; } = new();
 }
 

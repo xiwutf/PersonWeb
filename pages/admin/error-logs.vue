@@ -52,23 +52,53 @@
       </div>
     </div>
 
-    <!-- 筛选器 -->
+    <!-- 筛选器和批量操作 -->
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-6">
-      <div class="flex gap-4">
-        <select v-model="filters.errorType" @change="fetchErrorLogs" class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-          <option value="">全部类型</option>
-          <option value="JavaScript">JavaScript</option>
-          <option value="Promise">Promise</option>
-          <option value="Vue">Vue</option>
-          <option value="API">API</option>
-          <option value="Server">Server</option>
-        </select>
-        <select v-model="filters.status" @change="fetchErrorLogs" class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-          <option :value="null">全部状态</option>
-          <option :value="0">未处理</option>
-          <option :value="1">已处理</option>
-          <option :value="2">已忽略</option>
-        </select>
+      <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+        <div class="flex gap-4 flex-1">
+          <select v-model="filters.errorType" @change="fetchErrorLogs" class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+            <option value="">全部类型</option>
+            <option value="JavaScript">JavaScript</option>
+            <option value="Promise">Promise</option>
+            <option value="Vue">Vue</option>
+            <option value="API">API</option>
+            <option value="Server">Server</option>
+          </select>
+          <select v-model="filters.status" @change="fetchErrorLogs" class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+            <option :value="null">全部状态</option>
+            <option :value="0">未处理</option>
+            <option :value="1">已处理</option>
+            <option :value="2">已忽略</option>
+          </select>
+        </div>
+        <!-- 批量操作按钮 -->
+        <div v-if="selectedIds.length > 0" class="flex gap-2 items-center">
+          <span class="text-sm text-gray-600 dark:text-gray-400">已选择 {{ selectedIds.length }} 项</span>
+          <button
+            @click="batchUpdateStatus(1)"
+            class="px-4 py-2 bg-green-600 text-white rounded text-sm hover:bg-green-700 transition"
+          >
+            批量标记已处理
+          </button>
+          <button
+            @click="batchUpdateStatus(2)"
+            class="px-4 py-2 bg-gray-600 text-white rounded text-sm hover:bg-gray-700 transition"
+          >
+            批量标记已忽略
+          </button>
+          <button
+            @click="batchDelete"
+            class="px-4 py-2 bg-red-600 text-white rounded text-sm hover:bg-red-700 transition"
+          >
+            批量删除
+          </button>
+          <button
+            @click="clearSelection"
+            class="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 rounded text-sm hover:bg-gray-400 dark:hover:bg-gray-500 transition"
+          >
+            取消选择
+          </button>
+        </div>
       </div>
     </div>
 
@@ -81,13 +111,34 @@
         暂无错误日志
       </div>
       <div v-else class="divide-y divide-gray-200 dark:divide-gray-700">
+        <!-- 全选 -->
+        <div class="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+          <label class="flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              :checked="isAllSelected"
+              @change="toggleSelectAll"
+              class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700"
+            />
+            <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">全选</span>
+          </label>
+        </div>
         <div
           v-for="log in errorLogs"
           :key="log.id"
           class="p-6 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"
+          :class="{ 'bg-blue-50 dark:bg-blue-900/20': selectedIds.includes(log.id) }"
         >
           <div class="flex items-start justify-between mb-3">
-            <div class="flex-1">
+            <div class="flex items-start gap-3 flex-1">
+              <!-- 复选框 -->
+              <input
+                type="checkbox"
+                :checked="selectedIds.includes(log.id)"
+                @change="toggleSelect(log.id)"
+                class="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700"
+              />
+              <div class="flex-1">
               <div class="flex items-center gap-3 mb-2">
                 <span
                   class="px-2 py-1 rounded text-xs font-semibold"
@@ -110,6 +161,7 @@
               <p class="text-xs text-gray-400 dark:text-gray-500 mt-2">
                 {{ formatDate(log.createdAt) }} | IP: {{ log.userIp || '未知' }}
               </p>
+              </div>
             </div>
             <div class="flex gap-2">
               <button
@@ -268,6 +320,7 @@ const total = ref(0)
 const showDetail = ref(false)
 const detailLoading = ref(false)
 const errorDetail = ref<any>(null)
+const selectedIds = ref<number[]>([])
 
 const filters = ref({
   errorType: '',
@@ -405,7 +458,15 @@ const fetchStats = async () => {
   try {
     const res = await api.get<any>('/ErrorLog/stats')
     if (res) {
-      stats.value = res
+      // 确保正确提取统计数据
+      stats.value = {
+        Total: res.Total || res.total || 0,
+        Unhandled: res.Unhandled || res.unhandled || 0,
+        Handled: res.Handled || res.handled || 0,
+        Ignored: res.Ignored || res.ignored || 0,
+        ByType: res.ByType || res.byType || [],
+        RecentErrors: res.RecentErrors || res.recentErrors || []
+      }
     }
   } catch (e: unknown) {
     handleError(e, '获取统计失败')
@@ -432,8 +493,83 @@ const updateStatus = async (id: number, status: number) => {
     success('状态已更新')
     await fetchErrorLogs()
     await fetchStats()
+    // 如果更新的项被选中，从选中列表中移除
+    const index = selectedIds.value.indexOf(id)
+    if (index > -1) {
+      selectedIds.value.splice(index, 1)
+    }
   } catch (e: unknown) {
     handleError(e, '更新状态失败')
+  }
+}
+
+// 批量处理相关函数
+const toggleSelect = (id: number) => {
+  const index = selectedIds.value.indexOf(id)
+  if (index > -1) {
+    selectedIds.value.splice(index, 1)
+  } else {
+    selectedIds.value.push(id)
+  }
+}
+
+const toggleSelectAll = () => {
+  if (isAllSelected.value) {
+    selectedIds.value = []
+  } else {
+    selectedIds.value = errorLogs.value.map(log => log.id)
+  }
+}
+
+const isAllSelected = computed(() => {
+  return errorLogs.value.length > 0 && selectedIds.value.length === errorLogs.value.length
+})
+
+const clearSelection = () => {
+  selectedIds.value = []
+}
+
+const batchUpdateStatus = async (status: number) => {
+  if (selectedIds.value.length === 0) {
+    return
+  }
+
+  try {
+    await api.put('/ErrorLog/batch/status', {
+      ids: selectedIds.value,
+      status
+    })
+    const statusText = status === 1 ? '已处理' : status === 2 ? '已忽略' : '未处理'
+    success(`已批量标记 ${selectedIds.value.length} 条错误日志为${statusText}`)
+    selectedIds.value = []
+    await fetchErrorLogs()
+    await fetchStats()
+  } catch (e: unknown) {
+    handleError(e, '批量更新状态失败')
+  }
+}
+
+const batchDelete = async () => {
+  if (selectedIds.value.length === 0) {
+    return
+  }
+
+  if (!confirm(`确定要删除选中的 ${selectedIds.value.length} 条错误日志吗？此操作不可恢复。`)) {
+    return
+  }
+
+  try {
+    await api.delete('/ErrorLog/batch', {
+      body: {
+        ids: selectedIds.value
+      }
+    })
+    success(`已删除 ${selectedIds.value.length} 条错误日志`)
+    selectedIds.value = []
+    await fetchErrorLogs()
+    await fetchStats()
+  } catch (e: unknown) {
+    handleError(e, '批量删除失败')
   }
 }
 
