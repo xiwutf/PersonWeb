@@ -134,6 +134,11 @@ export const useApi = () => {
         return request<T>(url, { method: 'PUT', body, ...options })
     }
 
+    // PATCH 请求
+    const patch = <T>(url: string, body: unknown, options = {}) => {
+        return request<T>(url, { method: 'PATCH', body, ...options })
+    }
+
     // DELETE 请求
     const del = <T>(url: string, options = {}) => {
         return request<T>(url, { method: 'DELETE', ...options })
@@ -146,6 +151,7 @@ export const useApi = () => {
         get,
         post,
         put,
+        patch,
         del,
         delete: deleteMethod, // 添加 delete 方法作为 del 的别名
         baseUrl // 暴露 baseUrl 用于调试

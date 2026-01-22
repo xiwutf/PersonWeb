@@ -5,45 +5,47 @@
       <div
         v-if="!showChat"
         class="support-chat-button"
-        @click.stop="openChat"
+        @click="openChat"
+        @mousedown.stop
+        @touchstart.stop
         role="button"
         tabindex="0"
         @keydown.enter="openChat"
+        aria-label="打开智能客服"
       >
         <i class="fas fa-comments"></i>
         <span class="button-text">智能客服</span>
       </div>
 
       <!-- 聊天窗口 -->
-      <component
-        v-if="NaiveComponents"
-        :is="NaiveComponents.NDrawer"
+      <n-drawer
+        ref="drawerRef"
         v-model:show="showChat"
         :width="400"
         placement="right"
         :mask-closable="true"
+        :z-index="10002"
+        class="support-chat-drawer"
       >
-      <template #header>
-        <div class="chat-header">
-          <div class="header-info">
-            <h3 class="header-title">智能客服</h3>
-            <p class="header-subtitle">可以向我咨询服务内容、项目开发、工具使用等问题</p>
+        <template #header>
+          <div class="chat-header">
+            <div class="header-info">
+              <h3 class="header-title">智能客服</h3>
+              <p class="header-subtitle">可以向我咨询服务内容、项目开发、工具使用等问题</p>
+            </div>
+            <n-button
+              text
+              size="small"
+              @click="closeChat"
+            >
+              <template #icon>
+                <i class="fas fa-times"></i>
+              </template>
+            </n-button>
           </div>
-          <component
-            v-if="NaiveComponents"
-            :is="NaiveComponents.NButton"
-            text
-            size="small"
-            @click="closeChat"
-          >
-            <template #icon>
-              <i class="fas fa-times"></i>
-            </template>
-          </component>
-        </div>
-      </template>
+        </template>
 
-      <div class="chat-content">
+        <div class="chat-content">
         <!-- 消息列表 -->
         <div class="messages-list" ref="messagesContainer">
           <div
@@ -88,11 +90,7 @@
             </div>
             <div class="message-content">
               <div class="message-text">
-                <component
-                  v-if="NaiveComponents"
-                  :is="NaiveComponents.NSpin"
-                  size="small"
-                />
+                <n-spin size="small" />
                 <span class="ml-2">正在思考...</span>
               </div>
             </div>
@@ -101,9 +99,7 @@
 
         <!-- 输入区域 -->
         <div class="chat-input-area">
-          <component
-            v-if="NaiveComponents"
-            :is="NaiveComponents.NInput"
+          <n-input
             v-model:value="inputMessage"
             type="textarea"
             :rows="2"
@@ -113,9 +109,7 @@
           />
           <div class="input-actions">
             <span class="input-hint">按 Enter 发送，Ctrl+Enter 换行</span>
-            <component
-              v-if="NaiveComponents"
-              :is="NaiveComponents.NButton"
+            <n-button
               type="primary"
               :loading="loading"
               :disabled="!inputMessage.trim()"
@@ -125,11 +119,11 @@
                 <i class="fas fa-paper-plane"></i>
               </template>
               发送
-            </component>
+            </n-button>
           </div>
         </div>
       </div>
-    </component>
+      </n-drawer>
     </div>
     <template #fallback>
       <div class="support-chat-container">
@@ -143,31 +137,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, defineComponent, h, markRaw } from 'vue'
+import { ref, onMounted, nextTick, watch } from 'vue'
+import { NDrawer, NInput, NButton, NSpin } from 'naive-ui'
 import { useMarkdown } from '~/composables/useMarkdown'
-
-// 动态导入 Naive UI 组件，避免 SSR 错误
-const NaiveComponents = ref<any>(null)
-
-onMounted(async () => {
-  if (typeof window === 'undefined') return
-  
-  try {
-    const naiveUI = await import('naive-ui')
-    NaiveComponents.value = markRaw({
-      NDrawer: naiveUI.NDrawer,
-      NInput: naiveUI.NInput,
-      NButton: naiveUI.NButton,
-      NSpin: naiveUI.NSpin
-    })
-  } catch (error) {
-    console.error('Failed to load Naive UI components:', error)
-  }
-})
 
 const api = useApi()
 const message = useSafeMessage()
-const { markdownToHtml } = useMarkdown()
+const { parse: markdownToHtml } = useMarkdown()
 
 const showChat = ref(false)
 const inputMessage = ref('')
@@ -179,22 +155,77 @@ const messages = ref<Array<{
   needHuman?: boolean
 }>>([])
 const messagesContainer = ref<HTMLElement | null>(null)
+const drawerRef = ref<any>(null)
 
 // 打开聊天窗口
-const openChat = () => {
-  console.log('智能客服：点击打开聊天窗口')
-  showChat.value = true
-  // 添加欢迎消息
+const openChat = async (e?: Event) => {
+  try {
+    if (e) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
+    console.log('智能客服：点击打开聊天窗口', { showChat: showChat.value })
+    
+    // 直接设置 showChat，drawer 会自动处理显示
+    showChat.value = true
+    addWelcomeMessage()
+    
+    // 确保 drawer 正确显示
+    await nextTick()
+    await nextTick() // 多等一个 tick 确保渲染完成
+    console.log('智能客服：drawer 状态', showChat.value, 'drawerRef:', drawerRef.value)
+    
+    // 调试：检查 DOM 中是否有正确的 drawer 元素
+    if (typeof window !== 'undefined') {
+      setTimeout(() => {
+        try {
+          // 查找 body 下的 drawer（Naive UI drawer 会挂载到 body）
+          const bodyDrawers = document.body.querySelectorAll('.n-drawer-container, .n-drawer')
+          console.log('智能客服：body 中的 drawer 数量', bodyDrawers.length)
+          
+          // 查找所有 drawer
+          const allDrawers = document.querySelectorAll('.n-drawer-container, .n-drawer, [class*="n-drawer"]')
+          console.log('智能客服：页面中所有 drawer 元素数量', allDrawers.length)
+          
+          if (allDrawers.length > 0) {
+            allDrawers.forEach((el, index) => {
+              const htmlEl = el as HTMLElement
+              const styles = window.getComputedStyle(htmlEl)
+              console.log(`智能客服：drawer ${index}`, {
+                element: htmlEl,
+                classes: htmlEl.className,
+                display: styles.display,
+                visibility: styles.visibility,
+                opacity: styles.opacity,
+                zIndex: styles.zIndex,
+                transform: styles.transform,
+                position: styles.position,
+                width: styles.width,
+                height: styles.height
+              })
+            })
+          } else {
+            console.error('智能客服：未找到任何 drawer 元素！drawer 可能未渲染')
+          }
+        } catch (err) {
+          console.error('智能客服：检查 drawer 时出错', err)
+        }
+      }, 300)
+    }
+  } catch (error) {
+    console.error('智能客服：打开聊天窗口时出错', error)
+    message.error('打开聊天窗口失败，请刷新页面重试')
+  }
+}
+
+// 添加欢迎消息
+const addWelcomeMessage = () => {
   if (messages.value.length === 0) {
     messages.value.push({
       role: 'assistant',
       content: '你好！我是智能客服，可以帮你解答关于服务内容、项目开发、工具使用等问题。有什么可以帮你的吗？'
     })
   }
-  // 确保 drawer 正确显示
-  nextTick(() => {
-    console.log('智能客服：drawer 状态', showChat.value)
-  })
 }
 
 // 关闭聊天窗口
@@ -223,20 +254,33 @@ const sendMessage = async () => {
   // 调用 API
   loading.value = true
   try {
-    const res = await api.post('/AiAgent/support/answer', {
+    const res = await api.post('/ai/support/answer', {
       question: userMessage,
       category: 'general',
       pageContext: getPageContext(),
       userMeta: getUserMeta()
     })
 
-    if (res && res.success) {
-      messages.value.push({
-        role: 'assistant',
-        content: res.answer || '',
-        relatedLinks: res.relatedLinks || [],
-        needHuman: res.needHuman || false
-      })
+    // 处理响应数据（兼容不同的响应格式）
+    if (res) {
+      // 兼容 success/answer 格式和直接返回 answer 的格式
+      const answer = res.answer || res.Answer || res.content || ''
+      const success = res.success !== undefined ? res.success : res.Success !== undefined ? res.Success : true
+      
+      if (success && answer) {
+        messages.value.push({
+          role: 'assistant',
+          content: answer,
+          relatedLinks: res.relatedLinks || res.RelatedLinks || [],
+          needHuman: res.needHuman || res.NeedHuman || false
+        })
+      } else {
+        message.error(res.message || res.Message || '获取回答失败，请稍后重试')
+        messages.value.push({
+          role: 'assistant',
+          content: '抱歉，我暂时无法回答这个问题，请稍后重试或联系人工客服。'
+        })
+      }
     } else {
       message.error('获取回答失败，请稍后重试')
       messages.value.push({
@@ -319,8 +363,24 @@ watch(messages, () => {
   position: fixed;
   bottom: 80px; /* 调整位置，避免与小智按钮重叠 */
   right: 24px;
-  z-index: 10000;
-  pointer-events: auto;
+  z-index: 10001 !important; /* 确保在 AI 小智按钮之上 */
+  pointer-events: auto !important;
+}
+
+/* 确保 drawer 正确显示 */
+.support-chat-drawer,
+.support-chat-container :deep(.n-drawer),
+.support-chat-container :deep(.n-drawer-container) {
+  z-index: 10002 !important;
+}
+
+.support-chat-container :deep(.n-drawer-mask) {
+  z-index: 10001 !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
 }
 
 .support-chat-button {
@@ -335,6 +395,9 @@ watch(messages, () => {
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
   transition: all 0.3s ease;
   font-weight: 500;
+  pointer-events: auto !important;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .support-chat-button:hover {

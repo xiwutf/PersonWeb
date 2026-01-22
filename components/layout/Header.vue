@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <header class="header-container floating-nav">
     <div class="header-content-wrapper">
       <div class="header-main">
@@ -380,6 +380,10 @@ const isActiveRoute = (path: string) => {
   // /tools 路径需要前缀匹配
   if (path === '/tools') {
     return route.path === '/tools' || route.path.startsWith('/tools/')
+  }
+  // /cognition 路径需要前缀匹配
+  if (path === '/cognition') {
+    return route.path === '/cognition' || route.path.startsWith('/cognition/')
   }
   // 其他路由精确匹配
   return route.path === path

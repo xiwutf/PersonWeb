@@ -1,10 +1,17 @@
-﻿<template>
-  <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-gray-50">
+<template>
+  <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-7xl mx-auto">
       <div class="flex justify-between items-center mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 font-['Outfit']">Visitor Dashboard</h1>
-        <button @click="fetchData" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-          Refresh Data
+        <h1 class="text-3xl font-bold font-['Outfit']">访客数据</h1>
+        <button 
+          @click="fetchData" 
+          :disabled="loading"
+          class="px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+          :class="loading ? 'bg-gray-300 cursor-not-allowed' : 'bg-primary text-white hover:bg-primary-hover'"
+        >
+          <i v-if="loading" class="fas fa-spinner fa-spin mr-2"></i>
+          <i v-else class="fas fa-sync-alt mr-2"></i>
+          {{ loading ? '加载中...' : '刷新数据' }}
         </button>
       </div>
 
@@ -41,18 +48,29 @@
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="visit in data?.recentVisits" :key="visit.id" class="hover:bg-gray-50">
+                <tr v-if="loading" class="text-center py-8">
+                  <td colspan="4" class="px-6 py-8 text-gray-500">
+                    <i class="fas fa-spinner fa-spin mr-2"></i>
+                    加载中...
+                  </td>
+                </tr>
+                <tr v-else-if="!data?.recentVisits || data.recentVisits.length === 0" class="text-center py-8">
+                  <td colspan="4" class="px-6 py-8 text-gray-500">
+                    暂无访问记录
+                  </td>
+                </tr>
+                <tr v-else v-for="visit in data.recentVisits" :key="visit.id || visit.Id || `${visit.timestamp}-${visit.path}`" class="hover:bg-gray-50">
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {{ new Date(visit.timestamp).toLocaleString() }}
+                    {{ formatDate(visit.timestamp || visit.Timestamp) }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-600">
-                    {{ visit.ip }}
+                    {{ visit.ip || visit.Ip || 'N/A' }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {{ visit.path }}
+                    {{ visit.path || visit.Path || 'N/A' }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-400 text-xs">
-                    {{ visit.visitorId.substring(0, 8) }}...
+                    {{ (visit.visitorId || visit.VisitorId || '').substring(0, 8) }}...
                   </td>
                 </tr>
               </tbody>
@@ -66,14 +84,23 @@
             <h2 class="text-lg font-bold text-gray-900">Top Referrers/Paths</h2>
           </div>
           <div class="p-6">
-            <div v-for="(item, index) in data?.topPaths" :key="item.path" class="flex items-center justify-between mb-4 last:mb-0">
+            <div v-if="loading" class="text-center py-8 text-gray-500">
+              <i class="fas fa-spinner fa-spin mr-2"></i>
+              加载中...
+            </div>
+            <div v-else-if="!data?.topPaths || data.topPaths.length === 0" class="text-center py-8 text-gray-500">
+              暂无数据
+            </div>
+            <div v-else v-for="(item, index) in data.topPaths" :key="item.path || item.Path || index" class="flex items-center justify-between mb-4 last:mb-0">
               <div class="flex items-center">
                 <span class="w-6 h-6 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center text-xs font-bold mr-3">
                   {{ index + 1 }}
                 </span>
-                <span class="text-sm text-gray-700 truncate max-w-[150px]" :title="item.path">{{ item.path }}</span>
+                <span class="text-sm text-gray-700 truncate max-w-[150px]" :title="item.path || item.Path">
+                  {{ item.path || item.Path || 'N/A' }}
+                </span>
               </div>
-              <span class="text-sm font-bold text-gray-900">{{ item.count }}</span>
+              <span class="text-sm font-bold text-gray-900">{{ item.count || item.Count || 0 }}</span>
             </div>
           </div>
         </div>
@@ -84,18 +111,55 @@
 
 <script setup lang="ts">
 definePageMeta({
-  layout: false,
+  layout: 'admin',
   middleware: 'admin-auth'
 })
 
 const api = useApi()
 const data = ref<any>(null)
+const loading = ref(false)
 
 const fetchData = async () => {
   try {
-    data.value = await api.get('/stats')
+    loading.value = true
+    // 使用正确的 API 端点获取访客数据
+    const res = await api.get('/Stats')
+    
+    // 处理 API 返回的数据格式（兼容大小写）
+    if (res) {
+      data.value = {
+        totalVisits: res.TotalVisits ?? res.totalVisits ?? 0,
+        uniqueVisitors: res.UniqueVisitors ?? res.uniqueVisitors ?? 0,
+        todayVisits: res.TodayVisits ?? res.todayVisits ?? 0,
+        recentVisits: res.RecentVisits ?? res.recentVisits ?? res.VisitLogs ?? res.visitLogs ?? [],
+        topPaths: res.TopPaths ?? res.topPaths ?? []
+      }
+    }
   } catch (e) {
-    console.error('Failed to fetch stats', e)
+    console.error('Failed to fetch visitor stats', e)
+    // 显示错误提示
+    const { error } = useNotification()
+    error('获取访客数据失败，请稍后重试')
+  } finally {
+    loading.value = false
+  }
+}
+
+// 格式化日期
+const formatDate = (dateString?: string | Date) => {
+  if (!dateString) return 'N/A'
+  try {
+    const date = typeof dateString === 'string' ? new Date(dateString) : dateString
+    return date.toLocaleString('zh-CN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    })
+  } catch {
+    return String(dateString)
   }
 }
 

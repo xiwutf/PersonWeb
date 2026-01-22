@@ -125,6 +125,7 @@ public class AppDbContext : DbContext
     public DbSet<RelationPerson> RelationPersons { get; set; }
     public DbSet<RelationInteraction> RelationInteractions { get; set; }
     public DbSet<RelationTask> RelationTasks { get; set; }
+    public DbSet<CognitionDoc> CognitionDocs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -155,6 +156,11 @@ public class AppDbContext : DbContext
             
         modelBuilder.Entity<Tag>()
             .HasIndex(t => t.Name)
+            .IsUnique();
+            
+        // 配置 CognitionDoc 的索引
+        modelBuilder.Entity<CognitionDoc>()
+            .HasIndex(d => d.Slug)
             .IsUnique();
             
         // 配置 Module 和 ModuleConfig 的关系

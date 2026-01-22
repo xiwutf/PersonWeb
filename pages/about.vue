@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <ModuleGuard module-key="about">
     <div class="about-page">
       <!-- 全局背景噪点 -->
@@ -133,6 +133,22 @@
           </div>
         </div>
 
+        <!-- 认知说明书 -->
+        <div class="about-section">
+          <h2 class="about-section-title">
+            <span class="about-section-icon about-section-icon--purple">🧠</span> 认知说明书
+          </h2>
+          <div class="about-cognition-card">
+            <p class="about-cognition-desc">
+              记录我的认知系统、思维模型和使用方法，偏理科思维、模型驱动、厌恶无效记忆的认知系统使用指南。
+            </p>
+            <NuxtLink to="/cognition" class="about-cognition-link">
+              <i class="fas fa-arrow-right mr-2"></i>
+              查看认知说明书
+            </NuxtLink>
+          </div>
+        </div>
+
         <!-- 联系方式 -->
         <div class="about-contact-section">
           <div class="about-contact-content">
@@ -264,4 +280,27 @@ useHead({
 <style scoped>
 /* 页面特有样式已移至 assets/css/about.css */
 /* 这里只保留组件特有的样式（如果有） */
+
+/* 认知说明书卡片样式 */
+.about-cognition-card {
+  @apply bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm;
+  @apply rounded-2xl shadow-lg;
+  @apply border border-gray-200 dark:border-gray-700;
+  @apply p-6 md:p-8;
+  @apply transition-all duration-200;
+  @apply hover:shadow-xl;
+}
+
+.about-cognition-desc {
+  @apply text-gray-600 dark:text-gray-300 mb-4 leading-7;
+}
+
+.about-cognition-link {
+  @apply inline-flex items-center px-6 py-3 rounded-lg;
+  @apply bg-gradient-to-r from-purple-500 to-blue-500;
+  @apply text-white font-medium;
+  @apply transition-all duration-200;
+  @apply hover:from-purple-600 hover:to-blue-600;
+  @apply hover:shadow-lg hover:scale-105;
+}
 </style>
