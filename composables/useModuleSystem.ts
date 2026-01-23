@@ -290,18 +290,48 @@ export const useModuleSystem = () => {
       return true
     }
 
+    // 调试信息（开发环境）
+    if (process.env.NODE_ENV === 'development') {
+      console.log('检查路由是否启用:', {
+        path,
+        moduleCount: moduleRegistry.size,
+        enabledModules: Array.from(enabledModules.value),
+        registries: Array.from(moduleRegistry.keys())
+      })
+    }
+
     for (const [moduleKey, manifest] of moduleRegistry.entries()) {
-      if (!enabledModules.value.has(moduleKey)) continue
+      if (!enabledModules.value.has(moduleKey)) {
+        if (process.env.NODE_ENV === 'development') {
+          console.log(`模块 ${moduleKey} 未启用，跳过`)
+        }
+        continue
+      }
 
       if (manifest.routes) {
+        if (process.env.NODE_ENV === 'development') {
+          console.log(`检查模块 ${moduleKey} 的路由:`, manifest.routes)
+        }
+        
         for (const route of manifest.routes) {
-          if (matchRoute(path, route)) {
+          const matched = matchRoute(path, route)
+          if (process.env.NODE_ENV === 'development') {
+            console.log(`  路由匹配: ${typeof route === 'string' ? route : route.path} vs ${path} = ${matched}`)
+          }
+          if (matched) {
             return true
           }
+        }
+      } else {
+        if (process.env.NODE_ENV === 'development') {
+          console.log(`模块 ${moduleKey} 没有路由配置`)
         }
       }
     }
 
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('路由未找到匹配的模块:', path)
+    }
     return false
   }
 
@@ -376,22 +406,41 @@ export const useModuleSystem = () => {
  * 将字符串数组转换为对象数组，确保每个路由都有 path 属性
  */
 function parseRoutes(routes?: string | string[]): ModuleRoute[] {
-  if (!routes) return []
+  if (!routes) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('parseRoutes: 路由配置为空')
+    }
+    return []
+  }
   
   let parsed: any[] = []
   
   if (typeof routes === 'string') {
     try {
       parsed = JSON.parse(routes)
-    } catch {
+      if (process.env.NODE_ENV === 'development') {
+        console.log('parseRoutes: 解析 JSON 字符串成功', { routes, parsed })
+      }
+    } catch (e) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('parseRoutes: JSON 解析失败', { routes, error: e })
+      }
       return []
     }
-  } else {
+  } else if (Array.isArray(routes)) {
     parsed = routes
+    if (process.env.NODE_ENV === 'development') {
+      console.log('parseRoutes: 使用数组格式', { routes, parsed })
+    }
+  } else {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('parseRoutes: 未知的路由格式', { routes, type: typeof routes })
+    }
+    return []
   }
   
   // 将字符串数组转换为对象数组
-  return parsed.map(route => {
+  const result = parsed.map(route => {
     if (typeof route === 'string') {
       return { path: route }
     }
@@ -402,6 +451,12 @@ function parseRoutes(routes?: string | string[]): ModuleRoute[] {
     // 如果对象没有 path 属性，尝试使用其他可能的属性
     return { path: route.path || route.route || String(route) }
   })
+  
+  if (process.env.NODE_ENV === 'development') {
+    console.log('parseRoutes: 最终结果', { input: routes, output: result })
+  }
+  
+  return result
 }
 
 /**
