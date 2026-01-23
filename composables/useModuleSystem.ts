@@ -3,7 +3,7 @@
  * 用于管理模块的启用/禁用、加载和配置
  */
 
-import type { ModuleDefinition, ModuleConfig, ModuleManifest } from '~/types/module'
+import type { ModuleDefinition, ModuleConfig, ModuleManifest, ModuleRoute } from '~/types/module'
 
 const moduleRegistry = new Map<string, ModuleManifest>()
 const enabledModules = ref<Set<string>>(new Set())
@@ -373,19 +373,35 @@ export const useModuleSystem = () => {
 
 /**
  * 解析路由配置
+ * 将字符串数组转换为对象数组，确保每个路由都有 path 属性
  */
-function parseRoutes(routes?: string | string[]): any[] {
+function parseRoutes(routes?: string | string[]): ModuleRoute[] {
   if (!routes) return []
+  
+  let parsed: any[] = []
   
   if (typeof routes === 'string') {
     try {
-      return JSON.parse(routes)
+      parsed = JSON.parse(routes)
     } catch {
       return []
     }
+  } else {
+    parsed = routes
   }
   
-  return routes
+  // 将字符串数组转换为对象数组
+  return parsed.map(route => {
+    if (typeof route === 'string') {
+      return { path: route }
+    }
+    // 如果已经是对象，确保有 path 属性
+    if (route && typeof route === 'object' && route.path) {
+      return route
+    }
+    // 如果对象没有 path 属性，尝试使用其他可能的属性
+    return { path: route.path || route.route || String(route) }
+  })
 }
 
 /**
@@ -407,14 +423,24 @@ function parseComponents(components?: string | string[]): any[] {
 
 /**
  * 匹配路由
+ * 支持字符串和对象两种格式的路由
  */
 function matchRoute(path: string, route: any): boolean {
-  if (route.path === path) {
+  // 支持字符串类型的路由（向后兼容）
+  const routePath = typeof route === 'string' ? route : (route?.path || '')
+  
+  if (!routePath) {
+    return false
+  }
+  
+  // 精确匹配
+  if (routePath === path) {
     return true
   }
 
   // 支持动态路由匹配
-  const routePattern = route.path
+  // 将 [slug] 转换为正则表达式 ([^/]+)
+  const routePattern = routePath
     .replace(/\[([^\]]+)\]/g, '([^/]+)')
     .replace(/\*\*/g, '.*')
     .replace(/\*/g, '[^/]*')
