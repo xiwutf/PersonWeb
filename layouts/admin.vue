@@ -9,12 +9,23 @@
     class="min-h-screen flex admin-layout"
     :style="layoutStyle"
   >
+    <!-- 移动端遮罩层 -->
+    <div 
+      v-if="!isEmbedded && isMobileMenuOpen"
+      class="fixed inset-0 bg-black/50 z-40 md:hidden"
+      @click="isMobileMenuOpen = false"
+    ></div>
+
     <!-- 侧边栏：使用主题颜色，替换写死的 text-white 和 border-slate-700 -->
     <!-- 注意：后台管理布局不包含前台 Header 组件，使用侧边栏导航 -->
     <!-- 如果在 iframe 中嵌入，则隐藏侧边栏 -->
     <aside 
       v-if="!isEmbedded"
-      class="w-64 flex flex-col fixed h-full left-0 top-0 z-50 admin-sidebar"
+      class="w-64 flex flex-col fixed h-full left-0 top-0 z-50 admin-sidebar transition-transform duration-300 ease-in-out md:translate-x-0"
+      :class="{ 
+        '-translate-x-full md:translate-x-0': !isMobileMenuOpen,
+        'translate-x-0': isMobileMenuOpen
+      }"
       :style="sidebarStyle"
     >
       <div class="p-6 text-xl font-bold border-b flex items-center gap-2 admin-sidebar-header">
@@ -41,6 +52,7 @@
                 <NuxtLink
                   v-if="item.path"
                   :to="item.path"
+                  @click="isMobileMenuOpen = false"
                   class="flex items-center px-4 py-2 rounded-md transition-colors admin-sidebar-link text-sm"
                   :class="{ 'admin-sidebar-link-active': isItemActive(item.path) }"
                 >
@@ -66,13 +78,24 @@
     <!-- 主内容区：使用主题背景色和文字颜色 -->
     <main 
       class="flex-1 admin-main flex flex-col" 
-      :class="{ 'ml-64': !isEmbedded }"
+      :class="{ 'md:ml-64': !isEmbedded }"
       :style="mainContentStyle"
     >
-      <!-- 顶部栏（包含铃铛入口） -->
+      <!-- 顶部栏（包含移动端菜单按钮和铃铛入口） -->
       <ClientOnly>
-        <div class="admin-topbar border-b border-border-subtle bg-bg-elevated px-6 py-4 flex items-center justify-end gap-4">
-          <NotificationBell />
+        <div class="admin-topbar border-b border-border-subtle bg-bg-elevated px-4 md:px-6 py-4 flex items-center justify-between md:justify-end gap-4">
+          <!-- 移动端菜单按钮 -->
+          <button
+            v-if="!isEmbedded"
+            @click="isMobileMenuOpen = !isMobileMenuOpen"
+            class="md:hidden p-2 rounded-md hover:bg-bg-elevated transition-colors"
+            aria-label="切换菜单"
+          >
+            <i class="fas fa-bars text-lg" :class="isMobileMenuOpen ? 'fa-times' : 'fa-bars'"></i>
+          </button>
+          <div class="flex items-center gap-4 ml-auto md:ml-0">
+            <NotificationBell />
+          </div>
         </div>
       </ClientOnly>
 
@@ -194,6 +217,9 @@ const safeMenu = computed(() => {
 // 菜单折叠状态（使用索引作为 key）
 const expandedMenus = ref<Record<number, boolean>>({})
 
+// 移动端菜单开关状态
+const isMobileMenuOpen = ref(false)
+
 // 切换菜单展开/折叠
 const toggleMenu = (groupIndex: number) => {
   expandedMenus.value[groupIndex] = !expandedMenus.value[groupIndex]
@@ -258,6 +284,10 @@ const autoExpandMenu = () => {
 watch(() => route.path, (newPath, oldPath) => {
   if (newPath !== oldPath) {
     autoExpandMenu()
+    // 移动端：路由变化时自动关闭菜单
+    if (process.client && window.innerWidth < 769) {
+      isMobileMenuOpen.value = false
+    }
   }
 }, { immediate: true, flush: 'post' })
 
@@ -572,11 +602,41 @@ const logout = () => {
   box-sizing: border-box;
 }
 
-/* 响应式：小屏幕时减少左边距 */
+/* 响应式：移动端优化 */
 @media (max-width: 768px) {
   .admin-main {
     margin-left: 0 !important;
     padding: 1rem !important;
+  }
+
+  /* 移动端侧边栏宽度调整 */
+  .admin-sidebar {
+    width: 280px;
+    max-width: 85vw;
+  }
+
+  /* 移动端菜单项字体大小 */
+  .admin-sidebar-link {
+    font-size: 0.9375rem;
+    padding: 0.75rem 1rem;
+  }
+
+  /* 移动端菜单组标题 */
+  .menu-group-title {
+    font-size: 0.6875rem;
+  }
+
+  /* 移动端顶部栏按钮样式 */
+  .admin-topbar button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* 桌面端：侧边栏始终显示 */
+@media (min-width: 769px) {
+  .admin-sidebar {
+    transform: translateX(0) !important;
   }
 }
 
