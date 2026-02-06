@@ -69,14 +69,20 @@
           <textarea v-model="form.summary" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 h-20 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" placeholder="文章简短描述..."></textarea>
         </div>
 
-        <!-- 编辑器区域 -->
-        <div class="flex flex-col">
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">内容 (Markdown)</label>
-          <MarkdownEditor 
-            v-model="form.contentMd" 
-            placeholder="开始编写你的文章内容...支持 Markdown 语法，可直接粘贴图片自动上传"
-            height="600px"
-          />
+        <!-- 正文编辑区：明显区块 + 说明，便于找到可填写位置 -->
+        <div class="article-content-section">
+          <div class="article-content-section-header">
+            <label class="article-content-section-label">内容 (Markdown)</label>
+            <span class="article-content-section-hint">左侧输入 Markdown，右侧实时预览</span>
+          </div>
+          <div class="article-content-section-editor">
+            <AdminSimpleMarkdownEditor
+              v-model="form.contentMd"
+              placeholder="开始编写你的文章内容...支持 Markdown 语法（标题、列表、代码块等）"
+              :min-rows="24"
+              :max-rows="60"
+            />
+          </div>
         </div>
 
         <div class="flex justify-end gap-4 pt-4 border-t border-gray-100 dark:border-gray-700">
@@ -278,4 +284,43 @@ onMounted(async () => {
   }
 })
 </script>
+
+<style scoped>
+.article-content-section {
+  margin-top: 1.5rem;
+  padding: 1rem 1.25rem;
+  background: var(--color-bg-elevated, var(--color-bg-card));
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg, 0.75rem);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+.article-content-section-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+}
+.article-content-section-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-main);
+}
+.article-content-section-hint {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+.article-content-section-editor {
+  border-radius: var(--radius-md, 0.5rem);
+  overflow: hidden;
+}
+
+[data-theme='dark'] .article-content-section,
+[data-theme='tech-blue'] .article-content-section,
+[data-theme='forest'] .article-content-section,
+[data-theme='hybrid-super-dark'] .article-content-section {
+  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.06);
+}
+</style>
 

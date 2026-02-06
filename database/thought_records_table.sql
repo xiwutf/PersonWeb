@@ -2,6 +2,10 @@
 -- 思维记录表（thought_records）
 -- 用于「随手写 + AI 批注」模块
 -- ============================================
+-- 执行前请确认已连接到正确的 MySQL，并在 personal_site 库中执行；
+-- 或在当前连接下先执行：USE personal_site;
+
+USE personal_site;
 
 CREATE TABLE IF NOT EXISTS `thought_records` (
   `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键ID',

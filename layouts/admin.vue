@@ -696,7 +696,7 @@ const logout = () => {
   color: var(--color-text-main) !important;
 }
 
-/* 输入框和表单元素样式 - 使用 CSS 变量，自动适配主题 */
+/* 输入框和表单元素样式 - 使用 CSS 变量，自动适配主题；加强边框便于分辨可填写区域 */
 .admin-main :deep(.input),
 .admin-main :deep(.form-input),
 .admin-main :deep(input[type="text"]),
@@ -708,8 +708,18 @@ const logout = () => {
 .admin-main :deep(select),
 .admin-main :deep(textarea) {
   background: var(--color-bg-elevated, var(--color-bg-card)) !important;
-  border-color: var(--color-border-default) !important;
+  border: 1px solid var(--color-border-default) !important;
   color: var(--color-text-main) !important;
+  border-radius: var(--radius-sm, 0.375rem);
+}
+
+.admin-main :deep(.form-input:focus),
+.admin-main :deep(input:focus),
+.admin-main :deep(select:focus),
+.admin-main :deep(textarea:focus) {
+  outline: none !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px var(--color-primary-soft) !important;
 }
 
 .admin-main :deep(.input::placeholder),
@@ -717,6 +727,50 @@ const logout = () => {
 .admin-main :deep(input::placeholder),
 .admin-main :deep(textarea::placeholder) {
   color: var(--color-text-muted) !important;
+}
+
+/* 深色主题下：输入框用明显亮边和浅底，便于在桌面上一眼分辨可填写区域 */
+[data-theme='dark'] .admin-main :deep(.input),
+[data-theme='dark'] .admin-main :deep(.form-input),
+[data-theme='dark'] .admin-main :deep(input[type="text"]),
+[data-theme='dark'] .admin-main :deep(input[type="password"]),
+[data-theme='dark'] .admin-main :deep(input[type="email"]),
+[data-theme='dark'] .admin-main :deep(input[type="number"]),
+[data-theme='dark'] .admin-main :deep(input[type="date"]),
+[data-theme='dark'] .admin-main :deep(input[type="datetime-local"]),
+[data-theme='dark'] .admin-main :deep(select),
+[data-theme='dark'] .admin-main :deep(textarea),
+[data-theme='tech-blue'] .admin-main :deep(.input),
+[data-theme='tech-blue'] .admin-main :deep(.form-input),
+[data-theme='tech-blue'] .admin-main :deep(input[type="text"]),
+[data-theme='tech-blue'] .admin-main :deep(input[type="password"]),
+[data-theme='tech-blue'] .admin-main :deep(input[type="email"]),
+[data-theme='tech-blue'] .admin-main :deep(input[type="number"]),
+[data-theme='tech-blue'] .admin-main :deep(select),
+[data-theme='tech-blue'] .admin-main :deep(textarea),
+[data-theme='forest'] .admin-main :deep(.form-input),
+[data-theme='forest'] .admin-main :deep(input[type="text"]),
+[data-theme='forest'] .admin-main :deep(select),
+[data-theme='forest'] .admin-main :deep(textarea),
+[data-theme='hybrid-super-dark'] .admin-main :deep(.form-input),
+[data-theme='hybrid-super-dark'] .admin-main :deep(input[type="text"]),
+[data-theme='hybrid-super-dark'] .admin-main :deep(select),
+[data-theme='hybrid-super-dark'] .admin-main :deep(textarea) {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.28) !important;
+}
+
+[data-theme='dark'] .admin-main :deep(.form-input::placeholder),
+[data-theme='dark'] .admin-main :deep(input::placeholder),
+[data-theme='dark'] .admin-main :deep(textarea::placeholder),
+[data-theme='tech-blue'] .admin-main :deep(.form-input::placeholder),
+[data-theme='tech-blue'] .admin-main :deep(input::placeholder),
+[data-theme='tech-blue'] .admin-main :deep(textarea::placeholder),
+[data-theme='forest'] .admin-main :deep(.form-input::placeholder),
+[data-theme='forest'] .admin-main :deep(textarea::placeholder),
+[data-theme='hybrid-super-dark'] .admin-main :deep(.form-input::placeholder),
+[data-theme='hybrid-super-dark'] .admin-main :deep(textarea::placeholder) {
+  color: rgba(255, 255, 255, 0.5) !important;
 }
 
 /* 按钮样式 - 使用 CSS 变量，自动适配主题 */

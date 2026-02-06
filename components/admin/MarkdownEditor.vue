@@ -92,48 +92,111 @@ const handleChange = (value: string) => {
 <style scoped>
 .markdown-editor-wrapper {
   width: 100%;
+  min-height: 400px;
 }
 
 .markdown-editor {
   height: v-bind(height);
+  min-height: 400px;
 }
 
-/* 自定义样式 */
+/* 确保 bytemd 根节点有高度，避免编辑区被压成一条线 */
 :deep(.bytemd) {
-  border: 1px solid rgb(209 213 219);
-  border-radius: 0.5rem;
+  min-height: 400px;
+}
+
+/* 使用主题变量，增强边框与背景对比，便于分辨可填写区域 */
+:deep(.bytemd) {
+  border: 2px solid var(--color-border-default, rgb(209 213 219));
+  border-radius: var(--radius-md, 0.5rem);
+  background: var(--color-bg-elevated, var(--color-bg-card));
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.03);
+}
+
+:deep(.bytemd:focus-within) {
+  border-color: var(--color-primary, #2563eb);
+  box-shadow: 0 0 0 3px var(--color-primary-soft, rgba(37, 99, 235, 0.2));
 }
 
 :deep(.bytemd-toolbar) {
-  border-bottom: 1px solid rgb(229 231 235);
-  background: rgb(249 250 251);
+  border-bottom: 1px solid var(--color-border-subtle, rgb(229 231 235));
+  background: var(--color-bg-elevated, rgb(249 250 251));
 }
 
+/* 左侧编辑区：与周围明显区分，一眼看出「这里可以输入」 */
 :deep(.bytemd-editor) {
   font-size: 14px;
   line-height: 1.6;
+  min-height: 280px;
+  background: var(--color-bg-editor, rgba(255, 255, 255, 0.95)) !important;
+  border-right: 1px solid var(--color-border-subtle, #e5e7eb);
 }
 
-/* 暗色模式支持 */
-.dark :deep(.bytemd) {
-  border-color: rgb(75 85 99);
-  background: rgb(17 24 39);
-  color: rgb(229 231 235);
+:deep(.bytemd-editor .CodeMirror) {
+  background: transparent !important;
+  cursor: text !important;
 }
 
-.dark :deep(.bytemd-toolbar) {
-  background: rgb(31 41 55);
-  border-bottom-color: rgb(75 85 99);
+:deep(.bytemd-editor .CodeMirror-scroll) {
+  cursor: text !important;
 }
 
-.dark :deep(.bytemd-editor) {
-  background: rgb(17 24 39);
-  color: rgb(229 231 235);
+:deep(.bytemd-editor .CodeMirror-placeholder) {
+  color: var(--color-text-muted, #6b7280) !important;
 }
 
-.dark :deep(.bytemd-preview) {
-  background: rgb(17 24 39);
-  color: rgb(229 231 235);
+:deep(.bytemd-preview) {
+  background: var(--color-bg-elevated, var(--color-bg-card));
+}
+
+/* 深色主题：整体编辑框用明显亮边，避免和背景融在一起 */
+[data-theme='dark'] :deep(.bytemd),
+[data-theme='tech-blue'] :deep(.bytemd),
+[data-theme='forest'] :deep(.bytemd),
+[data-theme='hybrid-super-dark'] :deep(.bytemd) {
+  border: 2px solid rgba(255, 255, 255, 0.35) !important;
+  background: var(--color-bg-elevated);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] :deep(.bytemd-toolbar),
+[data-theme='tech-blue'] :deep(.bytemd-toolbar),
+[data-theme='forest'] :deep(.bytemd-toolbar),
+[data-theme='hybrid-super-dark'] :deep(.bytemd-toolbar) {
+  background: rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* 深色下左侧编辑区：明显更亮的「可输入」区域，桌面上一眼能看见 */
+[data-theme='dark'] :deep(.bytemd-editor),
+[data-theme='tech-blue'] :deep(.bytemd-editor),
+[data-theme='forest'] :deep(.bytemd-editor),
+[data-theme='hybrid-super-dark'] :deep(.bytemd-editor) {
+  background: rgba(255, 255, 255, 0.14) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.25) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+[data-theme='dark'] :deep(.bytemd-editor .CodeMirror),
+[data-theme='tech-blue'] :deep(.bytemd-editor .CodeMirror),
+[data-theme='forest'] :deep(.bytemd-editor .CodeMirror),
+[data-theme='hybrid-super-dark'] :deep(.bytemd-editor .CodeMirror) {
+  color: var(--color-text-main) !important;
+}
+
+[data-theme='dark'] :deep(.bytemd-editor .CodeMirror-placeholder),
+[data-theme='tech-blue'] :deep(.bytemd-editor .CodeMirror-placeholder),
+[data-theme='forest'] :deep(.bytemd-editor .CodeMirror-placeholder),
+[data-theme='hybrid-super-dark'] :deep(.bytemd-editor .CodeMirror-placeholder) {
+  color: rgba(255, 255, 255, 0.55) !important;
+}
+
+[data-theme='dark'] :deep(.bytemd-preview),
+[data-theme='tech-blue'] :deep(.bytemd-preview),
+[data-theme='forest'] :deep(.bytemd-preview),
+[data-theme='hybrid-super-dark'] :deep(.bytemd-preview) {
+  background: var(--color-bg-elevated);
+  color: var(--color-text-main);
 }
 </style>
 
