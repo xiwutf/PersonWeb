@@ -127,6 +127,9 @@ public class AppDbContext : DbContext
     public DbSet<RelationTask> RelationTasks { get; set; }
     public DbSet<CognitionDoc> CognitionDocs { get; set; }
 
+    /// <summary>思维记录（随手写 + AI 批注）</summary>
+    public DbSet<ThoughtRecord> ThoughtRecords { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -269,5 +272,9 @@ public class AppDbContext : DbContext
         
         modelBuilder.Entity<RelationTask>()
             .HasIndex(t => new { t.PersonId, t.Status });
+
+        // 思维记录：按创建时间倒序查询索引
+        modelBuilder.Entity<ThoughtRecord>()
+            .HasIndex(t => t.CreatedAt);
     }
 }

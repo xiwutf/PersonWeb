@@ -167,6 +167,9 @@ builder.Services.AddScoped<PersonalSite.Api.Services.SideProjectAnalyticsService
 // 注册观察期服务
 builder.Services.AddScoped<PersonalSite.Api.Services.ObservationPeriodService>();
 
+// 注册思维记录服务
+builder.Services.AddScoped<PersonalSite.Api.Services.IThoughtService, PersonalSite.Api.Services.ThoughtService>();
+
 // 4. 配置 Swagger
 builder.Services.AddSwaggerGen(c =>
 {

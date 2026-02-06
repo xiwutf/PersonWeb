@@ -267,6 +267,8 @@ const getMenuItemIcon = (label: string): string => {
     '主题设置': 'fas fa-palette',
     '模块管理': 'fas fa-puzzle-piece',
     '用户管理': 'fas fa-user-cog',
+    '认知说明书': 'fas fa-book-open',
+    '思维记录': 'fas fa-pen-fancy',
   }
   return iconMap[label] || 'fas fa-circle'
 }

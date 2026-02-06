@@ -20,6 +20,7 @@ export const adminMenu: AdminMenuItem[] = [
       { label: '工具管理', path: '/admin/tools' },
       { label: '分类管理', path: '/admin/categories' },
       { label: '认知说明书', path: '/admin/cognition' },
+      { label: '思维记录', path: '/admin/thoughts' },
     ],
   },
   {

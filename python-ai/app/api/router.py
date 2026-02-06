@@ -3,13 +3,14 @@ API 路由注册
 """
 
 from fastapi import APIRouter
-from app.api.v1 import website_chat
+from app.api.v1 import website_chat, thought
 
 # 创建 v1 路由
 v1_router = APIRouter(prefix="/ai", tags=["AI 服务"])
 
 # 注册 v1 路由
 v1_router.include_router(website_chat.router)
+v1_router.include_router(thought.router)
 
 # 创建主路由
 api_router = APIRouter(prefix="/api")

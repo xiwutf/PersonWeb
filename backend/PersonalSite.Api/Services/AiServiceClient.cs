@@ -550,6 +550,75 @@ public class AiServiceClient
             throw;
         }
     }
+
+    /// <summary>
+    /// 请求思维批注（调用 python-ai POST /api/ai/thought_comment，鉴权头为 X-Internal-Key）
+    /// </summary>
+    public async Task<string> ThoughtCommentAsync(string content, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(content))
+        {
+            throw new ArgumentException("原文内容不能为空", nameof(content));
+        }
+
+        string internalKey = _options.InternalToken ?? "default-internal-token-change-in-production";
+        string baseAddress = _httpClient.BaseAddress?.ToString().TrimEnd('/') ?? _options.BaseUrl.TrimEnd('/');
+        string requestUri = $"{baseAddress}/thought_comment";
+
+        var requestBody = new { content = content };
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri)
+        {
+            Content = JsonContent.Create(requestBody)
+        };
+        // python-ai 内部接口使用 X-Internal-Key，复用配置项 InternalToken 的值
+        requestMessage.Headers.Add("X-Internal-Key", internalKey);
+
+        HttpResponseMessage response;
+        try
+        {
+            response = await _httpClient.SendAsync(requestMessage, cancellationToken);
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogError(ex, "调用思维批注接口网络失败");
+            throw new Exception("AI 服务不可用或网络超时，请稍后重试", ex);
+        }
+        catch (TaskCanceledException ex) when (ex.CancellationToken != cancellationToken)
+        {
+            _logger.LogError(ex, "调用思维批注接口超时");
+            throw new Exception("AI 批注请求超时，请稍后重试", ex);
+        }
+
+        string responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            _logger.LogError("思维批注接口返回错误: StatusCode={StatusCode}, Response={Response}",
+                response.StatusCode, responseBody);
+            string message = "AI 批注服务返回错误";
+            try
+            {
+                var err = System.Text.Json.JsonSerializer.Deserialize<System.Text.Json.JsonElement>(responseBody);
+                if (err.TryGetProperty("detail", out var detail))
+                    message = detail.GetString() ?? message;
+            }
+            catch { /* 忽略解析失败 */ }
+            throw new Exception($"{message}（{(int)response.StatusCode}）");
+        }
+
+        try
+        {
+            var node = System.Text.Json.JsonSerializer.Deserialize<System.Text.Json.JsonElement>(responseBody);
+            if (node.TryGetProperty("comment_md", out var commentMd))
+                return commentMd.GetString() ?? string.Empty;
+        }
+        catch (System.Text.Json.JsonException ex)
+        {
+            _logger.LogError(ex, "解析思维批注响应失败: {Response}", responseBody);
+        }
+
+        throw new Exception("AI 批注返回格式异常，未包含 comment_md");
+    }
 }
 
 /// <summary>
