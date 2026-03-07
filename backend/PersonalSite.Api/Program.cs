@@ -42,7 +42,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
             maxRetryCount: 5,                    // 最大重试次数
             maxRetryDelay: TimeSpan.FromSeconds(30), // 最大重试延迟
             errorNumbersToAdd: null);            // 要添加的错误代码列表（null 表示使用默认值）
-        
+
         // 设置命令超时时间（秒）
         mySqlOptions.CommandTimeout(60);
     })
@@ -109,7 +109,7 @@ builder.Services.AddSingleton<PersonalSite.Api.Services.Cache.ICacheService>(ser
 {
     var configuration = serviceProvider.GetRequiredService<IConfiguration>();
     var redisEnabled = configuration.GetValue<bool>("Redis:Enabled", false);
-    
+
     if (redisEnabled)
     {
         // 使用 Redis 缓存服务
@@ -170,11 +170,17 @@ builder.Services.AddScoped<PersonalSite.Api.Services.ObservationPeriodService>()
 // 注册思维记录服务
 builder.Services.AddScoped<PersonalSite.Api.Services.IThoughtService, PersonalSite.Api.Services.ThoughtService>();
 
+// 注册情报中心服务
+builder.Services.AddScoped<PersonalSite.Api.Services.IIntelligenceSourceService, PersonalSite.Api.Services.IntelligenceSourceService>();
+builder.Services.AddScoped<PersonalSite.Api.Services.IIntelligenceContentService, PersonalSite.Api.Services.IntelligenceContentService>();
+builder.Services.AddScoped<PersonalSite.Api.Services.IIntelligenceReportService, PersonalSite.Api.Services.IntelligenceReportService>();
+builder.Services.AddScoped<PersonalSite.Api.Services.IIntelligenceTaskService, PersonalSite.Api.Services.IntelligenceTaskService>();
+
 // 4. 配置 Swagger
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "PersonalSite API", Version = "v1" });
-    
+
     // 添加 JWT 认证支持
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {

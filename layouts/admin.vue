@@ -269,6 +269,10 @@ const getMenuItemIcon = (label: string): string => {
     '用户管理': 'fas fa-user-cog',
     '认知说明书': 'fas fa-book-open',
     '思维记录': 'fas fa-pen-fancy',
+    '情报首页': 'fas fa-chart-pie',
+    '内容列表': 'fas fa-list-alt',
+    '每日简报': 'fas fa-file-alt',
+    '来源管理': 'fas fa-rss',
   }
   return iconMap[label] || 'fas fa-circle'
 }

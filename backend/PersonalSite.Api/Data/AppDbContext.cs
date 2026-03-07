@@ -130,6 +130,13 @@ public class AppDbContext : DbContext
     /// <summary>思维记录（随手写 + AI 批注）</summary>
     public DbSet<ThoughtRecord> ThoughtRecords { get; set; }
 
+    // ==================== 情报中心相关 ====================
+    public DbSet<IntelligenceSource> IntelligenceSources { get; set; }
+    public DbSet<IntelligenceContent> IntelligenceContents { get; set; }
+    public DbSet<IntelligenceAnalysis> IntelligenceAnalyses { get; set; }
+    public DbSet<IntelligenceDailyReport> IntelligenceDailyReports { get; set; }
+    public DbSet<IntelligenceTaskLog> IntelligenceTaskLogs { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

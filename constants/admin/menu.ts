@@ -43,6 +43,15 @@ export const adminMenu: AdminMenuItem[] = [
     ],
   },
   {
+    label: '情报中心',
+    children: [
+      { label: '情报首页', path: '/admin/intelligence' },
+      { label: '内容列表', path: '/admin/intelligence/content' },
+      { label: '每日简报', path: '/admin/intelligence/daily-report' },
+      { label: '来源管理', path: '/admin/intelligence/source' },
+    ],
+  },
+  {
     label: '个人系统',
     children: [
       { label: '关系管理', path: '/admin/relations' },

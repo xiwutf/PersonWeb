@@ -2,7 +2,6 @@
 FastAPI 应用主入口
 负责初始化应用、挂载路由、配置中间件等
 """
-
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,7 +10,7 @@ from contextlib import asynccontextmanager
 
 from app.core.config import settings
 from app.core.app_logging import setup_logging, logger
-from app.api import health, chat, tools, rag, document, name, relation
+from app.api import health, chat, tools, rag, document, name, relation, intelligence
 
 
 @asynccontextmanager
@@ -50,23 +49,23 @@ app.add_middleware(
 async def log_requests(request: Request, call_next):
     """记录请求日志"""
     start_time = time.time()
-    
+
     # 记录请求信息
     logger.info(
         f"请求开始: {request.method} {request.url.path} - "
         f"客户端: {request.client.host if request.client else 'unknown'}"
     )
-    
+
     try:
         response = await call_next(request)
         process_time = time.time() - start_time
-        
+
         # 记录响应信息
         logger.info(
             f"请求完成: {request.method} {request.url.path} - "
             f"状态码: {response.status_code} - 耗时: {process_time:.3f}s"
         )
-        
+
         # 添加响应头
         response.headers["X-Process-Time"] = str(process_time)
         return response
@@ -103,6 +102,7 @@ app.include_router(rag.router, prefix="/api/ai", tags=["RAG 知识库"])
 app.include_router(document.router, prefix="/api/ai", tags=["文档知识管家"])
 app.include_router(name.router, prefix="/api/ai", tags=["智能取名助手"])
 app.include_router(relation.router, prefix="/api/ai", tags=["关系跟进助理"])
+app.include_router(intelligence.router, prefix="/api/ai", tags=["情报中心"])
 
 
 @app.get("/")
@@ -128,4 +128,3 @@ if __name__ == "__main__":
         port=8001,
         reload=True
     )
-

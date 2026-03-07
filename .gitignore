@@ -59,3 +59,7 @@ appsettings.Development.json
 # 保留示例文件
 !.env.example
 !appsettings.Development.json.example
+
+# Local machine/runtime caches
+.dotnet/
+.claude/settings.local.json
