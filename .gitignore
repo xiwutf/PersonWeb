@@ -32,6 +32,17 @@ server/data/*.json
 !server/data/.keep
 !server/data/personal_metrics.json
 
+# Python 虚拟环境
+.venv/
+venv/
+
+# 测试文档
+test-documents/
+
+# IDE 配置
+.idea/
+.vscode/
+
 # Visual Studio / .NET
 .vs/
 bin/
