@@ -150,9 +150,10 @@ def generate_daily_report(report_date: str = None) -> Optional[str]:
             if content.get('summary'):
                 content_summary.append(f"   摘要: {content['summary'][:100]}")
 
+        summary_text = "\n".join(content_summary)
         user_message = f"""今日收集到的情报摘要如下：
 
-{"\n".join(content_summary)}
+{summary_text}
 
 请根据以上内容生成一份每日情报简报，日期为：{report_date}
 """
