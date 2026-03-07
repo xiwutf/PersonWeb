@@ -4,8 +4,15 @@ uvicorn[standard]>=0.24.0
 pydantic>=2.5.0
 pydantic-settings>=2.1.0
 
-# HTTP 客户端（用于调用外部 API）
+# HTTP 客户端（用于调用外部 API 和采集网页）
 httpx>=0.25.0
+requests>=2.31.0
+
+# RSS 解析
+feedparser>=6.0.0
+
+# HTML 解析
+beautifulsoup4>=4.12.0
 
 # 测试相关
 pytest>=7.4.3
