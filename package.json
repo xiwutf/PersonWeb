@@ -1,6 +1,25 @@
 {
-  "name": "溪午听风-personal-site",
+  "name": "personal-site",
   "version": "1.0.0",
+  "description": "溪午听风 - 一个现代化、响应式的个人开发者网站，基于 Nuxt 3 构建",
+  "author": "Xie Feng <your-email@example.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/yourusername/personal-site",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/personal-site.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/personal-site/issues"
+  },
+  "keywords": [
+    "personal-site",
+    "nuxt3",
+    "vue3",
+    "portfolio",
+    "developer",
+    "blog"
+  ],
   "scripts": {
     "dev": "cross-env SASS_SILENCE_DEPRECATIONS=legacy-js-api nuxt dev",
     "dev:mobile": "cross-env SASS_SILENCE_DEPRECATIONS=legacy-js-api nuxt dev --host 0.0.0.0",

@@ -1,6 +1,19 @@
-# 溪午听风 个人网站
+# 溪午听风 Personal Site 🌐
 
-一个现代化、响应式的个人开发者网站，基于 Nuxt 3 构建。
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Nuxt 3](https://img.shields.io/badge/Nuxt-3-00DC82.svg)](https://nuxt.com)
+[![Vue 3](https://img.shields.io/badge/Vue-3-4FC08D.svg)](https://vuejs.org)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-339933.svg)](https://nodejs.org)
+
+一个现代化、响应式的个人开发者网站，基于 Nuxt 3 + Vue 3 + Tailwind CSS 构建。
+提供内容管理系统、项目展示、技术博客、插件工具展示等完整功能。
+
+[English](#english) | [中文](#中文)
+
+> **声明**: 本项目代码采用 MIT 开源许可证发布。
+> 本项目内的内容（文章、作品等）版权归原作者所有。
+> **Disclaimer**: The code in this project is released under the MIT open source license.
+> The copyright of the content (articles, works, etc.) in this project belongs to the original author.
 
 ## ✨ 特性
 
@@ -285,6 +298,128 @@ export default defineNuxtConfig({
 npm run build
 npm run preview
 ```
+
+## 🤝 贡献指南
+
+我们欢迎任何形式的贡献！无论是修复 Bug、添加新功能还是改进文档。
+
+### 如何贡献
+
+1. **Fork 本仓库**
+   ```bash
+   git clone https://github.com/yourusername/personal-site.git
+   cd personal-site
+   ```
+
+2. **创建特性分支**
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+
+3. **提交更改**
+   ```bash
+   git add .
+   git commit -m "feat: add your feature description"
+   ```
+
+4. **推送到分支**
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+
+5. **提交 Pull Request**
+   - 描述你的更改
+   - 链接相关的问题（如有）
+   - 确保通过所有测试
+
+### 代码风格
+
+- 使用 TypeScript 获得类型安全
+- 遵循 ESLint 配置
+- 使用 Prettier 格式化代码
+- 在提交前运行 `npm run lint`
+
+### 报告 Bug
+
+如果你发现了 Bug，请：
+1. 检查 [GitHub Issues](https://github.com/yourusername/personal-site/issues) 确保尚未报告
+2. 创建新的 Issue，包含：
+   - Bug 的详细描述
+   - 复现步骤
+   - 期望行为 vs 实际行为
+   - 环境信息（OS、Node 版本等）
+   - 截图或日志（如有）
+
+### 功能请求
+
+如果你有功能建议，请：
+1. 在 [GitHub Discussions](https://github.com/yourusername/personal-site/discussions) 中讨论
+2. 或创建 Feature Request Issue，包含：
+   - 功能的清晰描述
+   - 该功能解决的问题
+   - 可能的实现方案
+   - 示例和用例
+
+## 📄 许可证
+
+本项目采用 **MIT License** 开源许可证发布。详见 [LICENSE](./LICENSE) 文件。
+
+### 许可证说明
+
+- ✅ **可以**：商业使用、修改、分发、私人使用
+- ✅ **条件**：提供许可证和版权声明
+- ❌ **禁止**：责任免除
+- ⚠️ **免责**：本软件按"现状"提供，没有任何保证
+
+### 内容版权
+
+- **代码**：MIT License（开源）
+- **文章与作品**：版权归原作者所有
+- **第三方资源**：遵守相应的许可证
+
+如果你在项目中使用了第三方代码或资源，请确保遵守相应的许可证。
+
+## 👤 关于作者
+
+**Xie Feng (谢峰) - 溪午听风**
+
+- GitHub: [@yourusername](https://github.com/yourusername)
+- Website: [https://xifg.com.cn](https://xifg.com.cn)
+- Email: your-email@example.com
+
+## 🙏 致谢
+
+感谢以下项目和社区的支持：
+
+- [Nuxt](https://nuxt.com) - Vue.js 全栈框架
+- [Vue.js](https://vuejs.org) - 渐进式 JavaScript 框架
+- [Tailwind CSS](https://tailwindcss.com) - 功能优先的 CSS 框架
+- [Naive UI](https://www.naiveui.com) - Vue 3 UI 组件库
+- [ECharts](https://echarts.apache.org) - 数据可视化库
+- 所有为本项目做出贡献的开发者
+
+## 📞 支持与反馈
+
+- 📧 **Email**: your-email@example.com
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/yourusername/personal-site/discussions)
+- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/yourusername/personal-site/issues)
+- 💡 **Feature Requests**: [GitHub Discussions](https://github.com/yourusername/personal-site/discussions)
+
+## 📋 更新日志
+
+详见 [CHANGELOG.md](./CHANGELOG.md)
+
+## 🌟 如果这个项目对你有帮助
+
+请考虑给个 Star ⭐ 来支持它的发展！
+
+---
+
+<div align="center">
+
+Made with ❤️ by [Xie Feng](https://github.com/yourusername)
+
+[MIT License](./LICENSE) © 2026
 
 ## 📚 项目文档
 
