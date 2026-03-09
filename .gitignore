@@ -127,11 +127,25 @@ test-documents/
 *.temp
 *.suo
 *.userprefs
+
+# ============================================
+# Sensitive Configuration (重要：保护敏感信息)
+# ============================================
 appsettings.Development.json
+appsettings.Production.json
+appsettings.Staging.json
 .env
 .env.production
 .env.local
 .env.*.local
+**/secrets/
+*.pem
+*.key
+*.pfx
+*.p12
+
+# 敏感信息替换规则（git-filter-repo 使用）
+scripts/sensitive-replacements.txt
 
 # 保留示例文件
 !.env.example

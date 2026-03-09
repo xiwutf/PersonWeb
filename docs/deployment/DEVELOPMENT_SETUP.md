@@ -269,7 +269,7 @@ Server=服务器地址;Database=数据库名;User=用户名;Password=密码;SslM
 ```json
 {
   "ConnectionStrings": {
-    "Default": "Server=localhost;Database=personal_site;User=root;Password=123456;SslMode=None;"
+    "Default": "Server=localhost;Database=personal_site;User=root;Password=your_password;SslMode=None;"
   }
 }
 ```

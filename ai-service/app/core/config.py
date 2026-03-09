@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     DEFAULT_MODEL_NAME: str = "gpt-3.5-turbo"
 
     # DeepSeek 配置
-    DEEPSEEK_API_KEY: str = "your-deepseek-api-key-here"
+    DEEPSEEK_API_KEY: str = ""
     DEEPSEEK_BASE_URL: str = "https://api.deepseek.com/v1"
     DEEPSEEK_MODEL_NAME: str = "deepseek-chat"
 

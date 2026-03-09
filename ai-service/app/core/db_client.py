@@ -2,6 +2,7 @@
 MySQL 数据库连接客户端
 用于情报中心模块读写数据库
 """
+import os
 import pymysql
 from typing import List, Dict, Any, Optional
 from contextlib import contextmanager
@@ -14,11 +15,11 @@ import json
 def get_db_connection():
     """获取数据库连接上下文管理器"""
     conn = pymysql.connect(
-        host='localhost',
-        port=3306,
-        database='personal_site',
-        user='root',
-        password='',
+        host=os.getenv('DB_HOST', 'localhost'),
+        port=int(os.getenv('DB_PORT', '3306')),
+        database=os.getenv('DB_NAME', 'personal_site'),
+        user=os.getenv('DB_USER', 'root'),
+        password=os.getenv('DB_PASSWORD', ''),
         charset='utf8mb4',
         cursorclass=pymysql.cursors.DictCursor
     )
