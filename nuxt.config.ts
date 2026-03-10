@@ -99,29 +99,11 @@ export default defineNuxtConfig({
     }
   },
 
-  // CSS 配置
+  // CSS 配置 - 优化后的主要样式文件
   css: [
-    '~/assets/css/design-system.css', // 极光设计系统 Design Token (V3)
-    '~/assets/styles/tokens.css', // 设计 Token：全局 CSS 变量
-    '~/assets/styles/base.css', // 基础样式和 Reset
-    '~/assets/styles/ui-patch-naive.css', // Naive UI 补丁样式
+    '~/assets/css/optimized-main.css', // 合并后的主样式文件（优化版）
     '~/assets/styles/glassmorphism.css', // Vision Pro × 玻璃拟态风格
-    '~/assets/styles/theme.css', // 保留旧的主题文件（兼容性） // 统一主题样式文件（必须在最前面，定义 CSS 变量）
-    '~/assets/css/main.css', // main.css 已经导入了 components.css
-    '~/assets/css/themes.css',
-    '~/assets/css/header.css', // Header 组件统一样式
-    '~/assets/css/footer.css', // Footer 组件统一样式
-    '~/assets/css/hero.css', // Hero 组件统一样式
-    '~/assets/css/home.css', // 首页组件统一样式
-    '~/assets/css/visitor-interaction.css',
-    '~/assets/css/about.css',
-    '~/assets/css/tools.css',
-    '~/assets/css/life.css',
-    '~/assets/css/blog.css',
-    '~/assets/css/projects.css',
-    '~/assets/css/investment.css',
-    '~/assets/css/charts.css',
-    '~/assets/css/admin-asset-management.css'
+    '~/assets/styles/theme.css', // 保留旧的主题文件（兼容性）
   ],
 
   // Nitro 配置（用于静态生成优化）
@@ -163,15 +145,39 @@ export default defineNuxtConfig({
       rollupOptions: {
         output: {
           manualChunks: {
+            // UI 组件库
             'naive-ui': ['naive-ui'],
+            // 图表库
             'echarts': ['echarts', 'vue-echarts'],
-            'chartjs': ['chart.js', 'vue-chartjs']
+            // 3D 库
+            'three': ['three', '@types/three'],
+            // Markdown 编辑器
+            'bytemd': ['@bytemd/vue-next', '@bytemd/plugin-gfm', '@bytemd/plugin-highlight', '@bytemd/plugin-math', '@bytemd/plugin-medium-zoom', 'bytemd'],
+            // 动画库
+            'motion': ['@motionone/vue', '@motionone/dom'],
+            // 工具库
+            'utils': ['uuid', '@types/uuid', 'diff-match-patch'],
+            // 图标库
+            'vicons': ['@vicons/ionicons5'],
+            // 通知库
+            'notifications': ['vue-toast-notification']
           }
         }
       },
       // 减少 chunk 大小警告阈值
       chunkSizeWarningLimit: 1000
+    },
+    // 启用 CSS 压缩
+    cssMinify: true,
+    // 构建时移除 console 和 debugger（生产环境）
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true
+      }
     }
+  },
   },
 
   compatibilityDate: '2024-04-03'
