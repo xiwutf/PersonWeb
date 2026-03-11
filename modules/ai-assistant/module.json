@@ -1,0 +1,187 @@
+{
+  "meta": {
+    "key": "ai-assistant",
+    "name": "AI Assistant",
+    "version": "1.0.0",
+    "description": "智能AI助手系统，提供对话、问答、内容生成等功能",
+    "author": "PersonWeb Team",
+    "license": "MIT",
+    "category": "ai",
+    "tags": ["ai", "assistant", "chat", "gpt"],
+    "icon": "🤖",
+    "price": 0,
+    "demoUrl": "https://demo.personweb.com/ai",
+    "documentation": "https://docs.personweb.com/modules/ai-assistant",
+    "dependencies": [],
+    "isCore": false,
+    "compatibility": {
+      "nuxtVersion": "^3.0.0",
+      "nodeVersion": "^16.0.0"
+    }
+  },
+  "routes": [
+    {
+      "path": "/ai",
+      "name": "ai-assistant",
+      "meta": {
+        "title": "AI 助手",
+        "icon": "🤖",
+        "hidden": false,
+        "order": 100
+      }
+    },
+    {
+      "path": "/ai/settings",
+      "name": "ai-assistant-settings",
+      "meta": {
+        "title": "AI 设置",
+        "icon": "⚙️",
+        "hidden": false,
+        "order": 101
+      }
+    }
+  ],
+  "components": [
+    {
+      "name": "AIAssistant",
+      "path": "~/components/ai/AIAssistant.vue",
+      "global": true
+    },
+    {
+      "name": "AICharacter",
+      "path": "~/components/ai/AICharacter.vue",
+      "global": false
+    }
+  ],
+  "configs": [
+    {
+      "configKey": "apiKey",
+      "configValue": "",
+      "configType": "string",
+      "description": "AI服务API密钥",
+      "required": true,
+      "validation": {
+        "pattern": "^sk-|^sk-|^sk-"
+      }
+    },
+    {
+      "configKey": "model",
+      "configValue": "gpt-3.5-turbo",
+      "configType": "string",
+      "description": "AI模型选择",
+      "required": false,
+      "defaultValue": "gpt-3.5-turbo",
+      "validation": {
+        "pattern": "^(gpt-|claude|deepseek)"
+      }
+    },
+    {
+      "configKey": "temperature",
+      "configValue": 0.7,
+      "configType": "number",
+      "description": "回复温度（0-2）",
+      "required": false,
+      "defaultValue": 0.7,
+      "validation": {
+        "min": 0,
+        "max": 2
+      }
+    },
+    {
+      "configKey": "maxTokens",
+      "configValue": 1000,
+      "configType": "number",
+      "description": "最大令牌数",
+      "required": false,
+      "defaultValue": 1000,
+      "validation": {
+        "min": 1,
+        "max": 4096
+      }
+    },
+    {
+      "configKey": "systemPrompt",
+      "configValue": "你是一个智能助手，能够帮助用户解决问题。请以友好、专业的语气回应。",
+      "configType": "string",
+      "description": "系统提示词",
+      "required": false,
+      "defaultValue": "你是一个智能助手，能够帮助用户解决问题。请以友好、专业的语气回应。"
+    },
+    {
+      "configKey": "enableQuickActions",
+      "configValue": true,
+      "configType": "boolean",
+      "description": "启用快捷操作",
+      "required": false,
+      "defaultValue": true
+    },
+    {
+      "configKey": "enableHistory",
+      "configValue": true,
+      "configType": "boolean",
+      "description": "启用对话历史",
+      "required": false,
+      "defaultValue": true
+    },
+    {
+      "configKey": "maxHistoryLength",
+      "configValue": 50,
+      "configType": "number",
+      "description": "最大历史记录长度",
+      "required": false,
+      "defaultValue": 50,
+      "validation": {
+        "min": 1,
+        "max": 1000
+      }
+    },
+    {
+      "configKey": "theme",
+      "configValue": "light",
+      "configType": "string",
+      "description": "界面主题",
+      "required": false,
+      "defaultValue": "light",
+      "validation": {
+        "pattern": "^(light|dark|auto)$"
+      }
+    },
+    {
+      "configKey": "position",
+      "configValue": "bottom-right",
+      "configType": "string",
+      "description": "助手位置",
+      "required": false,
+      "defaultValue": "bottom-right",
+      "validation": {
+        "pattern": "^(top-left|top-right|bottom-left|bottom-right)$"
+      }
+    }
+  ],
+  "permissions": [
+    {
+      "key": "ai.assist",
+      "name": "使用AI助手",
+      "description": "允许用户使用AI助手功能",
+      "level": "basic"
+    },
+    {
+      "key": "ai.settings",
+      "name": "AI设置管理",
+      "description": "允许管理AI助手设置",
+      "level": "advanced"
+    },
+    {
+      "key": "ai.history",
+      "name": "查看历史记录",
+      "description": "允许查看AI对话历史",
+      "level": "basic"
+    }
+  ],
+  "lifecycle": {
+    "onInstall": "onInstallAIAssistant",
+    "onUninstall": "onUninstallAIAssistant",
+    "onActivate": "onActivateAIAssistant",
+    "onDeactivate": "onDeactivateAIAssistant"
+  }
+}

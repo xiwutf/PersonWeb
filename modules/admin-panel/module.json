@@ -1,0 +1,219 @@
+{
+  "meta": {
+    "key": "admin-panel",
+    "name": "Admin Panel",
+    "version": "1.0.0",
+    "description": "后台管理系统，提供内容管理、数据分析、用户管理等功能",
+    "author": "PersonWeb Team",
+    "license": "MIT",
+    "category": "admin",
+    "tags": ["admin", "dashboard", "cms", "analytics"],
+    "icon": "⚙️",
+    "price": 0,
+    "demoUrl": "https://demo.personweb.com/admin",
+    "documentation": "https://docs.personweb.com/modules/admin-panel",
+    "dependencies": [],
+    "isCore": true,
+    "compatibility": {
+      "nuxtVersion": "^3.0.0",
+      "nodeVersion": "^16.0.0"
+    }
+  },
+  "routes": [
+    {
+      "path": "/admin",
+      "name": "admin-dashboard",
+      "meta": {
+        "title": "控制台",
+        "icon": "📊",
+        "hidden": false,
+        "order": 1
+      }
+    },
+    {
+      "path": "/admin/content",
+      "name": "admin-content",
+      "meta": {
+        "title": "内容管理",
+        "icon": "📝",
+        "hidden": false,
+        "order": 2
+      }
+    },
+    {
+      "path": "/admin/users",
+      "name": "admin-users",
+      "meta": {
+        "title": "用户管理",
+        "icon": "👥",
+        "hidden": false,
+        "order": 3
+      }
+    },
+    {
+      "path": "/admin/analytics",
+      "name": "admin-analytics",
+      "meta": {
+        "title": "数据分析",
+        "icon": "📈",
+        "hidden": false,
+        "order": 4
+      }
+    },
+    {
+      "path": "/admin/settings",
+      "name": "admin-settings",
+      "meta": {
+        "title": "系统设置",
+        "icon": "⚙️",
+        "hidden": false,
+        "order": 5
+      }
+    },
+    {
+      "path": "/admin/modules",
+      "name": "admin-modules",
+      "meta": {
+        "title": "模块管理",
+        "icon": "🧩",
+        "hidden": false,
+        "order": 6
+      }
+    }
+  ],
+  "components": [
+    {
+      "name": "ModuleGuard",
+      "path": "~/components/admin/ModuleGuard.vue",
+      "global": true
+    },
+    {
+      "name": "SecretAdminAccess",
+      "path": "~/components/admin/SecretAdminAccess.vue",
+      "global": true
+    },
+    {
+      "name": "MarkdownEditor",
+      "path": "~/components/admin/MarkdownEditor.vue",
+      "global": false
+    },
+    {
+      "name": "SimpleMarkdownEditor",
+      "path": "~/components/admin/SimpleMarkdownEditor.vue",
+      "global": false
+    }
+  ],
+  "configs": [
+    {
+      "configKey": "enableDarkMode",
+      "configValue": true,
+      "configType": "boolean",
+      "description": "启用深色模式",
+      "required": false,
+      "defaultValue": true
+    },
+    {
+      "configKey": "sidebarCollapsed",
+      "configValue": false,
+      "configType": "boolean",
+      "description": "侧边栏折叠状态",
+      "required": false,
+      "defaultValue": false
+    },
+    {
+      "configKey": "enableNotifications",
+      "configValue": true,
+      "configType": "boolean",
+      "description": "启用通知提醒",
+      "required": false,
+      "defaultValue": true
+    },
+    {
+      "configKey": "autoRefreshInterval",
+      "configValue": 30000,
+      "configType": "number",
+      "description": "自动刷新间隔（毫秒）",
+      "required": false,
+      "defaultValue": 30000,
+      "validation": {
+        "min": 5000,
+        "max": 300000
+      }
+    },
+    {
+      "configKey": "maxItemsPerPage",
+      "configValue": 20,
+      "configType": "number",
+      "description": "每页最大数量",
+      "required": false,
+      "defaultValue": 20,
+      "validation": {
+        "min": 10,
+        "max": 100
+      }
+    },
+    {
+      "configKey": "enableAuditLog",
+      "configValue": true,
+      "configType": "boolean",
+      "description": "启用审计日志",
+      "required": false,
+      "defaultValue": true
+    },
+    {
+      "configKey": "defaultLanguage",
+      "configValue": "zh-CN",
+      "configType": "string",
+      "description": "默认语言",
+      "required": false,
+      "defaultValue": "zh-CN",
+      "validation": {
+        "pattern": "^(zh-CN|en-US)$"
+      }
+    }
+  ],
+  "permissions": [
+    {
+      "key": "admin.access",
+      "name": "访问后台",
+      "description": "允许访问后台管理界面",
+      "level": "admin"
+    },
+    {
+      "key": "admin.view",
+      "name": "查看数据",
+      "description": "允许查看后台数据",
+      "level": "admin"
+    },
+    {
+      "key": "admin.content",
+      "name": "内容管理",
+      "description": "允许管理网站内容",
+      "level": "admin"
+    },
+    {
+      "key": "admin.users",
+      "name": "用户管理",
+      "description": "允许管理用户账户",
+      "level": "admin"
+    },
+    {
+      "key": "admin.settings",
+      "name": "系统设置",
+      "description": "允许修改系统设置",
+      "level": "superadmin"
+    },
+    {
+      "key": "admin.modules",
+      "name": "模块管理",
+      "description": "允许管理模块",
+      "level": "superadmin"
+    }
+  ],
+  "lifecycle": {
+    "onInstall": "onInstallAdminPanel",
+    "onUninstall": "onUninstallAdminPanel",
+    "onActivate": "onActivateAdminPanel",
+    "onDeactivate": "onDeactivateAdminPanel"
+  }
+}

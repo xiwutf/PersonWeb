@@ -1,0 +1,184 @@
+{
+  "meta": {
+    "key": "visitor-interaction",
+    "name": "Visitor Interaction",
+    "version": "1.0.0",
+    "description": "访客互动系统，提供弹幕墙、足迹地图、等级系统等功能",
+    "author": "PersonWeb Team",
+    "license": "MIT",
+    "category": "visitor",
+    "tags": ["visitor", "interaction", "danmaku", "map", "level"],
+    "icon": "👥",
+    "price": 0,
+    "demoUrl": "https://demo.personweb.com/visitor",
+    "documentation": "https://docs.personweb.com/modules/visitor-interaction",
+    "dependencies": [],
+    "isCore": false,
+    "compatibility": {
+      "nuxtVersion": "^3.0.0",
+      "nodeVersion": "^16.0.0"
+    }
+  },
+  "routes": [
+    {
+      "path": "/visitor",
+      "name": "visitor-dashboard",
+      "meta": {
+        "title": "访客中心",
+        "icon": "👥",
+        "hidden": false,
+        "order": 200
+      }
+    },
+    {
+      "path": "/visitor/map",
+      "name": "visitor-map",
+      "meta": {
+        "title": "足迹地图",
+        "icon": "🗺️",
+        "hidden": false,
+        "order": 201
+      }
+    },
+    {
+      "path": "/visitor/danmaku",
+      "name": "visitor-danmaku",
+      "meta": {
+        "title": "弹幕墙",
+        "icon": "💬",
+        "hidden": false,
+        "order": 202
+      }
+    }
+  ],
+  "components": [
+    {
+      "name": "VisitorInteractionPanel",
+      "path": "~/components/VisitorInteractionPanel.vue",
+      "global": true
+    },
+    {
+      "name": "VisitorFootprintMap",
+      "path": "~/components/VisitorFootprintMap.vue",
+      "global": false
+    },
+    {
+      "name": "VisitorDanmakuWall",
+      "path": "~/components/VisitorDanmakuWall.vue",
+      "global": false
+    },
+    {
+      "name": "VisitorBubble",
+      "path": "~/components/VisitorBubble.vue",
+      "global": false
+    },
+    {
+      "name": "VisitorLevelDisplay",
+      "path": "~/components/VisitorLevelDisplay.vue",
+      "global": false
+    }
+  ],
+  "configs": [
+    {
+      "configKey": "enableDanmaku",
+      "configValue": true,
+      "configType": "boolean",
+      "description": "启用弹幕墙功能",
+      "required": false,
+      "defaultValue": true
+    },
+    {
+      "configKey": "enableFootprintMap",
+      "configValue": true,
+      "configType": "boolean",
+      "description": "启用足迹地图功能",
+      "required": false,
+      "defaultValue": true
+    },
+    {
+      "configKey": "enableInteractionPanel",
+      "configValue": true,
+      "configType": "boolean",
+      "description": "启用互动面板功能",
+      "required": false,
+      "defaultValue": true
+    },
+    {
+      "configKey": "danmakuFrequency",
+      "configValue": 5000,
+      "configType": "number",
+      "description": "弹幕显示频率（毫秒）",
+      "required": false,
+      "defaultValue": 5000,
+      "validation": {
+        "min": 1000,
+        "max": 30000
+      }
+    },
+    {
+      "configKey": "maxDanmakuCount",
+      "configValue": 50,
+      "configType": "number",
+      "description": "最大弹幕数量",
+      "required": false,
+      "defaultValue": 50,
+      "validation": {
+        "min": 10,
+        "max": 200
+      }
+    },
+    {
+      "configKey": "enableMapAnimation",
+      "configValue": true,
+      "configType": "boolean",
+      "description": "启用地图动画效果",
+      "required": false,
+      "defaultValue": true
+    },
+    {
+      "configKey": "panelPosition",
+      "configValue": "right",
+      "configType": "string",
+      "description": "互动面板位置",
+      "required": false,
+      "defaultValue": "right",
+      "validation": {
+        "pattern": "^(left|right)$"
+      }
+    },
+    {
+      "configKey": "enableSound",
+      "configValue": true,
+      "configType": "boolean",
+      "description": "启用音效",
+      "required": false,
+      "defaultValue": true
+    }
+  ],
+  "permissions": [
+    {
+      "key": "visitor.view",
+      "name": "查看访客信息",
+      "description": "允许查看访客相关信息",
+      "level": "basic"
+    },
+    {
+      "key": "visitor.interact",
+      "name": "参与互动",
+      "description": "允许参与访客互动功能",
+      "level": "basic"
+    },
+    {
+      "key": "visitor.admin",
+      "name": "访客管理",
+      "description": "允许管理访客设置",
+      "level": "admin"
+    }
+  ],
+  "lifecycle": {
+    "onInstall": "onInstallVisitorInteraction",
+    "onUninstall": "onUninstallVisitorInteraction",
+    "onActivate": "onActivateVisitorInteraction",
+    "onDeactivate": "onDeactivateVisitorInteraction"
+  }
+}

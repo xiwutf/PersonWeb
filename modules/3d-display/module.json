@@ -1,0 +1,180 @@
+{
+  "meta": {
+    "key": "3d-display",
+    "name": "3D Display",
+    "version": "1.0.0",
+    "description": "3D场景展示系统，提供沉浸式3D项目展示功能",
+    "author": "PersonWeb Team",
+    "license": "MIT",
+    "category": "3d",
+    "tags": ["3d", "threejs", "immersive", "project"],
+    "icon": "🎮",
+    "price": 0,
+    "demoUrl": "https://demo.personweb.com/3d",
+    "documentation": "https://docs.personweb.com/modules/3d-display",
+    "dependencies": [],
+    "isCore": false,
+    "compatibility": {
+      "nuxtVersion": "^3.0.0",
+      "nodeVersion": "^16.0.0",
+      "browser": ["chrome", "firefox", "safari"]
+    }
+  },
+  "routes": [
+    {
+      "path": "/3d",
+      "name": "3d-showcase",
+      "meta": {
+        "title": "3D展示",
+        "icon": "🎮",
+        "hidden": false,
+        "order": 300
+      }
+    },
+    {
+      "path": "/3d/:projectId",
+      "name": "3d-project",
+      "meta": {
+        "title": "3D项目",
+        "icon": "🎮",
+        "hidden": false,
+        "order": 301
+      }
+    }
+  ],
+  "components": [
+    {
+      "name": "Immersive3DScene",
+      "path": "~/components/3d/Immersive3DScene.vue",
+      "global": true
+    },
+    {
+      "name": "Project3DSpace",
+      "path": "~/components/3d/Project3DSpace.vue",
+      "global": false
+    },
+    {
+      "name": "Scene3D",
+      "path": "~/components/3d/Scene3D.vue",
+      "global": false
+    }
+  ],
+  "configs": [
+    {
+      "configKey": "enableAutoRotate",
+      "configValue": true,
+      "configType": "boolean",
+      "description": "启用自动旋转",
+      "required": false,
+      "defaultValue": true
+    },
+    {
+      "configKey": "autoRotateSpeed",
+      "configValue": 1,
+      "configType": "number",
+      "description": "自动旋转速度",
+      "required": false,
+      "defaultValue": 1,
+      "validation": {
+        "min": 0,
+        "max": 5
+      }
+    },
+    {
+      "configKey": "enableOrbitControls",
+      "configValue": true,
+      "configType": "boolean",
+      "description": "启用轨道控制",
+      "required": false,
+      "defaultValue": true
+    },
+    {
+      "configKey": "enableZoom",
+      "configValue": true,
+      "configType": "boolean",
+      "description": "启用缩放功能",
+      "required": false,
+      "defaultValue": true
+    },
+    {
+      "configKey": "maxZoom",
+      "configValue": 2,
+      "configType": "number",
+      "description": "最大缩放倍数",
+      "required": false,
+      "defaultValue": 2,
+      "validation": {
+        "min": 1,
+        "max": 10
+      }
+    },
+    {
+      "configKey": "enableFog",
+      "configValue": true,
+      "configType": "boolean",
+      "description": "启用雾效",
+      "required": false,
+      "defaultValue": true
+    },
+    {
+      "configKey": "lightIntensity",
+      "configValue": 1,
+      "configType": "number",
+      "description": "光照强度",
+      "required": false,
+      "defaultValue": 1,
+      "validation": {
+        "min": 0,
+        "max": 2
+      }
+    },
+    {
+      "configKey": "enableShadows",
+      "configValue": true,
+      "configType": "boolean",
+      "description": "启用阴影",
+      "required": false,
+      "defaultValue": true
+    },
+    {
+      "configKey": "enableStats",
+      "configValue": false,
+      "configType": "boolean",
+      "description": "启用性能统计",
+      "required": false,
+      "defaultValue": false
+    }
+  ],
+  "permissions": [
+    {
+      "key": "3d.view",
+      "name": "查看3D内容",
+      "description": "允许查看3D展示内容",
+      "level": "basic"
+    },
+    {
+      "key": "3d.interact",
+      "name": "3D交互",
+      "description": "允许与3D场景交互",
+      "level": "basic"
+    },
+    {
+      "key": "3d.upload",
+      "name": "上传3D模型",
+      "description": "允许上传3D模型",
+      "level": "advanced"
+    },
+    {
+      "key": "3d.admin",
+      "name": "3D管理",
+      "description": "允许管理3D设置",
+      "level": "admin"
+    }
+  ],
+  "lifecycle": {
+    "onInstall": "onInstall3DDisplay",
+    "onUninstall": "onUninstall3DDisplay",
+    "onActivate": "onActivate3DDisplay",
+    "onDeactivate": "onDeactivate3DDisplay"
+  }
+}
