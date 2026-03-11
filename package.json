@@ -59,6 +59,7 @@
     "@types/uuid": "^10.0.0",
     "@vicons/ionicons5": "^0.12.0",
     "bytemd": "^1.22.0",
+    "chart.js": "^4.4.1",
     "diff-match-patch": "^1.0.5",
     "echarts": "^6.0.0",
     "mysql2": "^3.15.3",
@@ -66,6 +67,7 @@
     "three": "^0.181.2",
     "uuid": "^13.0.0",
     "vfonts": "^0.0.3",
+    "vue-chartjs": "^4.1.1",
     "vue-echarts": "^8.0.1",
     "vue-toast-notification": "^3.1.3"
   }

@@ -99,11 +99,10 @@ export default defineNuxtConfig({
     }
   },
 
-  // CSS 配置 - 优化后的主要样式文件
+  // CSS 配置
   css: [
-    '~/assets/css/optimized-main.css', // 合并后的主样式文件（优化版）
     '~/assets/styles/glassmorphism.css', // Vision Pro × 玻璃拟态风格
-    '~/assets/styles/theme.css', // 保留旧的主题文件（兼容性）
+    '~/assets/styles/theme.css', // 主题文件
   ],
 
   // Nitro 配置（用于静态生成优化）
@@ -150,13 +149,13 @@ export default defineNuxtConfig({
             // 图表库
             'echarts': ['echarts', 'vue-echarts'],
             // 3D 库
-            'three': ['three', '@types/three'],
+            'three': ['three'],
             // Markdown 编辑器
             'bytemd': ['@bytemd/vue-next', '@bytemd/plugin-gfm', '@bytemd/plugin-highlight', '@bytemd/plugin-math', '@bytemd/plugin-medium-zoom', 'bytemd'],
             // 动画库
             'motion': ['@motionone/vue', '@motionone/dom'],
             // 工具库
-            'utils': ['uuid', '@types/uuid', 'diff-match-patch'],
+            'utils': ['uuid', 'diff-match-patch'],
             // 图标库
             'vicons': ['@vicons/ionicons5'],
             // 通知库
@@ -177,7 +176,6 @@ export default defineNuxtConfig({
         drop_debugger: true
       }
     }
-  },
   },
 
   compatibilityDate: '2024-04-03'

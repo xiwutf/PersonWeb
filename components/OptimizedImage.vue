@@ -1,6 +1,6 @@
 <template>
   <div
-    class="lazy-image-container"
+    class="image-container"
     :style="containerStyle"
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
@@ -235,7 +235,7 @@ onMounted(() => {
 
     // 延迟创建观察者，避免立即触发
     setTimeout(() => {
-      const image = document.querySelector('.lazy-image-container img')
+      const image = document.querySelector('.image-optimized-container img')
       if (image && !loaded.value) {
         observer.value?.observe(image)
       }
@@ -252,12 +252,12 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.lazy-image-container {
+.image-optimized-container {
   position: relative;
   overflow: hidden;
 }
 
-.lazy-placeholder {
+.placeholder {
   position: absolute;
   top: 0;
   left: 0;
@@ -299,12 +299,12 @@ onUnmounted(() => {
   }
 }
 
-.lazy-image {
+.image-optimized {
   opacity: 0;
   transition: opacity 0.3s ease;
 }
 
-.lazy-image.loaded {
+.image-optimized.loaded {
   opacity: 1;
 }
 
