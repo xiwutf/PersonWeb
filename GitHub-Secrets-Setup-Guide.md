@@ -1,4 +1,4 @@
-# GitHub Secrets 设置指南
+﻿# GitHub Secrets 设置指南
 
 ## 方法一：手动设置（推荐）
 
