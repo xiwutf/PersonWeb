@@ -123,6 +123,45 @@ A: Endpoint 应该是 `oss-<region>.aliyuncs.com`，不是 `http://` 或 `https:
 ### Q4: Bucket 名称冲突
 A: Bucket 名称必须全局唯一，尝试添加时间戳或随机字符。
 
+## 如何获取 OSS 配置信息
+
+### 1. 创建阿里云 OSS Bucket
+
+如果没有 OSS，请按以下步骤创建：
+
+1. **登录阿里云控制台**
+   - 访问 https://oss.console.aliyun.com/
+   - 使用你的阿里云账号登录
+
+2. **创建 Bucket**
+   - 点击"创建 Bucket"
+   - Bucket 名称：建议使用 `personweb-2024` 或类似格式（必须全局唯一）
+   - 选择地域：建议选择离用户最近的地域（如：杭州、上海）
+   - 读写权限：选择"公共读"
+   - 点击"确定"创建
+
+3. **获取 AccessKey**
+   - 访问 https://ram.console.aliyun.com/users
+   - 点击"创建用户"
+   - 用户名：`oss-deploy-user`
+   - 选择"编程访问"
+   - 点击"确定"
+   - 复制生成的 AccessKey ID 和 AccessKey Secret
+   - **注意**：只显示一次，请妥善保存！
+
+### 2. 项目中已有的配置
+
+从你的项目配置中，我发现：
+- 数据库已经在阿里云 RDS：`rm-2zereaqi1k536nd38zo.mysql.rds.aliyuncs.com`
+- API 基础路径（开发环境）：`http://localhost:5234/api`
+
+### 3. 生产环境 API 地址建议
+
+如果还没有域名，可以考虑：
+- 使用 GitHub Pages：`https://Lijing327.github.io/PersonWeb/api`
+- 使用 Vercel：`https://your-app-name.vercel.app/api`
+- 使用自建域名：`https://your-domain.com/api`
+
 ## 安全提示
 
 1. 不要将 AccessKey 写入代码或提交到仓库
