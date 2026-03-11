@@ -141,19 +141,26 @@ export const useAdminModuleStyle = (moduleKey: string) => {
     }
   })
 
-  // 获取模块样式类
+  // 获取模块样式类（改用内联样式以避免 esbuild CSS minify 警告）
   const moduleStyleClasses = computed(() => {
     const config = moduleStyleConfig.value
     if (!config) return ''
+    return 'admin-module-style'
+  })
 
-    const classes: string[] = []
-    
+  // 获取模块内联样式
+  const moduleInlineStyle = computed(() => {
+    const config = moduleStyleConfig.value
+    if (!config) return ''
+
+    const styles: string[] = []
+
     // 背景渐变
     if (config.bgGradient && Array.isArray(config.bgGradient)) {
-      classes.push(`bg-gradient-to-br from-[${config.bgGradient[0]}] to-[${config.bgGradient[1]}]`)
+      styles.push(`background: linear-gradient(135deg, ${config.bgGradient[0]}, ${config.bgGradient[1]})`)
     }
 
-    return classes.join(' ')
+    return styles.join('; ')
   })
 
   // 获取模块样式变量
@@ -177,6 +184,7 @@ export const useAdminModuleStyle = (moduleKey: string) => {
     moduleStyle: computed(() => moduleStyles.value[moduleKey]),
     moduleStyleConfig,
     moduleStyleClasses,
+    moduleInlineStyle,
     moduleStyleVars,
     fetchModuleStyle
   }

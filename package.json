@@ -59,7 +59,7 @@
     "@types/uuid": "^10.0.0",
     "@vicons/ionicons5": "^0.12.0",
     "bytemd": "^1.22.0",
-    "chart.js": "^4.4.1",
+    "chart.js": "^3.9.1",
     "diff-match-patch": "^1.0.5",
     "echarts": "^6.0.0",
     "mysql2": "^3.15.3",
