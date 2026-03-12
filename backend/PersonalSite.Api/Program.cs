@@ -51,8 +51,13 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     .EnableSensitiveDataLogging(builder.Environment.IsDevelopment()) // 仅在开发环境启用敏感数据日志（用于调试）
     .EnableDetailedErrors(builder.Environment.IsDevelopment()));     // 仅在开发环境启用详细错误（用于调试）
 
-// 2. 配置 JWT 认证
-var jwtKey = builder.Configuration["Jwt:Key"] ?? "YourSuperSecretKeyHere_MustBeAtLeast32BytesLong";
+// 2. 配置 JWT 认证（Key 为空时使用开发默认值，避免 IDX10703）
+string jwtKey = builder.Configuration["Jwt:Key"];
+if (string.IsNullOrWhiteSpace(jwtKey))
+{
+    jwtKey = "YourSuperSecretKeyHere_MustBeAtLeast32BytesLong";
+}
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -62,8 +67,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
+            ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "PersonalSite.Api",
+            ValidAudience = builder.Configuration["Jwt:Audience"] ?? "PersonalSite.Web",
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
         };
     });
