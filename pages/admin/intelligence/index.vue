@@ -552,7 +552,7 @@ onMounted(() => {
 }
 
 .category-item:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--color-border);
 }
 
 .category-name {
@@ -596,7 +596,7 @@ onMounted(() => {
 }
 
 .content-item:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--color-border);
 }
 
 .content-title {

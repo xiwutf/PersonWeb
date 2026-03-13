@@ -254,7 +254,7 @@ onMounted(() => {
 .search-input {
   flex: 1;
   padding: 0.75rem 1rem;
-  border: 2px solid #e2e8f0;
+  border: 2px solid var(--color-text-sub);
   border-radius: 8px;
   font-size: 1rem;
   transition: border-color 0.2s;
@@ -262,12 +262,12 @@ onMounted(() => {
 
 .search-input:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: var(--color-primary);
 }
 
 .search-btn {
   padding: 0.75rem;
-  background: #3b82f6;
+  background: var(--color-primary);
   color: white;
   border: none;
   border-radius: 8px;
@@ -276,7 +276,7 @@ onMounted(() => {
 }
 
 .search-btn:hover {
-  background: #2563eb;
+  background: var(--color-primary-hover);
 }
 
 .filter-controls {
@@ -287,7 +287,7 @@ onMounted(() => {
 .category-select,
 .sort-select {
   padding: 0.75rem;
-  border: 2px solid #e2e8f0;
+  border: 2px solid var(--color-text-sub);
   border-radius: 8px;
   font-size: 1rem;
   background: white;
@@ -307,7 +307,7 @@ onMounted(() => {
   width: 48px;
   height: 48px;
   border: 4px solid #f3f4f6;
-  border-top: 4px solid #3b82f6;
+  border-top: 4px solid var(--color-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 1rem;
@@ -327,7 +327,7 @@ onMounted(() => {
 .retry-btn {
   margin-top: 1rem;
   padding: 0.5rem 1rem;
-  background: #3b82f6;
+  background: var(--color-primary);
   color: white;
   border: none;
   border-radius: 6px;
@@ -349,7 +349,7 @@ onMounted(() => {
 
 .page-btn {
   padding: 0.5rem 1rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-text-sub);
   background: white;
   border-radius: 6px;
   cursor: pointer;
@@ -372,7 +372,7 @@ onMounted(() => {
 
 .page-number {
   padding: 0.5rem 0.75rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-text-sub);
   background: white;
   border-radius: 6px;
   cursor: pointer;
@@ -380,9 +380,9 @@ onMounted(() => {
 }
 
 .page-number.active {
-  background: #3b82f6;
+  background: var(--color-primary);
   color: white;
-  border-color: #3b82f6;
+  border-color: var(--color-primary);
 }
 
 .page-number:hover:not(.active) {

@@ -174,7 +174,7 @@ export const useTheme = () => {
    * - 后端 tokens 会覆盖默认 tokens 中对应的字段
    * - 如果后端没有提供某个主题的 tokens，使用默认值
    * 
-   * @param tokensFromBackend 后端返回的 tokens，格式为 { themeKey: { "color.bg.body": "#ffffff", ... } }
+   * @param tokensFromBackend 后端返回的 tokens，格式为 { themeKey: { "color.bg.body": "var(--color-bg-card)", ... } }
    */
   const setBackendThemeTokens = (
     tokensFromBackend: Partial<Record<ThemeKey, Record<string, string>>>

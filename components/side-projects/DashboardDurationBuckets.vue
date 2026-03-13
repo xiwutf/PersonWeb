@@ -80,7 +80,7 @@ const chartOption = computed(() => {
       data: sortedData.map(item => item.bucketName),
       axisLine: {
         lineStyle: {
-          color: isDark.value ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'
+          color: isDark.value ? 'rgba(255, 255, 255, 0.2)' : 'var(--shadow)'
         }
       },
       axisLabel: {
@@ -91,7 +91,7 @@ const chartOption = computed(() => {
       type: 'value',
       axisLine: {
         lineStyle: {
-          color: getCssVar('--color-border-default') || (isDark.value ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)')
+          color: getCssVar('--color-border-default') || (isDark.value ? 'rgba(255, 255, 255, 0.2)' : 'var(--shadow)')
         }
       },
       axisLabel: {
@@ -99,7 +99,7 @@ const chartOption = computed(() => {
       },
       splitLine: {
         lineStyle: {
-          color: getCssVar('--chart-grid') || (isDark.value ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)')
+          color: getCssVar('--chart-grid') || (isDark.value ? 'rgba(255, 255, 255, 0.1)' : 'var(--color-border)')
         }
       }
     },

@@ -295,7 +295,7 @@ const sendMessage = async () => {
   max-height: calc(100vh - 1rem);
   background: var(--color-bg-card, white);
   border-radius: 1rem;
-  box-shadow: var(--shadow-xl, 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04));
+  box-shadow: var(--shadow-xl, 0 20px 25px -5px var(--shadow), 0 10px 10px -5px rgba(0, 0, 0, 0.04));
   border: 1px solid var(--color-border-subtle, rgba(229, 231, 235, 1));
   z-index: 10000 !important; /* 确保对话框也在最上层 */
   display: flex;

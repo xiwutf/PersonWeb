@@ -197,7 +197,7 @@ onMounted(() => {
   background: white;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px var(--shadow);
   transition: all 0.3s ease;
   height: 100%;
   display: flex;
@@ -293,14 +293,14 @@ onMounted(() => {
 }
 
 .version {
-  background: #e5e7eb;
-  color: #6b7280;
+  background: var(--color-border);
+  color: var(--color-text-sec);
   padding: 0.125rem 0.5rem;
   border-radius: 4px;
 }
 
 .category {
-  color: #6b7280;
+  color: var(--color-text-sec);
 }
 
 .module-description {
@@ -320,7 +320,7 @@ onMounted(() => {
 
 .tag {
   background: #f3f4f6;
-  color: #6b7280;
+  color: var(--color-text-sec);
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   font-size: 0.75rem;
@@ -331,7 +331,7 @@ onMounted(() => {
   gap: 1rem;
   margin-bottom: 1rem;
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--color-text-sec);
 }
 
 .stat-item {
@@ -358,21 +358,21 @@ onMounted(() => {
 }
 
 .action-btn.primary {
-  background: #3b82f6;
+  background: var(--color-primary);
   color: white;
 }
 
 .action-btn.primary:hover {
-  background: #2563eb;
+  background: var(--color-primary-hover);
 }
 
 .action-btn.secondary {
   background: #f3f4f6;
-  color: #374151;
+  color: var(--color-text-main);
 }
 
 .action-btn.secondary:hover {
-  background: #e5e7eb;
+  background: var(--color-border);
 }
 
 @media (max-width: 640px) {

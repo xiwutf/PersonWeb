@@ -402,9 +402,9 @@ const { handleError } = useErrorHandler()
 // 获取默认颜色（从 CSS 变量）
 const getDefaultCategoryColor = () => {
   if (process.client) {
-    return getComputedStyle(document.documentElement).getPropertyValue('--color-text-muted').trim() || '#6b7280'
+    return getComputedStyle(document.documentElement).getPropertyValue('--color-text-muted').trim() || 'var(--color-text-sec)'
   }
-  return '#6b7280'
+  return 'var(--color-text-sec)'
 }
 
 const defaultCategoryColor = getDefaultCategoryColor()
@@ -591,40 +591,40 @@ onMounted(() => {
 <style scoped>
 /* 标题样式 - 使用 CSS 变量 */
 .skill-tree-title {
-  color: var(--color-text-main, #0f172a);
+  color: var(--color-text-main, var(--color-text-main));
 }
 
 /* 分类卡片样式 - 使用 CSS 变量 */
 .skill-category-card {
-  background: var(--color-bg-card, #ffffff);
-  border: 1px solid var(--color-border-subtle, #e5e7eb);
+  background: var(--color-bg-card, var(--color-bg-card));
+  border: 1px solid var(--color-border-subtle, var(--color-border));
   border-radius: 0.5rem;
   padding: 1.5rem;
-  box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+  box-shadow: var(--shadow-sm, 0 1px 2px 0 var(--color-border));
 }
 
 .category-name {
-  color: var(--color-text-main, #0f172a);
+  color: var(--color-text-main, var(--color-text-main));
 }
 
 .category-count {
-  color: var(--color-text-muted, #6b7280);
+  color: var(--color-text-muted, var(--color-text-sec));
 }
 
 /* 技能项卡片样式 - 使用 CSS 变量 */
 .skill-item-card {
-  border: 1px solid var(--color-border-subtle, #e5e7eb);
+  border: 1px solid var(--color-border-subtle, var(--color-border));
   border-radius: 0.5rem;
   padding: 1rem;
   transition: box-shadow 0.2s ease;
 }
 
 .skill-item-card:hover {
-  box-shadow: var(--shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+  box-shadow: var(--shadow-md, 0 4px 6px -1px var(--shadow));
 }
 
 .skill-name {
-  color: var(--color-text-main, #0f172a);
+  color: var(--color-text-main, var(--color-text-main));
 }
 
 .skill-description {
@@ -632,7 +632,7 @@ onMounted(() => {
 }
 
 .skill-label {
-  color: var(--color-text-muted, #6b7280);
+  color: var(--color-text-muted, var(--color-text-sec));
 }
 
 .skill-rating-bar-bg {
@@ -649,11 +649,11 @@ onMounted(() => {
 }
 
 .skill-action-btn-primary {
-  color: var(--color-primary, #3b82f6);
+  color: var(--color-primary, var(--color-primary));
 }
 
 .skill-action-btn-primary:hover {
-  color: var(--color-primary-hover, #2563eb);
+  color: var(--color-primary-hover, var(--color-primary-hover));
 }
 
 .skill-action-btn-success {
@@ -665,27 +665,27 @@ onMounted(() => {
 }
 
 .skill-action-btn-default {
-  color: var(--color-text-muted, #6b7280);
+  color: var(--color-text-muted, var(--color-text-sec));
 }
 
 .skill-action-btn-default:hover {
-  color: var(--color-text-main, #0f172a);
+  color: var(--color-text-main, var(--color-text-main));
 }
 
 /* 空状态样式 - 使用 CSS 变量 */
 .empty-state {
-  background: var(--color-bg-card, #ffffff);
+  background: var(--color-bg-card, var(--color-bg-card));
   border-radius: 0.5rem;
 }
 
 .empty-state-text {
-  color: var(--color-text-muted, #6b7280);
+  color: var(--color-text-muted, var(--color-text-sec));
 }
 
 /* 深色主题适配 */
 html[data-theme="dark"] .skill-tree-title,
 html.dark .skill-tree-title {
-  color: var(--color-text-main, #ffffff);
+  color: var(--color-text-main, var(--color-bg-card));
 }
 
 html[data-theme="dark"] .skill-category-card,
@@ -696,7 +696,7 @@ html.dark .skill-category-card {
 
 html[data-theme="dark"] .category-name,
 html.dark .category-name {
-  color: var(--color-text-main, #ffffff);
+  color: var(--color-text-main, var(--color-bg-card));
 }
 
 html[data-theme="dark"] .category-count,
@@ -711,7 +711,7 @@ html.dark .skill-item-card {
 
 html[data-theme="dark"] .skill-name,
 html.dark .skill-name {
-  color: var(--color-text-main, #ffffff);
+  color: var(--color-text-main, var(--color-bg-card));
 }
 
 html[data-theme="dark"] .skill-description,
@@ -739,7 +739,7 @@ html.dark .empty-state {
 }
 
 .rating-color-good {
-  color: var(--color-primary, #3b82f6);
+  color: var(--color-primary, var(--color-primary));
 }
 
 .rating-color-fair {
@@ -756,7 +756,7 @@ html.dark .empty-state {
 }
 
 .rating-bar-good {
-  background: var(--color-primary, #3b82f6);
+  background: var(--color-primary, var(--color-primary));
 }
 
 .rating-bar-fair {

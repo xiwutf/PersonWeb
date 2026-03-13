@@ -193,8 +193,8 @@ onMounted(() => {
 }
 
 .home-creative-avatar-3 {
-  background: var(--color-bg-elevated, #6b7280);
-  color: var(--color-text-main, #ffffff);
+  background: var(--color-bg-elevated, var(--color-text-sec));
+  color: var(--color-text-main, var(--color-bg-card));
 }
 
 /* 深色主题适配 */
@@ -216,6 +216,6 @@ html.dark .home-creative-avatar-2 {
 html[data-theme="dark"] .home-creative-avatar-3,
 html.dark .home-creative-avatar-3 {
   background: var(--color-bg-elevated, rgba(255, 255, 255, 0.25));
-  color: var(--color-text-main, #ffffff);
+  color: var(--color-text-main, var(--color-bg-card));
 }
 </style>

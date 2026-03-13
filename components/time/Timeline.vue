@@ -68,9 +68,9 @@ const api = useApi()
 // 获取默认颜色（从 CSS 变量）
 const getDefaultColor = () => {
   if (process.client) {
-    return getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim() || '#3b82f6'
+    return getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim() || 'var(--color-primary)'
   }
-  return '#3b82f6'
+  return 'var(--color-primary)'
 }
 
 const defaultColor = getDefaultColor()
@@ -118,36 +118,36 @@ onMounted(() => {
 
 /* 时间线容器样式 - 使用 CSS 变量 */
 .timeline-container {
-  background: linear-gradient(to bottom, var(--color-bg-body, #f8fafc), var(--color-bg-card, #ffffff));
+  background: linear-gradient(to bottom, var(--color-bg-body, #f8fafc), var(--color-bg-card, var(--color-bg-card)));
 }
 
 .timeline-title {
-  color: var(--color-text-main, #0f172a);
+  color: var(--color-text-main, var(--color-text-main));
 }
 
 .timeline-subtitle {
-  color: var(--color-text-sub, #475569);
+  color: var(--color-text-sub, var(--color-text-sec));
 }
 
 .timeline-line-gradient {
-  background: linear-gradient(to bottom, var(--color-primary, #3b82f6), var(--color-purple, #a855f7), var(--color-error, #ec4899));
+  background: linear-gradient(to bottom, var(--color-primary, var(--color-primary)), var(--color-purple, #a855f7), var(--color-error, #ec4899));
 }
 
 .timeline-card {
-  background: var(--color-bg-card, #ffffff);
+  background: var(--color-bg-card, var(--color-bg-card));
 }
 
 .timeline-card-title {
-  color: var(--color-text-main, #0f172a);
+  color: var(--color-text-main, var(--color-text-main));
 }
 
 .timeline-card-description {
-  color: var(--color-text-sub, #475569);
+  color: var(--color-text-sub, var(--color-text-sec));
 }
 
 .timeline-loading,
 .timeline-empty {
-  color: var(--color-text-muted, #64748b);
+  color: var(--color-text-muted, var(--color-text-sec));
 }
 
 /* 深色主题适配 */
@@ -158,7 +158,7 @@ html.dark .timeline-container {
 
 html[data-theme="dark"] .timeline-title,
 html.dark .timeline-title {
-  color: var(--color-text-main, #ffffff);
+  color: var(--color-text-main, var(--color-bg-card));
 }
 
 html[data-theme="dark"] .timeline-subtitle,
@@ -173,7 +173,7 @@ html.dark .timeline-card {
 
 html[data-theme="dark"] .timeline-card-title,
 html.dark .timeline-card-title {
-  color: var(--color-text-main, #ffffff);
+  color: var(--color-text-main, var(--color-bg-card));
 }
 
 html[data-theme="dark"] .timeline-card-description,

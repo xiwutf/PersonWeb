@@ -413,27 +413,27 @@ onMounted(() => {
 <style scoped>
 /* 页面标题 - 使用 CSS 变量 */
 .tasks-page-title {
-  color: var(--color-text-main, #0f172a);
+  color: var(--color-text-main, var(--color-text-main));
 }
 
 /* 统计卡片样式 - 使用 CSS 变量 */
 .task-stat-card {
-  background: var(--color-bg-card, #ffffff);
-  border: 1px solid var(--color-border-subtle, #e5e7eb);
+  background: var(--color-bg-card, var(--color-bg-card));
+  border: 1px solid var(--color-border-subtle, var(--color-border));
   border-radius: 0.5rem;
   padding: 1rem;
-  box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+  box-shadow: var(--shadow-sm, 0 1px 2px 0 var(--color-border));
 }
 
 .task-stat-label {
   font-size: 0.875rem;
-  color: var(--color-text-muted, #6b7280);
+  color: var(--color-text-muted, var(--color-text-sec));
 }
 
 .task-stat-value {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--color-text-main, #0f172a);
+  color: var(--color-text-main, var(--color-text-main));
 }
 
 .task-stat-value-warning {
@@ -441,7 +441,7 @@ onMounted(() => {
 }
 
 .task-stat-value-primary {
-  color: var(--color-primary, #3b82f6);
+  color: var(--color-primary, var(--color-primary));
 }
 
 .task-stat-value-success {
@@ -454,15 +454,15 @@ onMounted(() => {
 
 /* 筛选栏样式 - 使用 CSS 变量 */
 .task-filter-bar {
-  background: var(--color-bg-card, #ffffff);
-  border: 1px solid var(--color-border-subtle, #e5e7eb);
+  background: var(--color-bg-card, var(--color-bg-card));
+  border: 1px solid var(--color-border-subtle, var(--color-border));
   border-radius: 0.5rem;
   padding: 1rem;
   margin-bottom: 1.5rem;
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
-  box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+  box-shadow: var(--shadow-sm, 0 1px 2px 0 var(--color-border));
 }
 
 /* 任务状态样式 - 使用 CSS 变量 */
@@ -477,7 +477,7 @@ onMounted(() => {
 
 .task-status-in-progress {
   background: var(--color-primary-soft, rgba(59, 130, 246, 0.1));
-  color: var(--color-primary, #3b82f6);
+  color: var(--color-primary, var(--color-primary));
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
   font-size: 0.75rem;
@@ -495,7 +495,7 @@ onMounted(() => {
 
 .task-status-cancelled {
   background: var(--color-bg-elevated, #f3f4f6);
-  color: var(--color-text-muted, #6b7280);
+  color: var(--color-text-muted, var(--color-text-sec));
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
   font-size: 0.75rem;
@@ -505,7 +505,7 @@ onMounted(() => {
 /* 任务优先级样式 - 使用 CSS 变量 */
 .task-priority-low {
   background: var(--color-bg-elevated, #f3f4f6);
-  color: var(--color-text-muted, #6b7280);
+  color: var(--color-text-muted, var(--color-text-sec));
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
   font-size: 0.75rem;
@@ -514,7 +514,7 @@ onMounted(() => {
 
 .task-priority-medium {
   background: var(--color-primary-soft, rgba(59, 130, 246, 0.1));
-  color: var(--color-primary, #3b82f6);
+  color: var(--color-primary, var(--color-primary));
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
   font-size: 0.75rem;
@@ -545,7 +545,7 @@ onMounted(() => {
 }
 
 .task-progress-good {
-  background: var(--color-primary, #3b82f6);
+  background: var(--color-primary, var(--color-primary));
 }
 
 .task-progress-fair {
@@ -559,7 +559,7 @@ onMounted(() => {
 /* 深色主题适配 */
 html[data-theme="dark"] .tasks-page-title,
 html.dark .tasks-page-title {
-  color: var(--color-text-main, #ffffff);
+  color: var(--color-text-main, var(--color-bg-card));
 }
 
 html[data-theme="dark"] .task-stat-card,
@@ -586,20 +586,20 @@ html.dark .task-filter-bar {
 
 /* 任务列表样式 - 使用 CSS 变量 */
 .task-list-container {
-  background: var(--color-bg-card, #ffffff);
-  border: 1px solid var(--color-border-subtle, #e5e7eb);
+  background: var(--color-bg-card, var(--color-bg-card));
+  border: 1px solid var(--color-border-subtle, var(--color-border));
   border-radius: 0.5rem;
-  box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+  box-shadow: var(--shadow-sm, 0 1px 2px 0 var(--color-border));
   overflow: hidden;
 }
 
 .task-list-loading,
 .task-list-empty {
-  color: var(--color-text-muted, #6b7280);
+  color: var(--color-text-muted, var(--color-text-sec));
 }
 
 .task-list-divider > * + * {
-  border-top: 1px solid var(--color-border-subtle, #e5e7eb);
+  border-top: 1px solid var(--color-border-subtle, var(--color-border));
 }
 
 .task-list-item {
@@ -612,7 +612,7 @@ html.dark .task-filter-bar {
 }
 
 .task-list-item-title {
-  color: var(--color-text-main, #0f172a);
+  color: var(--color-text-main, var(--color-text-main));
 }
 
 .task-list-item-description {
@@ -620,16 +620,16 @@ html.dark .task-filter-bar {
 }
 
 .task-list-item-meta {
-  color: var(--color-text-muted, #6b7280);
+  color: var(--color-text-muted, var(--color-text-sec));
 }
 
 .task-list-item-category {
   background: var(--color-bg-elevated, #f3f4f6);
-  color: var(--color-text-muted, #6b7280);
+  color: var(--color-text-muted, var(--color-text-sec));
 }
 
 .task-list-progress-bg {
-  background: var(--color-bg-elevated, #e5e7eb);
+  background: var(--color-bg-elevated, var(--color-border));
 }
 
 .task-list-action-btn {
@@ -640,11 +640,11 @@ html.dark .task-filter-bar {
 }
 
 .task-list-action-btn-primary {
-  color: var(--color-primary, #3b82f6);
+  color: var(--color-primary, var(--color-primary));
 }
 
 .task-list-action-btn-primary:hover {
-  color: var(--color-primary-hover, #2563eb);
+  color: var(--color-primary-hover, var(--color-primary-hover));
 }
 
 .task-list-action-btn-error {
@@ -669,7 +669,7 @@ html.dark .task-list-item:hover {
 
 html[data-theme="dark"] .task-list-item-title,
 html.dark .task-list-item-title {
-  color: var(--color-text-main, #ffffff);
+  color: var(--color-text-main, var(--color-bg-card));
 }
 
 html[data-theme="dark"] .task-list-item-description,

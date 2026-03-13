@@ -115,7 +115,7 @@ const props = withDefaults(defineProps<Props>(), {
   rootMargin: '50px',
   downloadUrl: '',
   showHover: true,
-  placeholderColor: '#e5e7eb'
+  placeholderColor: 'var(--color-border)'
 })
 
 // Emits
@@ -318,7 +318,7 @@ onUnmounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #6b7280;
+  color: var(--color-text-sec);
   font-size: 14px;
   text-align: center;
   padding: 20px;
@@ -371,7 +371,7 @@ onUnmounted(() => {
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  color: #374151;
+  color: var(--color-text-main);
 }
 
 .hover-action:hover {

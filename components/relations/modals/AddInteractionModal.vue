@@ -145,7 +145,7 @@
           <n-divider style="margin: 12px 0;">AI 分析结果</n-divider>
           
           <!-- 调试：显示原始数据 -->
-          <div v-if="isDev" style="font-size: 12px; color: #999; margin-bottom: 8px;">
+          <div v-if="isDev" style="font-size: 12px; color: var(--color-text-muted); margin-bottom: 8px;">
             调试：summary = {{ aiResult.summary ? '存在' : '不存在' }}, 
             oneLine = {{ getOneLine() || '(空)' }},
             keyFacts = {{ getKeyFacts().length }} 条
@@ -285,9 +285,9 @@
           <!-- 调试信息（开发环境显示） -->
           <div v-if="isDev && aiResult" class="ai-debug">
             <n-divider style="margin: 8px 0;" />
-            <details style="font-size: 12px; color: #666;">
+            <details style="font-size: 12px; color: var(--color-text-muted);">
               <summary style="cursor: pointer;">调试信息（点击展开）</summary>
-              <pre style="margin-top: 8px; padding: 8px; background: #f5f5f5; border-radius: 4px; overflow-x: auto;">{{ JSON.stringify(aiResult, null, 2) }}</pre>
+              <pre style="margin-top: 8px; padding: 8px; background: var(--color-bg-card); border-radius: 4px; overflow-x: auto;">{{ JSON.stringify(aiResult, null, 2) }}</pre>
             </details>
           </div>
         </div>
@@ -1026,7 +1026,7 @@ const handleSubmitWithAi = async () => {
 
 [data-theme="dark"] .ai-section {
   background: rgba(31, 41, 55, 0.6);
-  border: 1px solid #374151;
+  border: 1px solid var(--color-text-main);
 }
 
 .ai-data-source {
@@ -1086,10 +1086,10 @@ const handleSubmitWithAi = async () => {
 .ai-result {
   margin-top: 12px;
   padding: 18px;
-  background: #ffffff;
+  background: var(--color-bg-card);
   border-radius: 8px;
   border: 1px solid #d1d5db;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px var(--shadow);
 }
 
 [data-theme="dark"] .ai-result {
@@ -1123,7 +1123,7 @@ const handleSubmitWithAi = async () => {
 
 .message-draft-item:hover {
   border-color: var(--color-primary) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px var(--shadow);
 }
 
 .draft-empty {
@@ -1194,29 +1194,29 @@ const handleSubmitWithAi = async () => {
 .ai-summary-content {
   margin-top: 10px;
   padding: 16px 18px;
-  background: #ffffff;
+  background: var(--color-bg-card);
   border-radius: 6px;
   font-size: 16px;
   line-height: 1.8;
-  color: #111827;
-  border: 1px solid #e5e7eb;
-  border-left: 4px solid #3b82f6;
+  color: var(--color-text-main);
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-primary);
   white-space: pre-wrap;
   word-wrap: break-word;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 2px var(--color-border);
 }
 
 [data-theme="dark"] .ai-summary-content {
-  background: #111827;
+  background: var(--color-text-main);
   color: #f9fafb;
-  border-color: #374151;
-  border-left-color: #60a5fa;
+  border-color: var(--color-text-main);
+  border-left-color: var(--color-primary-soft);
 }
 
 .ai-summary-empty {
   margin-top: 10px;
   padding: 12px;
-  color: #6b7280;
+  color: var(--color-text-sec);
   font-style: italic;
   font-size: 14px;
 }
@@ -1241,15 +1241,15 @@ const handleSubmitWithAi = async () => {
   padding: 8px 12px;
   font-size: 15px;
   line-height: 1.8;
-  color: #111827;
-  background: #ffffff;
+  color: var(--color-text-main);
+  background: var(--color-bg-card);
   border-radius: 4px;
   border-left: 3px solid #10b981;
 }
 
 [data-theme="dark"] .ai-key-fact-item {
   color: #f9fafb;
-  background: #111827;
+  background: var(--color-text-main);
   border-left-color: #34d399;
 }
 
@@ -1264,23 +1264,23 @@ const handleSubmitWithAi = async () => {
   align-items: center;
   margin: 12px 0;
   padding: 16px 18px;
-  background: #ffffff;
+  background: var(--color-bg-card);
   border-radius: 6px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-border);
   gap: 12px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 2px var(--color-border);
 }
 
 [data-theme="dark"] .action-item {
-  background: #111827;
-  border-color: #374151;
+  background: var(--color-text-main);
+  border-color: var(--color-text-main);
 }
 
 .action-content {
   flex: 1;
   font-size: 15px;
   line-height: 1.7;
-  color: #111827;
+  color: var(--color-text-main);
 }
 
 [data-theme="dark"] .action-content {
@@ -1301,7 +1301,7 @@ const handleSubmitWithAi = async () => {
 .action-when,
 .action-why {
   font-size: 14px;
-  color: #374151;
+  color: var(--color-text-main);
 }
 
 [data-theme="dark"] .action-when,
@@ -1319,27 +1319,27 @@ const handleSubmitWithAi = async () => {
   margin: 12px 0;
   padding: 16px 18px;
   padding-right: 45px;
-  background: #ffffff;
+  background: var(--color-bg-card);
   border-radius: 6px;
   cursor: pointer;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-border);
   transition: all 0.2s;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 2px var(--color-border);
 }
 
 [data-theme="dark"] .message-draft-item {
-  background: #111827;
-  border-color: #374151;
+  background: var(--color-text-main);
+  border-color: var(--color-text-main);
 }
 
 .message-draft-item:hover {
-  border-color: #3b82f6;
+  border-color: var(--color-primary);
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
   transform: translateY(-1px);
 }
 
 [data-theme="dark"] .message-draft-item:hover {
-  border-color: #60a5fa;
+  border-color: var(--color-primary-soft);
   background: #1e2937;
 }
 
@@ -1350,7 +1350,7 @@ const handleSubmitWithAi = async () => {
 
 .draft-scene {
   font-size: 13px;
-  color: #6b7280;
+  color: var(--color-text-sec);
   margin-bottom: 10px;
   font-weight: 600;
   text-transform: uppercase;
@@ -1364,7 +1364,7 @@ const handleSubmitWithAi = async () => {
 .draft-text {
   font-size: 15px;
   line-height: 1.8;
-  color: #111827;
+  color: var(--color-text-main);
   white-space: pre-wrap;
   word-wrap: break-word;
   font-weight: 400;
@@ -1378,13 +1378,13 @@ const handleSubmitWithAi = async () => {
   position: absolute;
   top: 14px;
   right: 14px;
-  color: #6b7280;
+  color: var(--color-text-sec);
   font-size: 16px;
   transition: color 0.2s;
 }
 
 .message-draft-item:hover .copy-icon {
-  color: #3b82f6;
+  color: var(--color-primary);
 }
 
 [data-theme="dark"] .copy-icon {
@@ -1392,7 +1392,7 @@ const handleSubmitWithAi = async () => {
 }
 
 [data-theme="dark"] .message-draft-item:hover .copy-icon {
-  color: #60a5fa;
+  color: var(--color-primary-soft);
 }
 
 .ai-heat-score-hint {
@@ -1400,12 +1400,12 @@ const handleSubmitWithAi = async () => {
   padding: 12px;
   background: rgba(59, 130, 246, 0.1);
   border-radius: 6px;
-  border-left: 3px solid #3b82f6;
+  border-left: 3px solid var(--color-primary);
 }
 
 [data-theme="dark"] .ai-heat-score-hint {
   background: rgba(59, 130, 246, 0.15);
-  border-left-color: #60a5fa;
+  border-left-color: var(--color-primary-soft);
 }
 
 .heat-score-content {
@@ -1452,14 +1452,14 @@ const handleSubmitWithAi = async () => {
 .question-item {
   margin: 10px 0;
   padding: 14px 16px;
-  background: #ffffff;
+  background: var(--color-bg-card);
   border-radius: 6px;
   font-size: 15px;
   line-height: 1.7;
   color: #78350f;
   border: 1px solid #fde68a;
   border-left: 4px solid #f59e0b;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 2px var(--color-border);
 }
 
 [data-theme="dark"] .question-item {
@@ -1472,7 +1472,7 @@ const handleSubmitWithAi = async () => {
 .questions-hint {
   margin-top: 12px;
   font-size: 13px;
-  color: #6b7280;
+  color: var(--color-text-sec);
   font-style: italic;
 }
 

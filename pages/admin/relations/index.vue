@@ -1053,7 +1053,7 @@ onMounted(async () => {
   overflow: hidden;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px var(--color-border);
 }
 
 .kanban-column-header {

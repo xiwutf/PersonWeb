@@ -532,7 +532,7 @@ useHead({
 
 .blog-page-size-label {
   font-size: 0.875rem;
-  color: #94a3b8;
+  color: var(--color-text-muted);
 }
 
 .blog-info-page {
@@ -581,7 +581,7 @@ useHead({
 }
 
 .blog-sidebar-icon--blue {
-  color: #60a5fa;
+  color: var(--color-primary-soft);
 }
 
 .blog-sidebar-icon--emerald {

@@ -76,7 +76,7 @@ const initParticles = () => {
 
   const count = props.config.count || 100
   const speed = props.config.speed || 1
-  const color = props.config.color || '#3b82f6'
+  const color = props.config.color || 'var(--color-primary)'
 
   particles = []
   for (let i = 0; i < count; i++) {

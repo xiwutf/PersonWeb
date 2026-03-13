@@ -93,7 +93,7 @@ withDefaults(defineProps<Props>(), {
 .action-button:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--color-border);
   border-color: rgba(255, 255, 255, 0.2);
 }
 
@@ -110,7 +110,7 @@ withDefaults(defineProps<Props>(), {
 .action-label {
   font-size: 0.875rem;
   font-weight: 500;
-  color: #e5e7eb;
+  color: var(--color-border);
   position: relative;
   z-index: 1;
 }

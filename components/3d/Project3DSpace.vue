@@ -224,11 +224,11 @@ const createTextTexture = (text: string): Promise<THREE.Texture> => {
     }
     
     // 背景
-    ctx.fillStyle = '#1e293b'
+    ctx.fillStyle = 'var(--color-border-default)'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
     
     // 文字
-    ctx.fillStyle = '#ffffff'
+    ctx.fillStyle = 'var(--color-bg-card)'
     ctx.font = 'bold 48px Arial'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
@@ -405,9 +405,9 @@ onUnmounted(() => {
   padding: 0.75rem 1.25rem;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
-  border: 2px solid rgba(59, 130, 246, 0.3);
+  border: 2px solid var(--theme-primary);
   border-radius: 0.75rem;
-  color: #1e293b;
+  color: var(--color-border-default);
   font-weight: 600;
   font-size: 0.875rem;
   cursor: pointer;
@@ -472,7 +472,7 @@ onUnmounted(() => {
   max-width: 24rem;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
   z-index: 100;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--shadow);
 }
 
 .project-3d-info-close {
@@ -485,9 +485,9 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.1);
+  background: var(--shadow);
   border: none;
-  color: #1e293b;
+  color: var(--color-border-default);
   font-size: 1.5rem;
   line-height: 1;
   cursor: pointer;
@@ -503,12 +503,12 @@ onUnmounted(() => {
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
-  color: #1e293b;
+  color: var(--color-border-default);
   padding-right: 2rem;
 }
 
 .project-3d-info-description {
-  color: #64748b;
+  color: var(--color-text-sec);
   margin-bottom: 1rem;
   line-height: 1.6;
 }
@@ -529,23 +529,23 @@ onUnmounted(() => {
 }
 
 .project-3d-info-button-primary {
-  background: #3b82f6;
+  background: var(--color-primary);
   color: white;
 }
 
 .project-3d-info-button-primary:hover {
-  background: #2563eb;
+  background: var(--color-primary-hover);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
 
 .project-3d-info-button-secondary {
-  background: #1e293b;
+  background: var(--color-border-default);
   color: white;
 }
 
 .project-3d-info-button-secondary:hover {
-  background: #0f172a;
+  background: var(--color-text-main);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
@@ -603,7 +603,7 @@ onUnmounted(() => {
 }
 
 :global(.dark) .project-3d-info-description {
-  color: #94a3b8;
+  color: var(--color-text-muted);
 }
 
 :global(.dark) .project-3d-info-close {

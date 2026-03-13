@@ -416,7 +416,7 @@ onMounted(() => {
 .tag-success {
   background: var(--color-success-soft, rgba(34, 197, 94, 0.2));
   border: 1px solid var(--color-success, rgba(34, 197, 94, 0.4));
-  color: var(--color-success, #22c55e);
+  color: var(--color-success, var(--color-success));
 }
 
 .tag-default {
@@ -460,7 +460,7 @@ onMounted(() => {
 }
 
 .btn-link-blue {
-  color: var(--color-primary, #60a5fa);
+  color: var(--color-primary, var(--color-primary-soft));
 }
 
 .btn-link-blue:hover {

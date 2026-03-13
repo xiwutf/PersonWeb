@@ -97,7 +97,7 @@ const initCanvas = () => {
 }
 
 // 创建爆裂粒子
-const createBurst = (x: number, y: number, color: string = '#3b82f6') => {
+const createBurst = (x: number, y: number, color: string = 'var(--color-primary)') => {
   const count = 8
   for (let i = 0; i < count; i++) {
     const angle = (Math.PI * 2 * i) / count
@@ -237,7 +237,7 @@ const handleClick = (e: MouseEvent) => {
   const x = Math.max(0, Math.min(e.clientX, window.innerWidth))
   const y = Math.max(0, Math.min(e.clientY, window.innerHeight))
   createRipple(x, y)
-  createBurst(x, y, '#60a5fa')
+  createBurst(x, y, 'var(--color-primary-soft)')
 }
 
 let resizeCleanup: (() => void) | null = null

@@ -7,11 +7,11 @@
    默认风格 (Default)
    ============================================ */
 .theme-default {
-  --theme-primary: #3b82f6;
-  --theme-bg: #ffffff;
+  --theme-primary: var(--color-primary);
+  --theme-bg: var(--color-bg-card);
   --theme-text: #1f2937;
-  --theme-card-bg: #ffffff;
-  --theme-border: #e5e7eb;
+  --theme-card-bg: var(--color-bg-card);
+  --theme-border: var(--color-text-sec);
 }
 
 .theme-default body {
@@ -24,10 +24,10 @@
    ============================================ */
 .theme-minimal {
   --theme-primary: #000000;
-  --theme-bg: #ffffff;
+  --theme-bg: var(--color-bg-card);
   --theme-text: #000000;
-  --theme-card-bg: #ffffff;
-  --theme-border: #e5e7eb;
+  --theme-card-bg: var(--color-bg-card);
+  --theme-border: var(--color-text-sec);
   --theme-spacing: 2rem;
 }
 
@@ -108,11 +108,11 @@
    暗黑科技风 (Dark Tech)
    ============================================ */
 .theme-dark-tech {
-  --theme-primary: #3b82f6;
-  --theme-bg: #0f172a;
-  --theme-text: #e2e8f0;
+  --theme-primary: var(--color-primary);
+  --theme-bg: var(--color-text-main);
+  --theme-text: var(--color-text-sub);
   --theme-card-bg: rgba(15, 23, 42, 0.8);
-  --theme-border: rgba(59, 130, 246, 0.3);
+  --theme-border: var(--theme-primary);
   --theme-grid: rgba(59, 130, 246, 0.1);
 }
 
@@ -152,9 +152,9 @@
   --theme-primary: #f59e0b;
   --theme-bg: #fef3c7;
   --theme-text: #78350f;
-  --theme-card-bg: #ffffff;
+  --theme-card-bg: var(--color-bg-card);
   --theme-border: #fbbf24;
-  --theme-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
+  --theme-shadow: 4px 4px 0px var(--shadow);
 }
 
 .theme-cartoon body {
@@ -192,7 +192,7 @@
 
 .theme-cartoon button:hover {
   transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.1);
+  box-shadow: 6px 6px 0px var(--shadow);
 }
 
 /* 手绘风格装饰 */

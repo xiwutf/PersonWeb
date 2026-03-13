@@ -87,11 +87,11 @@ const formattedValue = computed(() => {
 
 /* 加载状态样式 - 使用 CSS 变量 */
 .kpi-loading-dot {
-  background: var(--color-bg-elevated, #e5e7eb);
+  background: var(--color-bg-elevated, var(--color-border));
 }
 
 .kpi-loading-bar {
-  background: var(--color-bg-elevated, #e5e7eb);
+  background: var(--color-bg-elevated, var(--color-border));
 }
 
 /* 深色主题适配 */

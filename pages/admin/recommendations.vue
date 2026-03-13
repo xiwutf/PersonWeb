@@ -102,7 +102,7 @@ const fetchRecommendations = async () => {
 .recommendations-refresh-button {
   padding: var(--spacing-sm) var(--spacing-md);
   background: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-bg-card);
   border-radius: var(--radius-md);
   border: none;
   font-weight: 500;
@@ -155,14 +155,14 @@ const fetchRecommendations = async () => {
 .recommendation-filter-button--active {
   background: var(--color-primary);
   border-color: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-bg-card);
   box-shadow: var(--shadow-md);
 }
 
 .recommendation-filter-button--active:hover {
   background: var(--color-primary-hover);
   border-color: var(--color-primary-hover);
-  color: #ffffff;
+  color: var(--color-bg-card);
 }
 
 /* 推荐内容 */

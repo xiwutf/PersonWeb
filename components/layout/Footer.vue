@@ -280,7 +280,7 @@ onMounted(() => {
 
 .wechat-qr-content {
   position: relative;
-  background: var(--color-bg-card, #1e293b);
+  background: var(--color-bg-card, var(--color-border-default));
   border-radius: 1rem;
   padding: 2rem;
   box-shadow: var(--shadow-xl, 0 20px 60px rgba(0, 0, 0, 0.5));
@@ -305,7 +305,7 @@ onMounted(() => {
   right: 1rem;
   background: transparent;
   border: none;
-  color: var(--color-text-muted, #94a3b8);
+  color: var(--color-text-muted, var(--color-text-muted));
   font-size: 1.5rem;
   cursor: pointer;
   padding: 0.5rem;
@@ -315,7 +315,7 @@ onMounted(() => {
 }
 
 .wechat-qr-close:hover {
-  color: var(--color-text-main, #ffffff);
+  color: var(--color-text-main, var(--color-bg-card));
 }
 
 .wechat-qr-image-wrapper {
@@ -336,7 +336,7 @@ onMounted(() => {
 
 .wechat-qr-text {
   text-align: center;
-  color: var(--color-text-muted, #94a3b8);
+  color: var(--color-text-muted, var(--color-text-muted));
   font-size: 0.875rem;
   margin: 0;
 }
@@ -359,7 +359,7 @@ onMounted(() => {
 
 .email-modal-content {
   position: relative;
-  background: var(--color-bg-card, #1e293b);
+  background: var(--color-bg-card, var(--color-border-default));
   border-radius: 1rem;
   padding: 2rem;
   box-shadow: var(--shadow-xl, 0 20px 60px rgba(0, 0, 0, 0.5));
@@ -374,7 +374,7 @@ onMounted(() => {
   right: 1rem;
   background: transparent;
   border: none;
-  color: var(--color-text-muted, #94a3b8);
+  color: var(--color-text-muted, var(--color-text-muted));
   font-size: 1.5rem;
   cursor: pointer;
   padding: 0.5rem;
@@ -384,7 +384,7 @@ onMounted(() => {
 }
 
 .email-modal-close:hover {
-  color: var(--color-text-main, #ffffff);
+  color: var(--color-text-main, var(--color-bg-card));
 }
 
 .email-modal-header {
@@ -396,13 +396,13 @@ onMounted(() => {
 
 .email-modal-icon {
   font-size: 1.5rem;
-  color: var(--color-primary, #3b82f6);
+  color: var(--color-primary, var(--color-primary));
 }
 
 .email-modal-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--color-text-main, #ffffff);
+  color: var(--color-text-main, var(--color-bg-card));
   margin: 0;
 }
 
@@ -425,14 +425,14 @@ onMounted(() => {
 
 .email-address-text {
   font-size: 1rem;
-  color: var(--color-text-main, #ffffff);
+  color: var(--color-text-main, var(--color-bg-card));
   font-family: 'Courier New', monospace;
   flex: 1;
   word-break: break-all;
 }
 
 .email-copy-btn {
-  background: var(--color-primary, #3b82f6);
+  background: var(--color-primary, var(--color-primary));
   border: none;
   color: white;
   padding: 0.5rem 1rem;
@@ -446,7 +446,7 @@ onMounted(() => {
 }
 
 .email-copy-btn:hover {
-  background: var(--color-primary-hover, #2563eb);
+  background: var(--color-primary-hover, var(--color-primary-hover));
   transform: translateY(-1px);
 }
 
@@ -455,7 +455,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: linear-gradient(135deg, var(--color-primary, #3b82f6), var(--color-primary-hover, #2563eb));
+  background: linear-gradient(135deg, var(--color-primary, var(--color-primary)), var(--color-primary-hover, var(--color-primary-hover)));
   color: white;
   text-decoration: none;
   padding: 0.75rem 1.5rem;

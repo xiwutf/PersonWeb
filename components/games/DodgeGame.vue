@@ -228,11 +228,11 @@ const draw = () => {
   if (!ctx) return
   
   // 清空画布
-  ctx.fillStyle = '#0f172a'
+  ctx.fillStyle = 'var(--color-text-main)'
   ctx.fillRect(0, 0, canvas.width, canvas.height)
   
   // 绘制网格背景
-  ctx.strokeStyle = '#1e293b'
+  ctx.strokeStyle = 'var(--color-border-default)'
   ctx.lineWidth = 1
   const gridSize = 50
   for (let x = 0; x < canvas.width; x += gridSize) {
@@ -249,13 +249,13 @@ const draw = () => {
   }
   
   // 绘制玩家
-  ctx.fillStyle = '#3b82f6'
+  ctx.fillStyle = 'var(--color-primary)'
   ctx.beginPath()
   ctx.arc(player.x, player.y, player.size, 0, Math.PI * 2)
   ctx.fill()
   
   // 绘制玩家边框
-  ctx.strokeStyle = '#60a5fa'
+  ctx.strokeStyle = 'var(--color-primary-soft)'
   ctx.lineWidth = 3
   ctx.stroke()
   

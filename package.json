@@ -32,7 +32,11 @@
     "build:css": "node scripts/build-css.js",
     "optimize:images": "node scripts/optimize-images.js",
     "optimize:all": "node scripts/optimize-all.js",
-    "clean:modules": "node scripts/clean-node-modules.js"
+    "clean:modules": "node scripts/clean-node-modules.js",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:ui": "vitest --ui"
   },
   "devDependencies": {
     "@nuxt/content": "^2.8.1",
@@ -40,13 +44,19 @@
     "@tailwindcss/typography": "^0.5.19",
     "@types/markdown-it": "^14.1.2",
     "@types/node": "^24.10.1",
+    "@vitest/coverage-v8": "^1.6.0",
+    "@vitest/ui": "^1.6.0",
+    "@vue/test-utils": "^2.4.6",
     "benchmark": "^2.1.4",
     "cross-env": "^10.1.0",
     "cssmin": "^0.4.3",
     "glob": "^13.0.6",
+    "happy-dom": "^14.12.3",
+    "jsdom": "^24.1.0",
     "markdown-it": "^14.1.0",
     "nuxt": "^3.10.0",
-    "sharp": "^0.34.5"
+    "sharp": "^0.34.5",
+    "vitest": "^1.6.0"
   },
   "dependencies": {
     "@bytemd/plugin-gfm": "^1.22.0",

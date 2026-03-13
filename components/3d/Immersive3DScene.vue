@@ -62,7 +62,7 @@ const createGradientTexture = () => {
   // 创建从深灰到深蓝灰的渐变（更中性的颜色）
   const gradient = context.createLinearGradient(0, 0, 0, 256)
   gradient.addColorStop(0, '#030712') // 深灰 gray-950
-  gradient.addColorStop(0.5, '#0f172a') // 深蓝灰 slate-950
+  gradient.addColorStop(0.5, 'var(--color-text-main)') // 深蓝灰 slate-950
   gradient.addColorStop(1, '#18181b') // 深灰 zinc-950
 
   context.fillStyle = gradient

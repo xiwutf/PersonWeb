@@ -252,7 +252,7 @@ useHead({
 }
 
 .log-item:hover {
-  box-shadow: var(--shadow-sm, 0 2px 8px rgba(0, 0, 0, 0.1));
+  box-shadow: var(--shadow-sm, 0 2px 8px var(--shadow));
 }
 
 .log-item-error {

@@ -67,7 +67,7 @@ const html = computed(() => md.render(localValue.value || ''))
 }
 
 .pane {
-  border: 1px solid var(--color-border-default, #e5e7eb);
+  border: 1px solid var(--color-border-default, var(--color-border));
   border-radius: 10px;
   overflow: hidden;
   background: var(--color-bg-elevated, var(--color-bg-card, #fff));
@@ -118,7 +118,7 @@ const html = computed(() => md.render(localValue.value || ''))
   padding: 10px;
   border-radius: 10px;
   background: #0b1020;
-  color: #e5e7eb;
+  color: var(--color-border);
   overflow: auto;
 }
 .preview-inner :deep(pre code) {
@@ -129,7 +129,7 @@ const html = computed(() => md.render(localValue.value || ''))
   padding-left: 18px;
 }
 .preview-inner :deep(blockquote) {
-  border-left: 4px solid var(--color-border-default, #e5e7eb);
+  border-left: 4px solid var(--color-border-default, var(--color-border));
   padding-left: 10px;
   color: var(--color-text-muted);
   margin: 8px 0;
@@ -141,6 +141,6 @@ const html = computed(() => md.render(localValue.value || ''))
 [data-theme='forest'] .pane,
 [data-theme='hybrid-super-dark'] .pane {
   border-color: rgba(255, 255, 255, 0.25);
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--color-border);
 }
 </style>

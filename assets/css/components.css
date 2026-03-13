@@ -348,8 +348,8 @@
   /* ========== 后台管理深色主题样式覆盖 ========== */
   /* 确保所有文字在深色背景下可见，使用柔和的颜色 */
   .admin-main {
-    color: #e5e7eb; /* 柔和的浅灰色，替代纯白色 */
-    background-color: var(--admin-sidebar-bg, #1e293b) !important; /* 使用侧边栏背景色 */
+    color: var(--color-text-sec); /* 柔和的浅灰色，替代纯白色 */
+    background-color: var(--admin-sidebar-bg, var(--color-border-default)) !important; /* 使用侧边栏背景色 */
   }
 
   /* 主文字颜色 - 柔和清晰 */
@@ -365,7 +365,7 @@
 
   .admin-main .text-gray-800,
   .admin-main .text-gray-900 {
-    color: var(--color-text-main, #e5e7eb) !important;
+    color: var(--color-text-main, var(--color-text-sec)) !important;
   }
 
   /* 标题文字 - 柔和但清晰 */
@@ -375,7 +375,7 @@
   .admin-main h4,
   .admin-main h5,
   .admin-main h6 {
-    color: var(--color-text-main, #f3f4f6) !important;
+    color: var(--color-text-main, var(--color-slate-100)) !important;
   }
 
   /* 白色背景改为半透明深色 - 使用 CSS 变量 */
@@ -402,26 +402,26 @@
   body[data-theme='light'] .admin-main,
   html[data-theme='light'] .admin-main {
     background-color: var(--color-bg-body, #f5f7fb);
-    color: var(--color-text-main, #0f172a);
+    color: var(--color-text-main, var(--color-text-main));
   }
 
   /* 侧边栏背景与文字 */
   body[data-theme='light'] .admin-main .n-layout-sider,
   html[data-theme='light'] .admin-main .n-layout-sider {
-    background: var(--color-bg-card, #ffffff);
-    border-right: 1px solid var(--color-border-default, #e5e7eb);
+    background: var(--color-bg-card, var(--color-bg-card));
+    border-right: 1px solid var(--color-border-default, var(--color-text-sec));
   }
 
   body[data-theme='light'] .admin-main .n-menu,
   html[data-theme='light'] .admin-main .n-menu {
-    color: var(--color-text-main, #0f172a);
+    color: var(--color-text-main, var(--color-text-main));
   }
 
   body[data-theme='light'] .admin-main .n-menu-item-content__icon,
   body[data-theme='light'] .admin-main .n-menu-item-content,
   html[data-theme='light'] .admin-main .n-menu-item-content__icon,
   html[data-theme='light'] .admin-main .n-menu-item-content {
-    color: var(--color-text-main, #0f172a);
+    color: var(--color-text-main, var(--color-text-main));
   }
 
   /* 选中与悬停态 */
@@ -429,7 +429,7 @@
   body[data-theme='light'] .admin-main .n-menu-item--selected .n-menu-item-content__icon,
   html[data-theme='light'] .admin-main .n-menu-item--selected .n-menu-item-content,
   html[data-theme='light'] .admin-main .n-menu-item--selected .n-menu-item-content__icon {
-    color: var(--color-text-main, #0f172a);
+    color: var(--color-text-main, var(--color-text-main));
     font-weight: 600;
   }
 
@@ -442,14 +442,14 @@
   body[data-theme='light'] .admin-main .n-menu-item:hover .n-menu-item-content__icon,
   html[data-theme='light'] .admin-main .n-menu-item:hover .n-menu-item-content,
   html[data-theme='light'] .admin-main .n-menu-item:hover .n-menu-item-content__icon {
-    color: var(--color-text-main, #0f172a);
+    color: var(--color-text-main, var(--color-text-main));
   }
 
   /* 主区域卡片与文字 */
   body[data-theme='light'] .admin-dashboard-page,
   html[data-theme='light'] .admin-dashboard-page {
-    background: var(--color-bg-card, #ffffff);
-    color: var(--color-text-main, #0f172a);
+    background: var(--color-bg-card, var(--color-bg-card));
+    color: var(--color-text-main, var(--color-text-main));
   }
 
   body[data-theme='light'] .admin-dashboard-page h1,
@@ -458,12 +458,12 @@
   html[data-theme='light'] .admin-dashboard-page h1,
   html[data-theme='light'] .admin-dashboard-page h2,
   html[data-theme='light'] .admin-dashboard-page h3 {
-    color: var(--color-text-main, #0f172a);
+    color: var(--color-text-main, var(--color-text-main));
   }
 
   body[data-theme='light'] .admin-dashboard-page p,
   html[data-theme='light'] .admin-dashboard-page p {
-    color: var(--color-text-sub, #475569);
+    color: var(--color-text-sub, var(--color-text-sec));
   }
 
   /* KPI 小字、副标题 */
@@ -473,13 +473,13 @@
   html[data-theme='light'] .admin-dashboard-page .subtitle-text,
   html[data-theme='light'] .admin-dashboard-page .kpi-label,
   html[data-theme='light'] .admin-dashboard-page .kpi-trend {
-    color: var(--color-text-muted, #64748b);
+    color: var(--color-text-muted, var(--color-text-sec));
   }
 
   /* 图表标题 */
   body[data-theme='light'] .admin-dashboard-page .chart-title,
   html[data-theme='light'] .admin-dashboard-page .chart-title {
-    color: var(--color-text-main, #0f172a);
+    color: var(--color-text-main, var(--color-text-main));
   }
 
   /* 渐变背景统一为黑色 - 使用 CSS 变量 */
@@ -491,7 +491,7 @@
 
   /* 深色背景下的文字 - 使用 CSS 变量 */
   .admin-main .dark\:text-white {
-    color: var(--color-text-main, #e5e7eb) !important;
+    color: var(--color-text-main, var(--color-text-sec)) !important;
   }
 
   .admin-main .dark\:text-gray-200 {
@@ -519,7 +519,7 @@
 
   .admin-main .dark\:text-red-400,
   .admin-main .text-red-600.dark\:text-red-400 {
-    color: var(--color-error, #fca5a5) !important;
+    color: var(--color-error, var(--color-red-300)) !important;
   }
 
   .admin-main .dark\:text-orange-400,
@@ -559,7 +559,7 @@
 
   /* 悬停效果 - 使用 CSS 变量 */
   .admin-main .dark\:hover\:bg-gray-700:hover {
-    background: var(--color-bg-elevated, rgba(255, 255, 255, 0.08)) !important;
+    background: var(--color-bg-elevated, var(--color-border)) !important;
   }
 
   .admin-main .hover\:bg-gray-50:hover {
@@ -579,17 +579,17 @@
   }
 
   .admin-main .stat-value {
-    color: var(--color-text-main, #e5e7eb) !important;
+    color: var(--color-text-main, var(--color-text-sec)) !important;
   }
 
   /* 按钮文字颜色 - 使用 CSS 变量 */
   .admin-main .btn-primary {
-    color: var(--color-text-main, #ffffff) !important;
+    color: var(--color-text-main, var(--color-bg-card)) !important;
   }
 
   .admin-main .btn-secondary {
-    color: var(--color-text-main, #e5e7eb) !important;
-    background: var(--color-bg-elevated, rgba(255, 255, 255, 0.08)) !important;
+    color: var(--color-text-main, var(--color-text-sec)) !important;
+    background: var(--color-bg-elevated, var(--color-border)) !important;
     border-color: var(--color-border-default, rgba(255, 255, 255, 0.15)) !important;
   }
 

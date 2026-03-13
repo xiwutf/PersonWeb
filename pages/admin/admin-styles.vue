@@ -239,7 +239,7 @@
                 v-model="moduleForm.styleConfig"
                 class="input font-mono text-sm"
                 rows="10"
-                placeholder='{"icon": "fas fa-file-alt", "iconColor": "#3b82f6", ...}'
+                placeholder='{"icon": "fas fa-file-alt", "iconColor": "var(--color-primary)", ...}'
               ></textarea>
               <p class="text-xs text-gray-500 mt-1">支持 JSON 格式配置，包含图标、颜色、背景等样式</p>
             </div>

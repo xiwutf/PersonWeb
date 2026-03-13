@@ -158,7 +158,7 @@ onMounted(() => {
 <style scoped>
 .cognition-page {
   @apply min-h-screen relative overflow-hidden;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, var(--color-bg-body) 0%, #c3cfe2 100%);
 }
 
 /* 背景噪点 */
@@ -224,7 +224,7 @@ onMounted(() => {
 
 .cognition-header-icon {
   @apply text-6xl mb-6;
-  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+  filter: drop-shadow(0 4px 6px var(--shadow));
 }
 
 .cognition-title {

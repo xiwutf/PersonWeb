@@ -775,13 +775,13 @@ onMounted(() => {
 .tag-success {
   background: rgba(34, 197, 94, 0.2);
   border: 1px solid rgba(34, 197, 94, 0.4);
-  color: #22c55e;
+  color: var(--color-success);
 }
 
 .tag-info {
   background: rgba(59, 130, 246, 0.2);
   border: 1px solid rgba(59, 130, 246, 0.4);
-  color: #3b82f6;
+  color: var(--color-primary);
 }
 
 .tag-warning {
@@ -821,7 +821,7 @@ onMounted(() => {
 }
 
 .btn-link-blue {
-  color: #60a5fa;
+  color: var(--color-primary-soft);
 }
 
 .btn-link-blue:hover {

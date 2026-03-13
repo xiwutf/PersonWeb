@@ -115,8 +115,8 @@
 
 .visitor-form-input:focus {
   outline: none;
-  border-color: rgba(59, 130, 246, 0.5);
-  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--theme-primary);
+  background: var(--color-border);
 }
 
 .visitor-form-textarea {
@@ -134,8 +134,8 @@
 
 .visitor-form-textarea:focus {
   outline: none;
-  border-color: rgba(59, 130, 246, 0.5);
-  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--theme-primary);
+  background: var(--color-border);
 }
 
 .visitor-form-char-count {
@@ -175,7 +175,7 @@
 .visitor-button-primary:hover:not(:disabled) {
   background: rgba(59, 130, 246, 1);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 12px var(--theme-primary);
 }
 
 .visitor-button-primary:disabled {
@@ -243,7 +243,7 @@
 }
 
 .visitor-emoji-option-selected {
-  background: rgba(59, 130, 246, 0.3);
+  background: var(--theme-primary);
   border-color: rgba(59, 130, 246, 0.6);
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
 }
@@ -276,7 +276,7 @@
 }
 
 .visitor-emoji-button-selected {
-  background: rgba(59, 130, 246, 0.3);
+  background: var(--theme-primary);
   border-color: rgba(59, 130, 246, 0.6);
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
 }
@@ -312,7 +312,7 @@
 }
 
 .visitor-type-button-active {
-  background: rgba(59, 130, 246, 0.3);
+  background: var(--theme-primary);
   border-color: rgba(59, 130, 246, 0.6);
   color: white;
 }

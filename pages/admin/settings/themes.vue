@@ -231,7 +231,7 @@
               v-model="themeForm.styleConfig"
               class="form-input"
               rows="5"
-              placeholder='{"primaryColor": "#3b82f6", "bgColor": "#ffffff"}'
+              placeholder='{"primaryColor": "var(--color-primary)", "bgColor": "var(--color-bg-card)"}'
             ></textarea>
           </div>
 
@@ -516,8 +516,8 @@ onMounted(() => {
 }
 
 .tab-button-active {
-  color: #ffffff;
-  border-bottom-color: #3b82f6;
+  color: var(--color-bg-card);
+  border-bottom-color: var(--color-primary);
 }
 
 .content-section {
@@ -538,7 +538,7 @@ onMounted(() => {
 .section-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--color-bg-card);
 }
 
 .themes-grid,
@@ -559,7 +559,7 @@ onMounted(() => {
 
 .theme-card:hover,
 .background-card:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--color-border);
   border-color: rgba(255, 255, 255, 0.2);
 }
 
@@ -569,8 +569,8 @@ onMounted(() => {
 }
 
 .theme-card-default {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--theme-primary);
 }
 
 .theme-card-header,
@@ -584,7 +584,7 @@ onMounted(() => {
 .theme-card-title h3 {
   font-size: 1rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--color-bg-card);
   margin-bottom: 0.25rem;
 }
 
@@ -681,13 +681,13 @@ onMounted(() => {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 0.25rem;
-  color: #ffffff;
+  color: var(--color-bg-card);
   font-size: 0.875rem;
 }
 
 .form-input:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: var(--color-primary);
   background: rgba(255, 255, 255, 0.15);
 }
 
@@ -730,7 +730,7 @@ onMounted(() => {
 .modal-header h2 {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--color-bg-card);
 }
 
 .modal-close {
@@ -750,7 +750,7 @@ onMounted(() => {
 
 .modal-close:hover {
   background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  color: var(--color-bg-card);
 }
 
 .modal-body {
@@ -768,10 +768,10 @@ onMounted(() => {
 
 .btn-primary {
   padding: 0.5rem 1rem;
-  background: rgba(59, 130, 246, 0.3);
-  border: 1px solid rgba(59, 130, 246, 0.5);
+  background: var(--theme-primary);
+  border: 1px solid var(--theme-primary);
   border-radius: 0.25rem;
-  color: #ffffff;
+  color: var(--color-bg-card);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -797,7 +797,7 @@ onMounted(() => {
 }
 
 .btn-link-blue {
-  color: #60a5fa;
+  color: var(--color-primary-soft);
 }
 
 .btn-link-red {

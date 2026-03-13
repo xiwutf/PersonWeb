@@ -305,13 +305,13 @@ const handleChangePassword = async () => {
 }
 
 .change-password-toggle-btn:hover {
-  color: var(--color-text-sub, #6b7280);
+  color: var(--color-text-sub, var(--color-text-sec));
 }
 
 .change-password-cancel-btn {
-  background: var(--color-bg-elevated, #e5e7eb);
+  background: var(--color-bg-elevated, var(--color-border));
   border-color: var(--color-border-default, #9ca3af);
-  color: var(--color-text-main, #111827);
+  color: var(--color-text-main, var(--color-text-main));
   transition: all 0.2s ease;
 }
 

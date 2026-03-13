@@ -54,7 +54,7 @@
 }
 
 html[data-theme="dark"] .btn-pill {
-  background: #fff;
+  background: var(--color-text-inverse);
   color: #000;
 }
 

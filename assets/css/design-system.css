@@ -39,9 +39,9 @@
     /* 浅灰 */
 
     /* Shadows */
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+    --shadow-sm: 0 1px 2px var(--color-border);
+    --shadow-md: 0 4px 6px -1px var(--color-border), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --shadow-lg: 0 10px 15px -3px var(--color-border), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
     --shadow-glow: 0 0 0 rgba(0, 0, 0, 0);
     /* 浅色模式通常不发光 */
 
@@ -95,7 +95,7 @@ html.dark {
     
     /* Typography Colors - 浅色卡片上的文字（新增） */
     --text-on-light-primary: #0F172A;
-    --text-on-light-secondary: #475569;
+    --text-on-light-secondary: var(--color-text-sec);
     --text-on-light-tertiary: #64748B;
 
     /* Shadows & Glows */

@@ -19,7 +19,7 @@ onMounted(() => {
 .contact-redirect {
   padding: 40px;
   text-align: center;
-  color: var(--color-text-main, #0f172a);
+  color: var(--color-text-main, var(--color-text-main));
 }
 </style>
 

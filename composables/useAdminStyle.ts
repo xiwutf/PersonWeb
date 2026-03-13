@@ -64,28 +64,28 @@ export const useAdminGlobalStyle = () => {
 
     // 侧边栏
     if (config.sidebar) {
-      vars['--admin-sidebar-bg'] = config.sidebar.bgColor || '#1e293b'
-      vars['--admin-sidebar-text'] = config.sidebar.textColor || '#ffffff'
-      vars['--admin-sidebar-active-bg'] = config.sidebar.activeBgColor || '#3b82f6'
+      vars['--admin-sidebar-bg'] = config.sidebar.bgColor || 'var(--color-border-default)'
+      vars['--admin-sidebar-text'] = config.sidebar.textColor || 'var(--color-bg-card)'
+      vars['--admin-sidebar-active-bg'] = config.sidebar.activeBgColor || 'var(--color-primary)'
       vars['--admin-sidebar-hover-bg'] = config.sidebar.hoverBgColor || '#334155'
     }
 
     // 头部
     if (config.header) {
-      vars['--admin-header-bg'] = config.header.bgColor || '#ffffff'
-      vars['--admin-header-text'] = config.header.textColor || '#1e293b'
-      vars['--admin-header-border'] = config.header.borderColor || '#e2e8f0'
+      vars['--admin-header-bg'] = config.header.bgColor || 'var(--color-bg-card)'
+      vars['--admin-header-text'] = config.header.textColor || 'var(--color-border-default)'
+      vars['--admin-header-border'] = config.header.borderColor || 'var(--color-text-sub)'
     }
 
     // 卡片
     if (config.card) {
-      vars['--admin-card-bg'] = config.card.bgColor || '#ffffff'
-      vars['--admin-card-border'] = config.card.borderColor || '#e2e8f0'
+      vars['--admin-card-bg'] = config.card.bgColor || 'var(--color-bg-card)'
+      vars['--admin-card-border'] = config.card.borderColor || 'var(--color-text-sub)'
       vars['--admin-card-shadow'] = config.card.shadow || '0 1px 3px rgba(0,0,0,0.1)'
     }
 
     // 主题色
-    vars['--admin-primary'] = config.primaryColor || '#3b82f6'
+    vars['--admin-primary'] = config.primaryColor || 'var(--color-primary)'
     vars['--admin-secondary'] = config.secondaryColor || '#8b5cf6'
     vars['--admin-accent'] = config.accentColor || '#06b6d4'
 
@@ -197,7 +197,7 @@ function getDefaultStyleConfig() {
   return {
     background: {
       type: 'gradient',
-      colors: ['#0f172a', '#1e293b', '#334155'],
+      colors: ['var(--color-text-main)', 'var(--color-border-default)', '#334155'],
       grid: {
         enabled: true,
         opacity: 0.03,
@@ -205,22 +205,22 @@ function getDefaultStyleConfig() {
       }
     },
     sidebar: {
-      bgColor: '#1e293b',
-      textColor: '#ffffff',
-      activeBgColor: '#3b82f6',
+      bgColor: 'var(--color-border-default)',
+      textColor: 'var(--color-bg-card)',
+      activeBgColor: 'var(--color-primary)',
       hoverBgColor: '#334155'
     },
     header: {
-      bgColor: '#ffffff',
-      textColor: '#1e293b',
-      borderColor: '#e2e8f0'
+      bgColor: 'var(--color-bg-card)',
+      textColor: 'var(--color-border-default)',
+      borderColor: 'var(--color-text-sub)'
     },
     card: {
-      bgColor: '#ffffff',
-      borderColor: '#e2e8f0',
+      bgColor: 'var(--color-bg-card)',
+      borderColor: 'var(--color-text-sub)',
       shadow: '0 1px 3px rgba(0,0,0,0.1)'
     },
-    primaryColor: '#3b82f6',
+    primaryColor: 'var(--color-primary)',
     secondaryColor: '#8b5cf6',
     accentColor: '#06b6d4'
   }

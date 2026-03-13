@@ -275,7 +275,7 @@ const getRatingBarColor = (rating: number) => {
 //     id: 1,
 //     name: '前端开发',
 //     icon: '💻',
-//     color: '#3b82f6',
+//     color: 'var(--color-primary)',
 //     skills: [
 //       {
 //         id: 1,
@@ -481,7 +481,7 @@ useHead({
 :global(.skill-tree-glowing) .skill-tree-card {
   animation: skill-tree-glow 3s ease-in-out;
   box-shadow: 0 0 30px rgba(59, 130, 246, 0.6);
-  border-color: rgba(59, 130, 246, 0.5);
+  border-color: var(--theme-primary);
 }
 
 @keyframes skill-tree-glow {

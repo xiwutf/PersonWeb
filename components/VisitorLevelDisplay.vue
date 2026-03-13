@@ -132,7 +132,7 @@ onUnmounted(() => {
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  background: linear-gradient(90deg, var(--color-primary), #8b5cf6);
   border-radius: 3px;
   transition: width 0.3s ease;
 }
@@ -145,7 +145,7 @@ onUnmounted(() => {
 
 /* 不同等级的样式 */
 .level-1 .badge-icon { color: #9ca3af; }
-.level-2 .badge-icon { color: #60a5fa; }
+.level-2 .badge-icon { color: var(--color-primary-soft); }
 .level-3 .badge-icon { color: #34d399; }
 .level-4 .badge-icon { color: #fbbf24; }
 .level-5 .badge-icon { color: #a78bfa; }

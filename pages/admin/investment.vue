@@ -613,23 +613,23 @@ const { isDark, darkTheme, lightTheme } = useEChartsTheme()
 registerTheme('dark-custom', {
   backgroundColor: 'transparent',
   textStyle: {
-    color: '#ffffff'
+    color: 'var(--color-bg-card)'
   },
   title: {
     textStyle: {
-      color: '#ffffff'
+      color: 'var(--color-bg-card)'
     }
   },
   legend: {
     textStyle: {
-      color: '#e5e7eb'
+      color: 'var(--color-border)'
     }
   },
   tooltip: {
     backgroundColor: 'rgba(17, 24, 39, 0.98)',
     borderColor: 'rgba(156, 163, 175, 0.5)',
     textStyle: {
-      color: '#ffffff'
+      color: 'var(--color-bg-card)'
     }
   }
 })
@@ -638,23 +638,23 @@ registerTheme('dark-custom', {
 registerTheme('light-custom', {
   backgroundColor: 'transparent',
   textStyle: {
-    color: '#374151'
+    color: 'var(--color-text-main)'
   },
   title: {
     textStyle: {
-      color: '#111827'
+      color: 'var(--color-text-main)'
     }
   },
   legend: {
     textStyle: {
-      color: '#6b7280'
+      color: 'var(--color-text-sec)'
     }
   },
   tooltip: {
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
     borderColor: 'rgba(209, 213, 219, 0.8)',
     textStyle: {
-      color: '#111827'
+      color: 'var(--color-text-main)'
     }
   }
 })
@@ -1322,14 +1322,14 @@ const getCommonPieOption = () => {
     return {
       backgroundColor: 'transparent',
       textStyle: {
-        color: isDark.value ? '#ffffff' : '#111827'
+        color: isDark.value ? 'var(--color-bg-card)' : 'var(--color-text-main)'
       },
       tooltip: {
         trigger: 'item',
         backgroundColor: isDark.value ? 'rgba(17, 24, 39, 0.98)' : 'rgba(255, 255, 255, 0.95)',
         borderColor: isDark.value ? 'rgba(156, 163, 175, 0.5)' : 'rgba(209, 213, 219, 0.8)',
         textStyle: {
-          color: isDark.value ? '#ffffff' : '#111827'
+          color: isDark.value ? 'var(--color-bg-card)' : 'var(--color-text-main)'
         },
         formatter: (params: any) => {
           const { name, value, percent } = params
@@ -1341,7 +1341,7 @@ const getCommonPieOption = () => {
         left: 'left',
         bottom: 'bottom',
         textStyle: {
-          color: isDark.value ? '#e5e7eb' : '#6b7280',
+          color: isDark.value ? 'var(--color-border)' : 'var(--color-text-sec)',
           fontSize: 12,
           fontWeight: 'normal'
         }
@@ -1350,12 +1350,12 @@ const getCommonPieOption = () => {
   }
   return {
     backgroundColor: theme.backgroundColor || 'transparent',
-    textStyle: theme.textStyle || { color: isDark.value ? '#ffffff' : '#111827' },
+    textStyle: theme.textStyle || { color: isDark.value ? 'var(--color-bg-card)' : 'var(--color-text-main)' },
     tooltip: {
       trigger: 'item',
       backgroundColor: theme.tooltip?.backgroundColor || (isDark.value ? 'rgba(17, 24, 39, 0.98)' : 'rgba(255, 255, 255, 0.95)'),
       borderColor: theme.tooltip?.borderColor || (isDark.value ? 'rgba(156, 163, 175, 0.5)' : 'rgba(209, 213, 219, 0.8)'),
-      textStyle: theme.tooltip?.textStyle || { color: isDark.value ? '#ffffff' : '#111827' },
+      textStyle: theme.tooltip?.textStyle || { color: isDark.value ? 'var(--color-bg-card)' : 'var(--color-text-main)' },
       formatter: (params: any) => {
         const { name, value, percent } = params
         return `${name}<br/>¥${value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (${percent}%)`
@@ -1366,7 +1366,7 @@ const getCommonPieOption = () => {
       left: 'left',
       bottom: 'bottom',
       textStyle: {
-        color: theme.legend?.textStyle?.color || (isDark.value ? '#e5e7eb' : '#6b7280'),
+        color: theme.legend?.textStyle?.color || (isDark.value ? 'var(--color-border)' : 'var(--color-text-sec)'),
         fontSize: 12,
         fontWeight: 'normal'
       }
@@ -1400,7 +1400,7 @@ const typeChartOption = computed(() => {
       avoidLabelOverlap: true,
       itemStyle: {
         borderRadius: 8,
-        borderColor: isDark.value ? '#1f2937' : '#ffffff',
+        borderColor: isDark.value ? '#1f2937' : 'var(--color-bg-card)',
         borderWidth: 2
       },
       label: {
@@ -1461,7 +1461,7 @@ const profitStatusChartOption = computed(() => {
       avoidLabelOverlap: true,
       itemStyle: {
         borderRadius: 8,
-        borderColor: isDark.value ? '#1f2937' : '#ffffff',
+        borderColor: isDark.value ? '#1f2937' : 'var(--color-bg-card)',
         borderWidth: 2
       },
       label: {
@@ -1534,7 +1534,7 @@ const assetDistributionChartOption = computed(() => {
       avoidLabelOverlap: true,
       itemStyle: {
         borderRadius: 6,
-        borderColor: isDark.value ? '#1f2937' : '#ffffff',
+        borderColor: isDark.value ? '#1f2937' : 'var(--color-bg-card)',
         borderWidth: 2
       },
       label: {
@@ -1582,13 +1582,13 @@ const profitRankChartOption = computed(() => {
   if (!theme) {
     return {
       backgroundColor: 'transparent',
-      textStyle: { color: isDark.value ? '#ffffff' : '#111827' },
+      textStyle: { color: isDark.value ? 'var(--color-bg-card)' : 'var(--color-text-main)' },
       tooltip: {
         trigger: 'axis',
         axisPointer: { type: 'shadow' },
         backgroundColor: isDark.value ? 'rgba(17, 24, 39, 0.98)' : 'rgba(255, 255, 255, 0.95)',
         borderColor: isDark.value ? 'rgba(156, 163, 175, 0.5)' : 'rgba(209, 213, 219, 0.8)',
-        textStyle: { color: isDark.value ? '#ffffff' : '#111827' },
+        textStyle: { color: isDark.value ? 'var(--color-bg-card)' : 'var(--color-text-main)' },
         formatter: (params: any) => {
           const param = params[0]
           return `${param.name}<br/>盈亏: ¥${param.value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
@@ -1599,7 +1599,7 @@ const profitRankChartOption = computed(() => {
         right: '4%',
         bottom: '3%',
         outerBounds: true,
-        borderColor: isDark.value ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+        borderColor: isDark.value ? 'rgba(255, 255, 255, 0.1)' : 'var(--shadow)'
       },
       xAxis: {
         type: 'category',
@@ -1607,12 +1607,12 @@ const profitRankChartOption = computed(() => {
         axisLabel: {
           rotate: 45,
           interval: 0,
-          color: isDark.value ? '#ffffff' : '#111827',
+          color: isDark.value ? 'var(--color-bg-card)' : 'var(--color-text-main)',
           fontSize: 11
         },
         axisLine: {
           lineStyle: {
-            color: isDark.value ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+            color: isDark.value ? 'rgba(255, 255, 255, 0.1)' : 'var(--shadow)'
           }
         },
         splitLine: { show: false }
@@ -1620,17 +1620,17 @@ const profitRankChartOption = computed(() => {
       yAxis: {
         type: 'value',
         axisLabel: {
-          color: isDark.value ? '#ffffff' : '#111827',
+          color: isDark.value ? 'var(--color-bg-card)' : 'var(--color-text-main)',
           formatter: (value: number) => '¥' + value.toLocaleString('zh-CN')
         },
         axisLine: {
           lineStyle: {
-            color: isDark.value ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+            color: isDark.value ? 'rgba(255, 255, 255, 0.1)' : 'var(--shadow)'
           }
         },
         splitLine: {
           lineStyle: {
-            color: isDark.value ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+            color: isDark.value ? 'rgba(255, 255, 255, 0.1)' : 'var(--shadow)',
             type: 'dashed'
           }
         }
@@ -1644,7 +1644,7 @@ const profitRankChartOption = computed(() => {
         label: {
           show: true,
           position: 'top',
-          color: isDark.value ? '#ffffff' : '#111827',
+          color: isDark.value ? 'var(--color-bg-card)' : 'var(--color-text-main)',
           fontSize: 11,
           formatter: (params: any) => {
             const value = params.value
@@ -1657,7 +1657,7 @@ const profitRankChartOption = computed(() => {
   
   return {
     backgroundColor: theme.backgroundColor || 'transparent',
-    textStyle: theme.textStyle || { color: isDark.value ? '#ffffff' : '#111827' },
+    textStyle: theme.textStyle || { color: isDark.value ? 'var(--color-bg-card)' : 'var(--color-text-main)' },
     tooltip: {
       trigger: 'axis',
       axisPointer: {
@@ -1665,7 +1665,7 @@ const profitRankChartOption = computed(() => {
       },
       backgroundColor: theme.tooltip?.backgroundColor || (isDark.value ? 'rgba(17, 24, 39, 0.98)' : 'rgba(255, 255, 255, 0.95)'),
       borderColor: theme.tooltip?.borderColor || (isDark.value ? 'rgba(156, 163, 175, 0.5)' : 'rgba(209, 213, 219, 0.8)'),
-      textStyle: theme.tooltip?.textStyle || { color: isDark.value ? '#ffffff' : '#111827' },
+      textStyle: theme.tooltip?.textStyle || { color: isDark.value ? 'var(--color-bg-card)' : 'var(--color-text-main)' },
       formatter: (params: any) => {
         const param = params[0]
         return `${param.name}<br/>盈亏: ¥${param.value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
@@ -1812,7 +1812,7 @@ onUnmounted(() => {
   align-items: flex-start;
   margin-bottom: 2rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--color-border-default, #e5e7eb);
+  border-bottom: 1px solid var(--color-border-default, var(--color-border));
 }
 
 .header-title-section {
@@ -1822,14 +1822,14 @@ onUnmounted(() => {
 .panel-title {
   font-size: 2rem;
   font-weight: 600;
-  color: var(--color-text-main, #111827);
+  color: var(--color-text-main, var(--color-text-main));
   margin: 0 0 0.5rem 0;
   letter-spacing: -0.02em;
 }
 
 .panel-subtitle {
   font-size: 0.95rem;
-  color: var(--color-text-muted, #6b7280);
+  color: var(--color-text-muted, var(--color-text-sec));
   margin: 0;
   font-weight: 400;
   letter-spacing: 0.01em;
@@ -1854,31 +1854,31 @@ onUnmounted(() => {
 }
 
 .btn-action-primary {
-  background: var(--color-primary, #3b82f6);
-  color: var(--color-text-on-primary, #ffffff);
+  background: var(--color-primary, var(--color-primary));
+  color: var(--color-text-on-primary, var(--color-bg-card));
 }
 
 .btn-action-primary:hover {
-  background: var(--color-primary-hover, #2563eb);
+  background: var(--color-primary-hover, var(--color-primary-hover));
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 12px var(--theme-primary);
 }
 
 .btn-action-secondary {
   background: var(--color-bg-elevated, #f9fafb);
-  color: var(--color-text-main, #374151);
-  border: 1px solid var(--color-border-default, #e5e7eb);
+  color: var(--color-text-main, var(--color-text-main));
+  border: 1px solid var(--color-border-default, var(--color-border));
 }
 
 .btn-action-secondary:hover {
-  background: var(--color-bg-card, #ffffff);
+  background: var(--color-bg-card, var(--color-bg-card));
   border-color: var(--color-border-subtle, #d1d5db);
 }
 
 /* 模块说明 */
 .module-description {
   background: var(--color-bg-elevated, #f9fafb);
-  border: 1px solid var(--color-border-default, #e5e7eb);
+  border: 1px solid var(--color-border-default, var(--color-border));
   border-radius: 0.75rem;
   padding: 0;
   margin-bottom: 2rem;
@@ -1896,7 +1896,7 @@ onUnmounted(() => {
 }
 
 .description-header:hover {
-  background: var(--color-bg-card, #ffffff);
+  background: var(--color-bg-card, var(--color-bg-card));
 }
 
 .description-icon {
@@ -1906,13 +1906,13 @@ onUnmounted(() => {
 .description-title {
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--color-text-main, #374151);
+  color: var(--color-text-main, var(--color-text-main));
   flex: 1;
 }
 
 .description-toggle {
   font-size: 0.75rem;
-  color: var(--color-text-muted, #6b7280);
+  color: var(--color-text-muted, var(--color-text-sec));
 }
 
 .description-content {
@@ -1921,35 +1921,35 @@ onUnmounted(() => {
 
 .description-text {
   font-size: 0.875rem;
-  color: var(--color-text-main, #374151);
+  color: var(--color-text-main, var(--color-text-main));
   margin: 0 0 0.75rem 0;
 }
 
 .description-warning {
   font-size: 0.8125rem;
-  color: var(--color-text-muted, #6b7280);
+  color: var(--color-text-muted, var(--color-text-sec));
   margin: 0;
   padding-top: 0.75rem;
-  border-top: 1px solid var(--color-border-default, #e5e7eb);
+  border-top: 1px solid var(--color-border-default, var(--color-border));
 }
 
 /* 功能说明卡片 */
 .feature-card {
-  background: var(--color-bg-card, #ffffff);
-  border: 1px solid var(--color-border-default, #e5e7eb);
+  background: var(--color-bg-card, var(--color-bg-card));
+  border: 1px solid var(--color-border-default, var(--color-border));
   border-radius: 0.75rem;
   padding: 1.5rem;
   margin-bottom: 2rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 3px var(--color-border);
 }
 
 .feature-card-title {
   font-size: 1.125rem;
   font-weight: 600;
-  color: var(--color-text-main, #111827);
+  color: var(--color-text-main, var(--color-text-main));
   margin: 0 0 1.25rem 0;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--color-border-default, #e5e7eb);
+  border-bottom: 1px solid var(--color-border-default, var(--color-border));
 }
 
 .feature-list {
@@ -1985,7 +1985,7 @@ onUnmounted(() => {
 .feature-name {
   font-size: 0.9375rem;
   font-weight: 500;
-  color: var(--color-text-main, #111827);
+  color: var(--color-text-main, var(--color-text-main));
 }
 
 /* 交易记录导入 */
@@ -1994,11 +1994,11 @@ onUnmounted(() => {
 }
 
 .import-card {
-  background: var(--color-bg-card, #ffffff);
-  border: 1px solid var(--color-border-default, #e5e7eb);
+  background: var(--color-bg-card, var(--color-bg-card));
+  border: 1px solid var(--color-border-default, var(--color-border));
   border-radius: 0.75rem;
   padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 3px var(--color-border);
 }
 
 .import-header {
@@ -2011,7 +2011,7 @@ onUnmounted(() => {
 .import-title {
   font-size: 1.125rem;
   font-weight: 600;
-  color: var(--color-text-main, #111827);
+  color: var(--color-text-main, var(--color-text-main));
   margin: 0;
   flex: 1;
 }
@@ -2043,11 +2043,11 @@ onUnmounted(() => {
   display: inline-block;
   padding: 0.375rem 0.75rem;
   background: var(--color-bg-elevated, #f9fafb);
-  border: 1px solid var(--color-border-default, #e5e7eb);
+  border: 1px solid var(--color-border-default, var(--color-border));
   border-radius: 0.375rem;
   font-size: 0.8125rem;
   font-weight: 500;
-  color: var(--color-text-main, #374151);
+  color: var(--color-text-main, var(--color-text-main));
 }
 
 
@@ -2056,8 +2056,8 @@ onUnmounted(() => {
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background: var(--color-primary, #3b82f6);
-  color: var(--color-text-on-primary, #ffffff);
+  background: var(--color-primary, var(--color-primary));
+  color: var(--color-text-on-primary, var(--color-bg-card));
   border: none;
   border-radius: 0.5rem;
   font-size: 0.875rem;
@@ -2068,9 +2068,9 @@ onUnmounted(() => {
 }
 
 .btn-import:hover:not(:disabled) {
-  background: var(--color-primary-hover, #2563eb);
+  background: var(--color-primary-hover, var(--color-primary-hover));
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 12px var(--theme-primary);
 }
 
 .btn-import:disabled {
@@ -2086,8 +2086,8 @@ onUnmounted(() => {
   position: absolute;
   top: -0.5rem;
   right: -0.5rem;
-  background: var(--color-text-muted, #6b7280);
-  color: var(--color-text-on-primary, #ffffff);
+  background: var(--color-text-muted, var(--color-text-sec));
+  color: var(--color-text-on-primary, var(--color-bg-card));
   font-size: 0.625rem;
   padding: 0.125rem 0.375rem;
   border-radius: 0.75rem;
@@ -2110,13 +2110,13 @@ onUnmounted(() => {
 }
 
 .modal-content {
-  background: var(--color-bg-card, #ffffff);
+  background: var(--color-bg-card, var(--color-bg-card));
   border-radius: 0.5rem;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   width: 100%;
   max-width: 28rem;
   margin: 1rem;
-  border: 1px solid var(--color-border-default, #e5e7eb);
+  border: 1px solid var(--color-border-default, var(--color-border));
   max-height: 90vh;
   overflow-y: auto;
 }
@@ -2129,7 +2129,7 @@ onUnmounted(() => {
   font-size: 1.25rem;
   font-weight: bold;
   margin-bottom: 1rem;
-  color: var(--color-text-main, #111827);
+  color: var(--color-text-main, var(--color-text-main));
 }
 
 .modal-form {
@@ -2147,7 +2147,7 @@ onUnmounted(() => {
   font-size: 0.875rem;
   font-weight: 500;
   margin-bottom: 0.5rem;
-  color: var(--color-text-main, #374151);
+  color: var(--color-text-main, var(--color-text-main));
 }
 
 .form-input,
@@ -2157,8 +2157,8 @@ onUnmounted(() => {
   padding: 0.5rem 0.75rem;
   border: 1px solid var(--color-border-default, #d1d5db);
   border-radius: 0.375rem;
-  background: var(--color-bg-card, #ffffff);
-  color: var(--color-text-main, #111827);
+  background: var(--color-bg-card, var(--color-bg-card));
+  color: var(--color-text-main, var(--color-text-main));
   font-size: 0.875rem;
 }
 
@@ -2167,8 +2167,8 @@ onUnmounted(() => {
 .form-textarea:focus {
   outline: none;
   ring: 2px;
-  ring-color: var(--color-primary, #3b82f6);
-  border-color: var(--color-primary, #3b82f6);
+  ring-color: var(--color-primary, var(--color-primary));
+  border-color: var(--color-primary, var(--color-primary));
 }
 
 .form-textarea {
@@ -2182,7 +2182,7 @@ onUnmounted(() => {
   justify-content: flex-end;
   margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid var(--color-border-default, #e5e7eb);
+  border-top: 1px solid var(--color-border-default, var(--color-border));
 }
 
 .btn-save,
@@ -2196,18 +2196,18 @@ onUnmounted(() => {
 }
 
 .btn-save {
-  background: var(--color-primary, #3b82f6);
-  color: var(--color-text-on-primary, #ffffff);
+  background: var(--color-primary, var(--color-primary));
+  color: var(--color-text-on-primary, var(--color-bg-card));
   border: none;
 }
 
 .btn-save:hover {
-  background: var(--color-primary-hover, #2563eb);
+  background: var(--color-primary-hover, var(--color-primary-hover));
 }
 
 .btn-cancel {
   background: transparent;
-  color: var(--color-text-main, #6b7280);
+  color: var(--color-text-main, var(--color-text-sec));
   border: 1px solid var(--color-border-default, #d1d5db);
 }
 
@@ -2217,7 +2217,7 @@ onUnmounted(() => {
 
 .form-hint {
   font-size: 0.75rem;
-  color: var(--color-text-muted, #6b7280);
+  color: var(--color-text-muted, var(--color-text-sec));
   margin-top: 0.25rem;
   line-height: 1.4;
 }
@@ -2225,7 +2225,7 @@ onUnmounted(() => {
 .form-hint-tip {
   display: inline-block;
   margin-top: 0.25rem;
-  color: var(--color-text-muted, #6b7280);
+  color: var(--color-text-muted, var(--color-text-sec));
   font-size: 0.7rem;
   opacity: 0.8;
 }
@@ -2247,8 +2247,8 @@ onUnmounted(() => {
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
-  background: var(--color-primary, #3b82f6);
-  color: var(--color-text-on-primary, #ffffff);
+  background: var(--color-primary, var(--color-primary));
+  color: var(--color-text-on-primary, var(--color-bg-card));
   border: none;
   white-space: nowrap;
   display: flex;
@@ -2257,7 +2257,7 @@ onUnmounted(() => {
 }
 
 .btn-auto-fill:hover:not(:disabled) {
-  background: var(--color-primary-hover, #2563eb);
+  background: var(--color-primary-hover, var(--color-primary-hover));
 }
 
 .btn-auto-fill:disabled {
@@ -2270,7 +2270,7 @@ onUnmounted(() => {
   width: 0.875rem;
   height: 0.875rem;
   border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: var(--color-text-on-primary, #ffffff);
+  border-top-color: var(--color-text-on-primary, var(--color-bg-card));
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
 }
@@ -2284,7 +2284,7 @@ onUnmounted(() => {
 .form-info-box {
   padding: 0.75rem;
   background: var(--color-bg-elevated, #f9fafb);
-  border: 1px solid var(--color-border-default, #e5e7eb);
+  border: 1px solid var(--color-border-default, var(--color-border));
   border-radius: 0.375rem;
   display: flex;
   align-items: center;
@@ -2293,18 +2293,18 @@ onUnmounted(() => {
 
 .form-info-label {
   font-size: 0.875rem;
-  color: var(--color-text-muted, #6b7280);
+  color: var(--color-text-muted, var(--color-text-sec));
 }
 
 .form-info-value {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--color-primary, #3b82f6);
+  color: var(--color-primary, var(--color-primary));
 }
 
 .form-info-hint {
   font-size: 0.75rem;
-  color: var(--color-text-muted, #6b7280);
+  color: var(--color-text-muted, var(--color-text-sec));
   margin-left: auto;
 }
 
@@ -2316,13 +2316,13 @@ onUnmounted(() => {
   padding: 0.75rem;
   background: var(--color-bg-elevated, #f9fafb);
   border-radius: 0.5rem;
-  border: 1px solid var(--color-border-default, #e5e7eb);
+  border: 1px solid var(--color-border-default, var(--color-border));
 }
 
 .switch-label {
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--color-text-main, #111827);
+  color: var(--color-text-main, var(--color-text-main));
   white-space: nowrap;
 }
 
@@ -2335,10 +2335,10 @@ onUnmounted(() => {
 .switch-btn {
   flex: 1;
   padding: 0.5rem 1rem;
-  border: 1px solid var(--color-border-default, #e5e7eb);
+  border: 1px solid var(--color-border-default, var(--color-border));
   border-radius: 0.375rem;
-  background: var(--color-bg-card, #ffffff);
-  color: var(--color-text-main, #111827);
+  background: var(--color-bg-card, var(--color-bg-card));
+  color: var(--color-text-main, var(--color-text-main));
   font-size: 0.875rem;
   cursor: pointer;
   transition: all 0.2s;
@@ -2346,13 +2346,13 @@ onUnmounted(() => {
 
 .switch-btn:hover {
   background: var(--color-bg-elevated, #f9fafb);
-  border-color: var(--color-primary, #3b82f6);
+  border-color: var(--color-primary, var(--color-primary));
 }
 
 .switch-btn.active {
-  background: var(--color-primary, #3b82f6);
-  color: var(--color-text-on-primary, #ffffff);
-  border-color: var(--color-primary, #3b82f6);
+  background: var(--color-primary, var(--color-primary));
+  color: var(--color-text-on-primary, var(--color-bg-card));
+  border-color: var(--color-primary, var(--color-primary));
   font-weight: 500;
 }
 
@@ -2371,7 +2371,7 @@ onUnmounted(() => {
   position: absolute;
   right: 0.75rem;
   font-size: 0.875rem;
-  color: var(--color-text-muted, #6b7280);
+  color: var(--color-text-muted, var(--color-text-sec));
   pointer-events: none;
   font-weight: 500;
 }
@@ -2380,7 +2380,7 @@ onUnmounted(() => {
 .estimate-result {
   padding: 1rem;
   background: var(--color-primary-soft, #eff6ff);
-  border: 1px solid var(--color-primary, #3b82f6);
+  border: 1px solid var(--color-primary, var(--color-primary));
   border-radius: 0.5rem;
   margin-top: 0.5rem;
 }
@@ -2398,14 +2398,14 @@ onUnmounted(() => {
 
 .estimate-label {
   font-size: 0.875rem;
-  color: var(--color-text-main, #111827);
+  color: var(--color-text-main, var(--color-text-main));
   font-weight: 500;
 }
 
 .estimate-value {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--color-primary, #3b82f6);
+  color: var(--color-primary, var(--color-primary));
 }
 
 /* 统计卡片网格 */
@@ -2417,16 +2417,16 @@ onUnmounted(() => {
 }
 
 .stat-card {
-  background: var(--color-bg-card, #ffffff);
-  border: 1px solid var(--color-border-default, #e5e7eb);
+  background: var(--color-bg-card, var(--color-bg-card));
+  border: 1px solid var(--color-border-default, var(--color-border));
   border-radius: 0.75rem;
   padding: 1.25rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 3px var(--color-border);
 }
 
 .stat-label {
   font-size: 0.875rem;
-  color: var(--color-text-muted, #6b7280);
+  color: var(--color-text-muted, var(--color-text-sec));
   margin-bottom: 0.5rem;
   font-weight: 500;
 }
@@ -2437,11 +2437,11 @@ onUnmounted(() => {
 .stat-value-negative {
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--color-text-main, #111827);
+  color: var(--color-text-main, var(--color-text-main));
 }
 
 .stat-value-blue {
-  color: var(--color-primary, #3b82f6);
+  color: var(--color-primary, var(--color-primary));
 }
 
 .stat-value-positive {
@@ -2461,20 +2461,20 @@ onUnmounted(() => {
 }
 
 .chart-container {
-  background: var(--color-bg-card, #ffffff);
-  border: 1px solid var(--color-border-default, #e5e7eb);
+  background: var(--color-bg-card, var(--color-bg-card));
+  border: 1px solid var(--color-border-default, var(--color-border));
   border-radius: 0.75rem;
   padding: 1.5rem;
-  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.05));
+  box-shadow: var(--shadow-sm, 0 1px 3px var(--color-border));
 }
 
 .chart-title {
   font-size: 1.125rem;
   font-weight: 600;
-  color: var(--color-text-main, #111827);
+  color: var(--color-text-main, var(--color-text-main));
   margin: 0 0 1rem 0;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--color-border-default, #e5e7eb);
+  border-bottom: 1px solid var(--color-border-default, var(--color-border));
 }
 
 .chart-wrapper {
@@ -2486,17 +2486,17 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-text-muted, #6b7280);
+  color: var(--color-text-muted, var(--color-text-sec));
   font-size: 0.875rem;
 }
 
 /* 投资列表表格 */
 .investment-table-container {
-  background: var(--color-bg-card, #ffffff);
-  border: 1px solid var(--color-border-default, #e5e7eb);
+  background: var(--color-bg-card, var(--color-bg-card));
+  border: 1px solid var(--color-border-default, var(--color-border));
   border-radius: 0.75rem;
   padding: 1.5rem;
-  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.05));
+  box-shadow: var(--shadow-sm, 0 1px 3px var(--color-border));
   overflow-x: auto;
 }
 
@@ -2507,13 +2507,13 @@ onUnmounted(() => {
 
 .table-header-hint {
   font-size: 0.75rem;
-  color: var(--color-text-muted, #6b7280);
+  color: var(--color-text-muted, var(--color-text-sec));
   cursor: help;
   margin-left: 0.25rem;
 }
 
 .price-zero-hint {
-  color: var(--color-text-muted, #6b7280);
+  color: var(--color-text-muted, var(--color-text-sec));
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -2529,20 +2529,20 @@ onUnmounted(() => {
 .investment-table td {
   padding: 0.75rem;
   text-align: left;
-  border-bottom: 1px solid var(--color-border-default, #e5e7eb);
+  border-bottom: 1px solid var(--color-border-default, var(--color-border));
 }
 
 .investment-table th {
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--color-text-muted, #6b7280);
+  color: var(--color-text-muted, var(--color-text-sec));
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .investment-table td {
   font-size: 0.875rem;
-  color: var(--color-text-main, #374151);
+  color: var(--color-text-main, var(--color-text-main));
 }
 
 .badge-stock,
@@ -2556,14 +2556,14 @@ onUnmounted(() => {
 
 .badge-stock {
   background: var(--color-bg-elevated, #f9fafb);
-  color: var(--color-primary, #3b82f6);
-  border: 1px solid var(--color-border-default, #e5e7eb);
+  color: var(--color-primary, var(--color-primary));
+  border: 1px solid var(--color-border-default, var(--color-border));
 }
 
 .badge-fund {
   background: var(--color-bg-elevated, #f9fafb);
   color: var(--success, var(--color-success, #10b981));
-  border: 1px solid var(--color-border-default, #e5e7eb);
+  border: 1px solid var(--color-border-default, var(--color-border));
 }
 
 .profit-positive,
@@ -2612,21 +2612,21 @@ onUnmounted(() => {
 
 .btn-edit {
   background: var(--color-bg-elevated, #f9fafb);
-  color: var(--color-text-main, #374151);
-  border: 1px solid var(--color-border-default, #e5e7eb);
+  color: var(--color-text-main, var(--color-text-main));
+  border: 1px solid var(--color-border-default, var(--color-border));
 }
 
 .btn-edit:hover {
-  background: var(--color-bg-card, #ffffff);
+  background: var(--color-bg-card, var(--color-bg-card));
 }
 
 .btn-transaction {
-  background: var(--color-primary, #3b82f6);
-  color: var(--color-text-on-primary, #ffffff);
+  background: var(--color-primary, var(--color-primary));
+  color: var(--color-text-on-primary, var(--color-bg-card));
 }
 
 .btn-transaction:hover {
-  background: var(--color-primary-hover, #2563eb);
+  background: var(--color-primary-hover, var(--color-primary-hover));
 }
 
 .btn-delete {
@@ -2637,7 +2637,7 @@ onUnmounted(() => {
 
 .btn-delete:hover {
   background: var(--error, var(--color-error, #ef4444));
-  color: var(--color-text-on-primary, #ffffff);
+  color: var(--color-text-on-primary, var(--color-bg-card));
 }
 
 /* 导入相关样式 */
@@ -2779,7 +2779,7 @@ onUnmounted(() => {
   background: white;
   border: 1px solid #e8e8e8;
   border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px var(--shadow);
   z-index: 1000;
   min-width: 160px;
 }
@@ -2831,18 +2831,18 @@ onUnmounted(() => {
   width: 18px;
   height: 18px;
   cursor: pointer;
-  accent-color: var(--color-primary, #3b82f6);
+  accent-color: var(--color-primary, var(--color-primary));
 }
 
 .auto-refresh-label {
   font-size: 0.875rem;
-  color: var(--color-text-main, #374151);
+  color: var(--color-text-main, var(--color-text-main));
   font-weight: 500;
 }
 
 .last-refresh-time {
   font-size: 0.75rem;
-  color: var(--color-text-muted, #6b7280);
+  color: var(--color-text-muted, var(--color-text-sec));
   font-style: italic;
 }
 </style>

@@ -114,7 +114,7 @@ const handleChange = (value: string) => {
 }
 
 :deep(.bytemd:focus-within) {
-  border-color: var(--color-primary, #2563eb);
+  border-color: var(--color-primary, var(--color-primary-hover));
   box-shadow: 0 0 0 3px var(--color-primary-soft, rgba(37, 99, 235, 0.2));
 }
 
@@ -129,7 +129,7 @@ const handleChange = (value: string) => {
   line-height: 1.6;
   min-height: 280px;
   background: var(--color-bg-editor, rgba(255, 255, 255, 0.95)) !important;
-  border-right: 1px solid var(--color-border-subtle, #e5e7eb);
+  border-right: 1px solid var(--color-border-subtle, var(--color-border));
 }
 
 :deep(.bytemd-editor .CodeMirror) {
@@ -142,7 +142,7 @@ const handleChange = (value: string) => {
 }
 
 :deep(.bytemd-editor .CodeMirror-placeholder) {
-  color: var(--color-text-muted, #6b7280) !important;
+  color: var(--color-text-muted, var(--color-text-sec)) !important;
 }
 
 :deep(.bytemd-preview) {
@@ -163,7 +163,7 @@ const handleChange = (value: string) => {
 [data-theme='tech-blue'] :deep(.bytemd-toolbar),
 [data-theme='forest'] :deep(.bytemd-toolbar),
 [data-theme='hybrid-super-dark'] :deep(.bytemd-toolbar) {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--color-border);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
@@ -174,7 +174,7 @@ const handleChange = (value: string) => {
 [data-theme='hybrid-super-dark'] :deep(.bytemd-editor) {
   background: rgba(255, 255, 255, 0.14) !important;
   border-right: 1px solid rgba(255, 255, 255, 0.25) !important;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1px var(--color-border);
 }
 
 [data-theme='dark'] :deep(.bytemd-editor .CodeMirror),

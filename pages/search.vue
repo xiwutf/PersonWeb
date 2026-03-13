@@ -744,7 +744,7 @@ onMounted(() => {
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: var(--spacing-md);
-  color: #ffffff;
+  color: var(--color-bg-card);
 }
 
 @media (min-width: 1024px) {
@@ -980,7 +980,7 @@ onMounted(() => {
 .search-button {
   padding: var(--spacing-md) var(--spacing-2xl);
   background: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-bg-card);
   border-radius: var(--radius-xl);
   border: none;
   font-weight: 500;
@@ -1031,7 +1031,7 @@ onMounted(() => {
 
 .search-type-button-active {
   background: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-bg-card);
 }
 
 .search-type-button-inactive {
@@ -1195,7 +1195,7 @@ onMounted(() => {
 }
 
 .search-result-icon-article .search-result-icon-emoji {
-  color: #3b82f6;
+  color: var(--color-primary);
 }
 
 .search-result-icon-knowledge .search-result-icon-emoji {
@@ -1223,12 +1223,12 @@ onMounted(() => {
 
 .search-result-tag-article {
   background: rgba(59, 130, 246, 0.1);
-  color: #3b82f6;
+  color: var(--color-primary);
 }
 
 .search-result-tag-project {
   background: rgba(34, 197, 94, 0.1);
-  color: #22c55e;
+  color: var(--color-success);
 }
 
 .search-result-tag-knowledge {
@@ -1324,7 +1324,7 @@ onMounted(() => {
 }
 
 .search-result-link-project {
-  color: #22c55e;
+  color: var(--color-success);
 }
 
 .search-result-link-project:hover {

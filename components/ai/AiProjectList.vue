@@ -320,7 +320,7 @@ html[data-theme="light"] .ai-project-status-badge--default {
 html[data-theme="dark"] .ai-project-status-badge--success {
   background: rgba(34, 197, 94, 0.15);
   border: 1px solid rgba(34, 197, 94, 0.3);
-  color: #22c55e;
+  color: var(--color-success);
 }
 
 html[data-theme="dark"] .ai-project-status-badge--warning {
@@ -331,14 +331,14 @@ html[data-theme="dark"] .ai-project-status-badge--warning {
 
 html[data-theme="dark"] .ai-project-status-badge--info {
   background: rgba(59, 130, 246, 0.15);
-  border: 1px solid rgba(59, 130, 246, 0.3);
-  color: #3b82f6;
+  border: 1px solid var(--theme-primary);
+  color: var(--color-primary);
 }
 
 html[data-theme="dark"] .ai-project-status-badge--default {
   background: rgba(148, 163, 184, 0.15);
   border: 1px solid rgba(148, 163, 184, 0.3);
-  color: #94a3b8;
+  color: var(--color-text-muted);
 }
 
 .ai-project-title {

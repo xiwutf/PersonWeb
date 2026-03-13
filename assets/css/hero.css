@@ -444,7 +444,7 @@ html[data-theme="dark"] .hero-tag {
   overflow: hidden;
   /* 浅色主题优化（2025-01）：主按钮使用主色背景 + 白色文字，对比更清晰 */
   background: var(--primary);
-  color: #ffffff;
+  color: var(--color-text-inverse);
   border: 1px solid var(--primary);
   box-shadow: 0 4px 6px -1px rgba(var(--primary-rgb, 37, 99, 235), 0.2), 0 2px 4px -1px rgba(var(--primary-rgb, 37, 99, 235), 0.1);
 }
@@ -474,7 +474,7 @@ html[data-theme="dark"] .hero-tag {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.1));
+  background: linear-gradient(to bottom, transparent, var(--shadow));
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -591,7 +591,7 @@ html[data-theme="dark"] .hero-button-secondary:hover {
 
 html[data-theme="light"] .hero-visual-card-bg {
   background: rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--color-border);
 }
 
 .hero-visual-card-glow {
@@ -641,7 +641,7 @@ html[data-theme="light"] .hero-visual-card-bg {
   border-radius: 0.75rem;
   overflow: hidden;
   border: 2px solid var(--color-border-default);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 15px -3px var(--shadow);
   backdrop-filter: blur(4px);
   background: var(--color-bg-card);
   transition: all 0.5s ease;

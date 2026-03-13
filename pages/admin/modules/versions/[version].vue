@@ -481,7 +481,7 @@ const deleteVersion = async () => {
 .back-link {
   display: inline-block;
   margin-bottom: 1rem;
-  color: #3b82f6;
+  color: var(--color-primary);
   text-decoration: none;
 }
 
@@ -617,7 +617,7 @@ const deleteVersion = async () => {
   display: block;
   font-size: 1.5rem;
   font-weight: 600;
-  color: #3b82f6;
+  color: var(--color-primary);
 }
 
 .stat-label {
@@ -646,7 +646,7 @@ const deleteVersion = async () => {
 }
 
 .bar {
-  background: #3b82f6;
+  background: var(--color-primary);
   flex: 1;
   min-width: 8px;
   border-radius: 2px 2px 0 0;
@@ -663,7 +663,7 @@ const deleteVersion = async () => {
 .score {
   font-size: 3rem;
   font-weight: 600;
-  color: #3b82f6;
+  color: var(--color-primary);
 }
 
 .score .max {
@@ -709,7 +709,7 @@ const deleteVersion = async () => {
 .bar-container {
   flex: 1;
   height: 20px;
-  background: #e5e7eb;
+  background: var(--color-border);
   border-radius: 10px;
   overflow: hidden;
 }
@@ -888,9 +888,9 @@ const deleteVersion = async () => {
 }
 
 .page-btn.active {
-  background: #3b82f6;
+  background: var(--color-primary);
   color: white;
-  border-color: #3b82f6;
+  border-color: var(--color-primary);
 }
 
 .action-buttons {
@@ -915,13 +915,13 @@ const deleteVersion = async () => {
 }
 
 .btn.primary {
-  background: #3b82f6;
+  background: var(--color-primary);
   color: white;
-  border-color: #3b82f6;
+  border-color: var(--color-primary);
 }
 
 .btn.primary:hover {
-  background: #2563eb;
+  background: var(--color-primary-hover);
 }
 
 .btn.danger {

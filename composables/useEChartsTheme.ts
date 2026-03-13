@@ -109,19 +109,19 @@ export const useEChartsTheme = () => {
   const lightTheme = computed(() => ({
     backgroundColor: 'transparent',
     textStyle: {
-      color: getCssVar('--color-text-main') || '#374151',
+      color: getCssVar('--color-text-main') || 'var(--color-text-main)',
       fontSize: 12
     },
     title: {
       textStyle: {
-        color: getCssVar('--color-text-main') || '#111827',
+        color: getCssVar('--color-text-main') || 'var(--color-text-main)',
         fontSize: 14,
         fontWeight: 'bold'
       }
     },
     legend: {
       textStyle: {
-        color: getCssVar('--color-text-muted') || '#6b7280',
+        color: getCssVar('--color-text-muted') || 'var(--color-text-sec)',
         fontSize: 12
       }
     },
@@ -130,7 +130,7 @@ export const useEChartsTheme = () => {
       borderColor: getCssVar('--color-border-default') || 'rgba(209, 213, 219, 0.8)',
       borderWidth: 1,
       textStyle: {
-        color: getCssVar('--color-text-main') || '#111827',
+        color: getCssVar('--color-text-main') || 'var(--color-text-main)',
         fontSize: 12
       },
       padding: [8, 12]
@@ -146,7 +146,7 @@ export const useEChartsTheme = () => {
         }
       },
       axisLabel: {
-        color: getCssVar('--color-text-muted') || '#6b7280'
+        color: getCssVar('--color-text-muted') || 'var(--color-text-sec)'
       },
       splitLine: {
         lineStyle: {
@@ -162,7 +162,7 @@ export const useEChartsTheme = () => {
         }
       },
       axisLabel: {
-        color: getCssVar('--color-text-muted') || '#6b7280'
+        color: getCssVar('--color-text-muted') || 'var(--color-text-sec)'
       },
       splitLine: {
         lineStyle: {

@@ -454,19 +454,19 @@ useHead({
 
 .tag-info {
   background: rgba(59, 130, 246, 0.2);
-  color: #3b82f6;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: var(--color-primary);
+  border: 1px solid var(--theme-primary);
 }
 
 .tag-success {
   background: rgba(34, 197, 94, 0.2);
-  color: #22c55e;
+  color: var(--color-success);
   border: 1px solid rgba(34, 197, 94, 0.3);
 }
 
 .tag-default {
   background: rgba(107, 114, 128, 0.2);
-  color: #6b7280;
+  color: var(--color-text-sec);
   border: 1px solid rgba(107, 114, 128, 0.3);
 }
 

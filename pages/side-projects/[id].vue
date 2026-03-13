@@ -351,7 +351,7 @@ onMounted(() => {
   display: inline-block;
   padding: var(--spacing-sm) var(--spacing-lg);
   background: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-bg-card);
   border-radius: var(--radius-md);
   text-decoration: none;
   transition: all 0.2s ease;
@@ -415,7 +415,7 @@ onMounted(() => {
 
 .status-badge--info {
   background: rgba(59, 130, 246, 0.1);
-  color: #3b82f6;
+  color: var(--color-primary);
 }
 
 .status-badge--success {
@@ -510,7 +510,7 @@ onMounted(() => {
 
 .tech-tag:hover {
   background: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-bg-card);
   border-color: var(--color-primary);
   transform: translateY(-2px);
 }

@@ -242,8 +242,8 @@ const formatDate = (dateStr: string) => {
   max-height: 400px;
   background: white;
   border-radius: 0.75rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px var(--shadow);
+  border: 1px solid var(--shadow);
   display: flex;
   flex-direction: column;
   overflow: hidden;

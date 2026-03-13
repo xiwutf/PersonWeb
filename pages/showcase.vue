@@ -175,7 +175,7 @@ onMounted(() => {
 
 <style scoped>
 .showcase-page {
-  background: var(--theme-bg, #ffffff);
+  background: var(--theme-bg, var(--color-bg-card));
   color: var(--theme-text, #1f2937);
 }
 
@@ -187,8 +187,8 @@ onMounted(() => {
 }
 
 .showcase-item {
-  background: var(--theme-card-bg, #ffffff);
-  border: 1px solid var(--theme-border, #e5e7eb);
+  background: var(--theme-card-bg, var(--color-bg-card));
+  border: 1px solid var(--theme-border, var(--color-border));
   border-radius: 1rem;
   overflow: hidden;
   cursor: pointer;
@@ -197,7 +197,7 @@ onMounted(() => {
 
 .showcase-item:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 12px 24px var(--shadow);
 }
 
 .item-content {
@@ -246,7 +246,7 @@ onMounted(() => {
 .item-tag {
   padding: 0.25rem 0.75rem;
   background: rgba(59, 130, 246, 0.1);
-  color: #3b82f6;
+  color: var(--color-primary);
   border-radius: 0.25rem;
   font-size: 0.75rem;
 }
@@ -281,7 +281,7 @@ onMounted(() => {
   width: 2rem;
   height: 2rem;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.1);
+  background: var(--shadow);
   border: none;
   cursor: pointer;
   font-size: 1.5rem;

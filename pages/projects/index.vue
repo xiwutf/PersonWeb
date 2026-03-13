@@ -502,8 +502,8 @@ const loadGithubStats = async () => {
               datasets: [{
                 label: 'Commits',
                 data: recentStats.map(w => w.total),
-                backgroundColor: '#3b82f6',
-                hoverBackgroundColor: '#2563eb'
+                backgroundColor: 'var(--color-primary)',
+                hoverBackgroundColor: 'var(--color-primary-hover)'
               }]
             }
           }

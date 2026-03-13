@@ -132,7 +132,7 @@ onMounted(() => {
 <style scoped>
 .cognition-page {
   @apply min-h-screen relative overflow-hidden;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, var(--color-bg-body) 0%, #c3cfe2 100%);
 }
 
 /* 背景噪点 */

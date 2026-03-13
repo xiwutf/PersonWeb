@@ -208,7 +208,7 @@ onMounted(() => {
 <style scoped>
 /* 确保表单标签文字清晰可见 */
 .form-label {
-  color: var(--color-text-main, #ffffff) !important;
+  color: var(--color-text-main, var(--color-bg-card)) !important;
   display: block;
   margin-bottom: 0.5rem;
   font-size: 0.875rem;
@@ -220,25 +220,25 @@ onMounted(() => {
 }
 
 .form-section-title {
-  color: var(--color-text-main, #ffffff) !important;
+  color: var(--color-text-main, var(--color-bg-card)) !important;
 }
 
 /* 确保下拉框文字清晰可见 */
 .form-input {
-  color: var(--color-text-main, #ffffff) !important;
+  color: var(--color-text-main, var(--color-bg-card)) !important;
   background: rgba(255, 255, 255, 0.1) !important;
   border-color: rgba(255, 255, 255, 0.2) !important;
 }
 
 .form-input:focus {
   background: rgba(255, 255, 255, 0.15) !important;
-  border-color: var(--color-primary, #3b82f6) !important;
+  border-color: var(--color-primary, var(--color-primary)) !important;
   outline: none;
 }
 
 /* 下拉框选项文字 - 增强样式确保清晰可见 */
 select.form-input {
-  color: var(--color-text-main, #ffffff) !important;
+  color: var(--color-text-main, var(--color-bg-card)) !important;
   background: rgba(255, 255, 255, 0.1) !important;
   border-color: rgba(255, 255, 255, 0.2) !important;
   /* 确保下拉箭头可见 */
@@ -251,9 +251,9 @@ select.form-input {
 
 /* 下拉框选项样式 - 使用深色背景和白色文字 */
 select.form-input option {
-  background: #1e293b !important;
-  background-color: #1e293b !important;
-  color: #ffffff !important;
+  background: var(--color-border-default) !important;
+  background-color: var(--color-border-default) !important;
+  color: var(--color-bg-card) !important;
   padding: 0.75rem 0.5rem !important;
   font-size: 0.875rem !important;
   font-weight: 400 !important;
@@ -264,21 +264,21 @@ select.form-input option {
 /* 下拉框打开时的样式 */
 select.form-input:focus {
   background: rgba(255, 255, 255, 0.15) !important;
-  border-color: var(--color-primary, #3b82f6) !important;
+  border-color: var(--color-primary, var(--color-primary)) !important;
 }
 
 /* 选中状态的选项 */
 select.form-input option:checked {
-  background: var(--color-primary, #3b82f6) !important;
-  background-color: var(--color-primary, #3b82f6) !important;
-  color: #ffffff !important;
+  background: var(--color-primary, var(--color-primary)) !important;
+  background-color: var(--color-primary, var(--color-primary)) !important;
+  color: var(--color-bg-card) !important;
 }
 
 /* 悬停状态的选项（某些浏览器支持） */
 select.form-input option:hover {
-  background: rgba(59, 130, 246, 0.3) !important;
-  background-color: rgba(59, 130, 246, 0.3) !important;
-  color: #ffffff !important;
+  background: var(--theme-primary) !important;
+  background-color: var(--theme-primary) !important;
+  color: var(--color-bg-card) !important;
 }
 
 /* 加载文字 */

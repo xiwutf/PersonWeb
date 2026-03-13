@@ -107,7 +107,7 @@
 .about-avatar-glow {
   position: absolute;
   inset: -1rem;
-  background: linear-gradient(to right, #3b82f6, #a855f7, #10b981);
+  background: linear-gradient(to right, var(--color-primary), var(--color-purple-500), var(--color-emerald-500));
   border-radius: 50%;
   opacity: 0.75;
   filter: blur(1rem);
@@ -126,7 +126,7 @@
   height: 10rem;
   border-radius: 50%;
   overflow: hidden;
-  border: 4px solid #1e293b;
+  border: 4px solid var(--color-border-default);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
@@ -148,9 +148,9 @@
   right: 0.5rem;
   width: 2rem;
   height: 2rem;
-  background-color: #10b981;
+  background-color: var(--color-emerald-500);
   border-radius: 50%;
-  border: 4px solid #0f172a;
+  border: 4px solid var(--color-text-main);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -162,7 +162,7 @@
   height: 100%;
   width: 100%;
   border-radius: 50%;
-  background-color: #34d399;
+  background-color: var(--color-emerald-400);
   opacity: 0.75;
   animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
@@ -174,7 +174,7 @@
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  background-image: linear-gradient(to right, #bfdbfe, #ffffff, #e9d5ff);
+  background-image: linear-gradient(to right, #bfdbfe, var(--color-bg-card), #e9d5ff);
   letter-spacing: -0.025em;
 }
 
@@ -186,7 +186,7 @@
 
 .about-subtitle {
   font-size: 1.25rem;
-  color: #60a5fa;
+  color: var(--color-primary-soft);
   font-weight: 500;
   margin-bottom: 1.5rem;
 }
@@ -215,13 +215,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #94a3b8;
+  color: var(--color-text-muted);
   transition: all 0.3s;
 }
 
 .about-social-link:hover {
-  background-color: #ffffff;
-  color: #0f172a;
+  background-color: var(--color-bg-card);
+  color: var(--color-text-main);
   transform: scale(1.1);
 }
 
@@ -250,15 +250,15 @@
 }
 
 .about-section-icon--blue {
-  color: #3b82f6;
+  color: var(--color-primary);
 }
 
 .about-section-icon--purple {
-  color: #a855f7;
+  color: var(--color-purple-500);
 }
 
 .about-section-icon--emerald {
-  color: #10b981;
+  color: var(--color-emerald-500);
 }
 
 .about-section-icon--pink {
@@ -306,12 +306,12 @@
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 15px -3px var(--shadow);
 }
 
 .about-skill-icon--blue {
   background: linear-gradient(to bottom right, rgba(59, 130, 246, 0.2), rgba(6, 182, 212, 0.2));
-  color: #60a5fa;
+  color: var(--color-primary-soft);
 }
 
 .about-skill-icon--purple {
@@ -321,12 +321,12 @@
 
 .about-skill-icon--orange {
   background: linear-gradient(to bottom right, rgba(249, 115, 22, 0.2), rgba(239, 68, 68, 0.2));
-  color: #fb923c;
+  color: var(--color-orange-400);
 }
 
 .about-skill-icon--emerald {
   background: linear-gradient(to bottom right, rgba(16, 185, 129, 0.2), rgba(20, 184, 166, 0.2));
-  color: #34d399;
+  color: var(--color-emerald-400);
 }
 
 .about-skill-name {
@@ -387,16 +387,16 @@
 .about-timeline-item {
   position: relative;
   padding-left: 2rem;
-  border-left: 2px solid #475569;
+  border-left: 2px solid var(--color-text-sec);
   transition: border-color 0.3s;
 }
 
 .about-timeline-item:hover {
-  border-color: #a855f7;
+  border-color: var(--color-purple-500);
 }
 
 .about-timeline-item--emerald:hover {
-  border-color: #10b981;
+  border-color: var(--color-emerald-500);
 }
 
 .about-timeline-dot {
@@ -406,17 +406,17 @@
   width: 1rem;
   height: 1rem;
   border-radius: 50%;
-  background-color: #0f172a;
-  border: 2px solid #475569;
+  background-color: var(--color-text-main);
+  border: 2px solid var(--color-text-sec);
   transition: border-color 0.3s;
 }
 
 .about-timeline-item:hover .about-timeline-dot {
-  border-color: #a855f7;
+  border-color: var(--color-purple-500);
 }
 
 .about-timeline-item--emerald:hover .about-timeline-dot {
-  border-color: #10b981;
+  border-color: var(--color-emerald-500);
 }
 
 .about-timeline-title {
@@ -431,7 +431,7 @@
 }
 
 .about-timeline-item--emerald:hover .about-timeline-title {
-  color: #34d399;
+  color: var(--color-emerald-400);
 }
 
 .about-timeline-meta {
@@ -568,7 +568,7 @@
 
 .about-contact-label {
   font-size: 0.75rem;
-  color: #94a3b8;
+  color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -579,11 +579,11 @@
 }
 
 .about-contact-value--green {
-  color: #4ade80;
+  color: var(--color-green-400);
 }
 
 .about-contact-value--blue {
-  color: #60a5fa;
+  color: var(--color-primary-soft);
 }
 
 .about-contact-qr {
@@ -598,14 +598,14 @@
 .about-contact-qr-image {
   width: 12rem;
   height: 12rem;
-  background-color: #ffffff;
+  background-color: var(--color-bg-card);
   padding: 0.5rem;
   border-radius: 0.75rem;
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px -1px var(--shadow);
 }
 
 .about-contact-qr-image img {
@@ -617,7 +617,7 @@
 
 .about-contact-qr-text {
   font-size: 0.875rem;
-  color: #94a3b8;
+  color: var(--color-text-muted);
 }
 
 /* ========== 动画 ========== */

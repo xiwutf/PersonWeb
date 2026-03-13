@@ -300,7 +300,7 @@ onMounted(() => {
   width: 100%;
   max-width: 680px;
   height: 100vh;
-  background: var(--color-bg-card, #ffffff);
+  background: var(--color-bg-card, var(--color-bg-card));
   box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
@@ -316,7 +316,7 @@ onMounted(() => {
 /* 头部 */
 .knowledge-modal-header {
   padding: 24px 28px;
-  border-bottom: 1px solid var(--color-border, #e5e7eb);
+  border-bottom: 1px solid var(--color-border, var(--color-border));
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -325,7 +325,7 @@ onMounted(() => {
 }
 
 [data-theme="dark"] .knowledge-modal-header {
-  border-bottom-color: #374151;
+  border-bottom-color: var(--color-text-main);
   background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
 }
 
@@ -340,7 +340,7 @@ onMounted(() => {
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #3b82f6 0%, #9333ea 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, #9333ea 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -356,7 +356,7 @@ onMounted(() => {
 .knowledge-modal-title {
   font-size: 20px;
   font-weight: 600;
-  color: var(--color-text-main, #111827);
+  color: var(--color-text-main, var(--color-text-main));
   margin: 0 0 4px 0;
   line-height: 1.4;
 }
@@ -367,7 +367,7 @@ onMounted(() => {
 
 .knowledge-modal-subtitle {
   font-size: 14px;
-  color: var(--color-text-sec, #6b7280);
+  color: var(--color-text-sec, var(--color-text-sec));
   margin: 0;
   line-height: 1.5;
 }
@@ -382,7 +382,7 @@ onMounted(() => {
   border-radius: 8px;
   border: none;
   background: transparent;
-  color: var(--color-text-sec, #6b7280);
+  color: var(--color-text-sec, var(--color-text-sec));
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -393,11 +393,11 @@ onMounted(() => {
 
 .knowledge-modal-close:hover {
   background: var(--color-bg-hover, #f3f4f6);
-  color: var(--color-text-main, #111827);
+  color: var(--color-text-main, var(--color-text-main));
 }
 
 [data-theme="dark"] .knowledge-modal-close:hover {
-  background: #374151;
+  background: var(--color-text-main);
   color: #f9fafb;
 }
 
@@ -441,11 +441,11 @@ onMounted(() => {
   gap: 6px;
   font-size: 14px;
   font-weight: 500;
-  color: var(--color-text-main, #374151);
+  color: var(--color-text-main, var(--color-text-main));
 }
 
 [data-theme="dark"] .knowledge-form-label {
-  color: #e5e7eb;
+  color: var(--color-border);
 }
 
 .knowledge-form-label-text {
@@ -476,9 +476,9 @@ onMounted(() => {
   padding: 12px 16px;
   font-size: 14px;
   line-height: 1.5;
-  color: var(--color-text-main, #111827);
-  background: var(--color-bg-input, #ffffff);
-  border: 1.5px solid var(--color-border, #e5e7eb);
+  color: var(--color-text-main, var(--color-text-main));
+  background: var(--color-bg-input, var(--color-bg-card));
+  border: 1.5px solid var(--color-border, var(--color-border));
   border-radius: 10px;
   transition: all 0.2s;
   font-family: inherit;
@@ -487,8 +487,8 @@ onMounted(() => {
 [data-theme="dark"] .knowledge-form-input,
 [data-theme="dark"] .knowledge-form-select,
 [data-theme="dark"] .knowledge-form-textarea {
-  background: #111827;
-  border-color: #374151;
+  background: var(--color-text-main);
+  border-color: var(--color-text-main);
   color: #f9fafb;
 }
 
@@ -496,14 +496,14 @@ onMounted(() => {
 .knowledge-form-select:focus,
 .knowledge-form-textarea:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 [data-theme="dark"] .knowledge-form-input:focus,
 [data-theme="dark"] .knowledge-form-select:focus,
 [data-theme="dark"] .knowledge-form-textarea:focus {
-  border-color: #60a5fa;
+  border-color: var(--color-primary-soft);
   box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
 }
 
@@ -525,7 +525,7 @@ onMounted(() => {
   transform: translateY(-50%);
   width: 20px;
   height: 20px;
-  color: var(--color-text-sec, #6b7280);
+  color: var(--color-text-sec, var(--color-text-sec));
   pointer-events: none;
 }
 
@@ -560,16 +560,16 @@ onMounted(() => {
 /* 底部操作栏 */
 .knowledge-modal-footer {
   padding: 20px 28px;
-  border-top: 1px solid var(--color-border, #e5e7eb);
+  border-top: 1px solid var(--color-border, var(--color-border));
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 12px;
-  background: var(--color-bg-card, #ffffff);
+  background: var(--color-bg-card, var(--color-bg-card));
 }
 
 [data-theme="dark"] .knowledge-modal-footer {
-  border-top-color: #374151;
+  border-top-color: var(--color-text-main);
   background: #1e2937;
 }
 
@@ -590,16 +590,16 @@ onMounted(() => {
 
 .knowledge-btn-secondary {
   background: var(--color-bg-hover, #f3f4f6);
-  color: var(--color-text-main, #374151);
+  color: var(--color-text-main, var(--color-text-main));
 }
 
 [data-theme="dark"] .knowledge-btn-secondary {
-  background: #374151;
-  color: #e5e7eb;
+  background: var(--color-text-main);
+  color: var(--color-border);
 }
 
 .knowledge-btn-secondary:hover {
-  background: var(--color-bg-hover-active, #e5e7eb);
+  background: var(--color-bg-hover-active, var(--color-border));
 }
 
 [data-theme="dark"] .knowledge-btn-secondary:hover {
@@ -607,9 +607,9 @@ onMounted(() => {
 }
 
 .knowledge-btn-primary {
-  background: linear-gradient(135deg, #3b82f6 0%, #9333ea 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, #9333ea 100%);
   color: white;
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 2px 8px var(--theme-primary);
 }
 
 .knowledge-btn-primary:hover {

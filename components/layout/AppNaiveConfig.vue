@@ -224,7 +224,7 @@ onMounted(async () => {
   height: 100%;
   /* 使用与主题一致的背景色，避免蓝屏 */
   background: var(--n-body-color, var(--color-bg-body, #020617));
-  color: var(--color-text-main, #e2e8f0);
+  color: var(--color-text-main, var(--color-text-sub));
 }
 </style>
 

@@ -18,7 +18,7 @@
 /* ========== 按钮样式 ========== */
 .btn-refresh {
   padding: 0.5rem 1rem;
-  background: #10b981;
+  background: var(--color-emerald-500);
   color: white;
   border-radius: 0.375rem;
   border: none;
@@ -27,7 +27,7 @@
 }
 
 .btn-refresh:hover {
-  background: #059669;
+  background: var(--color-emerald-600);
 }
 
 .btn-add {
@@ -87,7 +87,7 @@
 }
 
 .btn-transaction {
-  color: #10b981;
+  color: var(--color-emerald-500);
   background: none;
   border: none;
   cursor: pointer;
@@ -96,11 +96,11 @@
 }
 
 .btn-transaction:hover {
-  color: #059669;
+  color: var(--color-emerald-600);
 }
 
 .btn-delete {
-  color: #ef4444;
+  color: var(--color-red-500);
   background: none;
   border: none;
   cursor: pointer;
@@ -109,7 +109,7 @@
 }
 
 .btn-delete:hover {
-  color: #dc2626;
+  color: var(--color-red-600);
 }
 
 /* ========== 信息提示框 ========== */
@@ -195,13 +195,13 @@
 .stat-value-positive {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #10b981;
+  color: var(--color-emerald-500);
 }
 
 .stat-value-negative {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #ef4444;
+  color: var(--color-red-500);
 }
 
 .stat-value-blue {
@@ -236,59 +236,59 @@
 
 /* 确保 ECharts 图表文字在深色模式下可见 */
 .dark .chart-wrapper :deep(.echarts) {
-  color: #ffffff !important;
+  color: var(--color-bg-card) !important;
 }
 
 .dark .chart-wrapper :deep(text) {
-  fill: #ffffff !important;
+  fill: var(--color-bg-card) !important;
   font-size: 13px !important;
   font-weight: normal !important;
 }
 
 /* 确保图例文字可见 */
 .dark .chart-wrapper :deep(.echarts-legend) {
-  color: #e5e7eb !important;
+  color: var(--color-text-sec) !important;
 }
 
 .dark .chart-wrapper :deep(.echarts-legend-item) {
-  color: #e5e7eb !important;
+  color: var(--color-text-sec) !important;
 }
 
 .dark .chart-wrapper :deep(.echarts-legend-item-text) {
-  color: #e5e7eb !important;
-  fill: #e5e7eb !important;
+  color: var(--color-text-sec) !important;
+  fill: var(--color-text-sec) !important;
 }
 
 /* 工具提示样式 */
 .dark .chart-wrapper :deep(.echarts-tooltip) {
   background-color: rgba(17, 24, 39, 0.98) !important;
   border-color: rgba(156, 163, 175, 0.5) !important;
-  color: #ffffff !important;
+  color: var(--color-bg-card) !important;
 }
 
 .dark .chart-wrapper :deep(.echarts-tooltip-content) {
-  color: #ffffff !important;
+  color: var(--color-bg-card) !important;
 }
 
 /* 坐标轴文字 */
 .dark .chart-wrapper :deep(.echarts-axis-label) {
-  fill: #e5e7eb !important;
-  color: #e5e7eb !important;
+  fill: var(--color-text-sec) !important;
+  color: var(--color-text-sec) !important;
 }
 
 /* 浅色模式下的文字 */
 .chart-wrapper :deep(.echarts) {
-  color: #374151;
+  color: var(--color-text-main);
 }
 
 .chart-wrapper :deep(text) {
-  fill: #374151 !important;
+  fill: var(--color-text-main) !important;
   font-size: 13px !important;
 }
 
 .chart-wrapper :deep(.echarts-legend-item-text) {
-  color: #6b7280 !important;
-  fill: #6b7280 !important;
+  color: var(--color-text-sec) !important;
+  fill: var(--color-text-sec) !important;
 }
 
 .chart-empty {
@@ -429,18 +429,18 @@
 
 .badge-fund {
   background: rgba(34, 197, 94, 0.2);
-  color: #22c55e;
+  color: var(--color-success);
 }
 
 /* ========== 盈亏显示 ========== */
 .profit-positive {
   font-weight: 600;
-  color: #10b981;
+  color: var(--color-emerald-500);
 }
 
 .profit-negative {
   font-weight: 600;
-  color: #ef4444;
+  color: var(--color-red-500);
 }
 
 .profit-rate {
@@ -449,12 +449,12 @@
 
 .profit-rate-positive {
   font-size: 0.75rem;
-  color: #10b981;
+  color: var(--color-emerald-500);
 }
 
 .profit-rate-negative {
   font-size: 0.75rem;
-  color: #ef4444;
+  color: var(--color-red-500);
 }
 
 /* ========== Top 持仓卡片 ========== */
@@ -506,7 +506,7 @@
 
 .holding-rank-1 {
   background: rgba(251, 191, 36, 0.2);
-  color: #fbbf24;
+  color: var(--color-amber-300);
 }
 
 .holding-rank-2 {
@@ -516,7 +516,7 @@
 
 .holding-rank-3 {
   background: rgba(249, 115, 22, 0.2);
-  color: #f97316;
+  color: var(--color-orange-500);
 }
 
 .holding-rank-other {

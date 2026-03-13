@@ -370,7 +370,7 @@ const getMetricClass = (value: number, good: number, poor: number) => {
 }
 
 .monitor-toggle {
-  background: #374151;
+  background: var(--color-text-main);
   color: white;
   border: none;
   border-radius: 8px;
@@ -381,7 +381,7 @@ const getMetricClass = (value: number, good: number, poor: number) => {
   gap: 8px;
   font-size: 14px;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px var(--shadow);
 }
 
 .monitor-toggle:hover {
@@ -415,14 +415,14 @@ const getMetricClass = (value: number, good: number, poor: number) => {
   max-height: 80vh;
   background: white;
   border-radius: 12px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 20px 25px -5px var(--shadow), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
 .metrics-header {
-  background: #374151;
+  background: var(--color-text-main);
   color: white;
   padding: 16px;
   display: flex;
@@ -452,7 +452,7 @@ const getMetricClass = (value: number, good: number, poor: number) => {
 
 .metrics-section {
   padding: 16px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .metrics-section:last-child {
@@ -463,7 +463,7 @@ const getMetricClass = (value: number, good: number, poor: number) => {
   margin: 0 0 12px 0;
   font-size: 14px;
   font-weight: 600;
-  color: #374151;
+  color: var(--color-text-main);
 }
 
 .metric-item {
@@ -479,12 +479,12 @@ const getMetricClass = (value: number, good: number, poor: number) => {
 }
 
 .metric-label {
-  color: #6b7280;
+  color: var(--color-text-sec);
 }
 
 .metric-value {
   font-weight: 600;
-  color: #374151;
+  color: var(--color-text-main);
 }
 
 .metric-value.good {
@@ -510,7 +510,7 @@ const getMetricClass = (value: number, good: number, poor: number) => {
   margin: 0 0 12px 0;
   font-size: 14px;
   font-weight: 600;
-  color: #374151;
+  color: var(--color-text-main);
 }
 
 .performance-tips ul {
@@ -525,7 +525,7 @@ const getMetricClass = (value: number, good: number, poor: number) => {
   gap: 8px;
   margin-bottom: 8px;
   font-size: 13px;
-  color: #6b7280;
+  color: var(--color-text-sec);
 }
 
 .performance-tips li i {
@@ -542,7 +542,7 @@ const getMetricClass = (value: number, good: number, poor: number) => {
 }
 
 .performance-tips li.info i {
-  color: #3b82f6;
+  color: var(--color-primary);
 }
 
 .slide-enter-active,

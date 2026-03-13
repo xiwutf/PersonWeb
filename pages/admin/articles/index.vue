@@ -325,7 +325,7 @@ onMounted(() => {
 .tag-success {
   background: rgba(34, 197, 94, 0.2);
   border: 1px solid rgba(34, 197, 94, 0.4);
-  color: #22c55e;
+  color: var(--color-success);
 }
 
 .tag-default {
@@ -351,7 +351,7 @@ onMounted(() => {
 }
 
 .btn-link-blue {
-  color: #60a5fa;
+  color: var(--color-primary-soft);
 }
 
 .btn-link-blue:hover {

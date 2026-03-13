@@ -210,7 +210,7 @@ onMounted(() => {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-  color: var(--color-text-main, #e2e8f0) !important;
+  color: var(--color-text-main, var(--color-text-sub)) !important;
   background: rgba(255, 255, 255, 0.05) !important;
 }
 
@@ -249,13 +249,13 @@ onMounted(() => {
 
 .status-published {
   background: rgba(34, 197, 94, 0.2);
-  color: #22c55e;
+  color: var(--color-success);
   border: 1px solid rgba(34, 197, 94, 0.4);
 }
 
 .status-archived {
   background: rgba(148, 163, 184, 0.2);
-  color: #94a3b8;
+  color: var(--color-text-muted);
   border: 1px solid rgba(148, 163, 184, 0.4);
 }
 
@@ -265,14 +265,14 @@ onMounted(() => {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 0.375rem;
-  color: var(--color-text-main, #e2e8f0);
+  color: var(--color-text-main, var(--color-text-sub));
   font-size: 0.875rem;
   transition: all 0.2s ease;
 }
 
 .form-input:focus {
   outline: none;
-  border-color: var(--color-primary, #3b82f6);
+  border-color: var(--color-primary, var(--color-primary));
   background: rgba(255, 255, 255, 0.15);
 }
 
@@ -281,8 +281,8 @@ onMounted(() => {
 }
 
 .form-input option {
-  background: var(--admin-sidebar-bg, #1e293b);
-  color: var(--color-text-main, #e2e8f0);
+  background: var(--admin-sidebar-bg, var(--color-border-default));
+  color: var(--color-text-main, var(--color-text-sub));
 }
 </style>
 

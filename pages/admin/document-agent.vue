@@ -737,7 +737,7 @@ onMounted(() => {
 
 .document-agent-page {
   padding: 24px;
-  color: #1e293b !important; /* 确保页面文字是深色 */
+  color: var(--color-border-default) !important; /* 确保页面文字是深色 */
   background: transparent !important;
 }
 
@@ -752,7 +752,7 @@ onMounted(() => {
 .document-agent-page .document-table td,
 .document-agent-page .filter-select,
 .document-agent-page .btn-refresh {
-  color: #1e293b !important;
+  color: var(--color-border-default) !important;
   text-shadow: none !important; /* 移除文字发光效果 */
 }
 
@@ -761,7 +761,7 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
-  color: #1e293b !important;
+  color: var(--color-border-default) !important;
   gap: 20px;
 }
 
@@ -769,12 +769,12 @@ onMounted(() => {
   font-size: 24px;
   font-weight: 600;
   margin: 0;
-  color: #1e293b !important;
+  color: var(--color-border-default) !important;
   text-shadow: none !important; /* 移除所有文字发光效果 */
 }
 
 .btn-primary {
-  background: #3b82f6;
+  background: var(--color-primary);
   color: white;
   border: none;
   padding: 10px 24px;
@@ -790,12 +790,12 @@ onMounted(() => {
   min-width: 100px;
   font-weight: 500;
   transition: all 0.2s;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 2px 0 var(--color-border);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #2563eb;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  background: var(--color-primary-hover);
+  box-shadow: 0 4px 6px -1px var(--shadow);
   transform: translateY(-1px);
 }
 
@@ -815,8 +815,8 @@ onMounted(() => {
   background: white !important;
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  color: #1e293b !important; /* 确保文字是深色 */
+  box-shadow: 0 1px 3px var(--shadow);
+  color: var(--color-border-default) !important; /* 确保文字是深色 */
 }
 
 .section-header {
@@ -829,7 +829,7 @@ onMounted(() => {
 .section-header h2 {
   font-size: 18px;
   font-weight: 600;
-  color: #1e293b !important;
+  color: var(--color-border-default) !important;
   margin: 0;
   text-shadow: none !important; /* 移除文字发光效果 */
 }
@@ -846,12 +846,12 @@ onMounted(() => {
   border-radius: 6px;
   font-size: 14px;
   background: white !important;
-  color: #1e293b !important;
+  color: var(--color-border-default) !important;
 }
 
 .filter-select option {
   background: white;
-  color: #1e293b;
+  color: var(--color-border-default);
 }
 
 .btn-refresh {
@@ -863,13 +863,13 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #1e293b !important;
+  color: var(--color-border-default) !important;
   transition: all 0.2s;
 }
 
 .btn-refresh:hover {
-  background: #e5e7eb;
-  color: #0f172a !important;
+  background: var(--color-border);
+  color: var(--color-text-main) !important;
 }
 
 .table-container {
@@ -886,16 +886,16 @@ onMounted(() => {
   padding: 12px;
   text-align: left;
   font-weight: 600;
-  border-bottom: 2px solid #e5e7eb;
-  color: #1e293b !important;
+  border-bottom: 2px solid var(--color-border);
+  color: var(--color-border-default) !important;
   font-size: 14px;
   text-shadow: none !important; /* 移除文字发光效果 */
 }
 
 .document-table td {
   padding: 12px;
-  border-bottom: 1px solid #e5e7eb;
-  color: #1e293b !important;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-border-default) !important;
   font-size: 14px;
   background: white !important;
   text-shadow: none !important; /* 移除文字发光效果 */
@@ -910,7 +910,7 @@ onMounted(() => {
 }
 
 .document-row td {
-  color: #1e293b !important;
+  color: var(--color-border-default) !important;
   background: inherit !important;
 }
 
@@ -922,7 +922,7 @@ onMounted(() => {
   font-weight: 600;
   display: block;
   margin-bottom: 4px;
-  color: #111827;
+  color: var(--color-text-main);
   font-size: 14px;
   text-decoration: none;
   cursor: default;
@@ -932,7 +932,7 @@ onMounted(() => {
 
 .doc-summary {
   font-size: 12px;
-  color: #6b7280;
+  color: var(--color-text-sec);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -998,12 +998,12 @@ onMounted(() => {
   padding: 6px 10px;
   border-radius: 4px;
   cursor: pointer;
-  color: #6b7280;
+  color: var(--color-text-sec);
 }
 
 .btn-action:hover:not(:disabled) {
   background: #f3f4f6;
-  color: #374151;
+  color: var(--color-text-main);
 }
 
 .btn-action:disabled {
@@ -1018,14 +1018,14 @@ onMounted(() => {
 }
 
 .btn-retry {
-  color: #3b82f6;
-  border-color: #3b82f6;
+  color: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 .btn-retry:hover:not(:disabled) {
   background: #eff6ff;
-  color: #2563eb;
-  border-color: #2563eb;
+  color: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
 }
 
 .empty-cell {
@@ -1086,7 +1086,7 @@ onMounted(() => {
   flex-direction: column;
   position: relative;
   z-index: 10000;
-  color: #1e293b !important; /* 确保模态框内所有文字都是深色 */
+  color: var(--color-border-default) !important; /* 确保模态框内所有文字都是深色 */
 }
 
 /* 强制覆盖全局深色主题样式 */
@@ -1101,7 +1101,7 @@ onMounted(() => {
 .modal-content .chunk-content,
 .modal-content .chunk-index,
 .modal-content .chunks-title {
-  color: #1e293b !important;
+  color: var(--color-border-default) !important;
   text-shadow: none !important; /* 移除文字发光效果 */
 }
 
@@ -1114,15 +1114,15 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--color-border);
   background: white !important;
-  color: #1e293b !important;
+  color: var(--color-border-default) !important;
 }
 
 .modal-header h3 {
   margin: 0;
   font-size: 20px;
-  color: #1e293b !important;
+  color: var(--color-border-default) !important;
   font-weight: 600;
   text-shadow: none !important; /* 移除文字发光效果 */
 }
@@ -1132,7 +1132,7 @@ onMounted(() => {
   border: none;
   font-size: 20px;
   cursor: pointer;
-  color: #6b7280;
+  color: var(--color-text-sec);
 }
 
 .modal-body {
@@ -1146,7 +1146,7 @@ onMounted(() => {
   justify-content: flex-end;
   gap: 10px;
   padding: 20px;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--color-border);
   position: relative;
   z-index: 10001;
   background: white;
@@ -1176,7 +1176,7 @@ onMounted(() => {
 }
 
 .upload-placeholder {
-  color: #6b7280;
+  color: var(--color-text-sec);
 }
 
 .upload-placeholder i {
@@ -1203,7 +1203,7 @@ onMounted(() => {
 .btn-select-file {
   margin-top: 16px;
   padding: 10px 20px;
-  background: #3b82f6;
+  background: var(--color-primary);
   color: white;
   border: none;
   border-radius: 6px;
@@ -1249,11 +1249,11 @@ onMounted(() => {
 
 .query-input-area {
   padding: 20px;
-  border-bottom: 2px solid #e5e7eb;
+  border-bottom: 2px solid var(--color-border);
   display: flex;
   gap: 12px;
   background: #fafbfc !important;
-  color: #1e293b !important;
+  color: var(--color-border-default) !important;
 }
 
 .query-input {
@@ -1266,15 +1266,15 @@ onMounted(() => {
   font-family: inherit;
   transition: border-color 0.2s;
   background: white !important;
-  color: #1e293b !important;
+  color: var(--color-border-default) !important;
 }
 
 .query-input:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
   background: white !important;
-  color: #1e293b !important;
+  color: var(--color-border-default) !important;
 }
 
 .query-input::placeholder {
@@ -1283,7 +1283,7 @@ onMounted(() => {
 
 .btn-query {
   padding: 12px 24px;
-  background: #3b82f6;
+  background: var(--color-primary);
   color: white;
   border: none;
   border-radius: 6px;
@@ -1295,9 +1295,9 @@ onMounted(() => {
 }
 
 .btn-query:hover:not(:disabled) {
-  background: #2563eb;
+  background: var(--color-primary-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px var(--shadow);
 }
 
 .btn-query:disabled {
@@ -1309,8 +1309,8 @@ onMounted(() => {
   flex: 1;
   overflow-y: auto;
   padding: 24px;
-  background: #ffffff !important;
-  color: #1e293b !important;
+  background: var(--color-bg-card) !important;
+  color: var(--color-border-default) !important;
 }
 
 .query-history::-webkit-scrollbar {
@@ -1328,7 +1328,7 @@ onMounted(() => {
 }
 
 .query-history::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: var(--color-text-muted);
 }
 
 .query-item {
@@ -1342,9 +1342,9 @@ onMounted(() => {
   margin-bottom: 16px;
   padding: 16px;
   background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-text-sub);
   border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 2px var(--color-border);
 }
 
 .query-question * {
@@ -1352,14 +1352,14 @@ onMounted(() => {
 }
 
 .query-question i {
-  color: #3b82f6;
+  color: var(--color-primary);
   margin-top: 4px;
   font-size: 16px;
   flex-shrink: 0;
 }
 
 .query-question span {
-  color: #1e293b !important;
+  color: var(--color-border-default) !important;
   font-size: 15px;
   font-weight: 500;
   line-height: 1.6;
@@ -1372,8 +1372,8 @@ onMounted(() => {
   align-items: flex-start;
   gap: 12px;
   padding: 16px;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-text-sub);
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   margin-bottom: 20px;
@@ -1401,7 +1401,7 @@ onMounted(() => {
   gap: 8px;
   margin-bottom: 12px;
   font-weight: 600;
-  color: #2563eb !important;
+  color: var(--color-primary-hover) !important;
   font-size: 15px;
 }
 
@@ -1412,27 +1412,27 @@ onMounted(() => {
 
 .answer-body {
   line-height: 1.8;
-  color: #111827 !important;
+  color: var(--color-text-main) !important;
   font-size: 15px;
   font-weight: 400;
   word-wrap: break-word;
   word-break: break-word;
   padding: 16px;
-  background: #ffffff;
+  background: var(--color-bg-card);
   border-radius: 8px;
-  border-left: 4px solid #3b82f6;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid var(--color-primary);
+  box-shadow: 0 1px 3px var(--shadow);
   text-shadow: none !important; /* 移除文字发光效果 */
 }
 
 .answer-body p {
   margin: 0 0 12px 0;
-  color: #111827 !important;
+  color: var(--color-text-main) !important;
   font-weight: 400;
 }
 
 .answer-body * {
-  color: #111827 !important;
+  color: var(--color-text-main) !important;
 }
 
 /* 确保所有文本元素都清晰可见 */
@@ -1442,7 +1442,7 @@ onMounted(() => {
 .answer-body em,
 .answer-body b,
 .answer-body i:not(.fas):not(.far):not(.fab) {
-  color: #111827 !important;
+  color: var(--color-text-main) !important;
   text-shadow: none !important; /* 移除文字发光效果 */
 }
 
@@ -1454,7 +1454,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #6b7280;
+  color: var(--color-text-sec);
   font-size: 14px;
   padding: 12px;
   background: #f9fafb;
@@ -1463,20 +1463,20 @@ onMounted(() => {
 }
 
 .no-answer i {
-  color: #6b7280;
+  color: var(--color-text-sec);
 }
 
 .loading-answer {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #475569;
+  color: var(--color-text-sec);
   font-size: 14px;
   padding: 8px 0;
 }
 
 .loading-answer i {
-  color: #3b82f6;
+  color: var(--color-primary);
   font-size: 16px;
   animation: spin 1s linear infinite;
 }
@@ -1523,18 +1523,18 @@ onMounted(() => {
 
 .chunk-index {
   font-weight: 600;
-  color: #3b82f6;
+  color: var(--color-primary);
   margin-right: 12px;
 }
 
 .chunk-score {
-  color: #6b7280;
+  color: var(--color-text-sec);
   font-size: 12px;
 }
 
 .chunk-content {
   margin-top: 8px;
-  color: #374151;
+  color: var(--color-text-main);
   line-height: 1.6;
 }
 

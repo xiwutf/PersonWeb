@@ -463,7 +463,7 @@ onMounted(() => {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--n-primary-color, #3b82f6);
+  background: var(--n-primary-color, var(--color-primary));
   box-shadow: var(--shadow-primary, 0 0 8px rgba(59, 130, 246, 0.6));
   opacity: 0.7;
 }

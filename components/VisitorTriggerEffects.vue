@@ -118,7 +118,7 @@ onUnmounted(() => {
 
 .skill-tree-glow-effect.active {
   opacity: 1;
-  background: radial-gradient(circle at center, rgba(59, 130, 246, 0.3) 0%, transparent 70%);
+  background: radial-gradient(circle at center, var(--theme-primary) 0%, transparent 70%);
   animation: glow-pulse 3s ease-in-out;
 }
 
@@ -138,8 +138,8 @@ onUnmounted(() => {
 }
 
 :global(.skill-tree-glowing .card) {
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
-  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 20px var(--theme-primary);
+  border-color: var(--theme-primary);
 }
 
 /* 全局样式：头像眨眼效果 */

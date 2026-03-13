@@ -84,7 +84,7 @@
                 v-model="styleConfig.backgroundColor"
                 type="text"
                 class="config-input"
-                placeholder="#0f172a"
+                placeholder="var(--color-text-main)"
               />
             </div>
 
@@ -102,7 +102,7 @@
                 v-model="styleConfig.textColor"
                 type="text"
                 class="config-input"
-                placeholder="#e2e8f0"
+                placeholder="var(--color-text-sub)"
               />
             </div>
 
@@ -401,8 +401,8 @@ const activePageKey = ref<string>('tools')
 const styleConfig = ref<StyleConfig>({
   primaryColor: '#f97316',
   secondaryColor: '#dc2626',
-  backgroundColor: '#0f172a',
-  textColor: '#e2e8f0',
+  backgroundColor: 'var(--color-text-main)',
+  textColor: 'var(--color-text-sub)',
   cardBackground: 'rgba(30, 41, 59, 0.3)',
   borderColor: 'rgba(255, 255, 255, 0.05)',
   borderRadius: '1.5rem',

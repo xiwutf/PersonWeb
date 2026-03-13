@@ -292,7 +292,7 @@ onMounted(() => {
 .page-title {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--color-bg-card);
   margin-bottom: 0.5rem;
 }
 
@@ -330,7 +330,7 @@ onMounted(() => {
 
 .stat-icon-approved {
   background: rgba(34, 197, 94, 0.2);
-  color: #22c55e;
+  color: var(--color-success);
 }
 
 .stat-icon-rejected {
@@ -345,7 +345,7 @@ onMounted(() => {
 .stat-value {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--color-bg-card);
 }
 
 .stat-label {
@@ -372,8 +372,8 @@ onMounted(() => {
 
 .filter-select:focus {
   outline: none;
-  border-color: rgba(59, 130, 246, 0.5);
-  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--theme-primary);
+  background: var(--color-border);
 }
 
 .messages-container {
@@ -407,7 +407,7 @@ onMounted(() => {
 }
 
 .message-card-approved {
-  border-left: 3px solid #22c55e;
+  border-left: 3px solid var(--color-success);
 }
 
 .message-card-rejected {
@@ -434,7 +434,7 @@ onMounted(() => {
 
 .type-message {
   background: rgba(59, 130, 246, 0.2);
-  color: #60a5fa;
+  color: var(--color-primary-soft);
   border: 1px solid rgba(59, 130, 246, 0.4);
 }
 
@@ -465,7 +465,7 @@ onMounted(() => {
 
 .status-approved {
   background: rgba(34, 197, 94, 0.2);
-  color: #22c55e;
+  color: var(--color-success);
   border: 1px solid rgba(34, 197, 94, 0.4);
 }
 

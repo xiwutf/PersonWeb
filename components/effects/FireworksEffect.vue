@@ -55,7 +55,7 @@ const createFirework = (x: number, y: number) => {
 const animate = () => {
   if (!ctx || !canvasRef.value) return
 
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'
+  ctx.fillStyle = 'var(--shadow)'
   ctx.fillRect(0, 0, canvasRef.value.width, canvasRef.value.height)
 
   for (let i = particles.length - 1; i >= 0; i--) {

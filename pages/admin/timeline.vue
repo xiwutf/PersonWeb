@@ -17,7 +17,7 @@
           <div class="event-main">
             <div
               class="event-icon"
-              :style="{ backgroundColor: event.color || 'var(--color-primary, #3b82f6)' }"
+              :style="{ backgroundColor: event.color || 'var(--color-primary, var(--color-primary))' }"
             >
               {{ event.icon || '⭐' }}
             </div>
@@ -123,7 +123,7 @@ const form = ref({
   title: '',
   description: '',
   icon: '⭐',
-  color: 'var(--color-primary, #3b82f6)'
+  color: 'var(--color-primary, var(--color-primary))'
 })
 
 // 模态框显示状态（计算属性）
@@ -178,7 +178,7 @@ const editEvent = (event: TimelineEvent) => {
     title: event.title,
     description: event.description || '',
     icon: event.icon || '⭐',
-    color: event.color || 'var(--color-primary, #3b82f6)'
+    color: event.color || 'var(--color-primary, var(--color-primary))'
   }
 }
 
@@ -234,7 +234,7 @@ const cancelEdit = () => {
     title: '',
     description: '',
     icon: '⭐',
-    color: 'var(--color-primary, #3b82f6)'
+    color: 'var(--color-primary, var(--color-primary))'
   }
 }
 

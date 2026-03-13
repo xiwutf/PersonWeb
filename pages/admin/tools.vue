@@ -351,7 +351,7 @@ const statusChartOption = computed(() => {
         data: [
           { value: stats.value.published, name: '已发布', itemStyle: { color: getCssVar('--color-success') || '#10b981' } },
           { value: stats.value.draft, name: '草稿', itemStyle: { color: getCssVar('--color-warning') || '#f59e0b' } },
-          { value: stats.value.archived, name: '已归档', itemStyle: { color: getCssVar('--color-text-muted') || '#6b7280' } }
+          { value: stats.value.archived, name: '已归档', itemStyle: { color: getCssVar('--color-text-muted') || 'var(--color-text-sec)' } }
         ]
       }
     ]
@@ -430,7 +430,7 @@ const priceChartOption = computed(() => {
             x2: 0,
             y2: 1,
             colorStops: [
-              { offset: 0, color: getCssVar('--color-primary') || '#3b82f6' },
+              { offset: 0, color: getCssVar('--color-primary') || 'var(--color-primary)' },
               { offset: 1, color: getCssVar('--color-secondary') || getCssVar('--color-primary-hover') || '#8b5cf6' }
             ]
           },

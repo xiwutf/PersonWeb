@@ -371,7 +371,7 @@ useHead({
 
 .wechat-qr-content {
   position: relative;
-  background: var(--color-bg-card, #1e293b);
+  background: var(--color-bg-card, var(--color-border-default));
   border-radius: 1rem;
   padding: 2rem;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
@@ -398,7 +398,7 @@ useHead({
   right: 1rem;
   background: transparent;
   border: none;
-  color: var(--color-text-muted, #94a3b8);
+  color: var(--color-text-muted, var(--color-text-muted));
   font-size: 1.5rem;
   cursor: pointer;
   padding: 0.5rem;
@@ -408,7 +408,7 @@ useHead({
 }
 
 .wechat-qr-close:hover {
-  color: var(--color-text-main, #ffffff);
+  color: var(--color-text-main, var(--color-bg-card));
 }
 
 .wechat-qr-header {
@@ -419,13 +419,13 @@ useHead({
 .wechat-qr-title {
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--color-text-main, #ffffff);
+  color: var(--color-text-main, var(--color-bg-card));
   margin: 0 0 0.5rem 0;
 }
 
 .wechat-qr-subtitle {
   font-size: 0.875rem;
-  color: var(--color-text-muted, #94a3b8);
+  color: var(--color-text-muted, var(--color-text-muted));
   margin: 0;
 }
 
@@ -451,14 +451,14 @@ useHead({
 
 .wechat-qr-text {
   font-size: 1rem;
-  color: var(--color-text-main, #ffffff);
+  color: var(--color-text-main, var(--color-bg-card));
   font-weight: 500;
   margin: 0 0 0.5rem 0;
 }
 
 .wechat-qr-hint {
   font-size: 0.875rem;
-  color: var(--color-text-muted, #94a3b8);
+  color: var(--color-text-muted, var(--color-text-muted));
   margin: 0;
 }
 </style>

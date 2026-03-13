@@ -107,7 +107,7 @@
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  background-image: linear-gradient(to right, #fde68a, #ffffff, #fed7aa);
+  background-image: linear-gradient(to right, #fde68a, var(--color-bg-card), var(--color-orange-100));
   letter-spacing: -0.025em;
   font-family: serif;
 }
@@ -201,7 +201,7 @@
   width: 1rem;
   height: 1rem;
   border-radius: 50%;
-  background-color: #0f172a;
+  background-color: var(--color-text-main);
   border: 2px solid rgba(245, 158, 11, 0.5);
   margin-top: 2rem;
   transition: all 0.5s;
@@ -216,7 +216,7 @@
 
 .life-post:hover .life-post-dot {
   transform: translateX(-50%) scale(1.25);
-  border-color: #fbbf24;
+  border-color: var(--color-amber-300);
 }
 
 .life-post-card {
@@ -281,7 +281,7 @@
   position: absolute;
   bottom: 1rem;
   left: 1rem;
-  color: #ffffff;
+  color: var(--color-bg-card);
   font-family: serif;
   font-size: 1.125rem;
   font-weight: 500;
@@ -290,7 +290,7 @@
 
 .life-post-header {
   height: 6rem;
-  background: linear-gradient(to bottom right, #1e293b, #0f172a);
+  background: linear-gradient(to bottom right, var(--color-border-default), var(--color-text-main));
   display: flex;
   align-items: center;
   padding: 0 1.5rem;
@@ -369,7 +369,7 @@
 
 .life-post-tag {
   font-size: 0.75rem;
-  color: #64748b;
+  color: var(--color-text-sec);
 }
 
 .life-post-read-more {

@@ -356,7 +356,7 @@ const formatFileSize = (bytes) => {
 .back-link {
   display: inline-block;
   margin-bottom: 1rem;
-  color: #3b82f6;
+  color: var(--color-primary);
   text-decoration: none;
 }
 
@@ -432,7 +432,7 @@ const formatFileSize = (bytes) => {
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
@@ -530,12 +530,12 @@ const formatFileSize = (bytes) => {
 }
 
 .btn.primary {
-  background: #3b82f6;
+  background: var(--color-primary);
   color: white;
 }
 
 .btn.primary:hover {
-  background: #2563eb;
+  background: var(--color-primary-hover);
 }
 
 .btn.secondary {
@@ -573,14 +573,14 @@ const formatFileSize = (bytes) => {
 .progress-bar {
   flex: 1;
   height: 8px;
-  background: #e5e7eb;
+  background: var(--color-border);
   border-radius: 4px;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: #3b82f6;
+  background: var(--color-primary);
   transition: width 0.3s ease;
 }
 

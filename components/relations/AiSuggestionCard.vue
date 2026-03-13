@@ -106,11 +106,11 @@ defineEmits<{
   background: linear-gradient(135deg, #f0f4ff 0%, #e8f0fe 100%);
   border-radius: 8px;
   border: 1px solid #d0e7ff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px var(--color-border);
 }
 
 [data-theme="dark"] .ai-suggestion-card {
-  background: linear-gradient(135deg, #1e293b 0%, #1a2332 100%);
+  background: linear-gradient(135deg, var(--color-border-default) 0%, #1a2332 100%);
   border-color: #334155;
 }
 
@@ -131,7 +131,7 @@ defineEmits<{
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #3b82f6;
+  background: var(--color-primary);
   border-radius: 50%;
   color: white;
   font-size: 14px;
@@ -171,7 +171,7 @@ defineEmits<{
   padding: 10px 12px;
   background: rgba(59, 130, 246, 0.1);
   border-radius: 6px;
-  border-left: 3px solid #3b82f6;
+  border-left: 3px solid var(--color-primary);
   font-size: 13px;
   color: var(--text-color);
   line-height: 1.6;
@@ -182,7 +182,7 @@ defineEmits<{
 }
 
 .status-hint i {
-  color: #3b82f6;
+  color: var(--color-primary);
   margin-top: 2px;
   flex-shrink: 0;
 }
@@ -208,17 +208,17 @@ defineEmits<{
   padding: 12px;
   background: white;
   border-radius: 6px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-border);
   transition: all 0.2s;
 }
 
 [data-theme="dark"] .action-item {
   background: #1f2937;
-  border-color: #374151;
+  border-color: var(--color-text-main);
 }
 
 .action-item:hover {
-  border-color: #3b82f6;
+  border-color: var(--color-primary);
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
 }
 

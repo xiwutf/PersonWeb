@@ -86,7 +86,7 @@
         <div class="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl -mr-16 -mt-16 opacity-60 group-hover:opacity-100 transition-opacity"></div>
         <div class="relative z-10 p-6">
           <div class="text-sm text-text-muted mb-2">今日浏览量</div>
-          <div class="text-3xl font-bold mb-2" style="color: var(--color-primary, #3b82f6);">
+          <div class="text-3xl font-bold mb-2" style="color: var(--color-primary, var(--color-primary));">
             {{ overview.todayPv ?? 0 }}
           </div>
           <div class="text-xs text-text-muted">

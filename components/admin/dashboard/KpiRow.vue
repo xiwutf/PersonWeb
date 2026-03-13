@@ -99,7 +99,7 @@ const formatValue = (value: number) => {
 .kpi-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--color-border);
   border-color: rgba(255, 255, 255, 0.15);
 }
 
@@ -128,12 +128,12 @@ const formatValue = (value: number) => {
 }
 
 .kpi-card-icon--blue {
-  --icon-color-start: #3b82f6;
-  --icon-color-end: #2563eb;
+  --icon-color-start: var(--color-primary);
+  --icon-color-end: var(--color-primary-hover);
 }
 
 .kpi-card-icon--green {
-  --icon-color-start: #22c55e;
+  --icon-color-start: var(--color-success);
   --icon-color-end: #16a34a;
 }
 
@@ -186,7 +186,7 @@ const formatValue = (value: number) => {
 }
 
 .trend-up {
-  color: #22c55e;
+  color: var(--color-success);
 }
 
 .trend-down {

@@ -592,12 +592,12 @@ const closeDetails = () => {
 }
 
 .toggle-btn.enable {
-  background: #3b82f6;
+  background: var(--color-primary);
   color: white;
 }
 
 .toggle-btn.enable:hover {
-  background: #2563eb;
+  background: var(--color-primary-hover);
 }
 
 .toggle-btn.disable {
@@ -643,7 +643,7 @@ const closeDetails = () => {
 }
 
 .dependency-tag {
-  background: #e5e7eb;
+  background: var(--color-border);
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   font-size: 0.8rem;
@@ -727,17 +727,17 @@ const closeDetails = () => {
 }
 
 .save-btn {
-  background: #3b82f6;
+  background: var(--color-primary);
   color: white;
 }
 
 .save-btn:hover {
-  background: #2563eb;
+  background: var(--color-primary-hover);
 }
 
 .cancel-btn,
 .close-btn {
-  background: #e5e7eb;
+  background: var(--color-border);
   color: #666;
 }
 

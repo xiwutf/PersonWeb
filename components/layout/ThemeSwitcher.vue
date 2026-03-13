@@ -483,8 +483,8 @@ onUnmounted(() => {
 
 .theme-card.active,
 .background-card.active {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--theme-primary);
 }
 
 .theme-preview,
@@ -513,7 +513,7 @@ html[data-theme="light"] .theme-card[data-theme-code="dark"] .theme-preview {
 /* 深色主题预览卡片特殊处理 */
 html[data-theme="dark"] .theme-card[data-theme-code="light"] .theme-preview {
   background: #f5f7fb;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--shadow);
 }
 
 html[data-theme="dark"] .theme-card[data-theme-code="dark"] .theme-preview {
@@ -546,8 +546,8 @@ html[data-theme="dark"] .theme-card[data-theme-code="dark"] .theme-preview {
 .theme-badge {
   font-size: 0.75rem;
   padding: 0.25rem 0.5rem;
-  background: rgba(59, 130, 246, 0.3);
-  border: 1px solid rgba(59, 130, 246, 0.5);
+  background: var(--theme-primary);
+  border: 1px solid var(--theme-primary);
   border-radius: 0.25rem;
   color: #93c5fd;
 }

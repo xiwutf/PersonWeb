@@ -289,7 +289,7 @@ onMounted(() => {
 
 .status-paid {
   background: rgba(34, 197, 94, 0.2);
-  color: #22c55e;
+  color: var(--color-success);
 }
 
 .status-failed {

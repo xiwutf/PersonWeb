@@ -1,5 +1,5 @@
 ﻿<template>
-  <div class="min-h-screen bg-[#0f172a] text-slate-200 relative overflow-hidden font-['Outfit']">
+  <div class="min-h-screen bg-[var(--color-text-main)] text-slate-200 relative overflow-hidden font-['Outfit']">
     <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <!-- 加载状态 -->
       <div v-if="loading" class="text-center py-20">

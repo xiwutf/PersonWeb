@@ -11,7 +11,7 @@ const props = withDefaults(defineProps<{
   interactive?: boolean
 }>(), {
   intensity: 0.5,
-  color: '#3b82f6',
+  color: 'var(--color-primary)',
   interactive: true
 })
 

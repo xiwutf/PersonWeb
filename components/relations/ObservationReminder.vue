@@ -190,7 +190,7 @@ const handleDecision = async (decision: 'Continue' | 'Downgrade' | 'End') => {
 }
 
 .reminder-ongoing {
-  border-left-color: #3b82f6;
+  border-left-color: var(--color-primary);
   background: rgba(59, 130, 246, 0.05);
 }
 
@@ -236,7 +236,7 @@ const handleDecision = async (decision: 'Continue' | 'Downgrade' | 'End') => {
 
 .reminder-ongoing .reminder-icon {
   background: rgba(59, 130, 246, 0.2);
-  color: #3b82f6;
+  color: var(--color-primary);
 }
 
 .reminder-ending .reminder-icon {

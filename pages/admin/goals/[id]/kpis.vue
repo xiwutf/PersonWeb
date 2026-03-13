@@ -394,7 +394,7 @@ onMounted(() => {
 }
 
 .kpi-page-link:hover {
-  color: var(--color-text-main, #111827);
+  color: var(--color-text-main, var(--color-text-main));
 }
 
 .kpi-page-title {
@@ -513,11 +513,11 @@ onMounted(() => {
 }
 
 .kpi-action-btn-primary {
-  color: var(--color-primary, #3b82f6);
+  color: var(--color-primary, var(--color-primary));
 }
 
 .kpi-action-btn-primary:hover {
-  color: var(--color-primary-hover, #2563eb);
+  color: var(--color-primary-hover, var(--color-primary-hover));
 }
 
 .kpi-action-btn-error {
@@ -529,18 +529,18 @@ onMounted(() => {
 }
 
 .kpi-btn-primary {
-  background: var(--color-primary, #3b82f6);
-  color: var(--color-text-main, #ffffff);
+  background: var(--color-primary, var(--color-primary));
+  color: var(--color-text-main, var(--color-bg-card));
   transition: background-color 0.2s ease;
 }
 
 .kpi-btn-primary:hover {
-  background: var(--color-primary-hover, #2563eb);
+  background: var(--color-primary-hover, var(--color-primary-hover));
 }
 
 .kpi-btn-success {
-  background: var(--color-success, #22c55e);
-  color: var(--color-text-main, #ffffff);
+  background: var(--color-success, var(--color-success));
+  color: var(--color-text-main, var(--color-bg-card));
   transition: background-color 0.2s ease;
 }
 

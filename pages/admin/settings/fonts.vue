@@ -146,8 +146,8 @@
               v-model="fontSettings.textMainColor"
               class="form-input"
             >
-              <option value="#0f172a">深色（浅色主题）</option>
-              <option value="#1e293b">深灰（浅色主题）</option>
+              <option value="var(--color-text-main)">深色（浅色主题）</option>
+              <option value="var(--color-border-default)">深灰（浅色主题）</option>
               <option value="#334155">中灰（浅色主题）</option>
               <option value="rgba(255, 255, 255, 0.95)">亮白（深色主题）</option>
               <option value="rgba(255, 255, 255, 0.85)">白色（深色主题，推荐）</option>
@@ -172,8 +172,8 @@
               v-model="fontSettings.textMutedColor"
               class="form-input"
             >
-              <option value="#64748b">中灰（浅色主题）</option>
-              <option value="#94a3b8">浅灰（浅色主题）</option>
+              <option value="var(--color-text-sec)">中灰（浅色主题）</option>
+              <option value="var(--color-text-muted)">浅灰（浅色主题）</option>
               <option value="#cbd5e1">很浅灰（浅色主题）</option>
               <option value="rgba(255, 255, 255, 0.7)">亮白（深色主题）</option>
               <option value="rgba(255, 255, 255, 0.6)">白色（深色主题，推荐）</option>
@@ -333,8 +333,8 @@ const fontSettings = ref({
   h2FontSize: 24,
   h3FontSize: 20,
   h4FontSize: 18,
-  textMainColor: '#0f172a',
-  textMutedColor: '#64748b'
+  textMainColor: 'var(--color-text-main)',
+  textMutedColor: 'var(--color-text-sec)'
 })
 
 const saving = ref(false)
@@ -350,8 +350,8 @@ const defaultFontSettings = {
   h2FontSize: 24,
   h3FontSize: 20,
   h4FontSize: 18,
-  textMainColor: '#0f172a',
-  textMutedColor: '#64748b'
+  textMainColor: 'var(--color-text-main)',
+  textMutedColor: 'var(--color-text-sec)'
 }
 
 // 获取字体设置
@@ -561,7 +561,7 @@ onMounted(() => {
 .page-title {
   font-size: 1.875rem;
   font-weight: 700;
-  color: var(--color-text-main, #ffffff);
+  color: var(--color-text-main, var(--color-bg-card));
   margin-bottom: 0.5rem;
 }
 
@@ -591,7 +591,7 @@ onMounted(() => {
 .section-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--color-text-main, #ffffff);
+  color: var(--color-text-main, var(--color-bg-card));
   margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
@@ -615,7 +615,7 @@ onMounted(() => {
 }
 
 .form-label {
-  color: var(--color-text-main, #ffffff);
+  color: var(--color-text-main, var(--color-bg-card));
   font-size: 0.875rem;
   font-weight: 500;
   display: flex;
@@ -633,14 +633,14 @@ onMounted(() => {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 0.5rem;
-  color: var(--color-text-main, #ffffff);
+  color: var(--color-text-main, var(--color-bg-card));
   font-size: 0.875rem;
   transition: all 0.2s;
 }
 
 .form-input:focus {
   outline: none;
-  border-color: var(--color-primary, #3b82f6);
+  border-color: var(--color-primary, var(--color-primary));
   background: rgba(255, 255, 255, 0.15);
 }
 
@@ -741,12 +741,12 @@ onMounted(() => {
 }
 
 .btn-primary {
-  background: var(--color-primary, #3b82f6);
-  color: #ffffff;
+  background: var(--color-primary, var(--color-primary));
+  color: var(--color-bg-card);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--color-primary-hover, #2563eb);
+  background: var(--color-primary-hover, var(--color-primary-hover));
   transform: translateY(-1px);
 }
 
@@ -757,7 +757,7 @@ onMounted(() => {
 
 .btn-secondary {
   background: rgba(255, 255, 255, 0.1);
-  color: var(--color-text-main, #ffffff);
+  color: var(--color-text-main, var(--color-bg-card));
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 

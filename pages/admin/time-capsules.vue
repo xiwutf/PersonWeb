@@ -431,7 +431,7 @@ onMounted(() => {
 }
 
 .btn-link-blue {
-  color: var(--color-primary, #60a5fa);
+  color: var(--color-primary, var(--color-primary-soft));
 }
 
 .btn-link-blue:hover {
@@ -450,7 +450,7 @@ onMounted(() => {
 
 .filter-select-fallback:focus {
   outline: none;
-  border-color: var(--color-primary, rgba(59, 130, 246, 0.5));
+  border-color: var(--color-primary, var(--theme-primary));
 }
 
 /* 统计图标颜色 - 使用 CSS 变量 */

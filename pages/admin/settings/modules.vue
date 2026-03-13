@@ -354,7 +354,7 @@ onMounted(() => {
 .section-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--color-bg-card);
 }
 
 .filter-tabs {
@@ -377,9 +377,9 @@ onMounted(() => {
 }
 
 .filter-tab-active {
-  background: rgba(59, 130, 246, 0.3);
-  border-color: rgba(59, 130, 246, 0.5);
-  color: #ffffff;
+  background: var(--theme-primary);
+  border-color: var(--theme-primary);
+  color: var(--color-bg-card);
 }
 
 .modules-grid {
@@ -397,13 +397,13 @@ onMounted(() => {
 }
 
 .module-card:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--color-border);
   border-color: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
 }
 
 .module-card-enabled {
-  border-left: 3px solid #22c55e;
+  border-left: 3px solid var(--color-success);
 }
 
 .module-card-disabled {
@@ -437,7 +437,7 @@ onMounted(() => {
 .module-name {
   font-size: 1rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--color-bg-card);
   margin-bottom: 0.25rem;
 }
 
@@ -612,7 +612,7 @@ onMounted(() => {
 .modal-header h2 {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--color-bg-card);
 }
 
 .modal-close {
@@ -632,7 +632,7 @@ onMounted(() => {
 
 .modal-close:hover {
   background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  color: var(--color-bg-card);
 }
 
 .modal-body {
@@ -646,7 +646,7 @@ onMounted(() => {
 .detail-title {
   font-size: 1rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--color-bg-card);
   margin-bottom: 1rem;
 }
 

@@ -310,7 +310,7 @@ const handleProjectClick = (project: FeaturedProject) => {
   font-weight: 800;
   line-height: 1.1;
   margin: 0 auto 32px auto;
-  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #8b5cf6 100%);
+  background: linear-gradient(135deg, #06b6d4 0%, var(--color-primary) 50%, #8b5cf6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -652,7 +652,7 @@ const handleProjectClick = (project: FeaturedProject) => {
 
 .ai-solutions-project-icon i {
   font-size: 36px;
-  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #8b5cf6 100%);
+  background: linear-gradient(135deg, #06b6d4 0%, var(--color-primary) 50%, #8b5cf6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -662,7 +662,7 @@ const handleProjectClick = (project: FeaturedProject) => {
 .ai-solutions-project-title {
   font-size: 24px;
   font-weight: 800;
-  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #8b5cf6 100%);
+  background: linear-gradient(135deg, #06b6d4 0%, var(--color-primary) 50%, #8b5cf6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -981,7 +981,7 @@ const handleProjectClick = (project: FeaturedProject) => {
 }
 
 .ai-solutions-cta-button--primary {
-  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #8b5cf6 100%);
+  background: linear-gradient(135deg, #06b6d4 0%, var(--color-primary) 50%, #8b5cf6 100%);
   color: #fff;
   box-shadow: 0 8px 24px rgba(6, 182, 212, 0.4);
   border: none;
@@ -990,7 +990,7 @@ const handleProjectClick = (project: FeaturedProject) => {
 .ai-solutions-cta-button--primary:hover {
   transform: translateY(-4px) scale(1.05);
   box-shadow: 0 12px 32px rgba(6, 182, 212, 0.5);
-  background: linear-gradient(135deg, #0891b2 0%, #2563eb 50%, #7c3aed 100%);
+  background: linear-gradient(135deg, #0891b2 0%, var(--color-primary-hover) 50%, #7c3aed 100%);
 }
 
 .ai-solutions-cta-button--secondary {

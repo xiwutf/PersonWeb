@@ -101,7 +101,7 @@ const getDanmakuDynamicStyle = (danmaku: Danmaku, index: number) => {
 // 根据消息类型获取颜色
 const getRandomColor = (type?: string): string => {
   const colors: Record<string, string[]> = {
-    message: ['#60a5fa', '#34d399', '#fbbf24', '#a78bfa'],
+    message: ['var(--color-primary-soft)', '#34d399', '#fbbf24', '#a78bfa'],
     mood: ['#f472b6', '#fb923c', '#22d3ee'],
     blessing: ['#fbbf24', '#f59e0b', '#eab308']
   }

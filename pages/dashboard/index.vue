@@ -1,73 +1,73 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 font-['Outfit']">
+  <div class="dashboard-page min-h-screen py-12 px-4 sm:px-6 lg:px-8 font-['Outfit']" style="background-color: var(--color-bg-body); color: var(--color-text-main);">
     <div class="max-w-7xl mx-auto">
       <div class="text-center mb-12">
-        <h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 mb-2">
+        <h1 class="text-4xl font-bold mb-2" style="color: var(--color-primary);">
           数字孪生仪表盘
         </h1>
-        <p class="text-gray-500 dark:text-gray-400 text-sm">量化自我与生活指标 · 记录和追踪个人数据，帮助了解自己的生活状态和成长轨迹</p>
+        <p class="text-sm" style="color: var(--color-text-muted);">量化自我与生活指标 · 记录和追踪个人数据，帮助了解自己的生活状态和成长轨迹</p>
       </div>
 
       <!-- 核心指标卡片 -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
         <!-- Life Battery -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 relative overflow-hidden group">
+        <div class="dashboard-card rounded-2xl p-6 shadow-lg relative overflow-hidden group">
           <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-            <svg class="w-24 h-24 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"></path></svg>
+            <svg class="w-24 h-24 dashboard-card__icon--green" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"></path></svg>
           </div>
-          <h3 class="text-gray-500 dark:text-gray-400 text-sm mb-2">生活电量</h3>
+          <h3 class="dashboard-card__label text-sm mb-2">生活电量</h3>
           <div class="flex items-end gap-2">
-            <span class="text-4xl font-bold text-gray-900 dark:text-white">{{ latest.energy }}%</span>
-            <span class="text-sm text-green-500 mb-1">精力值</span>
+            <span class="text-4xl font-bold dashboard-card__value">{{ latest.energy }}%</span>
+            <span class="text-sm mb-1 dashboard-card__accent--green">精力值</span>
           </div>
-          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-4">
-            <div class="bg-gradient-to-r from-green-400 to-green-600 h-2 rounded-full transition-all duration-1000" :style="{ width: latest.energy + '%' }"></div>
+          <div class="dashboard-card__track w-full rounded-full h-2 mt-4">
+            <div class="dashboard-card__fill--green h-2 rounded-full transition-all duration-1000" :style="{ width: latest.energy + '%' }"></div>
           </div>
-          <p class="text-xs text-gray-400 mt-2">睡眠: {{ latest.sleep }}小时</p>
+          <p class="dashboard-card__hint text-xs mt-2">睡眠: {{ latest.sleep }}小时</p>
         </div>
 
         <!-- Activity -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 relative overflow-hidden group">
+        <div class="dashboard-card rounded-2xl p-6 shadow-lg relative overflow-hidden group">
           <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-            <svg class="w-24 h-24 text-orange-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path></svg>
+            <svg class="w-24 h-24 dashboard-card__icon--orange" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path></svg>
           </div>
-          <h3 class="text-gray-500 dark:text-gray-400 text-sm mb-2">日常活动</h3>
+          <h3 class="dashboard-card__label text-sm mb-2">日常活动</h3>
           <div class="flex items-end gap-2">
-            <span class="text-4xl font-bold text-gray-900 dark:text-white">{{ latest.steps }}</span>
-            <span class="text-sm text-orange-500 mb-1">步数</span>
+            <span class="text-4xl font-bold dashboard-card__value">{{ latest.steps }}</span>
+            <span class="text-sm mb-1 dashboard-card__accent--orange">步数</span>
           </div>
-          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-4">
-            <div class="bg-gradient-to-r from-orange-400 to-red-500 h-2 rounded-full transition-all duration-1000" :style="{ width: Math.min((latest.steps / 10000) * 100, 100) + '%' }"></div>
+          <div class="dashboard-card__track w-full rounded-full h-2 mt-4">
+            <div class="dashboard-card__fill--orange h-2 rounded-full transition-all duration-1000" :style="{ width: Math.min((latest.steps / 10000) * 100, 100) + '%' }"></div>
           </div>
-          <p class="text-xs text-gray-400 mt-2">目标: 10,000 步</p>
+          <p class="dashboard-card__hint text-xs mt-2">目标: 10,000 步</p>
         </div>
 
         <!-- Physique -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 relative overflow-hidden group">
+        <div class="dashboard-card rounded-2xl p-6 shadow-lg relative overflow-hidden group">
           <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-            <svg class="w-24 h-24 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+            <svg class="w-24 h-24 dashboard-card__icon--blue" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
           </div>
-          <h3 class="text-gray-500 dark:text-gray-400 text-sm mb-2">身体状况</h3>
+          <h3 class="dashboard-card__label text-sm mb-2">身体状况</h3>
           <div class="flex items-end gap-2">
-            <span class="text-4xl font-bold text-gray-900 dark:text-white">{{ latest.weight }}</span>
-            <span class="text-sm text-blue-500 mb-1">公斤</span>
+            <span class="text-4xl font-bold dashboard-card__value">{{ latest.weight }}</span>
+            <span class="text-sm mb-1 dashboard-card__accent--blue">公斤</span>
           </div>
           <div class="mt-4">
-             <span class="text-xs px-2 py-1 rounded bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">BMI: {{ (latest.weight / (1.75 * 1.75)).toFixed(1) }}</span>
+             <span class="dashboard-card__badge--blue text-xs px-2 py-1 rounded">BMI: {{ (latest.weight / (1.75 * 1.75)).toFixed(1) }}</span>
           </div>
         </div>
 
         <!-- Net Worth -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 relative overflow-hidden group">
+        <div class="dashboard-card rounded-2xl p-6 shadow-lg relative overflow-hidden group">
           <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-            <svg class="w-24 h-24 text-purple-500" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"></path><path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"></path></svg>
+            <svg class="w-24 h-24 dashboard-card__icon--purple" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"></path><path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"></path></svg>
           </div>
-          <h3 class="text-gray-500 dark:text-gray-400 text-sm mb-2">净资产</h3>
+          <h3 class="dashboard-card__label text-sm mb-2">净资产</h3>
           <div class="flex items-end gap-2">
-            <span class="text-4xl font-bold text-gray-900 dark:text-white">¥{{ (latest.netWorth / 10000).toFixed(1) }}</span>
-            <span class="text-sm text-purple-500 mb-1">万元</span>
+            <span class="text-4xl font-bold dashboard-card__value">¥{{ (latest.netWorth / 10000).toFixed(1) }}</span>
+            <span class="text-sm mb-1 dashboard-card__accent--purple">万元</span>
           </div>
-          <div class="mt-4 flex items-center text-xs text-green-500">
+          <div class="mt-4 flex items-center text-xs dashboard-card__accent--green">
             <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
             <span>增长中</span>
           </div>
@@ -77,16 +77,16 @@
       <!-- 图表区域 -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <!-- 趋势图 -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
-          <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-6">健康趋势</h3>
+        <div class="dashboard-card rounded-2xl p-6 shadow-lg">
+          <h3 class="dashboard-section-title text-lg font-bold mb-6">健康趋势</h3>
           <div class="h-64">
             <Line :data="healthChartData" :options="chartOptions" />
           </div>
         </div>
 
         <!-- 财富趋势 -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
-          <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-6">财富增长</h3>
+        <div class="dashboard-card rounded-2xl p-6 shadow-lg">
+          <h3 class="dashboard-section-title text-lg font-bold mb-6">财富增长</h3>
           <div class="h-64">
             <Line :data="wealthChartData" :options="chartOptions" />
           </div>
@@ -96,13 +96,13 @@
       <!-- 任务统计 -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <!-- 任务统计卡片 -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+        <div class="dashboard-card rounded-2xl p-6 shadow-lg">
           <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-bold text-gray-800 dark:text-white">任务统计</h3>
+            <h3 class="dashboard-section-title text-lg font-bold">任务统计</h3>
             <a 
               v-if="isAuthenticated"
               href="/admin/tasks" 
-              class="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400"
+              class="dashboard-link text-sm"
               @click.prevent="router.push('/admin/tasks')"
             >
               管理任务 →
@@ -110,7 +110,7 @@
             <a 
               v-else
               href="#" 
-              class="text-sm text-gray-400 cursor-not-allowed"
+              class="dashboard-link--muted text-sm cursor-not-allowed"
               @click.prevent="handleUnauthorizedClick"
               title="需要登录才能访问"
             >
@@ -118,34 +118,34 @@
             </a>
           </div>
           <div v-if="taskStats" class="grid grid-cols-2 gap-4">
-            <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-900 dark:to-yellow-800 rounded-xl p-4">
-              <div class="text-sm text-gray-600 dark:text-gray-300 mb-1">待处理</div>
-              <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ taskStats.Pending || 0 }}</div>
+            <div class="dashboard-stat-card dashboard-stat-card--yellow rounded-xl p-4">
+              <div class="dashboard-stat-label text-sm mb-1">待处理</div>
+              <div class="dashboard-stat-value text-2xl font-bold">{{ taskStats.Pending || 0 }}</div>
             </div>
-            <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-800 rounded-xl p-4">
-              <div class="text-sm text-gray-600 dark:text-gray-300 mb-1">进行中</div>
-              <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ taskStats.InProgress || 0 }}</div>
+            <div class="dashboard-stat-card dashboard-stat-card--blue rounded-xl p-4">
+              <div class="dashboard-stat-label text-sm mb-1">进行中</div>
+              <div class="dashboard-stat-value text-2xl font-bold">{{ taskStats.InProgress || 0 }}</div>
             </div>
-            <div class="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900 dark:to-green-800 rounded-xl p-4">
-              <div class="text-sm text-gray-600 dark:text-gray-300 mb-1">已完成</div>
-              <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ taskStats.Completed || 0 }}</div>
+            <div class="dashboard-stat-card dashboard-stat-card--green rounded-xl p-4">
+              <div class="dashboard-stat-label text-sm mb-1">已完成</div>
+              <div class="dashboard-stat-value text-2xl font-bold">{{ taskStats.Completed || 0 }}</div>
             </div>
-            <div class="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900 dark:to-red-800 rounded-xl p-4">
-              <div class="text-sm text-gray-600 dark:text-gray-300 mb-1">已逾期</div>
-              <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ taskStats.Overdue || 0 }}</div>
+            <div class="dashboard-stat-card dashboard-stat-card--red rounded-xl p-4">
+              <div class="dashboard-stat-label text-sm mb-1">已逾期</div>
+              <div class="dashboard-stat-value text-2xl font-bold">{{ taskStats.Overdue || 0 }}</div>
             </div>
           </div>
-          <div v-else class="text-center text-gray-500 py-8">加载中...</div>
+          <div v-else class="text-center py-8 dashboard-hint">加载中...</div>
         </div>
 
         <!-- 年度目标卡片 -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+        <div class="dashboard-card rounded-2xl p-6 shadow-lg">
           <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-bold text-gray-800 dark:text-white">年度目标</h3>
+            <h3 class="dashboard-section-title text-lg font-bold">年度目标</h3>
             <a 
               v-if="isAuthenticated"
               href="/admin/goals" 
-              class="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400"
+              class="dashboard-link text-sm"
               @click.prevent="router.push('/admin/goals')"
             >
               管理目标 →
@@ -153,20 +153,20 @@
             <a 
               v-else
               href="#" 
-              class="text-sm text-gray-400 cursor-not-allowed"
+              class="dashboard-link--muted text-sm cursor-not-allowed"
               @click.prevent="handleUnauthorizedClick"
               title="需要登录才能访问"
             >
               管理目标 →
             </a>
           </div>
-          <div v-if="goalsLoading" class="text-center text-gray-500 py-8">加载中...</div>
-          <div v-else-if="activeGoals.length === 0" class="text-center text-gray-500 py-8">
+          <div v-if="goalsLoading" class="text-center py-8 dashboard-hint">加载中...</div>
+          <div v-else-if="activeGoals.length === 0" class="text-center py-8 dashboard-hint">
             <p class="mb-4">暂无年度目标</p>
             <a 
               v-if="isAuthenticated"
               href="/admin/goals" 
-              class="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400"
+              class="dashboard-link text-sm"
               @click.prevent="router.push('/admin/goals')"
             >
               创建目标
@@ -174,7 +174,7 @@
             <a 
               v-else
               href="#" 
-              class="text-sm text-gray-400 cursor-not-allowed"
+              class="dashboard-link--muted text-sm cursor-not-allowed"
               @click.prevent="handleUnauthorizedClick"
               title="需要登录才能访问"
             >
@@ -182,50 +182,50 @@
             </a>
           </div>
           <div v-else class="space-y-4 max-h-64 overflow-y-auto">
-            <div v-for="goal in activeGoals" :key="goal.id" class="p-4 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-xl border border-purple-100 dark:border-purple-800">
+            <div v-for="goal in activeGoals" :key="goal.id" class="dashboard-goal-item p-4 rounded-xl">
               <div class="flex items-start justify-between mb-2">
-                <h4 class="font-semibold text-gray-800 dark:text-white text-sm">{{ goal.title }}</h4>
-                <span class="text-xs text-gray-500 dark:text-gray-400">{{ goal.year }}年</span>
+                <h4 class="font-semibold text-sm dashboard-card__value">{{ goal.title }}</h4>
+                <span class="text-xs dashboard-card__hint">{{ goal.year }}年</span>
               </div>
-              <div v-if="goal.targetValue" class="text-xs text-gray-600 dark:text-gray-400 mb-2">
+              <div v-if="goal.targetValue" class="text-xs dashboard-card__hint mb-2">
                 {{ goal.currentValue }}{{ goal.unit || '' }} / {{ goal.targetValue }}{{ goal.unit || '' }}
               </div>
-              <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
+              <div class="dashboard-card__track w-full rounded-full h-2 mb-2">
                 <div 
                   :class="getGoalProgressColor(goal.progress)"
                   class="h-2 rounded-full transition-all duration-300"
                   :style="{ width: Math.min(goal.progress, 100) + '%' }"
                 ></div>
               </div>
-              <div class="text-xs text-gray-500 dark:text-gray-400 text-right">{{ goal.progress }}%</div>
+              <div class="text-xs dashboard-card__hint text-right">{{ goal.progress }}%</div>
             </div>
           </div>
         </div>
       </div>
 
       <!-- 今日任务列表 -->
-      <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 mb-8">
+      <div class="dashboard-card rounded-2xl p-6 shadow-lg mb-8">
         <div class="flex items-center justify-between mb-6">
-          <h3 class="text-lg font-bold text-gray-800 dark:text-white">今日任务</h3>
-          <button @click="fetchTodayTasks" class="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400">刷新</button>
+          <h3 class="dashboard-section-title text-lg font-bold">今日任务</h3>
+          <button type="button" @click="fetchTodayTasks" class="dashboard-link text-sm">刷新</button>
         </div>
-        <div v-if="todayTasksLoading" class="text-center text-gray-500 py-8">加载中...</div>
-        <div v-else-if="todayTasks.length === 0" class="text-center text-gray-500 py-8">暂无任务</div>
+        <div v-if="todayTasksLoading" class="text-center py-8 dashboard-hint">加载中...</div>
+        <div v-else-if="todayTasks.length === 0" class="text-center py-8 dashboard-hint">暂无任务</div>
         <div v-else class="space-y-3 max-h-64 overflow-y-auto">
-          <div v-for="task in todayTasks" :key="task.id" class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+          <div v-for="task in todayTasks" :key="task.id" class="dashboard-task-item p-3 rounded-lg">
             <div class="flex items-start justify-between">
               <div class="flex-1">
                 <div class="flex items-center gap-2 mb-1">
-                  <h4 class="font-medium text-gray-800 dark:text-white">{{ task.title }}</h4>
+                  <h4 class="font-medium dashboard-card__value">{{ task.title }}</h4>
                   <span :class="getStatusClass(task.status)" class="px-2 py-0.5 rounded text-xs">
                     {{ getStatusText(task.status) }}
                   </span>
                 </div>
-                <div class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+                <div class="flex items-center gap-4 text-xs dashboard-card__hint">
                   <span>进度: {{ task.progress }}%</span>
                   <span v-if="task.dueDate">截止: {{ formatTaskDate(task.dueDate) }}</span>
                 </div>
-                <div class="mt-2 w-full bg-gray-200 dark:bg-gray-600 rounded-full h-1.5">
+                <div class="dashboard-card__track mt-2 w-full rounded-full h-1.5">
                   <div 
                     :class="getProgressColor(task.progress)"
                     class="h-1.5 rounded-full transition-all duration-300"
@@ -241,19 +241,19 @@
       <!-- GitHub 代码统计 -->
       <div v-if="githubStats" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- 代码语言分布 -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
-          <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-6">代码语言分布</h3>
+        <div class="dashboard-card rounded-2xl p-6 shadow-lg">
+          <h3 class="dashboard-section-title text-lg font-bold mb-6">代码语言分布</h3>
           <div v-if="githubLanguages.length > 0" class="h-64">
             <Doughnut :data="languageChartData" :options="languageChartOptions" />
           </div>
-          <div v-else class="h-64 flex items-center justify-center text-gray-500">
+          <div v-else class="h-64 flex items-center justify-center dashboard-hint">
             暂无数据
           </div>
         </div>
 
         <!-- GitHub 贡献统计 -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
-          <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-6">仓库统计</h3>
+        <div class="dashboard-card rounded-2xl p-6 shadow-lg">
+          <h3 class="text-lg font-bold mb-6 dashboard-section-title">仓库统计</h3>
           <div v-if="githubStats" class="space-y-4">
             <div class="stat-grid">
               <div class="stat-card stat-card--blue">
@@ -274,7 +274,7 @@
               </div>
             </div>
           </div>
-          <div v-else class="h-64 flex items-center justify-center text-gray-500">
+          <div v-else class="h-64 flex items-center justify-center dashboard-hint">
             暂无数据
           </div>
         </div>
@@ -283,13 +283,63 @@
   </div>
 </template>
 
+<style scoped>
+/* 使用主题 CSS 变量，避免硬编码颜色 */
+.dashboard-card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border-subtle);
+}
+.dashboard-card__label,
+.dashboard-card__hint {
+  color: var(--color-text-muted);
+}
+.dashboard-card__value {
+  color: var(--color-text-main);
+}
+.dashboard-card__track {
+  background-color: var(--color-border-subtle);
+}
+.dashboard-card__icon--green,
+.dashboard-card__accent--green,
+.dashboard-card__fill--green { color: var(--chart-secondary, #10b981); }
+.dashboard-card__fill--green { background: linear-gradient(to right, var(--chart-secondary, #10b981), var(--chart-octonary, #84cc16)); }
+.dashboard-card__icon--orange,
+.dashboard-card__accent--orange,
+.dashboard-card__fill--orange { color: var(--chart-nonary, #f97316); }
+.dashboard-card__fill--orange { background: linear-gradient(to right, var(--chart-nonary, #f97316), var(--chart-quaternary, #ef4444)); }
+.dashboard-card__icon--blue,
+.dashboard-card__accent--blue { color: var(--chart-primary, var(--color-primary)); }
+.dashboard-card__badge--blue {
+  background-color: var(--color-primary-soft, #dbeafe);
+  color: var(--color-primary, var(--color-primary-hover));
+}
+.dashboard-card__icon--purple,
+.dashboard-card__accent--purple { color: var(--chart-quinary, #8b5cf6); }
+.dashboard-section-title { color: var(--color-text-main); }
+.dashboard-link { color: var(--color-primary); }
+.dashboard-link:hover { color: var(--color-primary-hover); }
+.dashboard-link--muted { color: var(--color-text-disabled); }
+.dashboard-hint { color: var(--color-text-muted); }
+.dashboard-stat-label { color: var(--color-text-muted); }
+.dashboard-stat-value { color: var(--color-text-main); }
+.dashboard-stat-card--yellow { background-color: var(--color-bg-elevated); border-left: 4px solid var(--chart-tertiary); }
+.dashboard-stat-card--blue { background-color: var(--color-bg-elevated); border-left: 4px solid var(--chart-primary); }
+.dashboard-stat-card--green { background-color: var(--color-bg-elevated); border-left: 4px solid var(--chart-secondary); }
+.dashboard-stat-card--red { background-color: var(--color-bg-elevated); border-left: 4px solid var(--chart-quaternary); }
+.dashboard-goal-item {
+  background-color: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-subtle);
+}
+.dashboard-task-item { background-color: var(--color-bg-elevated); }
+</style>
+
 <script setup lang="ts">
 // 使用默认布局（包含顶部导航栏）
 definePageMeta({
   layout: 'default'
 })
 
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -368,35 +418,74 @@ const goalsLoading = ref(false)
 // GitHub 仓库配置（可以从配置中心获取）
 const githubRepo = ref<string | null>(null)
 
-const chartOptions = {
+// 从主题 CSS 变量读取图表颜色，随主题切换生效
+const { currentTheme } = useTheme()
+const chartTheme = ref({
+  text: 'var(--color-text-sec)',
+  grid: 'var(--color-text-sub)',
+  chartPrimary: 'var(--color-primary)',
+  chartSecondary: '#10b981',
+  chartNonary: '#f97316',
+  chartQuinary: '#8b5cf6'
+})
+
+function getCssVar(name: string): string {
+  if (typeof document === 'undefined') return ''
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+}
+
+function hexToRgba(hex: string, alpha: number): string {
+  if (!hex || hex.startsWith('rgba')) return hex
+  const h = hex.replace('#', '')
+  if (h.length !== 6) return hex
+  const r = parseInt(h.slice(0, 2), 16)
+  const g = parseInt(h.slice(2, 4), 16)
+  const b = parseInt(h.slice(4, 6), 16)
+  return `rgba(${r},${g},${b},${alpha})`
+}
+
+function updateChartTheme() {
+  if (typeof document === 'undefined') return
+  chartTheme.value = {
+    text: getCssVar('--color-text-muted') || 'var(--color-text-sec)',
+    grid: getCssVar('--color-border-default') || getCssVar('--color-border-subtle') || 'var(--color-text-sub)',
+    chartPrimary: getCssVar('--chart-primary') || 'var(--color-primary)',
+    chartSecondary: getCssVar('--chart-secondary') || '#10b981',
+    chartNonary: getCssVar('--chart-nonary') || '#f97316',
+    chartQuinary: getCssVar('--chart-quinary') || '#8b5cf6'
+  }
+}
+
+const chartOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
     legend: {
       position: 'top' as const,
-      labels: { color: '#9ca3af' }
+      labels: { color: chartTheme.value.text }
     }
   },
   scales: {
     y: {
-      grid: { color: '#374151' },
-      ticks: { color: '#9ca3af' }
+      grid: { color: chartTheme.value.grid },
+      ticks: { color: chartTheme.value.text }
     },
     x: {
       grid: { display: false },
-      ticks: { color: '#9ca3af' }
+      ticks: { color: chartTheme.value.text }
     }
   },
   interaction: {
     mode: 'index',
     intersect: false,
   },
-}
+}))
 
 const healthChartData = computed(() => {
   const labels = metrics.value.map(m => m.date.slice(5)).slice(-30) // Last 30 days
   const steps = metrics.value.map(m => m.steps).slice(-30)
   const weight = metrics.value.map(m => m.weight).slice(-30)
+  const t = chartTheme.value
 
   return {
     labels,
@@ -404,8 +493,8 @@ const healthChartData = computed(() => {
       {
         label: '步数',
         data: steps,
-        borderColor: '#f97316',
-        backgroundColor: 'rgba(249, 115, 22, 0.1)',
+        borderColor: t.chartNonary,
+        backgroundColor: hexToRgba(t.chartNonary, 0.1),
         yAxisID: 'y',
         fill: true,
         tension: 0.4
@@ -413,8 +502,8 @@ const healthChartData = computed(() => {
       {
         label: '体重 (公斤)',
         data: weight,
-        borderColor: '#3b82f6',
-        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        borderColor: t.chartPrimary,
+        backgroundColor: hexToRgba(t.chartPrimary, 0.1),
         yAxisID: 'y1',
         fill: true,
         tension: 0.4
@@ -426,6 +515,7 @@ const healthChartData = computed(() => {
 const wealthChartData = computed(() => {
   const labels = metrics.value.map(m => m.date.slice(5)).slice(-30)
   const netWorth = metrics.value.map(m => m.netWorth).slice(-30)
+  const t = chartTheme.value
 
   return {
     labels,
@@ -433,8 +523,8 @@ const wealthChartData = computed(() => {
       {
         label: '净资产',
         data: netWorth,
-        borderColor: '#a855f7',
-        backgroundColor: 'rgba(168, 85, 247, 0.1)',
+        borderColor: t.chartQuinary,
+        backgroundColor: hexToRgba(t.chartQuinary, 0.1),
         fill: true,
         tension: 0.4
       }
@@ -484,7 +574,7 @@ const languageChartData = computed(() => {
   }
 
   const colors = githubLanguages.value.map((lang: any) => 
-    languageColors[lang.language] || '#6b7280'
+    languageColors[lang.language] || 'var(--color-text-sec)'
   )
 
   return {
@@ -499,14 +589,14 @@ const languageChartData = computed(() => {
   }
 })
 
-const languageChartOptions = {
+const languageChartOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
     legend: {
       position: 'right' as const,
       labels: {
-        color: '#9ca3af',
+        color: chartTheme.value.text,
         padding: 15,
         font: { size: 12 }
       }
@@ -522,7 +612,7 @@ const languageChartOptions = {
       }
     }
   }
-}
+}))
 
 // 加载任务统计
 const loadTaskStats = async () => {
@@ -656,7 +746,12 @@ const loadGithubStats = async () => {
   }
 }
 
+watch(currentTheme, () => {
+  updateChartTheme()
+}, { flush: 'post' })
+
 onMounted(async () => {
+  updateChartTheme()
   try {
     // 优先从新的MockData API获取数据
     const mockRes = await api.get<any[]>('/MockData/dashboard-metrics?days=30')

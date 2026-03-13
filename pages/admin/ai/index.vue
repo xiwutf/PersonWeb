@@ -542,7 +542,7 @@ useHead({
 
 /* 智能体图标样式 - 使用 CSS 变量 */
 .agent-icon-blue {
-  background: linear-gradient(135deg, var(--color-primary, #3b82f6) 0%, var(--color-primary-hover, #2563eb) 100%);
+  background: linear-gradient(135deg, var(--color-primary, var(--color-primary)) 0%, var(--color-primary-hover, var(--color-primary-hover)) 100%);
 }
 
 .agent-icon-purple {

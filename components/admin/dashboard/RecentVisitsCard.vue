@@ -146,13 +146,13 @@ const formatTime = (timeStr: string | null | undefined) => {
 }
 
 .visit-time {
-  color: #6b7280;
+  color: var(--color-text-sec);
   font-size: 0.75rem;
   white-space: nowrap;
 }
 
 .visit-path {
-  color: #e5e7eb;
+  color: var(--color-border);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -169,7 +169,7 @@ const formatTime = (timeStr: string | null | undefined) => {
 .empty-state {
   text-align: center;
   padding: 3rem 1rem;
-  color: #6b7280;
+  color: var(--color-text-sec);
   font-size: 0.875rem;
 }
 

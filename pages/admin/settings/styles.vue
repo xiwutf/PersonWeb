@@ -124,7 +124,7 @@
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">背景颜色</label>
-              <input v-model="styleForm.backgroundColor" type="text" class="form-input" placeholder="rgba(59, 130, 246, 0.3)" />
+              <input v-model="styleForm.backgroundColor" type="text" class="form-input" placeholder="var(--theme-primary)" />
             </div>
             <div class="form-group">
               <label class="form-label">边框颜色</label>
@@ -527,8 +527,8 @@ onMounted(() => {
 }
 
 .tab-button-active {
-  color: #ffffff;
-  border-bottom-color: #3b82f6;
+  color: var(--color-bg-card);
+  border-bottom-color: var(--color-primary);
 }
 
 /* 样式区域 */
@@ -550,7 +550,7 @@ onMounted(() => {
 .section-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--color-bg-card);
 }
 
 /* 样式网格 */
@@ -569,7 +569,7 @@ onMounted(() => {
 }
 
 .style-card:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--color-border);
   border-color: rgba(255, 255, 255, 0.2);
 }
 
@@ -587,7 +587,7 @@ onMounted(() => {
 .style-card-title h3 {
   font-size: 1rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--color-bg-card);
   margin-bottom: 0.25rem;
 }
 
@@ -692,7 +692,7 @@ onMounted(() => {
 .modal-header h2 {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--color-bg-card);
 }
 
 .modal-close {
@@ -712,7 +712,7 @@ onMounted(() => {
 
 .modal-close:hover {
   background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  color: var(--color-bg-card);
 }
 
 .modal-body {
@@ -753,14 +753,14 @@ onMounted(() => {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 0.25rem;
-  color: #ffffff;
+  color: var(--color-bg-card);
   font-size: 0.875rem;
   transition: all 0.2s ease;
 }
 
 .form-input:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: var(--color-primary);
   background: rgba(255, 255, 255, 0.15);
 }
 
@@ -778,10 +778,10 @@ onMounted(() => {
 /* 按钮 */
 .btn-primary {
   padding: 0.5rem 1rem;
-  background: rgba(59, 130, 246, 0.3);
-  border: 1px solid rgba(59, 130, 246, 0.5);
+  background: var(--theme-primary);
+  border: 1px solid var(--theme-primary);
   border-radius: 0.25rem;
-  color: #ffffff;
+  color: var(--color-bg-card);
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 0.875rem;
@@ -817,7 +817,7 @@ onMounted(() => {
 }
 
 .btn-link-blue {
-  color: #60a5fa;
+  color: var(--color-primary-soft);
 }
 
 .btn-link-blue:hover {

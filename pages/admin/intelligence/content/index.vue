@@ -390,7 +390,7 @@ onMounted(async () => {
   font-size: 13px;
   color: var(--color-text-sec);
   padding: var(--spacing-sm) 10px;
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--color-border);
   border-radius: var(--radius-sm);
 }
 

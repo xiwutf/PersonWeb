@@ -459,14 +459,14 @@ watch(() => props.visible, (newVal) => {
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .modal-title {
   margin: 0;
   font-size: 20px;
   font-weight: 600;
-  color: #1e293b;
+  color: var(--color-border-default);
 }
 
 .modal-close {
@@ -474,7 +474,7 @@ watch(() => props.visible, (newVal) => {
   border: none;
   font-size: 20px;
   cursor: pointer;
-  color: #6b7280;
+  color: var(--color-text-sec);
   padding: 4px 8px;
   border-radius: 4px;
   transition: all 0.2s;
@@ -482,7 +482,7 @@ watch(() => props.visible, (newVal) => {
 
 .modal-close:hover {
   background: #f3f4f6;
-  color: #374151;
+  color: var(--color-text-main);
 }
 
 .modal-body {
@@ -496,7 +496,7 @@ watch(() => props.visible, (newVal) => {
   justify-content: flex-end;
   gap: 12px;
   padding: 20px;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--color-border);
 }
 
 .form-group {
@@ -507,7 +507,7 @@ watch(() => props.visible, (newVal) => {
   display: block;
   font-size: 14px;
   font-weight: 500;
-  color: #374151;
+  color: var(--color-text-main);
   margin-bottom: 8px;
 }
 
@@ -519,7 +519,7 @@ watch(() => props.visible, (newVal) => {
   border: 1px solid #d1d5db;
   border-radius: 6px;
   font-size: 14px;
-  color: #1e293b;
+  color: var(--color-border-default);
   background: white;
   transition: all 0.2s;
 }
@@ -528,7 +528,7 @@ watch(() => props.visible, (newVal) => {
 .form-textarea:focus,
 .form-select:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
@@ -548,12 +548,12 @@ watch(() => props.visible, (newVal) => {
 }
 
 .btn-primary {
-  background: #3b82f6;
+  background: var(--color-primary);
   color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #2563eb;
+  background: var(--color-primary-hover);
 }
 
 .btn-primary:disabled {
@@ -563,11 +563,11 @@ watch(() => props.visible, (newVal) => {
 
 .btn-secondary {
   background: #f3f4f6;
-  color: #374151;
+  color: var(--color-text-main);
 }
 
 .btn-secondary:hover {
-  background: #e5e7eb;
+  background: var(--color-border);
 }
 </style>
 

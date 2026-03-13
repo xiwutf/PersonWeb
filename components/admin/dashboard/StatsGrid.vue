@@ -100,7 +100,7 @@ const formatValue = (value: number) => {
 .stat-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--color-border);
   border-color: rgba(255, 255, 255, 0.15);
 }
 
@@ -124,7 +124,7 @@ const formatValue = (value: number) => {
 
 .stat-card-icon--blue {
   background-color: rgba(59, 130, 246, 0.15);
-  color: #60a5fa;
+  color: var(--color-primary-soft);
 }
 
 .stat-card-icon--purple {
@@ -176,7 +176,7 @@ const formatValue = (value: number) => {
 
 .stat-card-desc {
   font-size: 0.75rem;
-  color: #6b7280;
+  color: var(--color-text-sec);
   margin-top: 0.25rem;
 }
 </style>

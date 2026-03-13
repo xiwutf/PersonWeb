@@ -670,12 +670,12 @@ const submitReview = async () => {
 }
 
 .btn.primary {
-  background: #3b82f6;
+  background: var(--color-primary);
   color: white;
 }
 
 .btn.primary:hover {
-  background: #2563eb;
+  background: var(--color-primary-hover);
 }
 
 .btn.secondary {
@@ -715,7 +715,7 @@ const submitReview = async () => {
   display: block;
   font-size: 1.8rem;
   font-weight: 600;
-  color: #3b82f6;
+  color: var(--color-primary);
 }
 
 .stat-label {
@@ -747,7 +747,7 @@ const submitReview = async () => {
 }
 
 .config-type {
-  background: #e5e7eb;
+  background: var(--color-border);
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   font-size: 0.85rem;
@@ -761,7 +761,7 @@ const submitReview = async () => {
 
 .tabs {
   display: flex;
-  border-bottom: 2px solid #e5e7eb;
+  border-bottom: 2px solid var(--color-border);
   margin-bottom: 2rem;
 }
 
@@ -777,11 +777,11 @@ const submitReview = async () => {
 }
 
 .tab-btn:hover {
-  color: #3b82f6;
+  color: var(--color-primary);
 }
 
 .tab-btn.active {
-  color: #3b82f6;
+  color: var(--color-primary);
 }
 
 .tab-btn.active::after {
@@ -791,7 +791,7 @@ const submitReview = async () => {
   left: 0;
   right: 0;
   height: 2px;
-  background: #3b82f6;
+  background: var(--color-primary);
 }
 
 .tab-content {
@@ -821,7 +821,7 @@ const submitReview = async () => {
 }
 
 .version-item {
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 1.5rem;
   transition: all 0.2s;
@@ -832,7 +832,7 @@ const submitReview = async () => {
 }
 
 .version-item.is-latest {
-  border-color: #3b82f6;
+  border-color: var(--color-primary);
   background: #f0f9ff;
 }
 
@@ -886,7 +886,7 @@ const submitReview = async () => {
 .rating-score {
   font-size: 3rem;
   font-weight: 600;
-  color: #3b82f6;
+  color: var(--color-primary);
 }
 
 .rating-score .max {
@@ -1031,9 +1031,9 @@ const submitReview = async () => {
 }
 
 .page-btn.active {
-  background: #3b82f6;
+  background: var(--color-primary);
   color: white;
-  border-color: #3b82f6;
+  border-color: var(--color-primary);
 }
 
 .modal {

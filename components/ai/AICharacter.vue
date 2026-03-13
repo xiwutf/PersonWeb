@@ -166,7 +166,7 @@ const draw = () => {
   
   // 绘制身体（现代服装风格 - 衬衫）
   const bodyGradient = ctx.createLinearGradient(-bodyWidth/2, 0, bodyWidth/2, bodyHeight)
-  bodyGradient.addColorStop(0, '#ffffff')
+  bodyGradient.addColorStop(0, 'var(--color-bg-card)')
   bodyGradient.addColorStop(0.3, '#f0f0f0')
   bodyGradient.addColorStop(0.7, '#e0e0e0')
   bodyGradient.addColorStop(1, '#d0d0d0')
@@ -262,13 +262,13 @@ const draw = () => {
   const drawEye = (x: number, isOpen: boolean) => {
     if (isOpen) {
       // 眼白
-      ctx.fillStyle = '#ffffff'
+      ctx.fillStyle = 'var(--color-bg-card)'
       ctx.beginPath()
       ctx.ellipse(x, eyeY, eyeWidth, eyeHeight, 0, 0, Math.PI * 2)
       ctx.fill()
       
       // 眼白阴影
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'
+      ctx.fillStyle = 'var(--shadow)'
       ctx.beginPath()
       ctx.ellipse(x, eyeY + eyeHeight * 0.3, eyeWidth * 0.9, eyeHeight * 0.5, 0, 0, Math.PI * 2)
       ctx.fill()
@@ -291,7 +291,7 @@ const draw = () => {
       ctx.fill()
       
       // 眼睛高光（两个高光点，更真实）
-      ctx.fillStyle = '#ffffff'
+      ctx.fillStyle = 'var(--color-bg-card)'
       ctx.beginPath()
       ctx.arc(x - 3 * scale, eyeY - 3 * scale, 3 * scale, 0, Math.PI * 2)
       ctx.fill()
