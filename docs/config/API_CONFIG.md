@@ -132,3 +132,32 @@ console.log('API Base:', config.public.apiBase)
 2. 确保使用 `npm run build`（会自动设置 `NODE_ENV=production` 并加载 `.env.production`）
 3. 检查构建日志中的环境变量值
 
+### 问题：部署后「加载列表失败」或首页展示不对
+
+**现象**：管理后台分类管理等页面报「加载列表失败」，或首页一直显示默认风格、内容不符合预期。
+
+**原因**：前端请求的后端 API（如 `https://api.xing.com.cn/api` 或 `https://api.xifg.com.cn/api`）无法访问或未返回正常响应。
+
+**排查步骤**：
+
+1. **确认 API 服务已启动且可访问**
+   - 在服务器上确认 .NET 后端进程正在运行（如 `PersonalSite.Api`）。
+   - 在浏览器或本机用 curl 访问：`https://api.xing.com.cn/api/health`（或你的 API 域名），应返回 `Healthy`。
+   - 若使用 Nginx 反向代理，检查代理到后端端口的配置是否正确（如 `proxy_pass http://127.0.0.1:5234`）。
+
+2. **确认前端使用的 API 域名**
+   - 前端会根据当前站点域名自动选择 API：
+     - 访问 `xifg.com.cn` → 使用 `https://api.xifg.com.cn/api`
+     - 访问 `xing.com.cn` → 使用 `https://api.xing.com.cn/api`
+   - 若部署域名不在上述之列，需在构建时设置 `NUXT_PUBLIC_API_BASE`（例如在 CI/部署脚本中）为你的 API 完整地址（含 `/api`）。
+
+3. **CORS**
+   - 本项目后端已配置 `AllowAnyOrigin()`，一般不会因 CORS 导致浏览器报错。若你改成了白名单，需把前端站点域名（如 `https://xing.com.cn`）加入允许来源。
+
+4. **首页「展示不对」**
+   - 首页会请求 `/config/home-style` 决定展示风格；若该接口失败，会回退为默认「creative」风格。
+   - 若希望展示其他风格，需保证该接口可访问且返回正确配置；同时检查 API 可访问性（同上 1、2）。
+
+5. **开发者工具辅助**
+   - 打开 F12 → Network，筛选 Fetch/XHR，看失败请求的 URL 和状态码（如 0、502、404），便于区分「网络/代理错误」还是「接口未部署/路径错误」。
+

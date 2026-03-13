@@ -60,16 +60,21 @@
 
 ## 项目结构
 
+根目录下的开源相关文档：
+
 ```
-personal-site/
+项目根目录/
 ├── LICENSE                    # MIT License (开源许可证)
 ├── CHANGELOG.md              # 更新日志
 ├── CODE_OF_CONDUCT.md        # 社区行为准则
 ├── CONTRIBUTING.md           # 贡献指南
 ├── SECURITY.md               # 安全政策
 ├── AUTHORS.md                # 作者信息
-├── OPEN_SOURCE.md            # 开源宣言
 ├── README.md                 # 项目文档
+├── docs/open-source/         # 开源相关文档（本目录）
+│   ├── OPEN_SOURCE.md        # 开源宣言
+│   ├── OPENSOURCE_CHECKLIST.md
+│   └── OPENSOURCE_SETUP.md   # 本配置指南
 ├── .github/
 │   ├── ISSUE_TEMPLATE/       # Issue 模板
 │   │   ├── bug_report.md

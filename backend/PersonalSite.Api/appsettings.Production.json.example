@@ -1,0 +1,10 @@
+{
+  "ConnectionStrings": {
+    "Default": "Server=你的数据库地址;Database=数据库名;User=用户名;Password=密码;SslMode=None;"
+  },
+  "Jwt": {
+    "Key": "生产环境JWT密钥至少32字符",
+    "Issuer": "PersonalSite.Api",
+    "Audience": "PersonalSite.Web"
+  }
+}

@@ -1,0 +1,183 @@
+{
+  "meta": {
+    "key": "ecommerce",
+    "name": "E-Commerce",
+    "version": "1.0.0",
+    "description": "电商模块，提供商品展示、购物车、订单管理等功能",
+    "author": "PersonWeb Team",
+    "license": "MIT",
+    "category": "business",
+    "tags": ["ecommerce", "shop", "cart", "payment"],
+    "icon": "🛒",
+    "price": 0,
+    "dependencies": [
+      "auth-module",
+      "payment-gateway"
+    ],
+    "isCore": false,
+    "compatibility": {
+      "nuxtVersion": "^3.0.0",
+      "nodeVersion": "^16.0.0",
+      "browser": ["chrome", "firefox", "safari", "edge"]
+    }
+  },
+  "routes": [
+    {
+      "path": "/shop",
+      "name": "shop-index",
+      "component": "~/components/ecommerce/Shop.vue",
+      "meta": {
+        "title": "商城",
+        "icon": "🛒",
+        "hidden": false,
+        "order": 100
+      }
+    },
+    {
+      "path": "/shop/products/:productId",
+      "name": "shop-product-detail",
+      "component": "~/components/ecommerce/ProductDetail.vue",
+      "meta": {
+        "title": "商品详情",
+        "icon": "📦",
+        "hidden": false
+      }
+    },
+    {
+      "path": "/shop/cart",
+      "name": "shop-cart",
+      "component": "~/components/ecommerce/Cart.vue",
+      "meta": {
+        "title": "购物车",
+        "icon": "🛒",
+        "hidden": false,
+        "order": 200
+      }
+    },
+    {
+      "path": "/shop/checkout",
+      "name": "shop-checkout",
+      "component": "~/components/ecommerce/Checkout.vue",
+      "meta": {
+        "title": "结算",
+        "icon": "💳",
+        "hidden": false,
+        "order": 300
+      }
+    },
+    {
+      "path": "/shop/orders",
+      "name": "shop-orders",
+      "component": "~/components/ecommerce/Orders.vue",
+      "meta": {
+        "title": "我的订单",
+        "icon": "📋",
+        "hidden": false,
+        "order": 400
+      }
+    }
+  ],
+  "components": [
+    {
+      "name": "ProductCard",
+      "path": "~/components/ecommerce/ProductCard.vue",
+      "global": true
+    },
+    {
+      "name": "CategoryFilter",
+      "path": "~/components/ecommerce/CategoryFilter.vue",
+      "global": false
+    },
+    {
+      "name": "Pagination",
+      "path": "~/components/ecommerce/Pagination.vue",
+      "global": true
+    }
+  ],
+  "configs": [
+    {
+      "configKey": "defaultCurrency",
+      "configValue": "CNY",
+      "configType": "string",
+      "description": "默认货币",
+      "required": false,
+      "defaultValue": "CNY",
+      "validation": {
+        "pattern": "^(CNY|USD|EUR|JPY|GBP)$"
+      }
+    },
+    {
+      "configKey": "showOutOfStock",
+      "configValue": true,
+      "configType": "boolean",
+      "description": "是否显示缺货商品",
+      "required": false,
+      "defaultValue": true
+    },
+    {
+      "configKey": "enableReviews",
+      "configValue": true,
+      "configType": "boolean",
+      "description": "是否启用商品评价",
+      "required": false,
+      "defaultValue": true
+    },
+    {
+      "configKey": "itemsPerPage",
+      "configValue": 12,
+      "configType": "number",
+      "description": "每页显示商品数量",
+      "required": false,
+      "defaultValue": 12,
+      "validation": {
+        "min": 1,
+        "max": 100
+      }
+    },
+    {
+      "configKey": "taxRate",
+      "configValue": 0.13,
+      "configType": "number",
+      "description": "税率",
+      "required": false,
+      "defaultValue": 0.13,
+      "validation": {
+        "min": 0,
+        "max": 1,
+        "step": 0.01
+      }
+    }
+  ],
+  "permissions": [
+    {
+      "key": "shop.view",
+      "name": "查看商城",
+      "description": "允许查看商城和商品",
+      "level": "basic"
+    },
+    {
+      "key": "shop.cart",
+      "name": "购物车",
+      "description": "允许添加商品到购物车",
+      "level": "basic"
+    },
+    {
+      "key": "shop.order",
+      "name": "下订单",
+      "description": "允许创建订单",
+      "level": "basic"
+    },
+    {
+      "key": "shop.admin",
+      "name": "商城管理",
+      "description": "允许管理商城设置和商品",
+      "level": "admin"
+    }
+  ],
+  "lifecycle": {
+    "onInstall": "onInstallEcommerce",
+    "onUninstall": "onUninstallEcommerce",
+    "onActivate": "onActivateEcommerce",
+    "onDeactivate": "onDeactivateEcommerce"
+  }
+}

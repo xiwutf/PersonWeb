@@ -17,7 +17,9 @@ export default defineNuxtConfig({
       // API 基础路径，通过环境变量配置
       // 注意：客户端会根据当前域名自动判断使用哪个 API
       // - localhost/127.0.0.1: 自动使用 http://localhost:5234/api
+      // - localhost/127.0.0.1: 自动使用 http://localhost:5234/api
       // - xifg.com.cn: 自动使用 https://api.xifg.com.cn/api
+      // - xing.com.cn: 自动使用 https://api.xing.com.cn/api
       // 环境变量仅作为服务端渲染时的默认值
       apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:5234/api'
     }

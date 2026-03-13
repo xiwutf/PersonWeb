@@ -448,6 +448,21 @@ Made with ❤️ by [Xie Feng](https://github.com/yourusername)
 - 📊 [代码质量文档](./docs/quality/) - 代码质量报告、规范检查
 - 📝 [迁移文档](./docs/migration/) - 数据迁移指南
 
+### 📚 文档
+
+#### 必读文档
+- [项目概览](./docs/PROJECT_OVERVIEW.md) - 项目整体架构和技术栈
+- [快速开始指南](./docs/deployment/QUICK_START.md) - 快速启动项目
+- [开发规范](./docs/development/DEVELOPMENT_GUIDELINES.md) - 开发规范和要求
+
+#### 模块化专题
+- [模块开发指南](./docs/development/MODULE_DEVELOPMENT_GUIDE.md) - 模块系统入门必读
+- [模块开发最佳实践](./docs/development/MODULE_BEST_PRACTICES.md) - 模块开发进阶指南
+- [模块系统 API 参考](./docs/api/MODULE_SYSTEM_API.md) - 完整 API 接口文档
+- [Hello World 示例](./examples/modules/hello-world/) - 简单示例模块
+- [E-Commerce 示例](./examples/modules/ecommerce/) - 复杂业务模块示例
+
+#### 完整文档索引
 详细文档索引请查看 [文档目录](./docs/README.md)
 
 ## 🆕 新电脑快速配置

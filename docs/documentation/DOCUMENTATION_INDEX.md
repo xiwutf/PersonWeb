@@ -28,6 +28,8 @@
 | [STYLE_REFACTORING_PROGRESS.md](./development/STYLE_REFACTORING_PROGRESS.md) | 样式重构进度 | 中 |
 | [BUILD_OPTIMIZATION.md](./development/BUILD_OPTIMIZATION.md) | 构建优化说明 | 低 |
 | [UI_COMPONENT_LIBRARY_RECOMMENDATIONS.md](./development/UI_COMPONENT_LIBRARY_RECOMMENDATIONS.md) | UI 组件库推荐 | 低 |
+| [MODULE_DEVELOPMENT_GUIDE.md](./development/MODULE_DEVELOPMENT_GUIDE.md) | 模块开发指南 ⭐ **新** | 高 |
+| [MODULE_BEST_PRACTICES.md](./development/MODULE_BEST_PRACTICES.md) | 模块开发最佳实践 ⭐ **新** | 高 |
 
 ### 🏗️ 架构文档 (`architecture/`)
 
@@ -35,6 +37,18 @@
 |------|------|--------|
 | [README_MODULES.md](./architecture/README_MODULES.md) | 模块化系统使用指南 | 高 |
 | [MODULE_SYSTEM.md](./architecture/MODULE_SYSTEM.md) | 模块系统架构说明 | 中 |
+
+### 🔧 模块开发文档
+
+| 文档 | 说明 | 优先级 |
+|------|------|--------|
+| [MODULE_DEVELOPMENT_GUIDE.md](./development/MODULE_DEVELOPMENT_GUIDE.md) | 模块开发指南 | 高 |
+| [MODULE_BEST_PRACTICES.md](./development/MODULE_BEST_PRACTICES.md) | 模块开发最佳实践 | 高 |
+| [MODULE_SYSTEM_API.md](./api/MODULE_SYSTEM_API.md) | 模块系统 API 参考 | 高 |
+| [ECOMMERCE_MODULE_API.md](./api/ECOMMERCE_MODULE_API.md) | E-Commerce 模块 API 参考 | 高 |
+| [MODULE_TROUBLESHOOTING.md](./troubleshooting/MODULE_TROUBLESHOOTING.md) | 模块问题排查 | 高 |
+| [examples/modules/hello-world/](../examples/modules/hello-world/) | Hello World 示例模块 | 中 |
+| [examples/modules/ecommerce/](../examples/modules/ecommerce/) | E-Commerce 示例模块 | 中 |
 
 ### ⚙️ 配置文档 (`config/`)
 
@@ -94,6 +108,13 @@
 | [THEME_REFACTORING_SUMMARY.md](./improvements/THEME_REFACTORING_SUMMARY.md) | 主题重构总结 | 中 |
 | [MARKDOWN_EDITOR_UPGRADE.md](./improvements/MARKDOWN_EDITOR_UPGRADE.md) | Markdown 编辑器升级 | 低 |
 
+### 📚 API 文档 (`api/`)
+
+| 文档 | 说明 | 优先级 |
+|------|------|--------|
+| [MODULE_SYSTEM_API.md](./api/MODULE_SYSTEM_API.md) | 模块系统 API 参考文档 ⭐ **新** | 高 |
+| [ECOMMERCE_MODULE_API.md](./api/ECOMMERCE_MODULE_API.md) | E-Commerce 模块 API 参考文档 ⭐ **新** | 高 |
+
 ### 🐛 故障排除文档 (`troubleshooting/`)
 
 | 文档 | 说明 | 优先级 |
@@ -102,6 +123,8 @@
 | [ARTICLES_TROUBLESHOOTING.md](./troubleshooting/ARTICLES_TROUBLESHOOTING.md) | 文章系统故障排除 | 中 |
 | [TOOLS_API_FIX.md](./troubleshooting/TOOLS_API_FIX.md) | 工具 API 修复记录 | 中 |
 | [GIT_FIX.md](./troubleshooting/GIT_FIX.md) | Git 问题修复记录 | 低 |
+| [MODULE_TROUBLESHOOTING.md](./troubleshooting/MODULE_TROUBLESHOOTING.md) | 模块系统排查指南 ⭐ **新** | 高 |
+| [COMPONENTS_AFFECTING_SCROLLBAR_AND_HEADER.md](./COMPONENTS_AFFECTING_SCROLLBAR_AND_HEADER.md) | 影响滚动条和头部的组件 | 中 |
 
 ### 📊 代码质量文档 (`quality/`)
 
@@ -109,6 +132,10 @@
 |------|------|--------|
 | [CODE_STANDARDS_CHECK.md](./quality/CODE_STANDARDS_CHECK.md) | 代码规范检查报告 | 高 |
 | [REFACTORING_PROGRESS.md](./quality/REFACTORING_PROGRESS.md) | 代码重构进度报告 | 中 |
+| [COMPONENT_ORGANIZATION_CHECK.md](./quality/COMPONENT_ORGANIZATION_CHECK.md) | 组件组织检查 | 中 |
+| [COMPONENT_REORGANIZATION_SUMMARY.md](./quality/COMPONENT_REORGANIZATION_SUMMARY.md) | 组件重组总结 | 中 |
+| [COMPOSABLES_CHECK.md](./quality/COMPOSABLES_CHECK.md) | 组合函数检查 | 中 |
+| [PROJECT_STANDARDS_CHECK_REPORT.md](./quality/PROJECT_STANDARDS_CHECK_REPORT.md) | 项目标准检查报告 | 中 |
 
 ### 🔧 修复文档 (`fixes/`)
 
@@ -129,10 +156,8 @@
 | [DOCUMENTATION_STATUS.md](./DOCUMENTATION_STATUS.md) | 文档整理状态报告 | 中 |
 | [DOCUMENTATION_CLEANUP.md](./DOCUMENTATION_CLEANUP.md) | 文档整理清理报告 | 中 |
 | [BACKEND_FRONTEND_SUPPORT_SUMMARY.md](./BACKEND_FRONTEND_SUPPORT_SUMMARY.md) | 前后端支持总结 | 中 |
-| [COMPONENTS_AFFECTING_SCROLLBAR_AND_HEADER.md](./COMPONENTS_AFFECTING_SCROLLBAR_AND_HEADER.md) | 影响滚动条和头部的组件 | 低 |
-| [DATA_DUPLICATE_CHECK.md](./DATA_DUPLICATE_CHECK.md) | 数据重复检查 | 低 |
-| [PROJECT_DUPLICATE_FIX.md](./PROJECT_DUPLICATE_FIX.md) | 项目重复修复 | 低 |
 | [整理说明.md](./整理说明.md) | 整理说明 | 低 |
+| [ROADMAP_MODULE_SYSTEM.md](./ROADMAP_MODULE_SYSTEM.md) | 模块系统路线图 | 低 |
 
 ---
 
@@ -144,6 +169,7 @@
 2. [快速开始](./deployment/QUICK_START.md) - 快速启动项目
 3. [开发规范](./development/DEVELOPMENT_GUIDELINES.md) - 学习开发规范
 4. [环境配置](./deployment/DEVELOPMENT_SETUP.md) - 配置开发环境
+5. [模块开发指南](./development/MODULE_DEVELOPMENT_GUIDE.md) - 学习模块开发（模块化特色）
 
 ### 日常开发
 
@@ -151,6 +177,8 @@
 2. [样式管理提醒](./development/STYLE_MANAGEMENT_REMINDER.md) - 样式开发提醒
 3. [模块系统](./architecture/README_MODULES.md) - 模块化开发
 4. [Naive UI 使用](./config/README_NAIVE_UI.md) - UI 组件使用
+5. [模块开发最佳实践](./development/MODULE_BEST_PRACTICES.md) - 模块开发进阶
+6. [模块 API 参考](./api/MODULE_SYSTEM_API.md) - 模块系统接口文档
 
 ### 功能开发
 
@@ -163,6 +191,8 @@
 1. [API 错误修复](./troubleshooting/API_ERRORS_FIX.md) - API 问题
 2. [文章系统问题](./troubleshooting/ARTICLES_TROUBLESHOOTING.md) - 文章系统问题
 3. [工具 API 修复](./troubleshooting/TOOLS_API_FIX.md) - 工具 API 问题
+4. [模块问题排查](./troubleshooting/MODULE_TROUBLESHOOTING.md) - 模块系统问题
+5. [组件影响分析](./COMPONENTS_AFFECTING_SCROLLBAR_AND_HEADER.md) - UI 组件问题
 
 ### 部署运维
 
@@ -178,25 +208,26 @@
 
 | 分类 | 文档数量 | 占比 |
 |------|----------|------|
-| 功能开发文档 | 16 | 27.6% |
-| 部署文档 | 9 | 15.5% |
-| 开发文档 | 6 | 10.3% |
-| 配置文档 | 5 | 8.6% |
-| 改进文档 | 4 | 6.9% |
-| 故障排除文档 | 4 | 6.9% |
-| 架构文档 | 2 | 3.4% |
-| 代码质量文档 | 2 | 3.4% |
-| 修复文档 | 2 | 3.4% |
-| 根目录文档 | 8 | 13.8% |
-| **总计** | **58** | **100%** |
+| 功能开发文档 | 16 | 25.0% |
+| 部署文档 | 9 | 14.1% |
+| 开发文档 | 8 | 12.5% |
+| API 文档 | 2 | 3.1% |
+| 配置文档 | 5 | 7.8% |
+| 改进文档 | 4 | 6.3% |
+| 故障排除文档 | 5 | 7.8% |
+| 架构文档 | 2 | 3.1% |
+| 代码质量文档 | 6 | 9.4% |
+| 修复文档 | 2 | 3.1% |
+| 根目录文档 | 8 | 12.5% |
+| **总计** | **62** | **100%** |
 
 ### 按优先级统计
 
 | 优先级 | 文档数量 | 占比 |
 |--------|----------|------|
-| 高优先级 | 18 | 31.0% |
-| 中优先级 | 25 | 43.1% |
-| 低优先级 | 15 | 25.9% |
+| 高优先级 | 21 | 33.9% |
+| 中优先级 | 26 | 41.9% |
+| 低优先级 | 15 | 24.2% |
 
 ---
 

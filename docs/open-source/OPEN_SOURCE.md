@@ -15,7 +15,7 @@
 **条件**: 
 - 需要保留许可证和版权声明
 
-详见 [LICENSE](./LICENSE) 文件。
+详见 [LICENSE](../../LICENSE) 文件。
 
 ### 内容版权
 
@@ -51,8 +51,8 @@
 ## 贡献指南
 
 还是想贡献代码？太好了！请阅读：
-- [CONTRIBUTING.md](./CONTRIBUTING.md) - 贡献指南
-- [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) - 社区行为准则
+- [CONTRIBUTING.md](../../CONTRIBUTING.md) - 贡献指南
+- [CODE_OF_CONDUCT.md](../../CODE_OF_CONDUCT.md) - 社区行为准则
 
 ## 支持项目
 
@@ -73,7 +73,7 @@
 ### 🚀 参与开发
 - Fork 项目
 - 提交 Pull Request
-- 详见 [CONTRIBUTING.md](./CONTRIBUTING.md)
+- 详见 [CONTRIBUTING.md](../../CONTRIBUTING.md)
 
 ### 💬 分享和宣传
 - 在社交媒体上分享这个项目
@@ -82,7 +82,7 @@
 
 ## 许可证文本
 
-完整的 MIT License 文本见 [LICENSE](./LICENSE) 文件。
+完整的 MIT License 文本见 [LICENSE](../../LICENSE) 文件。
 
 ---
 

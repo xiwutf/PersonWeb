@@ -11,25 +11,31 @@ export const useApi = () => {
     /**
      * 根据当前环境自动获取 API 基础路径
      * - 本地开发（localhost/127.0.0.1）: 使用本地 API
-     * - 生产环境（xifg.com.cn）: 使用生产 API
+     * - 生产环境（xifg.com.cn）: 使用 https://api.xifg.com.cn/api
+     * - 生产环境（xing.com.cn）: 使用 https://api.xing.com.cn/api
      */
     const getApiBaseUrl = (): string => {
         // 客户端运行时，根据当前域名自动判断
         if (typeof window !== 'undefined') {
             const hostname = window.location.hostname
-            
+
             // 本地开发环境
             if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '0.0.0.0') {
                 return 'http://localhost:5234/api'
             }
-            
+
             // 生产环境（xifg.com.cn 域名）
             if (hostname.includes('xifg.com.cn')) {
                 return 'https://api.xifg.com.cn/api'
             }
+
+            // 生产环境（xing.com.cn 域名）
+            if (hostname.includes('xing.com.cn')) {
+                return 'https://api.xing.com.cn/api'
+            }
         }
-        
-        // 服务端渲染或其他情况，使用环境变量配置
+
+        // 服务端渲染或未匹配域名，使用环境变量配置
         return config.public.apiBase
     }
     

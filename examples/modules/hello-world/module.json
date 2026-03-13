@@ -1,0 +1,110 @@
+{
+  "meta": {
+    "key": "hello-world",
+    "name": "Hello World",
+    "version": "1.0.0",
+    "description": "一个简单的示例模块，演示模块开发的基本概念",
+    "author": "PersonWeb Team",
+    "license": "MIT",
+    "category": "tools",
+    "tags": ["example", "demo", "learning"],
+    "icon": "👋",
+    "price": 0,
+    "dependencies": [],
+    "isCore": false,
+    "compatibility": {
+      "nuxtVersion": "^3.0.0",
+      "nodeVersion": "^16.0.0"
+    }
+  },
+  "routes": [
+    {
+      "path": "/hello-world",
+      "name": "hello-world-index",
+      "meta": {
+        "title": "Hello World",
+        "icon": "👋",
+        "hidden": false,
+        "order": 999
+      }
+    },
+    {
+      "path": "/hello-world/about",
+      "name": "hello-world-about",
+      "meta": {
+        "title": "关于模块",
+        "icon": "ℹ️",
+        "hidden": false,
+        "order": 1000
+      }
+    }
+  ],
+  "components": [
+    {
+      "name": "HelloWorld",
+      "path": "~/components/hello-world/HelloWorld.vue",
+      "global": false
+    },
+    {
+      "name": "HelloCounter",
+      "path": "~/components/hello-world/HelloCounter.vue",
+      "global": false
+    },
+    {
+      "name": "HelloGreeting",
+      "path": "~/components/hello-world/HelloGreeting.vue",
+      "global": false
+    }
+  ],
+  "configs": [
+    {
+      "configKey": "greeting",
+      "configValue": "Hello",
+      "configType": "string",
+      "description": "问候语",
+      "required": false,
+      "defaultValue": "Hello"
+    },
+    {
+      "configKey": "name",
+      "configValue": "World",
+      "configType": "string",
+      "description": "问候对象",
+      "required": false,
+      "defaultValue": "World"
+    },
+    {
+      "configKey": "showCounter",
+      "configValue": true,
+      "configType": "boolean",
+      "description": "是否显示计数器",
+      "required": false,
+      "defaultValue": true
+    },
+    {
+      "configKey": "theme",
+      "configValue": "light",
+      "configType": "string",
+      "description": "主题",
+      "required": false,
+      "defaultValue": "light",
+      "validation": {
+        "pattern": "^(light|dark)$"
+      }
+    }
+  ],
+  "permissions": [
+    {
+      "key": "hello.view",
+      "name": "查看 Hello World",
+      "description": "允许查看 Hello World 模块",
+      "level": "basic"
+    }
+  ],
+  "lifecycle": {
+    "onInstall": "onInstallHelloWorld",
+    "onUninstall": "onUninstallHelloWorld",
+    "onActivate": "onActivateHelloWorld",
+    "onDeactivate": "onDeactivateHelloWorld"
+  }
+}

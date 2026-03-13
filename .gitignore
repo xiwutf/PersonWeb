@@ -150,6 +150,7 @@ scripts/sensitive-replacements.txt
 # 保留示例文件
 !.env.example
 !appsettings.Development.json.example
+!appsettings.Production.json.example
 
 # Local machine/runtime caches
 .dotnet/

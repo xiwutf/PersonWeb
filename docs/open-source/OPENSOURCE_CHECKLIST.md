@@ -2,6 +2,8 @@
 
 项目已成功开源化！以下是需要你手动完成的项目。
 
+> 根目录文档：CONTRIBUTING.md、README.md 等位于项目根目录 `../../`。
+
 ## 🎯 第一步：更新项目信息（必须做）
 
 ### 1. 更新 package.json
@@ -81,8 +83,8 @@ Settings → Security & analysis → Dependabot alerts → Enable
 ✅ SECURITY.md                       (安全政策)
 ✅ CHANGELOG.md                      (版本日志)
 ✅ AUTHORS.md                        (作者信息)
-✅ OPEN_SOURCE.md                    (开源宣言)
-✅ OPENSOURCE_SETUP.md               (配置指南)
+✅ docs/open-source/OPEN_SOURCE.md   (开源宣言)
+✅ OPENSOURCE_SETUP.md               (配置指南，本目录下)
 ✅ .github/ISSUE_TEMPLATE/bug_report.md
 ✅ .github/ISSUE_TEMPLATE/feature_request.md
 ✅ .github/ISSUE_TEMPLATE/documentation.md
@@ -152,9 +154,9 @@ npm run changelog
 
 ## 📞 获取帮助
 
-- 查看 OPENSOURCE_SETUP.md 获取详细配置说明
-- 查看 CONTRIBUTING.md 了解如何接纳贡献
-- 查看 README.md 了解项目信息
+- 查看 [OPENSOURCE_SETUP.md](./OPENSOURCE_SETUP.md) 获取详细配置说明
+- 查看 [CONTRIBUTING.md](../../CONTRIBUTING.md) 了解如何接纳贡献
+- 查看 [README.md](../../README.md) 了解项目信息
 
 ## ✨ 恭喜！
 

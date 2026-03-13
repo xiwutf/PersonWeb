@@ -21,6 +21,18 @@ jobs:
       - name: Publish
         run: dotnet publish backend/PersonalSite.Api/PersonalSite.Api.csproj -c Release -o ./publish
 
+      - name: Backup production config on server (before deploy)
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            if [ -f /var/www/personal_site_api/appsettings.Production.json ]; then
+              cp /var/www/personal_site_api/appsettings.Production.json /tmp/appsettings.Production.json.bak
+              echo "Backed up appsettings.Production.json to /tmp"
+            fi
+
       - name: Deploy to Server
         uses: easingthemes/ssh-deploy@v5.0.0
         with:
@@ -30,6 +42,19 @@ jobs:
           TARGET: "/var/www/personal_site_api/"
           SOURCE: "publish/"
           ARGS: "-rltgoDzvO --delete"
+
+      - name: Restore production config (preserve appsettings.Production.json)
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            if [ -f /tmp/appsettings.Production.json.bak ]; then
+              cp /tmp/appsettings.Production.json.bak /var/www/personal_site_api/appsettings.Production.json
+              rm -f /tmp/appsettings.Production.json.bak
+              echo "Restored appsettings.Production.json from backup"
+            fi
 
       - name: Restart Service
         uses: appleboy/ssh-action@v1.0.3
