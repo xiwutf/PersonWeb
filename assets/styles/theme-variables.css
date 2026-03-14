@@ -1,0 +1,707 @@
+/**
+ * 设计系统主题变量 V3.0
+ *
+ * 设计原则：
+ * 1. 分层设计：基础层 → 语义层 → 组件层
+ * 2. 优先使用 CSS 变量，便于主题切换
+ * 3. 所有视觉值必须通过变量控制
+ * 4. 变量命名语义化，避免具体值暴露
+ *
+ * 变量命名规范：
+ * - 基础颜色：color-{base}-{hue}-{level}  如：color-blue-500
+ * - 语义颜色：color-{purpose}           如：color-primary, color-bg-card
+ * - 组件变量：{component}-{state}-{prop} 如：button-primary-bg
+ */
+
+/* ==================== 基础颜色层 ==================== */
+/* 色调阶梯 - 用于生成完整色彩系统 */
+
+/* 红色系 */
+:root {
+  --color-red-50: #fef2f2;
+  --color-red-100: #fee2e2;
+  --color-red-200: #fecaca;
+  --color-red-300: #fca5a5;
+  --color-red-400: #f87171;
+  --color-red-500: #ef4444;
+  --color-red-600: #dc2626;
+  --color-red-700: #b91c1c;
+  --color-red-800: #991b1b;
+  --color-red-900: #7f1d1d;
+  --color-red-950: #450a0a;
+}
+
+/* 橙色系 */
+:root {
+  --color-orange-50: #fff7ed;
+  --color-orange-100: #ffedd5;
+  --color-orange-200: #fed7aa;
+  --color-orange-300: #fdba74;
+  --color-orange-400: #fb923c;
+  --color-orange-500: #f97316;
+  --color-orange-600: #ea580c;
+  --color-orange-700: #c2410c;
+  --color-orange-800: #9a3412;
+  --color-orange-900: #7c2d12;
+  --color-orange-950: #431407;
+}
+
+/* 黄色系 */
+:root {
+  --color-yellow-50: #fefce8;
+  --color-yellow-100: #fef9c3;
+  --color-yellow-200: #fef08a;
+  --color-yellow-300: #fde047;
+  --color-yellow-400: #facc15;
+  --color-yellow-500: #eab308;
+  --color-yellow-600: #ca8a04;
+  --color-yellow-700: #a16207;
+  --color-yellow-800: #854d0e;
+  --color-yellow-900: #713f12;
+  --color-yellow-950: #422006;
+}
+
+/* 绿色系 */
+:root {
+  --color-green-50: #f0fdf4;
+  --color-green-100: #dcfce7;
+  --color-green-200: #bbf7d0;
+  --color-green-300: #86efac;
+  --color-green-400: #4ade80;
+  --color-green-500: #22c55e;
+  --color-green-600: #16a34a;
+  --color-green-700: #15803d;
+  --color-green-800: #166534;
+  --color-green-900: #14532d;
+  --color-green-950: #052e16;
+}
+
+/* 青色系 */
+:root {
+  --color-cyan-50: #ecfeff;
+  --color-cyan-100: #cffafe;
+  --color-cyan-200: #a5f3fc;
+  --color-cyan-300: #67e8f9;
+  --color-cyan-400: #22d3ee;
+  --color-cyan-500: #06b6d4;
+  --color-cyan-600: #0891b2;
+  --color-cyan-700: #0e7490;
+  --color-cyan-800: #155e75;
+  --color-cyan-900: #164e63;
+  --color-cyan-950: #083344;
+}
+
+/* 蓝色系 */
+:root {
+  --color-blue-50: #eff6ff;
+  --color-blue-100: #dbeafe;
+  --color-blue-200: #bfdbfe;
+  --color-blue-300: #93c5fd;
+  --color-blue-400: #60a5fa;
+  --color-blue-500: #3b82f6;
+  --color-blue-600: #2563eb;
+  --color-blue-700: #1d4ed8;
+  --color-blue-800: #1e40af;
+  --color-blue-900: #1e3a8a;
+  --color-blue-950: #172554;
+}
+
+/* 紫色系 */
+:root {
+  --color-purple-50: #faf5ff;
+  --color-purple-100: #f3e8ff;
+  --color-purple-200: #e9d5ff;
+  --color-purple-300: #d8b4fe;
+  --color-purple-400: #c084fc;
+  --color-purple-500: #a855f7;
+  --color-purple-600: #9333ea;
+  --color-purple-700: #7c3aed;
+  --color-purple-800: #6d28d9;
+  --color-purple-900: #5b21b6;
+  --color-purple-950: #4c1d95;
+}
+
+/* 粉色系 */
+:root {
+  --color-pink-50: #fdf2f8;
+  --color-pink-100: #fce7f3;
+  --color-pink-200: #fbcfe8;
+  --color-pink-300: #f9a8d4;
+  --color-pink-400: #f472b6;
+  --color-pink-500: #ec4899;
+  --color-pink-600: #db2777;
+  --color-pink-700: #be185d;
+  --color-pink-800: #9d174d;
+  --color-pink-900: #831843;
+  --color-pink-950: #500724;
+}
+
+/* 灰色系 */
+:root {
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+  --color-gray-950: #030712;
+}
+
+/* ==================== 语义颜色层 ==================== */
+/* 基于基础颜色层构建的语义化变量 */
+
+/* 文字颜色 */
+:root {
+  /* 主要文字 */
+  --color-text-primary: var(--color-gray-900);
+  --color-text-secondary: var(--color-gray-700);
+  --color-text-tertiary: var(--color-gray-500);
+  --color-text-quaternary: var(--color-gray-400);
+
+  /* 状态文字 */
+  --color-text-success: var(--color-green-600);
+  --color-text-warning: var(--color-orange-500);
+  --color-text-error: var(--color-red-600);
+  --color-text-info: var(--color-blue-500);
+
+  /* 链接文字 */
+  --color-link: var(--color-blue-600);
+  --color-link-hover: var(--color-blue-700);
+}
+
+/* 背景颜色 */
+:root {
+  /* 页面背景 */
+  --color-bg-page: var(--color-gray-50);
+  --color-bg-page-alt: var(--color-white);
+
+  /* 卡片背景 */
+  --color-bg-card: var(--color-white);
+  --color-bg-card-elevated: var(--color-gray-100);
+  --color-bg-card-muted: var(--color-gray-50);
+
+  /* 表面背景 */
+  --color-bg-surface: var(--color-white);
+  --color-bg-surface-elevated: var(--color-gray-100);
+  --color-bg-surface-muted: var(--color-gray-50);
+
+  /* 输入背景 */
+  --color-bg-input: var(--color-white);
+  --color-bg-input-disabled: var(--color-gray-100);
+  --color-bg-input-hover: var(--color-gray-50);
+}
+
+/* 边框颜色 */
+:root {
+  /* 边框层次 */
+  --color-border-subtle: var(--color-gray-200);
+  --color-border-default: var(--color-gray-300);
+  --color-border-strong: var(--color-gray-400);
+  --color-border-focus: var(--color-blue-500);
+
+  /* 分割线 */
+  --color-divider: var(--color-gray-200);
+  --color-divider-light: var(--color-gray-100);
+}
+
+/* 状态颜色 */
+:root {
+  /* 成功状态 */
+  --color-success-bg: var(--color-green-50);
+  --color-success-border: var(--color-green-200);
+  --color-success-text: var(--color-green-700);
+  --color-success-icon: var(--color-green-500);
+
+  /* 警告状态 */
+  --color-warning-bg: var(--color-orange-50);
+  --color-warning-border: var(--color-orange-200);
+  --color-warning-text: var(--color-orange-700);
+  --color-warning-icon: var(--color-orange-500);
+
+  /* 错误状态 */
+  --color-error-bg: var(--color-red-50);
+  --color-error-border: var(--color-red-200);
+  --color-error-text: var(--color-red-700);
+  --color-error-icon: var(--color-red-500);
+
+  /* 信息状态 */
+  --color-info-bg: var(--color-blue-50);
+  --color-info-border: var(--color-blue-200);
+  --color-info-text: var(--color-blue-700);
+  --color-info-icon: var(--color-blue-500);
+}
+
+/* 主色调 */
+:root {
+  --color-primary: var(--color-blue-600);
+  --color-primary-hover: var(--color-blue-700);
+  --color-primary-active: var(--color-blue-800);
+  --color-primary-light: var(--color-blue-100);
+  --color-primary-lighter: var(--color-blue-50);
+  --color-primary-dark: var(--color-blue-500);
+
+  /* 主色文本 */
+  --color-primary-text: var(--color-white);
+  --color-primary-text- inverse: var(--color-blue-600);
+}
+
+/* ==================== RGBA 颜色变量 ==================== */
+/* 用于半透明效果的颜色变量 */
+
+:root {
+  /* 深色玻璃效果 */
+  --rgba-slate-900-95: 30, 41, 59, 0.95;
+  --rgba-slate-900-98: 30, 41, 59, 0.98;
+
+  /* 主色玻璃效果 */
+  --rgba-primary-90: 59, 130, 246, 0.9;
+
+  /* 白色玻璃效果 */
+  --rgba-white-25: 255, 255, 255, 0.25;
+  --rgba-white-35: 255, 255, 255, 0.35;
+  --rgba-white-55: 255, 255, 255, 0.55;
+  --rgba-white-7: 255, 255, 255, 0.07;
+  --rgba-white-1: 255, 255, 255, 0.1;
+  --rgba-white-2: 255, 255, 255, 0.2;
+  --rgba-white-14: 255, 255, 255, 0.14;
+
+  /* 黑色玻璃效果 */
+  --rgba-black-3: 0, 0, 0, 0.3;
+  --rgba-black-95: 0, 0, 0, 0.95;
+
+  /* 阴影颜色 */
+  --rgba-shadow-primary: 59, 130, 246, 0.4;
+  --rgba-shadow-secondary: 0, 0, 0, 0.3;
+  --rgba-shadow-tertiary: 0, 0, 0, 0.2;
+}
+
+/* ==================== 组件变量层 ==================== */
+/* 特定组件使用的变量 */
+
+/* 按钮 */
+:root {
+  /* 主要按钮 */
+  --btn-bg-primary: var(--color-primary);
+  --btn-bg-primary-hover: var(--color-primary-hover);
+  --btn-bg-primary-active: var(--color-primary-active);
+  --btn-text-primary: var(--color-primary-text);
+  --btn-border-primary: transparent;
+
+  /* 次要按钮 */
+  --btn-bg-secondary: transparent;
+  --btn-bg-secondary-hover: var(--color-gray-100);
+  --btn-bg-secondary-active: var(--color-gray-200);
+  --btn-text-secondary: var(--color-text-primary);
+  --btn-border-secondary: var(--color-border-default);
+
+  /* 虚线按钮 */
+  --btn-bg-ghost: transparent;
+  --btn-text-ghost: var(--color-text-secondary);
+  --btn-border-ghost: var(--color-border-subtle);
+
+  /* 文字按钮 */
+  --btn-bg-text: transparent;
+  --btn-text-text: var(--color-primary);
+  --btn-border-text: transparent;
+
+  /* 按钮尺寸 */
+  --btn-height-sm: 32px;
+  --btn-height-md: 40px;
+  --btn-height-lg: 48px;
+
+  --btn-padding-x-sm: 12px;
+  --btn-padding-x-md: 16px;
+  --btn-padding-x-lg: 24px;
+
+  --btn-radius: var(--radius-md);
+  --btn-font-weight: 500;
+  --btn-text-shadow: none;
+}
+
+/* 输入框 */
+:root {
+  /* 输入框基础 */
+  --input-bg: var(--color-bg-input);
+  --input-border: var(--color-border-default);
+  --input-border-focus: var(--color-border-focus);
+  --input-text: var(--color-text-primary);
+  --input-placeholder: var(--color-text-quaternary);
+
+  /* 输入框尺寸 */
+  --input-height-sm: 32px;
+  --input-height-md: 40px;
+  --input-height-lg: 48px;
+
+  --input-padding-x: 12px;
+  --input-radius: var(--radius-md);
+
+  /* 输入框状态 */
+  --input-bg-disabled: var(--color-gray-100);
+  --input-bg-hover: var(--color-gray-50);
+  --input-bg-error: var(--color-error-bg);
+  --input-border-error: var(--color-error-border);
+}
+
+/* 卡片 */
+:root {
+  /* 卡片基础 */
+  --card-bg: var(--color-bg-card);
+  --card-border: var(--color-border-default);
+  --card-radius: var(--radius-lg);
+  --card-shadow-sm: var(--shadow-sm);
+  --card-shadow-md: var(--shadow-md);
+  --card-shadow-lg: var(--shadow-lg);
+
+  /* 卡片内边距 */
+  --card-padding-sm: 16px;
+  --card-padding-md: 24px;
+  --card-padding-lg: 32px;
+}
+
+/* 标签 */
+:root {
+  /* 标签基础 */
+  --tag-bg-default: var(--color-gray-100);
+  --tag-text-default: var(--color-text-secondary);
+  --tag-border-default: var(--color-border-subtle);
+
+  /* 标签尺寸 */
+  --tag-height-sm: 24px;
+  --tag-height-md: 28px;
+  --tag-height-lg: 32px;
+
+  --tag-padding-x-sm: 8px;
+  --tag-padding-x-md: 12px;
+  --tag-padding-x-lg: 16px;
+
+  --tag-radius: var(--radius-sm);
+  --tag-font-size: 0.875rem;
+  --tag-font-weight: 500;
+}
+
+/* 表格 */
+:root {
+  /* 表格基础 */
+  --table-bg-header: var(--color-gray-50);
+  --table-text-header: var(--color-text-secondary);
+  --table-border-header: var(--color-border-subtle);
+
+  --table-bg-row: transparent;
+  --table-bg-row-hover: var(--color-gray-50);
+  --table-text-row: var(--color-text-primary);
+  --table-border-row: var(--color-border-subtle);
+
+  --table-bg-stripe: var(--color-gray-50);
+  --table-bg-footer: var(--color-gray-50);
+  --table-text-footer: var(--color-text-secondary);
+  --table-border-footer: var(--color-border-subtle);
+}
+
+/* 弹窗 */
+:root {
+  /* 弹窗基础 */
+  --modal-bg: var(--color-bg-card);
+  --modal-border: var(--color-border-default);
+  --modal-radius: var(--radius-xl);
+  --modal-shadow: var(--shadow-lg);
+
+  /* 弹窗头部 */
+  --modal-header-bg: var(--color-bg-card);
+  --modal-header-border: var(--color-border-default);
+  --modal-header-text: var(--color-text-primary);
+
+  /* 弹窗内容 */
+  --modal-content-bg: transparent;
+  --modal-content-text: var(--color-text-primary);
+
+  /* 弹窗底部 */
+  --modal-footer-bg: var(--color-bg-card);
+  --modal-footer-border: var(--color-border-default);
+  --modal-footer-text: var(--color-text-primary);
+}
+
+/* 页面布局 */
+:root {
+  /* 容器宽度 */
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1280px;
+  --container-2xl: 1536px;
+
+  /* 页面内边距 */
+  --page-padding-x: var(--spacing-md);
+  --page-padding-y: var(--spacing-lg);
+
+  /* 最大宽度 */
+  --container-max-width: var(--container-xl);
+}
+
+/* ==================== 尺寸系统 ==================== */
+/* 间距、圆角、阴影、字体等基础尺寸 */
+
+/* 间距 - spacing */
+:root {
+  --spacing-0: 0px;
+  --spacing-px: 1px;
+  --spacing-0_5: 2px;
+  --spacing-1: 4px;
+  --spacing-1_5: 6px;
+  --spacing-2: 8px;
+  --spacing-2_5: 10px;
+  --spacing-3: 12px;
+  --spacing-3_5: 14px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+  --spacing-7: 28px;
+  --spacing-8: 32px;
+  --spacing-9: 36px;
+  --spacing-10: 40px;
+  --spacing-11: 44px;
+  --spacing-12: 48px;
+  --spacing-14: 56px;
+  --spacing-16: 64px;
+  --spacing-20: 80px;
+  --spacing-24: 96px;
+  --spacing-28: 112px;
+  --spacing-32: 128px;
+  --spacing-36: 144px;
+  --spacing-40: 160px;
+  --spacing-44: 176px;
+  --spacing-48: 192px;
+  --spacing-56: 224px;
+  --spacing-64: 256px;
+}
+
+/* 圆角 - radius */
+:root {
+  --radius-none: 0px;
+  --radius-sm: 4px;
+  --radius-base: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-3xl: 32px;
+  --radius-full: 9999px;
+}
+
+/* 阴影 - shadows */
+:root {
+  --shadow-none: 0 0 #0000;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-base: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+  --shadow-none: 0 0 #0000;
+}
+
+/* 字体系统 - typography */
+:root {
+  /* 字族 */
+  --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  --font-family-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+
+  /* 字号 */
+  --text-xs: 0.75rem;    /* 12px */
+  --text-sm: 0.875rem;   /* 14px */
+  --text-base: 1rem;     /* 16px */
+  --text-lg: 1.125rem;   /* 18px */
+  --text-xl: 1.25rem;    /* 20px */
+  --text-2xl: 1.5rem;    /* 24px */
+  --text-3xl: 1.875rem;  /* 30px */
+  --text-4xl: 2.25rem;   /* 36px */
+  --text-5xl: 3rem;      /* 48px */
+  --text-6xl: 3.75rem;   /* 60px */
+  --text-7xl: 4.5rem;    /* 72px */
+  --text-8xl: 6rem;      /* 96px */
+  --text-9xl: 8rem;      /* 128px */
+
+  /* 行高 */
+  --leading-none: 1;
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+
+  /* 字重 */
+  --font-thin: 100;
+  --font-light: 300;
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-extrabold: 800;
+  --font-black: 900;
+
+  /* 文本间距 */
+  --tracking-tighter: -0.025em;
+  --tracking-tight: -0.0125em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.0125em;
+  --tracking-wider: 0.025em;
+  --tracking-widest: 0.05em;
+}
+
+/* Z-index 层级 */
+:root {
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-toast: 1080;
+}
+
+/* 过渡动画 */
+:root {
+  --transition-none: none;
+  --transition-all: all;
+  --transition: all 0.2s ease-in-out;
+  --transition-faster: all 0.15s ease-in-out;
+  --transition-slower: all 0.3s ease-in-out;
+
+  /* 缓动函数 */
+  --ease-linear: linear;
+  --ease-in: ease-in;
+  --ease-out: ease-out;
+  --ease-in-out: ease-in-out;
+  --ease-cubic-bezier: 0.4, 0, 0.2, 1;
+}
+
+/* ==================== 动画关键帧 ==================== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(-25%); animation-timing-function: cubic-bezier(0.8,0,1,1); }
+  50% { transform: translateY(0); animation-timing-function: cubic-bezier(0,0,0.2,1); }
+}
+
+/* ==================== 通用类辅助 ==================== */
+/* 常用的工具类，便于快速使用 */
+
+/* 文本颜色 */
+.text-primary { color: var(--color-text-primary); }
+.text-secondary { color: var(--color-text-secondary); }
+.text-tertiary { color: var(--color-text-tertiary); }
+.text-quaternary { color: var(--color-text-quaternary); }
+.text-success { color: var(--color-text-success); }
+.text-warning { color: var(--color-text-warning); }
+.text-error { color: var(--color-text-error); }
+.text-info { color: var(--color-text-info); }
+
+/* 背景颜色 */
+.bg-primary { background-color: var(--color-primary); }
+.bg-primary-hover { background-color: var(--color-primary-hover); }
+.bg-success { background-color: var(--color-success-bg); }
+.bg-warning { background-color: var(--color-warning-bg); }
+.bg-error { background-color: var(--color-error-bg); }
+.bg-info { background-color: var(--color-info-bg); }
+
+/* 边框颜色 */
+.border-primary { border-color: var(--color-primary); }
+.border-success { border-color: var(--color-success-border); }
+.border-warning { border-color: var(--color-warning-border); }
+.border-error { border-color: var(--color-error-border); }
+.border-info { border-color: var(--color-info-border); }
+
+/* 阴影 */
+.shadow-sm { box-shadow: var(--shadow-sm); }
+.shadow { box-shadow: var(--shadow-base); }
+.shadow-md { box-shadow: var(--shadow-md); }
+.shadow-lg { box-shadow: var(--shadow-lg); }
+.shadow-xl { box-shadow: var(--shadow-xl); }
+.shadow-2xl { box-shadow: var(--shadow-2xl); }
+
+/* 圆角 */
+.rounded-sm { border-radius: var(--radius-sm); }
+.rounded { border-radius: var(--radius-base); }
+.rounded-md { border-radius: var(--radius-md); }
+.rounded-lg { border-radius: var(--radius-lg); }
+.rounded-xl { border-radius: var(--radius-xl); }
+.rounded-2xl { border-radius: var(--radius-2xl); }
+.rounded-full { border-radius: var(--radius-full); }
+
+/* 过渡 */
+.transition { transition: var(--transition); }
+.transition-faster { transition: var(--transition-faster); }
+.transition-slower { transition: var(--transition-slower); }
+.transition-all { transition: var(--transition-all); }
+
+/* 动画 */
+.animate-fade-in { animation: fadeIn 0.3s ease-out; }
+.animate-fade-in-up { animation: fadeInUp 0.3s ease-out; }
+.animate-fade-in-down { animation: fadeInDown 0.3s ease-out; }
+.animate-slide-in-left { animation: slideInLeft 0.3s ease-out; }
+.animate-slide-in-right { animation: slideInRight 0.3s ease-out; }
+.animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+.animate-spin { animation: spin 1s linear infinite; }
+.animate-bounce { animation: bounce 1s infinite; }

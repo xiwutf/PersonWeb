@@ -12,8 +12,9 @@ export default <Partial<Config>>{
                 secondary: 'var(--secondary)',
                 accent: 'var(--accent)',
 
-                // Backgrounds - for direct usage: bg-bg-app, bg-bg-surface-1, etc.
+                // Backgrounds - for direct usage: bg-bg-app, bg-bg-body, bg-bg-surface-1, etc.
                 bg: {
+                    body: 'var(--color-bg-body)',
                     app: 'var(--bg-app)',
                     'surface-1': 'var(--bg-surface-1)',
                     'surface-2': 'var(--bg-surface-2)',

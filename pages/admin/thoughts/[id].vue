@@ -205,7 +205,7 @@ onMounted(() => {
   }
 }
 .panel {
-  background: var(--n-color-modal, #fff);
+  background: var(--n-color-modal, var(--color-bg-light, white));
   border-radius: 8px;
   padding: 1rem;
   border: 1px solid var(--n-border-color, var(--color-border));

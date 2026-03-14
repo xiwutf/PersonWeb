@@ -186,7 +186,7 @@ const handleProjectCardClick = (project: any) => {
   left: -20%;
   width: 800px;
   height: 800px;
-  background: radial-gradient(circle, rgba(6, 182, 212, 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle, var(--color-cyan-500-15, rgba(6, 182, 212, 0.15)) 0%, transparent 70%);
   border-radius: 50%;
   filter: blur(80px);
 }
@@ -194,9 +194,9 @@ const handleProjectCardClick = (project: any) => {
 .ai-capability-bg-grid {
   position: absolute;
   inset: 0;
-  background-image: 
-    linear-gradient(rgba(6, 182, 212, 0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(6, 182, 212, 0.1) 1px, transparent 1px);
+  background-image:
+    linear-gradient(var(--color-cyan-500-10, rgba(6, 182, 212, 0.1)) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-cyan-500-10, rgba(6, 182, 212, 0.1)) 1px, transparent 1px);
   background-size: 40px 40px;
   opacity: 0.3;
 }
@@ -240,9 +240,9 @@ const handleProjectCardClick = (project: any) => {
   font-size: 14px;
   width: fit-content;
   /* 浅色主题优化（2025-01）：使用主色柔和背景，提高可读性 */
-  background: var(--primary-soft-bg, rgba(6, 182, 212, 0.1));
-  border: 1px solid rgba(37, 99, 235, 0.2);
-  color: var(--primary, #06b6d4);
+  background: var(--color-primary-10, rgba(6, 182, 212, 0.1));
+  border: 1px solid var(--color-primary-20, rgba(37, 99, 235, 0.2));
+  color: var(--color-primary, #06b6d4);
 }
 
 .ai-capability-badge-dot {
@@ -251,18 +251,20 @@ const handleProjectCardClick = (project: any) => {
   border-radius: 50%;
   animation: pulse 2s infinite;
   /* 浅色主题优化（2025-01）：使用主色 */
-  background: var(--primary, #06b6d4);
+  background: var(--color-primary, #06b6d4);
 }
 
 /* 深色主题保持原有样式 */
-html[data-theme="dark"] .ai-capability-badge {
-  background: rgba(6, 182, 212, 0.1);
-  border: 1px solid rgba(6, 182, 212, 0.3);
-  color: #06b6d4;
+:global(.dark) .ai-capability-badge,
+:global([data-theme="dark"]) .ai-capability-badge {
+  background: var(--color-cyan-500-10, rgba(6, 182, 212, 0.1));
+  border: 1px solid var(--color-cyan-500-30, rgba(6, 182, 212, 0.3));
+  color: var(--color-cyan-500, #06b6d4);
 }
 
-html[data-theme="dark"] .ai-capability-badge-dot {
-  background: #06b6d4;
+:global(.dark) .ai-capability-badge-dot,
+:global([data-theme="dark"]) .ai-capability-badge-dot {
+  background: var(--color-cyan-500, #06b6d4);
 }
 
 @keyframes pulse {
@@ -280,7 +282,7 @@ html[data-theme="dark"] .ai-capability-badge-dot {
   line-height: 1.2;
   margin: 0;
   /* 浅色主题优化（2025-01）：使用主题文字颜色，避免渐变在浅色背景下看不清 */
-  color: var(--text-main, #fff);
+  color: var(--color-text-main, #fff);
 }
 
 /* 深色主题使用渐变效果 */
@@ -338,7 +340,7 @@ html[data-theme="dark"] .ai-capability-title {
   justify-content: center;
   background: rgba(6, 182, 212, 0.1);
   border-radius: 10px;
-  color: #06b6d4;
+  color: var(--color-primary);
   font-size: 20px;
 }
 
@@ -521,7 +523,7 @@ html[data-theme="dark"] .ai-capability-title {
 html[data-theme="dark"] .ai-capability-project-tag {
   background: rgba(6, 182, 212, 0.1);
   border: 1px solid rgba(6, 182, 212, 0.3);
-  color: #06b6d4;
+  color: var(--color-primary);
 }
 
 /* 底部按钮 */
@@ -541,7 +543,7 @@ html[data-theme="dark"] .ai-capability-project-tag {
   border-radius: 12px;
   font-size: 16px;
   font-weight: 600;
-  color: #fff;
+  color: var(--color-text-main, white);
   text-decoration: none;
   cursor: pointer;
   transition: all 0.3s ease;

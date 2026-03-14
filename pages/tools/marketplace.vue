@@ -18,7 +18,7 @@
 
       <!-- 页面头部 -->
       <header class="text-center mb-12">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-orange-200 via-white to-red-200">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-orange-200 via-var(--color-bg-light, white) to-red-200">
           工具商城
         </h1>
         <p class="text-lg text-slate-400 max-w-2xl mx-auto">
@@ -37,7 +37,7 @@
             :class="[
               'px-4 py-2 rounded-xl transition-all text-sm font-medium',
               selectedCategory === cat.slug
-                ? 'bg-orange-600 text-white'
+                ? 'bg-orange-600 text-var(--color-bg-light, white)'
                 : 'bg-slate-800/50 text-slate-300 hover:bg-slate-700/50'
             ]"
           >
@@ -53,11 +53,11 @@
             v-model="searchQuery"
             type="text"
             placeholder="搜索工具..."
-            class="flex-1 px-4 py-2 bg-slate-800/50 border border-white/10 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:border-orange-500/50"
+            class="flex-1 px-4 py-2 bg-slate-800/50 border border-var(--color-bg-light, white)/10 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:border-orange-500/50"
           />
           <select
             v-model="sortBy"
-            class="px-4 py-2 bg-slate-800/50 border border-white/10 rounded-xl text-slate-200 focus:outline-none focus:border-orange-500/50"
+            class="px-4 py-2 bg-slate-800/50 border border-var(--color-bg-light, white)/10 rounded-xl text-slate-200 focus:outline-none focus:border-orange-500/50"
           >
             <option value="popular">最受欢迎</option>
             <option value="newest">最新发布</option>
@@ -85,7 +85,7 @@
           <div
             v-for="tool in tools"
             :key="tool.id"
-            class="group relative bg-slate-800/30 backdrop-blur-md border border-white/5 rounded-3xl overflow-hidden hover:bg-slate-800/50 transition-all duration-500 hover:border-orange-500/30 hover:shadow-[0_0_30px_rgba(249,115,22,0.15)] flex flex-col"
+            class="group relative bg-slate-800/30 backdrop-blur-md border border-var(--color-bg-light, white)/5 rounded-3xl overflow-hidden hover:bg-slate-800/50 transition-all duration-500 hover:border-orange-500/30 hover:shadow-[0_0_30px_rgba(249,115,22,0.15)] flex flex-col"
           >
             <!-- 封面图片 -->
             <div v-if="tool.coverImage" class="h-48 overflow-hidden">
@@ -95,7 +95,7 @@
             <!-- 卡片内容 -->
             <div class="p-6 flex-1 flex flex-col">
               <div class="flex items-start justify-between mb-4">
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/20 border border-white/10 flex items-center justify-center text-xl">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/20 border border-var(--color-bg-light, white)/10 flex items-center justify-center text-xl">
                   {{ tool.icon || '🔧' }}
                 </div>
                 <div class="text-right">
@@ -144,7 +144,7 @@
                 <button
                   @click="handlePurchase(tool)"
                   :disabled="purchasing"
-                  class="flex-1 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white px-4 py-2 rounded-xl transition-all text-sm font-medium disabled:opacity-50"
+                  class="flex-1 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-var(--color-bg-light, white) px-4 py-2 rounded-xl transition-all text-sm font-medium disabled:opacity-50"
                 >
                   {{ tool.isFree ? '免费获取' : '立即购买' }}
                 </button>
@@ -163,7 +163,7 @@
           :class="[
             'px-4 py-2 rounded-xl transition-all',
             currentPage === page
-              ? 'bg-orange-600 text-white'
+              ? 'bg-orange-600 text-var(--color-bg-light, white)'
               : 'bg-slate-800/50 text-slate-300 hover:bg-slate-700/50'
           ]"
         >
@@ -327,7 +327,7 @@ useHead({
 
 .tools-back-button:hover {
   background: rgba(30, 41, 59, 0.7);
-  color: white;
+  color: var(--color-bg-light, white);
 }
 
 .tools-back-button-icon {

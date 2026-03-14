@@ -7,7 +7,7 @@
           @click="fetchData" 
           :disabled="loading"
           class="px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
-          :class="loading ? 'bg-gray-300 cursor-not-allowed' : 'bg-primary text-white hover:bg-primary-hover'"
+          :class="loading ? 'bg-gray-300 cursor-not-allowed' : 'bg-primary text-var(--color-bg-light, white) hover:bg-primary-hover'"
         >
           <i v-if="loading" class="fas fa-spinner fa-spin mr-2"></i>
           <i v-else class="fas fa-sync-alt mr-2"></i>
@@ -17,15 +17,15 @@
 
       <!-- Stats Cards -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div class="bg-var(--color-bg-light, white) p-6 rounded-2xl shadow-sm border border-gray-100">
           <div class="text-sm font-medium text-gray-500 mb-1">Total Visits</div>
           <div class="text-3xl font-bold text-gray-900">{{ data?.totalVisits || 0 }}</div>
         </div>
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div class="bg-var(--color-bg-light, white) p-6 rounded-2xl shadow-sm border border-gray-100">
           <div class="text-sm font-medium text-gray-500 mb-1">Unique Visitors</div>
           <div class="text-3xl font-bold text-blue-600">{{ data?.uniqueVisitors || 0 }}</div>
         </div>
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div class="bg-var(--color-bg-light, white) p-6 rounded-2xl shadow-sm border border-gray-100">
           <div class="text-sm font-medium text-gray-500 mb-1">Today's Visits</div>
           <div class="text-3xl font-bold text-green-600">{{ data?.todayVisits || 0 }}</div>
         </div>
@@ -33,7 +33,7 @@
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Recent Visits Table -->
-        <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="lg:col-span-2 bg-var(--color-bg-light, white) rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
           <div class="px-6 py-4 border-b border-gray-100">
             <h2 class="text-lg font-bold text-gray-900">Recent Visits</h2>
           </div>
@@ -47,7 +47,7 @@
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Visitor ID</th>
                 </tr>
               </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
+              <tbody class="bg-var(--color-bg-light, white) divide-y divide-gray-200">
                 <tr v-if="loading" class="text-center py-8">
                   <td colspan="4" class="px-6 py-8 text-gray-500">
                     <i class="fas fa-spinner fa-spin mr-2"></i>
@@ -60,16 +60,16 @@
                   </td>
                 </tr>
                 <tr v-else v-for="visit in data.recentVisits" :key="visit.id || visit.Id || `${visit.timestamp}-${visit.path}`" class="hover:bg-gray-50">
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td class="px-6 py-4 var(--color-bg-light, white)space-nowrap text-sm text-gray-500">
                     {{ formatDate(visit.timestamp || visit.Timestamp) }}
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-600">
+                  <td class="px-6 py-4 var(--color-bg-light, white)space-nowrap text-sm font-mono text-gray-600">
                     {{ visit.ip || visit.Ip || 'N/A' }}
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <td class="px-6 py-4 var(--color-bg-light, white)space-nowrap text-sm text-gray-900">
                     {{ visit.path || visit.Path || 'N/A' }}
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-400 text-xs">
+                  <td class="px-6 py-4 var(--color-bg-light, white)space-nowrap text-sm font-mono text-gray-400 text-xs">
                     {{ (visit.visitorId || visit.VisitorId || '').substring(0, 8) }}...
                   </td>
                 </tr>
@@ -79,7 +79,7 @@
         </div>
 
         <!-- Top Paths -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 h-fit">
+        <div class="bg-var(--color-bg-light, white) rounded-2xl shadow-sm border border-gray-100 h-fit">
           <div class="px-6 py-4 border-b border-gray-100">
             <h2 class="text-lg font-bold text-gray-900">Top Referrers/Paths</h2>
           </div>

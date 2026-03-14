@@ -287,14 +287,14 @@ const handleProjectClick = (project: FeaturedProject) => {
   border: 1px solid rgba(6, 182, 212, 0.3);
   border-radius: 999px;
   font-size: 14px;
-  color: #06b6d4;
+  color: var(--color-cyan-500);
   margin: 0 auto 24px auto;
 }
 
 .ai-solutions-badge-dot {
   width: 8px;
   height: 8px;
-  background: #06b6d4;
+  background: var(--color-cyan-500);
   border-radius: 50%;
   animation: pulse 2s infinite;
 }
@@ -310,7 +310,7 @@ const handleProjectClick = (project: FeaturedProject) => {
   font-weight: 800;
   line-height: 1.1;
   margin: 0 auto 32px auto;
-  background: linear-gradient(135deg, #06b6d4 0%, var(--color-primary) 50%, #8b5cf6 100%);
+  background: linear-gradient(135deg, var(--color-cyan-500) 0%, var(--color-primary) 50%, var(--color-purple-500) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -327,7 +327,7 @@ const handleProjectClick = (project: FeaturedProject) => {
   left: 0;
   width: 100%;
   height: 4px;
-  background: linear-gradient(90deg, #06b6d4 0%, #8b5cf6 100%);
+  background: linear-gradient(90deg, var(--color-cyan-500) 0%, var(--color-purple-500) 100%);
   border-radius: 2px;
   opacity: 0.5;
 }
@@ -377,7 +377,7 @@ const handleProjectClick = (project: FeaturedProject) => {
   padding: 32px;
   background: linear-gradient(135deg, rgba(6, 182, 212, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
   border: 2px solid;
-  border-image: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%) 1;
+  border-image: linear-gradient(135deg, var(--color-cyan-500) 0%, var(--color-purple-500) 100%) 1;
   border-radius: 12px;
   text-align: center;
 }
@@ -410,7 +410,7 @@ const handleProjectClick = (project: FeaturedProject) => {
   transform: translateX(-50%);
   width: 100px;
   height: 4px;
-  background: linear-gradient(90deg, transparent 0%, #06b6d4 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, var(--color-cyan-500) 50%, transparent 100%);
   border-radius: 2px;
   opacity: 0.3;
 }
@@ -433,14 +433,14 @@ const handleProjectClick = (project: FeaturedProject) => {
   align-items: center;
   justify-content: center;
   gap: 16px;
-  background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, var(--color-cyan-500) 0%, var(--color-purple-500) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .ai-solutions-section-title i {
-  background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, var(--color-cyan-500) 0%, var(--color-purple-500) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -492,7 +492,7 @@ const handleProjectClick = (project: FeaturedProject) => {
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #06b6d4 0%, #8b5cf6 100%);
+  background: linear-gradient(90deg, var(--color-cyan-500) 0%, var(--color-purple-500) 100%);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.4s ease;
@@ -530,7 +530,7 @@ const handleProjectClick = (project: FeaturedProject) => {
 
 .ai-solutions-capability-icon i {
   font-size: 32px;
-  background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, var(--color-cyan-500) 0%, var(--color-purple-500) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -539,7 +539,7 @@ const handleProjectClick = (project: FeaturedProject) => {
 .ai-solutions-capability-title {
   font-size: 24px;
   font-weight: 700;
-  background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, var(--color-cyan-500) 0%, var(--color-purple-500) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -571,7 +571,7 @@ const handleProjectClick = (project: FeaturedProject) => {
   content: '✓';
   position: absolute;
   left: 0;
-  background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, var(--color-cyan-500) 0%, var(--color-purple-500) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -606,7 +606,7 @@ const handleProjectClick = (project: FeaturedProject) => {
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #06b6d4 0%, #8b5cf6 100%);
+  background: linear-gradient(90deg, var(--color-cyan-500) 0%, var(--color-purple-500) 100%);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.4s ease;
@@ -652,7 +652,7 @@ const handleProjectClick = (project: FeaturedProject) => {
 
 .ai-solutions-project-icon i {
   font-size: 36px;
-  background: linear-gradient(135deg, #06b6d4 0%, var(--color-primary) 50%, #8b5cf6 100%);
+  background: linear-gradient(135deg, var(--color-cyan-500) 0%, var(--color-primary) 50%, var(--color-purple-500) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -662,7 +662,7 @@ const handleProjectClick = (project: FeaturedProject) => {
 .ai-solutions-project-title {
   font-size: 24px;
   font-weight: 800;
-  background: linear-gradient(135deg, #06b6d4 0%, var(--color-primary) 50%, #8b5cf6 100%);
+  background: linear-gradient(135deg, var(--color-cyan-500) 0%, var(--color-primary) 50%, var(--color-purple-500) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -688,7 +688,7 @@ const handleProjectClick = (project: FeaturedProject) => {
 .ai-solutions-project-highlights-title {
   font-size: 15px;
   font-weight: 700;
-  background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, var(--color-cyan-500) 0%, var(--color-purple-500) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -720,7 +720,7 @@ const handleProjectClick = (project: FeaturedProject) => {
   content: '✓';
   position: absolute;
   left: 0;
-  background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, var(--color-cyan-500) 0%, var(--color-purple-500) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -759,7 +759,7 @@ const handleProjectClick = (project: FeaturedProject) => {
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #06b6d4 0%, #8b5cf6 100%);
+  background: linear-gradient(90deg, var(--color-cyan-500) 0%, var(--color-purple-500) 100%);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.4s ease;
@@ -785,7 +785,7 @@ const handleProjectClick = (project: FeaturedProject) => {
 
 .ai-solutions-tech-header i {
   font-size: 28px;
-  background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, var(--color-cyan-500) 0%, var(--color-purple-500) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -794,7 +794,7 @@ const handleProjectClick = (project: FeaturedProject) => {
 .ai-solutions-tech-title {
   font-size: 20px;
   font-weight: 700;
-  background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, var(--color-cyan-500) 0%, var(--color-purple-500) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -820,7 +820,7 @@ const handleProjectClick = (project: FeaturedProject) => {
   content: '▸';
   position: absolute;
   left: 0;
-  background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, var(--color-cyan-500) 0%, var(--color-purple-500) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -861,7 +861,7 @@ const handleProjectClick = (project: FeaturedProject) => {
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #06b6d4 0%, #8b5cf6 100%);
+  background: linear-gradient(90deg, var(--color-cyan-500) 0%, var(--color-purple-500) 100%);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.4s ease;
@@ -882,7 +882,7 @@ const handleProjectClick = (project: FeaturedProject) => {
   font-size: 48px;
   margin-bottom: 20px;
   display: inline-block;
-  background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, var(--color-cyan-500) 0%, var(--color-purple-500) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -893,7 +893,7 @@ const handleProjectClick = (project: FeaturedProject) => {
 .ai-solutions-cooperation-step-title {
   font-size: 22px;
   font-weight: 700;
-  background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, var(--color-cyan-500) 0%, var(--color-purple-500) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -981,8 +981,8 @@ const handleProjectClick = (project: FeaturedProject) => {
 }
 
 .ai-solutions-cta-button--primary {
-  background: linear-gradient(135deg, #06b6d4 0%, var(--color-primary) 50%, #8b5cf6 100%);
-  color: #fff;
+  background: linear-gradient(135deg, var(--color-cyan-500) 0%, var(--color-primary) 50%, var(--color-purple-500) 100%);
+  color: var(--color-text-main);
   box-shadow: 0 8px 24px rgba(6, 182, 212, 0.4);
   border: none;
 }
@@ -990,7 +990,7 @@ const handleProjectClick = (project: FeaturedProject) => {
 .ai-solutions-cta-button--primary:hover {
   transform: translateY(-4px) scale(1.05);
   box-shadow: 0 12px 32px rgba(6, 182, 212, 0.5);
-  background: linear-gradient(135deg, #0891b2 0%, var(--color-primary-hover) 50%, #7c3aed 100%);
+  background: linear-gradient(135deg, var(--color-cyan-600) 0%, var(--color-primary-hover) 50%, var(--color-purple-600) 100%);
 }
 
 .ai-solutions-cta-button--secondary {

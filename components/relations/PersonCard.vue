@@ -406,7 +406,7 @@ defineExpose({
   display: flex;
   align-items: center;
   gap: 4px;
-  color: #ff6b6b;
+  color: var(--color-danger, #ff6b6b);
   font-size: 12px;
   font-weight: 500;
 }
@@ -448,13 +448,14 @@ defineExpose({
   align-items: center;
   gap: 10px;
   padding: 12px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  background: linear-gradient(135deg, var(--color-primary, #667eea) 0%, var(--color-primary-hover, #764ba2) 100%);
+  border-radius: var(--radius-md, 8px);
+  box-shadow: var(--shadow-md, 0 2px 8px rgba(102, 126, 234, 0.3));
 }
 
-[data-theme="dark"] .next-action-bar {
-  background: linear-gradient(135deg, #4c5fd5 0%, #5a3f8c 100%);
+:global(.dark) .next-action-bar,
+:global([data-theme="dark"]) .next-action-bar {
+  background: linear-gradient(135deg, var(--color-primary-dark, #4c5fd5) 0%, var(--color-primary-darker, #5a3f8c) 100%);
 }
 
 .action-icon {
@@ -533,24 +534,25 @@ defineExpose({
 .long-time-warning {
   margin-top: 12px;
   padding: 10px 12px;
-  background: #fff7ed;
-  border-radius: 6px;
-  border-left: 3px solid #f59e0b;
+  background: var(--color-warning-50);
+  border-radius: var(--radius-sm, 6px);
+  border-left: 3px solid var(--color-warning);
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: #92400e;
+  color: var(--color-warning-text);
 }
 
-[data-theme="dark"] .long-time-warning {
-  background: #3f2419;
-  border-left-color: #f59e0b;
-  color: #fcd34d;
+:global(.dark) .long-time-warning,
+:global([data-theme="dark"]) .long-time-warning {
+  background: var(--color-warning-900, #3f2419);
+  border-left-color: var(--color-warning);
+  color: var(--color-warning-200);
 }
 
 .long-time-warning i {
-  color: #f59e0b;
+  color: var(--color-warning);
   font-size: 14px;
 }
 

@@ -398,25 +398,25 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: var(--color-bg-light);
   font-size: 24px;
 }
 
 /* KPI 图标背景色 */
 .kpi-card.kpi-icon-blue .kpi-icon {
-  background: linear-gradient(135deg, var(--color-primary) 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-purple-600) 100%);
 }
 
 .kpi-card.kpi-icon-pink .kpi-icon {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: linear-gradient(135deg, var(--color-fuchsia-400) 0%, var(--color-rose-500) 100%);
 }
 
 .kpi-card.kpi-icon-cyan .kpi-icon {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background: linear-gradient(135deg, var(--color-blue-400) 0%, var(--color-cyan-400) 100%);
 }
 
 .kpi-card.kpi-icon-green .kpi-icon {
-  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  background: linear-gradient(135deg, var(--color-emerald-400) 0%, var(--color-teal-400) 100%);
 }
 
 .kpi-content {
@@ -470,7 +470,7 @@ onMounted(() => {
   background: var(--color-primary);
   border-radius: var(--radius-md);
   padding: var(--spacing-lg);
-  color: #fff;
+  color: var(--color-bg-light);
   cursor: pointer;
   transition: transform 0.2s;
 }
@@ -605,7 +605,7 @@ onMounted(() => {
   margin-bottom: var(--spacing-sm);
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  var(--color-bg-light, white)-space: nowrap;
 }
 
 .content-meta {
@@ -619,7 +619,7 @@ onMounted(() => {
 .content-source {
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  var(--color-bg-light, white)-space: nowrap;
 }
 
 .content-time {
@@ -636,7 +636,7 @@ onMounted(() => {
   font-size: 11px;
   padding: 2px var(--spacing-sm);
   background: var(--color-error);
-  color: #fff;
+  color: var(--color-bg-light);
   border-radius: var(--radius-sm);
 }
 

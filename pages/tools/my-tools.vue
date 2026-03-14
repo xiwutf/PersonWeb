@@ -13,7 +13,7 @@
 
       <!-- 页面头部 -->
       <header class="text-center mb-12">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-orange-200 via-white to-red-200">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-orange-200 via-var(--color-bg-light, white) to-red-200">
           我的工具
         </h1>
         <p class="text-lg text-slate-400">管理您已购买的工具</p>
@@ -31,7 +31,7 @@
         <p class="text-slate-500 mb-6">去工具商城发现好工具吧</p>
         <NuxtLink
           to="/tools/marketplace"
-          class="inline-block px-6 py-3 bg-gradient-to-r from-orange-600 to-red-600 text-white rounded-xl hover:from-orange-500 hover:to-red-500 transition-all"
+          class="inline-block px-6 py-3 bg-gradient-to-r from-orange-600 to-red-600 text-var(--color-bg-light, white) rounded-xl hover:from-orange-500 hover:to-red-500 transition-all"
         >
           浏览工具商城
         </NuxtLink>
@@ -41,10 +41,10 @@
         <div
           v-for="purchase in tools"
           :key="purchase.id"
-          class="bg-slate-800/30 backdrop-blur-md border border-white/5 rounded-3xl p-6 hover:bg-slate-800/50 transition-all"
+          class="bg-slate-800/30 backdrop-blur-md border border-var(--color-bg-light, white)/5 rounded-3xl p-6 hover:bg-slate-800/50 transition-all"
         >
           <div class="flex items-start justify-between mb-4">
-            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/20 border border-white/10 flex items-center justify-center text-xl">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/20 border border-var(--color-bg-light, white)/10 flex items-center justify-center text-xl">
               {{ purchase.tool.icon || '🔧' }}
             </div>
             <div class="text-right text-xs text-slate-500">
@@ -87,7 +87,7 @@
             <h2 class="text-2xl font-bold">生成 API 密钥</h2>
             <button
               @click="showApiKeyModal = false"
-              class="text-slate-400 hover:text-white"
+              class="text-slate-400 hover:text-var(--color-bg-light, white)"
             >
               ✕
             </button>
@@ -100,7 +100,7 @@
                 v-model="apiKeyName"
                 type="text"
                 placeholder="例如：生产环境密钥"
-                class="w-full px-4 py-2 bg-slate-700/50 border border-white/10 rounded-xl text-slate-200 focus:outline-none focus:border-orange-500/50"
+                class="w-full px-4 py-2 bg-slate-700/50 border border-var(--color-bg-light, white)/10 rounded-xl text-slate-200 focus:outline-none focus:border-orange-500/50"
               />
             </div>
 
@@ -111,7 +111,7 @@
                 type="number"
                 min="1"
                 max="10000"
-                class="w-full px-4 py-2 bg-slate-700/50 border border-white/10 rounded-xl text-slate-200 focus:outline-none focus:border-orange-500/50"
+                class="w-full px-4 py-2 bg-slate-700/50 border border-var(--color-bg-light, white)/10 rounded-xl text-slate-200 focus:outline-none focus:border-orange-500/50"
               />
             </div>
 
@@ -120,7 +120,7 @@
               <div class="font-mono text-sm bg-slate-800 p-3 rounded break-all">{{ generatedApiKey }}</div>
               <button
                 @click="copyApiKey"
-                class="mt-2 px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm"
+                class="mt-2 px-4 py-2 bg-orange-600 hover:bg-orange-500 text-var(--color-bg-light, white) rounded-lg text-sm"
               >
                 复制密钥
               </button>
@@ -130,7 +130,7 @@
               <button
                 @click="generateApiKey"
                 :disabled="generating"
-                class="flex-1 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white px-6 py-3 rounded-xl transition-all font-medium disabled:opacity-50"
+                class="flex-1 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-var(--color-bg-light, white) px-6 py-3 rounded-xl transition-all font-medium disabled:opacity-50"
               >
                 {{ generating ? '生成中...' : '生成密钥' }}
               </button>
@@ -287,7 +287,7 @@ useHead({
 
 .tools-back-button:hover {
   background: rgba(30, 41, 59, 0.7);
-  color: white;
+  color: var(--color-bg-light, white);
 }
 
 .tools-back-button-icon {

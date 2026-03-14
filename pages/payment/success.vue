@@ -105,29 +105,29 @@ const goToMyLicenses = () => {
   margin: 0 auto;
   text-align: center;
   padding: 2rem;
-  background: white;
+  background: var(--color-bg-light, white);
   border-radius: 8px;
   box-shadow: 0 2px 10px var(--shadow);
 }
 
 .success-icon {
   font-size: 4rem;
-  color: #4caf50;
+  color: var(--color-success);
   margin-bottom: 1rem;
 }
 
 h1 {
-  color: #333;
+  color: var(--color-text-dark);
   margin-bottom: 1rem;
 }
 
 p {
-  color: #666;
+  color: var(--color-text-muted);
   margin-bottom: 2rem;
 }
 
 .order-info {
-  background: #f5f5f5;
+  background: var(--color-bg-elevated);
   padding: 1.5rem;
   border-radius: 4px;
   margin-bottom: 2rem;
@@ -136,7 +136,7 @@ p {
 
 .order-info h3 {
   margin-top: 0;
-  color: #333;
+  color: var(--color-text-dark);
 }
 
 .order-info p {
@@ -163,32 +163,32 @@ p {
 }
 
 .btn-primary {
-  background: #4caf50;
-  color: white;
+  background: var(--color-success);
+  color: var(--color-bg-light, white);
 }
 
 .btn-primary:hover {
-  background: #45a049;
+  background: var(--color-success-hover);
 }
 
 .btn-secondary {
-  background: #2196f3;
-  color: white;
+  background: var(--color-primary);
+  color: var(--color-bg-light, white);
 }
 
 .btn-secondary:hover {
-  background: #1976d2;
+  background: var(--color-primary-hover);
 }
 
 .btn-outline {
   background: transparent;
-  border: 2px solid #2196f3;
-  color: #2196f3;
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
 }
 
 .btn-outline:hover {
-  background: #2196f3;
-  color: white;
+  background: var(--color-primary);
+  color: var(--color-bg-light, white);
 }
 
 i {

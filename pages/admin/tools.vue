@@ -11,7 +11,7 @@
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
       <div class="card p-4">
         <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">总工具数</div>
-        <div class="text-2xl font-bold text-gray-800 dark:text-white">{{ stats.total }}</div>
+        <div class="text-2xl font-bold text-gray-800 dark:text-var(--color-bg-light, white)">{{ stats.total }}</div>
       </div>
       <div class="card p-4">
         <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">已发布</div>
@@ -31,7 +31,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
       <!-- 状态分布饼图 -->
       <div class="card p-6">
-        <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">状态分布</h3>
+        <h3 class="text-lg font-bold text-gray-800 dark:text-var(--color-bg-light, white) mb-4">状态分布</h3>
         <ClientOnly>
           <div v-if="statusChartOption" class="h-64">
             <v-chart :option="statusChartOption" autoresize class="w-full h-full" />
@@ -44,7 +44,7 @@
 
       <!-- 价格分布柱状图 -->
       <div class="card p-6">
-        <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">价格分布</h3>
+        <h3 class="text-lg font-bold text-gray-800 dark:text-var(--color-bg-light, white) mb-4">价格分布</h3>
         <ClientOnly>
           <div v-if="priceChartOption" class="h-64">
             <v-chart :option="priceChartOption" autoresize class="w-full h-full" />
@@ -65,7 +65,7 @@
               {{ tool.icon || '🛠️' }}
             </div>
             <div>
-              <h3 class="font-bold text-gray-800 dark:text-white">{{ tool.name }}</h3>
+              <h3 class="font-bold text-gray-800 dark:text-var(--color-bg-light, white)">{{ tool.name }}</h3>
               <div class="flex items-center gap-2 mt-1">
                 <span class="text-xs px-2 py-1 rounded" :class="{
                   'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300': tool.status === 'published',
@@ -349,8 +349,8 @@ const statusChartOption = computed(() => {
           }
         },
         data: [
-          { value: stats.value.published, name: '已发布', itemStyle: { color: getCssVar('--color-success') || '#10b981' } },
-          { value: stats.value.draft, name: '草稿', itemStyle: { color: getCssVar('--color-warning') || '#f59e0b' } },
+          { value: stats.value.published, name: '已发布', itemStyle: { color: getCssVar('--color-success') || 'var(--color-success)' } },
+          { value: stats.value.draft, name: '草稿', itemStyle: { color: getCssVar('--color-warning') || 'var(--color-warning)' } },
           { value: stats.value.archived, name: '已归档', itemStyle: { color: getCssVar('--color-text-muted') || 'var(--color-text-sec)' } }
         ]
       }
@@ -431,7 +431,7 @@ const priceChartOption = computed(() => {
             y2: 1,
             colorStops: [
               { offset: 0, color: getCssVar('--color-primary') || 'var(--color-primary)' },
-              { offset: 1, color: getCssVar('--color-secondary') || getCssVar('--color-primary-hover') || '#8b5cf6' }
+              { offset: 1, color: getCssVar('--color-secondary') || getCssVar('--color-primary-hover') || 'var(--color-purple-500)' }
             ]
           },
           borderRadius: [4, 4, 0, 0]

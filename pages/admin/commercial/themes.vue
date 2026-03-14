@@ -243,7 +243,7 @@ onMounted(() => {
 
 .status-draft {
   background: rgba(251, 191, 36, 0.2);
-  color: #fbbf24;
+  color: var(--color-warning);
   border: 1px solid rgba(251, 191, 36, 0.4);
 }
 

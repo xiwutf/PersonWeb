@@ -117,13 +117,13 @@ const themeModeValue = ref<'light' | 'dark'>(currentTheme.value)
 // 预设主题色（保留用于后续扩展）
 const presetColors = {
   blue: 'var(--color-primary)',
-  green: '#10b981',
-  purple: '#8b5cf6',
-  orange: '#f59e0b',
-  red: '#ef4444',
-  cyan: '#06b6d4',
-  pink: '#ec4899',
-  indigo: '#6366f1'
+  green: 'var(--color-success)',
+  purple: 'var(--color-purple-500)',
+  orange: 'var(--color-warning)',
+  red: 'var(--color-danger)',
+  cyan: 'var(--color-cyan-500)',
+  pink: 'var(--color-pink-500)',
+  indigo: 'var(--color-indigo-500)'
 }
 
 const customColor = ref('var(--color-primary)')

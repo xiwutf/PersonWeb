@@ -44,7 +44,7 @@
                 历史版本
               </span>
             </div>
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">{{ version.title }}</h3>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-var(--color-bg-light, white) mb-1">{{ version.title }}</h3>
             <p class="text-sm text-gray-500 dark:text-gray-400">
               {{ formatDate(version.updatedAt) }}
             </p>
@@ -108,7 +108,7 @@
             <!-- 并排对比模式 -->
             <div v-if="viewMode === 'split'" class="grid grid-cols-2 gap-6">
               <div>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-var(--color-bg-light, white) mb-4">
                   当前版本 (v{{ currentVersion.version }})
                 </h3>
                 <div class="prose dark:prose-invert max-w-none card p-4">
@@ -116,7 +116,7 @@
                 </div>
               </div>
               <div>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-var(--color-bg-light, white) mb-4">
                   历史版本 (v{{ selectedVersion.version }})
                 </h3>
                 <div class="prose dark:prose-invert max-w-none card p-4">
@@ -283,7 +283,7 @@ onMounted(() => {
 .diff-content {
   font-family: 'Courier New', monospace;
   line-height: 1.8;
-  white-space: pre-wrap;
+  var(--color-bg-light, white)-space: pre-wrap;
   word-wrap: break-word;
 }
 

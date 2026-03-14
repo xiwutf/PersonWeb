@@ -17,7 +17,7 @@
       <div class="mb-6">
         <NuxtLink
           to="/projects"
-          class="inline-flex items-center px-4 py-2 bg-white/70 backdrop-blur-sm rounded-lg shadow-sm hover:shadow-md transition-all duration-200 text-purple-700 hover:text-purple-800 border border-purple-200"
+          class="inline-flex items-center px-4 py-2 bg-var(--color-bg-light, white)/70 backdrop-blur-sm rounded-lg shadow-sm hover:shadow-md transition-all duration-200 text-purple-700 hover:text-purple-800 border border-purple-200"
         >
           <i class="fas fa-arrow-left mr-2"></i>
           返回项目展示
@@ -27,11 +27,11 @@
       <!-- 项目内容 -->
       <div v-if="project" class="space-y-8">
         <!-- 项目信息头部 -->
-        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8">
+        <div class="bg-var(--color-bg-light, white)/80 backdrop-blur-sm rounded-2xl shadow-xl p-8">
           <div class="flex flex-col lg:flex-row gap-8">
             <div class="lg:w-1/3">
               <div class="h-64 bg-gradient-to-br from-purple-400 to-pink-600 rounded-xl flex items-center justify-center">
-                <div class="text-center text-white">
+                <div class="text-center text-var(--color-bg-light, white)">
                   <span class="text-4xl mb-2 block">🚀</span>
                   <p class="text-lg font-semibold">{{ project.category }}</p>
                 </div>
@@ -79,7 +79,7 @@
                   v-if="project.demo_link"
                   :href="project.demo_link"
                   target="_blank"
-                  class="bg-purple-600 text-white px-6 py-3 rounded-xl hover:bg-purple-700 transition-colors font-medium inline-flex items-center gap-2"
+                  class="bg-purple-600 text-var(--color-bg-light, white) px-6 py-3 rounded-xl hover:bg-purple-700 transition-colors font-medium inline-flex items-center gap-2"
                 >
                   <i class="fas fa-external-link-alt"></i>
                   在线体验
@@ -99,22 +99,22 @@
         </div>
         
         <!-- 详细内容 -->
-        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden">
+        <div class="bg-var(--color-bg-light, white)/80 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden">
           <div class="p-8">
             <div class="prose prose-lg max-w-none">
-              <ContentDoc :path="project._path" />
+              <ContentRenderer :value="project" />
             </div>
           </div>
         </div>
         
         <!-- 相关项目推荐 -->
-        <div v-if="relatedProjects?.length" class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8">
+        <div v-if="relatedProjects?.length" class="bg-var(--color-bg-light, white)/80 backdrop-blur-sm rounded-2xl shadow-xl p-8">
           <h2 class="text-2xl font-bold text-gray-900 mb-6">相关项目推荐</h2>
           <div class="grid gap-6 md:grid-cols-2">
             <NuxtLink
               v-for="related in relatedProjects"
-              :key="related._path"
-              :to="`/projects/detail-${related.slug || related._path.split('/').pop()}`"
+              :key="related.path"
+              :to="`/projects/detail-${related.slug || related.path?.split('/').pop()}`"
               class="group p-6 border border-gray-200 rounded-xl hover:border-purple-300 hover:shadow-lg transition-all duration-200"
             >
               <h3 class="font-semibold text-gray-900 group-hover:text-purple-700 mb-2">{{ related.title }}</h3>
@@ -132,7 +132,7 @@
       </div>
 
       <!-- 无数据状态 -->
-      <div v-else class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 text-center">
+      <div v-else class="bg-var(--color-bg-light, white)/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 text-center">
         <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
           <strong>警告:</strong> 没有找到项目数据！<br>
           当前 slug: {{ $route.params.slug }}<br>
@@ -152,23 +152,26 @@
 <script setup lang="ts">
 const route = useRoute()
 const slug = route.params.slug
+const slugStr = Array.isArray(slug) ? slug[0] : slug
 
-// 获取具体项目数据
-const { data: project, error } = await useAsyncData(`project-${slug}`, () =>
-  queryContent('/projects').where({
-    $or: [
-      { _path: `/projects/${slug}` },
-      { slug: slug }
-    ]
-  }).findOne()
+// 获取具体项目数据（Content v3: queryCollection）
+const { data: project, error } = await useAsyncData(`project-${slugStr}`, () =>
+  queryCollection('content')
+    .where('path', '=', `/projects/${slugStr}`)
+    .orWhere(q => q.where('slug', '=', slugStr))
+    .first()
 )
 
 // 获取相关项目（同类别的其他项目）
-const { data: relatedProjects } = await useAsyncData(`related-projects-${slug}`, () =>
-  queryContent('/projects')
-    .where({ category: project.value?.category, _path: { $ne: project.value?._path } })
-    .limit(4)
-    .find()
+const { data: relatedProjects } = await useAsyncData(`related-projects-${slugStr}`, () =>
+  project.value
+    ? queryCollection('content')
+        .where('path', 'LIKE', '/projects%')
+        .where('category', '=', project.value?.category ?? '')
+        .where('path', '<>', project.value?.path ?? '')
+        .limit(4)
+        .all()
+    : Promise.resolve([])
 )
 
 // 格式化日期

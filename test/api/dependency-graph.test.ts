@@ -385,7 +385,7 @@ describe('Dependency Graph', () => {
           visited.add(source)
 
           for (const dependent of graph[source].dependents) {
-            if (canReach(graph, dependent, target, visited)) {
+            if (canReach(dependent, target, visited)) {
               return true
             }
           }
@@ -395,7 +395,7 @@ describe('Dependency Graph', () => {
 
         // Find all modules that can reach target
         Object.keys(graph).forEach(source => {
-          if (source !== target && canReach(graph, source, target, new Set())) {
+          if (source !== target && canReach(source, target, new Set())) {
             // Simplified path finding - just indicate reachability
             paths[target].push([source, target])
           }

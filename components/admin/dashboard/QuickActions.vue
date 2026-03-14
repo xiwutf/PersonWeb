@@ -50,7 +50,7 @@ withDefaults(defineProps<Props>(), {
 .card-title {
   font-size: 1.125rem;
   font-weight: 600;
-  color: #f3f4f6;
+  color: var(--color-text-main, #f3f4f6);
 }
 
 .actions-grid {
@@ -85,7 +85,7 @@ withDefaults(defineProps<Props>(), {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(168, 85, 247, 0.1));
+  background: linear-gradient(135deg, var(--color-primary-10, rgba(59, 130, 246, 0.1)), var(--color-purple-500-10, rgba(168, 85, 247, 0.1)));
   opacity: 0;
   transition: opacity 0.3s ease;
 }

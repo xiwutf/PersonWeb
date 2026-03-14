@@ -10,14 +10,14 @@
       <!-- 工具详情 -->
       <div v-else-if="tool" class="space-y-8">
         <!-- 头部信息 -->
-        <div class="bg-slate-800/30 backdrop-blur-md border border-white/5 rounded-3xl p-8">
+        <div class="bg-slate-800/30 backdrop-blur-md border border-var(--color-bg-light, white)/5 rounded-3xl p-8">
           <div class="flex flex-col md:flex-row gap-8">
             <!-- 封面图片 -->
             <div class="md:w-1/3">
               <div v-if="tool.coverImage" class="rounded-2xl overflow-hidden">
                 <img :src="tool.coverImage" :alt="tool.name" class="w-full h-full object-cover" />
               </div>
-              <div v-else class="w-full h-64 rounded-2xl bg-gradient-to-br from-orange-500/20 to-red-500/20 border border-white/10 flex items-center justify-center text-6xl">
+              <div v-else class="w-full h-64 rounded-2xl bg-gradient-to-br from-orange-500/20 to-red-500/20 border border-var(--color-bg-light, white)/10 flex items-center justify-center text-6xl">
                 {{ tool.icon || '🔧' }}
               </div>
             </div>
@@ -76,7 +76,7 @@
                 <button
                   @click="handlePurchase"
                   :disabled="purchasing || hasPurchased"
-                  class="flex-1 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white px-6 py-3 rounded-xl transition-all font-medium disabled:opacity-50"
+                  class="flex-1 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-var(--color-bg-light, white) px-6 py-3 rounded-xl transition-all font-medium disabled:opacity-50"
                 >
                   {{ hasPurchased ? '已拥有' : tool.isFree ? '免费获取' : '立即购买' }}
                 </button>
@@ -101,13 +101,13 @@
         </div>
 
         <!-- 详细描述 -->
-        <div v-if="tool.detailedDescription" class="bg-slate-800/30 backdrop-blur-md border border-white/5 rounded-3xl p-8">
+        <div v-if="tool.detailedDescription" class="bg-slate-800/30 backdrop-blur-md border border-var(--color-bg-light, white)/5 rounded-3xl p-8">
           <h2 class="text-2xl font-bold mb-6">详细介绍</h2>
           <div class="prose prose-invert max-w-none" v-html="markdownToHtml(tool.detailedDescription)"></div>
         </div>
 
         <!-- 功能特性 -->
-        <div v-if="tool.features && tool.features.length > 0" class="bg-slate-800/30 backdrop-blur-md border border-white/5 rounded-3xl p-8">
+        <div v-if="tool.features && tool.features.length > 0" class="bg-slate-800/30 backdrop-blur-md border border-var(--color-bg-light, white)/5 rounded-3xl p-8">
           <h2 class="text-2xl font-bold mb-6">功能特性</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div
@@ -122,7 +122,7 @@
         </div>
 
         <!-- 标签 -->
-        <div v-if="tool.tags && tool.tags.length > 0" class="bg-slate-800/30 backdrop-blur-md border border-white/5 rounded-3xl p-8">
+        <div v-if="tool.tags && tool.tags.length > 0" class="bg-slate-800/30 backdrop-blur-md border border-var(--color-bg-light, white)/5 rounded-3xl p-8">
           <h2 class="text-2xl font-bold mb-6">标签</h2>
           <div class="flex flex-wrap gap-2">
             <span
@@ -136,7 +136,7 @@
         </div>
 
         <!-- 使用要求 -->
-        <div v-if="tool.requirements" class="bg-slate-800/30 backdrop-blur-md border border-white/5 rounded-3xl p-8">
+        <div v-if="tool.requirements" class="bg-slate-800/30 backdrop-blur-md border border-var(--color-bg-light, white)/5 rounded-3xl p-8">
           <h2 class="text-2xl font-bold mb-6">使用要求</h2>
           <div class="prose prose-invert max-w-none" v-html="markdownToHtml(tool.requirements)"></div>
         </div>
@@ -153,7 +153,7 @@
             <h2 class="text-2xl font-bold">API 文档</h2>
             <button
               @click="showApiDocs = false"
-              class="text-slate-400 hover:text-white"
+              class="text-slate-400 hover:text-var(--color-bg-light, white)"
             >
               ✕
             </button>

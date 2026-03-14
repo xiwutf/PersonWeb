@@ -38,7 +38,7 @@
         <!-- 主要内容 -->
         <article v-if="doc" class="cognition-article">
           <div class="cognition-prose">
-            <ContentDoc :path="doc._path" />
+            <ContentRenderer :value="doc" />
           </div>
         </article>
 
@@ -57,9 +57,9 @@ definePageMeta({
   layout: 'default'
 })
 
-// 获取更新日志内容
+// 获取更新日志内容（Content v3: queryCollection）
 const { data: doc } = await useAsyncData('cognition-changelog', () =>
-  queryContent('/cognition/changelog').findOne()
+  queryCollection('content').path('/cognition/changelog').first()
 )
 
 // 404处理
@@ -79,7 +79,7 @@ useHead({
 <style scoped>
 .cognition-page {
   @apply min-h-screen relative overflow-hidden;
-  background: linear-gradient(135deg, var(--color-bg-body) 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, var(--color-bg-body) 0%, var(--color-blue-200) 100%);
 }
 
 /* 背景噪点 */
@@ -150,7 +150,7 @@ useHead({
 
 .cognition-title {
   @apply text-4xl md:text-5xl font-bold mb-4;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-indigo-500) 0%, var(--color-purple-600) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -167,10 +167,10 @@ useHead({
 
 .cognition-nav-link {
   @apply px-6 py-3 rounded-lg font-medium transition-all duration-200;
-  @apply bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm;
+  @apply bg-var(--color-bg-light, white)/80 dark:bg-gray-800/80 backdrop-blur-sm;
   @apply border border-gray-200 dark:border-gray-700;
   @apply text-gray-700 dark:text-gray-300;
-  @apply hover:bg-white dark:hover:bg-gray-800;
+  @apply hover:bg-var(--color-bg-light, white) dark:hover:bg-gray-800;
   @apply hover:shadow-lg hover:scale-105;
 }
 
@@ -182,7 +182,7 @@ useHead({
 
 /* 文章内容 */
 .cognition-article {
-  @apply bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm;
+  @apply bg-var(--color-bg-light, white)/90 dark:bg-gray-900/90 backdrop-blur-sm;
   @apply rounded-2xl shadow-xl;
   @apply border border-gray-200 dark:border-gray-700;
   @apply p-8 md:p-12;

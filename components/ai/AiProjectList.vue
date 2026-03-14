@@ -292,16 +292,16 @@ const handleProjectClick = (project: AiProject) => {
 }
 
 /* 浅色主题下的状态标签 */
-html[data-theme="light"] .ai-project-status-badge--success {
-  background: rgba(34, 197, 94, 0.1);
-  border: 1px solid rgba(34, 197, 94, 0.3);
-  color: #16a34a;
+:global([data-theme="light"]) .ai-project-status-badge--success {
+  background: var(--color-success-10, rgba(34, 197, 94, 0.1));
+  border: 1px solid var(--color-success-30, rgba(34, 197, 94, 0.3));
+  color: var(--color-success, #16a34a);
 }
 
-html[data-theme="light"] .ai-project-status-badge--warning {
-  background: rgba(251, 191, 36, 0.1);
-  border: 1px solid rgba(251, 191, 36, 0.3);
-  color: #ca8a04;
+:global([data-theme="light"]) .ai-project-status-badge--warning {
+  background: var(--color-warning-10, rgba(251, 191, 36, 0.1));
+  border: 1px solid var(--color-warning-30, rgba(251, 191, 36, 0.3));
+  color: var(--color-warning-dark, #ca8a04);
 }
 
 html[data-theme="light"] .ai-project-status-badge--info {
@@ -317,27 +317,31 @@ html[data-theme="light"] .ai-project-status-badge--default {
 }
 
 /* 深色主题下的状态标签 */
-html[data-theme="dark"] .ai-project-status-badge--success {
-  background: rgba(34, 197, 94, 0.15);
-  border: 1px solid rgba(34, 197, 94, 0.3);
+:global(.dark) .ai-project-status-badge--success,
+:global([data-theme="dark"]) .ai-project-status-badge--success {
+  background: var(--color-success-15, rgba(34, 197, 94, 0.15));
+  border: 1px solid var(--color-success-30, rgba(34, 197, 94, 0.3));
   color: var(--color-success);
 }
 
-html[data-theme="dark"] .ai-project-status-badge--warning {
-  background: rgba(251, 191, 36, 0.15);
-  border: 1px solid rgba(251, 191, 36, 0.3);
-  color: #fbbf24;
+:global(.dark) .ai-project-status-badge--warning,
+:global([data-theme="dark"]) .ai-project-status-badge--warning {
+  background: var(--color-warning-15, rgba(251, 191, 36, 0.15));
+  border: 1px solid var(--color-warning-30, rgba(251, 191, 36, 0.3));
+  color: var(--color-warning, #fbbf24);
 }
 
-html[data-theme="dark"] .ai-project-status-badge--info {
-  background: rgba(59, 130, 246, 0.15);
-  border: 1px solid var(--theme-primary);
+:global(.dark) .ai-project-status-badge--info,
+:global([data-theme="dark"]) .ai-project-status-badge--info {
+  background: var(--color-primary-15, rgba(59, 130, 246, 0.15));
+  border: 1px solid var(--color-primary, var(--theme-primary));
   color: var(--color-primary);
 }
 
-html[data-theme="dark"] .ai-project-status-badge--default {
-  background: rgba(148, 163, 184, 0.15);
-  border: 1px solid rgba(148, 163, 184, 0.3);
+:global(.dark) .ai-project-status-badge--default,
+:global([data-theme="dark"]) .ai-project-status-badge--default {
+  background: var(--color-gray-500-15, rgba(148, 163, 184, 0.15));
+  border: 1px solid var(--color-gray-500-30, rgba(148, 163, 184, 0.3));
   color: var(--color-text-muted);
 }
 
@@ -374,10 +378,11 @@ html[data-theme="dark"] .ai-project-status-badge--default {
 }
 
 /* 深色主题保持原有样式 */
-html[data-theme="dark"] .ai-project-tag {
-  background: rgba(6, 182, 212, 0.1);
-  border: 1px solid rgba(6, 182, 212, 0.3);
-  color: #06b6d4;
+:global(.dark) .ai-project-tag,
+:global([data-theme="dark"]) .ai-project-tag {
+  background: var(--color-cyan-500-10, rgba(6, 182, 212, 0.1));
+  border: 1px solid var(--color-cyan-500-30, rgba(6, 182, 212, 0.3));
+  color: var(--color-cyan-500, #06b6d4);
 }
 
 .ai-project-stack {

@@ -495,7 +495,7 @@ const deleteVersion = async () => {
 }
 
 .header-content p {
-  color: #666;
+  color: var(--color-gray-500);
 }
 
 .info-cards {
@@ -506,16 +506,16 @@ const deleteVersion = async () => {
 }
 
 .info-card {
-  background: white;
+  background: var(--color-bg-light, white);
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   overflow: hidden;
 }
 
 .card-header {
-  background: #f8f9fa;
+  background: var(--color-gray-50);
   padding: 1rem;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid var(--color-gray-200);
 }
 
 .card-header h3 {
@@ -538,7 +538,7 @@ const deleteVersion = async () => {
 }
 
 .info-item .label {
-  color: #666;
+  color: var(--color-gray-500);
   font-weight: 500;
 }
 
@@ -564,23 +564,23 @@ const deleteVersion = async () => {
 }
 
 .badge.enabled {
-  background: #d1fae5;
-  color: #065f46;
+  background: var(--color-green-100);
+  color: var(--color-emerald-800);
 }
 
 .badge.disabled {
-  background: #fee2e2;
-  color: #991b1b;
+  background: var(--color-red-100);
+  color: var(--color-red-800);
 }
 
 .badge.stable.enabled {
-  background: #d1fae5;
-  color: #065f46;
+  background: var(--color-green-100);
+  color: var(--color-emerald-800);
 }
 
 .badge.stable.disabled {
-  background: #fed7aa;
-  color: #9a3412;
+  background: var(--color-orange-200);
+  color: var(--color-orange-800);
 }
 
 .hash {
@@ -598,7 +598,7 @@ const deleteVersion = async () => {
 }
 
 .copy-btn:hover {
-  background: #f0f0f0;
+  background: var(--color-gray-200);
   border-radius: 4px;
 }
 
@@ -622,7 +622,7 @@ const deleteVersion = async () => {
 
 .stat-label {
   font-size: 0.9rem;
-  color: #666;
+  color: var(--color-gray-500);
 }
 
 .download-trend {
@@ -668,7 +668,7 @@ const deleteVersion = async () => {
 
 .score .max {
   font-size: 1.5rem;
-  color: #666;
+  color: var(--color-gray-500);
 }
 
 .stars {
@@ -677,16 +677,16 @@ const deleteVersion = async () => {
 
 .star {
   font-size: 1.5rem;
-  color: #ddd;
+  color: var(--color-gray-300);
 }
 
 .star.filled {
-  color: #fbbf24;
+  color: var(--color-amber-400);
 }
 
 .total-reviews {
   margin-bottom: 1rem;
-  color: #666;
+  color: var(--color-gray-500);
 }
 
 .rating-distribution {
@@ -716,7 +716,7 @@ const deleteVersion = async () => {
 
 .bar-fill {
   height: 100%;
-  background: #fbbf24;
+  background: var(--color-amber-400);
   transition: width 0.3s ease;
 }
 
@@ -726,7 +726,7 @@ const deleteVersion = async () => {
 }
 
 .changelog-section {
-  background: white;
+  background: var(--color-bg-light, white);
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   padding: 2rem;
@@ -746,7 +746,7 @@ const deleteVersion = async () => {
 
 .section-header button {
   background: none;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-gray-300);
   padding: 0.5rem 1rem;
   border-radius: 4px;
   cursor: pointer;
@@ -754,21 +754,21 @@ const deleteVersion = async () => {
 }
 
 .changelog-content {
-  background: #f8f9fa;
+  background: var(--color-gray-50);
   padding: 1rem;
   border-radius: 4px;
 }
 
 .changelog-content pre {
-  white-space: pre-wrap;
+  var(--color-bg-light, white)-space: pre-wrap;
   word-break: break-word;
   margin: 0;
 }
 
 .changelog-editor {
   width: 100%;
-  background: white;
-  border: 1px solid #ddd;
+  background: var(--color-bg-light, white);
+  border: 1px solid var(--color-gray-300);
   border-radius: 4px;
   padding: 1rem;
   font-family: inherit;
@@ -783,7 +783,7 @@ const deleteVersion = async () => {
 }
 
 .reviews-section {
-  background: white;
+  background: var(--color-bg-light, white);
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   padding: 2rem;
@@ -797,7 +797,7 @@ const deleteVersion = async () => {
 }
 
 .review-item {
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid var(--color-gray-200);
   padding-bottom: 1rem;
 }
 
@@ -821,7 +821,7 @@ const deleteVersion = async () => {
 .reviewer-avatar {
   width: 40px;
   height: 40px;
-  background: #f0f0f0;
+  background: var(--color-gray-200);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -840,7 +840,7 @@ const deleteVersion = async () => {
 
 .reviewer-date {
   font-size: 0.85rem;
-  color: #666;
+  color: var(--color-gray-500);
 }
 
 .review-rating {
@@ -851,11 +851,11 @@ const deleteVersion = async () => {
 .review-title {
   font-weight: 500;
   margin-bottom: 0.5rem;
-  color: #333;
+  color: var(--color-gray-700);
 }
 
 .review-content {
-  color: #666;
+  color: var(--color-gray-500);
   line-height: 1.6;
 }
 
@@ -865,8 +865,8 @@ const deleteVersion = async () => {
 }
 
 .verified-badge {
-  background: #d1fae5;
-  color: #065f46;
+  background: var(--color-green-100);
+  color: var(--color-emerald-800);
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   font-size: 0.85rem;
@@ -881,15 +881,15 @@ const deleteVersion = async () => {
 
 .page-btn {
   padding: 0.5rem 0.75rem;
-  border: 1px solid #ddd;
-  background: white;
+  border: 1px solid var(--color-gray-300);
+  background: var(--color-bg-light, white);
   border-radius: 4px;
   cursor: pointer;
 }
 
 .page-btn.active {
   background: var(--color-primary);
-  color: white;
+  color: var(--color-bg-light, white);
   border-color: var(--color-primary);
 }
 
@@ -902,8 +902,8 @@ const deleteVersion = async () => {
 
 .btn {
   padding: 0.75rem 1.5rem;
-  border: 1px solid #ddd;
-  background: white;
+  border: 1px solid var(--color-gray-300);
+  background: var(--color-bg-light, white);
   border-radius: 4px;
   cursor: pointer;
   font-size: 1rem;
@@ -911,12 +911,12 @@ const deleteVersion = async () => {
 }
 
 .btn:hover {
-  background: #f8f9fa;
+  background: var(--color-gray-50);
 }
 
 .btn.primary {
   background: var(--color-primary);
-  color: white;
+  color: var(--color-bg-light, white);
   border-color: var(--color-primary);
 }
 
@@ -925,13 +925,13 @@ const deleteVersion = async () => {
 }
 
 .btn.danger {
-  background: #ef4444;
-  color: white;
-  border-color: #ef4444;
+  background: var(--color-danger);
+  color: var(--color-bg-light, white);
+  border-color: var(--color-danger);
 }
 
 .btn.danger:hover {
-  background: #dc2626;
+  background: var(--color-danger-600);
 }
 
 .modal {
@@ -948,7 +948,7 @@ const deleteVersion = async () => {
 }
 
 .modal-content {
-  background: white;
+  background: var(--color-bg-light, white);
   border-radius: 8px;
   padding: 2rem;
   max-width: 500px;
@@ -960,7 +960,7 @@ const deleteVersion = async () => {
 }
 
 .modal-content p {
-  color: #666;
+  color: var(--color-gray-500);
   margin-bottom: 1.5rem;
 }
 
@@ -973,7 +973,7 @@ const deleteVersion = async () => {
 .empty-state {
   text-align: center;
   padding: 3rem;
-  color: #666;
+  color: var(--color-gray-500);
 }
 
 @media (max-width: 768px) {

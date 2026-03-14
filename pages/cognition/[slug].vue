@@ -132,7 +132,7 @@ onMounted(() => {
 <style scoped>
 .cognition-page {
   @apply min-h-screen relative overflow-hidden;
-  background: linear-gradient(135deg, var(--color-bg-body) 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, var(--color-bg-body) 0%, var(--color-blue-200) 100%);
 }
 
 /* 背景噪点 */
@@ -198,10 +198,10 @@ onMounted(() => {
 
 .cognition-back-link {
   @apply inline-flex items-center px-4 py-2 rounded-lg;
-  @apply bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm;
+  @apply bg-var(--color-bg-light, white)/80 dark:bg-gray-800/80 backdrop-blur-sm;
   @apply border border-gray-200 dark:border-gray-700;
   @apply text-gray-700 dark:text-gray-300;
-  @apply hover:bg-white dark:hover:bg-gray-800;
+  @apply hover:bg-var(--color-bg-light, white) dark:hover:bg-gray-800;
   @apply hover:shadow-lg transition-all duration-200;
 }
 
@@ -213,16 +213,16 @@ onMounted(() => {
 .cognition-article-title {
   @apply text-3xl md:text-4xl font-bold mb-4;
   @apply text-gray-900 dark:text-gray-100;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-indigo-500) 0%, var(--color-purple-600) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   /* 确保文字清晰可见 */
-  color: #667eea;
+  color: var(--color-primary-start);
 }
 
 .dark .cognition-article-title {
-  color: #a78bfa;
+  color: var(--color-primary-end);
 }
 
 .cognition-article-summary {
@@ -240,7 +240,7 @@ onMounted(() => {
 
 /* 文章内容 */
 .cognition-article {
-  @apply bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm;
+  @apply bg-var(--color-bg-light, white)/90 dark:bg-gray-900/90 backdrop-blur-sm;
   @apply rounded-2xl shadow-xl;
   @apply border border-gray-200 dark:border-gray-700;
   @apply p-8 md:p-12;

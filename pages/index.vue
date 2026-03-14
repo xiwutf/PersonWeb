@@ -2,11 +2,11 @@
   <div>
     <!-- 动态加载风格组件 -->
     <component :is="currentComponent" v-if="currentComponent" />
-    <div v-else class="min-h-screen flex items-center justify-center bg-black text-white">
+    <div v-else class="min-h-screen flex items-center justify-center bg-black text-var(--color-bg-light, white)">
       <div class="text-center">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mx-auto mb-4"></div>
-        <p class="text-white/60">加载首页组件中...</p>
-        <p class="text-white/40 text-sm mt-2">当前风格: {{ style }}</p>
+        <p class="text-var(--color-bg-light, white)/60">加载首页组件中...</p>
+        <p class="text-var(--color-bg-light, white)/40 text-sm mt-2">当前风格: {{ style }}</p>
       </div>
     </div>
   </div>

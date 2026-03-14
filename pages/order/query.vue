@@ -8,7 +8,7 @@
       </div>
 
       <!-- 查询表单 -->
-      <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 mb-6">
+      <div class="bg-var(--color-bg-light, white)/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 mb-6">
         <form @submit.prevent="handleQuery" class="space-y-6">
           <!-- 订单编号 -->
           <div>
@@ -47,7 +47,7 @@
           <button
             type="submit"
             :disabled="querying"
-            class="w-full px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-lg hover:from-blue-600 hover:to-indigo-600 transition-all font-medium shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+            class="w-full px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 text-var(--color-bg-light, white) rounded-lg hover:from-blue-600 hover:to-indigo-600 transition-all font-medium shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span v-if="querying">查询中...</span>
             <span v-else>
@@ -59,7 +59,7 @@
       </div>
 
       <!-- 查询结果 -->
-      <div v-if="orderResult" class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8">
+      <div v-if="orderResult" class="bg-var(--color-bg-light, white)/80 backdrop-blur-sm rounded-2xl shadow-xl p-8">
         <h3 class="text-xl font-bold text-gray-900 mb-6">订单详情</h3>
         
         <div class="space-y-4">
@@ -87,7 +87,7 @@
           
           <div v-if="orderResult.remark" class="pt-4">
             <span class="text-gray-600 block mb-2">备注/需求说明：</span>
-            <p class="text-gray-900 bg-gray-50 rounded-lg p-4 whitespace-pre-line">{{ orderResult.remark }}</p>
+            <p class="text-gray-900 bg-gray-50 rounded-lg p-4 var(--color-bg-light, white)space-pre-line">{{ orderResult.remark }}</p>
           </div>
         </div>
 

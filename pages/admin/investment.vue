@@ -1400,7 +1400,7 @@ const typeChartOption = computed(() => {
       avoidLabelOverlap: true,
       itemStyle: {
         borderRadius: 8,
-        borderColor: isDark.value ? '#1f2937' : 'var(--color-bg-card)',
+        borderColor: isDark.value ? 'var(--color-gray-800)' : 'var(--color-bg-card)',
         borderWidth: 2
       },
       label: {
@@ -1422,7 +1422,7 @@ const typeChartOption = computed(() => {
         itemStyle: {
           shadowBlur: 15,
           shadowOffsetX: 0,
-          shadowColor: isDark.value ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)'
+          shadowColor: isDark.value ? 'rgba(255, 255, 255, 0.5)' : 'var(--overlay-color, rgba(0, 0, 0, 0.5))'
         },
         label: {
           color: theme.textStyle.color,
@@ -1461,7 +1461,7 @@ const profitStatusChartOption = computed(() => {
       avoidLabelOverlap: true,
       itemStyle: {
         borderRadius: 8,
-        borderColor: isDark.value ? '#1f2937' : 'var(--color-bg-card)',
+        borderColor: isDark.value ? 'var(--color-gray-800)' : 'var(--color-bg-card)',
         borderWidth: 2
       },
       label: {
@@ -1483,7 +1483,7 @@ const profitStatusChartOption = computed(() => {
         itemStyle: {
           shadowBlur: 15,
           shadowOffsetX: 0,
-          shadowColor: isDark.value ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)'
+          shadowColor: isDark.value ? 'rgba(255, 255, 255, 0.5)' : 'var(--overlay-color, rgba(0, 0, 0, 0.5))'
         },
         label: {
           color: theme.textStyle.color,
@@ -1534,7 +1534,7 @@ const assetDistributionChartOption = computed(() => {
       avoidLabelOverlap: true,
       itemStyle: {
         borderRadius: 6,
-        borderColor: isDark.value ? '#1f2937' : 'var(--color-bg-card)',
+        borderColor: isDark.value ? 'var(--color-gray-800)' : 'var(--color-bg-card)',
         borderWidth: 2
       },
       label: {
@@ -1555,7 +1555,7 @@ const assetDistributionChartOption = computed(() => {
         itemStyle: {
           shadowBlur: 15,
           shadowOffsetX: 0,
-          shadowColor: isDark.value ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)'
+          shadowColor: isDark.value ? 'rgba(255, 255, 255, 0.5)' : 'var(--overlay-color, rgba(0, 0, 0, 0.5))'
         },
         label: {
           color: theme.textStyle.color,
@@ -1850,7 +1850,7 @@ onUnmounted(() => {
   cursor: pointer;
   transition: all 0.2s;
   border: none;
-  white-space: nowrap;
+  var(--color-bg-light, white)-space: nowrap;
 }
 
 .btn-action-primary {
@@ -1865,19 +1865,19 @@ onUnmounted(() => {
 }
 
 .btn-action-secondary {
-  background: var(--color-bg-elevated, #f9fafb);
+  background: var(--color-bg-elevated, var(--color-gray-50));
   color: var(--color-text-main, var(--color-text-main));
   border: 1px solid var(--color-border-default, var(--color-border));
 }
 
 .btn-action-secondary:hover {
   background: var(--color-bg-card, var(--color-bg-card));
-  border-color: var(--color-border-subtle, #d1d5db);
+  border-color: var(--color-border-subtle, var(--color-gray-300));
 }
 
 /* 模块说明 */
 .module-description {
-  background: var(--color-bg-elevated, #f9fafb);
+  background: var(--color-bg-elevated, var(--color-gray-50));
   border: 1px solid var(--color-border-default, var(--color-border));
   border-radius: 0.75rem;
   padding: 0;
@@ -1974,7 +1974,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-bg-elevated, #f9fafb);
+  background: var(--color-bg-elevated, var(--color-gray-50));
   border-radius: 0.5rem;
 }
 
@@ -2042,7 +2042,7 @@ onUnmounted(() => {
 .format-tag {
   display: inline-block;
   padding: 0.375rem 0.75rem;
-  background: var(--color-bg-elevated, #f9fafb);
+  background: var(--color-bg-elevated, var(--color-gray-50));
   border: 1px solid var(--color-border-default, var(--color-border));
   border-radius: 0.375rem;
   font-size: 0.8125rem;
@@ -2101,7 +2101,7 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--color-overlay, rgba(0, 0, 0, 0.5));
+  background: var(--color-overlay, var(--overlay-color, rgba(0, 0, 0, 0.5)));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2155,7 +2155,7 @@ onUnmounted(() => {
 .form-textarea {
   width: 100%;
   padding: 0.5rem 0.75rem;
-  border: 1px solid var(--color-border-default, #d1d5db);
+  border: 1px solid var(--color-border-default, var(--color-gray-300));
   border-radius: 0.375rem;
   background: var(--color-bg-card, var(--color-bg-card));
   color: var(--color-text-main, var(--color-text-main));
@@ -2208,11 +2208,11 @@ onUnmounted(() => {
 .btn-cancel {
   background: transparent;
   color: var(--color-text-main, var(--color-text-sec));
-  border: 1px solid var(--color-border-default, #d1d5db);
+  border: 1px solid var(--color-border-default, var(--color-gray-300));
 }
 
 .btn-cancel:hover {
-  background: var(--color-bg-elevated, #f9fafb);
+  background: var(--color-bg-elevated, var(--color-gray-50));
 }
 
 .form-hint {
@@ -2250,7 +2250,7 @@ onUnmounted(() => {
   background: var(--color-primary, var(--color-primary));
   color: var(--color-text-on-primary, var(--color-bg-card));
   border: none;
-  white-space: nowrap;
+  var(--color-bg-light, white)-space: nowrap;
   display: flex;
   align-items: center;
   gap: 0.25rem;
@@ -2283,7 +2283,7 @@ onUnmounted(() => {
 
 .form-info-box {
   padding: 0.75rem;
-  background: var(--color-bg-elevated, #f9fafb);
+  background: var(--color-bg-elevated, var(--color-gray-50));
   border: 1px solid var(--color-border-default, var(--color-border));
   border-radius: 0.375rem;
   display: flex;
@@ -2314,7 +2314,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 1rem;
   padding: 0.75rem;
-  background: var(--color-bg-elevated, #f9fafb);
+  background: var(--color-bg-elevated, var(--color-gray-50));
   border-radius: 0.5rem;
   border: 1px solid var(--color-border-default, var(--color-border));
 }
@@ -2323,7 +2323,7 @@ onUnmounted(() => {
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--color-text-main, var(--color-text-main));
-  white-space: nowrap;
+  var(--color-bg-light, white)-space: nowrap;
 }
 
 .switch-buttons {
@@ -2345,7 +2345,7 @@ onUnmounted(() => {
 }
 
 .switch-btn:hover {
-  background: var(--color-bg-elevated, #f9fafb);
+  background: var(--color-bg-elevated, var(--color-gray-50));
   border-color: var(--color-primary, var(--color-primary));
 }
 
@@ -2379,7 +2379,7 @@ onUnmounted(() => {
 /* 快速估算结果 */
 .estimate-result {
   padding: 1rem;
-  background: var(--color-primary-soft, #eff6ff);
+  background: var(--color-primary-soft, var(--color-blue-50));
   border: 1px solid var(--color-primary, var(--color-primary));
   border-radius: 0.5rem;
   margin-top: 0.5rem;
@@ -2445,11 +2445,11 @@ onUnmounted(() => {
 }
 
 .stat-value-positive {
-  color: var(--success, var(--color-success, #10b981));
+  color: var(--success, var(--color-success, var(--color-success)));
 }
 
 .stat-value-negative {
-  color: var(--error, var(--color-error, #ef4444));
+  color: var(--error, var(--color-error, var(--color-danger)));
 }
 
 /* 图表网格 */
@@ -2555,14 +2555,14 @@ onUnmounted(() => {
 }
 
 .badge-stock {
-  background: var(--color-bg-elevated, #f9fafb);
+  background: var(--color-bg-elevated, var(--color-gray-50));
   color: var(--color-primary, var(--color-primary));
   border: 1px solid var(--color-border-default, var(--color-border));
 }
 
 .badge-fund {
-  background: var(--color-bg-elevated, #f9fafb);
-  color: var(--success, var(--color-success, #10b981));
+  background: var(--color-bg-elevated, var(--color-gray-50));
+  color: var(--success, var(--color-success, var(--color-success)));
   border: 1px solid var(--color-border-default, var(--color-border));
 }
 
@@ -2572,11 +2572,11 @@ onUnmounted(() => {
 }
 
 .profit-positive {
-  color: var(--success, var(--color-success, #10b981));
+  color: var(--success, var(--color-success, var(--color-success)));
 }
 
 .profit-negative {
-  color: var(--error, var(--color-error, #ef4444));
+  color: var(--error, var(--color-error, var(--color-danger)));
 }
 
 .profit-rate-positive,
@@ -2586,11 +2586,11 @@ onUnmounted(() => {
 }
 
 .profit-rate-positive {
-  color: var(--success, var(--color-success, #10b981));
+  color: var(--success, var(--color-success, var(--color-success)));
 }
 
 .profit-rate-negative {
-  color: var(--error, var(--color-error, #ef4444));
+  color: var(--error, var(--color-error, var(--color-danger)));
 }
 
 .action-buttons {
@@ -2611,7 +2611,7 @@ onUnmounted(() => {
 }
 
 .btn-edit {
-  background: var(--color-bg-elevated, #f9fafb);
+  background: var(--color-bg-elevated, var(--color-gray-50));
   color: var(--color-text-main, var(--color-text-main));
   border: 1px solid var(--color-border-default, var(--color-border));
 }
@@ -2631,12 +2631,12 @@ onUnmounted(() => {
 
 .btn-delete {
   background: transparent;
-  color: var(--error, var(--color-error, #ef4444));
-  border: 1px solid var(--error, var(--color-error, #ef4444));
+  color: var(--error, var(--color-error, var(--color-danger)));
+  border: 1px solid var(--error, var(--color-error, var(--color-danger)));
 }
 
 .btn-delete:hover {
-  background: var(--error, var(--color-error, #ef4444));
+  background: var(--error, var(--color-error, var(--color-danger)));
   color: var(--color-text-on-primary, var(--color-bg-card));
 }
 
@@ -2651,7 +2651,7 @@ onUnmounted(() => {
   width: 2rem;
   height: 2rem;
   border: 3px solid #f3f3f3;
-  border-top: 3px solid #1890ff;
+  border-top: 3px solid var(--color-blue-500);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
@@ -2679,13 +2679,13 @@ onUnmounted(() => {
 }
 
 .result-item.success {
-  background: #f6ffed;
-  border: 1px solid #b7eb8f;
+  background: var(--color-green-50);
+  border: 1px solid var(--color-green-200);
 }
 
 .result-item.error {
-  background: #fff2e8;
-  border: 1px solid #ffd591;
+  background: var(--color-orange-50);
+  border: 1px solid var(--color-orange-200);
 }
 
 .result-label {
@@ -2701,22 +2701,22 @@ onUnmounted(() => {
 .result-errors {
   margin-top: 1rem;
   padding: 1rem;
-  background: #fff1f0;
-  border: 1px solid #ffccc7;
+  background: var(--color-red-50);
+  border: 1px solid var(--color-red-200);
   border-radius: 4px;
 }
 
 .result-errors h4 {
   margin: 0 0 0.5rem 0;
   font-size: 0.875rem;
-  color: #ff4d4f;
+  color: var(--color-danger);
 }
 
 .result-errors ul {
   margin: 0;
   padding-left: 1.5rem;
   font-size: 0.875rem;
-  color: #666;
+  color: var(--color-gray-500);
 }
 
 .result-errors li {
@@ -2741,13 +2741,13 @@ onUnmounted(() => {
 .import-format-list li {
   margin-bottom: 0.5rem;
   font-size: 0.875rem;
-  color: #666;
+  color: var(--color-gray-500);
 }
 
 .import-example {
   margin-top: 1.5rem;
   padding: 1rem;
-  background: #f5f5f5;
+  background: var(--color-gray-100);
   border-radius: 4px;
 }
 
@@ -2759,8 +2759,8 @@ onUnmounted(() => {
 .import-example pre {
   margin: 0;
   padding: 0.75rem;
-  background: white;
-  border: 1px solid #e8e8e8;
+  background: var(--color-bg-light, white);
+  border: 1px solid var(--color-gray-200);
   border-radius: 4px;
   font-size: 0.75rem;
   overflow-x: auto;
@@ -2776,8 +2776,8 @@ onUnmounted(() => {
   top: 100%;
   right: 0;
   margin-top: 0.5rem;
-  background: white;
-  border: 1px solid #e8e8e8;
+  background: var(--color-bg-light, white);
+  border: 1px solid var(--color-gray-200);
   border-radius: 4px;
   box-shadow: 0 2px 8px var(--shadow);
   z-index: 1000;
@@ -2793,11 +2793,11 @@ onUnmounted(() => {
   background: none;
   cursor: pointer;
   font-size: 0.875rem;
-  color: #333;
+  color: var(--color-gray-700);
 }
 
 .export-menu-item:hover {
-  background: #f5f5f5;
+  background: var(--color-gray-100);
 }
 
 .export-menu-item:first-child {

@@ -115,8 +115,8 @@
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
       @click.self="showAddCategoryDialog = false"
     >
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
-        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">添加技能分类</h2>
+      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-var(--color-bg-light, white) mb-4">添加技能分类</h2>
         <form @submit.prevent="addCategory" class="space-y-4">
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">分类名称</label>
@@ -124,7 +124,7 @@
               v-model="categoryForm.name"
               type="text"
               required
-              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
+              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200"
             />
           </div>
           <div>
@@ -133,7 +133,7 @@
               v-model="categoryForm.icon"
               type="text"
               placeholder="💻"
-              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
+              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200"
             />
           </div>
           <div>
@@ -149,7 +149,7 @@
             <input
               v-model.number="categoryForm.sortOrder"
               type="number"
-              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
+              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200"
             />
           </div>
           <div class="flex gap-2 justify-end">
@@ -162,7 +162,7 @@
             </button>
             <button
               type="submit"
-              class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+              class="px-4 py-2 bg-blue-600 text-var(--color-bg-light, white) rounded hover:bg-blue-700 transition"
             >
               添加
             </button>
@@ -177,8 +177,8 @@
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
       @click.self="showAddSkillDialog = false"
     >
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
-        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">添加技能</h2>
+      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-var(--color-bg-light, white) mb-4">添加技能</h2>
         <form @submit.prevent="addSkill" class="space-y-4">
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">技能名称</label>
@@ -186,7 +186,7 @@
               v-model="skillForm.name"
               type="text"
               required
-              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
+              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200"
             />
           </div>
           <div>
@@ -194,7 +194,7 @@
             <select
               v-model.number="skillForm.categoryId"
               required
-              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
+              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200"
             >
               <option value="">请选择分类</option>
               <option v-for="cat in categories" :key="cat.id" :value="cat.id">
@@ -207,7 +207,7 @@
             <textarea
               v-model="skillForm.description"
               rows="3"
-              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
+              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200"
             ></textarea>
           </div>
           <div>
@@ -216,7 +216,7 @@
               v-model="skillForm.icon"
               type="text"
               placeholder="⚡"
-              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
+              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200"
             />
           </div>
           <div class="flex gap-2 justify-end">
@@ -229,7 +229,7 @@
             </button>
             <button
               type="submit"
-              class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+              class="px-4 py-2 bg-green-600 text-var(--color-bg-light, white) rounded hover:bg-green-700 transition"
             >
               添加
             </button>
@@ -244,8 +244,8 @@
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
       @click.self="showRatingDialog = false"
     >
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
-        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
+      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-var(--color-bg-light, white) mb-4">
           记录技能评级 - {{ selectedSkill?.name }}
         </h2>
         <form @submit.prevent="submitRating" class="space-y-4">
@@ -260,7 +260,7 @@
               max="10"
               step="0.1"
               required
-              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
+              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200"
             />
           </div>
           <div>
@@ -268,7 +268,7 @@
             <textarea
               v-model="ratingForm.notes"
               rows="3"
-              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
+              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200"
             ></textarea>
           </div>
           <div>
@@ -276,7 +276,7 @@
             <input
               v-model="ratingForm.recordedAt"
               type="datetime-local"
-              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
+              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200"
             />
           </div>
           <div class="flex gap-2 justify-end">
@@ -289,7 +289,7 @@
             </button>
             <button
               type="submit"
-              class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+              class="px-4 py-2 bg-blue-600 text-var(--color-bg-light, white) rounded hover:bg-blue-700 transition"
             >
               保存
             </button>
@@ -304,8 +304,8 @@
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
       @click.self="showLearningLogDialog = false"
     >
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
-        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
+      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-var(--color-bg-light, white) mb-4">
           添加学习日志 - {{ selectedSkill?.name }}
         </h2>
         <form @submit.prevent="submitLearningLog" class="space-y-4">
@@ -315,7 +315,7 @@
               v-model="learningLogForm.title"
               type="text"
               required
-              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
+              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200"
             />
           </div>
           <div>
@@ -323,7 +323,7 @@
             <textarea
               v-model="learningLogForm.content"
               rows="4"
-              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
+              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200"
             ></textarea>
           </div>
           <div class="grid grid-cols-2 gap-4">
@@ -332,14 +332,14 @@
               <input
                 v-model.number="learningLogForm.duration"
                 type="number"
-                class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
+                class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200"
               />
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">资源类型</label>
               <select
                 v-model="learningLogForm.resourceType"
-                class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
+                class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200"
               >
                 <option value="">请选择</option>
                 <option value="视频">视频</option>
@@ -354,7 +354,7 @@
             <input
               v-model="learningLogForm.resourceUrl"
               type="url"
-              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
+              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200"
             />
           </div>
           <div>
@@ -362,7 +362,7 @@
             <input
               v-model="learningLogForm.learnedAt"
               type="datetime-local"
-              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
+              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200"
             />
           </div>
           <div class="flex gap-2 justify-end">
@@ -375,7 +375,7 @@
             </button>
             <button
               type="submit"
-              class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+              class="px-4 py-2 bg-green-600 text-var(--color-bg-light, white) rounded hover:bg-green-700 transition"
             >
               保存
             </button>
@@ -628,7 +628,7 @@ onMounted(() => {
 }
 
 .skill-description {
-  color: var(--color-text-sub, #4b5563);
+  color: var(--color-text-sub, var(--color-gray-600));
 }
 
 .skill-label {
@@ -636,7 +636,7 @@ onMounted(() => {
 }
 
 .skill-rating-bar-bg {
-  background: var(--color-bg-elevated, #f3f4f6);
+  background: var(--color-bg-elevated, var(--color-gray-100));
 }
 
 /* 技能操作按钮样式 - 使用 CSS 变量 */
@@ -657,11 +657,11 @@ onMounted(() => {
 }
 
 .skill-action-btn-success {
-  color: var(--color-success, #10b981);
+  color: var(--color-success, var(--color-success));
 }
 
 .skill-action-btn-success:hover {
-  color: var(--color-success-hover, #059669);
+  color: var(--color-success-hover, var(--color-green-700));
 }
 
 .skill-action-btn-default {
@@ -701,7 +701,7 @@ html.dark .category-name {
 
 html[data-theme="dark"] .category-count,
 html.dark .category-count {
-  color: var(--color-text-muted, #9ca3af);
+  color: var(--color-text-muted, var(--color-gray-400));
 }
 
 html[data-theme="dark"] .skill-item-card,
@@ -716,7 +716,7 @@ html.dark .skill-name {
 
 html[data-theme="dark"] .skill-description,
 html.dark .skill-description {
-  color: var(--color-text-sub, #9ca3af);
+  color: var(--color-text-sub, var(--color-gray-400));
 }
 
 html[data-theme="dark"] .skill-rating-bar-bg,
@@ -730,12 +730,12 @@ html.dark .empty-state {
 }
 
 .skill-last-update {
-  color: var(--color-text-muted, #9ca3af);
+  color: var(--color-text-muted, var(--color-gray-400));
 }
 
 /* 评级颜色样式 - 使用 CSS 变量 */
 .rating-color-excellent {
-  color: var(--color-success, #10b981);
+  color: var(--color-success, var(--color-success));
 }
 
 .rating-color-good {
@@ -743,16 +743,16 @@ html.dark .empty-state {
 }
 
 .rating-color-fair {
-  color: var(--color-warning, #f59e0b);
+  color: var(--color-warning, var(--color-warning));
 }
 
 .rating-color-poor {
-  color: var(--color-error, #ef4444);
+  color: var(--color-error, var(--color-danger));
 }
 
 /* 评级进度条颜色样式 - 使用 CSS 变量 */
 .rating-bar-excellent {
-  background: var(--color-success, #10b981);
+  background: var(--color-success, var(--color-success));
 }
 
 .rating-bar-good {
@@ -760,11 +760,11 @@ html.dark .empty-state {
 }
 
 .rating-bar-fair {
-  background: var(--color-warning, #f59e0b);
+  background: var(--color-warning, var(--color-warning));
 }
 
 .rating-bar-poor {
-  background: var(--color-error, #ef4444);
+  background: var(--color-error, var(--color-danger));
 }
 </style>
 

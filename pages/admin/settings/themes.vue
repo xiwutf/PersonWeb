@@ -642,7 +642,7 @@ onMounted(() => {
 .badge-success {
   background: rgba(34, 197, 94, 0.3);
   border: 1px solid rgba(34, 197, 94, 0.6);
-  color: #a7f3d0;
+  color: var(--color-purple-300);
 }
 
 .badge-default {
@@ -701,7 +701,7 @@ onMounted(() => {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: var(--overlay-color, rgba(0, 0, 0, 0.7));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -801,7 +801,7 @@ onMounted(() => {
 }
 
 .btn-link-red {
-  color: #f87171;
+  color: var(--color-danger-400);
 }
 </style>
 

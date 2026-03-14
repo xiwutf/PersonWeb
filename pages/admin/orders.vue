@@ -114,7 +114,7 @@
           </n-descriptions-item>
           <n-descriptions-item label="下单时间">{{ formatDate(currentOrder.createdAt) }}</n-descriptions-item>
           <n-descriptions-item label="需求说明" :span="2">
-            <div class="whitespace-pre-line">{{ currentOrder.remark || '-' }}</div>
+            <div class="var(--color-bg-light, white)space-pre-line">{{ currentOrder.remark || '-' }}</div>
           </n-descriptions-item>
           <n-descriptions-item label="内部备注" :span="2">
             <n-input
@@ -448,7 +448,7 @@ useHead({
 
 .tag-warning {
   background: rgba(251, 191, 36, 0.2);
-  color: #fbbf24;
+  color: var(--color-warning);
   border: 1px solid rgba(251, 191, 36, 0.3);
 }
 

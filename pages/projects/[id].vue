@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-50 to-white py-12">
+  <div class="min-h-screen bg-gradient-to-br from-slate-50 to-var(--color-bg-light, white) py-12">
     <div class="container mx-auto px-4 max-w-5xl">
       <!-- 返回按钮 -->
       <div class="mb-6">
@@ -30,10 +30,10 @@
               class="w-full h-full object-cover"
             />
             <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-            <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
+            <div class="absolute bottom-0 left-0 right-0 p-8 text-var(--color-bg-light, white)">
               <div class="flex items-center gap-3 mb-3">
                 <span
-                  class="px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm bg-white/20"
+                  class="px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm bg-var(--color-bg-light, white)/20"
                   :class="{
                     'bg-green-500/80': project.status === 'Active',
                     'bg-gray-500/80': project.status === 'Completed',
@@ -42,13 +42,13 @@
                 >
                   {{ project.status === 'Active' ? '进行中' : project.status === 'Completed' ? '已完成' : '已归档' }}
                 </span>
-                <span class="text-sm text-white/80 flex items-center gap-1">
+                <span class="text-sm text-var(--color-bg-light, white)/80 flex items-center gap-1">
                   <i class="fas fa-eye"></i>
                   {{ project.viewCount || 0 }} 次浏览
                 </span>
               </div>
               <h1 class="text-4xl font-bold mb-2">{{ project.title }}</h1>
-              <p class="text-lg text-white/90">{{ project.description }}</p>
+              <p class="text-lg text-var(--color-bg-light, white)/90">{{ project.description }}</p>
             </div>
           </div>
 
@@ -153,7 +153,7 @@ const getTechTagClass = (tech: string) => {
   
   // 前端技术
   if (techLower.includes('vue') || techLower.includes('react') || techLower.includes('angular') || techLower.includes('nuxt') || techLower.includes('next')) {
-    return 'bg-gradient-to-r from-blue-500 to-blue-600 text-white'
+    return 'bg-gradient-to-r from-blue-500 to-blue-600 text-var(--color-bg-light, white)'
   }
   // JavaScript/TypeScript
   if (techLower.includes('javascript') || techLower.includes('typescript') || techLower.includes('js') || techLower.includes('ts')) {
@@ -161,30 +161,30 @@ const getTechTagClass = (tech: string) => {
   }
   // Python
   if (techLower.includes('python')) {
-    return 'bg-gradient-to-r from-blue-400 to-blue-500 text-white'
+    return 'bg-gradient-to-r from-blue-400 to-blue-500 text-var(--color-bg-light, white)'
   }
   // Node.js
   if (techLower.includes('node') || techLower.includes('express')) {
-    return 'bg-gradient-to-r from-green-500 to-green-600 text-white'
+    return 'bg-gradient-to-r from-green-500 to-green-600 text-var(--color-bg-light, white)'
   }
   // 数据库
   if (techLower.includes('mysql') || techLower.includes('postgresql') || techLower.includes('mongodb') || techLower.includes('redis')) {
-    return 'bg-gradient-to-r from-orange-500 to-orange-600 text-white'
+    return 'bg-gradient-to-r from-orange-500 to-orange-600 text-var(--color-bg-light, white)'
   }
   // 框架
   if (techLower.includes('spring') || techLower.includes('fastapi') || techLower.includes('django') || techLower.includes('flask')) {
-    return 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white'
+    return 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-var(--color-bg-light, white)'
   }
   // 小程序
   if (techLower.includes('小程序') || techLower.includes('wechat') || techLower.includes('miniprogram')) {
-    return 'bg-gradient-to-r from-green-400 to-green-500 text-white'
+    return 'bg-gradient-to-r from-green-400 to-green-500 text-var(--color-bg-light, white)'
   }
   // AI/ML
   if (techLower.includes('ai') || techLower.includes('ml') || techLower.includes('langchain') || techLower.includes('openai')) {
-    return 'bg-gradient-to-r from-purple-500 to-purple-600 text-white'
+    return 'bg-gradient-to-r from-purple-500 to-purple-600 text-var(--color-bg-light, white)'
   }
   // 默认样式
-  return 'bg-gradient-to-r from-gray-500 to-gray-600 text-white'
+  return 'bg-gradient-to-r from-gray-500 to-gray-600 text-var(--color-bg-light, white)'
 }
 
 // 获取技术栈图标

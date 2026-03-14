@@ -272,7 +272,7 @@ onMounted(() => {
 
 .type-tool {
   background: rgba(236, 72, 153, 0.2);
-  color: #ec4899;
+  color: var(--color-pink-500);
 }
 
 .status-badge {
@@ -284,7 +284,7 @@ onMounted(() => {
 
 .status-pending {
   background: rgba(251, 191, 36, 0.2);
-  color: #fbbf24;
+  color: var(--color-warning);
 }
 
 .status-paid {
@@ -294,7 +294,7 @@ onMounted(() => {
 
 .status-failed {
   background: rgba(239, 68, 68, 0.2);
-  color: #ef4444;
+  color: var(--color-danger);
 }
 
 .status-refunded {

@@ -464,22 +464,22 @@ onMounted(() => {
 }
 
 .btn-link-blue:hover {
-  color: var(--color-primary-hover, #93c5fd);
+  color: var(--color-primary-hover, var(--color-blue-400));
 }
 
 .btn-link-red {
-  color: var(--color-error, #f87171);
+  color: var(--color-error, var(--color-red-400));
 }
 
 .btn-link-red:hover {
-  color: var(--color-error-hover, #fca5a5);
+  color: var(--color-error-hover, var(--color-red-300));
 }
 
 .btn-link-purple {
-  color: var(--color-purple, #a78bfa);
+  color: var(--color-purple, var(--color-purple-400));
 }
 
 .btn-link-purple:hover {
-  color: var(--color-purple-hover, #c4b5fd);
+  color: var(--color-purple-hover, var(--color-purple-300));
 }
 </style>

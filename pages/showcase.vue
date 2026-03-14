@@ -18,8 +18,8 @@
           :class="[
             'px-4 py-2 rounded-lg transition-all',
             activeCategory === category.value
-              ? 'bg-blue-600 text-white shadow-lg'
-              : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+              ? 'bg-blue-600 text-var(--color-bg-light, white) shadow-lg'
+              : 'bg-var(--color-bg-light, white) dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
           ]"
         >
           {{ category.label }}
@@ -176,7 +176,7 @@ onMounted(() => {
 <style scoped>
 .showcase-page {
   background: var(--theme-bg, var(--color-bg-card));
-  color: var(--theme-text, #1f2937);
+  color: var(--theme-text, var(--color-gray-800));
 }
 
 .showcase-grid {
@@ -211,8 +211,8 @@ onMounted(() => {
 }
 
 .item-code {
-  background: #1e1e1e;
-  color: #d4d4d4;
+  background: var(--color-bg-dark);
+  color: var(--color-text-muted);
   padding: 1rem;
   border-radius: 0.5rem;
   overflow-x: auto;
@@ -228,7 +228,7 @@ onMounted(() => {
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: var(--theme-text, #1f2937);
+  color: var(--theme-text, var(--color-gray-800));
 }
 
 .item-description {
@@ -254,7 +254,7 @@ onMounted(() => {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: var(--overlay-color, rgba(0, 0, 0, 0.7));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -262,7 +262,7 @@ onMounted(() => {
 }
 
 .modal-content {
-  background: white;
+  background: var(--color-bg-light, white);
   border-radius: 1rem;
   max-width: 90vw;
   max-height: 90vh;
@@ -288,8 +288,8 @@ onMounted(() => {
 }
 
 .code-block {
-  background: #1e1e1e;
-  color: #d4d4d4;
+  background: var(--color-gray-900);
+  color: var(--color-gray-300);
   padding: 1.5rem;
   border-radius: 0.5rem;
   overflow-x: auto;

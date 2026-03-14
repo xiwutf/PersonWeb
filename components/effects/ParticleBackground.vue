@@ -3,6 +3,8 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue'
+
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 let animationId: number | null = null
 
@@ -40,7 +42,7 @@ const initCanvas = () => {
       vx: (Math.random() - 0.5) * 0.5,
       vy: (Math.random() - 0.5) * 0.5,
       radius: Math.random() * 2 + 1,
-      color: `rgba(59, 130, 246, ${Math.random() * 0.5 + 0.2})`
+      color: `var(--color-primary, rgba(59, 130, 246, 0.7))`
     })
   }
 
@@ -72,7 +74,7 @@ const initCanvas = () => {
           ctx.beginPath()
           ctx.moveTo(particle.x, particle.y)
           ctx.lineTo(other.x, other.y)
-          ctx.strokeStyle = `rgba(59, 130, 246, ${0.2 * (1 - distance / 150)})`
+          ctx.strokeStyle = `var(--color-primary, rgba(59, 130, 246, ${0.2 * (1 - distance / 150)}))`
           ctx.lineWidth = 0.5
           ctx.stroke()
         }

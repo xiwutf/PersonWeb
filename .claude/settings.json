@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rg -g \"*.vue\" \"border-radius:\" components pages --no-filename --count)"
+    ]
+  }
+}

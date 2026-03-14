@@ -48,7 +48,7 @@
                 v-model="styleConfig.primaryColor"
                 type="text"
                 class="config-input"
-                placeholder="#f97316"
+                placeholder="var(--color-orange-500)"
               />
             </div>
 
@@ -66,7 +66,7 @@
                 v-model="styleConfig.secondaryColor"
                 type="text"
                 class="config-input"
-                placeholder="#dc2626"
+                placeholder="var(--color-danger-600)"
               />
             </div>
 
@@ -315,7 +315,7 @@
               v-model="ruleForm.cssPropertiesJson"
               class="form-input"
               rows="6"
-              placeholder='{"color": "#fff", "font-size": "1.5rem"}'
+              placeholder='{"color": "var(--color-bg-light, white)", "font-size": "1.5rem"}'
               required
             ></textarea>
           </div>
@@ -399,8 +399,8 @@ const pages: Page[] = [
 
 const activePageKey = ref<string>('tools')
 const styleConfig = ref<StyleConfig>({
-  primaryColor: '#f97316',
-  secondaryColor: '#dc2626',
+  primaryColor: 'var(--color-orange-500)',
+  secondaryColor: 'var(--color-danger-600)',
   backgroundColor: 'var(--color-text-main)',
   textColor: 'var(--color-text-sub)',
   cardBackground: 'rgba(30, 41, 59, 0.3)',

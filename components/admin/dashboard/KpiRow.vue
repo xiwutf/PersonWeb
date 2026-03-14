@@ -134,17 +134,17 @@ const formatValue = (value: number) => {
 
 .kpi-card-icon--green {
   --icon-color-start: var(--color-success);
-  --icon-color-end: #16a34a;
+  --icon-color-end: var(--color-success, #16a34a);
 }
 
 .kpi-card-icon--yellow {
-  --icon-color-start: #eab308;
-  --icon-color-end: #ca8a04;
+  --icon-color-start: var(--color-warning, #eab308);
+  --icon-color-end: var(--color-warning-dark, #ca8a04);
 }
 
 .kpi-card-icon--orange {
-  --icon-color-start: #f97316;
-  --icon-color-end: #ea580c;
+  --icon-color-start: var(--color-orange-500, #f97316);
+  --icon-color-end: var(--color-orange-600, #ea580c);
 }
 
 .kpi-icon-emoji {
@@ -160,7 +160,7 @@ const formatValue = (value: number) => {
 
 .kpi-card-label {
   font-size: 0.875rem;
-  color: #9ca3af;
+  color: var(--color-text-muted, #9ca3af);
   margin-bottom: 0.5rem;
   font-weight: 500;
 }
@@ -168,7 +168,7 @@ const formatValue = (value: number) => {
 .kpi-card-value {
   font-size: 2rem;
   font-weight: 700;
-  color: #f3f4f6;
+  color: var(--color-text-main, #f3f4f6);
   line-height: 1.2;
   margin-bottom: 0.25rem;
 }
@@ -190,7 +190,7 @@ const formatValue = (value: number) => {
 }
 
 .trend-down {
-  color: #ef4444;
+  color: var(--color-danger, #ef4444);
 }
 </style>
 

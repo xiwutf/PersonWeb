@@ -9,7 +9,7 @@
       <div class="w-full lg:w-3/4">
         <div class="card p-8">
           <div class="mb-6">
-            <h1 class="text-3xl font-bold text-gray-800 dark:text-white mb-4">{{ article.title }}</h1>
+            <h1 class="text-3xl font-bold text-gray-800 dark:text-var(--color-bg-light, white) mb-4">{{ article.title }}</h1>
             <div class="flex items-center text-gray-500 dark:text-gray-400 text-sm">
               <span class="mr-4">📅 {{ formatDate(article.publishTime || article.createdAt) }}</span>
               <span v-if="article.category" class="mr-4">📂 {{ article.category.name }}</span>
@@ -37,7 +37,7 @@
       <div class="hidden lg:block w-1/4">
         <div class="sticky top-24">
           <div v-if="toc.length > 0" class="card p-6">
-            <h3 class="font-bold text-gray-800 dark:text-white mb-4 text-lg">目录</h3>
+            <h3 class="font-bold text-gray-800 dark:text-var(--color-bg-light, white) mb-4 text-lg">目录</h3>
             <nav>
               <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
                 <li v-for="item in toc" :key="item.id" :class="`pl-${(item.level - 1) * 2}`">
@@ -57,7 +57,7 @@
     </div>
 
     <div v-else class="text-center py-10">
-      <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">文章未找到</h1>
+      <h1 class="text-2xl font-bold text-gray-800 dark:text-var(--color-bg-light, white) mb-4">文章未找到</h1>
       <p class="text-gray-600 dark:text-gray-400 mb-6">抱歉，您访问的文章不存在或已被删除。</p>
       <NuxtLink to="/blog" class="btn-link btn-link--blue">返回博客列表</NuxtLink>
     </div>

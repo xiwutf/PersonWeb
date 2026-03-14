@@ -286,7 +286,7 @@ useHead({
 
 /* 认知说明书卡片样式 */
 .about-cognition-card {
-  @apply bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm;
+  @apply bg-var(--color-bg-light, white)/80 dark:bg-gray-800/80 backdrop-blur-sm;
   @apply rounded-2xl shadow-lg;
   @apply border border-gray-200 dark:border-gray-700;
   @apply p-6 md:p-8;
@@ -301,7 +301,7 @@ useHead({
 .about-cognition-link {
   @apply inline-flex items-center px-6 py-3 rounded-lg;
   @apply bg-gradient-to-r from-purple-500 to-blue-500;
-  @apply text-white font-medium;
+  @apply text-var(--color-bg-light, white) font-medium;
   @apply transition-all duration-200;
   @apply hover:from-purple-600 hover:to-blue-600;
   @apply hover:shadow-lg hover:scale-105;

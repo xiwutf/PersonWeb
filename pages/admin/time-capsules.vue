@@ -384,7 +384,7 @@ onMounted(() => {
 .content-text {
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  var(--color-bg-light, white)-space: nowrap;
 }
 
 /* 标签样式 - 提高文字对比度 */
@@ -399,19 +399,19 @@ onMounted(() => {
 .tag-warning {
   background: var(--color-warning-soft, rgba(251, 191, 36, 0.3));
   border: 1px solid var(--color-warning, rgba(251, 191, 36, 0.6));
-  color: var(--color-warning-hover, #fde68a);
+  color: var(--color-warning-hover, var(--color-amber-200));
 }
 
 .tag-success {
   background: var(--color-success-soft, rgba(34, 197, 94, 0.3));
   border: 1px solid var(--color-success, rgba(34, 197, 94, 0.6));
-  color: var(--color-success-hover, #a7f3d0);
+  color: var(--color-success-hover, var(--color-purple-400));
 }
 
 .tag-error {
   background: var(--color-error-soft, rgba(239, 68, 68, 0.3));
   border: 1px solid var(--color-error, rgba(239, 68, 68, 0.6));
-  color: var(--color-error-hover, #fecaca);
+  color: var(--color-error-hover, var(--color-red-200));
 }
 
 /* 操作按钮 */
@@ -435,7 +435,7 @@ onMounted(() => {
 }
 
 .btn-link-blue:hover {
-  color: var(--color-primary-hover, #93c5fd);
+  color: var(--color-primary-hover, var(--color-blue-400));
 }
 
 .filter-select-fallback {
@@ -455,31 +455,31 @@ onMounted(() => {
 
 /* 统计图标颜色 - 使用 CSS 变量 */
 .stat-icon-pending {
-  color: var(--color-warning, #fb923c);
+  color: var(--color-warning, var(--color-orange-400));
 }
 
 .stat-icon-approved {
-  color: var(--color-success, #86efac);
+  color: var(--color-success, var(--color-green-300));
 }
 
 .stat-icon-rejected {
-  color: var(--color-error, #fca5a5);
+  color: var(--color-error, var(--color-red-300));
 }
 
 .btn-link-green {
-  color: var(--color-success, #34d399);
+  color: var(--color-success, var(--color-emerald-400));
 }
 
 .btn-link-green:hover {
-  color: var(--color-success-hover, #6ee7b7);
+  color: var(--color-success-hover, var(--color-emerald-300));
 }
 
 .btn-link-red {
-  color: var(--color-error, #f87171);
+  color: var(--color-error, var(--color-red-400));
 }
 
 .btn-link-red:hover {
-  color: var(--color-error-hover, #fca5a5);
+  color: var(--color-error-hover, var(--color-red-300));
 }
 </style>
 

@@ -194,8 +194,8 @@ onMounted(() => {
 
 <style scoped>
 .module-card {
-  background: white;
-  border-radius: 12px;
+  background: var(--color-bg-primary);
+  border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: 0 1px 3px var(--shadow);
   transition: all 0.3s ease;
@@ -205,7 +205,7 @@ onMounted(() => {
 }
 
 .module-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px var(--shadow-lg);
   transform: translateY(-2px);
 }
 
@@ -213,7 +213,7 @@ onMounted(() => {
   position: relative;
   height: 180px;
   overflow: hidden;
-  background: #f3f4f6;
+  background: var(--color-bg-secondary);
 }
 
 .module-cover img {
@@ -235,10 +235,10 @@ onMounted(() => {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background: #ef4444;
-  color: white;
+  background: var(--color-error);
+  color: var(--color-text-primary);
   padding: 0.25rem 0.75rem;
-  border-radius: 20px;
+  border-radius: 9999px;
   font-size: 0.875rem;
   font-weight: 600;
 }
@@ -247,10 +247,10 @@ onMounted(() => {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background: #10b981;
-  color: white;
+  background: var(--color-success);
+  color: var(--color-text-primary);
   padding: 0.25rem 0.75rem;
-  border-radius: 20px;
+  border-radius: 9999px;
   font-size: 0.875rem;
   font-weight: 600;
 }
@@ -259,10 +259,10 @@ onMounted(() => {
   position: absolute;
   bottom: 1rem;
   left: 1rem;
-  background: rgba(16, 185, 129, 0.9);
-  color: white;
+  background: var(--color-success);
+  color: var(--color-text-primary);
   padding: 0.25rem 0.75rem;
-  border-radius: 20px;
+  border-radius: 9999px;
   font-size: 0.875rem;
   font-weight: 600;
 }
@@ -281,7 +281,7 @@ onMounted(() => {
 .module-name {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1a202c;
+  color: var(--color-text-primary);
   margin: 0 0 0.5rem 0;
 }
 
@@ -294,17 +294,17 @@ onMounted(() => {
 
 .version {
   background: var(--color-border);
-  color: var(--color-text-sec);
+  color: var(--color-text-secondary);
   padding: 0.125rem 0.5rem;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
 }
 
 .category {
-  color: var(--color-text-sec);
+  color: var(--color-text-secondary);
 }
 
 .module-description {
-  color: #4b5563;
+  color: var(--color-text-secondary);
   font-size: 0.875rem;
   line-height: 1.5;
   margin-bottom: 1rem;
@@ -319,10 +319,10 @@ onMounted(() => {
 }
 
 .tag {
-  background: #f3f4f6;
-  color: var(--color-text-sec);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-secondary);
   padding: 0.25rem 0.5rem;
-  border-radius: 4px;
+  border-radius: var(--radius);
   font-size: 0.75rem;
 }
 
@@ -331,7 +331,7 @@ onMounted(() => {
   gap: 1rem;
   margin-bottom: 1rem;
   font-size: 0.875rem;
-  color: var(--color-text-sec);
+  color: var(--color-text-secondary);
 }
 
 .stat-item {
@@ -367,7 +367,7 @@ onMounted(() => {
 }
 
 .action-btn.secondary {
-  background: #f3f4f6;
+  background: var(--color-bg-secondary);
   color: var(--color-text-main);
 }
 

@@ -973,7 +973,7 @@ onMounted(() => {
 }
 
 .card-item .value.error {
-  color: #ef4444;
+  color: var(--color-danger);
 }
 
 .progress-text {
@@ -995,7 +995,7 @@ onMounted(() => {
   padding: var(--spacing-md);
   background: var(--color-bg-elevated);
   border-radius: var(--radius-md);
-  white-space: pre-wrap;
+  var(--color-bg-light, white)-space: pre-wrap;
   min-height: 100px;
 }
 
@@ -1066,7 +1066,7 @@ onMounted(() => {
 
 .log-content {
   margin-bottom: var(--spacing-sm);
-  white-space: pre-wrap;
+  var(--color-bg-light, white)-space: pre-wrap;
 }
 
 .log-todo {

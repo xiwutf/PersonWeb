@@ -128,28 +128,28 @@ const formatValue = (value: number) => {
 }
 
 .stat-card-icon--purple {
-  background-color: rgba(168, 85, 247, 0.15);
-  color: #a78bfa;
+  background-color: var(--color-purple-500-15, rgba(168, 85, 247, 0.15));
+  color: var(--color-purple-500, #a78bfa);
 }
 
 .stat-card-icon--green {
-  background-color: rgba(34, 197, 94, 0.15);
-  color: #86efac;
+  background-color: var(--color-success-15, rgba(34, 197, 94, 0.15));
+  color: var(--color-success, #86efac);
 }
 
 .stat-card-icon--cyan {
-  background-color: rgba(6, 182, 212, 0.15);
-  color: #22d3ee;
+  background-color: var(--color-cyan-500-15, rgba(6, 182, 212, 0.15));
+  color: var(--color-cyan-500, #22d3ee);
 }
 
 .stat-card-icon--yellow {
-  background-color: rgba(234, 179, 8, 0.15);
-  color: #fbbf24;
+  background-color: var(--color-warning-15, rgba(234, 179, 8, 0.15));
+  color: var(--color-warning, #fbbf24);
 }
 
 .stat-card-icon--teal {
-  background-color: rgba(20, 184, 166, 0.15);
-  color: #2dd4bf;
+  background-color: var(--color-teal-500-15, rgba(20, 184, 166, 0.15));
+  color: var(--color-teal-500, #2dd4bf);
 }
 
 .stat-card-content {
@@ -159,7 +159,7 @@ const formatValue = (value: number) => {
 
 .stat-card-label {
   font-size: 0.75rem;
-  color: #9ca3af;
+  color: var(--color-text-muted, #9ca3af);
   margin-bottom: 0.5rem;
   font-weight: 500;
   text-transform: uppercase;
@@ -169,7 +169,7 @@ const formatValue = (value: number) => {
 .stat-card-value {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #f3f4f6;
+  color: var(--color-text-main, #f3f4f6);
   line-height: 1.2;
   margin-bottom: 0.25rem;
 }

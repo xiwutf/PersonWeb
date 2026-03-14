@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="tools-page">
     <!-- 全局背景噪点 -->
     <div class="tools-background-noise"></div>
@@ -276,9 +276,9 @@ const fetchTools = async () => {
       console.warn('从 Toolbox API 获取工具失败，尝试其他方式:', e)
     }
     
-    // 如果API没有数据，尝试从 @nuxt/content 获取
+    // 如果API没有数据，尝试从 @nuxt/content 获取（Content v3: queryCollection）
     const { data: contentTools } = await useAsyncData('tools', () =>
-      queryContent('/tools').sort({ date: -1 }).find()
+      queryCollection('content').where('path', 'LIKE', '/tools%').order('date', 'DESC').all()
     )
     
     if (contentTools.value && Array.isArray(contentTools.value) && contentTools.value.length > 0) {
@@ -311,7 +311,7 @@ const handleConsultation = (tool: any) => {
     selectedTool.value = tool
     showConsultationDialog.value = true
   } else {
-    const slug = tool.slug || tool._path?.split('/').pop()
+    const slug = tool.slug || tool.path?.split('/').pop()
     if (slug) {
       router.push(`/tools/detail-${slug}`)
     } else {
@@ -351,7 +351,7 @@ useHead({
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: var(--overlay-color, rgba(0, 0, 0, 0.7));
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -374,7 +374,7 @@ useHead({
   background: var(--color-bg-card, var(--color-border-default));
   border-radius: 1rem;
   padding: 2rem;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 20px 60px var(--overlay-color, rgba(0, 0, 0, 0.5));
   animation: slideUp 0.3s ease-out;
   max-width: 90vw;
   width: 100%;

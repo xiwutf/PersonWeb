@@ -385,13 +385,13 @@ const getMetricClass = (value: number, good: number, poor: number) => {
 }
 
 .monitor-toggle:hover {
-  background: #4b5563;
+  background: var(--color-success, #4b5563);
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .monitor-toggle.active {
-  background: #10b981;
+  background: var(--color-success, #10b981);
 }
 
 .monitor-text {
@@ -488,15 +488,15 @@ const getMetricClass = (value: number, good: number, poor: number) => {
 }
 
 .metric-value.good {
-  color: #10b981;
+  color: var(--color-success, #10b981);
 }
 
 .metric-value.needs-improvement {
-  color: #f59e0b;
+  color: var(--color-warning, #f59e0b);
 }
 
 .metric-value.poor {
-  color: #ef4444;
+  color: var(--color-danger, #ef4444);
 }
 
 .performance-tips {
@@ -534,11 +534,11 @@ const getMetricClass = (value: number, good: number, poor: number) => {
 }
 
 .performance-tips li.warning i {
-  color: #f59e0b;
+  color: var(--color-warning);
 }
 
 .performance-tips li.danger i {
-  color: #ef4444;
+  color: var(--color-danger);
 }
 
 .performance-tips li.info i {

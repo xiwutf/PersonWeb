@@ -13,7 +13,7 @@
 
       <!-- 页面头部 -->
       <header class="text-center mb-12">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-orange-200 via-white to-red-200">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-orange-200 via-var(--color-bg-light, white) to-red-200">
           工具合集
         </h1>
         <p class="text-lg text-slate-400 max-w-2xl mx-auto">
@@ -28,7 +28,7 @@
           <div
             v-for="collection in featuredCollections"
             :key="collection.id"
-            class="bg-slate-800/30 backdrop-blur-md border border-white/5 rounded-3xl overflow-hidden hover:bg-slate-800/50 transition-all hover:border-orange-500/30"
+            class="bg-slate-800/30 backdrop-blur-md border border-var(--color-bg-light, white)/5 rounded-3xl overflow-hidden hover:bg-slate-800/50 transition-all hover:border-orange-500/30"
           >
             <div v-if="collection.coverImage" class="h-48 overflow-hidden">
               <img :src="collection.coverImage" :alt="collection.name" class="w-full h-full object-cover" />
@@ -48,7 +48,7 @@
                 </div>
                 <button
                   @click="handlePurchaseCollection(collection)"
-                  class="px-6 py-2 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white rounded-xl transition-all"
+                  class="px-6 py-2 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-var(--color-bg-light, white) rounded-xl transition-all"
                 >
                   立即购买
                 </button>
@@ -65,7 +65,7 @@
           <div
             v-for="collection in collections"
             :key="collection.id"
-            class="bg-slate-800/30 backdrop-blur-md border border-white/5 rounded-3xl overflow-hidden hover:bg-slate-800/50 transition-all"
+            class="bg-slate-800/30 backdrop-blur-md border border-var(--color-bg-light, white)/5 rounded-3xl overflow-hidden hover:bg-slate-800/50 transition-all"
           >
             <div class="p-6">
               <h3 class="text-xl font-bold mb-2">{{ collection.name }}</h3>
@@ -77,7 +77,7 @@
                 </div>
                 <button
                   @click="handlePurchaseCollection(collection)"
-                  class="px-4 py-2 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white rounded-xl transition-all text-sm"
+                  class="px-4 py-2 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-var(--color-bg-light, white) rounded-xl transition-all text-sm"
                 >
                   购买
                 </button>
@@ -172,7 +172,7 @@ useHead({
 
 .tools-back-button:hover {
   background: rgba(30, 41, 59, 0.7);
-  color: white;
+  color: var(--color-bg-light, white);
 }
 
 .tools-back-button-icon {

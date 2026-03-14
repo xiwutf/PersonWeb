@@ -68,7 +68,7 @@ const html = computed(() => md.render(localValue.value || ''))
 
 .pane {
   border: 1px solid var(--color-border-default, var(--color-border));
-  border-radius: 10px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
   background: var(--color-bg-elevated, var(--color-bg-card, #fff));
 }
@@ -110,15 +110,15 @@ const html = computed(() => md.render(localValue.value || ''))
 }
 .preview-inner :deep(code) {
   padding: 2px 6px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: var(--color-bg-elevated);
   color: var(--color-text-main);
 }
 .preview-inner :deep(pre) {
-  padding: 10px;
-  border-radius: 10px;
-  background: #0b1020;
-  color: var(--color-border);
+  padding: var(--spacing-3);
+  border-radius: var(--radius-lg);
+  background: var(--color-gray-900);
+  color: var(--color-gray-100);
   overflow: auto;
 }
 .preview-inner :deep(pre code) {

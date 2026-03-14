@@ -1,7 +1,7 @@
 ﻿<template>
   <div class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
-    <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md w-96">
-      <h1 class="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-white">System Access</h1>
+    <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 p-8 rounded-lg shadow-md w-96">
+      <h1 class="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-var(--color-bg-light, white)">System Access</h1>
       <form @submit.prevent="handleLogin">
         <div class="mb-4">
           <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" for="password">
@@ -9,7 +9,7 @@
           </label>
           <input
             v-model="password"
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline dark:bg-gray-700 dark:border-gray-600 dark:text-var(--color-bg-light, white)"
             id="password"
             type="password"
             placeholder="Enter password"
@@ -17,7 +17,7 @@
         </div>
         <div class="flex items-center justify-between">
           <button
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+            class="bg-blue-500 hover:bg-blue-700 text-var(--color-bg-light, white) font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
             type="submit"
           >
             Login

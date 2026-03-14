@@ -424,32 +424,32 @@ onMounted(() => {
 }
 
 .btn-primary {
-  background: #1890ff;
-  color: white;
+  background: var(--color-blue-500);
+  color: var(--color-bg-light, white);
 }
 
 .btn-primary:hover {
-  background: #40a9ff;
+  background: var(--color-blue-400);
 }
 
 .btn-secondary {
-  background: #f0f0f0;
-  color: #333;
+  background: var(--color-gray-200);
+  color: var(--color-gray-700);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: #e0e0e0;
+  background: var(--color-gray-300);
 }
 
 .btn-secondary:disabled {
-  background: #d9d9d9;
+  background: var(--color-gray-300);
   cursor: not-allowed;
 }
 
 .loading, .empty-state {
   text-align: center;
   padding: 48px;
-  color: #999;
+  color: var(--color-gray-400);
 }
 
 .alerts-grid {
@@ -459,15 +459,15 @@ onMounted(() => {
 }
 
 .alert-card {
-  border: 1px solid #e8e8e8;
+  border: 1px solid var(--color-gray-200);
   border-radius: 8px;
   padding: 20px;
-  background: white;
+  background: var(--color-bg-light, white);
 }
 
 .alert-card.triggered {
-  border-color: #52c41a;
-  background: #f6ffed;
+  border-color: var(--color-green-500);
+  background: var(--color-green-50);
 }
 
 .alert-header {
@@ -476,7 +476,7 @@ onMounted(() => {
   align-items: flex-start;
   margin-bottom: 16px;
   padding-bottom: 16px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--color-gray-200);
 }
 
 .alert-title h3 {
@@ -486,7 +486,7 @@ onMounted(() => {
 }
 
 .alert-code {
-  color: #999;
+  color: var(--color-gray-400);
   font-size: 12px;
 }
 
@@ -497,21 +497,21 @@ onMounted(() => {
 }
 
 .status-badge.active {
-  background: #f6ffed;
-  color: #52c41a;
-  border: 1px solid #b7eb8f;
+  background: var(--color-green-50);
+  color: var(--color-green-500);
+  border: 1px solid var(--color-green-200);
 }
 
 .status-badge.inactive {
-  background: #fff2e8;
-  color: #fa8c16;
-  border: 1px solid #ffd591;
+  background: var(--color-orange-50);
+  color: var(--color-orange-500);
+  border: 1px solid var(--color-orange-200);
 }
 
 .status-badge.triggered {
-  background: #fff1f0;
-  color: #ff4d4f;
-  border: 1px solid #ffccc7;
+  background: var(--color-red-50);
+  color: var(--color-red-500);
+  border: 1px solid var(--color-red-200);
 }
 
 .alert-details {
@@ -531,7 +531,7 @@ onMounted(() => {
 }
 
 .price-item .label {
-  color: #666;
+  color: var(--color-gray-500);
 }
 
 .price-item .value {
@@ -539,22 +539,22 @@ onMounted(() => {
 }
 
 .price-item .value.target {
-  color: #1890ff;
+  color: var(--color-blue-500);
 }
 
 .price-item .value.current {
-  color: #52c41a;
+  color: var(--color-green-500);
 }
 
 .trigger-info {
   margin-top: 12px;
   padding-top: 12px;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--color-gray-200);
 }
 
 .trigger-time {
   font-size: 12px;
-  color: #999;
+  color: var(--color-gray-400);
 }
 
 .alert-actions {
@@ -564,8 +564,8 @@ onMounted(() => {
 
 .btn-danger {
   padding: 6px 12px;
-  background: #ff4d4f;
-  color: white;
+  background: var(--color-red-500);
+  color: var(--color-bg-light, white);
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -573,7 +573,7 @@ onMounted(() => {
 }
 
 .btn-danger:hover {
-  background: #ff7875;
+  background: var(--color-red-400);
 }
 
 /* 模态框样式（复用定投计划的样式） */
@@ -583,7 +583,7 @@ onMounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--overlay-color, rgba(0, 0, 0, 0.5));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -591,7 +591,7 @@ onMounted(() => {
 }
 
 .modal-content {
-  background: white;
+  background: var(--color-bg-light, white);
   border-radius: 8px;
   width: 90%;
   max-width: 600px;
@@ -604,7 +604,7 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid #e8e8e8;
+  border-bottom: 1px solid var(--color-gray-200);
 }
 
 .modal-header h2 {
@@ -617,7 +617,7 @@ onMounted(() => {
   border: none;
   font-size: 24px;
   cursor: pointer;
-  color: #999;
+  color: var(--color-gray-400);
 }
 
 .modal-body {
@@ -636,7 +636,7 @@ onMounted(() => {
 }
 
 .form-group .required {
-  color: #ff4d4f;
+  color: var(--color-red-500);
 }
 
 .form-group input,
@@ -644,7 +644,7 @@ onMounted(() => {
 .form-group textarea {
   width: 100%;
   padding: 8px 12px;
-  border: 1px solid #d9d9d9;
+  border: 1px solid var(--color-gray-300);
   border-radius: 4px;
   font-size: 14px;
 }
@@ -657,8 +657,8 @@ onMounted(() => {
 .btn-auto-fill {
   margin-top: 8px;
   padding: 4px 12px;
-  background: #f0f0f0;
-  border: 1px solid #d9d9d9;
+  background: var(--color-gray-200);
+  border: 1px solid var(--color-gray-300);
   border-radius: 4px;
   cursor: pointer;
   font-size: 12px;

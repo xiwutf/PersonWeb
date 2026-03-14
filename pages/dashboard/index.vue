@@ -301,20 +301,20 @@
 }
 .dashboard-card__icon--green,
 .dashboard-card__accent--green,
-.dashboard-card__fill--green { color: var(--chart-secondary, #10b981); }
-.dashboard-card__fill--green { background: linear-gradient(to right, var(--chart-secondary, #10b981), var(--chart-octonary, #84cc16)); }
+.dashboard-card__fill--green { color: var(--chart-secondary, var(--color-success)); }
+.dashboard-card__fill--green { background: linear-gradient(to right, var(--chart-secondary, var(--color-success)), var(--chart-octonary, var(--color-lime-500))); }
 .dashboard-card__icon--orange,
 .dashboard-card__accent--orange,
-.dashboard-card__fill--orange { color: var(--chart-nonary, #f97316); }
-.dashboard-card__fill--orange { background: linear-gradient(to right, var(--chart-nonary, #f97316), var(--chart-quaternary, #ef4444)); }
+.dashboard-card__fill--orange { color: var(--chart-nonary, var(--color-orange-500)); }
+.dashboard-card__fill--orange { background: linear-gradient(to right, var(--chart-nonary, var(--color-orange-500)), var(--chart-quaternary, var(--color-danger))); }
 .dashboard-card__icon--blue,
 .dashboard-card__accent--blue { color: var(--chart-primary, var(--color-primary)); }
 .dashboard-card__badge--blue {
-  background-color: var(--color-primary-soft, #dbeafe);
+  background-color: var(--color-primary-soft, var(--color-blue-100));
   color: var(--color-primary, var(--color-primary-hover));
 }
 .dashboard-card__icon--purple,
-.dashboard-card__accent--purple { color: var(--chart-quinary, #8b5cf6); }
+.dashboard-card__accent--purple { color: var(--chart-quinary, var(--color-purple-500)); }
 .dashboard-section-title { color: var(--color-text-main); }
 .dashboard-link { color: var(--color-primary); }
 .dashboard-link:hover { color: var(--color-primary-hover); }
@@ -424,9 +424,9 @@ const chartTheme = ref({
   text: 'var(--color-text-sec)',
   grid: 'var(--color-text-sub)',
   chartPrimary: 'var(--color-primary)',
-  chartSecondary: '#10b981',
-  chartNonary: '#f97316',
-  chartQuinary: '#8b5cf6'
+  chartSecondary: 'var(--color-success)',
+  chartNonary: 'var(--color-orange-500)',
+  chartQuinary: 'var(--color-purple-500)'
 })
 
 function getCssVar(name: string): string {
@@ -450,9 +450,9 @@ function updateChartTheme() {
     text: getCssVar('--color-text-muted') || 'var(--color-text-sec)',
     grid: getCssVar('--color-border-default') || getCssVar('--color-border-subtle') || 'var(--color-text-sub)',
     chartPrimary: getCssVar('--chart-primary') || 'var(--color-primary)',
-    chartSecondary: getCssVar('--chart-secondary') || '#10b981',
-    chartNonary: getCssVar('--chart-nonary') || '#f97316',
-    chartQuinary: getCssVar('--chart-quinary') || '#8b5cf6'
+    chartSecondary: getCssVar('--chart-secondary') || 'var(--color-success)',
+    chartNonary: getCssVar('--chart-nonary') || 'var(--color-orange-500)',
+    chartQuinary: getCssVar('--chart-quinary') || 'var(--color-purple-500)'
   }
 }
 
@@ -557,7 +557,7 @@ const languageChartData = computed(() => {
     'C#': '#239120',
     'C++': '#00599c',
     'Go': '#00add8',
-    'Rust': '#000000',
+    'Rust': 'var(--color-bg-dark, black)',
     'PHP': '#777bb4',
     'Ruby': '#cc342d',
     'Swift': '#fa7343',

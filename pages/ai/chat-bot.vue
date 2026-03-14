@@ -1,12 +1,12 @@
 ﻿<template>
   <div class="container mx-auto px-4 py-8 h-[calc(100vh-64px)] flex flex-col">
-    <div class="flex-1 bg-white rounded-xl shadow-lg overflow-hidden flex flex-col border border-gray-200">
+    <div class="flex-1 bg-var(--color-bg-light, white) rounded-xl shadow-lg overflow-hidden flex flex-col border border-gray-200">
       <!-- 聊天头部 -->
-      <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-4 text-white flex justify-between items-center">
+      <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-4 text-var(--color-bg-light, white) flex justify-between items-center">
         <h1 class="text-lg font-bold flex items-center gap-2">
           <span>🤖</span> AI 助手 (演示版)
         </h1>
-        <span class="text-xs bg-white/20 px-2 py-1 rounded">在线</span>
+        <span class="text-xs bg-var(--color-bg-light, white)/20 px-2 py-1 rounded">在线</span>
       </div>
       
       <!-- 聊天记录区域 -->
@@ -14,20 +14,20 @@
         <div v-for="(msg, index) in messages" :key="index" 
              class="flex" :class="msg.role === 'user' ? 'justify-end' : 'justify-start'">
           <div class="max-w-[80%] rounded-lg p-3 shadow-sm"
-               :class="msg.role === 'user' ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-white text-gray-800 rounded-tl-none border border-gray-200'">
+               :class="msg.role === 'user' ? 'bg-blue-600 text-var(--color-bg-light, white) rounded-tr-none' : 'bg-var(--color-bg-light, white) text-gray-800 rounded-tl-none border border-gray-200'">
             <p>{{ msg.content }}</p>
           </div>
         </div>
         
         <div v-if="loading" class="flex justify-start">
-          <div class="bg-white text-gray-500 rounded-lg p-3 rounded-tl-none border border-gray-200 shadow-sm">
+          <div class="bg-var(--color-bg-light, white) text-gray-500 rounded-lg p-3 rounded-tl-none border border-gray-200 shadow-sm">
             <span class="animate-pulse">正在思考...</span>
           </div>
         </div>
       </div>
       
       <!-- 输入区域 -->
-      <div class="p-4 bg-white border-t border-gray-200">
+      <div class="p-4 bg-var(--color-bg-light, white) border-t border-gray-200">
         <div class="flex gap-2">
           <input 
             v-model="userInput" 
@@ -39,7 +39,7 @@
           />
           <button 
             @click="sendMessage"
-            class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            class="bg-blue-600 text-var(--color-bg-light, white) px-6 py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
             :disabled="loading || !userInput.trim()"
           >
             发送

@@ -714,7 +714,7 @@ onMounted(() => {
 /* ==================== 页面头部 ==================== */
 .search-header {
   padding: var(--spacing-2xl) 0;
-  background: linear-gradient(135deg, var(--color-primary) 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-purple-500) 100%);
   color: var(--color-text-main);
 }
 
@@ -915,7 +915,7 @@ onMounted(() => {
 }
 
 .search-history-delete:hover {
-  color: #ef4444;
+  color: var(--color-danger);
 }
 
 .search-history-delete-icon {
@@ -1199,7 +1199,7 @@ onMounted(() => {
 }
 
 .search-result-icon-knowledge .search-result-icon-emoji {
-  color: #8b5cf6;
+  color: var(--color-purple-500);
 }
 
 .search-result-body {
@@ -1233,17 +1233,17 @@ onMounted(() => {
 
 .search-result-tag-knowledge {
   background: rgba(139, 92, 246, 0.1);
-  color: #8b5cf6;
+  color: var(--color-purple-500);
 }
 
 .search-result-tag-tool {
   background: rgba(249, 115, 22, 0.1);
-  color: #f97316;
+  color: var(--color-orange-500);
 }
 
 .search-result-tag-theme {
   background: rgba(236, 72, 153, 0.1);
-  color: #ec4899;
+  color: var(--color-pink-500);
 }
 
 .search-result-tag-category {
@@ -1275,7 +1275,7 @@ onMounted(() => {
 }
 
 .search-result-title-link-knowledge:hover {
-  color: #8b5cf6;
+  color: var(--color-purple-500);
 }
 
 .search-result-card-title {
@@ -1328,31 +1328,31 @@ onMounted(() => {
 }
 
 .search-result-link-project:hover {
-  color: #16a34a;
+  color: var(--color-green-600);
 }
 
 .search-result-link-knowledge {
-  color: #8b5cf6;
+  color: var(--color-purple-500);
 }
 
 .search-result-link-knowledge:hover {
-  color: #7c3aed;
+  color: var(--color-purple-600);
 }
 
 .search-result-link-tool {
-  color: #f97316;
+  color: var(--color-orange-500);
 }
 
 .search-result-link-tool:hover {
-  color: #ea580c;
+  color: var(--color-orange-600);
 }
 
 .search-result-link-theme {
-  color: #ec4899;
+  color: var(--color-pink-500);
 }
 
 .search-result-link-theme:hover {
-  color: #db2777;
+  color: var(--color-pink-600);
 }
 
 .search-result-card-body {

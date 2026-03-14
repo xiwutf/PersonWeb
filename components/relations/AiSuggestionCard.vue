@@ -111,7 +111,7 @@ defineEmits<{
 
 [data-theme="dark"] .ai-suggestion-card {
   background: linear-gradient(135deg, var(--color-border-default) 0%, #1a2332 100%);
-  border-color: #334155;
+  border-color: var(--color-gray-700);
 }
 
 .ai-suggestion-card.compact {
@@ -273,15 +273,15 @@ defineEmits<{
   padding: 8px 12px;
   background: #fef2f2;
   border-radius: 6px;
-  border-left: 3px solid #ef4444;
-  color: #dc2626;
+  border-left: 3px solid var(--color-danger);
+  color: var(--color-danger);
   font-size: 13px;
 }
 
 [data-theme="dark"] .suggestion-error {
   background: #3f1f1f;
-  border-left-color: #ef4444;
-  color: #fca5a5;
+  border-left-color: var(--color-danger);
+  color: var(--color-red-300);
 }
 </style>
 

@@ -388,11 +388,11 @@ watch(messages, () => {
   align-items: center;
   gap: 8px;
   padding: 12px 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary-start, #667eea) 0%, var(--color-primary-end, #764ba2) 100%);
   color: white;
   border-radius: 50px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: var(--shadow-primary, 0 4px 12px rgba(102, 126, 234, 0.4));
   transition: all 0.3s ease;
   font-weight: 500;
   pointer-events: auto !important;
@@ -486,7 +486,7 @@ watch(messages, () => {
 }
 
 .message-user .message-avatar {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary-start, #667eea) 0%, var(--color-primary-end, #764ba2) 100%);
   color: white;
 }
 
@@ -513,7 +513,7 @@ watch(messages, () => {
 }
 
 .message-user .message-text {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary-start, #667eea) 0%, var(--color-primary-end, #764ba2) 100%);
   color: white;
   border-bottom-right-radius: 4px;
 }
@@ -541,7 +541,7 @@ watch(messages, () => {
 }
 
 .link-text {
-  color: #667eea;
+  color: var(--color-primary-start, #667eea);
   text-decoration: none;
   display: inline-flex;
   align-items: center;
@@ -550,18 +550,18 @@ watch(messages, () => {
 }
 
 .link-text:hover {
-  color: #764ba2;
+  color: var(--color-primary-end, #764ba2);
   text-decoration: underline;
 }
 
 .message-human-tip {
   margin-top: 8px;
   padding: 6px 10px;
-  background: rgba(239, 68, 68, 0.1);
-  border-left: 3px solid #ef4444;
+  background: var(--color-danger-10, rgba(239, 68, 68, 0.1));
+  border-left: 3px solid var(--color-danger, #ef4444);
   border-radius: 4px;
   font-size: 0.8125rem;
-  color: #dc2626;
+  color: var(--color-danger-dark, #dc2626);
   display: inline-flex;
   align-items: center;
   gap: 6px;

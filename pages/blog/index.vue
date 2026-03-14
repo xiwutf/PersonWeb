@@ -585,11 +585,11 @@ useHead({
 }
 
 .blog-sidebar-icon--emerald {
-  color: #34d399;
+  color: var(--color-success-400);
 }
 
 .blog-sidebar-icon--purple {
-  color: #a78bfa;
+  color: var(--color-purple-400);
 }
 
 .blog-tags {

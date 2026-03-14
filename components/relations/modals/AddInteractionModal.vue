@@ -1094,7 +1094,7 @@ const handleSubmitWithAi = async () => {
 
 [data-theme="dark"] .ai-result {
   background: #1f2937;
-  border-color: #4b5563;
+  border-color: var(--color-gray-600);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
@@ -1177,13 +1177,13 @@ const handleSubmitWithAi = async () => {
   display: block;
   font-size: 16px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--color-gray-800);
   margin-bottom: 12px;
   margin-top: 18px;
 }
 
 [data-theme="dark"] .ai-section-title {
-  color: #f9fafb;
+  color: var(--color-text-main);
 }
 
 .ai-summary {
@@ -1208,7 +1208,7 @@ const handleSubmitWithAi = async () => {
 
 [data-theme="dark"] .ai-summary-content {
   background: var(--color-text-main);
-  color: #f9fafb;
+  color: var(--color-text-main);
   border-color: var(--color-text-main);
   border-left-color: var(--color-primary-soft);
 }
@@ -1222,7 +1222,7 @@ const handleSubmitWithAi = async () => {
 }
 
 [data-theme="dark"] .ai-summary-empty {
-  color: #9ca3af;
+  color: var(--color-gray-400);
 }
 
 .ai-key-facts {
@@ -1244,13 +1244,13 @@ const handleSubmitWithAi = async () => {
   color: var(--color-text-main);
   background: var(--color-bg-card);
   border-radius: 4px;
-  border-left: 3px solid #10b981;
+  border-left: 3px solid var(--color-success);
 }
 
 [data-theme="dark"] .ai-key-fact-item {
-  color: #f9fafb;
+  color: var(--color-text-main);
   background: var(--color-text-main);
-  border-left-color: #34d399;
+  border-left-color: var(--color-success);
 }
 
 .ai-actions {
@@ -1284,18 +1284,18 @@ const handleSubmitWithAi = async () => {
 }
 
 [data-theme="dark"] .action-content {
-  color: #f9fafb;
+  color: var(--color-text-main);
 }
 
 .action-title {
   font-size: 15px;
   font-weight: 600;
-  color: #1e40af;
+  color: var(--color-primary);
   margin-right: 8px;
 }
 
 [data-theme="dark"] .action-title {
-  color: #93c5fd;
+  color: var(--color-primary);
 }
 
 .action-when,
@@ -1306,7 +1306,7 @@ const handleSubmitWithAi = async () => {
 
 [data-theme="dark"] .action-when,
 [data-theme="dark"] .action-why {
-  color: #d1d5db;
+  color: var(--color-gray-300);
 }
 
 .ai-message-drafts {
@@ -1358,7 +1358,7 @@ const handleSubmitWithAi = async () => {
 }
 
 [data-theme="dark"] .draft-scene {
-  color: #9ca3af;
+  color: var(--color-gray-400);
 }
 
 .draft-text {
@@ -1371,7 +1371,7 @@ const handleSubmitWithAi = async () => {
 }
 
 [data-theme="dark"] .draft-text {
-  color: #f9fafb;
+  color: var(--color-text-main);
 }
 
 .copy-icon {
@@ -1388,7 +1388,7 @@ const handleSubmitWithAi = async () => {
 }
 
 [data-theme="dark"] .copy-icon {
-  color: #9ca3af;
+  color: var(--color-gray-400);
 }
 
 [data-theme="dark"] .message-draft-item:hover .copy-icon {
@@ -1425,12 +1425,12 @@ const handleSubmitWithAi = async () => {
 }
 
 .heat-score-delta.positive {
-  color: #10b981;
+  color: var(--color-success);
   background: rgba(16, 185, 129, 0.2);
 }
 
 .heat-score-delta.negative {
-  color: #ef4444;
+  color: var(--color-danger);
   background: rgba(239, 68, 68, 0.2);
 }
 
@@ -1456,17 +1456,17 @@ const handleSubmitWithAi = async () => {
   border-radius: 6px;
   font-size: 15px;
   line-height: 1.7;
-  color: #78350f;
+  color: var(--color-yellow-900);
   border: 1px solid #fde68a;
-  border-left: 4px solid #f59e0b;
+  border-left: 4px solid var(--color-warning);
   box-shadow: 0 1px 2px var(--color-border);
 }
 
 [data-theme="dark"] .question-item {
   background: #1f2937;
-  color: #fde68a;
-  border-color: #fbbf24;
-  border-left-color: #fbbf24;
+  color: var(--color-yellow-200);
+  border-color: var(--color-warning);
+  border-left-color: var(--color-warning);
 }
 
 .questions-hint {
@@ -1477,7 +1477,7 @@ const handleSubmitWithAi = async () => {
 }
 
 [data-theme="dark"] .questions-hint {
-  color: #9ca3af;
+  color: var(--color-gray-400);
 }
 
 .ai-debug {

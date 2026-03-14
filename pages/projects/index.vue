@@ -62,7 +62,7 @@
         <NuxtLink 
           v-for="project in filteredProjects" 
           :key="project.id" 
-          :to="`/projects/${project.id}`" 
+          :to="getProjectLink(project)" 
           class="projects-card"
         >
           <!-- 封面图 -->
@@ -93,7 +93,7 @@
                   v-if="project.demoUrl" 
                   :href="project.demoUrl" 
                   target="_blank" 
-                  class="projects-card-cover-button projects-card-cover-button--white"
+                  class="projects-card-cover-button projects-card-cover-button--var(--color-bg-light, white)"
                   @click.stop
                 >
                   Live Demo
@@ -156,6 +156,8 @@
 </template>
 
 <script setup lang="ts">
+import Project3DSpace from '~/components/three/Project3DSpace.vue'
+
 // 确保使用 default 布局（包含 Header）
 definePageMeta({
   layout: 'default'
@@ -470,6 +472,16 @@ const getPlaceholderIcon = (project: Project) => {
     return '🔧'
   }
   return '💻'
+}
+
+// 安全生成项目详情链接，避免把图片路径等当作路由（修复 Vue Router "No match found" 警告）
+const getProjectLink = (project: Project) => {
+  const id = project.id
+  if (id == null || id === '') return '/projects'
+  if (typeof id === 'number') return `/projects/${id}`
+  const s = String(id)
+  if (s.startsWith('/') || /\.(png|jpg|jpeg|gif|webp|svg)(\?|$)/i.test(s)) return '/projects'
+  return `/projects/${id}`
 }
 
 // 处理图片加载错误

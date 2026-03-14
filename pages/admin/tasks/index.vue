@@ -437,7 +437,7 @@ onMounted(() => {
 }
 
 .task-stat-value-warning {
-  color: var(--color-warning, #f59e0b);
+  color: var(--color-warning, var(--color-warning));
 }
 
 .task-stat-value-primary {
@@ -445,11 +445,11 @@ onMounted(() => {
 }
 
 .task-stat-value-success {
-  color: var(--color-success, #10b981);
+  color: var(--color-success, var(--color-success));
 }
 
 .task-stat-value-error {
-  color: var(--color-error, #ef4444);
+  color: var(--color-error, var(--color-danger));
 }
 
 /* 筛选栏样式 - 使用 CSS 变量 */
@@ -468,7 +468,7 @@ onMounted(() => {
 /* 任务状态样式 - 使用 CSS 变量 */
 .task-status-pending {
   background: var(--color-warning-soft, rgba(251, 191, 36, 0.1));
-  color: var(--color-warning, #f59e0b);
+  color: var(--color-warning, var(--color-warning));
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
   font-size: 0.75rem;
@@ -486,7 +486,7 @@ onMounted(() => {
 
 .task-status-completed {
   background: var(--color-success-soft, rgba(16, 185, 129, 0.1));
-  color: var(--color-success, #10b981);
+  color: var(--color-success, var(--color-success));
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
   font-size: 0.75rem;
@@ -494,7 +494,7 @@ onMounted(() => {
 }
 
 .task-status-cancelled {
-  background: var(--color-bg-elevated, #f3f4f6);
+  background: var(--color-bg-elevated, var(--color-gray-100));
   color: var(--color-text-muted, var(--color-text-sec));
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
@@ -504,7 +504,7 @@ onMounted(() => {
 
 /* 任务优先级样式 - 使用 CSS 变量 */
 .task-priority-low {
-  background: var(--color-bg-elevated, #f3f4f6);
+  background: var(--color-bg-elevated, var(--color-gray-100));
   color: var(--color-text-muted, var(--color-text-sec));
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
@@ -523,7 +523,7 @@ onMounted(() => {
 
 .task-priority-high {
   background: var(--color-warning-soft, rgba(249, 115, 22, 0.1));
-  color: var(--color-warning, #f97316);
+  color: var(--color-warning, var(--color-orange-500));
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
   font-size: 0.75rem;
@@ -532,7 +532,7 @@ onMounted(() => {
 
 .task-priority-urgent {
   background: var(--color-error-soft, rgba(239, 68, 68, 0.1));
-  color: var(--color-error, #ef4444);
+  color: var(--color-error, var(--color-danger));
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
   font-size: 0.75rem;
@@ -541,7 +541,7 @@ onMounted(() => {
 
 /* 任务进度条颜色样式 - 使用 CSS 变量 */
 .task-progress-complete {
-  background: var(--color-success, #10b981);
+  background: var(--color-success, var(--color-success));
 }
 
 .task-progress-good {
@@ -549,11 +549,11 @@ onMounted(() => {
 }
 
 .task-progress-fair {
-  background: var(--color-warning, #f59e0b);
+  background: var(--color-warning, var(--color-warning));
 }
 
 .task-progress-poor {
-  background: var(--color-text-muted, #9ca3af);
+  background: var(--color-text-muted, var(--color-gray-400));
 }
 
 /* 深色主题适配 */
@@ -608,7 +608,7 @@ html.dark .task-filter-bar {
 }
 
 .task-list-item:hover {
-  background-color: var(--color-bg-elevated, #f9fafb);
+  background-color: var(--color-bg-elevated, var(--color-gray-50));
 }
 
 .task-list-item-title {
@@ -616,7 +616,7 @@ html.dark .task-filter-bar {
 }
 
 .task-list-item-description {
-  color: var(--color-text-sub, #4b5563);
+  color: var(--color-text-sub, var(--color-gray-600));
 }
 
 .task-list-item-meta {
@@ -624,7 +624,7 @@ html.dark .task-filter-bar {
 }
 
 .task-list-item-category {
-  background: var(--color-bg-elevated, #f3f4f6);
+  background: var(--color-bg-elevated, var(--color-gray-100));
   color: var(--color-text-muted, var(--color-text-sec));
 }
 
@@ -648,11 +648,11 @@ html.dark .task-filter-bar {
 }
 
 .task-list-action-btn-error {
-  color: var(--color-error, #ef4444);
+  color: var(--color-error, var(--color-danger));
 }
 
 .task-list-action-btn-error:hover {
-  color: var(--color-error-hover, #dc2626);
+  color: var(--color-error-hover, var(--color-danger-600));
 }
 
 /* 深色主题适配 */
@@ -674,13 +674,13 @@ html.dark .task-list-item-title {
 
 html[data-theme="dark"] .task-list-item-description,
 html.dark .task-list-item-description {
-  color: var(--color-text-sub, #9ca3af);
+  color: var(--color-text-sub, var(--color-gray-400));
 }
 
 html[data-theme="dark"] .task-list-item-category,
 html.dark .task-list-item-category {
   background: var(--color-bg-elevated, rgba(255, 255, 255, 0.1));
-  color: var(--color-text-muted, #9ca3af);
+  color: var(--color-text-muted, var(--color-gray-400));
 }
 
 html[data-theme="dark"] .task-list-progress-bg,

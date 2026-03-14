@@ -301,7 +301,7 @@ onMounted(() => {
   max-width: 680px;
   height: 100vh;
   background: var(--color-bg-card, var(--color-bg-card));
-  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+  box-shadow: -4px 0 24px var(--shadow-medium, rgba(0, 0, 0, 0.15));
   display: flex;
   flex-direction: column;
   animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -309,7 +309,7 @@ onMounted(() => {
 }
 
 [data-theme="dark"] .knowledge-modal-content {
-  background: #1e2937;
+  background: var(--color-bg-dark);
   box-shadow: -4px 0 24px rgba(0, 0, 0, 0.4);
 }
 
@@ -340,11 +340,11 @@ onMounted(() => {
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  background: linear-gradient(135deg, var(--color-primary) 0%, #9333ea 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-purple-600) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--color-bg-light, white);
   flex-shrink: 0;
 }
 
@@ -362,7 +362,7 @@ onMounted(() => {
 }
 
 [data-theme="dark"] .knowledge-modal-title {
-  color: #f9fafb;
+  color: var(--color-bg-elevated);
 }
 
 .knowledge-modal-subtitle {
@@ -373,7 +373,7 @@ onMounted(() => {
 }
 
 [data-theme="dark"] .knowledge-modal-subtitle {
-  color: #9ca3af;
+  color: var(--color-text-muted);
 }
 
 .knowledge-modal-close {
@@ -392,13 +392,13 @@ onMounted(() => {
 }
 
 .knowledge-modal-close:hover {
-  background: var(--color-bg-hover, #f3f4f6);
+  background: var(--color-bg-hover, var(--color-gray-100));
   color: var(--color-text-main, var(--color-text-main));
 }
 
 [data-theme="dark"] .knowledge-modal-close:hover {
   background: var(--color-text-main);
-  color: #f9fafb;
+  color: var(--color-bg-elevated);
 }
 
 .knowledge-modal-close svg {
@@ -453,14 +453,14 @@ onMounted(() => {
 }
 
 .knowledge-form-required {
-  color: #ef4444;
+  color: var(--color-danger);
   font-weight: 600;
 }
 
 .knowledge-form-hint {
   font-size: 12px;
   font-weight: 400;
-  color: var(--color-text-sec, #9ca3af);
+  color: var(--color-text-sec, var(--color-gray-400));
 }
 
 .knowledge-form-input-wrapper,
@@ -489,7 +489,7 @@ onMounted(() => {
 [data-theme="dark"] .knowledge-form-textarea {
   background: var(--color-text-main);
   border-color: var(--color-text-main);
-  color: #f9fafb;
+  color: var(--color-bg-elevated);
 }
 
 .knowledge-form-input:focus,
@@ -509,7 +509,7 @@ onMounted(() => {
 
 .knowledge-form-input::placeholder,
 .knowledge-form-textarea::placeholder {
-  color: var(--color-text-placeholder, #9ca3af);
+  color: var(--color-text-placeholder, var(--color-gray-400));
 }
 
 .knowledge-form-select {
@@ -549,7 +549,7 @@ onMounted(() => {
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: var(--color-text-sec, #9ca3af);
+  color: var(--color-text-sec, var(--color-gray-400));
 }
 
 .knowledge-form-hint-icon {
@@ -570,7 +570,7 @@ onMounted(() => {
 
 [data-theme="dark"] .knowledge-modal-footer {
   border-top-color: var(--color-text-main);
-  background: #1e2937;
+  background: var(--color-bg-dark);
 }
 
 .knowledge-btn {
@@ -589,7 +589,7 @@ onMounted(() => {
 }
 
 .knowledge-btn-secondary {
-  background: var(--color-bg-hover, #f3f4f6);
+  background: var(--color-bg-hover, var(--color-gray-100));
   color: var(--color-text-main, var(--color-text-main));
 }
 
@@ -603,12 +603,12 @@ onMounted(() => {
 }
 
 [data-theme="dark"] .knowledge-btn-secondary:hover {
-  background: #4b5563;
+  background: var(--color-gray-600);
 }
 
 .knowledge-btn-primary {
-  background: linear-gradient(135deg, var(--color-primary) 0%, #9333ea 100%);
-  color: white;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-purple-600) 100%);
+  color: var(--color-bg-light, white);
   box-shadow: 0 2px 8px var(--theme-primary);
 }
 

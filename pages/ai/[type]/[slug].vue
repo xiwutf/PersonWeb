@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="min-h-screen font-sans pt-20" style="background-color: var(--bg); color: var(--text-main);">
     <!-- 顶部导航栏 -->
     <div class="fixed top-0 left-0 w-full z-50 backdrop-blur-md" style="background-color: var(--header-bg, var(--bg)); border-bottom: 1px solid var(--border-color);">
@@ -13,24 +13,24 @@
     </div>
 
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <ContentDoc v-slot="{ doc }">
+      <template v-if="item">
         <!-- 头部信息 -->
         <div class="flex items-center gap-6 mb-12" data-aos="fade-down">
           <div class="w-24 h-24 rounded-2xl flex items-center justify-center text-5xl shadow-2xl" style="background-color: var(--bg-card); border: 1px solid var(--border-color);">
-            {{ doc.icon }}
+            {{ item.icon }}
           </div>
           <div>
-            <h1 class="text-4xl font-bold mb-2" style="color: var(--text-main);">{{ doc.title }}</h1>
-            <p class="text-lg" style="color: var(--text-secondary);">{{ doc.description }}</p>
+            <h1 class="text-4xl font-bold mb-2" style="color: var(--text-main);">{{ item.title }}</h1>
+            <p class="text-lg" style="color: var(--text-secondary);">{{ item.description }}</p>
             <div class="flex gap-3 mt-4">
               <span class="px-2 py-1 rounded text-xs font-mono doc-badge" style="background-color: var(--primary-soft-bg); border: 1px solid var(--color-primary-soft, rgba(37, 99, 235, 0.2)); color: var(--primary);">
-                STATUS: {{ doc.status }}
+                STATUS: {{ item.status }}
               </span>
-              <span v-if="doc.role" class="px-2 py-1 rounded text-xs font-mono doc-badge" style="background-color: var(--primary-soft-bg); border: 1px solid var(--color-primary-soft, rgba(37, 99, 235, 0.2)); color: var(--primary);">
-                ROLE: {{ doc.role }}
+              <span v-if="item.role" class="px-2 py-1 rounded text-xs font-mono doc-badge" style="background-color: var(--primary-soft-bg); border: 1px solid var(--color-primary-soft, rgba(37, 99, 235, 0.2)); color: var(--primary);">
+                ROLE: {{ item.role }}
               </span>
-              <span v-if="doc.duration" class="px-2 py-1 rounded text-xs font-mono doc-badge" style="background-color: var(--primary-soft-bg); border: 1px solid var(--color-primary-soft, rgba(37, 99, 235, 0.2)); color: var(--primary);">
-                TIME: {{ doc.duration }}
+              <span v-if="item.duration" class="px-2 py-1 rounded text-xs font-mono doc-badge" style="background-color: var(--primary-soft-bg); border: 1px solid var(--color-primary-soft, rgba(37, 99, 235, 0.2)); color: var(--primary);">
+                TIME: {{ item.duration }}
               </span>
             </div>
           </div>
@@ -41,7 +41,7 @@
           <!-- 左侧：文档内容 -->
           <div class="lg:col-span-2 space-y-8">
             <div class="rounded-2xl p-8 prose max-w-none" style="background-color: var(--bg-card); border: 1px solid var(--border-color);">
-              <ContentRenderer :value="doc" />
+              <ContentRenderer :value="item" />
             </div>
           </div>
 
@@ -57,9 +57,9 @@
                 
                 <div class="flex-1 p-4 overflow-y-auto space-y-4 font-mono text-sm custom-scrollbar" style="background-color: var(--bg);">
                   <div class="flex gap-3">
-                    <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style="background-color: var(--primary-soft-bg);">{{ doc.icon }}</div>
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style="background-color: var(--primary-soft-bg);">{{ item.icon }}</div>
                     <div class="p-3 rounded-lg rounded-tl-none" style="background-color: var(--bg-card); color: var(--text-main);">
-                      你好！我是{{ doc.title }}。有什么我可以帮你的吗？
+                      你好！我是{{ item.title }}。有什么我可以帮你的吗？
                     </div>
                   </div>
                 </div>
@@ -67,7 +67,7 @@
                 <div class="p-4" style="border-top: 1px solid var(--border-color); background-color: var(--bg-card);">
                   <div class="flex gap-2">
                     <input type="text" placeholder="输入消息..." class="flex-1 rounded-lg px-3 py-2 text-sm focus:outline-none transition-colors" style="background-color: var(--bg-elevated); border: 1px solid var(--border-color); color: var(--text-main);" disabled>
-                    <button class="px-3 py-2 rounded-lg transition-colors disabled:opacity-50 text-white" style="background-color: var(--primary);" disabled>
+                    <button class="px-3 py-2 rounded-lg transition-colors disabled:opacity-50 text-var(--color-bg-light, white)" style="background-color: var(--primary);" disabled>
                       <i class="fas fa-paper-plane"></i>
                     </button>
                   </div>
@@ -95,14 +95,14 @@
                     <i class="far fa-circle mr-2"></i> [WAITING] Awaiting user input
                   </div>
                 </div>
-                <button class="w-full mt-6 py-2 rounded-lg text-sm font-medium transition-colors text-white" style="background-color: var(--primary);">
+                <button class="w-full mt-6 py-2 rounded-lg text-sm font-medium transition-colors text-var(--color-bg-light, white)" style="background-color: var(--primary);">
                   运行演示
                 </button>
               </div>
             </div>
           </div>
         </div>
-      </ContentDoc>
+      </template>
     </div>
   </div>
 </template>
@@ -112,9 +112,9 @@ const route = useRoute()
 const type = route.params.type // 'agents' or 'workflows'
 const slug = route.params.slug
 
-// 简单的元数据设置
-const { data: item } = await useAsyncData(`ai-${type}-${slug}`, () => 
-  queryContent(`/ai/${type}/${slug}`).findOne()
+// 简单的元数据设置（Content v3: queryCollection）
+const { data: item } = await useAsyncData(`ai-${type}-${slug}`, () =>
+  queryCollection('content').path(`/ai/${type}/${slug}`).first()
 )
 
 definePageMeta({

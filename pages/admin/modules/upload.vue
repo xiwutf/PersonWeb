@@ -370,7 +370,7 @@ const formatFileSize = (bytes) => {
 }
 
 .header-content p {
-  color: #666;
+  color: var(--color-gray-500);
 }
 
 .upload-container {
@@ -378,7 +378,7 @@ const formatFileSize = (bytes) => {
 }
 
 .upload-card {
-  background: white;
+  background: var(--color-bg-light, white);
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   padding: 2rem;
@@ -404,7 +404,7 @@ const formatFileSize = (bytes) => {
 .form-section h3 {
   margin: 0;
   font-size: 1.2rem;
-  color: #333;
+  color: var(--color-gray-700);
 }
 
 .form-group {
@@ -415,14 +415,14 @@ const formatFileSize = (bytes) => {
 
 .form-group label {
   font-weight: 500;
-  color: #333;
+  color: var(--color-gray-700);
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
   padding: 0.75rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-gray-300);
   border-radius: 4px;
   font-size: 1rem;
   font-family: inherit;
@@ -444,7 +444,7 @@ const formatFileSize = (bytes) => {
 .form-help {
   margin: 0;
   font-size: 0.85rem;
-  color: #666;
+  color: var(--color-gray-500);
 }
 
 .file-info {
@@ -453,7 +453,7 @@ const formatFileSize = (bytes) => {
   align-items: center;
   margin-top: 0.5rem;
   padding: 0.5rem;
-  background: #f8f9fa;
+  background: var(--color-gray-50);
   border-radius: 4px;
 }
 
@@ -462,7 +462,7 @@ const formatFileSize = (bytes) => {
 }
 
 .file-size {
-  color: #666;
+  color: var(--color-gray-500);
   font-size: 0.85rem;
 }
 
@@ -478,7 +478,7 @@ const formatFileSize = (bytes) => {
 }
 
 .preview-section {
-  background: #f8f9fa;
+  background: var(--color-gray-50);
   border-radius: 4px;
   padding: 1rem;
 }
@@ -502,11 +502,11 @@ const formatFileSize = (bytes) => {
 
 .tree-children {
   padding-left: 1.5rem;
-  border-left: 1px solid #ddd;
+  border-left: 1px solid var(--color-gray-300);
 }
 
 .leaf {
-  color: #666;
+  color: var(--color-gray-500);
 }
 
 .form-actions {
@@ -531,7 +531,7 @@ const formatFileSize = (bytes) => {
 
 .btn.primary {
   background: var(--color-primary);
-  color: white;
+  color: var(--color-bg-light, white);
 }
 
 .btn.primary:hover {
@@ -539,13 +539,13 @@ const formatFileSize = (bytes) => {
 }
 
 .btn.secondary {
-  background: white;
-  color: #333;
-  border: 1px solid #ddd;
+  background: var(--color-bg-light, white);
+  color: var(--color-gray-700);
+  border: 1px solid var(--color-gray-300);
 }
 
 .btn.secondary:hover {
-  background: #f8f9fa;
+  background: var(--color-gray-50);
 }
 
 .btn:disabled {
@@ -558,7 +558,7 @@ const formatFileSize = (bytes) => {
   top: 0;
   left: 0;
   right: 0;
-  background: white;
+  background: var(--color-bg-light, white);
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   padding: 1rem;
   z-index: 1000;
@@ -586,11 +586,11 @@ const formatFileSize = (bytes) => {
 
 .progress-text {
   font-weight: 500;
-  color: #666;
+  color: var(--color-gray-500);
 }
 
 .upload-tips {
-  background: white;
+  background: var(--color-bg-light, white);
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   padding: 2rem;
@@ -611,7 +611,7 @@ const formatFileSize = (bytes) => {
 }
 
 .upload-tips li strong {
-  color: #333;
+  color: var(--color-gray-800);
 }
 
 .success-message {
@@ -619,7 +619,7 @@ const formatFileSize = (bytes) => {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: white;
+  background: var(--color-bg-light, white);
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   padding: 2rem;
@@ -642,11 +642,11 @@ const formatFileSize = (bytes) => {
 
 .success-text h3 {
   margin: 0;
-  color: #10b981;
+  color: var(--color-success);
 }
 
 .success-text p {
-  color: #666;
+  color: var(--color-gray-500);
   margin: 0;
 }
 

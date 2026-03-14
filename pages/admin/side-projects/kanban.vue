@@ -467,7 +467,7 @@ onMounted(() => {
 }
 
 .error-text {
-  color: #ef4444;
+  color: var(--color-danger);
 }
 
 .empty-container {

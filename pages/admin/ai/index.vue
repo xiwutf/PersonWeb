@@ -471,13 +471,13 @@ useHead({
 
 /* Hero 区域样式 - 使用 CSS 变量 */
 .hero-card {
-  background: linear-gradient(135deg, var(--color-primary, #667eea) 0%, var(--color-purple, #764ba2) 100%);
+  background: linear-gradient(135deg, var(--color-primary, var(--color-indigo-500)) 0%, var(--color-purple, var(--color-purple-600)) 100%);
   border: none;
   box-shadow: var(--shadow-md);
 }
 
 .hero-content {
-  color: var(--color-text-main, white);
+  color: var(--color-text-main, var(--color-bg-light, white));
   text-align: center;
   padding: 20px 0;
 }
@@ -546,23 +546,23 @@ useHead({
 }
 
 .agent-icon-purple {
-  background: linear-gradient(135deg, var(--color-purple, #8b5cf6) 0%, var(--color-purple-hover, #7c3aed) 100%);
+  background: linear-gradient(135deg, var(--color-purple, var(--color-purple-500)) 0%, var(--color-purple-hover, var(--color-purple-600)) 100%);
 }
 
 .agent-icon-green {
-  background: linear-gradient(135deg, var(--color-success, #10b981) 0%, var(--color-success-hover, #059669) 100%);
+  background: linear-gradient(135deg, var(--color-success, var(--color-success)) 0%, var(--color-success-hover, var(--color-green-700)) 100%);
 }
 
 .agent-icon-cyan {
-  background: linear-gradient(135deg, var(--color-info, #06b6d4) 0%, var(--color-info-hover, #0891b2) 100%);
+  background: linear-gradient(135deg, var(--color-info, var(--color-cyan-500)) 0%, var(--color-info-hover, var(--color-cyan-600)) 100%);
 }
 
 .agent-icon-orange {
-  background: linear-gradient(135deg, var(--color-warning, #f97316) 0%, var(--color-warning-hover, #ea580c) 100%);
+  background: linear-gradient(135deg, var(--color-warning, var(--color-orange-500)) 0%, var(--color-warning-hover, var(--color-orange-600)) 100%);
 }
 
 .agent-icon-pink {
-  background: linear-gradient(135deg, var(--color-error, #ec4899) 0%, var(--color-error-hover, #db2777) 100%);
+  background: linear-gradient(135deg, var(--color-error, var(--color-pink-500)) 0%, var(--color-error-hover, var(--color-pink-600)) 100%);
 }
 
 .agent-icon-emoji {
@@ -614,7 +614,7 @@ useHead({
 }
 
 .feature-icon {
-  color: var(--color-success, #10b981);
+  color: var(--color-success, var(--color-success));
   font-size: 0.875rem;
   flex-shrink: 0;
 }
@@ -635,8 +635,8 @@ useHead({
 
 /* 工作流提示卡片 - 使用 CSS 变量 */
 .workflow-tip-card {
-  background: linear-gradient(135deg, var(--color-warning-soft, #fef3c7) 0%, var(--color-warning-soft, #fde68a) 100%);
-  border: 1px solid var(--color-warning, #fbbf24);
+  background: linear-gradient(135deg, var(--color-warning-soft, var(--color-amber-100)) 0%, var(--color-warning-soft, var(--color-amber-200)) 100%);
+  border: 1px solid var(--color-warning, var(--color-amber-400));
 }
 
 .workflow-tip-content {
@@ -648,13 +648,13 @@ useHead({
 
 .tip-icon {
   font-size: 1.5rem;
-  color: var(--color-warning-hover, #d97706);
+  color: var(--color-warning-hover, var(--color-amber-600));
   flex-shrink: 0;
 }
 
 .tip-text {
   font-size: 0.9375rem;
-  color: var(--color-text-main, #92400e);
+  color: var(--color-text-main, var(--color-amber-800));
   margin: 0;
   line-height: 1.6;
 }

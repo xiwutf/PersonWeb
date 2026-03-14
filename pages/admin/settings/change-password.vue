@@ -267,7 +267,7 @@ const handleChangePassword = async () => {
 .form-error {
   margin-top: 0.5rem;
   font-size: 0.75rem;
-  color: var(--color-error, #ef4444);
+  color: var(--color-error, var(--color-danger));
 }
 
 .alert {
@@ -281,26 +281,26 @@ const handleChangePassword = async () => {
 .alert-error {
   background: var(--color-error-soft);
   border: 1px solid var(--color-error);
-  color: var(--color-error-hover, #fca5a5);
+  color: var(--color-error-hover, var(--color-red-300));
 }
 
 .alert-success {
   background: var(--color-success-soft);
   border: 1px solid var(--color-success);
-  color: var(--color-success-hover, #86efac);
+  color: var(--color-success-hover, var(--color-green-300));
 }
 
 /* 修改密码页面样式 - 使用 CSS 变量 */
 .change-password-subtitle {
-  color: var(--color-text-muted, #9ca3af);
+  color: var(--color-text-muted, var(--color-gray-400));
 }
 
 .change-password-required {
-  color: var(--color-error, #ef4444);
+  color: var(--color-error, var(--color-danger));
 }
 
 .change-password-toggle-btn {
-  color: var(--color-text-muted, #9ca3af);
+  color: var(--color-text-muted, var(--color-gray-400));
   transition: color 0.2s ease;
 }
 
@@ -310,13 +310,13 @@ const handleChangePassword = async () => {
 
 .change-password-cancel-btn {
   background: var(--color-bg-elevated, var(--color-border));
-  border-color: var(--color-border-default, #9ca3af);
+  border-color: var(--color-border-default, var(--color-gray-400));
   color: var(--color-text-main, var(--color-text-main));
   transition: all 0.2s ease;
 }
 
 .change-password-cancel-btn:hover {
-  background: var(--color-bg-elevated, #d1d5db);
+  background: var(--color-bg-elevated, var(--color-gray-300));
   border-color: var(--color-border-default);
 }
 

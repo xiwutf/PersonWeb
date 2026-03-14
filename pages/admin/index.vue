@@ -493,7 +493,7 @@ onMounted(() => {
 .kpi-trend {
   font-size: 12px;
   font-weight: 500;
-  white-space: nowrap;
+  var(--color-bg-light, white)-space: nowrap;
   color: var(--color-text-sub);
 }
 
@@ -515,7 +515,7 @@ onMounted(() => {
 .kpi-trend-empty {
   font-size: 12px;
   opacity: 0.5;
-  white-space: nowrap;
+  var(--color-bg-light, white)-space: nowrap;
 }
 
 /* 图表卡片 */

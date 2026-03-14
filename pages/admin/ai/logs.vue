@@ -256,7 +256,7 @@ useHead({
 }
 
 .log-item-error {
-  border-color: var(--color-error, #ef4444);
+  border-color: var(--color-error, var(--color-danger));
   background: var(--color-error-soft, rgba(239, 68, 68, 0.05));
 }
 
@@ -279,9 +279,9 @@ useHead({
 .log-error {
   padding: 12px;
   background: var(--color-error-soft, rgba(239, 68, 68, 0.1));
-  border-left: 3px solid var(--color-error, #ef4444);
+  border-left: 3px solid var(--color-error, var(--color-danger));
   border-radius: 4px;
-  color: var(--color-error-hover, #dc2626);
+  color: var(--color-error-hover, var(--color-danger-600));
   margin-bottom: 12px;
   display: flex;
   align-items: center;

@@ -1,23 +1,23 @@
 <template>
   <div>
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold text-gray-800 dark:text-white">项目访问统计</h1>
-      <button @click="fetchStats" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+      <h1 class="text-2xl font-bold text-gray-800 dark:text-var(--color-bg-light, white)">项目访问统计</h1>
+      <button @click="fetchStats" class="px-4 py-2 bg-blue-600 text-var(--color-bg-light, white) rounded hover:bg-blue-700 transition">
         刷新数据
       </button>
     </div>
 
     <!-- 总体统计 -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">总项目数</div>
         <div class="text-3xl font-bold text-blue-600 dark:text-blue-400">{{ stats.TotalProjects || 0 }}</div>
       </div>
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">总访问量</div>
         <div class="text-3xl font-bold text-green-600 dark:text-green-400">{{ stats.TotalViews || 0 }}</div>
       </div>
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">平均访问量</div>
         <div class="text-3xl font-bold text-purple-600 dark:text-purple-400">
           {{ stats.TotalProjects > 0 ? Math.round((stats.TotalViews || 0) / stats.TotalProjects) : 0 }}
@@ -27,8 +27,8 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- 热门项目排行 -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <h2 class="text-lg font-bold text-gray-800 dark:text-white mb-4">热门项目 Top 10</h2>
+      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h2 class="text-lg font-bold text-gray-800 dark:text-var(--color-bg-light, white) mb-4">热门项目 Top 10</h2>
         <div class="space-y-3">
           <div
             v-for="(project, index) in (stats.TopProjects || stats.topProjects || [])"
@@ -55,7 +55,7 @@
               </div>
             </div>
             <div class="text-right">
-              <div class="font-semibold text-gray-900 dark:text-white">{{ project.viewCount || 0 }}</div>
+              <div class="font-semibold text-gray-900 dark:text-var(--color-bg-light, white)">{{ project.viewCount || 0 }}</div>
               <div class="text-xs text-gray-500 dark:text-gray-400">次访问</div>
             </div>
           </div>
@@ -66,10 +66,10 @@
       </div>
 
       <!-- 项目访问趋势图表 -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div class="flex justify-between items-center mb-4">
-          <h2 class="text-lg font-bold text-gray-800 dark:text-white">访问趋势</h2>
-          <select v-model="selectedProjectId" @change="fetchTrends" class="border border-gray-300 dark:border-gray-600 rounded px-3 py-1 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 text-sm">
+          <h2 class="text-lg font-bold text-gray-800 dark:text-var(--color-bg-light, white)">访问趋势</h2>
+          <select v-model="selectedProjectId" @change="fetchTrends" class="border border-gray-300 dark:border-gray-600 rounded px-3 py-1 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200 text-sm">
             <option value="">选择项目</option>
             <option v-for="project in (stats.TopProjects || stats.topProjects || [])" :key="project.id" :value="project.id">
               {{ project.title }}

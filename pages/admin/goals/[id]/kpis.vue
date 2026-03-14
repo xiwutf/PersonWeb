@@ -95,45 +95,45 @@
 
     <!-- 创建/编辑 KPI 模态框 -->
     <div v-if="showCreateModal || editingKpi" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" @click.self="closeModal">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
         <div class="p-6">
-          <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-4">
+          <h2 class="text-xl font-bold text-gray-800 dark:text-var(--color-bg-light, white) mb-4">
             {{ editingKpi ? '编辑 KPI' : '新建月度 KPI' }}
           </h2>
           <form @submit.prevent="saveKpi" class="space-y-4">
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">年份 *</label>
-                <input v-model.number="kpiForm.year" type="number" required min="2020" max="2100" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
+                <input v-model.number="kpiForm.year" type="number" required min="2020" max="2100" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">月份 *</label>
-                <select v-model.number="kpiForm.month" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+                <select v-model.number="kpiForm.month" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200">
                   <option v-for="m in 12" :key="m" :value="m">{{ m }}月</option>
                 </select>
               </div>
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">KPI 标题 *</label>
-              <input v-model="kpiForm.title" type="text" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
+              <input v-model="kpiForm.title" type="text" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
             </div>
             <div class="grid grid-cols-3 gap-4">
               <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">目标数值</label>
-                <input v-model.number="kpiForm.targetValue" type="number" step="0.01" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
+                <input v-model.number="kpiForm.targetValue" type="number" step="0.01" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">当前数值</label>
-                <input v-model.number="kpiForm.currentValue" type="number" step="0.01" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
+                <input v-model.number="kpiForm.currentValue" type="number" step="0.01" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">单位</label>
-                <input v-model="kpiForm.unit" type="text" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
+                <input v-model="kpiForm.unit" type="text" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
               </div>
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">状态</label>
-              <select v-model="kpiForm.status" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+              <select v-model="kpiForm.status" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200">
                 <option value="pending">待开始</option>
                 <option value="in_progress">进行中</option>
                 <option value="completed">已完成</option>
@@ -141,7 +141,7 @@
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">备注</label>
-              <textarea v-model="kpiForm.notes" rows="3" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"></textarea>
+              <textarea v-model="kpiForm.notes" rows="3" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200"></textarea>
             </div>
             <div class="flex justify-end gap-3 pt-4">
               <button 
@@ -151,7 +151,7 @@
               >
                 <span class="dark:text-gray-100" style="color: inherit;">取消</span>
               </button>
-              <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors font-medium shadow-md">保存</button>
+              <button type="submit" class="px-4 py-2 bg-blue-600 text-var(--color-bg-light, white) rounded hover:bg-blue-700 transition-colors font-medium shadow-md">保存</button>
             </div>
           </form>
         </div>
@@ -160,9 +160,9 @@
 
     <!-- 批量创建 KPI 模态框 -->
     <div v-if="showBatchCreateModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" @click.self="showBatchCreateModal = false">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4">
+      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4">
         <div class="p-6">
-          <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-4">批量创建月度 KPI</h2>
+          <h2 class="text-xl font-bold text-gray-800 dark:text-var(--color-bg-light, white) mb-4">批量创建月度 KPI</h2>
           <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
             将为 {{ goal?.year }}年 创建 12 个月的 KPI，目标值将自动平均分配到每个月。
           </p>
@@ -173,7 +173,7 @@
             >
               <span class="dark:text-gray-100" style="color: inherit;">取消</span>
             </button>
-            <button @click="batchCreateKpis" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors">确认创建</button>
+            <button @click="batchCreateKpis" class="px-4 py-2 bg-green-600 text-var(--color-bg-light, white) rounded hover:bg-green-700 transition-colors">确认创建</button>
           </div>
         </div>
       </div>
@@ -389,7 +389,7 @@ onMounted(() => {
 <style scoped>
 /* KPI 页面样式 - 使用 CSS 变量 */
 .kpi-page-link {
-  color: var(--color-text-sub, #4b5563);
+  color: var(--color-text-sub, var(--color-gray-600));
   transition: color 0.2s ease;
 }
 
@@ -521,11 +521,11 @@ onMounted(() => {
 }
 
 .kpi-action-btn-error {
-  color: var(--color-error, #ef4444);
+  color: var(--color-error, var(--color-danger));
 }
 
 .kpi-action-btn-error:hover {
-  color: var(--color-error-hover, #dc2626);
+  color: var(--color-error-hover, var(--color-danger-600));
 }
 
 .kpi-btn-primary {
@@ -545,18 +545,18 @@ onMounted(() => {
 }
 
 .kpi-btn-success:hover {
-  background: var(--color-success-hover, #16a34a);
+  background: var(--color-success-hover, var(--color-green-600));
 }
 
 /* 深色主题适配 */
 html[data-theme="dark"] .kpi-page-link,
 html.dark .kpi-page-link {
-  color: var(--color-text-muted, #9ca3af);
+  color: var(--color-text-muted, var(--color-gray-400));
 }
 
 html[data-theme="dark"] .kpi-page-link:hover,
 html.dark .kpi-page-link:hover {
-  color: var(--color-text-main, #f9fafb);
+  color: var(--color-text-main, var(--color-gray-50));
 }
 
 html[data-theme="dark"] .kpi-goal-card,

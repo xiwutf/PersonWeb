@@ -325,7 +325,7 @@ onMounted(() => {
 
 .stat-icon-pending {
   background: rgba(251, 191, 36, 0.2);
-  color: #fbbf24;
+  color: var(--color-warning);
 }
 
 .stat-icon-approved {
@@ -335,7 +335,7 @@ onMounted(() => {
 
 .stat-icon-rejected {
   background: rgba(239, 68, 68, 0.2);
-  color: #ef4444;
+  color: var(--color-danger);
 }
 
 .stat-content {
@@ -403,7 +403,7 @@ onMounted(() => {
 }
 
 .message-card-pending {
-  border-left: 3px solid #fbbf24;
+  border-left: 3px solid var(--color-warning-400);
 }
 
 .message-card-approved {
@@ -411,7 +411,7 @@ onMounted(() => {
 }
 
 .message-card-rejected {
-  border-left: 3px solid #ef4444;
+  border-left: 3px solid var(--color-danger);
   opacity: 0.7;
 }
 
@@ -440,13 +440,13 @@ onMounted(() => {
 
 .type-mood {
   background: rgba(236, 72, 153, 0.2);
-  color: #f472b6;
+  color: var(--color-pink-500);
   border: 1px solid rgba(236, 72, 153, 0.4);
 }
 
 .type-blessing {
   background: rgba(251, 191, 36, 0.2);
-  color: #fbbf24;
+  color: var(--color-warning);
   border: 1px solid rgba(251, 191, 36, 0.4);
 }
 
@@ -459,7 +459,7 @@ onMounted(() => {
 
 .status-pending {
   background: rgba(251, 191, 36, 0.2);
-  color: #fbbf24;
+  color: var(--color-warning);
   border: 1px solid rgba(251, 191, 36, 0.4);
 }
 
@@ -471,7 +471,7 @@ onMounted(() => {
 
 .status-rejected {
   background: rgba(239, 68, 68, 0.2);
-  color: #ef4444;
+  color: var(--color-danger);
   border: 1px solid rgba(239, 68, 68, 0.4);
 }
 
@@ -538,7 +538,7 @@ onMounted(() => {
 .action-button-approve {
   background: rgba(34, 197, 94, 0.3);
   border: 1px solid rgba(34, 197, 94, 0.5);
-  color: #a7f3d0;
+  color: var(--color-purple-300);
 }
 
 .action-button-approve:hover {
@@ -548,7 +548,7 @@ onMounted(() => {
 .action-button-reject {
   background: rgba(239, 68, 68, 0.3);
   border: 1px solid rgba(239, 68, 68, 0.5);
-  color: #fecaca;
+  color: var(--color-danger-300);
 }
 
 .action-button-reject:hover {

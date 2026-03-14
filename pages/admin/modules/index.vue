@@ -408,7 +408,7 @@ const closeDetails = () => {
 }
 
 .page-header p {
-  color: #666;
+  color: var(--color-gray-500);
 }
 
 .stats-grid {
@@ -419,7 +419,7 @@ const closeDetails = () => {
 }
 
 .stat-card {
-  background: white;
+  background: var(--color-bg-light, white);
   padding: 1.5rem;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -433,11 +433,11 @@ const closeDetails = () => {
 }
 
 .stat-icon.enabled {
-  color: #10b981;
+  color: var(--color-success);
 }
 
 .stat-icon.disabled {
-  color: #ef4444;
+  color: var(--color-danger);
 }
 
 .stat-content h3 {
@@ -447,7 +447,7 @@ const closeDetails = () => {
 
 .stat-content p {
   margin: 0;
-  color: #666;
+  color: var(--color-gray-500);
 }
 
 .filter-section {
@@ -465,7 +465,7 @@ const closeDetails = () => {
 .search-box input {
   width: 100%;
   padding: 0.5rem 1rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-gray-300);
   border-radius: 4px;
   font-size: 1rem;
 }
@@ -477,9 +477,9 @@ const closeDetails = () => {
 
 .filter-group select {
   padding: 0.5rem 1rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-gray-300);
   border-radius: 4px;
-  background: white;
+  background: var(--color-bg-light, white);
 }
 
 .modules-list {
@@ -489,7 +489,7 @@ const closeDetails = () => {
 }
 
 .module-card {
-  background: white;
+  background: var(--color-bg-light, white);
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   overflow: hidden;
@@ -507,7 +507,7 @@ const closeDetails = () => {
 
 .module-header {
   padding: 1rem;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--color-gray-200);
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -524,7 +524,7 @@ const closeDetails = () => {
 
 .version {
   font-size: 0.9rem;
-  color: #666;
+  color: var(--color-gray-500);
 }
 
 .module-status {
@@ -541,18 +541,18 @@ const closeDetails = () => {
 }
 
 .status-badge.enabled {
-  background: #d1fae5;
-  color: #065f46;
+  background: var(--color-green-100);
+  color: var(--color-success-dark);
 }
 
 .status-badge.disabled {
-  background: #fee2e2;
-  color: #991b1b;
+  background: var(--color-red-100);
+  color: var(--color-danger-dark);
 }
 
 .core-badge {
-  background: #fbbf24;
-  color: #78350f;
+  background: var(--color-warning-400);
+  color: var(--color-amber-900);
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   font-size: 0.8rem;
@@ -564,19 +564,19 @@ const closeDetails = () => {
 
 .description {
   margin: 0 0 1rem 0;
-  color: #666;
+  color: var(--color-gray-500);
 }
 
 .meta-info {
   display: flex;
   gap: 1rem;
   font-size: 0.9rem;
-  color: #666;
+  color: var(--color-gray-500);
 }
 
 .module-actions {
   padding: 1rem;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--color-gray-200);
   display: flex;
   gap: 0.5rem;
 }
@@ -593,7 +593,7 @@ const closeDetails = () => {
 
 .toggle-btn.enable {
   background: var(--color-primary);
-  color: white;
+  color: var(--color-bg-light, white);
 }
 
 .toggle-btn.enable:hover {
@@ -601,19 +601,19 @@ const closeDetails = () => {
 }
 
 .toggle-btn.disable {
-  background: #ef4444;
-  color: white;
+  background: var(--color-danger);
+  color: var(--color-bg-light, white);
 }
 
 .toggle-btn.disable:hover {
-  background: #dc2626;
+  background: var(--color-danger-600);
 }
 
 .config-btn,
 .details-btn {
   padding: 0.5rem 1rem;
-  border: 1px solid #ddd;
-  background: white;
+  border: 1px solid var(--color-gray-300);
+  background: var(--color-bg-light, white);
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.9rem;
@@ -622,13 +622,13 @@ const closeDetails = () => {
 
 .config-btn:hover,
 .details-btn:hover {
-  background: #f3f4f6;
+  background: var(--color-gray-100);
 }
 
 .dependencies {
   padding: 1rem;
-  border-top: 1px solid #eee;
-  background: #f9fafb;
+  border-top: 1px solid var(--color-gray-200);
+  background: var(--color-bg-elevated);
 }
 
 .dependencies h4 {
@@ -652,13 +652,13 @@ const closeDetails = () => {
 .loading {
   text-align: center;
   padding: 2rem;
-  color: #666;
+  color: var(--color-gray-500);
 }
 
 .empty-state {
   text-align: center;
   padding: 2rem;
-  color: #666;
+  color: var(--color-gray-500);
 }
 
 .modal {
@@ -675,7 +675,7 @@ const closeDetails = () => {
 }
 
 .modal-content {
-  background: white;
+  background: var(--color-bg-light, white);
   border-radius: 8px;
   max-width: 600px;
   width: 90%;
@@ -685,7 +685,7 @@ const closeDetails = () => {
 
 .modal-header {
   padding: 1rem;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--color-gray-200);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -700,7 +700,7 @@ const closeDetails = () => {
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
-  color: #666;
+  color: var(--color-gray-500);
 }
 
 .modal-body {
@@ -709,7 +709,7 @@ const closeDetails = () => {
 
 .modal-footer {
   padding: 1rem;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--color-gray-200);
   display: flex;
   justify-content: flex-end;
   gap: 0.5rem;
@@ -728,7 +728,7 @@ const closeDetails = () => {
 
 .save-btn {
   background: var(--color-primary);
-  color: white;
+  color: var(--color-bg-light, white);
 }
 
 .save-btn:hover {
@@ -738,12 +738,12 @@ const closeDetails = () => {
 .cancel-btn,
 .close-btn {
   background: var(--color-border);
-  color: #666;
+  color: var(--color-gray-500);
 }
 
 .cancel-btn:hover,
 .close-btn:hover {
-  background: #d1d5db;
+  background: var(--color-gray-300);
 }
 
 .config-item {
@@ -759,7 +759,7 @@ const closeDetails = () => {
 .config-item input {
   width: 100%;
   padding: 0.5rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-gray-300);
   border-radius: 4px;
 }
 
@@ -767,7 +767,7 @@ const closeDetails = () => {
   display: block;
   margin-top: 0.25rem;
   font-size: 0.8rem;
-  color: #666;
+  color: var(--color-gray-500);
 }
 
 .detail-section {

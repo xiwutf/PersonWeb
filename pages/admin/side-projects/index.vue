@@ -787,13 +787,13 @@ onMounted(() => {
 .tag-warning {
   background: rgba(245, 158, 11, 0.2);
   border: 1px solid rgba(245, 158, 11, 0.4);
-  color: #f59e0b;
+  color: var(--color-warning);
 }
 
 .tag-error {
   background: rgba(239, 68, 68, 0.2);
   border: 1px solid rgba(239, 68, 68, 0.4);
-  color: #ef4444;
+  color: var(--color-danger);
 }
 
 .tag-default {
@@ -825,16 +825,16 @@ onMounted(() => {
 }
 
 .btn-link-blue:hover {
-  color: #93c5fd;
+  color: var(--color-primary-400);
   background: rgba(96, 165, 250, 0.1);
 }
 
 .btn-link-red {
-  color: #f87171;
+  color: var(--color-danger-400);
 }
 
 .btn-link-red:hover {
-  color: #fca5a5;
+  color: var(--color-danger-300);
   background: rgba(248, 113, 113, 0.1);
 }
 

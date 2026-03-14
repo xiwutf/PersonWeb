@@ -372,7 +372,7 @@ useHead({
   margin-bottom: 4px;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  var(--color-bg-light, white)-space: nowrap;
 }
 
 .session-meta {
@@ -485,9 +485,9 @@ useHead({
 }
 
 .message-user .message-avatar {
-  background: linear-gradient(135deg, var(--color-primary, #667eea) 0%, var(--color-purple, #764ba2) 100%);
+  background: linear-gradient(135deg, var(--color-primary, var(--color-indigo-500)) 0%, var(--color-purple, var(--color-purple-600)) 100%);
   border-color: transparent;
-  color: var(--color-text-main, white);
+  color: var(--color-text-main, var(--color-bg-light, white));
 }
 
 .message-bubble {
@@ -512,8 +512,8 @@ useHead({
 }
 
 .message-user .message-content {
-  background: linear-gradient(135deg, var(--color-primary, #667eea) 0%, var(--color-purple, #764ba2) 100%);
-  color: var(--color-text-main, white);
+  background: linear-gradient(135deg, var(--color-primary, var(--color-indigo-500)) 0%, var(--color-purple, var(--color-purple-600)) 100%);
+  color: var(--color-text-main, var(--color-bg-light, white));
   border-bottom-right-radius: 4px;
 }
 

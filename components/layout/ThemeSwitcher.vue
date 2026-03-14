@@ -357,9 +357,9 @@ onUnmounted(() => {
   width: 2.5rem !important; /* 缩小尺寸 */
   height: 2.5rem !important;
   border-radius: 50% !important;
-  background: rgba(59, 130, 246, 0.95) !important;
+  background: var(--color-primary, rgba(59, 130, 246, 0.95)) !important;
   backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.6) !important;
+  border: 2px solid var(--color-border-highlight, rgba(255, 255, 255, 0.6)) !important;
   color: white !important;
   font-size: 1rem !important; /* 缩小图标 */
   cursor: pointer !important;
@@ -376,13 +376,13 @@ onUnmounted(() => {
 }
 
 .theme-switcher-button:hover {
-  background: rgba(59, 130, 246, 1);
+  background: var(--color-primary, rgba(59, 130, 246, 1));
   transform: scale(1.1);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
 }
 
 .theme-switcher-button.active {
-  background: rgba(139, 92, 246, 0.9);
+  background: var(--color-purple-500, rgba(139, 92, 246, 0.9));
 }
 
 .theme-switcher-overlay {
@@ -402,9 +402,9 @@ onUnmounted(() => {
   width: 90vw;
   max-width: 600px;
   max-height: 80vh;
-  background: rgba(30, 41, 59, 0.95);
+  background: var(--color-bg-card, rgba(30, 41, 59, 0.95));
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.2));
   border-radius: 1rem;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   z-index: 1000;
@@ -418,13 +418,13 @@ onUnmounted(() => {
   align-items: center;
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.1));
 }
 
 .panel-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: white;
+  color: var(--color-text-main, white);
 }
 
 .panel-close {
@@ -453,7 +453,7 @@ onUnmounted(() => {
 .section-title {
   font-size: 0.875rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-muted, rgba(255, 255, 255, 0.7));
   margin-bottom: 1rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -505,20 +505,20 @@ html[data-theme="light"] .theme-card[data-theme-code="light"] .theme-preview {
   border: 1px solid var(--border-color);
 }
 
-html[data-theme="light"] .theme-card[data-theme-code="dark"] .theme-preview {
-  background: #0a0e1a;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+:global([data-theme="light"]) .theme-card[data-theme-code="dark"] .theme-preview {
+  background: var(--color-bg-dark, #0a0e1a);
+  border: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.1));
 }
 
 /* 深色主题预览卡片特殊处理 */
-html[data-theme="dark"] .theme-card[data-theme-code="light"] .theme-preview {
-  background: #f5f7fb;
+:global([data-theme="dark"]) .theme-card[data-theme-code="light"] .theme-preview {
+  background: var(--color-bg-light, #f5f7fb);
   border: 1px solid var(--shadow);
 }
 
-html[data-theme="dark"] .theme-card[data-theme-code="dark"] .theme-preview {
-  background: #0a0e1a;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+:global([data-theme="dark"]) .theme-card[data-theme-code="dark"] .theme-preview {
+  background: var(--color-bg-dark, #0a0e1a);
+  border: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.1));
 }
 
 .theme-preview img {
@@ -549,14 +549,14 @@ html[data-theme="dark"] .theme-card[data-theme-code="dark"] .theme-preview {
   background: var(--theme-primary);
   border: 1px solid var(--theme-primary);
   border-radius: 0.25rem;
-  color: #93c5fd;
+  color: var(--color-info, #93c5fd);
 }
 
 .background-name {
   padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.05));
   font-size: 0.875rem;
-  color: white;
+  color: var(--color-text-main, white);
   text-align: center;
 }
 
@@ -570,7 +570,7 @@ html[data-theme="dark"] .theme-card[data-theme-code="dark"] .theme-preview {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: white;
+  color: var(--color-text-main, white);
   cursor: pointer;
   flex: 1;
 }
@@ -578,10 +578,10 @@ html[data-theme="dark"] .theme-card[data-theme-code="dark"] .theme-preview {
 .interval-input {
   width: 80px;
   padding: 0.5rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.1));
+  border: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.2));
   border-radius: 0.25rem;
-  color: white;
+  color: var(--color-text-main, white);
 }
 
 /* 过渡动画 */

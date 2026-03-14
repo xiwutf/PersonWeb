@@ -8,7 +8,7 @@
         >
           ← 返回技能树
         </NuxtLink>
-        <h1 class="text-2xl font-bold text-gray-800 dark:text-white">{{ skill?.name || '技能详情' }}</h1>
+        <h1 class="text-2xl font-bold text-gray-800 dark:text-var(--color-bg-light, white)">{{ skill?.name || '技能详情' }}</h1>
       </div>
     </div>
 
@@ -18,11 +18,11 @@
 
     <div v-else-if="skill" class="space-y-6">
       <!-- 技能基本信息 -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div class="flex items-start gap-4">
           <span v-if="skill.icon" class="text-4xl">{{ skill.icon }}</span>
           <div class="flex-1">
-            <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">{{ skill.name }}</h2>
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-var(--color-bg-light, white) mb-2">{{ skill.name }}</h2>
             <p v-if="skill.description" class="text-gray-600 dark:text-gray-400 mb-4">
               {{ skill.description }}
             </p>
@@ -37,8 +37,8 @@
       </div>
 
       <!-- 评级历史 -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">评级历史</h3>
+      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-var(--color-bg-light, white) mb-4">评级历史</h3>
         <div v-if="skill.ratings && skill.ratings.length > 0" class="space-y-4">
           <div
             v-for="rating in skill.ratings"
@@ -46,7 +46,7 @@
             class="border-l-4 border-blue-500 pl-4 py-2"
           >
             <div class="flex items-center justify-between mb-1">
-              <span class="text-lg font-bold text-gray-900 dark:text-white">{{ rating.rating }} / 10</span>
+              <span class="text-lg font-bold text-gray-900 dark:text-var(--color-bg-light, white)">{{ rating.rating }} / 10</span>
               <span class="text-sm text-gray-500 dark:text-gray-400">
                 {{ formatDate(rating.recordedAt) }}
               </span>
@@ -58,8 +58,8 @@
       </div>
 
       <!-- 学习日志 -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">学习日志</h3>
+      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-var(--color-bg-light, white) mb-4">学习日志</h3>
         <div v-if="skill.learningLogs && skill.learningLogs.length > 0" class="space-y-4">
           <div
             v-for="log in skill.learningLogs"
@@ -67,7 +67,7 @@
             class="border border-gray-200 dark:border-gray-700 rounded-lg p-4"
           >
             <div class="flex items-start justify-between mb-2">
-              <h4 class="font-semibold text-gray-900 dark:text-white">{{ log.title }}</h4>
+              <h4 class="font-semibold text-gray-900 dark:text-var(--color-bg-light, white)">{{ log.title }}</h4>
               <span class="text-sm text-gray-500 dark:text-gray-400">
                 {{ formatDate(log.learnedAt) }}
               </span>

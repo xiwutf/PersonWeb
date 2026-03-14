@@ -412,7 +412,7 @@ onMounted(() => {
 }
 
 .module-card-core {
-  border-left: 3px solid #f59e0b;
+  border-left: 3px solid var(--color-warning);
 }
 
 .module-card-header {
@@ -510,7 +510,7 @@ onMounted(() => {
   border: 1px solid rgba(59, 130, 246, 0.4);
   border-radius: 0.25rem;
   font-size: 0.75rem;
-  color: #93c5fd;
+  color: var(--color-primary-400);
 }
 
 .module-card-footer {
@@ -538,7 +538,7 @@ onMounted(() => {
 .btn-toggle-enable {
   background: rgba(34, 197, 94, 0.3);
   border: 1px solid rgba(34, 197, 94, 0.5);
-  color: #a7f3d0;
+  color: var(--color-purple-300);
 }
 
 .btn-toggle-enable:hover {
@@ -548,7 +548,7 @@ onMounted(() => {
 .btn-toggle-disable {
   background: rgba(239, 68, 68, 0.3);
   border: 1px solid rgba(239, 68, 68, 0.5);
-  color: #fecaca;
+  color: var(--color-danger-300);
 }
 
 .btn-toggle-disable:hover {
@@ -565,7 +565,7 @@ onMounted(() => {
 .badge-success {
   background: rgba(34, 197, 94, 0.3);
   border: 1px solid rgba(34, 197, 94, 0.6);
-  color: #a7f3d0;
+  color: var(--color-purple-300);
 }
 
 .badge-default {
@@ -577,13 +577,13 @@ onMounted(() => {
 .badge-warning {
   background: rgba(251, 191, 36, 0.3);
   border: 1px solid rgba(251, 191, 36, 0.6);
-  color: #fde68a;
+  color: var(--color-warning-300);
 }
 
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: var(--overlay-color, rgba(0, 0, 0, 0.7));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -692,7 +692,7 @@ onMounted(() => {
   border: 1px solid rgba(139, 92, 246, 0.4);
   border-radius: 0.25rem;
   font-size: 0.75rem;
-  color: #c7d2fe;
+  color: var(--color-purple-300);
   font-family: monospace;
 }
 </style>

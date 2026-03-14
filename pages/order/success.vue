@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 py-8">
     <div class="container mx-auto px-4 max-w-2xl">
       <!-- 成功提示 -->
-      <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 text-center mb-6">
+      <div class="bg-var(--color-bg-light, white)/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 text-center mb-6">
         <div class="mb-6">
           <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <i class="fas fa-check-circle text-5xl text-green-600"></i>
@@ -50,7 +50,7 @@
         </div>
 
         <!-- 微信二维码 -->
-        <div v-if="wechatInfo" class="bg-white rounded-lg p-6 mb-6 border border-gray-200">
+        <div v-if="wechatInfo" class="bg-var(--color-bg-light, white) rounded-lg p-6 mb-6 border border-gray-200">
           <p class="text-sm text-gray-600 mb-3">您也可以直接添加我的微信：</p>
           <p class="text-lg font-semibold text-gray-800 mb-4">{{ wechatInfo.wechat }}</p>
           <div v-if="wechatInfo.qrcode" class="flex justify-center mb-3">
@@ -71,7 +71,7 @@
           </button>
           <button
             @click="$router.push('/order/query')"
-            class="flex-1 px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:from-orange-600 hover:to-red-600 transition-all font-medium shadow-lg"
+            class="flex-1 px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-var(--color-bg-light, white) rounded-lg hover:from-orange-600 hover:to-red-600 transition-all font-medium shadow-lg"
           >
             <i class="fas fa-search mr-2"></i>
             查看订单状态

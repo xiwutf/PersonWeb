@@ -1,27 +1,27 @@
 <template>
   <div>
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold text-gray-800 dark:text-white">错误日志</h1>
-      <button @click="fetchErrorLogs" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+      <h1 class="text-2xl font-bold text-gray-800 dark:text-var(--color-bg-light, white)">错误日志</h1>
+      <button @click="fetchErrorLogs" class="px-4 py-2 bg-blue-600 text-var(--color-bg-light, white) rounded hover:bg-blue-700 transition">
         刷新
       </button>
     </div>
 
     <!-- 统计卡片 -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
         <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">总错误数</div>
-        <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ stats.Total || 0 }}</div>
+        <div class="text-2xl font-bold text-gray-900 dark:text-var(--color-bg-light, white)">{{ stats.Total || 0 }}</div>
       </div>
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
         <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">未处理</div>
         <div class="text-2xl font-bold text-red-600 dark:text-red-400">{{ stats.Unhandled || 0 }}</div>
       </div>
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
         <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">已处理</div>
         <div class="text-2xl font-bold text-green-600 dark:text-green-400">{{ stats.Handled || 0 }}</div>
       </div>
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
         <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">已忽略</div>
         <div class="text-2xl font-bold text-gray-600 dark:text-gray-400">{{ stats.Ignored || 0 }}</div>
       </div>
@@ -30,8 +30,8 @@
     <!-- 统计图表 -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
       <!-- 错误类型分布 -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <h2 class="text-lg font-bold text-gray-800 dark:text-white mb-4">错误类型分布</h2>
+      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h2 class="text-lg font-bold text-gray-800 dark:text-var(--color-bg-light, white) mb-4">错误类型分布</h2>
         <div v-if="stats.ByType && stats.ByType.length > 0" class="h-64">
           <Doughnut :data="typeChartData" :options="typeChartOptions" />
         </div>
@@ -41,8 +41,8 @@
       </div>
 
       <!-- 最近7天错误趋势 -->
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <h2 class="text-lg font-bold text-gray-800 dark:text-white mb-4">最近7天错误趋势</h2>
+      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h2 class="text-lg font-bold text-gray-800 dark:text-var(--color-bg-light, white) mb-4">最近7天错误趋势</h2>
         <div v-if="stats.RecentErrors && stats.RecentErrors.length > 0" class="h-64">
           <Line :data="trendChartData" :options="trendChartOptions" />
         </div>
@@ -53,10 +53,10 @@
     </div>
 
     <!-- 筛选器和批量操作 -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-6">
+    <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-6">
       <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
         <div class="flex gap-4 flex-1">
-          <select v-model="filters.errorType" @change="fetchErrorLogs" class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+          <select v-model="filters.errorType" @change="fetchErrorLogs" class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200">
             <option value="">全部类型</option>
             <option value="JavaScript">JavaScript</option>
             <option value="Promise">Promise</option>
@@ -64,7 +64,7 @@
             <option value="API">API</option>
             <option value="Server">Server</option>
           </select>
-          <select v-model="filters.status" @change="fetchErrorLogs" class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+          <select v-model="filters.status" @change="fetchErrorLogs" class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200">
             <option :value="null">全部状态</option>
             <option :value="0">未处理</option>
             <option :value="1">已处理</option>
@@ -76,19 +76,19 @@
           <span class="text-sm text-gray-600 dark:text-gray-400">已选择 {{ selectedIds.length }} 项</span>
           <button
             @click="batchUpdateStatus(1)"
-            class="px-4 py-2 bg-green-600 text-white rounded text-sm hover:bg-green-700 transition"
+            class="px-4 py-2 bg-green-600 text-var(--color-bg-light, white) rounded text-sm hover:bg-green-700 transition"
           >
             批量标记已处理
           </button>
           <button
             @click="batchUpdateStatus(2)"
-            class="px-4 py-2 bg-gray-600 text-white rounded text-sm hover:bg-gray-700 transition"
+            class="px-4 py-2 bg-gray-600 text-var(--color-bg-light, white) rounded text-sm hover:bg-gray-700 transition"
           >
             批量标记已忽略
           </button>
           <button
             @click="batchDelete"
-            class="px-4 py-2 bg-red-600 text-white rounded text-sm hover:bg-red-700 transition"
+            class="px-4 py-2 bg-red-600 text-var(--color-bg-light, white) rounded text-sm hover:bg-red-700 transition"
           >
             批量删除
           </button>
@@ -103,7 +103,7 @@
     </div>
 
     <!-- 错误日志列表 -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
       <div v-if="loading" class="text-center py-12">
         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
       </div>
@@ -154,7 +154,7 @@
                   {{ log.errorType }}
                 </span>
               </div>
-              <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">{{ log.errorMessage }}</h3>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-var(--color-bg-light, white) mb-1">{{ log.errorMessage }}</h3>
               <p class="text-sm text-gray-500 dark:text-gray-400">
                 {{ log.errorUrl }}
               </p>
@@ -166,21 +166,21 @@
             <div class="flex gap-2">
               <button
                 @click="viewErrorLog(log.id)"
-                class="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 transition"
+                class="px-3 py-1 bg-blue-600 text-var(--color-bg-light, white) rounded text-sm hover:bg-blue-700 transition"
               >
                 查看详情
               </button>
               <button
                 v-if="log.status === 0"
                 @click="updateStatus(log.id, 1)"
-                class="px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700 transition"
+                class="px-3 py-1 bg-green-600 text-var(--color-bg-light, white) rounded text-sm hover:bg-green-700 transition"
               >
                 标记已处理
               </button>
               <button
                 v-if="log.status === 0"
                 @click="updateStatus(log.id, 2)"
-                class="px-3 py-1 bg-gray-600 text-white rounded text-sm hover:bg-gray-700 transition"
+                class="px-3 py-1 bg-gray-600 text-var(--color-bg-light, white) rounded text-sm hover:bg-gray-700 transition"
               >
                 忽略
               </button>
@@ -196,7 +196,7 @@
         <button
           @click="page = Math.max(1, page - 1); fetchErrorLogs()"
           :disabled="page === 1"
-          class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
+          class="px-4 py-2 bg-var(--color-bg-light, white) dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
         >
           上一页
         </button>
@@ -206,7 +206,7 @@
         <button
           @click="page = Math.min(Math.ceil(total / pageSize), page + 1); fetchErrorLogs()"
           :disabled="page >= Math.ceil(total / pageSize)"
-          class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
+          class="px-4 py-2 bg-var(--color-bg-light, white) dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
         >
           下一页
         </button>
@@ -219,9 +219,9 @@
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
       @click.self="showDetail = false"
     >
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
         <div class="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white">错误详情</h2>
+          <h2 class="text-xl font-bold text-gray-900 dark:text-var(--color-bg-light, white)">错误详情</h2>
           <button
             @click="showDetail = false"
             class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
@@ -236,11 +236,11 @@
           <div v-else-if="errorDetail" class="space-y-4">
             <div>
               <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">错误类型</h3>
-              <p class="text-gray-900 dark:text-white">{{ errorDetail.errorType }}</p>
+              <p class="text-gray-900 dark:text-var(--color-bg-light, white)">{{ errorDetail.errorType }}</p>
             </div>
             <div>
               <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">错误消息</h3>
-              <p class="text-gray-900 dark:text-white">{{ errorDetail.errorMessage }}</p>
+              <p class="text-gray-900 dark:text-var(--color-bg-light, white)">{{ errorDetail.errorMessage }}</p>
             </div>
             <div>
               <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">错误堆栈</h3>
@@ -248,21 +248,21 @@
             </div>
             <div>
               <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">错误URL</h3>
-              <p class="text-gray-900 dark:text-white break-all">{{ errorDetail.errorUrl }}</p>
+              <p class="text-gray-900 dark:text-var(--color-bg-light, white) break-all">{{ errorDetail.errorUrl }}</p>
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">用户IP</h3>
-                <p class="text-gray-900 dark:text-white">{{ errorDetail.userIp || '未知' }}</p>
+                <p class="text-gray-900 dark:text-var(--color-bg-light, white)">{{ errorDetail.userIp || '未知' }}</p>
               </div>
               <div>
                 <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">访客ID</h3>
-                <p class="text-gray-900 dark:text-white">{{ errorDetail.visitorId || '未知' }}</p>
+                <p class="text-gray-900 dark:text-var(--color-bg-light, white)">{{ errorDetail.visitorId || '未知' }}</p>
               </div>
             </div>
             <div>
               <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">用户代理</h3>
-              <p class="text-gray-900 dark:text-white text-sm break-all">{{ errorDetail.userAgent || '未知' }}</p>
+              <p class="text-gray-900 dark:text-var(--color-bg-light, white) text-sm break-all">{{ errorDetail.userAgent || '未知' }}</p>
             </div>
             <div v-if="errorDetail.metadata">
               <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">额外信息</h3>

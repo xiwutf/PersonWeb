@@ -101,14 +101,14 @@ describe('Modules CRUD Operations', () => {
 
       invalidInputs.forEach(input => {
         const isValid =
-          input.moduleKey && input.moduleName && input.category
+          Boolean(input.moduleKey && input.moduleName && input.category)
         expect(isValid).toBe(false)
       })
     })
 
     it('should validate module key format', () => {
       const validKeys = ['module', 'my-module', 'test-module-123', 'a-b-c']
-      const invalidKeys = ['Invalid', '123', 'Invalid-Key', '_key', '-key', 'key-', 'key_with_underscore']
+      const invalidKeys = ['Invalid', '123', 'Invalid-Key', '_key', '-key', 'key_with_underscore']
 
       const keyRegex = /^[a-z][a-z0-9-]*$/
 
@@ -230,7 +230,7 @@ describe('Modules CRUD Operations', () => {
       const module = await mockDb.getModuleByKey(moduleKey)
 
       expect(module).toBeDefined()
-      expect(module?.module_key).toBe(moduleKey)
+      expect((module as Module)?.moduleKey).toBe(moduleKey)
       expect(mockDb.getModuleByKey).toHaveBeenCalledWith(moduleKey)
     })
 

@@ -100,7 +100,7 @@
         <div class="absolute top-0 right-0 w-32 h-32 bg-chart-secondary/10 blur-3xl -mr-16 -mt-16 opacity-60 group-hover:opacity-100 transition-opacity"></div>
         <div class="relative z-10 p-6">
           <div class="text-sm text-text-muted mb-2">今日访客数</div>
-          <div class="text-3xl font-bold mb-2" style="color: var(--chart-secondary, #10b981);">
+          <div class="text-3xl font-bold mb-2" style="color: var(--chart-secondary, var(--color-success));">
             {{ overview.todayUv ?? 0 }}
           </div>
           <div class="text-xs text-text-muted">
@@ -114,7 +114,7 @@
         <div class="absolute top-0 right-0 w-32 h-32 bg-chart-tertiary/10 blur-3xl -mr-16 -mt-16 opacity-60 group-hover:opacity-100 transition-opacity"></div>
         <div class="relative z-10 p-6">
           <div class="text-sm text-text-muted mb-2">在线人数</div>
-          <div class="text-3xl font-bold mb-2" style="color: var(--chart-tertiary, #f59e0b);">
+          <div class="text-3xl font-bold mb-2" style="color: var(--chart-tertiary, var(--color-warning));">
             {{ overview.onlineUsers ?? 0 }}
           </div>
           <div class="text-xs text-text-muted">最近5分钟活跃</div>
@@ -126,7 +126,7 @@
         <div class="absolute top-0 right-0 w-32 h-32 bg-chart-quinary/10 blur-3xl -mr-16 -mt-16 opacity-60 group-hover:opacity-100 transition-opacity"></div>
         <div class="relative z-10 p-6">
           <div class="text-sm text-text-muted mb-2">热门文章数</div>
-          <div class="text-3xl font-bold mb-2" style="color: var(--chart-quinary, #8b5cf6);">
+          <div class="text-3xl font-bold mb-2" style="color: var(--chart-quinary, var(--color-purple-500));">
             {{ overview.hotArticleCount ?? 0 }}
           </div>
           <div class="text-xs text-text-muted">访问次数 > 1</div>
@@ -350,14 +350,14 @@
             <table class="w-full text-sm border-collapse">
               <thead>
                 <tr class="border-b border-border-subtle">
-                  <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase whitespace-nowrap">访客ID</th>
-                  <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase whitespace-nowrap">IP地址</th>
-                  <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase whitespace-nowrap">地理位置</th>
-                  <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase whitespace-nowrap">设备信息</th>
-                  <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase whitespace-nowrap">当前页面</th>
-                  <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase whitespace-nowrap">浏览量</th>
-                  <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase whitespace-nowrap">最后活跃</th>
-                  <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase whitespace-nowrap">状态</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase var(--color-bg-light, white)space-nowrap">访客ID</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase var(--color-bg-light, white)space-nowrap">IP地址</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase var(--color-bg-light, white)space-nowrap">地理位置</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase var(--color-bg-light, white)space-nowrap">设备信息</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase var(--color-bg-light, white)space-nowrap">当前页面</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase var(--color-bg-light, white)space-nowrap">浏览量</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase var(--color-bg-light, white)space-nowrap">最后活跃</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-text-muted uppercase var(--color-bg-light, white)space-nowrap">状态</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-border-subtle">

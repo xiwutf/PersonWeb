@@ -421,7 +421,7 @@ onMounted(() => {
   display: inline-block;
   padding: 0.25rem 0.5rem;
   background: var(--color-primary);
-  color: white;
+  color: var(--color-bg-light, white);
   border-radius: 4px;
   font-size: 0.875rem;
   font-weight: 500;
@@ -456,7 +456,7 @@ onMounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--overlay-color, rgba(0, 0, 0, 0.5));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -575,7 +575,7 @@ onMounted(() => {
 
 .btn-primary {
   background: var(--color-primary);
-  color: white;
+  color: var(--color-bg-light, white);
 }
 
 .btn-primary:hover {
@@ -604,12 +604,12 @@ onMounted(() => {
 }
 
 .btn-danger {
-  background: #ef4444;
-  color: white;
+  background: var(--color-danger);
+  color: var(--color-bg-light, white);
 }
 
 .btn-danger:hover {
-  background: #dc2626;
+  background: var(--color-danger-dark);
 }
 </style>
 

@@ -775,7 +775,7 @@ onMounted(() => {
 
 .btn-primary {
   background: var(--color-primary);
-  color: white;
+  color: var(--color-bg-light, white);
   border: none;
   padding: 10px 24px;
   border-radius: 6px;
@@ -804,7 +804,7 @@ onMounted(() => {
 }
 
 .btn-primary:disabled {
-  background: #9ca3af;
+  background: var(--color-gray-400);
   cursor: not-allowed;
   opacity: 0.6;
   transform: none;
@@ -812,7 +812,7 @@ onMounted(() => {
 }
 
 .document-list-section {
-  background: white !important;
+  background: var(--color-bg-light, white) !important;
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 1px 3px var(--shadow);
@@ -842,21 +842,21 @@ onMounted(() => {
 
 .filter-select {
   padding: 8px 12px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--color-border-subtle);
   border-radius: 6px;
   font-size: 14px;
-  background: white !important;
+  background: var(--color-bg-light) !important;
   color: var(--color-border-default) !important;
 }
 
 .filter-select option {
-  background: white;
+  background: var(--color-bg-light);
   color: var(--color-border-default);
 }
 
 .btn-refresh {
-  background: #f3f4f6;
-  border: 1px solid #d1d5db;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-subtle);
   padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
@@ -882,7 +882,7 @@ onMounted(() => {
 }
 
 .document-table th {
-  background: #f9fafb !important;
+  background: var(--color-bg-elevated) !important;
   padding: 12px;
   text-align: left;
   font-weight: 600;
@@ -897,16 +897,16 @@ onMounted(() => {
   border-bottom: 1px solid var(--color-border);
   color: var(--color-border-default) !important;
   font-size: 14px;
-  background: white !important;
+  background: var(--color-bg-light) !important;
   text-shadow: none !important; /* 移除文字发光效果 */
 }
 
 .document-row {
-  background: white !important;
+  background: var(--color-bg-light) !important;
 }
 
 .document-row:hover {
-  background: #f9fafb !important;
+  background: var(--color-bg-elevated) !important;
 }
 
 .document-row td {
@@ -935,7 +935,7 @@ onMounted(() => {
   color: var(--color-text-sec);
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  var(--color-bg-light, white)-space: nowrap;
 }
 
 .file-type-badge {
@@ -953,29 +953,29 @@ onMounted(() => {
 }
 
 .status-pending {
-  background: #fef3c7;
-  color: #92400e;
+  background: var(--color-warning-soft);
+  color: var(--color-warning-dark);
 }
 
 .status-processing {
-  background: #dbeafe;
-  color: #1e40af;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
 }
 
 .status-completed {
-  background: #d1fae5;
-  color: #065f46;
+  background: var(--color-success-soft);
+  color: var(--color-success-dark);
 }
 
 .status-failed {
-  background: #fee2e2;
-  color: #991b1b;
+  background: var(--color-danger-soft);
+  color: var(--color-danger-dark);
 }
 
 .error-message {
   margin-top: 4px;
   font-size: 11px;
-  color: #dc2626;
+  color: var(--color-danger-dark);
   display: flex;
   align-items: center;
   gap: 4px;
@@ -994,7 +994,7 @@ onMounted(() => {
 
 .btn-action {
   background: transparent;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--color-border-subtle);
   padding: 6px 10px;
   border-radius: 4px;
   cursor: pointer;
@@ -1002,7 +1002,7 @@ onMounted(() => {
 }
 
 .btn-action:hover:not(:disabled) {
-  background: #f3f4f6;
+  background: var(--color-bg-elevated);
   color: var(--color-text-main);
 }
 
@@ -1012,9 +1012,9 @@ onMounted(() => {
 }
 
 .btn-danger:hover:not(:disabled) {
-  background: #fee2e2;
-  color: #dc2626;
-  border-color: #fca5a5;
+  background: var(--color-danger-soft);
+  color: var(--color-danger-dark);
+  border-color: var(--color-danger-400);
 }
 
 .btn-retry {
@@ -1023,14 +1023,14 @@ onMounted(() => {
 }
 
 .btn-retry:hover:not(:disabled) {
-  background: #eff6ff;
+  background: var(--color-primary-soft);
   color: var(--color-primary-hover);
   border-color: var(--color-primary-hover);
 }
 
 .empty-cell {
   text-align: center;
-  color: #9ca3af;
+  color: var(--color-text-muted);
   padding: 40px;
 }
 
@@ -1044,14 +1044,14 @@ onMounted(() => {
 
 .page-btn {
   padding: 8px 16px;
-  border: 1px solid #d1d5db;
-  background: white;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-bg-light);
   border-radius: 6px;
   cursor: pointer;
 }
 
 .page-btn:hover:not(:disabled) {
-  background: #f9fafb;
+  background: var(--color-bg-elevated);
 }
 
 .page-btn:disabled {
@@ -1075,7 +1075,7 @@ onMounted(() => {
 }
 
 .modal-content {
-  background: white !important;
+  background: var(--color-bg-light) !important;
   border-radius: 8px;
   width: 90%;
   max-width: 600px;
@@ -1115,7 +1115,7 @@ onMounted(() => {
   align-items: center;
   padding: 20px;
   border-bottom: 1px solid var(--color-border);
-  background: white !important;
+  background: var(--color-bg-light) !important;
   color: var(--color-border-default) !important;
 }
 
@@ -1149,26 +1149,26 @@ onMounted(() => {
   border-top: 1px solid var(--color-border);
   position: relative;
   z-index: 10001;
-  background: white;
+  background: var(--color-bg-light);
   flex-shrink: 0;
   margin-top: auto;
 }
 
 .btn-cancel {
   padding: 10px 20px;
-  border: 1px solid #d1d5db;
-  background: white;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-bg-light);
   border-radius: 6px;
   cursor: pointer;
 }
 
 .btn-cancel:hover {
-  background: #f9fafb;
+  background: var(--color-bg-elevated);
 }
 
 /* 上传区域 */
 .upload-area {
-  border: 2px dashed #d1d5db;
+  border: 2px dashed var(--color-border-subtle);
   border-radius: 8px;
   padding: 40px;
   text-align: center;
@@ -1187,7 +1187,7 @@ onMounted(() => {
 
 .upload-hint {
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--color-text-muted);
   margin-top: 8px;
 }
 
@@ -1196,7 +1196,7 @@ onMounted(() => {
   align-items: center;
   gap: 12px;
   padding: 12px;
-  background: #f9fafb;
+  background: var(--color-bg-elevated);
   border-radius: 6px;
 }
 
@@ -1204,7 +1204,7 @@ onMounted(() => {
   margin-top: 16px;
   padding: 10px 20px;
   background: var(--color-primary);
-  color: white;
+  color: var(--color-bg-light, white);
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -1214,7 +1214,7 @@ onMounted(() => {
   margin-left: auto;
   background: transparent;
   border: none;
-  color: #ef4444;
+  color: var(--color-danger);
   cursor: pointer;
 }
 
@@ -1231,7 +1231,7 @@ onMounted(() => {
 .form-input {
   width: 100%;
   padding: 10px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--color-border-subtle);
   border-radius: 6px;
   font-size: 14px;
 }
@@ -1252,44 +1252,44 @@ onMounted(() => {
   border-bottom: 2px solid var(--color-border);
   display: flex;
   gap: 12px;
-  background: #fafbfc !important;
+  background: var(--color-bg-elevated) !important;
   color: var(--color-border-default) !important;
 }
 
 .query-input {
   flex: 1;
   padding: 12px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--color-border-subtle);
   border-radius: 6px;
   font-size: 14px;
   resize: none;
   font-family: inherit;
   transition: border-color 0.2s;
-  background: white !important;
+  background: var(--color-bg-light) !important;
   color: var(--color-border-default) !important;
 }
 
 .query-input:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-  background: white !important;
+  box-shadow: 0 0 0 3px var(--color-primary-soft);
+  background: var(--color-bg-light) !important;
   color: var(--color-border-default) !important;
 }
 
 .query-input::placeholder {
-  color: #9ca3af !important;
+  color: var(--color-text-muted) !important;
 }
 
 .btn-query {
   padding: 12px 24px;
   background: var(--color-primary);
-  color: white;
+  color: var(--color-bg-light, white);
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
-  white-space: nowrap;
+  var(--color-bg-light, white)-space: nowrap;
   transition: all 0.2s;
   font-weight: 500;
 }
@@ -1318,12 +1318,12 @@ onMounted(() => {
 }
 
 .query-history::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: var(--color-bg-elevated);
   border-radius: 4px;
 }
 
 .query-history::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: var(--color-border-subtle);
   border-radius: 4px;
 }
 
@@ -1341,7 +1341,7 @@ onMounted(() => {
   gap: 12px;
   margin-bottom: 16px;
   padding: 16px;
-  background: #f8fafc;
+  background: var(--color-bg-elevated);
   border: 1px solid var(--color-text-sub);
   border-radius: 8px;
   box-shadow: 0 1px 2px var(--color-border);
@@ -1380,7 +1380,7 @@ onMounted(() => {
 }
 
 .query-answer i {
-  color: #10b981;
+  color: var(--color-success);
   margin-top: 4px;
   font-size: 16px;
   flex-shrink: 0;
@@ -1406,7 +1406,7 @@ onMounted(() => {
 }
 
 .answer-label i {
-  color: #fbbf24;
+  color: var(--color-warning);
   font-size: 16px;
 }
 
@@ -1457,9 +1457,9 @@ onMounted(() => {
   color: var(--color-text-sec);
   font-size: 14px;
   padding: 12px;
-  background: #f9fafb;
+  background: var(--color-bg-elevated);
   border-radius: 6px;
-  border: 1px dashed #d1d5db;
+  border: 1px dashed var(--color-border-subtle);
 }
 
 .no-answer i {
@@ -1490,35 +1490,35 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #dc2626;
+  color: var(--color-danger-dark);
   font-size: 14px;
   font-weight: 500;
   padding: 8px 0;
 }
 
 .error-answer i {
-  color: #dc2626;
+  color: var(--color-danger-dark);
   font-size: 16px;
 }
 
 .relevant-chunks {
   margin-top: 16px;
   padding-top: 16px;
-  border-top: 1px solid #dbeafe;
+  border-top: 1px solid var(--color-primary-soft);
 }
 
 .chunks-title {
   font-weight: 600;
   margin-bottom: 12px;
-  color: #1e40af;
+  color: var(--color-primary-dark);
 }
 
 .chunk-item {
   margin-bottom: 12px;
   padding: 12px;
-  background: white;
+  background: var(--color-bg-light);
   border-radius: 6px;
-  border: 1px solid #dbeafe;
+  border: 1px solid var(--color-primary-soft);
 }
 
 .chunk-index {
@@ -1540,7 +1540,7 @@ onMounted(() => {
 
 .empty-history {
   text-align: center;
-  color: #9ca3af;
+  color: var(--color-text-muted);
   padding: 80px 20px;
   display: flex;
   flex-direction: column;
@@ -1550,7 +1550,7 @@ onMounted(() => {
 
 .empty-history i {
   font-size: 48px;
-  color: #d1d5db;
+  color: var(--color-border-subtle);
   margin-bottom: 8px;
 }
 
@@ -1561,7 +1561,7 @@ onMounted(() => {
 
 .empty-hint {
   font-size: 13px;
-  color: #9ca3af;
+  color: var(--color-text-muted);
 }
 </style>
 

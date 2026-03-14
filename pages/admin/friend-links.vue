@@ -35,7 +35,7 @@
               </div>
             </td>
             <td class="table-cell">
-              <div class="text-sm font-medium text-gray-900 dark:text-white">{{ link.name }}</div>
+              <div class="text-sm font-medium text-gray-900 dark:text-var(--color-bg-light, white)">{{ link.name }}</div>
             </td>
             <td class="table-cell">
               <a :href="link.url" target="_blank" class="btn-link btn-link--blue max-w-xs truncate block">

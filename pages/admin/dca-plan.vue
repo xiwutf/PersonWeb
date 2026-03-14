@@ -478,13 +478,13 @@ onMounted(() => {
 
 .asset-management-badge-success {
   background: var(--color-success-bg, rgba(82, 196, 26, 0.1));
-  color: var(--color-success, #52c41a);
+  color: var(--color-success, var(--color-green-500));
   border: 1px solid var(--color-success-border, rgba(82, 196, 26, 0.3));
 }
 
 .asset-management-badge-warning {
   background: var(--color-warning-bg, rgba(250, 140, 22, 0.1));
-  color: var(--color-warning, #fa8c16);
+  color: var(--color-warning, var(--color-orange-500));
   border: 1px solid var(--color-warning-border, rgba(250, 140, 22, 0.3));
 }
 
@@ -495,7 +495,7 @@ onMounted(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--overlay-color, rgba(0, 0, 0, 0.5));
   display: flex;
   align-items: center;
   justify-content: center;

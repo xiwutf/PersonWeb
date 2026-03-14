@@ -355,15 +355,15 @@ onMounted(() => {
 }
 
 .btn-link-blue:hover {
-  color: #93c5fd;
+  color: var(--color-primary-400);
 }
 
 .btn-link-red {
-  color: #f87171;
+  color: var(--color-danger-400);
 }
 
 .btn-link-red:hover {
-  color: #fca5a5;
+  color: var(--color-danger-300);
 }
 
 /* 分页样式 */

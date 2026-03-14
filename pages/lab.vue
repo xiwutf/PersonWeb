@@ -24,7 +24,7 @@
       <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid lg:grid-cols-2 gap-10 items-center">
           <div>
-            <!-- 标签和标题：使用主题文字颜色，替换写死的 white/slate 颜色 -->
+            <!-- 标签和标题：使用主题文字颜色，替换写死的 var(--color-bg-light, white)/slate 颜色 -->
             <p class="inline-flex items-center px-3 py-1 rounded-full bg-primary-soft border border-border-subtle text-xs mb-4 text-text-muted">
               <span class="w-1.5 h-1.5 rounded-full bg-primary mr-2"></span>
               AI · 3D · 交互实验
@@ -112,14 +112,15 @@
 </template>
 
 <script setup lang="ts">
+import AppCard from '~/components/ui/AppCard.vue'
+import Scene3D from '~/components/three/Scene3D.vue'
+
 // 使用模块主题 composable
 const { moduleTheme } = useModuleTheme('ai_lab')
 
 definePageMeta({
   layout: 'default'
 })
-
-// 注意：AppCard 组件已在全局注册或通过 auto-import 可用
 
 useHead({
   title: 'AI 实验室 - 溪午听风',

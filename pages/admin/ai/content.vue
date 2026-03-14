@@ -127,7 +127,7 @@
 
           <div v-if="result.content.summary">
             <h4 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">摘要</h4>
-            <p class="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{{ result.content.summary }}</p>
+            <p class="text-gray-700 dark:text-gray-300 var(--color-bg-light, white)space-pre-wrap">{{ result.content.summary }}</p>
           </div>
 
           <div>

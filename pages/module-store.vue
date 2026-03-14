@@ -226,13 +226,13 @@ onMounted(() => {
 .store-header h1 {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #1a202c;
+  color: var(--color-text-dark);
   margin-bottom: 1rem;
 }
 
 .store-header p {
   font-size: 1.1rem;
-  color: #4a5568;
+  color: var(--color-text-muted);
   max-width: 600px;
   margin: 0 auto;
 }
@@ -268,7 +268,7 @@ onMounted(() => {
 .search-btn {
   padding: 0.75rem;
   background: var(--color-primary);
-  color: white;
+  color: var(--color-bg-light, white);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -290,7 +290,7 @@ onMounted(() => {
   border: 2px solid var(--color-text-sub);
   border-radius: 8px;
   font-size: 1rem;
-  background: white;
+  background: var(--color-bg-light, white);
   cursor: pointer;
 }
 
@@ -306,7 +306,7 @@ onMounted(() => {
 .loading-spinner {
   width: 48px;
   height: 48px;
-  border: 4px solid #f3f4f6;
+  border: 4px solid var(--color-bg-light);
   border-top: 4px solid var(--color-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
@@ -321,14 +321,14 @@ onMounted(() => {
 .error-state {
   text-align: center;
   padding: 4rem;
-  color: #ef4444;
+  color: var(--color-danger);
 }
 
 .retry-btn {
   margin-top: 1rem;
   padding: 0.5rem 1rem;
   background: var(--color-primary);
-  color: white;
+  color: var(--color-bg-light, white);
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -350,7 +350,7 @@ onMounted(() => {
 .page-btn {
   padding: 0.5rem 1rem;
   border: 1px solid var(--color-text-sub);
-  background: white;
+  background: var(--color-bg-light, white);
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s;
@@ -362,7 +362,7 @@ onMounted(() => {
 }
 
 .page-btn:hover:not(:disabled) {
-  background: #f3f4f6;
+  background: var(--color-gray-100);
 }
 
 .page-numbers {
@@ -373,7 +373,7 @@ onMounted(() => {
 .page-number {
   padding: 0.5rem 0.75rem;
   border: 1px solid var(--color-text-sub);
-  background: white;
+  background: var(--color-bg-light, white);
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s;
@@ -381,12 +381,12 @@ onMounted(() => {
 
 .page-number.active {
   background: var(--color-primary);
-  color: white;
+  color: var(--color-bg-light, white);
   border-color: var(--color-primary);
 }
 
 .page-number:hover:not(.active) {
-  background: #f3f4f6;
+  background: var(--color-gray-100);
 }
 
 @media (max-width: 768px) {

@@ -440,7 +440,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: var(--color-bg-light);
   font-size: 20px;
   flex-shrink: 0;
 }
@@ -462,7 +462,7 @@ onMounted(() => {
   color: var(--color-text-sec);
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  var(--color-bg-light, white)-space: nowrap;
 }
 
 .source-status {

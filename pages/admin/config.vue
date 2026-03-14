@@ -31,7 +31,7 @@
             <button
               type="button"
               @click="saveTheme"
-              class="btn-primary disabled:opacity-50 whitespace-nowrap"
+              class="btn-primary disabled:opacity-50 var(--color-bg-light, white)space-nowrap"
               :disabled="savingTheme"
             >
               {{ savingTheme ? '保存中' : '保存主题' }}

@@ -25,44 +25,19 @@ export default defineNuxtConfig({
     }
   },
 
-  // Content 模块配置
-  // @ts-ignore
+  // Content 模块配置（v3：build.markdown）
   content: {
-    highlight: {
-      theme: {
-        default: 'dracula',
-        dark: 'dracula'
-      },
-      langs: [
-        'javascript',
-        'typescript',
-        'vue',
-        'html',
-        'css',
-        'scss',
-        'python',
-        'java',
-        'cpp',
-        'c',
-        'json',
-        'yaml',
-        'xml',
-        'sql',
-        'bash',
-        'shell',
-        'markdown',
-        'php',
-        'go',
-        'rust',
-        'dart',
-        'kotlin',
-        'swift'
-      ]
-    },
-    markdown: {
-      toc: {
-        depth: 3,
-        searchDepth: 3
+    build: {
+      markdown: {
+        toc: { depth: 3, searchDepth: 3 },
+        highlight: {
+          theme: { default: 'dracula', dark: 'dracula' },
+          langs: [
+            'javascript', 'typescript', 'vue', 'html', 'css', 'scss', 'python', 'java',
+            'cpp', 'c', 'json', 'yaml', 'xml', 'sql', 'bash', 'shell', 'markdown',
+            'php', 'go', 'rust', 'dart', 'kotlin', 'swift'
+          ]
+        }
       }
     }
   },
@@ -103,18 +78,14 @@ export default defineNuxtConfig({
 
   // CSS 配置
   css: [
-    '~/assets/css/design-system.css', // 极光设计系统 Design Token (V3)
-    '~/assets/styles/tokens.css', // 设计 Token：全局 CSS 变量
-    '~/assets/styles/base.css', // 基础样式和 Reset
-    '~/assets/styles/ui-patch-naive.css', // Naive UI 补丁样式
-    '~/assets/styles/glassmorphism.css', // Vision Pro × 玻璃拟态风格
-    '~/assets/styles/theme.css', // 保留旧的主题文件（兼容性） // 统一主题样式文件（必须在最前面，定义 CSS 变量）
-    '~/assets/css/main.css', // main.css 已经导入了 components.css
-    '~/assets/css/themes.css',
+    '~/assets/styles/index.css', // 样式系统统一入口（包含所有主题变量和组件样式）
+    '~/assets/css/main.css', // 主要组件样式（已导入 components.css）
+    '~/assets/css/themes.css', // 主题切换样式
     '~/assets/css/header.css', // Header 组件统一样式
     '~/assets/css/footer.css', // Footer 组件统一样式
     '~/assets/css/hero.css', // Hero 组件统一样式
     '~/assets/css/home.css', // 首页组件统一样式
+    '~/assets/css/home-creative.css', // 首页创意组件样式
     '~/assets/css/visitor-interaction.css',
     '~/assets/css/about.css',
     '~/assets/css/tools.css',

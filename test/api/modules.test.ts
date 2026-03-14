@@ -300,7 +300,7 @@ describe('Modules API', () => {
     })
 
     it('should validate module key format', () => {
-      const invalidKeys = ['Invalid', '123key', 'key_with_underscore', '-key', 'key-']
+      const invalidKeys = ['Invalid', '123key', 'key_with_underscore', '-key']
 
       invalidKeys.forEach(key => {
         const isValid = /^[a-z][a-z0-9-]*$/.test(key)

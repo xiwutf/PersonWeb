@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="life-page">
     <!-- 全局背景噪点 -->
     <div class="life-background-noise"></div>
@@ -49,7 +49,7 @@
                 :class="index % 2 === 0 ? 'life-post-card--left' : 'life-post-card--right'"
               >
                 <NuxtLink 
-                  :to="post._path"
+                  :to="post.path || post._path"
                   class="life-post-link"
                 >
                   <!-- 封面图 -->
@@ -125,9 +125,9 @@ const fetchPosts = async () => {
       return
     }
     
-    // 如果API没有数据，尝试从 @nuxt/content 获取
+    // 如果API没有数据，尝试从 @nuxt/content 获取（Content v3: queryCollection）
     const { data: contentPosts } = await useAsyncData('life-posts', () =>
-      queryContent('/life').sort({ date: -1 }).find()
+      queryCollection('content').where('path', 'LIKE', '/life%').order('date', 'DESC').all()
     )
     
     if (contentPosts.value && Array.isArray(contentPosts.value) && contentPosts.value.length > 0) {

@@ -218,7 +218,7 @@ const goToModules = () => {
 }
 
 h1 {
-  color: #333;
+  color: var(--color-text-dark);
   margin-bottom: 2rem;
 }
 
@@ -228,8 +228,8 @@ h1 {
 }
 
 .license-card {
-  background: white;
-  border: 1px solid #e0e0e0;
+  background: var(--color-bg-light, white);
+  border: 1px solid var(--color-gray-300);
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 2px 4px var(--shadow);
@@ -244,7 +244,7 @@ h1 {
 
 .license-header h3 {
   margin: 0;
-  color: #333;
+  color: var(--color-text-dark);
   font-size: 1.25rem;
 }
 
@@ -256,23 +256,23 @@ h1 {
 }
 
 .status.active {
-  background: #e8f5e9;
-  color: #2e7d32;
+  background: var(--color-bg-elevated);
+  color: var(--color-success);
 }
 
 .status.expired {
-  background: #ffebee;
-  color: #c62828;
+  background: var(--color-red-50);
+  color: var(--color-red-800);
 }
 
 .status.revoked {
-  background: #fce4ec;
-  color: #c2185b;
+  background: var(--color-pink-100);
+  color: var(--color-pink-700);
 }
 
 .license-details p {
   margin: 0.5rem 0;
-  color: #666;
+  color: var(--color-text-muted);
   font-size: 0.95rem;
 }
 
@@ -301,49 +301,49 @@ h1 {
 }
 
 .btn-primary {
-  background: #2196f3;
-  color: white;
+  background: var(--color-blue-500);
+  color: var(--color-bg-light, white);
 }
 
 .btn-primary:hover {
-  background: #1976d2;
+  background: var(--color-blue-700);
 }
 
 .btn-secondary {
-  background: #ff9800;
-  color: white;
+  background: var(--color-orange-500);
+  color: var(--color-bg-light, white);
 }
 
 .btn-secondary:hover {
-  background: #f57c00;
+  background: var(--color-orange-600);
 }
 
 .btn-outline {
   background: transparent;
-  border: 1px solid #2196f3;
-  color: #2196f3;
+  border: 1px solid var(--color-blue-500);
+  color: var(--color-blue-500);
 }
 
 .btn-outline:hover {
-  background: #2196f3;
-  color: white;
+  background: var(--color-blue-500);
+  color: var(--color-bg-light, white);
 }
 
 .empty-state {
   text-align: center;
   padding: 3rem;
-  background: #f5f5f5;
+  background: var(--color-gray-100);
   border-radius: 8px;
 }
 
 .empty-state i {
   font-size: 4rem;
-  color: #999;
+  color: var(--color-gray-400);
   margin-bottom: 1rem;
 }
 
 .empty-state p {
-  color: #666;
+  color: var(--color-text-muted);
   margin-bottom: 1.5rem;
 }
 
@@ -353,7 +353,7 @@ h1 {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--overlay-color, rgba(0, 0, 0, 0.5));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -361,7 +361,7 @@ h1 {
 }
 
 .modal-content {
-  background: white;
+  background: var(--color-bg-light, white);
   border-radius: 8px;
   padding: 2rem;
   max-width: 500px;
@@ -371,7 +371,7 @@ h1 {
 .modal-content h3 {
   margin-top: 0;
   margin-bottom: 1.5rem;
-  color: #333;
+  color: var(--color-text-dark);
 }
 
 .form-group {
@@ -381,21 +381,21 @@ h1 {
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #666;
+  color: var(--color-text-muted);
   font-weight: 500;
 }
 
 .form-group input {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-gray-300);
   border-radius: 4px;
   font-size: 1rem;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #2196f3;
+  border-color: var(--color-blue-500);
 }
 
 .modal-actions {

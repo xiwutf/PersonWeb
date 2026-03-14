@@ -350,7 +350,7 @@ const statusChartOption = computed(() => {
     legend: {
       orient: 'vertical',
       left: 'left',
-      textStyle: { color: isDark.value ? '#fff' : '#333' }
+      textStyle: { color: isDark.value ? 'var(--color-bg-light, white)' : 'var(--color-gray-700)' }
     },
     series: [
       {
@@ -365,7 +365,7 @@ const statusChartOption = computed(() => {
           itemStyle: {
             shadowBlur: 10,
             shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)'
+            shadowColor: 'var(--overlay-color, rgba(0, 0, 0, 0.5))'
           }
         }
       }
@@ -390,12 +390,12 @@ const revenueChartOption = computed(() => {
     xAxis: {
       type: 'category',
       data: summary.value.monthlyRevenue.map(m => m.month),
-      axisLabel: { color: isDark.value ? '#fff' : '#333' }
+      axisLabel: { color: isDark.value ? 'var(--color-bg-light, white)' : 'var(--color-gray-700)' }
     },
     yAxis: {
       type: 'value',
       axisLabel: {
-        color: isDark.value ? '#fff' : '#333',
+        color: isDark.value ? 'var(--color-bg-light, white)' : 'var(--color-gray-700)',
         formatter: (value: number) => `¥${(value / 1000).toFixed(0)}k`
       }
     },
@@ -430,14 +430,14 @@ const deliveryChartOption = computed(() => {
       type: 'category',
       data: summary.value.deliveryCycle.map(d => d.groupName),
       axisLabel: {
-        color: isDark.value ? '#fff' : '#333',
+        color: isDark.value ? 'var(--color-bg-light, white)' : 'var(--color-gray-700)',
         rotate: 45
       }
     },
     yAxis: {
       type: 'value',
       name: '天数',
-      axisLabel: { color: isDark.value ? '#fff' : '#333' }
+      axisLabel: { color: isDark.value ? 'var(--color-bg-light, white)' : 'var(--color-gray-700)' }
     },
     series: [
       {
@@ -468,14 +468,14 @@ const customerChartOption = computed(() => {
     xAxis: {
       type: 'value',
       axisLabel: {
-        color: isDark.value ? '#fff' : '#333',
+        color: isDark.value ? 'var(--color-bg-light, white)' : 'var(--color-gray-700)',
         formatter: (value: number) => `¥${(value / 1000).toFixed(0)}k`
       }
     },
     yAxis: {
       type: 'category',
       data: summary.value.customerTop.map(c => c.customerName),
-      axisLabel: { color: isDark.value ? '#fff' : '#333' }
+      axisLabel: { color: isDark.value ? 'var(--color-bg-light, white)' : 'var(--color-gray-700)' }
     },
     series: [
       {

@@ -148,7 +148,7 @@
             >
               <option value="var(--color-text-main)">深色（浅色主题）</option>
               <option value="var(--color-border-default)">深灰（浅色主题）</option>
-              <option value="#334155">中灰（浅色主题）</option>
+              <option value="var(--color-slate-700)">中灰（浅色主题）</option>
               <option value="rgba(255, 255, 255, 0.95)">亮白（深色主题）</option>
               <option value="rgba(255, 255, 255, 0.85)">白色（深色主题，推荐）</option>
               <option value="rgba(255, 255, 255, 0.75)">浅白（深色主题）</option>
@@ -174,7 +174,7 @@
             >
               <option value="var(--color-text-sec)">中灰（浅色主题）</option>
               <option value="var(--color-text-muted)">浅灰（浅色主题）</option>
-              <option value="#cbd5e1">很浅灰（浅色主题）</option>
+              <option value="var(--color-slate-300)">很浅灰（浅色主题）</option>
               <option value="rgba(255, 255, 255, 0.7)">亮白（深色主题）</option>
               <option value="rgba(255, 255, 255, 0.6)">白色（深色主题，推荐）</option>
               <option value="rgba(255, 255, 255, 0.5)">浅白（深色主题）</option>
@@ -509,7 +509,7 @@ const previewFontSettings = () => {
               font-weight: ${fontSettings.value.defaultFontWeight};
               line-height: ${fontSettings.value.defaultLineHeight};
               padding: 2rem;
-              background: #1a1a1a;
+              background: var(--color-gray-900);
               color: rgba(255, 255, 255, 0.85);
             }
             h1 { font-size: ${fontSettings.value.h1FontSize}px; margin: 1rem 0; }

@@ -39,7 +39,7 @@
       <p class="project-3d-info-description">{{ selectedProject.description }}</p>
       <div class="project-3d-info-actions">
         <NuxtLink
-          :to="`/projects/${selectedProject.id}`"
+          :to="getProjectDetailLink(selectedProject)"
           class="project-3d-info-button project-3d-info-button-primary"
         >
           查看详情
@@ -77,6 +77,16 @@ const props = defineProps<{
 const emit = defineEmits<{
   'back-to-list': []
 }>()
+
+// 安全生成项目详情链接，避免把图片路径等当作路由
+function getProjectDetailLink(project: Project): string {
+  const id = project.id
+  if (id == null || id === '') return '/projects'
+  if (typeof id === 'number') return `/projects/${id}`
+  const s = String(id)
+  if (s.startsWith('/') || /\.(png|jpg|jpeg|gif|webp|svg)(\?|$)/i.test(s)) return '/projects'
+  return `/projects/${id}`
+}
 
 const containerRef = ref<HTMLDivElement | null>(null)
 const canvasRef = ref<HTMLCanvasElement | null>(null)

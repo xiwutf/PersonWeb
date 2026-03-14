@@ -24,10 +24,10 @@
 
       <!-- 页面头部 -->
       <header class="text-center mb-16 relative">
-        <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-xl border border-white/10 mb-6 shadow-lg shadow-purple-500/10 animate-float">
+        <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-xl border border-var(--color-bg-light, white)/10 mb-6 shadow-lg shadow-purple-500/10 animate-float">
           <span class="text-4xl">🎮</span>
         </div>
-        <h1 class="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-200 via-white to-pink-200 tracking-tight">
+        <h1 class="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-200 via-var(--color-bg-light, white) to-pink-200 tracking-tight">
           小游戏
         </h1>
         <p class="text-lg max-w-2xl mx-auto leading-relaxed" style="color: var(--text-secondary);">
@@ -300,7 +300,7 @@ useHead({
   width: 100%;
   padding: 0.75rem 1.5rem;
   background: linear-gradient(to right, rgb(147, 51, 234), rgb(236, 72, 153));
-  color: white;
+  color: var(--color-bg-light, white);
   border: none;
   border-radius: 0.75rem;
   font-weight: 600;

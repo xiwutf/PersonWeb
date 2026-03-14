@@ -199,21 +199,23 @@ const handleDecision = async (decision: 'Continue' | 'Downgrade' | 'End') => {
 }
 
 .reminder-ending {
-  border-left-color: #f59e0b;
-  background: rgba(245, 158, 11, 0.05);
+  border-left-color: var(--color-warning);
+  background: var(--color-warning-50);
 }
 
-[data-theme="dark"] .reminder-ending {
-  background: rgba(245, 158, 11, 0.1);
+:global(.dark) .reminder-ending,
+:global([data-theme="dark"]) .reminder-ending {
+  background: var(--color-warning-900, rgba(245, 158, 11, 0.1));
 }
 
 .reminder-decision {
-  border-left-color: #ef4444;
-  background: rgba(239, 68, 68, 0.05);
+  border-left-color: var(--color-danger);
+  background: var(--color-danger-50);
 }
 
-[data-theme="dark"] .reminder-decision {
-  background: rgba(239, 68, 68, 0.1);
+:global(.dark) .reminder-decision,
+:global([data-theme="dark"]) .reminder-decision {
+  background: var(--color-danger-900, rgba(239, 68, 68, 0.1));
 }
 
 .reminder-header {
@@ -240,13 +242,13 @@ const handleDecision = async (decision: 'Continue' | 'Downgrade' | 'End') => {
 }
 
 .reminder-ending .reminder-icon {
-  background: rgba(245, 158, 11, 0.2);
-  color: #f59e0b;
+  background: var(--color-warning-200, rgba(245, 158, 11, 0.2));
+  color: var(--color-warning);
 }
 
 .reminder-decision .reminder-icon {
-  background: rgba(239, 68, 68, 0.2);
-  color: #ef4444;
+  background: var(--color-danger-200, rgba(239, 68, 68, 0.2));
+  color: var(--color-danger);
 }
 
 .reminder-content {

@@ -1,5 +1,5 @@
-﻿<template>
-  <div class="min-h-screen bg-[#fdfbf7] py-8">
+<template>
+  <div class="min-h-screen bg-[var(--color-amber-50)] py-8">
     <div class="container mx-auto px-4 max-w-3xl">
       <!-- 顶部导航 -->
       <nav class="flex items-center justify-between mb-12 text-sm text-gray-500">
@@ -11,7 +11,7 @@
       </nav>
 
       <!-- 文章内容 -->
-      <article v-if="post" class="bg-white shadow-sm border border-gray-100 rounded-none p-8 md:p-12 mb-12">
+      <article v-if="post" class="bg-var(--color-bg-light, white) shadow-sm border border-gray-100 rounded-none p-8 md:p-12 mb-12">
         <!-- 文章头部 -->
         <header class="text-center mb-12">
           <div class="flex items-center justify-center gap-3 text-sm text-gray-400 mb-4 font-serif">
@@ -27,7 +27,7 @@
 
         <!-- 文章正文 -->
         <div class="prose prose-lg prose-stone mx-auto font-serif">
-          <ContentDoc :path="post._path" />
+          <ContentRenderer :value="post" />
         </div>
         
         <!-- 底部标签 -->
@@ -43,7 +43,7 @@
           </div>
         </div>
         <!-- 评论区 -->
-        <GiscusComments :identifier="post._path" :title="post.title" />
+        <GiscusComments :identifier="post.path" :title="post.title" />
       </article>
 
       <!-- 加载状态 -->
@@ -62,9 +62,9 @@ const slug = route.params.slug
 const slugString = Array.isArray(slug) ? slug[0] : slug
 const articlePath = `/life/${slugString}`
 
-// 获取文章数据
+// 获取文章数据（Content v3: queryCollection）
 const { data: post } = await useAsyncData(`life-${slugString}`, () =>
-  queryContent(articlePath).findOne()
+  queryCollection('content').path(articlePath).first()
 )
 
 // 404处理

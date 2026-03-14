@@ -16,7 +16,7 @@
       <div class="mb-6">
         <NuxtLink
           to="/tools"
-          class="inline-flex items-center px-4 py-2 bg-white/70 backdrop-blur-sm rounded-lg shadow-sm hover:shadow-md transition-all duration-200 text-orange-700 hover:text-orange-800 border border-orange-200"
+          class="inline-flex items-center px-4 py-2 bg-var(--color-bg-light, white)/70 backdrop-blur-sm rounded-lg shadow-sm hover:shadow-md transition-all duration-200 text-orange-700 hover:text-orange-800 border border-orange-200"
         >
           <i class="fas fa-arrow-left mr-2"></i>
           返回工具列表
@@ -24,7 +24,7 @@
       </div>
 
       <!-- 加载状态 -->
-      <div v-if="loading" class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 text-center">
+      <div v-if="loading" class="bg-var(--color-bg-light, white)/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 text-center">
         <div class="animate-pulse">
           <div class="h-8 bg-gray-200 rounded mb-4"></div>
           <div class="h-4 bg-gray-200 rounded mb-2"></div>
@@ -36,11 +36,11 @@
       <!-- 工具内容 -->
       <div v-else-if="tool" class="space-y-8">
         <!-- 工具信息头部 -->
-        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8">
+        <div class="bg-var(--color-bg-light, white)/80 backdrop-blur-sm rounded-2xl shadow-xl p-8">
           <div class="flex flex-col lg:flex-row gap-8">
             <div class="lg:w-1/3">
               <div class="h-64 bg-gradient-to-br from-orange-400 to-red-600 rounded-xl flex items-center justify-center">
-                <div class="text-center text-white">
+                <div class="text-center text-var(--color-bg-light, white)">
                   <span class="text-4xl mb-2 block">🔧</span>
                   <p class="text-lg font-semibold">专业工具</p>
                 </div>
@@ -80,7 +80,7 @@
                     <i class="fas fa-check-circle mr-2"></i>
                     适合这些人
                   </h4>
-                  <div class="text-sm text-green-700 whitespace-pre-line">{{ tool.fitFor }}</div>
+                  <div class="text-sm text-green-700 var(--color-bg-light, white)space-pre-line">{{ tool.fitFor }}</div>
                 </div>
 
                 <!-- 不适合情况 -->
@@ -89,7 +89,7 @@
                     <i class="fas fa-times-circle mr-2"></i>
                     不适合这些情况
                   </h4>
-                  <div class="text-sm text-red-700 whitespace-pre-line">{{ tool.notFitFor }}</div>
+                  <div class="text-sm text-red-700 var(--color-bg-light, white)space-pre-line">{{ tool.notFitFor }}</div>
                 </div>
               </div>
               
@@ -98,7 +98,7 @@
                 <!-- 咨询按钮（主按钮） -->
                 <button
                   @click="showConsultationDialog = true"
-                  class="bg-gradient-to-r from-orange-500 to-red-500 text-white px-8 py-3 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all font-medium inline-flex items-center gap-2 shadow-lg"
+                  class="bg-gradient-to-r from-orange-500 to-red-500 text-var(--color-bg-light, white) px-8 py-3 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all font-medium inline-flex items-center gap-2 shadow-lg"
                 >
                   <i class="fas fa-comments"></i>
                   咨询
@@ -109,7 +109,7 @@
         </div>
         
         <!-- 详细内容 -->
-        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden">
+        <div class="bg-var(--color-bg-light, white)/80 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden">
           <div class="p-8">
             <div class="prose prose-lg max-w-none">
               <div v-if="tool.content" v-html="renderMarkdown(tool.content)"></div>
@@ -120,7 +120,7 @@
       </div>
 
       <!-- 无数据状态 -->
-      <div v-else class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 text-center">
+      <div v-else class="bg-var(--color-bg-light, white)/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 text-center">
         <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
           <strong>警告:</strong> 没有找到工具数据！<br>
           当前 slug: {{ $route.params.slug }}<br>

@@ -1,16 +1,16 @@
 ﻿<template>
   <div class="container mx-auto px-4 py-8 h-screen flex flex-col">
     <div class="flex justify-between items-center mb-4">
-      <h1 class="text-2xl font-bold text-gray-800 dark:text-white">
+      <h1 class="text-2xl font-bold text-gray-800 dark:text-var(--color-bg-light, white)">
         {{ isEditing ? 'Edit Article' : 'New Article' }}
       </h1>
       <div class="space-x-4">
-        <NuxtLink to="/admin" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+        <NuxtLink to="/admin" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-var(--color-bg-light, white)">
           Cancel
         </NuxtLink>
         <button 
           @click="save" 
-          class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+          class="bg-blue-500 hover:bg-blue-600 text-var(--color-bg-light, white) font-bold py-2 px-4 rounded"
           :disabled="saving"
         >
           {{ saving ? 'Saving...' : 'Save' }}
@@ -23,7 +23,7 @@
       <input 
         v-model="filename" 
         type="text" 
-        class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+        class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-var(--color-bg-light, white)"
         :disabled="isEditing"
         placeholder="folder/filename.md"
       >

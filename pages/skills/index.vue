@@ -1,9 +1,9 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-50 to-white dark:from-gray-900 dark:to-gray-800 py-12">
+  <div class="min-h-screen bg-gradient-to-br from-slate-50 to-var(--color-bg-light, white) dark:from-gray-900 dark:to-gray-800 py-12">
     <div class="container mx-auto px-4 max-w-7xl">
       <!-- 页面头部 -->
       <div class="text-center mb-12">
-        <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">技能树</h1>
+        <h1 class="text-4xl font-bold text-gray-900 dark:text-var(--color-bg-light, white) mb-4">技能树</h1>
         <p class="text-xl text-gray-600 dark:text-gray-400">我的技术能力展示</p>
       </div>
 
@@ -17,7 +17,7 @@
       <div v-else class="space-y-8">
         <!-- 雷达图 -->
         <div class="card p-8">
-          <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">技能雷达图</h2>
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-var(--color-bg-light, white) mb-6">技能雷达图</h2>
           <div class="flex gap-4 mb-4">
             <select
               v-model="selectedCategoryId"
@@ -61,7 +61,7 @@
             <div class="flex items-center gap-3">
               <span class="text-3xl">{{ category.icon }}</span>
               <div>
-                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{{ category.name }}</h2>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-var(--color-bg-light, white)">{{ category.name }}</h2>
                 <p class="text-sm text-gray-500 dark:text-gray-400">
                   {{ category.skills?.length || 0 }} 个技能
                 </p>
@@ -79,7 +79,7 @@
                 <div class="flex items-start justify-between mb-4">
                   <div class="flex items-center gap-2">
                     <span v-if="skill.icon" class="text-2xl">{{ skill.icon }}</span>
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ skill.name }}</h3>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-var(--color-bg-light, white)">{{ skill.name }}</h3>
                   </div>
                 </div>
                 <p v-if="skill.description" class="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
@@ -191,8 +191,8 @@ const updateRadarData = async () => {
           borderColor: 'rgb(59, 130, 246)',
           borderWidth: 2,
           pointBackgroundColor: 'rgb(59, 130, 246)',
-          pointBorderColor: '#fff',
-          pointHoverBackgroundColor: '#fff',
+          pointBorderColor: 'var(--color-bg-light, white)',
+          pointHoverBackgroundColor: 'var(--color-bg-light, white)',
           pointHoverBorderColor: 'rgb(59, 130, 246)'
         }]
       }
@@ -221,8 +221,8 @@ const updateRadarData = async () => {
           borderColor: 'rgb(59, 130, 246)',
           borderWidth: 2,
           pointBackgroundColor: 'rgb(59, 130, 246)',
-          pointBorderColor: '#fff',
-          pointHoverBackgroundColor: '#fff',
+          pointBorderColor: 'var(--color-bg-light, white)',
+          pointHoverBackgroundColor: 'var(--color-bg-light, white)',
           pointHoverBorderColor: 'rgb(59, 130, 246)'
         }]
       }
@@ -311,7 +311,7 @@ const getRatingBarColor = (rating: number) => {
 //     id: 2,
 //     name: '后端开发',
 //     icon: '⚙️',
-//     color: '#10b981',
+//     color: 'var(--color-success)',
 //     skills: [
 //       {
 //         id: 5,
@@ -347,7 +347,7 @@ const getRatingBarColor = (rating: number) => {
 //     id: 3,
 //     name: '数据库',
 //     icon: '💾',
-//     color: '#f59e0b',
+//     color: 'var(--color-warning)',
 //     skills: [
 //       {
 //         id: 9,
@@ -376,7 +376,7 @@ const getRatingBarColor = (rating: number) => {
 //     id: 4,
 //     name: 'AI & 机器学习',
 //     icon: '🤖',
-//     color: '#8b5cf6',
+//     color: 'var(--color-purple-500)',
 //     skills: [
 //       {
 //         id: 12,

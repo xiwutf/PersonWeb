@@ -420,17 +420,17 @@ onMounted(() => {
 
 .status-badge--success {
   background: rgba(16, 185, 129, 0.1);
-  color: #10b981;
+  color: var(--color-success);
 }
 
 .status-badge--warning {
   background: rgba(245, 158, 11, 0.1);
-  color: #f59e0b;
+  color: var(--color-warning);
 }
 
 .status-badge--error {
   background: rgba(239, 68, 68, 0.1);
-  color: #ef4444;
+  color: var(--color-danger);
 }
 
 .category-badge {
@@ -617,9 +617,9 @@ onMounted(() => {
 }
 
 .timeline-marker-end {
-  background: #10b981;
+  background: var(--color-success);
   border: 3px solid var(--color-bg-card);
-  box-shadow: 0 0 0 2px #10b981;
+  box-shadow: 0 0 0 2px var(--color-success);
 }
 
 .timeline-content {

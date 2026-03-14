@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold text-gray-800 dark:text-white">
+      <h1 class="text-2xl font-bold text-gray-800 dark:text-var(--color-bg-light, white)">
         {{ isEdit ? '编辑友情链接' : '新建友情链接' }}
       </h1>
       <NuxtLink to="/admin/friend-links" class="text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200">
@@ -9,7 +9,7 @@
       </NuxtLink>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+    <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
       <form class="space-y-6" @submit.prevent>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
@@ -19,7 +19,7 @@
             <input 
               v-model="form.name" 
               type="text" 
-              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" 
+              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200" 
               placeholder="例如：GitHub" 
               required
             />
@@ -30,7 +30,7 @@
             </label>
             <select 
               v-model="form.status" 
-              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
+              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200"
             >
               <option :value="1">启用</option>
               <option :value="0">禁用</option>
@@ -45,7 +45,7 @@
           <input 
             v-model="form.url" 
             type="url" 
-            class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" 
+            class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200" 
             placeholder="https://example.com" 
             required
           />
@@ -55,7 +55,7 @@
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">链接描述</label>
           <textarea 
             v-model="form.description" 
-            class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 h-20 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" 
+            class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 h-20 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200" 
             placeholder="简短描述这个网站..."
           ></textarea>
         </div>
@@ -67,7 +67,7 @@
               <input 
                 v-model="form.logoUrl" 
                 type="url" 
-                class="flex-1 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" 
+                class="flex-1 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200" 
                 placeholder="输入 Logo URL 或上传"
               />
               <button 
@@ -86,7 +86,7 @@
             <input 
               v-model.number="form.sortOrder" 
               type="number" 
-              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" 
+              class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200" 
               placeholder="0"
             />
             <p class="text-xs text-gray-500 mt-1">数字越小越靠前，默认为 0</p>
@@ -103,7 +103,7 @@
           <button 
             @click="handleSave" 
             type="button" 
-            class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" 
+            class="px-6 py-2 bg-blue-600 text-var(--color-bg-light, white) rounded hover:bg-blue-700" 
             :disabled="saving"
           >
             {{ saving ? '保存中...' : '保存链接' }}

@@ -181,7 +181,7 @@ const fetchRecommendations = async () => {
 }
 
 .recommendations-text {
-  white-space: pre-wrap;
+  var(--color-bg-light, white)-space: pre-wrap;
   color: var(--color-text-main);
   line-height: 1.75;
 }

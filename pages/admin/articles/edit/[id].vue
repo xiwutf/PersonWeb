@@ -40,7 +40,7 @@
             <button 
               @click="generateSlugFromTitle" 
               type="button" 
-              class="btn-secondary whitespace-nowrap"
+              class="btn-secondary var(--color-bg-light, white)space-nowrap"
             >
               自动生成
             </button>

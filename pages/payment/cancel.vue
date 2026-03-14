@@ -67,29 +67,29 @@ const contactSupport = () => {
   margin: 0 auto;
   text-align: center;
   padding: 2rem;
-  background: white;
+  background: var(--color-bg-light, white);
   border-radius: 8px;
   box-shadow: 0 2px 10px var(--shadow);
 }
 
 .cancel-icon {
   font-size: 4rem;
-  color: #f44336;
+  color: var(--color-danger);
   margin-bottom: 1rem;
 }
 
 h1 {
-  color: #333;
+  color: var(--color-text-dark);
   margin-bottom: 1rem;
 }
 
 p {
-  color: #666;
+  color: var(--color-gray-500);
   margin-bottom: 2rem;
 }
 
 .reasons {
-  background: #fff3cd;
+  background: var(--color-bg-elevated);
   padding: 1.5rem;
   border-radius: 4px;
   margin-bottom: 2rem;
@@ -98,11 +98,11 @@ p {
 
 .reasons h3 {
   margin-top: 0;
-  color: #856404;
+  color: var(--color-amber-900);
 }
 
 .reasons ul {
-  color: #856404;
+  color: var(--color-amber-900);
   padding-left: 20px;
 }
 
@@ -130,32 +130,32 @@ p {
 }
 
 .btn-primary {
-  background: #2196f3;
-  color: white;
+  background: var(--color-primary);
+  color: var(--color-bg-light, white);
 }
 
 .btn-primary:hover {
-  background: #1976d2;
+  background: var(--color-primary-hover);
 }
 
 .btn-secondary {
-  background: #ff9800;
-  color: white;
+  background: var(--color-warning);
+  color: var(--color-bg-light, white);
 }
 
 .btn-secondary:hover {
-  background: #f57c00;
+  background: var(--color-orange-600);
 }
 
 .btn-outline {
   background: transparent;
-  border: 2px solid #2196f3;
-  color: #2196f3;
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
 }
 
 .btn-outline:hover {
-  background: #2196f3;
-  color: white;
+  background: var(--color-primary);
+  color: var(--color-bg-light, white);
 }
 
 i {

@@ -1,9 +1,9 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50">
     <!-- 页面头部 -->
-    <section class="py-16 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+    <section class="py-16 bg-gradient-to-r from-indigo-600 to-purple-600 text-var(--color-bg-light, white)">
       <div class="max-w-6xl mx-auto px-4 text-center">
-        <div class="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+        <div class="w-20 h-20 bg-var(--color-bg-light, white)/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
           <span class="text-3xl">🔗</span>
         </div>
         <h1 class="text-4xl lg:text-5xl font-bold mb-4">友情链接</h1>
@@ -46,7 +46,7 @@
                 @error="handleImageError"
               />
               <div v-else class="h-16 w-16 rounded-lg bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center">
-                <span class="text-white text-2xl font-bold">{{ link.name.charAt(0).toUpperCase() }}</span>
+                <span class="text-var(--color-bg-light, white) text-2xl font-bold">{{ link.name.charAt(0).toUpperCase() }}</span>
               </div>
             </div>
 

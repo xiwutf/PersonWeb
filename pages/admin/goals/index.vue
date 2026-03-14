@@ -1,39 +1,39 @@
 <template>
   <div>
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold text-gray-800 dark:text-white">年度目标管理</h1>
-      <button @click="showCreateModal = true" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+      <h1 class="text-2xl font-bold text-gray-800 dark:text-var(--color-bg-light, white)">年度目标管理</h1>
+      <button @click="showCreateModal = true" class="px-4 py-2 bg-blue-600 text-var(--color-bg-light, white) rounded hover:bg-blue-700 transition-colors">
         + 新建目标
       </button>
     </div>
 
     <!-- 统计卡片 -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-      <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
         <div class="text-sm text-gray-500 dark:text-gray-400">总目标</div>
-        <div class="text-2xl font-bold text-gray-800 dark:text-white">{{ stats?.Total || 0 }}</div>
+        <div class="text-2xl font-bold text-gray-800 dark:text-var(--color-bg-light, white)">{{ stats?.Total || 0 }}</div>
       </div>
-      <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
         <div class="text-sm text-gray-500 dark:text-gray-400">进行中</div>
         <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">{{ stats?.Active || 0 }}</div>
       </div>
-      <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
         <div class="text-sm text-gray-500 dark:text-gray-400">已完成</div>
         <div class="text-2xl font-bold text-green-600 dark:text-green-400">{{ stats?.Completed || 0 }}</div>
       </div>
-      <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
         <div class="text-sm text-gray-500 dark:text-gray-400">平均进度</div>
         <div class="text-2xl font-bold text-purple-600 dark:text-purple-400">{{ stats?.AverageProgress || 0 }}%</div>
       </div>
     </div>
 
     <!-- 筛选栏 -->
-    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-6 flex gap-4 flex-wrap">
-      <select v-model.number="filterYear" @change="fetchGoals" class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+    <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-6 flex gap-4 flex-wrap">
+      <select v-model.number="filterYear" @change="fetchGoals" class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200">
         <option :value="null">全部年份</option>
         <option v-for="y in years" :key="y" :value="y">{{ y }}年</option>
       </select>
-      <select v-model="filterStatus" @change="fetchGoals" class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+      <select v-model="filterStatus" @change="fetchGoals" class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200">
         <option value="">全部状态</option>
         <option value="active">进行中</option>
         <option value="completed">已完成</option>
@@ -43,7 +43,7 @@
     </div>
 
     <!-- 目标列表 -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
       <div v-if="loading" class="p-8 text-center text-gray-500 dark:text-gray-400">加载中...</div>
       <div v-else-if="goals.length === 0" class="p-8 text-center text-gray-500 dark:text-gray-400">暂无目标</div>
       <div v-else class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -51,7 +51,7 @@
           <div class="flex items-start justify-between">
             <div class="flex-1">
               <div class="flex items-center gap-3 mb-2">
-                <h3 class="text-lg font-semibold text-gray-800 dark:text-white">{{ goal.title }}</h3>
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-var(--color-bg-light, white)">{{ goal.title }}</h3>
                 <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded text-xs font-medium">
                   {{ goal.year }}年
                 </span>
@@ -67,13 +67,13 @@
               <!-- 目标数值 -->
               <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 mb-3">
                 <span v-if="goal.targetValue">
-                  目标: <span class="font-semibold text-gray-800 dark:text-white">{{ goal.targetValue }}{{ goal.unit || '' }}</span>
+                  目标: <span class="font-semibold text-gray-800 dark:text-var(--color-bg-light, white)">{{ goal.targetValue }}{{ goal.unit || '' }}</span>
                 </span>
                 <span>
-                  当前: <span class="font-semibold text-gray-800 dark:text-white">{{ goal.currentValue }}{{ goal.unit || '' }}</span>
+                  当前: <span class="font-semibold text-gray-800 dark:text-var(--color-bg-light, white)">{{ goal.currentValue }}{{ goal.unit || '' }}</span>
                 </span>
                 <span>
-                  进度: <span class="font-semibold text-gray-800 dark:text-white">{{ goal.progress }}%</span>
+                  进度: <span class="font-semibold text-gray-800 dark:text-var(--color-bg-light, white)">{{ goal.progress }}%</span>
                 </span>
               </div>
 
@@ -114,57 +114,57 @@
 
     <!-- 创建/编辑目标模态框 -->
     <div v-if="showCreateModal || editingGoal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" @click.self="closeModal">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
         <div class="p-6">
-          <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-4">
+          <h2 class="text-xl font-bold text-gray-800 dark:text-var(--color-bg-light, white) mb-4">
             {{ editingGoal ? '编辑目标' : '新建年度目标' }}
           </h2>
           <form @submit.prevent="saveGoal" class="space-y-4">
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">目标年份 *</label>
-                <input v-model.number="goalForm.year" type="number" required min="2020" max="2100" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
+                <input v-model.number="goalForm.year" type="number" required min="2020" max="2100" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">分类</label>
-                <input v-model="goalForm.category" type="text" placeholder="工作/学习/生活等" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
+                <input v-model="goalForm.category" type="text" placeholder="工作/学习/生活等" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
               </div>
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">目标标题 *</label>
-              <input v-model="goalForm.title" type="text" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
+              <input v-model="goalForm.title" type="text" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">目标描述</label>
-              <textarea v-model="goalForm.description" rows="3" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"></textarea>
+              <textarea v-model="goalForm.description" rows="3" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200"></textarea>
             </div>
             <div class="grid grid-cols-3 gap-4">
               <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">目标数值</label>
-                <input v-model.number="goalForm.targetValue" type="number" step="0.01" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
+                <input v-model.number="goalForm.targetValue" type="number" step="0.01" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">当前数值</label>
-                <input v-model.number="goalForm.currentValue" type="number" step="0.01" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
+                <input v-model.number="goalForm.currentValue" type="number" step="0.01" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">单位</label>
-                <input v-model="goalForm.unit" type="text" placeholder="个/篇/小时等" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
+                <input v-model="goalForm.unit" type="text" placeholder="个/篇/小时等" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
               </div>
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">开始日期</label>
-                <input v-model="goalForm.startDate" type="date" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
+                <input v-model="goalForm.startDate" type="date" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">结束日期</label>
-                <input v-model="goalForm.endDate" type="date" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
+                <input v-model="goalForm.endDate" type="date" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
               </div>
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">状态</label>
-              <select v-model="goalForm.status" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+              <select v-model="goalForm.status" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200">
                 <option value="active">进行中</option>
                 <option value="completed">已完成</option>
                 <option value="archived">已归档</option>
@@ -178,7 +178,7 @@
               >
                 <span class="dark:text-gray-100" style="color: inherit;">取消</span>
               </button>
-              <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors font-medium shadow-md">保存</button>
+              <button type="submit" class="px-4 py-2 bg-blue-600 text-var(--color-bg-light, white) rounded hover:bg-blue-700 transition-colors font-medium shadow-md">保存</button>
             </div>
           </form>
         </div>

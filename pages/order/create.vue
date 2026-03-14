@@ -8,7 +8,7 @@
       </div>
 
       <!-- 加载状态 -->
-      <div v-if="loading" class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 text-center">
+      <div v-if="loading" class="bg-var(--color-bg-light, white)/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 text-center">
         <div class="animate-pulse">
           <div class="h-8 bg-gray-200 rounded mb-4"></div>
           <div class="h-4 bg-gray-200 rounded mb-2"></div>
@@ -16,7 +16,7 @@
       </div>
 
       <!-- 订单表单 -->
-      <div v-else-if="product" class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8">
+      <div v-else-if="product" class="bg-var(--color-bg-light, white)/80 backdrop-blur-sm rounded-2xl shadow-xl p-8">
         <!-- 商品信息（只读） -->
         <div class="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
           <h3 class="text-sm font-medium text-gray-700 mb-2">商品信息</h3>
@@ -117,7 +117,7 @@
             <button
               type="submit"
               :disabled="submitting"
-              class="flex-1 px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:from-orange-600 hover:to-red-600 transition-all font-medium shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              class="flex-1 px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-var(--color-bg-light, white) rounded-lg hover:from-orange-600 hover:to-red-600 transition-all font-medium shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span v-if="submitting">提交中...</span>
               <span v-else>提交订单</span>
@@ -127,7 +127,7 @@
       </div>
 
       <!-- 无数据状态 -->
-      <div v-else class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 text-center">
+      <div v-else class="bg-var(--color-bg-light, white)/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 text-center">
         <p class="text-gray-600">商品不存在或已下架</p>
         <NuxtLink to="/tools" class="mt-4 inline-block text-orange-600 hover:text-orange-700">
           返回工具列表

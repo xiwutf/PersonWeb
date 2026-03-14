@@ -156,13 +156,13 @@
           </n-descriptions-item>
           <n-descriptions-item label="创建时间">{{ formatDate(currentConsultation.createdAt) }}</n-descriptions-item>
           <n-descriptions-item label="需求描述" :span="2">
-            <div class="whitespace-pre-line bg-gray-50 p-3 rounded">{{ currentConsultation.requirementDescription }}</div>
+            <div class="var(--color-bg-light, white)space-pre-line bg-gray-50 p-3 rounded">{{ currentConsultation.requirementDescription }}</div>
           </n-descriptions-item>
           <n-descriptions-item v-if="currentConsultation.summary" label="AI 摘要" :span="2">
-            <div class="whitespace-pre-line bg-blue-50 p-3 rounded">{{ currentConsultation.summary }}</div>
+            <div class="var(--color-bg-light, white)space-pre-line bg-blue-50 p-3 rounded">{{ currentConsultation.summary }}</div>
           </n-descriptions-item>
           <n-descriptions-item v-if="currentConsultation.aiRecommendation" label="AI 推荐建议" :span="2">
-            <div class="whitespace-pre-line bg-green-50 p-3 rounded">{{ currentConsultation.aiRecommendation }}</div>
+            <div class="var(--color-bg-light, white)space-pre-line bg-green-50 p-3 rounded">{{ currentConsultation.aiRecommendation }}</div>
           </n-descriptions-item>
           <n-descriptions-item label="内部备注" :span="2">
             <n-input
@@ -828,7 +828,7 @@ useHead({
 
 .pagination-select {
   padding: 4px 8px;
-  border: 1px solid var(--color-border-default, #d1d5db);
+  border: 1px solid var(--color-border-default, var(--color-gray-300));
   border-radius: 4px;
 }
 
@@ -840,8 +840,8 @@ useHead({
 
 .pagination-btn {
   padding: 4px 12px;
-  border: 1px solid var(--color-border-default, #d1d5db);
-  background: var(--color-bg-card, white);
+  border: 1px solid var(--color-border-default, var(--color-gray-300));
+  background: var(--color-bg-card, var(--color-bg-light, white));
   border-radius: 4px;
   cursor: pointer;
 }

@@ -119,7 +119,7 @@ const formatTime = (timeStr: string | null | undefined) => {
 .card-title {
   font-size: 1.125rem;
   font-weight: 600;
-  color: #f3f4f6;
+  color: var(--color-text-main, #f3f4f6);
 }
 
 .visits-list {
@@ -159,7 +159,7 @@ const formatTime = (timeStr: string | null | undefined) => {
 }
 
 .visit-ip {
-  color: #9ca3af;
+  color: var(--color-text-muted, #9ca3af);
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
   font-size: 0.75rem;
   text-align: right;
