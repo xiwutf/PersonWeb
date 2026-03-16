@@ -551,72 +551,72 @@ onMounted(() => {
 <style scoped>
 .font-management-page {
   width: 100%;
-  padding: 1rem;
+  padding: var(--spacing-md);
 }
 
 .page-header {
-  margin-bottom: 2rem;
+  margin-bottom: var(--spacing-2xl);
 }
 
 .page-title {
-  font-size: 1.875rem;
+  font-size: var(--text-2xl);
   font-weight: 700;
   color: var(--color-text-main, var(--color-bg-card));
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--spacing-sm);
 }
 
 .page-description {
   color: var(--color-text-muted, rgba(255, 255, 255, 0.6));
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
 }
 
 .font-settings-container {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: var(--spacing-2xl);
 }
 
 .settings-section {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.75rem;
-  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
 }
 
 .section-header {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--spacing-xl);
 }
 
 .section-title {
-  font-size: 1.25rem;
+  font-size: var(--text-lg);
   font-weight: 600;
   color: var(--color-text-main, var(--color-bg-card));
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--spacing-sm);
   display: flex;
   align-items: center;
 }
 
 .section-description {
   color: var(--color-text-muted, rgba(255, 255, 255, 0.6));
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
 }
 
 .settings-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: var(--spacing-xl);
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
 }
 
 .form-label {
   color: var(--color-text-main, var(--color-bg-card));
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   font-weight: 500;
   display: flex;
   align-items: center;
@@ -624,17 +624,17 @@ onMounted(() => {
 
 .form-hint {
   color: var(--color-text-muted, rgba(255, 255, 255, 0.5));
-  font-size: 0.75rem;
-  margin-top: -0.25rem;
+  font-size: var(--text-xs);
+  margin-top: calc(var(--spacing-sm) * -0.5);
 }
 
 .form-input {
-  padding: 0.75rem;
+  padding: var(--spacing-md);
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 0.5rem;
+  border-radius: var(--radius-md);
   color: var(--color-text-main, var(--color-bg-card));
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   transition: all 0.2s;
 }
 
@@ -651,7 +651,7 @@ onMounted(() => {
 .form-row {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
+  gap: var(--spacing-xl);
 }
 
 @media (max-width: 768px) {
@@ -662,7 +662,7 @@ onMounted(() => {
 
 .font-family-input-group {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
 }
 
 .font-family-input-group .form-input {
@@ -672,7 +672,7 @@ onMounted(() => {
 .font-size-input-group {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
 }
 
 .font-size-input-group .form-input {
@@ -681,30 +681,30 @@ onMounted(() => {
 
 .input-unit {
   color: var(--color-text-muted, rgba(255, 255, 255, 0.6));
-  font-size: 0.875rem;
-  min-width: 2rem;
+  font-size: var(--text-sm);
+  min-width: var(--spacing-2xl);
 }
 
 .font-preview {
-  margin-top: 0.75rem;
-  padding: 1rem;
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-lg);
   background: rgba(0, 0, 0, 0.3);
-  border-radius: 0.5rem;
+  border-radius: var(--radius-md);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .font-preview-small {
-  margin-top: 0.5rem;
-  padding: 0.75rem;
+  margin-top: var(--spacing-sm);
+  padding: var(--spacing-md);
   background: rgba(0, 0, 0, 0.3);
-  border-radius: 0.5rem;
+  border-radius: var(--radius-md);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .preview-label {
   color: var(--color-text-muted, rgba(255, 255, 255, 0.6));
-  font-size: 0.75rem;
-  margin-bottom: 0.5rem;
+  font-size: var(--text-xs);
+  margin-bottom: var(--spacing-sm);
 }
 
 .preview-text {
@@ -722,16 +722,16 @@ onMounted(() => {
 
 .actions-section {
   display: flex;
-  gap: 1rem;
-  padding-top: 1rem;
+  gap: var(--spacing-md);
+  padding-top: var(--spacing-md);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .btn-primary,
 .btn-secondary {
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
+  padding: var(--spacing-md) var(--spacing-xl);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;

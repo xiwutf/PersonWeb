@@ -321,9 +321,9 @@ onMounted(() => {
 
 /* 表格容器 - 使用 CSS 变量 */
 .table-container {
-  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.05));
+  background: var(--color-bg-elevated);
   backdrop-filter: blur(10px);
-  border: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.1));
+  border: 1px solid var(--color-border-subtle);
   border-radius: 0.5rem;
   overflow: hidden;
   margin-bottom: 1.5rem;
@@ -333,7 +333,7 @@ onMounted(() => {
 .table-empty {
   padding: 2rem;
   text-align: center;
-  color: var(--color-text-muted, rgba(255, 255, 255, 0.6));
+  color: var(--color-text-muted);
 }
 
 /* 数据表格 */
@@ -344,7 +344,7 @@ onMounted(() => {
 }
 
 .table-header {
-  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.05));
+  background: var(--color-bg-elevated);
   border-bottom: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.1));
 }
 
@@ -352,7 +352,7 @@ onMounted(() => {
   padding: 0.75rem 1.5rem;
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--color-text-muted, rgba(255, 255, 255, 0.6));
+  color: var(--color-text-muted);
 }
 
 .table-body {
@@ -365,7 +365,7 @@ onMounted(() => {
 }
 
 .table-row:hover {
-  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.05));
+  background: var(--color-bg-elevated);
 }
 
 .table-row:last-child {
@@ -374,7 +374,7 @@ onMounted(() => {
 
 .table-cell {
   padding: 1rem 1.5rem;
-  color: var(--color-text-main, rgba(255, 255, 255, 0.9));
+  color: var(--color-text-main);
 }
 
 .table-cell-content {
@@ -397,21 +397,21 @@ onMounted(() => {
 }
 
 .tag-warning {
-  background: var(--color-warning-soft, rgba(251, 191, 36, 0.3));
-  border: 1px solid var(--color-warning, rgba(251, 191, 36, 0.6));
+  background: var(--color-warning-soft);
+  border: 1px solid var(--color-warning);
   color: var(--color-warning-hover, var(--color-amber-200));
 }
 
 .tag-success {
-  background: var(--color-success-soft, rgba(34, 197, 94, 0.3));
-  border: 1px solid var(--color-success, rgba(34, 197, 94, 0.6));
-  color: var(--color-success-hover, var(--color-purple-400));
+  background: var(--color-success-soft);
+  border: 1px solid var(--color-success);
+  color: var(--color-success-hover);
 }
 
 .tag-error {
-  background: var(--color-error-soft, rgba(239, 68, 68, 0.3));
-  border: 1px solid var(--color-error, rgba(239, 68, 68, 0.6));
-  color: var(--color-error-hover, var(--color-red-200));
+  background: var(--color-error-soft);
+  border: 1px solid var(--color-error);
+  color: var(--color-error-hover);
 }
 
 /* 操作按钮 */
@@ -431,55 +431,55 @@ onMounted(() => {
 }
 
 .btn-link-blue {
-  color: var(--color-primary, var(--color-primary-soft));
+  color: var(--color-primary);
 }
 
 .btn-link-blue:hover {
-  color: var(--color-primary-hover, var(--color-blue-400));
+  color: var(--color-primary-hover);
 }
 
 .filter-select-fallback {
   width: 200px;
   padding: 0.5rem;
-  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.05));
-  border: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.1));
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-subtle);
   border-radius: 0.25rem;
-  color: var(--color-text-main, rgba(255, 255, 255, 0.9));
+  color: var(--color-text-main);
   font-size: 0.875rem;
 }
 
 .filter-select-fallback:focus {
   outline: none;
-  border-color: var(--color-primary, var(--theme-primary));
+  border-color: var(--color-primary);
 }
 
 /* 统计图标颜色 - 使用 CSS 变量 */
 .stat-icon-pending {
-  color: var(--color-warning, var(--color-orange-400));
+  color: var(--color-warning);
 }
 
 .stat-icon-approved {
-  color: var(--color-success, var(--color-green-300));
+  color: var(--color-success);
 }
 
 .stat-icon-rejected {
-  color: var(--color-error, var(--color-red-300));
+  color: var(--color-error);
 }
 
 .btn-link-green {
-  color: var(--color-success, var(--color-emerald-400));
+  color: var(--color-success);
 }
 
 .btn-link-green:hover {
-  color: var(--color-success-hover, var(--color-emerald-300));
+  color: var(--color-success-hover);
 }
 
 .btn-link-red {
-  color: var(--color-error, var(--color-red-400));
+  color: var(--color-error);
 }
 
 .btn-link-red:hover {
-  color: var(--color-error-hover, var(--color-red-300));
+  color: var(--color-error-hover);
 }
 </style>
 

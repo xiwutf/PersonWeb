@@ -585,7 +585,7 @@ const submitReview = async () => {
 }
 
 .page-header p {
-  color: var(--color-gray-500);
+  color: var(--color-text-tertiary);
   font-size: 1.1rem;
 }
 
@@ -634,19 +634,19 @@ const submitReview = async () => {
   font-weight: 500;
 }
 
-.badge.content { background: var(--color-blue-100); color: var(--color-blue-700); }
+.badge.content { background: var(--color-primary-light); color: var(--color-primary-hover); }
 .badge.tool { background: var(--color-yellow-100); color: var(--color-yellow-800); }
 .badge.ai { background: var(--color-indigo-100); color: var(--color-indigo-700); }
 .badge.experiment { background: var(--color-pink-100); color: var(--color-pink-700); }
-.badge.interaction { background: var(--color-green-100); color: var(--color-success-dark); }
+.badge.interaction { background: var(--color-success-bg); color: var(--color-success-dark); }
 
 .version {
-  color: var(--color-gray-500);
+  color: var(--color-text-tertiary);
   font-size: 0.9rem;
 }
 
 .author {
-  color: var(--color-gray-500);
+  color: var(--color-text-tertiary);
   font-size: 0.9rem;
 }
 
@@ -680,8 +680,8 @@ const submitReview = async () => {
 
 .btn.secondary {
   background: var(--color-bg-light, white);
-  color: var(--color-gray-700);
-  border: 1px solid var(--color-gray-300);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-default);
 }
 
 .btn.secondary:hover {
@@ -690,8 +690,8 @@ const submitReview = async () => {
 
 .btn.favorite {
   background: var(--color-bg-light, white);
-  color: var(--color-gray-500);
-  border: 1px solid var(--color-gray-300);
+  color: var(--color-text-tertiary);
+  border: 1px solid var(--color-border-default);
   padding: 0.75rem;
 }
 
@@ -719,7 +719,7 @@ const submitReview = async () => {
 }
 
 .stat-label {
-  color: var(--color-gray-500);
+  color: var(--color-text-tertiary);
   font-size: 0.9rem;
 }
 
@@ -737,7 +737,7 @@ const submitReview = async () => {
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem;
-  background: var(--color-gray-50);
+  background: var(--color-bg-elevated);
   border-radius: 6px;
 }
 
@@ -751,11 +751,11 @@ const submitReview = async () => {
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   font-size: 0.85rem;
-  color: var(--color-gray-500);
+  color: var(--color-text-tertiary);
 }
 
 .config-desc {
-  color: var(--color-gray-500);
+  color: var(--color-text-tertiary);
   font-size: 0.9rem;
 }
 
@@ -771,7 +771,7 @@ const submitReview = async () => {
   border: none;
   cursor: pointer;
   font-size: 1rem;
-  color: var(--color-gray-500);
+  color: var(--color-text-tertiary);
   position: relative;
   transition: color 0.2s;
 }
@@ -833,7 +833,7 @@ const submitReview = async () => {
 
 .version-item.is-latest {
   border-color: var(--color-primary);
-  background: var(--color-blue-50);
+  background: var(--color-primary-lighter);
 }
 
 .version-header {
@@ -851,20 +851,20 @@ const submitReview = async () => {
 }
 
 .badge.latest {
-  background: var(--color-blue-100);
-  color: var(--color-blue-700);
+  background: var(--color-primary-light);
+  color: var(--color-primary-hover);
 }
 
 .badge.stable {
-  background: var(--color-green-100);
-  color: var(--color-green-800);
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
 }
 
 .version-details {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: var(--color-gray-500);
+  color: var(--color-text-tertiary);
   font-size: 0.9rem;
 }
 
@@ -879,7 +879,7 @@ const submitReview = async () => {
   text-align: center;
   margin-bottom: 2rem;
   padding: 2rem;
-  background: var(--color-gray-50);
+  background: var(--color-bg-elevated);
   border-radius: 8px;
 }
 
@@ -891,7 +891,7 @@ const submitReview = async () => {
 
 .rating-score .max {
   font-size: 1.5rem;
-  color: var(--color-gray-500);
+  color: var(--color-text-tertiary);
 }
 
 .stars {
@@ -899,7 +899,7 @@ const submitReview = async () => {
 }
 
 .review-form {
-  background: var(--color-gray-50);
+  background: var(--color-bg-elevated);
   border-radius: 8px;
   padding: 1.5rem;
   margin-bottom: 2rem;
@@ -939,7 +939,7 @@ const submitReview = async () => {
 .reviewer-avatar {
   width: 40px;
   height: 40px;
-  background: var(--color-gray-200);
+  background: var(--color-border-subtle);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -954,7 +954,7 @@ const submitReview = async () => {
 
 .reviewer-date {
   font-size: 0.85rem;
-  color: var(--color-gray-500);
+  color: var(--color-text-tertiary);
 }
 
 .review-title {
@@ -963,7 +963,7 @@ const submitReview = async () => {
 }
 
 .review-content {
-  color: var(--color-gray-500);
+  color: var(--color-text-tertiary);
   line-height: 1.6;
 }
 
@@ -979,12 +979,12 @@ const submitReview = async () => {
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  background: var(--color-gray-50);
+  background: var(--color-bg-elevated);
   border-radius: 8px;
 }
 
 .dependency-type {
-  color: var(--color-gray-500);
+  color: var(--color-text-tertiary);
   font-size: 0.85rem;
 }
 
@@ -1003,7 +1003,7 @@ const submitReview = async () => {
   display: flex;
   justify-content: space-between;
   padding: 0.75rem;
-  background: var(--color-gray-50);
+  background: var(--color-bg-elevated);
   border-radius: 6px;
 }
 
@@ -1012,7 +1012,7 @@ const submitReview = async () => {
 }
 
 .value {
-  color: var(--color-gray-500);
+  color: var(--color-text-tertiary);
 }
 
 .pagination {
@@ -1024,7 +1024,7 @@ const submitReview = async () => {
 
 .page-btn {
   padding: 0.5rem 1rem;
-  border: 1px solid var(--color-gray-300);
+  border: 1px solid var(--color-border-default);
   background: var(--color-bg-light, white);
   border-radius: 4px;
   cursor: pointer;
@@ -1077,7 +1077,7 @@ const submitReview = async () => {
   var(--color-bg-light, white)-space: pre-wrap;
   word-break: break-word;
   margin: 0;
-  background: var(--color-gray-50);
+  background: var(--color-bg-elevated);
   padding: 1rem;
   border-radius: 4px;
 }
@@ -1085,7 +1085,7 @@ const submitReview = async () => {
 .empty-state {
   text-align: center;
   padding: 3rem;
-  color: var(--color-gray-500);
+  color: var(--color-text-tertiary);
 }
 
 @media (max-width: 768px) {

@@ -229,7 +229,7 @@ h1 {
 
 .license-card {
   background: var(--color-bg-light, white);
-  border: 1px solid var(--color-gray-300);
+  border: 1px solid var(--color-border-default);
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 2px 4px var(--shadow);
@@ -261,13 +261,13 @@ h1 {
 }
 
 .status.expired {
-  background: var(--color-red-50);
-  color: var(--color-red-800);
+  background: var(--color-error-bg);
+  color: var(--color-error-text);
 }
 
 .status.revoked {
-  background: var(--color-pink-100);
-  color: var(--color-pink-700);
+  background: var(--color-error-bg);
+  color: var(--color-error-text);
 }
 
 .license-details p {
@@ -301,44 +301,44 @@ h1 {
 }
 
 .btn-primary {
-  background: var(--color-blue-500);
+  background: var(--color-primary);
   color: var(--color-bg-light, white);
 }
 
 .btn-primary:hover {
-  background: var(--color-blue-700);
+  background: var(--color-primary-hover);
 }
 
 .btn-secondary {
-  background: var(--color-orange-500);
+  background: var(--color-warning);
   color: var(--color-bg-light, white);
 }
 
 .btn-secondary:hover {
-  background: var(--color-orange-600);
+  background: var(--color-warning-icon);
 }
 
 .btn-outline {
   background: transparent;
-  border: 1px solid var(--color-blue-500);
-  color: var(--color-blue-500);
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
 }
 
 .btn-outline:hover {
-  background: var(--color-blue-500);
+  background: var(--color-primary);
   color: var(--color-bg-light, white);
 }
 
 .empty-state {
   text-align: center;
   padding: 3rem;
-  background: var(--color-gray-100);
+  background: var(--color-bg-elevated);
   border-radius: 8px;
 }
 
 .empty-state i {
   font-size: 4rem;
-  color: var(--color-gray-400);
+  color: var(--color-text-quaternary);
   margin-bottom: 1rem;
 }
 
@@ -388,14 +388,14 @@ h1 {
 .form-group input {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid var(--color-gray-300);
+  border: 1px solid var(--color-border-default);
   border-radius: 4px;
   font-size: 1rem;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: var(--color-blue-500);
+  border-color: var(--color-border-focus);
 }
 
 .modal-actions {

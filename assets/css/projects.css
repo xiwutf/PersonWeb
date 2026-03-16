@@ -164,20 +164,12 @@
 }
 
 .projects-error {
-  background-color: var(--color-red-100);
-  border: 1px solid var(--color-red-200);
+  background-color: var(--color-error-bg);
+  border: 1px solid var(--color-error-border);
   border-radius: 0.5rem;
   padding: 1rem;
   margin-bottom: 2rem;
-  color: var(--color-red-800);
-}
-
-@media (prefers-color-scheme: dark) {
-  .projects-error {
-    background-color: var(--color-red-900);
-    border-color: var(--color-red-800);
-    color: var(--color-red-300);
-  }
+  color: var(--color-error-text);
 }
 
 .projects-error-title {

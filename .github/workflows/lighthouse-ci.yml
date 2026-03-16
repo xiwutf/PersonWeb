@@ -1,0 +1,86 @@
+name: Lighthouse CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build the application
+        env:
+          NODE_ENV: production
+          NUXT_PUBLIC_API_BASE: https://api.xifg.com.cn/api
+        run: npm run generate
+
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli
+
+      - name: Run Lighthouse CI
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+          LHCI_TOKEN: ${{ secrets.LHCI_TOKEN }}
+        run: |
+          lhci autorun \
+            --collect.url=http://localhost:3000/ \
+            --collect.url=http://localhost:3000/about \
+            --collect.url=http://localhost:3000/projects \
+            --collect.url=http://localhost:3000/blog \
+            --collect.url=http://localhost:3000/tools \
+            --collect.url=http://localhost:3000/life \
+            --collect.numRuns=3 \
+            --upload.target=temporary-public-storage
+
+  lighthouse-budget:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build the application
+        env:
+          NODE_ENV: production
+          NUXT_PUBLIC_API_BASE: https://api.xifg.com.cn/api
+        run: npm run generate
+
+      - name: Check bundle size budget
+        run: npm run check:budget
+
+      - name: Generate Lighthouse report
+        run: npm run lighthouse:report
+
+      - name: Upload Lighthouse reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-reports
+          path: .lighthouseci/
+          retention-days: 30

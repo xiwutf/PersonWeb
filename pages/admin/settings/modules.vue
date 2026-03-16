@@ -196,6 +196,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed, onMounted, ref } from 'vue'
 import { useSafeMessage } from '~/composables/useNaiveUI'
 import { useErrorHandler } from '~/composables/useErrorHandler'
 
@@ -338,35 +339,35 @@ onMounted(() => {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.5rem;
-  padding: 1.5rem;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-xl);
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--spacing-xl);
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: var(--spacing-md);
 }
 
 .section-title {
-  font-size: 1.25rem;
+  font-size: var(--text-lg);
   font-weight: 600;
   color: var(--color-bg-card);
 }
 
 .filter-tabs {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
 }
 
 .filter-tab {
-  padding: 0.5rem 1rem;
+  padding: var(--spacing-sm) var(--spacing-md);
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 0.25rem;
+  border-radius: var(--radius-sm);
   color: rgba(255, 255, 255, 0.7);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -385,14 +386,14 @@ onMounted(() => {
 .modules-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1.5rem;
+  gap: var(--spacing-xl);
 }
 
 .module-card {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.5rem;
-  padding: 1.25rem;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-10);
   transition: all 0.3s ease;
 }
 
@@ -419,62 +420,62 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-md);
 }
 
 .module-card-title {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: var(--spacing-lg);
   flex: 1;
 }
 
 .module-icon {
-  font-size: 1.5rem;
+  font-size: var(--text-3xl);
   color: rgba(255, 255, 255, 0.7);
 }
 
 .module-name {
-  font-size: 1rem;
+  font-size: var(--text-base);
   font-weight: 600;
   color: var(--color-bg-card);
-  margin-bottom: 0.25rem;
+  margin-bottom: var(--spacing-xs);
 }
 
 .module-key {
-  font-size: 0.75rem;
+  font-size: var(--text-xs);
   color: rgba(255, 255, 255, 0.5);
   font-family: monospace;
 }
 
 .module-card-badges {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
   flex-wrap: wrap;
 }
 
 .module-card-body {
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-md);
 }
 
 .module-description {
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-md);
   line-height: 1.5;
 }
 
 .module-info {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
 }
 
 .info-item {
   display: flex;
-  gap: 0.5rem;
-  font-size: 0.875rem;
+  gap: var(--spacing-sm);
+  font-size: var(--text-sm);
 }
 
 .info-label {
@@ -486,53 +487,53 @@ onMounted(() => {
 }
 
 .module-dependencies {
-  margin-top: 1rem;
-  padding-top: 1rem;
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .dependencies-label {
-  font-size: 0.75rem;
+  font-size: var(--text-xs);
   color: rgba(255, 255, 255, 0.5);
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--spacing-sm);
   display: block;
 }
 
 .dependencies-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
 }
 
 .dependency-tag {
-  padding: 0.25rem 0.5rem;
+  padding: var(--spacing-xs) var(--spacing-sm);
   background: rgba(59, 130, 246, 0.2);
   border: 1px solid rgba(59, 130, 246, 0.4);
-  border-radius: 0.25rem;
-  font-size: 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
   color: var(--color-primary-400);
 }
 
 .module-card-footer {
-  padding-top: 1rem;
+  padding-top: var(--spacing-md);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .module-actions {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
 }
 
 .btn-toggle {
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-sm);
   border: none;
   cursor: pointer;
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
 }
 
 .btn-toggle-enable {
@@ -556,9 +557,9 @@ onMounted(() => {
 }
 
 .badge {
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-  font-size: 0.75rem;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
   font-weight: 500;
 }
 
@@ -594,7 +595,7 @@ onMounted(() => {
   background: rgba(30, 41, 59, 0.95);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.75rem;
+  border-radius: var(--radius-lg);
   width: 90%;
   max-width: 700px;
   max-height: 90vh;
@@ -605,12 +606,12 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem;
+  padding: var(--spacing-xl);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .modal-header h2 {
-  font-size: 1.25rem;
+  font-size: var(--text-lg);
   font-weight: 600;
   color: var(--color-bg-card);
 }
@@ -619,14 +620,14 @@ onMounted(() => {
   background: none;
   border: none;
   color: rgba(255, 255, 255, 0.7);
-  font-size: 1.5rem;
+  font-size: var(--text-3xl);
   cursor: pointer;
-  width: 2rem;
-  height: 2rem;
+  width: var(--spacing-2xl);
+  height: var(--spacing-2xl);
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0.25rem;
+  border-radius: var(--radius-sm);
   transition: all 0.2s ease;
 }
 
@@ -636,44 +637,44 @@ onMounted(() => {
 }
 
 .modal-body {
-  padding: 1.5rem;
+  padding: var(--spacing-xl);
 }
 
 .detail-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--spacing-xl);
 }
 
 .detail-title {
-  font-size: 1rem;
+  font-size: var(--text-base);
   font-weight: 600;
   color: var(--color-bg-card);
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-md);
 }
 
 .detail-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
+  gap: var(--spacing-md);
 }
 
 .detail-item {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: var(--spacing-xs);
 }
 
 .detail-label {
-  font-size: 0.75rem;
+  font-size: var(--text-xs);
   color: rgba(255, 255, 255, 0.5);
 }
 
 .detail-value {
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   color: rgba(255, 255, 255, 0.9);
 }
 
 .detail-text {
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   color: rgba(255, 255, 255, 0.7);
   line-height: 1.6;
 }
@@ -682,16 +683,16 @@ onMounted(() => {
 .components-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
 }
 
 .route-tag,
 .component-tag {
-  padding: 0.25rem 0.5rem;
+  padding: var(--spacing-xs) var(--spacing-sm);
   background: rgba(139, 92, 246, 0.2);
   border: 1px solid rgba(139, 92, 246, 0.4);
-  border-radius: 0.25rem;
-  font-size: 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
   color: var(--color-purple-300);
   font-family: monospace;
 }

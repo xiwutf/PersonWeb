@@ -211,7 +211,7 @@ onMounted(() => {
 
 .module-cover {
   position: relative;
-  height: 180px;
+  height: var(--spacing-20);
   overflow: hidden;
   background: var(--color-bg-secondary);
 }
@@ -227,75 +227,75 @@ onMounted(() => {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 48px;
+  font-size: var(--text-3xl);
   opacity: 0.3;
 }
 
 .price-tag {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
   background: var(--color-error);
   color: var(--color-text-primary);
-  padding: 0.25rem 0.75rem;
+  padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: 9999px;
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   font-weight: 600;
 }
 
 .free-tag {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
   background: var(--color-success);
   color: var(--color-text-primary);
-  padding: 0.25rem 0.75rem;
+  padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: 9999px;
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   font-weight: 600;
 }
 
 .installed-badge {
   position: absolute;
-  bottom: 1rem;
-  left: 1rem;
+  bottom: var(--spacing-md);
+  left: var(--spacing-md);
   background: var(--color-success);
   color: var(--color-text-primary);
-  padding: 0.25rem 0.75rem;
+  padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: 9999px;
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   font-weight: 600;
 }
 
 .module-info {
   flex: 1;
-  padding: 1.5rem;
+  padding: var(--spacing-lg);
   display: flex;
   flex-direction: column;
 }
 
 .module-header {
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-md);
 }
 
 .module-name {
-  font-size: 1.25rem;
+  font-size: var(--text-xl);
   font-weight: 600;
   color: var(--color-text-primary);
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 var(--spacing-sm) 0;
 }
 
 .module-meta {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
   align-items: center;
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
 }
 
 .version {
   background: var(--color-border);
   color: var(--color-text-secondary);
-  padding: 0.125rem 0.5rem;
+  padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--radius-sm);
 }
 
@@ -305,52 +305,52 @@ onMounted(() => {
 
 .module-description {
   color: var(--color-text-secondary);
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   line-height: 1.5;
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-md);
   flex: 1;
 }
 
 .module-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
 }
 
 .tag {
   background: var(--color-bg-secondary);
   color: var(--color-text-secondary);
-  padding: 0.25rem 0.5rem;
-  border-radius: var(--radius);
-  font-size: 0.75rem;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-base);
+  font-size: var(--text-xs);
 }
 
 .module-stats {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  font-size: 0.875rem;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  font-size: var(--text-sm);
   color: var(--color-text-secondary);
 }
 
 .stat-item {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: var(--spacing-xs);
 }
 
 .module-actions {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
 }
 
 .action-btn {
   flex: 1;
-  padding: 0.5rem 1rem;
+  padding: var(--spacing-sm) var(--spacing-md);
   border: none;
-  border-radius: 6px;
-  font-size: 0.875rem;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
@@ -381,15 +381,15 @@ onMounted(() => {
   }
 
   .module-info {
-    padding: 1rem;
+    padding: var(--spacing-md);
   }
 
   .module-name {
-    font-size: 1.125rem;
+    font-size: var(--text-lg);
   }
 
   .module-stats {
-    gap: 0.5rem;
+    gap: var(--spacing-2);
   }
 
   .module-actions {
@@ -397,7 +397,7 @@ onMounted(() => {
   }
 
   .action-btn {
-    padding: 0.75rem;
+    padding: var(--spacing-3);
   }
 }
 </style>

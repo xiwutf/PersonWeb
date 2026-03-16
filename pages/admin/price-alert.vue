@@ -424,7 +424,7 @@ onMounted(() => {
 }
 
 .btn-primary {
-  background: var(--color-blue-500);
+  background: var(--color-primary);
   color: var(--color-bg-light, white);
 }
 
@@ -433,23 +433,23 @@ onMounted(() => {
 }
 
 .btn-secondary {
-  background: var(--color-gray-200);
-  color: var(--color-gray-700);
+  background: var(--color-border-subtle);
+  color: var(--color-text-secondary);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: var(--color-gray-300);
+  background: var(--color-border-default);
 }
 
 .btn-secondary:disabled {
-  background: var(--color-gray-300);
+  background: var(--color-border-default);
   cursor: not-allowed;
 }
 
 .loading, .empty-state {
   text-align: center;
   padding: 48px;
-  color: var(--color-gray-400);
+  color: var(--color-text-quaternary);
 }
 
 .alerts-grid {
@@ -459,15 +459,15 @@ onMounted(() => {
 }
 
 .alert-card {
-  border: 1px solid var(--color-gray-200);
+  border: 1px solid var(--color-border-subtle);
   border-radius: 8px;
   padding: 20px;
   background: var(--color-bg-light, white);
 }
 
 .alert-card.triggered {
-  border-color: var(--color-green-500);
-  background: var(--color-green-50);
+  border-color: var(--color-success-icon);
+  background: var(--color-success-bg);
 }
 
 .alert-header {
@@ -476,7 +476,7 @@ onMounted(() => {
   align-items: flex-start;
   margin-bottom: 16px;
   padding-bottom: 16px;
-  border-bottom: 1px solid var(--color-gray-200);
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .alert-title h3 {
@@ -486,7 +486,7 @@ onMounted(() => {
 }
 
 .alert-code {
-  color: var(--color-gray-400);
+  color: var(--color-text-quaternary);
   font-size: 12px;
 }
 
@@ -497,21 +497,21 @@ onMounted(() => {
 }
 
 .status-badge.active {
-  background: var(--color-green-50);
-  color: var(--color-green-500);
-  border: 1px solid var(--color-green-200);
+  background: var(--color-success-bg);
+  color: var(--color-success-icon);
+  border: 1px solid var(--color-success-border);
 }
 
 .status-badge.inactive {
-  background: var(--color-orange-50);
-  color: var(--color-orange-500);
-  border: 1px solid var(--color-orange-200);
+  background: var(--color-warning-bg);
+  color: var(--color-warning-icon);
+  border: 1px solid var(--color-warning-border);
 }
 
 .status-badge.triggered {
-  background: var(--color-red-50);
-  color: var(--color-red-500);
-  border: 1px solid var(--color-red-200);
+  background: var(--color-error-bg);
+  color: var(--color-error-icon);
+  border: 1px solid var(--color-error-border);
 }
 
 .alert-details {
@@ -539,22 +539,22 @@ onMounted(() => {
 }
 
 .price-item .value.target {
-  color: var(--color-blue-500);
+  color: var(--color-primary);
 }
 
 .price-item .value.current {
-  color: var(--color-green-500);
+  color: var(--color-success-icon);
 }
 
 .trigger-info {
   margin-top: 12px;
   padding-top: 12px;
-  border-top: 1px solid var(--color-gray-200);
+  border-top: 1px solid var(--color-border-subtle);
 }
 
 .trigger-time {
   font-size: 12px;
-  color: var(--color-gray-400);
+  color: var(--color-text-quaternary);
 }
 
 .alert-actions {
@@ -564,7 +564,7 @@ onMounted(() => {
 
 .btn-danger {
   padding: 6px 12px;
-  background: var(--color-red-500);
+  background: var(--color-error-icon);
   color: var(--color-bg-light, white);
   border: none;
   border-radius: 4px;
@@ -573,7 +573,7 @@ onMounted(() => {
 }
 
 .btn-danger:hover {
-  background: var(--color-red-400);
+  background: var(--color-error-hover);
 }
 
 /* 模态框样式（复用定投计划的样式） */
@@ -604,7 +604,7 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid var(--color-gray-200);
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .modal-header h2 {
@@ -617,7 +617,7 @@ onMounted(() => {
   border: none;
   font-size: 24px;
   cursor: pointer;
-  color: var(--color-gray-400);
+  color: var(--color-text-quaternary);
 }
 
 .modal-body {
@@ -636,7 +636,7 @@ onMounted(() => {
 }
 
 .form-group .required {
-  color: var(--color-red-500);
+  color: var(--color-error-icon);
 }
 
 .form-group input,
@@ -644,7 +644,7 @@ onMounted(() => {
 .form-group textarea {
   width: 100%;
   padding: 8px 12px;
-  border: 1px solid var(--color-gray-300);
+  border: 1px solid var(--color-border-default);
   border-radius: 4px;
   font-size: 14px;
 }
@@ -657,8 +657,8 @@ onMounted(() => {
 .btn-auto-fill {
   margin-top: 8px;
   padding: 4px 12px;
-  background: var(--color-gray-200);
-  border: 1px solid var(--color-gray-300);
+  background: var(--color-border-subtle);
+  border: 1px solid var(--color-border-default);
   border-radius: 4px;
   cursor: pointer;
   font-size: 12px;

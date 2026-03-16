@@ -55,6 +55,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed, onMounted, ref } from 'vue'
 import { useIntelligenceApi } from '~/composables/useIntelligenceApi'
 import { useNotification } from '~/composables/useToast'
 import { useMarkdown } from '~/composables/useMarkdown'
@@ -133,7 +134,7 @@ onMounted(() => {
 
 <style scoped>
 .intelligence-daily-report-detail-page {
-  padding: 20px;
+  padding: var(--spacing-lg);
   max-width: 900px;
   margin: 0 auto;
 }
@@ -142,11 +143,11 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: var(--spacing-2xl);
 }
 
 .page-title {
-  font-size: 24px;
+  font-size: var(--text-2xl);
   font-weight: 600;
   margin: 0;
   color: var(--color-text-main);
@@ -154,7 +155,7 @@ onMounted(() => {
 
 .header-actions {
   display: flex;
-  gap: 12px;
+  gap: var(--spacing-md);
 }
 
 .loading-container,
@@ -163,37 +164,37 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 400px;
+  min-height: var(--spacing-3xl);
   color: var(--color-text-sub);
 }
 
 .empty-container i {
-  font-size: 48px;
-  margin-bottom: 12px;
+  font-size: var(--text-5xl);
+  margin-bottom: var(--spacing-md);
   opacity: 0.5;
 }
 
 /* 日报内容 */
 .report-content {
   background: var(--color-bg-card);
-  border-radius: 12px;
-  padding: 24px;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-2xl);
     box-shadow: var(--shadow-card);
 }
 
 /* 元信息栏 */
 .report-meta-bar {
   display: flex;
-  gap: 20px;
-  padding-bottom: 16px;
-  margin-bottom: 24px;
+  gap: var(--spacing-xl);
+  padding-bottom: var(--spacing-base);
+  margin-bottom: var(--spacing-2xl);
   border-bottom: 1px solid var(--color-border);
-  font-size: 14px;
+  font-size: var(--text-base);
   color: var(--color-text-sec);
 }
 
 .report-meta-bar i {
-  margin-right: 4px;
+  margin-right: var(--spacing-xs);
 }
 
 /* Markdown 内容 */
@@ -206,58 +207,58 @@ onMounted(() => {
 .markdown-content :deep(h2),
 .markdown-content :deep(h3),
 .markdown-content :deep(h4) {
-  margin-top: 24px;
-  margin-bottom: 12px;
+  margin-top: var(--spacing-2xl);
+  margin-bottom: var(--spacing-md);
   font-weight: 600;
 }
 
 .markdown-content :deep(h1) {
-  font-size: 24px;
+  font-size: var(--text-2xl);
   border-bottom: var(--spacing-md) solid var(--color-border);
-  padding-bottom: 8px;
+  padding-bottom: var(--spacing-sm);
 }
 
 .markdown-content :deep(h2) {
-  font-size: 20px;
+  font-size: var(--text-lg);
 }
 
 .markdown-content :deep(h3) {
-  font-size: 18px;
+  font-size: var(--text-lg);
 }
 
 .markdown-content :deep(h4) {
-  font-size: 16px;
+  font-size: var(--text-sm);
 }
 
 .markdown-content :deep(p) {
-  margin-bottom: 16px;
+  margin-bottom: var(--spacing-lg);
 }
 
 .markdown-content :deep(ul),
 .markdown-content :deep(ol) {
-  margin-bottom: 16px;
-  padding-left: 24px;
+  margin-bottom: var(--spacing-lg);
+  padding-left: var(--spacing-2xl);
 }
 
 .markdown-content :deep(li) {
-  margin-bottom: 8px;
+  margin-bottom: var(--spacing-sm);
 }
 
 .markdown-content :deep(code) {
   background: var(--color-bg-card);
-  padding: 2px 6px;
-  border-radius: 4px;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
   font-family: 'Courier New', monospace;
-  font-size: 14px;
+  font-size: var(--text-sm);
 }
 
 .markdown-content :deep(pre) {
   background: var(--color-bg-card);
   color: var(--color-text-sub);
-  padding: 16px;
-  border-radius: 8px;
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-md);
   overflow-x: auto;
-  margin-bottom: 16px;
+  margin-bottom: var(--spacing-lg);
 }
 
 .markdown-content :deep(pre code) {
@@ -277,24 +278,24 @@ onMounted(() => {
 
 .markdown-content :deep(blockquote) {
   border-left: var(--spacing-md) solid var(--color-primary);
-  padding-left: 16px;
-  margin: 16px 0;
+  padding-left: var(--spacing-xl);
+  margin: var(--spacing-lg) 0;
   color: var(--color-text-sec);
   background: var(--color-bg-card);
-  padding: 12px 16px;
-  border-radius: 0 8px 8px 0;
+  padding: var(--spacing-md) var(--spacing-xl);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
 }
 
 .markdown-content :deep(table) {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 16px;
+  margin-bottom: var(--spacing-lg);
 }
 
 .markdown-content :deep(th),
 .markdown-content :deep(td) {
   border: 1px solid var(--color-primary);
-  padding: 8px 12px;
+  padding: var(--spacing-sm) var(--spacing-md);
   text-align: left;
 }
 
@@ -306,7 +307,7 @@ onMounted(() => {
 .markdown-content :deep(hr) {
   border: none;
   border-top: var(--spacing-sm) solid var(--color-border);
-  margin: 24px 0;
+  margin: var(--spacing-2xl) 0;
 }
 
 /* 空内容 */
@@ -315,13 +316,13 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 60px 20px;
+  padding: var(--spacing-16) var(--spacing-xl);
   color: var(--color-text-sub);
 }
 
 .empty-content i {
-  font-size: 48px;
-  margin-bottom: 12px;
+  font-size: var(--text-5xl);
+  margin-bottom: var(--spacing-md);
   opacity: 0.5;
 }
 

@@ -280,23 +280,23 @@ const sendMessage = async () => {
   pointer-events: auto !important;
   width: 3rem !important;
   height: 3rem !important;
-  background: linear-gradient(to bottom right, var(--color-primary, rgb(59, 130, 246)), var(--color-purple, rgb(147, 51, 234))) !important;
+  background: linear-gradient(to bottom right, var(--color-primary), var(--color-purple)) !important;
   box-shadow: var(--shadow-lg, 0 4px 12px rgba(0, 0, 0, 0.5)) !important;
 }
 
 /* 对话框容器 - 使用 CSS 变量 */
 .ai-assistant-dialog {
   position: fixed;
-  bottom: 0.5rem;
-  right: 0.5rem;
-  width: 20rem;
-  max-width: calc(100vw - 1rem);
-  height: 28rem;
-  max-height: calc(100vh - 1rem);
+  bottom: var(--spacing-2);
+  right: var(--spacing-2);
+  width: 20rem;  /* 特定布局约束 */
+  max-width: calc(100vw - var(--spacing-1));
+  height: 28rem; /* 特定布局约束 */
+  max-height: calc(100vh - var(--spacing-1));
   background: var(--color-bg-card, white);
-  border-radius: 1rem;
+  border-radius: var(--radius-xl);
   box-shadow: var(--shadow-xl, 0 20px 25px -5px var(--shadow), 0 10px 10px -5px rgba(0, 0, 0, 0.04));
-  border: 1px solid var(--color-border-subtle, rgba(229, 231, 235, 1));
+  border: 1px solid var(--color-border-subtle);
   z-index: 10000 !important; /* 确保对话框也在最上层 */
   display: flex;
   flex-direction: column;
@@ -305,8 +305,8 @@ const sendMessage = async () => {
 
 /* 头部 - 使用 CSS 变量 */
 .ai-assistant-header {
-  background: linear-gradient(to right, var(--color-primary, rgb(59, 130, 246)), var(--color-purple, rgb(147, 51, 234)));
-  padding: 1rem;
+  background: linear-gradient(to right, var(--color-primary), var(--color-purple));
+  padding: var(--spacing-md);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -315,13 +315,13 @@ const sendMessage = async () => {
 .ai-assistant-header-content {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: var(--spacing-3);
 }
 
 .ai-assistant-avatar {
-  width: 2.5rem;
-  height: 2.5rem;
-  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.2));
+  width: var(--spacing-10);
+  height: var(--spacing-10);
+  background: var(--color-bg-elevated);
   border-radius: 9999px;
   display: flex;
   align-items: center;
@@ -329,31 +329,31 @@ const sendMessage = async () => {
 }
 
 .ai-assistant-avatar-icon {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: var(--spacing-6);
+  height: var(--spacing-6);
   color: var(--color-text-main, white);
 }
 
 .ai-assistant-title {
   color: var(--color-text-main, white);
   font-weight: 700;
-  font-size: 1rem;
+  font-size: var(--text-base);
   margin: 0;
 }
 
 .ai-assistant-status {
-  color: var(--color-text-sub, rgba(255, 255, 255, 0.8));
-  font-size: 0.75rem;
+  color: var(--color-text-sub);
+  font-size: var(--text-xs);
   margin: 0;
 }
 
 .ai-assistant-close-btn {
-  color: var(--color-text-sub, rgba(255, 255, 255, 0.8));
+  color: var(--color-text-sub);
   transition: color 0.2s;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0.25rem;
+  padding: var(--spacing-1);
 }
 
 .ai-assistant-close-btn:hover {
@@ -361,27 +361,27 @@ const sendMessage = async () => {
 }
 
 .ai-assistant-close-icon {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: var(--spacing-6);
+  height: var(--spacing-6);
 }
 
 /* 消息区域 - 使用 CSS 变量 */
 .ai-assistant-messages {
   flex: 1;
   overflow-y: auto;
-  padding: 1rem;
-  background: var(--color-bg-body, rgb(249, 250, 251));
+  padding: var(--spacing-md);
+  background: var(--color-bg-body);
 }
 
 .ai-assistant-welcome {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--spacing-2);
 }
 
 .ai-assistant-message-wrapper {
   display: flex;
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-md);
 }
 
 .ai-assistant-message-user-wrapper {
@@ -393,14 +393,14 @@ const sendMessage = async () => {
 }
 
 .ai-assistant-message {
-  border-radius: 1rem;
-  padding: 1rem;
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-md);
   max-width: 80%;
 }
 
 /* 用户消息 - 使用 CSS 变量 */
 .ai-assistant-message-user {
-  background: var(--color-primary, rgb(59, 130, 246));
+  background: var(--color-primary);
   color: var(--color-text-main, white);
   border-top-right-radius: 0;
 }
@@ -408,33 +408,33 @@ const sendMessage = async () => {
 /* AI 消息 - 使用 CSS 变量 */
 .ai-assistant-message-assistant {
   background: var(--color-bg-card, white);
-  color: var(--color-text-main, rgb(31, 41, 55));
+  color: var(--color-text-main);
   border-top-left-radius: 0;
-  border: 1px solid var(--color-border-subtle, rgba(229, 231, 235, 1));
+  border: 1px solid var(--color-border-subtle);
 }
 
 .ai-assistant-message-text {
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   white-space: pre-wrap;
   margin: 0;
 }
 
 .ai-assistant-message-loading {
-  font-size: 0.75rem;
-  color: var(--color-text-muted, rgb(107, 114, 128));
-  margin-top: 0.5rem;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-top: var(--spacing-2);
   margin-bottom: 0;
 }
 
 .ai-assistant-loading {
   display: flex;
-  gap: 0.25rem;
+  gap: var(--spacing-1);
 }
 
 .ai-assistant-loading-dot {
-  width: 0.5rem;
-  height: 0.5rem;
-  background: var(--color-text-muted, rgb(156, 163, 175));
+  width: var(--spacing-2);
+  height: var(--spacing-2);
+  background: var(--color-text-muted);
   border-radius: 9999px;
   animation: bounce 1.4s infinite;
 }
@@ -450,23 +450,23 @@ const sendMessage = async () => {
 
 /* 输入区域 - 使用 CSS 变量 */
 .ai-assistant-input-area {
-  padding: 0.75rem;
-  border-top: 1px solid var(--color-border-subtle, rgba(229, 231, 235, 1));
+  padding: var(--spacing-3);
+  border-top: 1px solid var(--color-border-subtle);
   background: var(--color-bg-card, white);
 }
 
 .ai-assistant-quick-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 0.75rem;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-3);
 }
 
 .ai-assistant-quick-action-btn {
-  padding: 0.375rem 0.75rem;
-  font-size: 0.75rem;
-  background: var(--color-bg-elevated, rgb(243, 244, 246));
-  color: var(--color-text-main, rgb(55, 65, 81));
+  padding: var(--spacing-1_5) var(--spacing-3);
+  font-size: var(--text-xs);
+  background: var(--color-bg-elevated);
+  color: var(--color-text-main);
   border-radius: 9999px;
   border: none;
   cursor: pointer;
@@ -474,7 +474,7 @@ const sendMessage = async () => {
 }
 
 .ai-assistant-quick-action-btn:hover:not(:disabled) {
-  background: var(--color-bg-elevated, rgb(229, 231, 235));
+  background: var(--color-bg-elevated);
 }
 
 .ai-assistant-quick-action-btn:disabled {
@@ -484,23 +484,23 @@ const sendMessage = async () => {
 
 .ai-assistant-input-wrapper {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--spacing-2);
 }
 
 .ai-assistant-input {
   flex: 1;
-  padding: 0.5rem 1rem;
-  border: 1px solid var(--color-border-default, rgba(209, 213, 219, 1));
-  border-radius: 0.5rem;
+  padding: var(--spacing-2) var(--spacing-md);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
   background: var(--color-bg-card, white);
-  color: var(--color-text-main, rgb(31, 41, 55));
-  font-size: 0.875rem;
+  color: var(--color-text-main);
+  font-size: var(--text-sm);
 }
 
 .ai-assistant-input:focus {
   outline: none;
   ring: 2px;
-  ring-color: var(--color-primary, rgb(59, 130, 246));
+  ring-color: var(--color-primary);
 }
 
 .ai-assistant-input:disabled {
@@ -509,10 +509,10 @@ const sendMessage = async () => {
 }
 
 .ai-assistant-send-btn {
-  padding: 0.5rem 1rem;
-  background: var(--color-primary, rgb(59, 130, 246));
+  padding: var(--spacing-2) var(--spacing-md);
+  background: var(--color-primary);
   color: var(--color-text-main, white);
-  border-radius: 0.5rem;
+  border-radius: var(--radius-md);
   border: none;
   cursor: pointer;
   transition: background 0.2s;
@@ -522,7 +522,7 @@ const sendMessage = async () => {
 }
 
 .ai-assistant-send-btn:hover:not(:disabled) {
-  background: var(--color-primary-hover, rgb(37, 99, 235));
+  background: var(--color-primary-hover);
 }
 
 .ai-assistant-send-btn:disabled {
@@ -531,8 +531,8 @@ const sendMessage = async () => {
 }
 
 .ai-assistant-send-icon {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: var(--spacing-5);
+  height: var(--spacing-5);
 }
 
 /* 动画 */
@@ -543,17 +543,17 @@ const sendMessage = async () => {
 
 .slide-up-enter-from {
   opacity: 0;
-  transform: translateY(20px) scale(0.9);
+  transform: translateY(var(--spacing-lg)) scale(0.9);
 }
 
 .slide-up-leave-to {
   opacity: 0;
-  transform: translateY(20px) scale(0.9);
+  transform: translateY(var(--spacing-lg)) scale(0.9);
 }
 
 /* AI 助手状态点样式 - 使用 CSS 变量 */
 .ai-assistant-status-dot {
-  background: var(--color-success, #10b981);
+  background: var(--color-success);
 }
 </style>
 

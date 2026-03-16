@@ -30,20 +30,17 @@
   /* 增强模糊强度 */
   backdrop-filter: blur(28px);
   -webkit-backdrop-filter: blur(28px);
-  
+
   /* 使用 CSS 变量控制背景 */
-  background: var(--color-bg-card, linear-gradient(
+  background: linear-gradient(
     135deg,
     rgba(15, 23, 42, 0.85) 0%,
     rgba(15, 23, 42, 0.75) 100%
-  )) !important;
-  
-  /* 使用 CSS 变量控制阴影 */
-  box-shadow: var(--shadow-xl, 
-    0 32px 80px rgba(15, 23, 42, 0.9),
-    0 0 0 1px var(--color-border-default, rgba(148, 163, 184, 0.2)),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05)
   ) !important;
+
+  /* 使用 CSS 变量控制阴影 */
+  box-shadow: var(--shadow-xl) !important;
+  border: 1px solid var(--color-border-default);
 }
 
 /* ==================== KPI Card（光片效果） ==================== */
@@ -56,11 +53,7 @@
 
 .kpi-card:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-xl, 
-    0 32px 80px rgba(15, 23, 42, 0.95),
-    0 0 0 1px var(--color-border-default, rgba(148, 163, 184, 0.3)),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08)
-  ) !important;
+  box-shadow: var(--shadow-xl) !important;
 }
 
 /* ==================== 排名 Pill 样式（Vision Pro 风格） ==================== */
@@ -73,9 +66,9 @@
   justify-content: center;
   font-size: 12px;
   font-weight: 500;
-  background: var(--color-bg-card, rgba(15, 23, 42, 0.85));
-  box-shadow: 0 0 0 1px var(--color-border-default, rgba(148, 163, 184, 0.5));
-  color: var(--color-text-main, rgba(255, 255, 255, 0.9));
+  background: var(--color-bg-card);
+  box-shadow: 0 0 0 1px var(--color-border-default);
+  color: var(--color-text-main);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
@@ -86,7 +79,7 @@
 }
 
 .list-item-hover:hover {
-  background-color: var(--color-bg-elevated, rgba(148, 163, 184, 0.06));
+  background-color: var(--color-bg-elevated);
 }
 
 /* ==================== 按钮 Hover 光晕效果 ==================== */

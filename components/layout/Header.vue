@@ -465,16 +465,16 @@ onMounted(() => {
 
 /* 独立悬浮导航栏样式 - 使用 CSS 变量 */
 .floating-nav {
-  background: var(--color-bg-elevated, var(--color-text-sub)) !important;
+  background: var(--color-bg-elevated) !important;
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
-  border: 1px solid var(--color-border-default, rgba(148, 163, 184, 0.3)) !important;
+  border: 1px solid var(--color-border-default) !important;
   border-radius: 1rem !important;
-  box-shadow: var(--shadow-md, 0 8px 32px var(--shadow), 0 2px 8px var(--color-border)) !important;
+  box-shadow: var(--shadow-md) !important;
   width: calc(100% - 2rem) !important;
   max-width: 1280px !important;
   transition: all 0.3s ease !important;
-  color: var(--color-text-main, var(--color-text-main)) !important;
+  color: var(--color-text-main) !important;
   visibility: visible !important;
   opacity: 1 !important;
   display: block !important;
@@ -484,12 +484,12 @@ onMounted(() => {
 :global(.dark) .floating-nav,
 :global([data-theme="dark"]) .floating-nav,
 :global([data-theme="hybrid-super-dark"]) .floating-nav {
-  background: var(--color-bg-card, var(--color-border-default)) !important;
+  background: var(--color-bg-card) !important;
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
-  border-color: var(--color-border-default, rgba(148, 163, 184, 0.3)) !important;
-  box-shadow: var(--shadow-lg, 0 8px 32px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.5)) !important;
-  color: var(--color-text-main, var(--color-bg-card)) !important;
+  border-color: var(--color-border-default) !important;
+  box-shadow: var(--shadow-lg) !important;
+  color: var(--color-text-main) !important;
   visibility: visible !important;
   opacity: 1 !important;
   display: block !important;
@@ -499,7 +499,7 @@ onMounted(() => {
 :global(.dark) .floating-nav,
 :global([data-theme="dark"]) .floating-nav,
 :global([data-theme="hybrid-super-dark"]) .floating-nav {
-  color: var(--color-text-main, var(--color-bg-card)) !important;
+  color: var(--color-text-main) !important;
 }
 
 /* 左侧 Logo 文字 */
@@ -539,30 +539,30 @@ onMounted(() => {
 
 /* 移动端菜单按钮图标 */
 .floating-nav .md\:hidden svg {
-  color: var(--color-text-main, var(--color-text-main)) !important;
+  color: var(--color-text-main) !important;
 }
 
 /* 非激活状态的导航链接 - 使用 CSS 变量 */
 .floating-nav nav a:not(.header-nav-link-active) {
-  background-color: var(--color-bg-elevated, rgba(148, 163, 184, 0.2)) !important;
-  color: var(--color-text-muted, var(--color-text-muted)) !important;
+  background-color: var(--color-bg-elevated) !important;
+  color: var(--color-text-muted) !important;
 }
 
 /* 激活状态的导航链接 - 使用主色调 */
 .floating-nav nav a.header-nav-link-active {
-  background-color: var(--color-primary-hover, #1e40af) !important;
-  color: var(--color-primary, var(--color-primary)) !important;
+  background-color: var(--color-primary-hover) !important;
+  color: var(--color-primary) !important;
 }
 
 /* 强制所有 span 文字使用 CSS 变量 */
 .floating-nav span {
-  color: var(--color-text-main, var(--color-text-main)) !important;
+  color: var(--color-text-main) !important;
   opacity: 1 !important;
 }
 
 /* Logo 文字 - 使用 CSS 变量 */
 .floating-nav .logo-text {
-  color: var(--color-text-main, var(--color-bg-card)) !important;
+  color: var(--color-text-main) !important;
   font-weight: 700 !important;
   opacity: 1 !important;
   text-shadow: none !important;
@@ -572,7 +572,7 @@ onMounted(() => {
 
 /* 确保图标 emoji 也清晰可见 */
 .floating-nav .mr-1\.5 {
-  color: var(--color-text-main, var(--color-text-main)) !important;
+  color: var(--color-text-main) !important;
 }
 
 /* 响应式：小屏幕时全宽 */

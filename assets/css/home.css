@@ -491,7 +491,7 @@
   font-size: 0.75rem;
   /* 浅色主题优化（2025-01）：标签使用主色柔和背景，提高可读性 */
   background: var(--primary-soft-bg);
-  border: 1px solid var(--color-primary-soft, rgba(37, 99, 235, 0.2));
+  border: 1px solid var(--color-primary-soft);
   color: var(--primary);
 }
 
@@ -785,7 +785,7 @@ html[data-theme="dark"] .platform-entry-card-tag {
   font-size: 0.75rem;
   /* 浅色主题优化（2025-01）：标签使用主色柔和背景，提高可读性 */
   background: var(--primary-soft-bg);
-  border: 1px solid var(--color-primary-soft, rgba(37, 99, 235, 0.2));
+  border: 1px solid var(--color-primary-soft);
   color: var(--primary);
 }
 
@@ -825,7 +825,7 @@ html[data-theme="dark"] .bento-card-item-tag {
   font-size: 0.75rem;
   /* 浅色主题优化（2025-01）：标签使用主色柔和背景，提高可读性 */
   background: var(--primary-soft-bg);
-  border: 1px solid var(--color-primary-soft, rgba(37, 99, 235, 0.2));
+  border: 1px solid var(--color-primary-soft);
   color: var(--primary);
 }
 
@@ -1105,7 +1105,7 @@ html[data-theme="dark"] .bento-card-item-tag {
 .time-capsule-bg-gradient {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom right, var(--color-bg-body, var(--color-text-main)), var(--color-purple-soft, rgba(147, 51, 234, 0.2)), var(--color-bg-body, var(--color-text-main)));
+  background: linear-gradient(to bottom right, var(--color-bg-body), var(--color-purple-soft), var(--color-bg-body));
 }
 
 .time-capsule-glow-blue {
@@ -1114,7 +1114,7 @@ html[data-theme="dark"] .bento-card-item-tag {
   left: -2.5rem;
   width: 15rem;
   height: 15rem;
-  background: var(--color-primary-soft, rgba(59, 130, 246, 0.2));
+  background: var(--color-primary-soft);
   border-radius: 9999px;
   filter: blur(48px);
 }
@@ -1125,7 +1125,7 @@ html[data-theme="dark"] .bento-card-item-tag {
   right: 0;
   width: 18rem;
   height: 18rem;
-  background: var(--color-purple-soft, rgba(168, 85, 247, 0.2));
+  background: var(--color-purple-soft);
   border-radius: 9999px;
   filter: blur(48px);
 }
@@ -1432,12 +1432,12 @@ html[data-theme="dark"] .bento-card-item-tag {
 
 /* 时间胶囊样式 - 使用 CSS 变量 */
 .showcase-wall-item-inner--capsule {
-  background: var(--color-primary-soft, rgba(59, 130, 246, 0.1));
+  background: var(--color-primary-soft);
   border-color: var(--color-primary, var(--theme-primary));
 }
 
 .showcase-wall-item:hover .showcase-wall-item-inner--capsule {
-  background: var(--color-primary-soft, rgba(59, 130, 246, 0.15));
+  background: var(--color-primary-soft);
   border-color: var(--color-primary, var(--theme-primary));
 }
 
@@ -1447,13 +1447,13 @@ html[data-theme="dark"] .bento-card-item-tag {
 
 /* 留言样式 - 使用 CSS 变量 */
 .showcase-wall-item-inner--message {
-  background: var(--color-success-soft, rgba(16, 185, 129, 0.1));
-  border-color: var(--color-success, rgba(16, 185, 129, 0.3));
+  background: var(--color-success-soft);
+  border-color: var(--color-success);
 }
 
 .showcase-wall-item:hover .showcase-wall-item-inner--message {
-  background: var(--color-success-soft, rgba(16, 185, 129, 0.15));
-  border-color: var(--color-success, rgba(16, 185, 129, 0.5));
+  background: var(--color-success-soft);
+  border-color: var(--color-success);
 }
 
 .showcase-wall-item-icon--message {
@@ -1489,12 +1489,12 @@ html[data-theme="dark"] .bento-card-item-tag {
 }
 
 .showcase-wall-item-label--capsule {
-  background: var(--color-primary-soft, rgba(59, 130, 246, 0.2));
+  background: var(--color-primary-soft);
   color: var(--color-primary, var(--color-primary));
 }
 
 .showcase-wall-item-label--message {
-  background: var(--color-success-soft, rgba(16, 185, 129, 0.2));
+  background: var(--color-success-soft);
   color: var(--color-success, var(--color-emerald-500));
 }
 
@@ -1613,7 +1613,7 @@ html[data-theme="dark"] .bento-card-item-tag {
   top: 0;
   bottom: 0;
   width: 2px;
-  background: linear-gradient(to bottom, var(--color-info, #06b6d4), var(--color-primary, var(--color-primary)), var(--color-purple, var(--color-purple-500)));
+  background: linear-gradient(to bottom, var(--color-info), var(--color-primary), var(--color-purple));
 }
 
 .timeline-items {
@@ -1642,7 +1642,7 @@ html[data-theme="dark"] .bento-card-item-tag {
   box-shadow: var(--shadow-lg);
   transform: scale(1);
   transition: all 0.3s ease;
-  border: 4px solid var(--color-bg-body, #000);
+  border: 4px solid var(--color-bg-body);
 }
 
 .timeline-dot:hover {
@@ -1662,7 +1662,7 @@ html[data-theme="dark"] .bento-card-item-tag {
   border-color: var(--color-border-default);
   transform: translateX(8px);
   /* 浅色主题优化（2025-01）：使用主题变量，避免硬编码荧光色 */
-  box-shadow: 0 8px 24px var(--color-primary-soft, rgba(37, 99, 235, 0.15));
+  box-shadow: 0 8px 24px var(--color-primary-soft);
 }
 
 /* ========================================
@@ -1884,27 +1884,27 @@ html[data-theme="dark"] .bento-card-item-tag {
 }
 
 .bento-grid-v3-card-icon-cyan {
-  background: var(--color-info-soft, rgba(6, 182, 212, 0.15));
-  color: var(--color-info, #06b6d4);
-  border: 1px solid var(--color-info, rgba(6, 182, 212, 0.3));
+  background: var(--color-info-soft);
+  color: var(--color-info);
+  border: 1px solid var(--color-info);
 }
 
 .bento-grid-v3-card-icon-purple {
-  background: var(--color-purple-soft, rgba(168, 85, 247, 0.15));
+  background: var(--color-purple-soft);
   color: var(--color-purple, var(--color-purple-500));
-  border: 1px solid var(--color-purple, rgba(168, 85, 247, 0.3));
+  border: 1px solid var(--color-purple);
 }
 
 .bento-grid-v3-card-icon-pink {
-  background: var(--color-error-soft, rgba(236, 72, 153, 0.15));
-  color: var(--color-error, #ec4899);
-  border: 1px solid var(--color-error, rgba(236, 72, 153, 0.3));
+  background: var(--color-error-soft);
+  color: var(--color-error);
+  border: 1px solid var(--color-error);
 }
 
 .bento-grid-v3-card-icon-orange {
-  background: var(--color-warning-soft, rgba(249, 115, 22, 0.15));
+  background: var(--color-warning-soft);
   color: var(--color-warning, var(--color-orange-500));
-  border: 1px solid var(--color-warning, rgba(249, 115, 22, 0.3));
+  border: 1px solid var(--color-warning);
 }
 
 /* 徽章 */
@@ -1922,33 +1922,33 @@ html[data-theme="dark"] .bento-card-item-tag {
 }
 
 .bento-grid-v3-card-badge-blue {
-  background: var(--color-primary-soft, rgba(59, 130, 246, 0.2));
+  background: var(--color-primary-soft);
   color: var(--color-primary-hover, var(--color-blue-300));
-  border: 1px solid var(--color-primary, rgba(59, 130, 246, 0.4));
+  border: 1px solid var(--color-primary);
 }
 
 .bento-grid-v3-card-badge-cyan {
-  background: var(--color-info-soft, rgba(6, 182, 212, 0.2));
-  color: var(--color-info-hover, #67e8f9);
-  border: 1px solid var(--color-info, rgba(6, 182, 212, 0.4));
+  background: var(--color-info-soft);
+  color: var(--color-info-hover);
+  border: 1px solid var(--color-info);
 }
 
 .bento-grid-v3-card-badge-purple {
-  background: var(--color-purple-soft, rgba(168, 85, 247, 0.2));
-  color: var(--color-purple-hover, #c084fc);
-  border: 1px solid var(--color-purple, rgba(168, 85, 247, 0.4));
+  background: var(--color-purple-soft);
+  color: var(--color-purple-hover);
+  border: 1px solid var(--color-purple);
 }
 
 .bento-grid-v3-card-badge-pink {
-  background: var(--color-error-soft, rgba(236, 72, 153, 0.2));
-  color: var(--color-error-hover, #f9a8d4);
-  border: 1px solid var(--color-error, rgba(236, 72, 153, 0.4));
+  background: var(--color-error-soft);
+  color: var(--color-error-hover);
+  border: 1px solid var(--color-error);
 }
 
 .bento-grid-v3-card-badge-orange {
-  background: var(--color-warning-soft, rgba(249, 115, 22, 0.2));
+  background: var(--color-warning-soft);
   color: var(--color-warning-hover, var(--color-orange-400));
-  border: 1px solid var(--color-warning, rgba(249, 115, 22, 0.4));
+  border: 1px solid var(--color-warning);
 }
 
 /* 标题和描述 */
@@ -1993,7 +1993,7 @@ html[data-theme="dark"] .bento-card-item-tag {
 }
 
 .bento-grid-v3-card-link-cyan {
-  color: var(--color-info, #06b6d4);
+  color: var(--color-info);
 }
 
 .bento-grid-v3-card-link-purple {
@@ -2001,7 +2001,7 @@ html[data-theme="dark"] .bento-card-item-tag {
 }
 
 .bento-grid-v3-card-link-pink {
-  color: var(--color-error, #ec4899);
+  color: var(--color-error);
 }
 
 .bento-grid-v3-card-link-orange {
@@ -2121,7 +2121,7 @@ html[data-theme="dark"] .bento-grid-v3-card-title,
 html.dark .bento-grid-v3-card-title,
 html[data-theme="dark"] .bento-grid-v3-card .bento-grid-v3-card-title,
 html.dark .bento-grid-v3-card .bento-grid-v3-card-title {
-  color: var(--color-text-main, #0F172A) !important;
+  color: var(--color-text-main) !important;
 }
 
 html[data-theme="dark"] .bento-grid-v3-title {
@@ -2153,27 +2153,27 @@ html[data-theme="dark"] .bento-grid-v3-card-badge {
 }
 
 html[data-theme="dark"] .bento-grid-v3-card-badge-blue {
-  background: var(--color-primary-soft, rgba(59, 130, 246, 0.1)) !important;
+  background: var(--color-primary-soft) !important;
   color: var(--color-primary-hover, var(--color-primary-hover)) !important;
   border-color: var(--color-primary, var(--theme-primary)) !important;
 }
 
 html[data-theme="dark"] .bento-grid-v3-card-badge-cyan {
-  background: var(--color-info-soft, rgba(6, 182, 212, 0.1)) !important;
-  color: var(--color-info-hover, #0891b2) !important;
-  border-color: var(--color-info, rgba(6, 182, 212, 0.3)) !important;
+  background: var(--color-info-soft) !important;
+  color: var(--color-info-hover) !important;
+  border-color: var(--color-info) !important;
 }
 
 html[data-theme="dark"] .bento-grid-v3-card-badge-purple {
-  background: var(--color-purple-soft, rgba(168, 85, 247, 0.1)) !important;
+  background: var(--color-purple-soft) !important;
   color: var(--color-purple-hover, var(--color-purple-600)) !important;
-  border-color: var(--color-purple, rgba(168, 85, 247, 0.3)) !important;
+  border-color: var(--color-purple) !important;
 }
 
 html[data-theme="dark"] .bento-grid-v3-card-badge-pink {
-  background: var(--color-error-soft, rgba(236, 72, 153, 0.1)) !important;
-  color: var(--color-error-hover, #db2777) !important;
-  border-color: var(--color-error, rgba(236, 72, 153, 0.3)) !important;
+  background: var(--color-error-soft) !important;
+  color: var(--color-error-hover) !important;
+  border-color: var(--color-error) !important;
 }
 
 html[data-theme="dark"] .bento-grid-v3-card-badge-orange {

@@ -344,18 +344,18 @@ const formatFileSize = (bytes) => {
 
 <style scoped>
 .upload-module-page {
-  padding: 2rem;
+  padding: var(--spacing-2xl);
   max-width: 1000px;
   margin: 0 auto;
 }
 
 .page-header {
-  margin-bottom: 2rem;
+  margin-bottom: var(--spacing-2xl);
 }
 
 .back-link {
   display: inline-block;
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-md);
   color: var(--color-primary);
   text-decoration: none;
 }
@@ -365,8 +365,8 @@ const formatFileSize = (bytes) => {
 }
 
 .header-content h1 {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+  font-size: var(--text-2xl);
+  margin-bottom: var(--spacing-md);
 }
 
 .header-content p {
@@ -374,43 +374,43 @@ const formatFileSize = (bytes) => {
 }
 
 .upload-container {
-  margin-bottom: 3rem;
+  margin-bottom: var(--spacing-3xl);
 }
 
 .upload-card {
   background: var(--color-bg-light, white);
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  padding: 2rem;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: var(--spacing-2xl);
 }
 
 .upload-card h2 {
-  margin: 0 0 1.5rem 0;
-  font-size: 1.5rem;
+  margin: 0 0 var(--spacing-xl) 0;
+  font-size: var(--text-xl);
 }
 
 .upload-form {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: var(--spacing-2xl);
 }
 
 .form-section {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: var(--spacing-xl);
 }
 
 .form-section h3 {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: var(--text-lg);
   color: var(--color-gray-700);
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
 }
 
 .form-group label {
@@ -421,10 +421,10 @@ const formatFileSize = (bytes) => {
 .form-group input,
 .form-group select,
 .form-group textarea {
-  padding: 0.75rem;
+  padding: var(--spacing-sm) var(--spacing-md);
   border: 1px solid var(--color-gray-300);
-  border-radius: 4px;
-  font-size: 1rem;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-base);
   font-family: inherit;
 }
 
@@ -438,12 +438,12 @@ const formatFileSize = (bytes) => {
 
 .form-group textarea {
   resize: vertical;
-  min-height: 120px;
+  min-height: 7.5rem;
 }
 
 .form-help {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: var(--text-xs);
   color: var(--color-gray-500);
 }
 
@@ -451,10 +451,10 @@ const formatFileSize = (bytes) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 0.5rem;
-  padding: 0.5rem;
+  margin-top: var(--spacing-sm);
+  padding: var(--spacing-sm);
   background: var(--color-gray-50);
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
 }
 
 .file-name {
@@ -463,7 +463,7 @@ const formatFileSize = (bytes) => {
 
 .file-size {
   color: var(--color-gray-500);
-  font-size: 0.85rem;
+  font-size: var(--text-xs);
 }
 
 .checkbox-label {
@@ -479,29 +479,29 @@ const formatFileSize = (bytes) => {
 
 .preview-section {
   background: var(--color-gray-50);
-  border-radius: 4px;
-  padding: 1rem;
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-lg);
 }
 
 .file-tree {
   font-family: monospace;
-  padding-left: 1rem;
+  padding-left: var(--spacing-lg);
 }
 
 .tree-item {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: var(--spacing-xs);
 }
 
 .tree-item > span {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
 }
 
 .tree-children {
-  padding-left: 1.5rem;
+  padding-left: var(--spacing-xl);
   border-left: 1px solid var(--color-gray-300);
 }
 
@@ -512,21 +512,21 @@ const formatFileSize = (bytes) => {
 .form-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 1rem;
+  gap: var(--spacing-lg);
 }
 
 .btn {
-  padding: 0.75rem 1.5rem;
+  padding: var(--spacing-sm) var(--spacing-xl);
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  font-size: 1rem;
+  font-size: var(--text-base);
   transition: all 0.2s;
 }
 
 .btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow-md);
 }
 
 .btn.primary {
@@ -559,22 +559,22 @@ const formatFileSize = (bytes) => {
   left: 0;
   right: 0;
   background: var(--color-bg-light, white);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  padding: 1rem;
+  box-shadow: var(--shadow-md);
+  padding: var(--spacing-md);
   z-index: 1000;
 }
 
 .progress-container {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: var(--spacing-md);
 }
 
 .progress-bar {
   flex: 1;
-  height: 8px;
+  height: var(--spacing-sm);
   background: var(--color-border);
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   overflow: hidden;
 }
 
@@ -591,22 +591,22 @@ const formatFileSize = (bytes) => {
 
 .upload-tips {
   background: var(--color-bg-light, white);
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  padding: 2rem;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: var(--spacing-2xl);
 }
 
 .upload-tips h3 {
-  margin: 0 0 1rem 0;
+  margin: 0 0 var(--spacing-lg) 0;
 }
 
 .upload-tips ul {
   margin: 0;
-  padding-left: 1.5rem;
+  padding-left: var(--spacing-xl);
 }
 
 .upload-tips li {
-  margin-bottom: 0.75rem;
+  margin-bottom: var(--spacing-md);
   line-height: 1.6;
 }
 
@@ -620,9 +620,9 @@ const formatFileSize = (bytes) => {
   left: 50%;
   transform: translate(-50%, -50%);
   background: var(--color-bg-light, white);
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  padding: 2rem;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xl);
+  padding: var(--spacing-2xl);
   max-width: 500px;
   width: 90%;
   z-index: 1001;
@@ -633,11 +633,11 @@ const formatFileSize = (bytes) => {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 1rem;
+  gap: var(--spacing-md);
 }
 
 .success-icon {
-  font-size: 3rem;
+  font-size: var(--text-5xl);
 }
 
 .success-text h3 {
@@ -652,22 +652,22 @@ const formatFileSize = (bytes) => {
 
 .success-actions {
   display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
 }
 
 .success-actions .btn {
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--text-sm);
 }
 
 @media (max-width: 768px) {
   .upload-module-page {
-    padding: 1rem;
+    padding: var(--spacing-md);
   }
 
   .upload-card {
-    padding: 1rem;
+    padding: var(--spacing-md);
   }
 
   .form-actions {

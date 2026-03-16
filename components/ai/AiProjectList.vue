@@ -201,18 +201,18 @@ const handleProjectClick = (project: AiProject) => {
 .ai-project-filters {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 32px;
-  padding-bottom: 24px;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-lg);
   border-bottom: 1px solid var(--divider-color);
 }
 
 .ai-project-filter-tag {
-  padding: 8px 20px;
+  padding: var(--spacing-sm) 40px;
   background: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
   color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.3s ease;
@@ -234,7 +234,7 @@ const handleProjectClick = (project: AiProject) => {
 .ai-project-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 24px;
+  gap: var(--spacing-lg);
 }
 
 @media (max-width: 640px) {
@@ -246,10 +246,10 @@ const handleProjectClick = (project: AiProject) => {
 /* 项目卡片 */
 .ai-project-card {
   position: relative;
-  padding: 24px;
+  padding: var(--spacing-lg);
   background: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: var(--card-radius, 16px);
+  border-radius: var(--radius-lg);
   cursor: pointer;
   transition: all 0.3s ease;
   overflow: hidden;
@@ -258,7 +258,7 @@ const handleProjectClick = (project: AiProject) => {
 .ai-project-card:hover {
   background: var(--bg-elevated);
   border-color: var(--primary);
-  transform: translateY(-4px);
+  transform: translateY(-8px);
   box-shadow: var(--shadow-soft);
 }
 
@@ -280,28 +280,28 @@ const handleProjectClick = (project: AiProject) => {
 }
 
 .ai-project-status {
-  margin-bottom: 16px;
+  margin-bottom: var(--spacing-md);
 }
 
 .ai-project-status-badge {
   display: inline-block;
-  padding: 4px 12px;
-  border-radius: 6px;
-  font-size: 12px;
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
   font-weight: 500;
 }
 
 /* 浅色主题下的状态标签 */
 :global([data-theme="light"]) .ai-project-status-badge--success {
-  background: var(--color-success-10, rgba(34, 197, 94, 0.1));
-  border: 1px solid var(--color-success-30, rgba(34, 197, 94, 0.3));
-  color: var(--color-success, #16a34a);
+  background: var(--color-success-bg);
+  border: 1px solid var(--color-success-border);
+  color: var(--color-success-text);
 }
 
 :global([data-theme="light"]) .ai-project-status-badge--warning {
-  background: var(--color-warning-10, rgba(251, 191, 36, 0.1));
-  border: 1px solid var(--color-warning-30, rgba(251, 191, 36, 0.3));
-  color: var(--color-warning-dark, #ca8a04);
+  background: var(--color-warning-bg);
+  border: 1px solid var(--color-warning-border);
+  color: var(--color-warning-text);
 }
 
 html[data-theme="light"] .ai-project-status-badge--info {
@@ -326,9 +326,9 @@ html[data-theme="light"] .ai-project-status-badge--default {
 
 :global(.dark) .ai-project-status-badge--warning,
 :global([data-theme="dark"]) .ai-project-status-badge--warning {
-  background: var(--color-warning-15, rgba(251, 191, 36, 0.15));
-  border: 1px solid var(--color-warning-30, rgba(251, 191, 36, 0.3));
-  color: var(--color-warning, #fbbf24);
+  background: var(--color-warning-bg);
+  border: 1px solid var(--color-warning-border);
+  color: var(--color-warning-text);
 }
 
 :global(.dark) .ai-project-status-badge--info,
@@ -346,31 +346,31 @@ html[data-theme="light"] .ai-project-status-badge--default {
 }
 
 .ai-project-title {
-  font-size: 20px;
+  font-size: var(--text-3xl);
   font-weight: 600;
   color: var(--text-main);
-  margin: 0 0 12px 0;
+  margin: 0 0 var(--spacing-md) 0;
   line-height: 1.4;
 }
 
 .ai-project-summary {
-  font-size: 14px;
+  font-size: var(--text-sm);
   line-height: 1.6;
   color: var(--text-secondary);
-  margin: 0 0 16px 0;
+  margin: 0 0 var(--spacing-lg) 0;
 }
 
 .ai-project-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 16px;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
 }
 
 .ai-project-tag {
-  padding: 4px 12px;
-  border-radius: 6px;
-  font-size: 12px;
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
   /* 浅色主题优化（2025-01）：标签使用主色柔和背景，提高可读性 */
   background: var(--primary-soft-bg, rgba(6, 182, 212, 0.1));
   border: 1px solid rgba(37, 99, 235, 0.2);
@@ -386,7 +386,7 @@ html[data-theme="light"] .ai-project-status-badge--default {
 }
 
 .ai-project-stack {
-  font-size: 12px;
+  font-size: var(--text-xs);
   color: var(--text-secondary);
   line-height: 1.6;
 }
@@ -405,18 +405,18 @@ html[data-theme="light"] .ai-project-status-badge--default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 80px 20px;
+  padding: calc(var(--spacing-20) * 2) var(--spacing-lg);
   text-align: center;
 }
 
 .ai-project-empty-icon {
-  font-size: 64px;
-  margin-bottom: 16px;
+  font-size: var(--text-8xl);
+  margin-bottom: var(--spacing-md);
   opacity: 0.5;
 }
 
 .ai-project-empty-text {
-  font-size: 16px;
+  font-size: var(--text-base);
   color: var(--text-secondary);
   margin: 0;
 }

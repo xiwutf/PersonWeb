@@ -207,44 +207,44 @@ const handleChangePassword = async () => {
 }
 
 .page-header {
-  margin-bottom: 2rem;
+  margin-bottom: var(--spacing-2xl);
 }
 
 .page-title {
-  font-size: 1.875rem;
+  font-size: var(--text-2xl);
   font-weight: 700;
   color: var(--color-text-main);
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--spacing-sm);
 }
 
 .card {
   background: var(--color-bg-elevated, var(--color-bg-card));
   backdrop-filter: blur(10px);
   border: 1px solid var(--color-border-subtle);
-  border-radius: 0.75rem;
-  padding: 2rem;
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-2xl);
 }
 
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--spacing-xl);
 }
 
 .form-label {
   display: block;
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   font-weight: 600;
   color: var(--color-text-main);
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--spacing-sm);
 }
 
 .form-input {
   width: 100%;
-  padding: 0.75rem 1rem;
+  padding: var(--spacing-md) var(--spacing-lg);
   background: var(--color-bg-elevated, var(--color-bg-card));
   border: 1px solid var(--color-border-default);
-  border-radius: 0.5rem;
+  border-radius: var(--radius-md);
   color: var(--color-text-main);
-  font-size: 1rem;
+  font-size: var(--text-base);
   transition: all 0.2s;
 }
 
@@ -259,48 +259,48 @@ const handleChangePassword = async () => {
 }
 
 .form-hint {
-  margin-top: 0.5rem;
-  font-size: 0.75rem;
+  margin-top: var(--spacing-sm);
+  font-size: var(--text-xs);
   color: var(--color-text-muted);
 }
 
 .form-error {
-  margin-top: 0.5rem;
-  font-size: 0.75rem;
+  margin-top: var(--spacing-sm);
+  font-size: var(--text-xs);
   color: var(--color-error, var(--color-danger));
 }
 
 .alert {
-  padding: 1rem;
-  border-radius: 0.5rem;
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
 }
 
 .alert-error {
   background: var(--color-error-soft);
   border: 1px solid var(--color-error);
-  color: var(--color-error-hover, var(--color-red-300));
+  color: var(--color-error-hover);
 }
 
 .alert-success {
   background: var(--color-success-soft);
   border: 1px solid var(--color-success);
-  color: var(--color-success-hover, var(--color-green-300));
+  color: var(--color-success-hover);
 }
 
 /* 修改密码页面样式 - 使用 CSS 变量 */
 .change-password-subtitle {
-  color: var(--color-text-muted, var(--color-gray-400));
+  color: var(--color-text-muted);
 }
 
 .change-password-required {
-  color: var(--color-error, var(--color-danger));
+  color: var(--color-error);
 }
 
 .change-password-toggle-btn {
-  color: var(--color-text-muted, var(--color-gray-400));
+  color: var(--color-text-muted);
   transition: color 0.2s ease;
 }
 

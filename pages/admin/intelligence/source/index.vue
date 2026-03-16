@@ -190,6 +190,7 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref, reactive } from 'vue'
 import { useIntelligenceApi } from '~/composables/useIntelligenceApi'
 import { useNotification } from '~/composables/useToast'
 import type { IntelligenceSource, SourceRequest } from '~/types/intelligence'
@@ -380,7 +381,7 @@ onMounted(() => {
 }
 
 .page-title {
-  font-size: 24px;
+  font-size: var(--text-2xl);
   font-weight: 600;
   margin: 0;
   color: var(--color-text-main);
@@ -397,7 +398,7 @@ onMounted(() => {
 }
 
 .empty-container i {
-  font-size: 48px;
+  font-size: var(--text-5xl);
   margin-bottom: var(--spacing-md);
   opacity: 0.5;
 }
@@ -422,7 +423,7 @@ onMounted(() => {
 }
 
 .source-card:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--shadow-lg);
 }
 
 .source-header {
@@ -433,15 +434,15 @@ onMounted(() => {
 }
 
 .source-icon {
-  width: 48px;
-  height: 48px;
+  width: var(--spacing-12);
+  height: var(--spacing-12);
   border-radius: var(--radius-md);
   background: var(--color-primary);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--color-bg-light);
-  font-size: 20px;
+  font-size: var(--text-lg);
   flex-shrink: 0;
 }
 
@@ -453,16 +454,16 @@ onMounted(() => {
 .source-name {
   font-weight: 600;
   color: var(--color-text-main);
-  font-size: 16px;
+  font-size: var(--text-base);
   margin-bottom: var(--spacing-sm);
 }
 
 .source-url {
-  font-size: 13px;
+  font-size: var(--text-xs);
   color: var(--color-text-sec);
   overflow: hidden;
   text-overflow: ellipsis;
-  var(--color-bg-light, white)-space: nowrap;
+  white-space: nowrap;
 }
 
 .source-status {
@@ -473,7 +474,7 @@ onMounted(() => {
   display: flex;
   gap: var(--spacing-sm);
   align-items: center;
-  font-size: 13px;
+  font-size: var(--text-xs);
   color: var(--color-text-sec);
   margin-bottom: var(--spacing-sm);
   flex-wrap: wrap;
@@ -493,10 +494,10 @@ onMounted(() => {
 }
 
 .source-remark {
-  font-size: 13px;
+  font-size: var(--text-xs);
   color: var(--color-text-sec);
   margin-bottom: var(--spacing-sm);
-  padding: var(--spacing-sm) 10px;
+  padding: var(--spacing-sm) var(--spacing-md);
   background: var(--color-bg-card);
   border-radius: var(--radius-sm);
 }
@@ -519,13 +520,13 @@ onMounted(() => {
 }
 
 .form-feedback-text {
-  font-size: 12px;
+  font-size: var(--text-xs);
   color: var(--color-text-sub);
 }
 
 .modal-footer {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
+  gap: var(--spacing-md);
 }
 </style>

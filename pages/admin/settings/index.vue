@@ -190,35 +190,35 @@ definePageMeta({
 }
 
 .page-header {
-  margin-bottom: 2rem;
+  margin-bottom: var(--spacing-2xl);
 }
 
 .page-title {
-  font-size: 1.875rem;
+  font-size: var(--text-xl);
   font-weight: 700;
   color: var(--color-text-main);
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--spacing-md);
 }
 
 .settings-grid {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: var(--spacing-2xl);
 }
 
 .settings-section {
   background: var(--color-bg-elevated, var(--color-bg-card));
   backdrop-filter: blur(10px);
   border: 1px solid var(--color-border-subtle);
-  border-radius: 0.75rem;
-  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
 }
 
 .section-title {
-  font-size: 1.25rem;
+  font-size: var(--text-lg);
   font-weight: 600;
   color: var(--color-text-main);
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--spacing-xl);
   display: flex;
   align-items: center;
 }
@@ -226,17 +226,17 @@ definePageMeta({
 .settings-cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1rem;
+  gap: var(--spacing-md);
 }
 
 .settings-card {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1.25rem;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xl);
   background: var(--color-bg-elevated, var(--color-bg-card));
   border: 1px solid var(--color-border-subtle);
-  border-radius: 0.5rem;
+  border-radius: var(--radius-md);
   transition: all 0.3s ease;
   text-decoration: none;
   color: inherit;
@@ -250,15 +250,15 @@ definePageMeta({
 }
 
 .card-icon {
-  width: 3rem;
-  height: 3rem;
+  width: var(--text-3xl);
+  height: var(--text-3xl);
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--color-primary-soft);
-  border-radius: 0.5rem;
+  border-radius: var(--radius-md);
   color: var(--color-primary);
-  font-size: 1.5rem;
+  font-size: var(--text-3xl);
   flex-shrink: 0;
 }
 
@@ -268,27 +268,27 @@ definePageMeta({
 }
 
 .card-title {
-  font-size: 1rem;
+  font-size: var(--text-base);
   font-weight: 600;
   color: var(--color-text-main);
-  margin-bottom: 0.25rem;
+  margin-bottom: var(--spacing-xs);
 }
 
 .card-desc {
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   color: var(--color-text-muted);
   line-height: 1.4;
 }
 
 .card-arrow {
   color: var(--color-text-muted);
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   flex-shrink: 0;
 }
 
 .settings-card:hover .card-arrow {
   color: var(--color-text-main);
-  transform: translateX(4px);
+  transform: translateX(var(--spacing-sm));
 }
 </style>
 

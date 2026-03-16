@@ -36,9 +36,22 @@
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "test:ui": "vitest --ui"
+    "test:ui": "vitest --ui",
+    "style:lint": "stylelint \"**/*.{vue,css,scss}\" --max-warnings 0",
+    "style:lint:fix": "stylelint \"**/*.{vue,css,scss}\" --fix",
+    "style:tokens:check": "node node/scripts/check-design-tokens.js scan",
+    "style:tokens:verify": "node node/scripts/verify-design-tokens.js",
+    "check:budget": "node scripts/check-budget.js",
+    "perf:analyze": "node scripts/performance-recommendations.js",
+    "perf:lighthouse": "lhci autorun --collect.url=http://localhost:3000/ --collect.numRuns=1",
+    "lighthouse:report": "lhci collect --url=http://localhost:3000/ --numberOfRuns=3",
+    "build:analyze": "cross-env ANALYZE=true npm run build",
+    "bundle:analyze": "nuxt build --analyze",
+    "perf:regression:test": "node scripts/test-performance-regression.js test",
+    "perf:baseline:update": "node scripts/test-performance-regression.js update-baseline"
   },
   "devDependencies": {
+    "@lhci/cli": "^0.13.0",
     "@nuxt/content": "^3.12.0",
     "@nuxtjs/tailwindcss": "^6.7.1",
     "@tailwindcss/typography": "^0.5.19",
@@ -55,10 +68,12 @@
     "jsdom": "^24.1.0",
     "markdown-it": "^14.1.0",
     "nuxt": "^3.10.0",
+    "rollup-plugin-visualizer": "^5.12.0",
     "sharp": "^0.34.5",
     "vitest": "^4.1.0"
   },
   "dependencies": {
+    "web-vitals": "^4.2.4",
     "@bytemd/plugin-gfm": "^1.22.0",
     "@bytemd/plugin-highlight": "^1.22.0",
     "@bytemd/plugin-math": "^1.22.0",

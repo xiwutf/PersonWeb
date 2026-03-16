@@ -232,7 +232,7 @@ useHead({
 
 .filters-bar {
   display: flex;
-  gap: 12px;
+  gap: var(--spacing-3);
   align-items: center;
   flex-wrap: wrap;
 }
@@ -240,19 +240,19 @@ useHead({
 .logs-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--spacing-4);
 }
 
 .log-item {
-  padding: 16px;
-  border: 1px solid var(--n-border-color);
-  border-radius: 8px;
+  padding: var(--spacing-4);
+  border: var(--spacing-px) solid var(--n-border-color);
+  border-radius: var(--radius-md);
   background: var(--n-color);
   transition: all 0.2s;
 }
 
 .log-item:hover {
-  box-shadow: var(--shadow-sm, 0 2px 8px var(--shadow));
+  box-shadow: var(--shadow-sm, 0 var(--spacing-0_5) var(--spacing-3) var(--shadow));
 }
 
 .log-item-error {
@@ -261,42 +261,42 @@ useHead({
 }
 
 .log-header {
-  margin-bottom: 12px;
+  margin-bottom: var(--spacing-3);
 }
 
 .log-meta {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--spacing-3);
   flex-wrap: wrap;
 }
 
 .log-time {
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   color: var(--n-text-color-2);
 }
 
 .log-error {
-  padding: 12px;
+  padding: var(--spacing-3);
   background: var(--color-error-soft, rgba(239, 68, 68, 0.1));
-  border-left: 3px solid var(--color-error, var(--color-danger));
-  border-radius: 4px;
+  border-left: var(--spacing-0_5) solid var(--color-error, var(--color-danger));
+  border-radius: var(--radius-sm);
   color: var(--color-error-hover, var(--color-danger-600));
-  margin-bottom: 12px;
+  margin-bottom: var(--spacing-3);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-2);
 }
 
 .log-details {
-  margin-top: 12px;
+  margin-top: var(--spacing-3);
 }
 
 .log-json {
   background: var(--n-color);
-  padding: 12px;
-  border-radius: 4px;
-  font-size: 0.8125rem;
+  padding: var(--spacing-3);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
   overflow-x: auto;
   max-height: 400px;
   overflow-y: auto;

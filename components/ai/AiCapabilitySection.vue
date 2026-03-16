@@ -163,11 +163,11 @@ const handleProjectCardClick = (project: any) => {
 <style scoped>
 .ai-capability-section {
   position: relative;
-  padding: 80px 0;
+  padding: var(--spacing-20) 0;
   overflow: hidden;
   /* 背景透明，融入全局背景 */
   background: rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(var(--spacing-lg));
   border-top: 1px solid var(--border-subtle);
   border-bottom: 1px solid var(--border-subtle);
 }
@@ -186,18 +186,18 @@ const handleProjectCardClick = (project: any) => {
   left: -20%;
   width: 800px;
   height: 800px;
-  background: radial-gradient(circle, var(--color-cyan-500-15, rgba(6, 182, 212, 0.15)) 0%, transparent 70%);
+  background: radial-gradient(circle, var(--color-info-soft) 0%, transparent 70%);
   border-radius: 50%;
-  filter: blur(80px);
+  filter: blur(calc(var(--spacing-xl) * 2));
 }
 
 .ai-capability-bg-grid {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(var(--color-cyan-500-10, rgba(6, 182, 212, 0.1)) 1px, transparent 1px),
+    linear-gradient(var(--color-info-10) 1px, transparent 1px),
     linear-gradient(90deg, var(--color-cyan-500-10, rgba(6, 182, 212, 0.1)) 1px, transparent 1px);
-  background-size: 40px 40px;
+  background-size: var(--spacing-xl) var(--spacing-xl);
   opacity: 0.3;
 }
 
@@ -206,65 +206,65 @@ const handleProjectCardClick = (project: any) => {
   z-index: 1;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 var(--spacing-lg);
 }
 
 /* 上半部分：文案 + 流程图 */
 .ai-capability-header {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 60px;
-  margin-bottom: 80px;
+  gap: var(--spacing-16);
+  margin-bottom: var(--spacing-20);
   align-items: start;
 }
 
 @media (max-width: 968px) {
   .ai-capability-header {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: var(--spacing-xl);
   }
 }
 
 .ai-capability-header-left {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: var(--spacing-lg);
 }
 
 .ai-capability-badge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  border-radius: 999px;
-  font-size: 14px;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: 9999px;
+  font-size: var(--text-sm);
   width: fit-content;
   /* 浅色主题优化（2025-01）：使用主色柔和背景，提高可读性 */
-  background: var(--color-primary-10, rgba(6, 182, 212, 0.1));
-  border: 1px solid var(--color-primary-20, rgba(37, 99, 235, 0.2));
-  color: var(--color-primary, #06b6d4);
+  background: var(--color-primary-10);
+  border: 1px solid var(--color-primary-20);
+  color: var(--color-info);
 }
 
 .ai-capability-badge-dot {
-  width: 8px;
-  height: 8px;
+  width: var(--spacing-sm);
+  height: var(--spacing-sm);
   border-radius: 50%;
   animation: pulse 2s infinite;
   /* 浅色主题优化（2025-01）：使用主色 */
-  background: var(--color-primary, #06b6d4);
+  background: var(--color-info);
 }
 
 /* 深色主题保持原有样式 */
 :global(.dark) .ai-capability-badge,
 :global([data-theme="dark"]) .ai-capability-badge {
-  background: var(--color-cyan-500-10, rgba(6, 182, 212, 0.1));
-  border: 1px solid var(--color-cyan-500-30, rgba(6, 182, 212, 0.3));
-  color: var(--color-cyan-500, #06b6d4);
+  background: var(--color-info-10);
+  border: 1px solid var(--color-info-30);
+  color: var(--color-info);
 }
 
 :global(.dark) .ai-capability-badge-dot,
 :global([data-theme="dark"]) .ai-capability-badge-dot {
-  background: var(--color-cyan-500, #06b6d4);
+  background: var(--color-info);
 }
 
 @keyframes pulse {
@@ -277,12 +277,12 @@ const handleProjectCardClick = (project: any) => {
 }
 
 .ai-capability-title {
-  font-size: 48px;
+  font-size: var(--text-6xl);
   font-weight: 700;
   line-height: 1.2;
   margin: 0;
   /* 浅色主题优化（2025-01）：使用主题文字颜色，避免渐变在浅色背景下看不清 */
-  color: var(--color-text-main, #fff);
+  color: var(--color-text-main);
 }
 
 /* 深色主题使用渐变效果 */
@@ -296,52 +296,52 @@ html[data-theme="dark"] .ai-capability-title {
 
 @media (max-width: 640px) {
   .ai-capability-title {
-    font-size: 36px;
+    font-size: var(--text-4xl);
   }
 }
 
 .ai-capability-subtitle {
-  font-size: 18px;
+  font-size: var(--text-2xl);
   line-height: 1.6;
   margin: 0;
   /* 浅色主题优化（2025-01）：使用主题文字颜色，确保清晰 */
-  color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+  color: var(--color-text-secondary);
 }
 
 .ai-capability-features {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  margin-top: 8px;
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-sm);
 }
 
 .ai-capability-feature-card {
   display: flex;
-  gap: 16px;
-  padding: 20px;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   transition: all 0.3s ease;
 }
 
 .ai-capability-feature-card:hover {
   background: rgba(255, 255, 255, 0.05);
   border-color: rgba(6, 182, 212, 0.3);
-  transform: translateY(-2px);
+  transform: translateY(-4px);
 }
 
 .ai-capability-feature-icon {
   flex-shrink: 0;
-  width: 48px;
-  height: 48px;
+  width: var(--spacing-xl);
+  height: var(--spacing-xl);
   display: flex;
   align-items: center;
   justify-content: center;
   background: rgba(6, 182, 212, 0.1);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   color: var(--color-primary);
-  font-size: 20px;
+  font-size: var(--text-2xl);
 }
 
 .ai-capability-feature-content {
@@ -349,19 +349,19 @@ html[data-theme="dark"] .ai-capability-title {
 }
 
 .ai-capability-feature-title {
-  font-size: 18px;
+  font-size: var(--text-2xl);
   font-weight: 600;
-  margin: 0 0 8px 0;
+  margin: 0 0 var(--spacing-sm) 0;
   /* 浅色主题优化（2025-01）：使用主题文字颜色，确保清晰 */
-  color: var(--text-main, #fff);
+  color: var(--color-text-main);
 }
 
 .ai-capability-feature-text {
-  font-size: 14px;
+  font-size: var(--text-sm);
   line-height: 1.6;
   margin: 0;
   /* 浅色主题优化（2025-01）：使用主题文字颜色，确保清晰 */
-  color: var(--text-secondary, rgba(255, 255, 255, 0.6));
+  color: var(--color-text-secondary);
 }
 
 /* 右侧流程图 */
@@ -375,18 +375,18 @@ html[data-theme="dark"] .ai-capability-title {
   position: relative;
   width: 100%;
   max-width: 400px;
-  padding: 40px;
+  padding: var(--spacing-xl);
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  backdrop-filter: blur(10px);
+  border-radius: var(--radius-2xl);
+  backdrop-filter: blur(var(--spacing-lg));
 }
 
 .ai-capability-visual-card-bg {
   position: absolute;
   inset: 0;
   background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
-  border-radius: 20px;
+  border-radius: var(--radius-2xl);
   opacity: 0.5;
 }
 
@@ -396,31 +396,31 @@ html[data-theme="dark"] .ai-capability-title {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--spacing-lg);
 }
 
 .ai-capability-visual-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-sm);
   flex: 1;
 }
 
 .ai-capability-visual-icon {
-  width: 60px;
-  height: 60px;
+  width: var(--spacing-12);
+  height: var(--spacing-12);
   display: flex;
   align-items: center;
   justify-content: center;
   background: rgba(6, 182, 212, 0.15);
   border: 2px solid rgba(6, 182, 212, 0.3);
-  border-radius: 12px;
-  font-size: 28px;
+  border-radius: var(--radius-lg);
+  font-size: var(--text-3xl);
 }
 
 .ai-capability-visual-text {
-  font-size: 12px;
+  font-size: var(--text-xs);
   color: rgba(255, 255, 255, 0.7);
   margin: 0;
   text-align: center;
@@ -428,36 +428,36 @@ html[data-theme="dark"] .ai-capability-title {
 
 .ai-capability-visual-arrow {
   color: rgba(6, 182, 212, 0.5);
-  font-size: 20px;
+  font-size: var(--text-2xl);
   flex-shrink: 0;
 }
 
 /* 下半部分：项目类型卡片 */
 .ai-capability-projects {
-  margin-top: 60px;
+  margin-top: var(--spacing-16);
 }
 
 .ai-capability-projects-title {
-  font-size: 32px;
+  font-size: var(--text-5xl);
   font-weight: 600;
-  margin: 0 0 32px 0;
+  margin: 0 0 var(--spacing-xl) 0;
   text-align: center;
   /* 浅色主题优化（2025-01）：使用主题文字颜色，确保清晰 */
-  color: var(--text-main, #fff);
+  color: var(--color-text-main);
 }
 
 .ai-capability-projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(var(--spacing-xl) + var(--spacing-lg), 1fr));
+  gap: var(--spacing-lg);
 }
 
 .ai-capability-project-card {
   position: relative;
-  padding: 24px;
+  padding: var(--spacing-lg);
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+  border-radius: var(--radius-xl);
   cursor: pointer;
   transition: all 0.3s ease;
   overflow: hidden;
@@ -466,8 +466,8 @@ html[data-theme="dark"] .ai-capability-title {
 .ai-capability-project-card:hover {
   background: rgba(255, 255, 255, 0.05);
   border-color: rgba(6, 182, 212, 0.4);
-  transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(6, 182, 212, 0.2);
+  transform: translateY(-8px);
+  box-shadow: 0 var(--spacing-md) var(--spacing-16) rgba(6, 182, 212, 0.2);
 }
 
 .ai-capability-project-card-bg {
@@ -488,35 +488,35 @@ html[data-theme="dark"] .ai-capability-title {
 }
 
 .ai-capability-project-title {
-  font-size: 18px;
+  font-size: var(--text-2xl);
   font-weight: 600;
-  margin: 0 0 12px 0;
+  margin: 0 0 var(--spacing-md) 0;
   /* 浅色主题优化（2025-01）：使用主题文字颜色，确保清晰 */
-  color: var(--text-main, #fff);
+  color: var(--color-text-main);
 }
 
 .ai-capability-project-description {
-  font-size: 14px;
+  font-size: var(--text-sm);
   line-height: 1.6;
-  margin: 0 0 16px 0;
+  margin: 0 0 var(--spacing-lg) 0;
   /* 浅色主题优化（2025-01）：使用主题文字颜色，确保清晰 */
-  color: var(--text-secondary, rgba(255, 255, 255, 0.6));
+  color: var(--color-text-secondary);
 }
 
 .ai-capability-project-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--spacing-sm);
 }
 
 .ai-capability-project-tag {
-  padding: 4px 12px;
-  border-radius: 6px;
-  font-size: 12px;
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
   /* 浅色主题优化（2025-01）：标签使用主色柔和背景，提高可读性 */
-  background: var(--primary-soft-bg, rgba(6, 182, 212, 0.1));
+  background: var(--primary-soft-bg);
   border: 1px solid rgba(37, 99, 235, 0.2);
-  color: var(--primary, #06b6d4);
+  color: var(--color-info);
 }
 
 /* 深色主题保持原有样式 */
@@ -530,29 +530,29 @@ html[data-theme="dark"] .ai-capability-project-tag {
 .ai-capability-footer {
   display: flex;
   justify-content: center;
-  margin-top: 60px;
+  margin-top: var(--spacing-16);
 }
 
 .ai-capability-button {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  padding: 16px 32px;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg) var(--spacing-16);
   background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%);
   border: none;
-  border-radius: 12px;
-  font-size: 16px;
+  border-radius: var(--radius-lg);
+  font-size: var(--text-base);
   font-weight: 600;
   color: var(--color-text-main, white);
   text-decoration: none;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 16px rgba(6, 182, 212, 0.3);
+  box-shadow: 0 var(--spacing-sm) var(--spacing-lg) rgba(6, 182, 212, 0.3);
 }
 
 .ai-capability-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(6, 182, 212, 0.4);
+  transform: translateY(-4px);
+  box-shadow: 0 var(--spacing-md) var(--spacing-16) rgba(6, 182, 212, 0.4);
 }
 
 .ai-capability-button i {
@@ -560,6 +560,6 @@ html[data-theme="dark"] .ai-capability-project-tag {
 }
 
 .ai-capability-button:hover i {
-  transform: translateX(4px);
+  transform: translateX(8px);
 }
 </style>

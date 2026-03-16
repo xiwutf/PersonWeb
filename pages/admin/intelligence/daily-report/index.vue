@@ -71,6 +71,7 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref } from 'vue'
 import { useIntelligenceApi } from '~/composables/useIntelligenceApi'
 import { useNotification } from '~/composables/useToast'
 import type { ReportResponseDto } from '~/types/intelligence'
@@ -171,7 +172,7 @@ onMounted(() => {
 
 <style scoped>
 .intelligence-daily-report-page {
-  padding: 20px;
+  padding: var(--spacing-lg);
   max-width: 1000px;
   margin: 0 auto;
 }
@@ -180,11 +181,11 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: var(--spacing-2xl);
 }
 
 .page-title {
-  font-size: 24px;
+  font-size: var(--text-2xl);
   font-weight: 600;
   margin: 0;
   color: var(--color-text-main);
@@ -196,76 +197,76 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 400px;
+  min-height: var(--spacing-3xl);
   color: var(--color-text-sub);
 }
 
 .empty-container i {
-  font-size: 48px;
-  margin-bottom: 12px;
+  font-size: var(--text-5xl);
+  margin-bottom: var(--spacing-md);
   opacity: 0.5;
 }
 
 .empty-container p {
-  margin: 0 0 16px 0;
+  margin: 0 0 var(--spacing-base) 0;
 }
 
 /* 日报列表 */
 .reports-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--spacing-base);
 }
 
 .report-card {
   background: var(--color-bg-card);
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
   box-shadow: var(--shadow-card);
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .report-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(var(--spacing-sm));
+  box-shadow: 0 4px var(--spacing-md) rgba(0, 0, 0, 0.12);
 }
 
 .report-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: var(--spacing-md);
 }
 
 .report-date {
-  font-size: 14px;
+  font-size: var(--text-base);
   color: var(--color-primary);
   font-weight: 500;
 }
 
 .report-title {
-  font-size: 18px;
+  font-size: var(--text-lg);
   font-weight: 600;
   color: var(--color-text-main);
-  margin-bottom: 12px;
+  margin-bottom: var(--spacing-md);
 }
 
 .report-meta {
   display: flex;
-  gap: 16px;
-  font-size: 13px;
+  gap: var(--spacing-base);
+  font-size: var(--text-sm);
   color: var(--color-text-sec);
 }
 
 .report-meta i {
-  margin-right: 4px;
+  margin-right: var(--spacing-xs);
 }
 
 /* 分页 */
 .pagination-container {
   display: flex;
   justify-content: center;
-  margin-top: 24px;
+  margin-top: var(--spacing-2xl);
 }
 </style>

@@ -481,7 +481,7 @@ watch(() => props.visible, (newVal) => {
 }
 
 .modal-close:hover {
-  background: #f3f4f6;
+  background: var(--color-bg-elevated);
   color: var(--color-text-main);
 }
 
@@ -516,11 +516,11 @@ watch(() => props.visible, (newVal) => {
 .form-select {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--color-border-default);
   border-radius: 6px;
   font-size: 14px;
-  color: var(--color-border-default);
-  background: white;
+  color: var(--color-text-main);
+  background: var(--color-bg-card);
   transition: all 0.2s;
 }
 
@@ -562,7 +562,7 @@ watch(() => props.visible, (newVal) => {
 }
 
 .btn-secondary {
-  background: #f3f4f6;
+  background: var(--color-bg-elevated);
   color: var(--color-text-main);
 }
 

@@ -460,7 +460,7 @@ const handleSaveArticle = async () => {
 }
 
 .error-alert {
-  font-size: 14px;
+  font-size: var(--text-sm);
 }
 
 .error-message {
@@ -469,23 +469,23 @@ const handleSaveArticle = async () => {
 
 .error-title {
   display: block;
-  font-size: 16px;
+  font-size: var(--text-base);
   font-weight: 600;
-  margin-bottom: 8px;
+  margin-bottom: var(--spacing-2);
   color: var(--n-error-color);
 }
 
 .error-detail {
-  font-size: 14px;
-  margin-bottom: 8px;
+  font-size: var(--text-sm);
+  margin-bottom: var(--spacing-2);
   color: var(--n-text-color);
   word-break: break-word;
 }
 
 .error-hint {
-  font-size: 13px;
-  margin-top: 12px;
-  padding-top: 12px;
+  font-size: var(--text-xs);
+  margin-top: var(--spacing-3);
+  padding-top: var(--spacing-3);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--n-text-color-secondary);
 }
@@ -506,21 +506,21 @@ const handleSaveArticle = async () => {
 
 .result-card {
   animation: fadeInUp 0.3s ease-out;
-  min-height: 200px;
+  min-height: var(--spacing-50);
 }
 
 .result-visible {
-  border: 2px solid var(--n-primary-color);
-  box-shadow: 0 4px 12px var(--shadow);
+  border: var(--spacing-0_5) solid var(--n-primary-color);
+  box-shadow: 0 var(--spacing-1) var(--spacing-3) var(--shadow);
 }
 
 .result-card::before {
   content: '';
   position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
+  top: calc(var(--spacing-0_5) * -1);
+  left: calc(var(--spacing-0_5) * -1);
+  right: calc(var(--spacing-0_5) * -1);
+  bottom: calc(var(--spacing-0_5) * -1);
   background: linear-gradient(135deg, var(--n-primary-color), var(--n-primary-color-hover));
   border-radius: inherit;
   z-index: -1;
@@ -530,7 +530,7 @@ const handleSaveArticle = async () => {
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(var(--spacing-5));
   }
   to {
     opacity: 1;

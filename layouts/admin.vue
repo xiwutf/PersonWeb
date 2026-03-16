@@ -430,7 +430,7 @@ const logout = () => {
 .admin-sidebar-header {
   color: var(--color-text-main) !important;
   border-color: var(--color-border-subtle) !important;
-  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.02));
+  background: var(--color-bg-elevated);
 }
 
 .admin-sidebar-header span {
@@ -559,9 +559,9 @@ const logout = () => {
   content: '';
   position: fixed;
   inset: 0;
-  background-image: 
-    radial-gradient(circle at 20% 30%, var(--color-primary-soft, rgba(59, 130, 246, 0.02)) 0%, transparent 30%),
-    radial-gradient(circle at 80% 70%, var(--color-primary-soft, rgba(96, 165, 250, 0.015)) 0%, transparent 30%);
+  background-image:
+    radial-gradient(circle at 20% 30%, var(--color-primary-soft) 0%, transparent 30%),
+    radial-gradient(circle at 80% 70%, rgba(96, 165, 250, 0.015) 0%, transparent 30%);
   pointer-events: none;
   z-index: 0;
   opacity: 0.6;
@@ -577,10 +577,10 @@ const logout = () => {
   content: '';
   position: fixed;
   inset: 0;
-  background-image: 
-    linear-gradient(var(--admin-sidebar-text, #ffffff) 1px, transparent 1px),
-    linear-gradient(90deg, var(--admin-sidebar-text, #ffffff) 1px, transparent 1px);
-  background-size: var(--admin-grid-size, 40px) var(--admin-grid-size, 40px);
+  background-image:
+    linear-gradient(var(--admin-sidebar-text) 1px, transparent 1px),
+    linear-gradient(90deg, var(--admin-sidebar-text) 1px, transparent 1px);
+  background-size: var(--admin-grid-size) var(--admin-grid-size);
   opacity: var(--admin-grid-opacity, 0.03);
   pointer-events: none;
   z-index: 0;
@@ -816,58 +816,58 @@ const logout = () => {
 /* 链接样式 - 使用 CSS 变量 */
 .admin-main :deep(.btn-link),
 .admin-main :deep(a) {
-  color: var(--color-text-main, rgba(255, 255, 255, 0.9));
+  color: var(--color-text-main);
 }
 
 .admin-main :deep(.btn-link--blue),
 .admin-main :deep(.btn-link:hover) {
-  color: var(--color-primary, #60a5fa);
+  color: var(--color-primary);
 }
 
 .admin-main :deep(.btn-link--red) {
-  color: var(--color-error, #f87171);
+  color: var(--color-error);
 }
 
 /* 标签和徽章 - 使用 CSS 变量 */
 .admin-main :deep(.badge) {
-  color: var(--color-text-main, #ffffff);
+  color: var(--color-text-main);
 }
 
 /* 模态框样式 - 使用 CSS 变量 */
 .admin-main :deep(.modal-overlay) {
-  background: var(--color-overlay, rgba(0, 0, 0, 0.8));
+  background: var(--color-overlay);
 }
 
 .admin-main :deep(.modal-content),
 .admin-main :deep(.modal-content-lg) {
-  background: var(--color-bg-card, rgba(30, 41, 59, 0.95));
+  background: var(--color-bg-card);
   backdrop-filter: blur(10px);
-  border: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.1));
+  border: 1px solid var(--color-border-subtle);
 }
 
 .admin-main :deep(.modal-header),
 .admin-main :deep(.modal-title) {
-  color: var(--color-text-main, #ffffff);
+  color: var(--color-text-main);
 }
 
 .admin-main :deep(.modal-body) {
-  color: var(--color-text-main, rgba(255, 255, 255, 0.9));
+  color: var(--color-text-main);
 }
 
 /* 所有文本颜色统一 - 使用 CSS 变量 */
 .admin-main :deep(.text-gray-600),
 .admin-main :deep(.text-gray-500),
 .admin-main :deep(.text-gray-400) {
-  color: var(--color-text-muted, rgba(255, 255, 255, 0.7)) !important;
+  color: var(--color-text-muted) !important;
 }
 
 .admin-main :deep(.text-gray-700) {
-  color: var(--color-text-sub, rgba(255, 255, 255, 0.8)) !important;
+  color: var(--color-text-sub) !important;
 }
 
 .admin-main :deep(.text-gray-800),
 .admin-main :deep(.text-gray-900) {
-  color: var(--color-text-main, #ffffff) !important;
+  color: var(--color-text-main) !important;
 }
 
 /* 白色背景的卡片 - 使用 CSS 变量，自动适配主题 */
@@ -1111,7 +1111,7 @@ const logout = () => {
 }
 
 .admin-main :deep(.n-data-table .n-button--error-type.n-button--quaternary) {
-  color: var(--color-error, #f87171) !important;
+  color: var(--color-error) !important;
 }
 
 .admin-main :deep(.n-data-table .n-button--error-type.n-button--quaternary:hover) {
@@ -1121,7 +1121,7 @@ const logout = () => {
 }
 
 .admin-main :deep(.n-data-table .n-button--success-type.n-button--quaternary) {
-  color: var(--color-success, #34d399) !important;
+  color: var(--color-success) !important;
 }
 
 .admin-main :deep(.n-data-table .n-button--success-type.n-button--quaternary:hover) {
@@ -1151,9 +1151,10 @@ const logout = () => {
 }
 
 .admin-main :deep(.n-data-table .n-tag--warning) {
-  background: var(--color-warning, rgba(251, 191, 36, 0.2));
-  border-color: var(--color-warning, rgba(251, 191, 36, 0.4)) !important;
-  color: var(--color-warning, #fcd34d) !important;
+  background: var(--color-warning);
+  opacity: 0.2;
+  border-color: var(--color-warning) !important;
+  color: var(--color-warning) !important;
 }
 
 .admin-main :deep(.n-data-table .n-tag--error) {

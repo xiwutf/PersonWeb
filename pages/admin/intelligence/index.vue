@@ -196,6 +196,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed, onMounted, ref } from 'vue'
 import { useIntelligenceApi } from '~/composables/useIntelligenceApi'
 import { useNotification } from '~/composables/useToast'
 import type { DashboardStats } from '~/types/intelligence'
@@ -345,7 +346,7 @@ onMounted(() => {
 }
 
 .page-title {
-  font-size: 24px;
+  font-size: var(--text-2xl);
   font-weight: 600;
   margin: 0;
   color: var(--color-text-main);
@@ -360,7 +361,7 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 400px;
+  min-height: var(--spacing-3xl);
 }
 
 /* KPI 卡片 */
@@ -387,19 +388,19 @@ onMounted(() => {
 }
 
 .kpi-card.clickable:hover {
-  transform: translateY(-2px);
+  transform: translateY(var(--spacing-sm));
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 
 .kpi-icon {
-  width: 56px;
-  height: 56px;
+  width: var(--spacing-7xl);
+  height: var(--spacing-7xl);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--color-bg-light);
-  font-size: 24px;
+  font-size: var(--text-2xl);
 }
 
 /* KPI 图标背景色 */
@@ -424,16 +425,16 @@ onMounted(() => {
 }
 
 .kpi-value {
-  font-size: 28px;
+  font-size: var(--text-4xl);
   font-weight: 700;
   color: var(--color-text-main);
   line-height: 1.2;
 }
 
 .kpi-label {
-  font-size: 14px;
+  font-size: var(--text-base);
   color: var(--color-text-sec);
-  margin-top: 4px;
+  margin-top: var(--spacing-xs);
 }
 
 /* 内容网格 */
@@ -459,7 +460,7 @@ onMounted(() => {
 }
 
 .section-title {
-  font-size: 18px;
+  font-size: var(--text-lg);
   font-weight: 600;
   color: var(--color-text-main);
   margin: 0;
@@ -476,18 +477,18 @@ onMounted(() => {
 }
 
 .latest-report-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(var(--spacing-sm));
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 
 .report-date {
-  font-size: 14px;
+  font-size: var(--text-base);
   opacity: 0.9;
   margin-bottom: var(--spacing-sm);
 }
 
 .report-title {
-  font-size: 18px;
+  font-size: var(--text-lg);
   font-weight: 600;
   margin-bottom: var(--spacing-md);
 }
@@ -495,12 +496,12 @@ onMounted(() => {
 .report-meta {
   display: flex;
   gap: var(--spacing-md);
-  font-size: 13px;
+  font-size: var(--text-sm);
   color: rgba(255, 255, 255, 0.8);
 }
 
 .report-meta i {
-  margin-right: 4px;
+  margin-right: var(--spacing-xs);
 }
 
 /* 任务状态卡片 */
@@ -521,7 +522,7 @@ onMounted(() => {
 }
 
 .task-message {
-  font-size: 13px;
+  font-size: var(--text-sm);
   color: var(--color-text-sec);
   margin-bottom: var(--spacing-sm);
 }
@@ -532,7 +533,7 @@ onMounted(() => {
 }
 
 .task-time {
-  font-size: 12px;
+  font-size: var(--text-xs);
   color: var(--color-text-sub);
 }
 
@@ -562,14 +563,14 @@ onMounted(() => {
 }
 
 .category-count {
-  font-size: 12px;
+  font-size: var(--text-xs);
   color: var(--color-text-sec);
 }
 
 .category-bar {
-  height: 4px;
+  height: var(--spacing-xs);
   background: var(--color-border);
-  border-radius: 2px;
+  border-radius: var(--radius-sm);
   overflow: hidden;
   margin-top: var(--spacing-sm);
 }
@@ -612,7 +613,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  font-size: 13px;
+  font-size: var(--text-sm);
   color: var(--color-text-sec);
 }
 
@@ -633,8 +634,8 @@ onMounted(() => {
 }
 
 .high-value {
-  font-size: 11px;
-  padding: 2px var(--spacing-sm);
+  font-size: var(--text-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
   background: var(--color-error);
   color: var(--color-bg-light);
   border-radius: var(--radius-sm);
@@ -645,12 +646,12 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 40px var(--spacing-lg);
+  padding: var(--spacing-10xl) var(--spacing-lg);
   color: var(--color-text-sub);
 }
 
 .empty-state i {
-  font-size: 48px;
+  font-size: var(--text-5xl);
   margin-bottom: var(--spacing-md);
   opacity: 0.5;
 }

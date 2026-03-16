@@ -212,8 +212,8 @@ onUnmounted(() => {
 .bell-button {
   position: relative;
   cursor: pointer;
-  padding: 8px 12px;
-  border-radius: 8px;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
   transition: background-color 0.2s ease;
   display: flex;
   align-items: center;
@@ -225,14 +225,14 @@ onUnmounted(() => {
 }
 
 .bell-button i {
-  font-size: 18px;
+  font-size: var(--text-lg);
   color: var(--color-text-main);
 }
 
 .bell-badge {
   position: absolute;
-  top: 4px;
-  right: 4px;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
 }
 
 .notification-popover {
@@ -245,13 +245,13 @@ onUnmounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
+  padding: var(--spacing-md) var(--spacing-lg);
   border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .popover-header h3 {
   margin: 0;
-  font-size: 16px;
+  font-size: var(--text-base);
   font-weight: 600;
 }
 
@@ -260,18 +260,18 @@ onUnmounted(() => {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 24px;
-  min-height: 100px;
+  padding: var(--spacing-lg);
+  min-height: var(--spacing-xl);
 }
 
 .popover-list {
   max-height: 400px;
   overflow-y: auto;
-  padding: 8px 0;
+  padding: var(--spacing-sm) 0;
 }
 
 .popover-item {
-  padding: 12px 16px;
+  padding: var(--spacing-md) var(--spacing-lg);
   cursor: pointer;
   transition: background-color 0.2s ease;
   border-bottom: 1px solid var(--color-border-subtle);
@@ -288,20 +288,20 @@ onUnmounted(() => {
 .popover-item-header {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 4px;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-xs);
 }
 
 .popover-item-title {
   font-weight: 600;
-  font-size: 14px;
+  font-size: var(--text-sm);
   flex: 1;
 }
 
 .popover-item-content {
-  font-size: 12px;
+  font-size: var(--text-xs);
   color: var(--color-text-secondary);
-  margin-top: 4px;
+  margin-top: var(--spacing-xs);
   line-height: 1.4;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -311,9 +311,9 @@ onUnmounted(() => {
 }
 
 .popover-item-time {
-  font-size: 11px;
+  font-size: var(--text-xs);
   color: var(--color-text-muted);
-  margin-top: 4px;
+  margin-top: var(--spacing-xs);
 }
 </style>
 

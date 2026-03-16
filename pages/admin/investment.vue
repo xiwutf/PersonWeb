@@ -1865,19 +1865,19 @@ onUnmounted(() => {
 }
 
 .btn-action-secondary {
-  background: var(--color-bg-elevated, var(--color-gray-50));
+  background: var(--color-bg-elevated);
   color: var(--color-text-main, var(--color-text-main));
   border: 1px solid var(--color-border-default, var(--color-border));
 }
 
 .btn-action-secondary:hover {
   background: var(--color-bg-card, var(--color-bg-card));
-  border-color: var(--color-border-subtle, var(--color-gray-300));
+  border-color: var(--color-border-subtle);
 }
 
 /* 模块说明 */
 .module-description {
-  background: var(--color-bg-elevated, var(--color-gray-50));
+  background: var(--color-bg-elevated);
   border: 1px solid var(--color-border-default, var(--color-border));
   border-radius: 0.75rem;
   padding: 0;
@@ -1974,7 +1974,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-bg-elevated, var(--color-gray-50));
+  background: var(--color-bg-elevated);
   border-radius: 0.5rem;
 }
 
@@ -2042,7 +2042,7 @@ onUnmounted(() => {
 .format-tag {
   display: inline-block;
   padding: 0.375rem 0.75rem;
-  background: var(--color-bg-elevated, var(--color-gray-50));
+  background: var(--color-bg-elevated);
   border: 1px solid var(--color-border-default, var(--color-border));
   border-radius: 0.375rem;
   font-size: 0.8125rem;
@@ -2212,7 +2212,7 @@ onUnmounted(() => {
 }
 
 .btn-cancel:hover {
-  background: var(--color-bg-elevated, var(--color-gray-50));
+  background: var(--color-bg-elevated);
 }
 
 .form-hint {
@@ -2283,7 +2283,7 @@ onUnmounted(() => {
 
 .form-info-box {
   padding: 0.75rem;
-  background: var(--color-bg-elevated, var(--color-gray-50));
+  background: var(--color-bg-elevated);
   border: 1px solid var(--color-border-default, var(--color-border));
   border-radius: 0.375rem;
   display: flex;
@@ -2314,7 +2314,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 1rem;
   padding: 0.75rem;
-  background: var(--color-bg-elevated, var(--color-gray-50));
+  background: var(--color-bg-elevated);
   border-radius: 0.5rem;
   border: 1px solid var(--color-border-default, var(--color-border));
 }
@@ -2345,7 +2345,7 @@ onUnmounted(() => {
 }
 
 .switch-btn:hover {
-  background: var(--color-bg-elevated, var(--color-gray-50));
+  background: var(--color-bg-elevated);
   border-color: var(--color-primary, var(--color-primary));
 }
 
@@ -2555,13 +2555,13 @@ onUnmounted(() => {
 }
 
 .badge-stock {
-  background: var(--color-bg-elevated, var(--color-gray-50));
+  background: var(--color-bg-elevated);
   color: var(--color-primary, var(--color-primary));
   border: 1px solid var(--color-border-default, var(--color-border));
 }
 
 .badge-fund {
-  background: var(--color-bg-elevated, var(--color-gray-50));
+  background: var(--color-bg-elevated);
   color: var(--success, var(--color-success, var(--color-success)));
   border: 1px solid var(--color-border-default, var(--color-border));
 }
@@ -2611,7 +2611,7 @@ onUnmounted(() => {
 }
 
 .btn-edit {
-  background: var(--color-bg-elevated, var(--color-gray-50));
+  background: var(--color-bg-elevated);
   color: var(--color-text-main, var(--color-text-main));
   border: 1px solid var(--color-border-default, var(--color-border));
 }

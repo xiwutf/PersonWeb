@@ -306,7 +306,7 @@ useHead({
 
 <style scoped>
 .admin-assistant-page {
-  height: calc(100vh - 80px);
+  height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -319,7 +319,7 @@ useHead({
 
 /* 左侧会话列表 */
 .sessions-sidebar {
-  width: 300px;
+  width: var(--spacing-75);
   border-right: 1px solid var(--n-border-color);
   display: flex;
   flex-direction: column;
@@ -327,7 +327,7 @@ useHead({
 }
 
 .sidebar-header {
-  padding: 16px;
+  padding: var(--spacing-xl);
   border-bottom: 1px solid var(--n-border-color);
   display: flex;
   justify-content: space-between;
@@ -335,7 +335,7 @@ useHead({
 }
 
 .sidebar-title {
-  font-size: 1.125rem;
+  font-size: var(--text-lg);
   font-weight: 600;
   margin: 0;
   color: var(--n-text-color);
@@ -344,15 +344,15 @@ useHead({
 .sessions-list {
   flex: 1;
   overflow-y: auto;
-  padding: 8px;
+  padding: var(--spacing-2);
 }
 
 .session-item {
-  padding: 12px;
-  border-radius: 8px;
+  padding: var(--spacing-3);
+  border-radius: var(--radius-md);
   cursor: pointer;
   transition: all 0.2s;
-  margin-bottom: 8px;
+  margin-bottom: var(--spacing-2);
   border: 1px solid transparent;
 }
 
@@ -366,27 +366,27 @@ useHead({
 }
 
 .session-title {
-  font-size: 0.9375rem;
+  font-size: var(--text-sm);
   font-weight: 500;
   color: var(--n-text-color);
-  margin-bottom: 4px;
+  margin-bottom: var(--spacing-1);
   overflow: hidden;
   text-overflow: ellipsis;
-  var(--color-bg-light, white)-space: nowrap;
+  white-space: nowrap;
 }
 
 .session-meta {
   display: flex;
   justify-content: space-between;
-  font-size: 0.75rem;
+  font-size: var(--text-xs);
   color: var(--n-text-color-2);
 }
 
 .sessions-empty {
-  padding: 24px;
+  padding: var(--spacing-6);
   text-align: center;
   color: var(--n-text-color-3);
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
 }
 
 /* 右侧对话区域 */
@@ -398,20 +398,20 @@ useHead({
 }
 
 .chat-header {
-  padding: 20px 24px;
+  padding: var(--spacing-20) var(--spacing-6);
   border-bottom: 1px solid var(--n-border-color);
   background: var(--n-color);
 }
 
 .chat-title {
-  font-size: 1.5rem;
+  font-size: var(--text-3xl);
   font-weight: 600;
-  margin: 0 0 8px 0;
+  margin: 0 0 var(--spacing-2) 0;
   color: var(--n-text-color);
 }
 
 .chat-subtitle {
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   color: var(--n-text-color-2);
   margin: 0;
   line-height: 1.6;
@@ -420,7 +420,7 @@ useHead({
 .messages-container {
   flex: 1;
   overflow-y: auto;
-  padding: 24px;
+  padding: var(--spacing-6);
   background: var(--n-color);
 }
 
@@ -429,7 +429,7 @@ useHead({
   align-items: center;
   justify-content: center;
   height: 100%;
-  min-height: 300px;
+  min-height: var(--spacing-75);
 }
 
 .welcome-content {
@@ -437,28 +437,28 @@ useHead({
 }
 
 .welcome-icon {
-  font-size: 3rem;
+  font-size: var(--text-3xl);
   color: var(--n-text-color-3);
-  margin-bottom: 16px;
+  margin-bottom: var(--spacing-xl);
 }
 
 .welcome-text {
-  font-size: 1rem;
+  font-size: var(--text-base);
   color: var(--n-text-color-2);
   margin: 0;
 }
 
 .message-wrapper {
   display: flex;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-20);
   animation: fadeIn 0.3s ease;
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(var(--spacing-2_5));
   }
   to {
     opacity: 1;
@@ -471,14 +471,14 @@ useHead({
 }
 
 .message-avatar {
-  width: 36px;
-  height: 36px;
+  width: var(--spacing-9);
+  height: var(--spacing-9);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  font-size: 1rem;
+  font-size: var(--text-base);
   background: var(--n-color);
   border: 1px solid var(--n-border-color);
   color: var(--n-text-color-2);
@@ -505,8 +505,8 @@ useHead({
 }
 
 .message-content {
-  padding: 12px 16px;
-  border-radius: 12px;
+  padding: var(--spacing-3) var(--spacing-4);
+  border-radius: var(--radius-lg);
   word-wrap: break-word;
   line-height: 1.6;
 }
@@ -514,34 +514,34 @@ useHead({
 .message-user .message-content {
   background: linear-gradient(135deg, var(--color-primary, var(--color-indigo-500)) 0%, var(--color-purple, var(--color-purple-600)) 100%);
   color: var(--color-text-main, var(--color-bg-light, white));
-  border-bottom-right-radius: 4px;
+  border-bottom-right-radius: var(--radius-sm);
 }
 
 .message-assistant .message-content {
   background: var(--n-color);
   border: 1px solid var(--n-border-color);
   color: var(--n-text-color);
-  border-bottom-left-radius: 4px;
+  border-bottom-left-radius: var(--radius-sm);
 }
 
 .message-time {
-  font-size: 0.75rem;
+  font-size: var(--text-xs);
   color: var(--n-text-color-3);
-  margin-top: 4px;
-  padding: 0 4px;
+  margin-top: var(--spacing-1);
+  padding: 0 var(--spacing-1);
 }
 
 .quick-suggestions {
-  padding: 12px 24px;
+  padding: var(--spacing-3) var(--spacing-6);
   border-top: 1px solid var(--n-border-color);
   display: flex;
-  gap: 8px;
+  gap: var(--spacing-2);
   flex-wrap: wrap;
   background: var(--n-color);
 }
 
 .input-area {
-  padding: 16px 24px;
+  padding: var(--spacing-xl) var(--spacing-6);
   border-top: 1px solid var(--n-border-color);
   background: var(--n-color);
 }
@@ -550,17 +550,17 @@ useHead({
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 8px;
+  margin-top: var(--spacing-2);
 }
 
 .input-hint {
-  font-size: 0.75rem;
+  font-size: var(--text-xs);
   color: var(--n-text-color-3);
 }
 
 @media (max-width: 1024px) {
   .sessions-sidebar {
-    width: 250px;
+    width: var(--spacing-62);
   }
 }
 

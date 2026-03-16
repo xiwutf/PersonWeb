@@ -356,11 +356,11 @@
   .admin-main .text-gray-600,
   .admin-main .text-gray-500,
   .admin-main .text-gray-400 {
-    color: var(--color-text-muted, rgba(229, 231, 235, 0.75)) !important;
+    color: var(--color-text-muted) !important;
   }
 
   .admin-main .text-gray-700 {
-    color: var(--color-text-sub, rgba(229, 231, 235, 0.85)) !important;
+    color: var(--color-text-sub) !important;
   }
 
   .admin-main .text-gray-800,
@@ -380,28 +380,28 @@
 
   /* 白色背景改为半透明深色 - 使用 CSS 变量 */
   .admin-main .bg-white {
-    background: var(--color-bg-elevated, rgba(255, 255, 255, 0.06)) !important;
+    background: var(--color-bg-elevated) !important;
     backdrop-filter: blur(10px);
-    border-color: var(--color-border-subtle, rgba(255, 255, 255, 0.12)) !important;
+    border-color: var(--color-border-subtle) !important;
   }
 
   /* 深色背景下的卡片 - 使用更柔和的半透明 */
   .admin-main .dark\:bg-gray-800 {
-    background: var(--color-bg-elevated, rgba(255, 255, 255, 0.06)) !important;
+    background: var(--color-bg-elevated) !important;
     backdrop-filter: blur(10px);
-    border-color: var(--color-border-subtle, rgba(255, 255, 255, 0.12)) !important;
+    border-color: var(--color-border-subtle) !important;
   }
 
   .admin-main .dark\:bg-gray-900 {
-    background: var(--color-bg-elevated, rgba(255, 255, 255, 0.04)) !important;
-    border-color: var(--color-border-subtle, rgba(255, 255, 255, 0.1)) !important;
+    background: var(--color-bg-elevated) !important;
+    border-color: var(--color-border-subtle) !important;
   }
 
   /* ========== 后台管理浅色主题样式 - 使用 CSS 变量 ========== */
   /* 目标：保证浅色主题下侧边栏、菜单项、正文文字有足够对比度 */
   body[data-theme='light'] .admin-main,
   html[data-theme='light'] .admin-main {
-    background-color: var(--color-bg-body, #f5f7fb);
+    background-color: var(--color-bg-body);
     color: var(--color-text-main, var(--color-text-main));
   }
 
@@ -434,7 +434,7 @@
   }
 
   body[data-theme='light'] .admin-main .n-menu-item--selected {
-    background: var(--color-primary-soft, rgba(59, 130, 246, 0.12));
+    background: var(--color-primary-soft);
     border-radius: 8px;
   }
 
@@ -486,7 +486,7 @@
   .admin-main .bg-gradient-to-br,
   .admin-main .bg-gradient-to-r,
   .admin-main .bg-gradient-to-l {
-    background: var(--color-bg-body, #0a0a0a) !important;
+    background: var(--color-bg-body) !important;
   }
 
   /* 深色背景下的文字 - 使用 CSS 变量 */
@@ -495,26 +495,26 @@
   }
 
   .admin-main .dark\:text-gray-200 {
-    color: var(--color-text-sub, rgba(229, 231, 235, 0.9)) !important;
+    color: var(--color-text-sub) !important;
   }
 
   .admin-main .dark\:text-gray-300 {
-    color: var(--color-text-sub, rgba(229, 231, 235, 0.85)) !important;
+    color: var(--color-text-sub) !important;
   }
 
   .admin-main .dark\:text-gray-400 {
-    color: var(--color-text-muted, rgba(229, 231, 235, 0.75)) !important;
+    color: var(--color-text-muted) !important;
   }
 
   /* 彩色文字 - 使用 CSS 变量 */
   .admin-main .dark\:text-blue-400,
   .admin-main .text-blue-600.dark\:text-blue-400 {
-    color: var(--color-info, #7dd3fc) !important;
+    color: var(--color-info) !important;
   }
 
   .admin-main .dark\:text-green-400,
   .admin-main .text-green-600.dark\:text-green-400 {
-    color: var(--color-success, #86efac) !important;
+    color: var(--color-success) !important;
   }
 
   .admin-main .dark\:text-red-400,
@@ -524,37 +524,37 @@
 
   .admin-main .dark\:text-orange-400,
   .admin-main .text-orange-600.dark\:text-orange-400 {
-    color: var(--color-warning, #fdba74) !important;
+    color: var(--color-warning) !important;
   }
 
   .admin-main .dark\:text-purple-400,
   .admin-main .text-purple-600.dark\:text-purple-400 {
-    color: var(--color-purple, #c4b5fd) !important;
+    color: var(--color-purple) !important;
   }
 
   .admin-main .dark\:text-yellow-400 {
-    color: var(--color-warning, #fde047) !important;
+    color: var(--color-warning) !important;
   }
 
   /* 边框颜色 - 使用 CSS 变量 */
   .admin-main .dark\:border-gray-600,
   .admin-main .dark\:border-gray-700 {
-    border-color: var(--color-border-default, rgba(255, 255, 255, 0.15)) !important;
+    border-color: var(--color-border-default) !important;
   }
 
   .admin-main .border-gray-200,
   .admin-main .border-gray-300 {
-    border-color: var(--color-border-subtle, rgba(255, 255, 255, 0.12)) !important;
+    border-color: var(--color-border-subtle) !important;
   }
 
   /* 分割线 - 使用 CSS 变量 */
   .admin-main .dark\:divide-gray-700 {
-    border-color: var(--color-border-default, rgba(255, 255, 255, 0.15)) !important;
+    border-color: var(--color-border-default) !important;
   }
 
   .admin-main .divide-gray-200,
   .admin-main .divide-gray-300 {
-    border-color: var(--color-border-subtle, rgba(255, 255, 255, 0.12)) !important;
+    border-color: var(--color-border-subtle) !important;
   }
 
   /* 悬停效果 - 使用 CSS 变量 */
@@ -563,19 +563,19 @@
   }
 
   .admin-main .hover\:bg-gray-50:hover {
-    background: var(--color-bg-elevated, rgba(255, 255, 255, 0.06)) !important;
+    background: var(--color-bg-elevated) !important;
   }
 
   /* 表格头部背景 - 使用 CSS 变量 */
   .admin-main .bg-gray-50,
   .admin-main .dark\:bg-gray-700\/50 {
-    background: var(--color-bg-elevated, rgba(255, 255, 255, 0.06)) !important;
-    border-color: var(--color-border-subtle, rgba(255, 255, 255, 0.12)) !important;
+    background: var(--color-bg-elevated) !important;
+    border-color: var(--color-border-subtle) !important;
   }
 
   /* 统计卡片文字颜色 - 使用 CSS 变量 */
   .admin-main .stat-label {
-    color: var(--color-text-muted, rgba(229, 231, 235, 0.75)) !important;
+    color: var(--color-text-muted) !important;
   }
 
   .admin-main .stat-value {
@@ -590,10 +590,10 @@
   .admin-main .btn-secondary {
     color: var(--color-text-main, var(--color-text-sec)) !important;
     background: var(--color-bg-elevated, var(--color-border)) !important;
-    border-color: var(--color-border-default, rgba(255, 255, 255, 0.15)) !important;
+    border-color: var(--color-border-default) !important;
   }
 
   .admin-main .btn-secondary:hover {
-    background: var(--color-bg-elevated, rgba(255, 255, 255, 0.12)) !important;
+    background: var(--color-bg-elevated) !important;
   }
 }

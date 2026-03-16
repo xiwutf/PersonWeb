@@ -76,13 +76,13 @@ onUnmounted(() => {
 <style scoped>
 .visitor-level-display {
   position: relative; /* 改为相对定位，由父容器控制位置 */
-  background: var(--color-bg-card, rgba(30, 41, 59, 0.95));
+  background: var(--color-bg-card);
   backdrop-filter: blur(20px);
-  border: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.2));
-  border-radius: var(--radius-md, 0.75rem);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
   padding: 0.75rem;
   width: 100%;
-  box-shadow: var(--shadow-md, 0 4px 12px rgba(0, 0, 0, 0.3));
+  box-shadow: var(--shadow-md);
 }
 
 .level-badge {
@@ -91,16 +91,16 @@ onUnmounted(() => {
   gap: 0.375rem; /* 减小间距 */
   margin-bottom: 0.5rem; /* 减小下边距 */
   padding: 0.375rem; /* 减小内边距 */
-  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.1));
-  border-radius: var(--radius-sm, 0.375rem);
+  background: var(--color-bg-elevated);
+  border-radius: var(--radius-sm);
 }
 
 .badge-icon {
-  font-size: 1.25rem; /* 减小图标大小 */
+  font-size: var(--text-xl); /* 减小图标大小 */
 }
 
 .badge-level {
-  font-size: 0.75rem; /* 减小字体大小 */
+  font-size: var(--text-sm); /* 减小字体大小 */
   font-weight: 600;
   color: white;
 }
@@ -110,7 +110,7 @@ onUnmounted(() => {
 }
 
 .level-title {
-  font-size: 0.75rem; /* 减小字体大小 */
+  font-size: var(--text-sm); /* 减小字体大小 */
   font-weight: 500;
   margin-bottom: 0.375rem; /* 减小下边距 */
   color: rgba(255, 255, 255, 0.9);
@@ -126,30 +126,30 @@ onUnmounted(() => {
   width: 100%;
   height: 6px;
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
+  border-radius: var(--radius-xs);
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-purple-500, #8b5cf6));
-  border-radius: var(--radius-sm, 3px);
+  background: linear-gradient(90deg, var(--color-primary), var(--color-purple-500));
+  border-radius: var(--radius-sm);
   transition: width 0.3s ease;
 }
 
 .progress-text {
-  font-size: 0.625rem; /* 减小字体大小 */
+  font-size: var(--text-xs);
   color: rgba(255, 255, 255, 0.7);
   text-align: right;
 }
 
 /* 不同等级的样式 */
-.level-1 .badge-icon { color: var(--color-gray-400, #9ca3af); }
+.level-1 .badge-icon { color: var(--color-gray-400); }
 .level-2 .badge-icon { color: var(--color-primary-soft); }
-.level-3 .badge-icon { color: var(--color-success, #34d399); }
-.level-4 .badge-icon { color: var(--color-warning, #fbbf24); }
-.level-5 .badge-icon { color: var(--color-purple-500, #a78bfa); }
-.level-10 .badge-icon { color: var(--color-warning, #fbbf24); animation: glow 2s ease-in-out infinite; }
+.level-3 .badge-icon { color: var(--color-success); }
+.level-4 .badge-icon { color: var(--color-warning); }
+.level-5 .badge-icon { color: var(--color-purple-500); }
+.level-10 .badge-icon { color: var(--color-warning); animation: glow 2s ease-in-out infinite; }
 
 @keyframes glow {
   0%, 100% { filter: drop-shadow(0 0 5px currentColor); }

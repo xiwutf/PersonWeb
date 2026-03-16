@@ -265,6 +265,7 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref } from 'vue'
 import { useSafeMessage } from '~/composables/useNaiveUI'
 import { useErrorHandler } from '~/composables/useErrorHandler'
 
@@ -492,17 +493,17 @@ onMounted(() => {
 }
 
 .tabs-container {
-  margin-bottom: 2rem;
+  margin-bottom: var(--spacing-2xl);
 }
 
 .tabs {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .tab-button {
-  padding: 0.75rem 1.5rem;
+  padding: var(--spacing-md) var(--spacing-xl);
   background: transparent;
   border: none;
   border-bottom: 2px solid transparent;
@@ -524,19 +525,19 @@ onMounted(() => {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.5rem;
-  padding: 1.5rem;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-xl);
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--spacing-xl);
 }
 
 .section-title {
-  font-size: 1.25rem;
+  font-size: var(--text-lg);
   font-weight: 600;
   color: var(--color-bg-card);
 }
@@ -545,15 +546,15 @@ onMounted(() => {
 .backgrounds-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
+  gap: var(--spacing-xl);
 }
 
 .theme-card,
 .background-card {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.5rem;
-  padding: 1.25rem;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-10);
   transition: all 0.3s ease;
 }
 
@@ -578,18 +579,18 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-md);
 }
 
 .theme-card-title h3 {
-  font-size: 1rem;
+  font-size: var(--text-base);
   font-weight: 600;
   color: var(--color-bg-card);
-  margin-bottom: 0.25rem;
+  margin-bottom: var(--spacing-xs);
 }
 
 .theme-code {
-  font-size: 0.75rem;
+  font-size: var(--text-xs);
   color: rgba(255, 255, 255, 0.6);
   font-family: monospace;
 }
@@ -599,8 +600,8 @@ onMounted(() => {
   width: 100%;
   aspect-ratio: 16 / 9;
   background: rgba(0, 0, 0, 0.2);
-  border-radius: 0.25rem;
-  margin-bottom: 1rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--spacing-md);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -615,27 +616,27 @@ onMounted(() => {
 }
 
 .theme-info {
-  margin-top: 1rem;
+  margin-top: var(--spacing-md);
 }
 
 .theme-description,
 .background-description {
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-md);
 }
 
 .theme-actions {
   display: flex;
-  gap: 0.5rem;
-  padding-top: 1rem;
+  gap: var(--spacing-sm);
+  padding-top: var(--spacing-md);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .badge {
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-  font-size: 0.75rem;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
   font-weight: 500;
 }
 
@@ -656,33 +657,33 @@ onMounted(() => {
 }
 
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--spacing-xl);
 }
 
 .form-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
+  gap: var(--spacing-md);
 }
 
 .form-label {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
   color: rgba(255, 255, 255, 0.9);
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   font-weight: 500;
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--spacing-sm);
 }
 
 .form-input {
   width: 100%;
-  padding: 0.75rem;
+  padding: var(--spacing-md);
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 0.25rem;
+  border-radius: var(--radius-sm);
   color: var(--color-bg-card);
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
 }
 
 .form-input:focus {
@@ -693,8 +694,8 @@ onMounted(() => {
 
 .form-hint {
   display: block;
-  margin-top: 0.25rem;
-  font-size: 0.75rem;
+  margin-top: var(--spacing-xs);
+  font-size: var(--text-xs);
   color: rgba(255, 255, 255, 0.5);
 }
 
@@ -712,7 +713,7 @@ onMounted(() => {
   background: rgba(30, 41, 59, 0.95);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.75rem;
+  border-radius: var(--radius-lg);
   width: 90%;
   max-width: 600px;
   max-height: 90vh;
@@ -723,12 +724,12 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem;
+  padding: var(--spacing-xl);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .modal-header h2 {
-  font-size: 1.25rem;
+  font-size: var(--text-lg);
   font-weight: 600;
   color: var(--color-bg-card);
 }
@@ -737,14 +738,14 @@ onMounted(() => {
   background: none;
   border: none;
   color: rgba(255, 255, 255, 0.7);
-  font-size: 1.5rem;
+  font-size: var(--text-3xl);
   cursor: pointer;
-  width: 2rem;
-  height: 2rem;
+  width: var(--spacing-2xl);
+  height: var(--spacing-2xl);
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0.25rem;
+  border-radius: var(--radius-sm);
   transition: all 0.2s ease;
 }
 
@@ -754,23 +755,23 @@ onMounted(() => {
 }
 
 .modal-body {
-  padding: 1.5rem;
+  padding: var(--spacing-xl);
 }
 
 .modal-footer {
   display: flex;
   justify-content: flex-end;
-  gap: 0.75rem;
-  padding-top: 1.5rem;
+  gap: var(--spacing-lg);
+  padding-top: var(--spacing-xl);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  margin-top: 1.5rem;
+  margin-top: var(--spacing-xl);
 }
 
 .btn-primary {
-  padding: 0.5rem 1rem;
+  padding: var(--spacing-sm) var(--spacing-md);
   background: var(--theme-primary);
   border: 1px solid var(--theme-primary);
-  border-radius: 0.25rem;
+  border-radius: var(--radius-sm);
   color: var(--color-bg-card);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -781,10 +782,10 @@ onMounted(() => {
 }
 
 .btn-secondary {
-  padding: 0.5rem 1rem;
+  padding: var(--spacing-sm) var(--spacing-md);
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 0.25rem;
+  border-radius: var(--radius-sm);
   color: rgba(255, 255, 255, 0.9);
   cursor: pointer;
 }
@@ -793,7 +794,7 @@ onMounted(() => {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
 }
 
 .btn-link-blue {

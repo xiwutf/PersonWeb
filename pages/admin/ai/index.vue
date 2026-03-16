@@ -466,7 +466,7 @@ useHead({
 .admin-ai-center-page {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 24px;
+  padding: var(--spacing-6);
 }
 
 /* Hero 区域样式 - 使用 CSS 变量 */
@@ -479,26 +479,26 @@ useHead({
 .hero-content {
   color: var(--color-text-main, var(--color-bg-light, white));
   text-align: center;
-  padding: 20px 0;
+  padding: var(--spacing-20) 0;
 }
 
 .hero-title {
-  font-size: 2.5rem;
+  font-size: var(--text-3xl);
   font-weight: 700;
-  margin-bottom: 16px;
-  text-shadow: var(--shadow-text, 0 2px 4px rgba(0, 0, 0, 0.2));
+  margin-bottom: var(--spacing-4);
+  text-shadow: var(--shadow-text, 0 var(--spacing-0_5) var(--spacing-3) rgba(0, 0, 0, 0.2));
 }
 
 .hero-subtitle {
-  font-size: 1.25rem;
+  font-size: var(--text-xl);
   font-weight: 500;
-  margin-bottom: 12px;
+  margin-bottom: var(--spacing-3);
   opacity: 0.95;
   line-height: 1.6;
 }
 
 .hero-description {
-  font-size: 1rem;
+  font-size: var(--text-base);
   opacity: 0.85;
   line-height: 1.6;
   max-width: 800px;
@@ -509,8 +509,8 @@ useHead({
 .agents-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 24px;
-  margin-bottom: 24px;
+  gap: var(--spacing-6);
+  margin-bottom: var(--spacing-6);
 }
 
 /* 智能体卡片样式 */
@@ -520,20 +520,20 @@ useHead({
 }
 
 .agent-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(calc(var(--spacing-0_5) * -1));
   box-shadow: var(--shadow-lg);
 }
 
 .agent-header {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: var(--spacing-4);
 }
 
 .agent-icon-wrapper {
-  width: 56px;
-  height: 56px;
-  border-radius: 12px;
+  width: var(--spacing-14);
+  height: var(--spacing-14);
+  border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -566,7 +566,7 @@ useHead({
 }
 
 .agent-icon-emoji {
-  font-size: 28px;
+  font-size: var(--text-2xl);
   line-height: 1;
 }
 
@@ -575,47 +575,47 @@ useHead({
 }
 
 .agent-title {
-  font-size: 1.25rem;
+  font-size: var(--text-xl);
   font-weight: 600;
-  margin: 0 0 4px 0;
+  margin: 0 0 var(--spacing-1) 0;
   color: var(--n-text-color);
 }
 
 .agent-subtitle {
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   color: var(--n-text-color-2);
   margin: 0;
 }
 
 .agent-body {
-  min-height: 200px;
-  padding: 8px 0;
+  min-height: var(--spacing-50);
+  padding: var(--spacing-2) 0;
 }
 
 .agent-description {
-  font-size: 0.9375rem;
+  font-size: var(--text-sm);
   color: var(--n-text-color-2);
   line-height: 1.6;
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-20);
 }
 
 .agent-features {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--spacing-3);
 }
 
 .feature-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 0.875rem;
+  gap: var(--spacing-2_5);
+  font-size: var(--text-sm);
   color: var(--n-text-color-1);
 }
 
 .feature-icon {
   color: var(--color-success, var(--color-success));
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   flex-shrink: 0;
 }
 
@@ -623,8 +623,8 @@ useHead({
 .bottom-section {
   display: grid;
   grid-template-columns: 1fr 400px;
-  gap: 24px;
-  margin-top: 24px;
+  gap: var(--spacing-6);
+  margin-top: var(--spacing-6);
 }
 
 @media (max-width: 1024px) {
@@ -642,18 +642,18 @@ useHead({
 .workflow-tip-content {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 8px 0;
+  gap: var(--spacing-3);
+  padding: var(--spacing-2) 0;
 }
 
 .tip-icon {
-  font-size: 1.5rem;
+  font-size: var(--text-xl);
   color: var(--color-warning-hover, var(--color-amber-600));
   flex-shrink: 0;
 }
 
 .tip-text {
-  font-size: 0.9375rem;
+  font-size: var(--text-sm);
   color: var(--color-text-main, var(--color-amber-800));
   margin: 0;
   line-height: 1.6;
@@ -671,7 +671,7 @@ useHead({
 }
 
 .status-title {
-  font-size: 1.125rem;
+  font-size: var(--text-lg);
   font-weight: 600;
   margin: 0;
   color: var(--n-text-color);
@@ -680,14 +680,14 @@ useHead({
 .status-content {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--spacing-4);
 }
 
 .status-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 0;
+  padding: var(--spacing-2) 0;
   border-bottom: 1px solid var(--n-border-color);
 }
 
@@ -696,45 +696,45 @@ useHead({
 }
 
 .status-label {
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   color: var(--n-text-color-2);
   font-weight: 500;
 }
 
 .status-value {
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   color: var(--n-text-color);
   font-weight: 600;
 }
 
 .status-actions {
-  margin-top: 8px;
-  padding-top: 16px;
+  margin-top: var(--spacing-2);
+  padding-top: var(--spacing-4);
   border-top: 1px solid var(--n-border-color);
 }
 
 /* 响应式设计 */
 @media (max-width: 768px) {
   .admin-ai-center-page {
-    padding: 16px;
+    padding: var(--spacing-4);
   }
 
   .hero-title {
-    font-size: 2rem;
+    font-size: var(--text-2xl);
   }
 
   .hero-subtitle {
-    font-size: 1.125rem;
+    font-size: var(--text-lg);
   }
 
   .agents-grid {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: var(--spacing-4);
   }
 
   .bottom-section {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: var(--spacing-4);
   }
 }
 </style>

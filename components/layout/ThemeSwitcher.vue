@@ -506,19 +506,19 @@ html[data-theme="light"] .theme-card[data-theme-code="light"] .theme-preview {
 }
 
 :global([data-theme="light"]) .theme-card[data-theme-code="dark"] .theme-preview {
-  background: var(--color-bg-dark, #0a0e1a);
-  border: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.1));
+  background: var(--color-bg-dark);
+  border: 1px solid var(--color-border-subtle);
 }
 
 /* 深色主题预览卡片特殊处理 */
 :global([data-theme="dark"]) .theme-card[data-theme-code="light"] .theme-preview {
-  background: var(--color-bg-light, #f5f7fb);
+  background: var(--color-bg-light);
   border: 1px solid var(--shadow);
 }
 
 :global([data-theme="dark"]) .theme-card[data-theme-code="dark"] .theme-preview {
-  background: var(--color-bg-dark, #0a0e1a);
-  border: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.1));
+  background: var(--color-bg-dark);
+  border: 1px solid var(--color-border-subtle);
 }
 
 .theme-preview img {
@@ -533,14 +533,14 @@ html[data-theme="light"] .theme-card[data-theme-code="light"] .theme-preview {
   justify-content: space-between;
   align-items: center;
   /* 浅色主题优化（2025-01）：使用主题变量 */
-  background: var(--bg-elevated, rgba(255, 255, 255, 0.05));
+  background: var(--bg-elevated);
 }
 
 .theme-name {
   font-size: 0.875rem;
   font-weight: 500;
   /* 浅色主题优化（2025-01）：使用主题文字颜色，确保清晰 */
-  color: var(--text-main, white);
+  color: var(--text-main);
 }
 
 .theme-badge {

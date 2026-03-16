@@ -1,34 +1,43 @@
 <template>
   <ClientOnly>
-    <div class="admin-support-config-page p-6">
-      <div class="mb-6">
-        <h1 class="text-2xl font-bold mb-2">客服智能体配置</h1>
-        <p class="text-gray-600 dark:text-gray-400">配置客服智能体的系统提示词和 FAQ 列表</p>
-      </div>
-
-      <n-card>
+    <!-- 使用 FormPage Pattern 组件 -->
+    <FormPage
+      title="客服智能体配置"
+      description="配置客服智能体的系统提示词和 FAQ 列表"
+      :model-value="form"
+      :submitting="saving"
+      submit-text="保存配置"
+      reset-text="重置"
+      @update:model-value="handleFormUpdate"
+      @submit="handleSave"
+      @reset="handleReset"
+    >
+      <!-- 自定义表单内容 -->
+      <template #form="{ value }">
         <n-form
           ref="formRef"
-          :model="form"
+          :model="value"
           label-placement="top"
           require-mark-placement="right-hanging"
         >
+          <!-- 系统提示词 -->
           <n-form-item label="系统提示词" path="systemPrompt">
             <n-input
-              v-model:value="form.systemPrompt"
+              v-model:value="value.systemPrompt"
               type="textarea"
               :rows="6"
               placeholder="输入客服智能体的系统提示词，用于定义客服的身份和回答风格"
             />
             <template #feedback>
-              <span class="text-sm text-gray-500">提示词将作为 AI 的基础指令，影响客服的回答风格和内容</span>
+              <span class="form-hint">提示词将作为 AI 的基础指令，影响客服的回答风格和内容</span>
             </template>
           </n-form-item>
 
+          <!-- FAQ 列表 -->
           <n-form-item label="FAQ 列表">
             <div class="faq-list">
               <div
-                v-for="(faq, index) in form.faqList"
+                v-for="(faq, index) in value.faqList"
                 :key="index"
                 class="faq-item"
               >
@@ -75,35 +84,15 @@
               </n-button>
             </div>
           </n-form-item>
-
-          <n-form-item>
-            <n-button
-              type="primary"
-              :loading="saving"
-              @click="handleSave"
-              size="large"
-            >
-              <template #icon>
-                <i class="fas fa-save"></i>
-              </template>
-              保存配置
-            </n-button>
-            <n-button
-              class="ml-2"
-              @click="handleReset"
-              :disabled="saving"
-            >
-              重置
-            </n-button>
-          </n-form-item>
         </n-form>
-      </n-card>
-    </div>
+      </template>
+    </FormPage>
   </ClientOnly>
 </template>
 
 <script setup lang="ts">
-import { NCard, NForm, NFormItem, NInput, NButton, NSelect } from 'naive-ui'
+import { NForm, NFormItem, NInput, NButton, NSelect } from 'naive-ui'
+import FormPage from '~/components/admin/patterns/FormPage.vue'
 
 definePageMeta({
   layout: 'admin',
@@ -128,6 +117,11 @@ const categoryOptions = [
   { label: '价格', value: 'pricing' },
   { label: '工具', value: 'tool' }
 ]
+
+// 处理表单更新
+const handleFormUpdate = (value: typeof form.value) => {
+  form.value = { ...value }
+}
 
 // 加载配置
 const loadConfig = async () => {
@@ -192,21 +186,22 @@ useHead({
 </script>
 
 <style scoped>
-.admin-support-config-page {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
+/* FAQ 列表样式 */
 .faq-list {
   width: 100%;
 }
 
 .faq-item {
-  padding: 16px;
-  border: 1px solid var(--n-border-color);
-  border-radius: 8px;
-  margin-bottom: 16px;
-  background: var(--n-color);
+  padding: var(--spacing-lg);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-lg);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.form-hint {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
 }
 </style>
 

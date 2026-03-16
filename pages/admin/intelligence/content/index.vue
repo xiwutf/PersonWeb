@@ -151,6 +151,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed, onMounted, ref } from 'vue'
 import { useIntelligenceApi } from '~/composables/useIntelligenceApi'
 import type { ContentItemDto, CategoryStatDto } from '~/types/intelligence'
 
@@ -333,7 +334,7 @@ onMounted(async () => {
 }
 
 .page-title {
-  font-size: 24px;
+  font-size: var(--text-2xl);
   font-weight: 600;
   margin: 0;
   color: var(--color-text-main);
@@ -362,12 +363,12 @@ onMounted(async () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 400px;
+  min-height: var(--spacing-3xl);
   color: var(--color-text-sub);
 }
 
 .empty-container i {
-  font-size: 48px;
+  font-size: var(--text-5xl);
   margin-bottom: var(--spacing-md);
   opacity: 0.5;
 }
@@ -387,7 +388,7 @@ onMounted(async () => {
 }
 
 .stat-badge {
-  font-size: 13px;
+  font-size: var(--text-sm);
   color: var(--color-text-sec);
   padding: var(--spacing-sm) 10px;
   background: var(--color-border);
@@ -430,7 +431,7 @@ onMounted(async () => {
   flex: 1;
   font-weight: 500;
   color: var(--color-text-main);
-  font-size: 16px;
+  font-size: var(--text-base);
   line-height: 1.4;
 }
 
@@ -442,7 +443,7 @@ onMounted(async () => {
 
 .content-summary {
   color: var(--color-text-sec);
-  font-size: 14px;
+  font-size: var(--text-base);
   line-height: 1.6;
   margin-bottom: var(--spacing-md);
   display: -webkit-box;
@@ -455,7 +456,7 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  font-size: 13px;
+  font-size: var(--text-sm);
   color: var(--color-text-sec);
   flex-wrap: wrap;
 }
@@ -479,7 +480,7 @@ onMounted(async () => {
 .content-tags {
   display: flex;
   gap: var(--spacing-sm);
-  margin-top: 10px;
+  margin-top: var(--spacing-sm);
   flex-wrap: wrap;
 }
 

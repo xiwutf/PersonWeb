@@ -1,107 +1,95 @@
 ﻿<template>
-  <div class="categories-page space-y-6">
-    <!-- 页头区域：包含标题和数据概览 -->
-    <div class="page-header flex items-center justify-between">
-      <div>
-        <h1 class="text-2xl font-bold tracking-tight" style="color: var(--color-text-main)">
-          分类管理
-        </h1>
-        <p class="text-sm mt-1" style="color: var(--color-text-muted)">
-          管理全站文章分类及其排序
-        </p>
-      </div>
-      <div class="flex gap-3">
+  <!-- 使用 ListPage Pattern 组件 -->
+  <ListPage
+    title="分类管理"
+    description="管理全站文章分类及其排序"
+    :show-stats="true"
+    :stats="stats"
+    :columns="internalColumns"
+    :data="filteredCategories"
+    :loading="loading"
+    :pagination="internalPagination"
+    :table-config="{
+      rowKey: (row: Category) => row.id,
+      singleLine: false,
+      rowClassName: () => 'category-row'
+    }"
+    :empty-config="{
+      icon: 'fas fa-inbox',
+      text: '暂无分类数据'
+    }"
+    @row-click="handleRowClick"
+  >
+    <!-- 头部操作按钮区域：搜索框 + 新建按钮 -->
+    <template #header-actions>
+      <n-space :size="12">
         <!-- 搜索框 -->
         <n-input
           v-model:value="searchQuery"
           placeholder="搜索分类..."
           clearable
-          class="w-64"
+          style="width: 240px"
         >
           <template #prefix>
             <i class="fas fa-search text-gray-400"></i>
           </template>
         </n-input>
-        
+
+        <!-- 新建按钮 -->
         <n-button type="primary" @click="openModal()">
           <template #icon>
             <i class="fas fa-plus"></i>
           </template>
           新建分类
         </n-button>
-      </div>
-    </div>
+      </n-space>
+    </template>
 
-    <!-- 数据概览卡片行 -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <n-card :bordered="false" size="small" class="stats-card">
-        <div class="flex items-center gap-4">
-          <div class="p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400">
-            <i class="fas fa-folder text-xl"></i>
-          </div>
-          <div>
-            <div class="text-sm text-gray-500 dark:text-gray-400">总分类数</div>
-            <div class="text-2xl font-bold" style="color: var(--color-text-main)">
-              {{ categories.length }}
+    <!-- 统计卡片 -->
+    <template #stats>
+      <n-grid :x-gap="16" :y-gap="16" :cols="3">
+        <n-gi>
+          <n-card :bordered="false" class="stat-card">
+            <div class="stat-content">
+              <div class="stat-icon" style="color: var(--color-blue-500)">
+                <i class="fas fa-folder"></i>
+              </div>
+              <div class="stat-info">
+                <div class="stat-value">{{ categories.length }}</div>
+                <div class="stat-label">总分类数</div>
+              </div>
             </div>
-          </div>
-        </div>
-      </n-card>
-      
-      <n-card :bordered="false" size="small" class="stats-card">
-        <div class="flex items-center gap-4">
-          <div class="p-3 rounded-lg bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400">
-            <i class="fas fa-clock text-xl"></i>
-          </div>
-          <div>
-            <div class="text-sm text-gray-500 dark:text-gray-400">最近更新</div>
-            <div class="text-xl font-bold truncate" style="color: var(--color-text-main)">
-              {{ lastUpdatedText }}
+          </n-card>
+        </n-gi>
+        <n-gi>
+          <n-card :bordered="false" class="stat-card">
+            <div class="stat-content">
+              <div class="stat-icon" style="color: var(--color-green-500)">
+                <i class="fas fa-clock"></i>
+              </div>
+              <div class="stat-info">
+                <div class="stat-value truncate">{{ lastUpdatedText }}</div>
+                <div class="stat-label">最近更新</div>
+              </div>
             </div>
-          </div>
-        </div>
-      </n-card>
-      
-      <n-card :bordered="false" size="small" class="stats-card">
-        <div class="flex items-center gap-4">
-          <div class="p-3 rounded-lg bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400">
-            <i class="fas fa-sort-amount-down text-xl"></i>
-          </div>
-          <div>
-            <div class="text-sm text-gray-500 dark:text-gray-400">最大排序值</div>
-            <div class="text-2xl font-bold" style="color: var(--color-text-main)">
-              {{ maxSortValue }}
+          </n-card>
+        </n-gi>
+        <n-gi>
+          <n-card :bordered="false" class="stat-card">
+            <div class="stat-content">
+              <div class="stat-icon" style="color: var(--color-purple-500)">
+                <i class="fas fa-sort-amount-down"></i>
+              </div>
+              <div class="stat-info">
+                <div class="stat-value">{{ maxSortValue }}</div>
+                <div class="stat-label">最大排序值</div>
+              </div>
             </div>
-          </div>
-        </div>
-      </n-card>
-    </div>
-
-    <!-- 分类列表 -->
-    <n-card :bordered="false" content-style="padding: 0;" class="shadow-sm rounded-xl overflow-hidden main-table-card">
-      <n-data-table
-        :columns="columns"
-        :data="filteredCategories"
-        :loading="loading"
-        :pagination="pagination"
-        :row-key="(row) => row.id"
-        :single-line="false"
-        :row-class-name="() => 'category-row'"
-      >
-        <template #loading>
-          <div class="p-8">
-            <n-skeleton text :repeat="3" />
-            <n-skeleton text style="width: 60%" class="mt-2" />
-          </div>
-        </template>
-        <template #empty>
-          <div class="py-12 text-center text-gray-400">
-            <i class="fas fa-inbox text-4xl mb-4"></i>
-            <p>暂无分类数据</p>
-          </div>
-        </template>
-      </n-data-table>
-    </n-card>
+          </n-card>
+        </n-gi>
+      </n-grid>
+    </template>
+  </ListPage>
 
     <!-- 编辑/新建弹窗 -->
     <n-modal
@@ -155,9 +143,9 @@
 
 <script setup lang="ts">
 import { h, ref, computed, onMounted } from 'vue'
-import { 
-  NButton, NModal, NForm, NFormItem, NInput, NInputNumber, 
-  NDataTable, NCard, NSpace, NTag, NPopconfirm, NSkeleton 
+import {
+  NButton, NModal, NForm, NFormItem, NInput, NInputNumber,
+  NCard, NSpace, NTag, NPopconfirm, NGrid, NGi
 } from 'naive-ui'
 import type { FormInst, FormRules, DataTableColumns } from 'naive-ui'
 import { formatDistanceToNow } from 'date-fns'
@@ -165,6 +153,8 @@ import { zhCN } from 'date-fns/locale'
 import type { Category } from '~/types/api'
 import { useSafeMessage } from '~/composables/useNaiveUI'
 import { useErrorHandler } from '~/composables/useErrorHandler'
+import ListPage from '~/components/admin/patterns/ListPage.vue'
+import type { StatConfig } from '~/components/admin/patterns/ListPage.vue'
 
 definePageMeta({
   layout: 'admin',
@@ -184,7 +174,14 @@ const showModal = ref(false)
 const isEdit = ref(false)
 const formRef = ref<FormInst | null>(null)
 const searchQuery = ref('')
-const pagination = ref({ pageSize: 10 })
+const pagination = ref({ pageSize: 10, page: 1, total: 0 })
+
+// 统计卡片配置（保留用于类型推断）
+const stats = computed<StatConfig[]>(() => [
+  { label: '总分类数', value: categories.length, icon: 'fas fa-folder', iconColor: 'var(--color-blue-500)' },
+  { label: '最近更新', value: lastUpdatedText.value, icon: 'fas fa-clock', iconColor: 'var(--color-green-500)' },
+  { label: '最大排序值', value: maxSortValue.value, icon: 'fas fa-sort-amount-down', iconColor: 'var(--color-purple-500)' }
+])
 
 // Form
 const form = ref({
@@ -223,7 +220,7 @@ const lastUpdatedText = computed(() => {
 })
 
 // Table Columns
-const columns: DataTableColumns<Category> = [
+const internalColumns: DataTableColumns<Category> = [
   {
     title: '名称',
     key: 'name',
@@ -237,7 +234,7 @@ const columns: DataTableColumns<Category> = [
     key: 'slug',
     width: 150,
     render(row) {
-      return row.slug 
+      return row.slug
         ? h(NTag, { type: 'info', size: 'small', bordered: false, style: 'font-weight: 500' }, { default: () => row.slug })
         : h('span', { class: 'text-gray-300' }, '-')
     }
@@ -256,7 +253,7 @@ const columns: DataTableColumns<Category> = [
     key: 'createdAt',
     width: 180,
     render(row) {
-      return h('div', { class: 'text-gray-500 text-sm' }, 
+      return h('div', { class: 'text-gray-500 text-sm' },
         new Date(row.createdAt).toLocaleDateString() + ' ' + new Date(row.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
       )
     }
@@ -309,6 +306,16 @@ const columns: DataTableColumns<Category> = [
     }
   }
 ]
+
+// 内部分页配置
+const internalPagination = computed(() => ({
+  page: 1,
+  pageSize: 10,
+  pageCount: Math.ceil(filteredCategories.value.length / 10),
+  showSizePicker: true,
+  pageSizes: [10, 20, 50, 100],
+  showQuickJumper: true
+}))
 
 // Actions
 const fetchCategories = async () => {
@@ -370,21 +377,62 @@ const handleDelete = async (item: Category) => {
   }
 }
 
+// 处理行点击
+const handleRowClick = (row: Category) => {
+  // 可以在这里实现行点击后查看详情
+  openModal(row)
+}
+
 onMounted(() => {
   fetchCategories()
 })
 </script>
 
 <style scoped>
-/* 深度样式调整 */
-.stats-card {
+/* 统计卡片样式 */
+:deep(.stat-card) {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.stats-card:hover {
+:deep(.stat-card:hover) {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
 
+:deep(.stat-content) {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+:deep(.stat-icon) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.05);
+  font-size: var(--text-xl);
+}
+
+:deep(.stat-info) {
+  flex: 1;
+}
+
+:deep(.stat-value) {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--color-text-main);
+  line-height: 1.2;
+}
+
+:deep(.stat-label) {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-top: var(--spacing-xs);
+}
+
+/* 表格行样式 */
 :deep(.category-row td) {
   transition: background-color 0.2s ease;
 }
@@ -396,11 +444,7 @@ onMounted(() => {
   transition: opacity 0.2s;
   opacity: 0.8;
 }
-.category-row:hover .action-btn {
+:deep(.category-row:hover .action-btn) {
   opacity: 1;
-}
-
-.main-table-card {
-  box-shadow: var(--shadow-soft);
 }
 </style>

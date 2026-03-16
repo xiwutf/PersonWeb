@@ -469,18 +469,18 @@ const deleteVersion = async () => {
 
 <style scoped>
 .version-detail-page {
-  padding: 2rem;
+  padding: var(--spacing-2xl);
   max-width: 1400px;
   margin: 0 auto;
 }
 
 .page-header {
-  margin-bottom: 2rem;
+  margin-bottom: var(--spacing-2xl);
 }
 
 .back-link {
   display: inline-block;
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-md);
   color: var(--color-primary);
   text-decoration: none;
 }
@@ -490,47 +490,47 @@ const deleteVersion = async () => {
 }
 
 .header-content h1 {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+  font-size: var(--text-2xl);
+  margin-bottom: var(--spacing-md);
 }
 
 .header-content p {
-  color: var(--color-gray-500);
+  color: var(--color-text-tertiary);
 }
 
 .info-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-2xl);
 }
 
 .info-card {
   background: var(--color-bg-light, white);
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
   overflow: hidden;
 }
 
 .card-header {
-  background: var(--color-gray-50);
-  padding: 1rem;
-  border-bottom: 1px solid var(--color-gray-200);
+  background: var(--color-bg-elevated);
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .card-header h3 {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: var(--text-base);
 }
 
 .card-content {
-  padding: 1rem;
+  padding: var(--spacing-md);
 }
 
 .info-item {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 0.75rem;
+  margin-bottom: var(--spacing-md);
 }
 
 .info-item:last-child {
@@ -538,7 +538,7 @@ const deleteVersion = async () => {
 }
 
 .info-item .label {
-  color: var(--color-gray-500);
+  color: var(--color-text-tertiary);
   font-weight: 500;
 }
 
@@ -550,7 +550,7 @@ const deleteVersion = async () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.75rem;
+  margin-bottom: var(--spacing-md);
 }
 
 .status-item:last-child {
@@ -558,24 +558,24 @@ const deleteVersion = async () => {
 }
 
 .badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 4px;
-  font-size: 0.9rem;
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
 }
 
 .badge.enabled {
-  background: var(--color-green-100);
-  color: var(--color-emerald-800);
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
 }
 
 .badge.disabled {
-  background: var(--color-red-100);
-  color: var(--color-red-800);
+  background: var(--color-error-bg);
+  color: var(--color-error-text);
 }
 
 .badge.stable.enabled {
-  background: var(--color-green-100);
-  color: var(--color-emerald-800);
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
 }
 
 .badge.stable.disabled {
@@ -585,28 +585,28 @@ const deleteVersion = async () => {
 
 .hash {
   font-family: monospace;
-  font-size: 0.9rem;
+  font-size: var(--text-sm);
 }
 
 .copy-btn {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 1rem;
-  padding: 0.25rem;
-  margin-left: 0.5rem;
+  font-size: var(--text-base);
+  padding: var(--spacing-xs);
+  margin-left: var(--spacing-sm);
 }
 
 .copy-btn:hover {
-  background: var(--color-gray-200);
-  border-radius: 4px;
+  background: var(--color-border-subtle);
+  border-radius: var(--radius-sm);
 }
 
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
 }
 
 .stat-item {
@@ -615,41 +615,41 @@ const deleteVersion = async () => {
 
 .stat-value {
   display: block;
-  font-size: 1.5rem;
+  font-size: var(--text-xl);
   font-weight: 600;
   color: var(--color-primary);
 }
 
 .stat-label {
-  font-size: 0.9rem;
-  color: var(--color-gray-500);
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
 }
 
 .download-trend {
-  margin-top: 1rem;
+  margin-top: var(--spacing-md);
 }
 
 .trend-chart {
-  height: 100px;
+  height: 6.25rem;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  padding: 0 1rem;
+  padding: 0 var(--spacing-md);
 }
 
 .chart-bars {
   display: flex;
   align-items: flex-end;
-  height: 80px;
-  gap: 4px;
+  height: 5rem;
+  gap: var(--spacing-xs);
   flex: 1;
 }
 
 .bar {
   background: var(--color-primary);
   flex: 1;
-  min-width: 8px;
-  border-radius: 2px 2px 0 0;
+  min-width: var(--spacing-sm);
+  border-radius: var(--radius-xs) var(--radius-xs) 0 0;
 }
 
 .rating-overview {
@@ -657,26 +657,26 @@ const deleteVersion = async () => {
 }
 
 .rating-score {
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-md);
 }
 
 .score {
-  font-size: 3rem;
+  font-size: var(--text-5xl);
   font-weight: 600;
   color: var(--color-primary);
 }
 
 .score .max {
-  font-size: 1.5rem;
-  color: var(--color-gray-500);
+  font-size: var(--text-xl);
+  color: var(--color-text-tertiary);
 }
 
 .stars {
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-md);
 }
 
 .star {
-  font-size: 1.5rem;
+  font-size: var(--text-xl);
   color: var(--color-gray-300);
 }
 
@@ -685,20 +685,20 @@ const deleteVersion = async () => {
 }
 
 .total-reviews {
-  margin-bottom: 1rem;
-  color: var(--color-gray-500);
+  margin-bottom: var(--spacing-md);
+  color: var(--color-text-tertiary);
 }
 
 .rating-distribution {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
 }
 
 .rating-bar {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
 }
 
 .rating-label {
@@ -708,9 +708,9 @@ const deleteVersion = async () => {
 
 .bar-container {
   flex: 1;
-  height: 20px;
+  height: 1.25rem;
   background: var(--color-border);
-  border-radius: 10px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
 }
 
@@ -727,17 +727,17 @@ const deleteVersion = async () => {
 
 .changelog-section {
   background: var(--color-bg-light, white);
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  padding: 2rem;
-  margin-bottom: 2rem;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: var(--spacing-2xl);
+  margin-bottom: var(--spacing-2xl);
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--spacing-xl);
 }
 
 .section-header h2 {
@@ -747,20 +747,20 @@ const deleteVersion = async () => {
 .section-header button {
   background: none;
   border: 1px solid var(--color-gray-300);
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: var(--text-sm);
 }
 
 .changelog-content {
-  background: var(--color-gray-50);
-  padding: 1rem;
-  border-radius: 4px;
+  background: var(--color-bg-elevated);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-sm);
 }
 
 .changelog-content pre {
-  var(--color-bg-light, white)-space: pre-wrap;
+  white-space: pre-wrap;
   word-break: break-word;
   margin: 0;
 }
@@ -769,8 +769,8 @@ const deleteVersion = async () => {
   width: 100%;
   background: var(--color-bg-light, white);
   border: 1px solid var(--color-gray-300);
-  border-radius: 4px;
-  padding: 1rem;
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-md);
   font-family: inherit;
   resize: vertical;
 }
@@ -778,27 +778,27 @@ const deleteVersion = async () => {
 .editor-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-md);
 }
 
 .reviews-section {
   background: var(--color-bg-light, white);
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  padding: 2rem;
-  margin-bottom: 2rem;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: var(--spacing-2xl);
+  margin-bottom: var(--spacing-2xl);
 }
 
 .reviews-list {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: var(--spacing-xl);
 }
 
 .review-item {
-  border-bottom: 1px solid var(--color-gray-200);
-  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+  padding-bottom: var(--spacing-md);
 }
 
 .review-item:last-child {
@@ -809,24 +809,24 @@ const deleteVersion = async () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.75rem;
+  margin-bottom: var(--spacing-md);
 }
 
 .reviewer-info {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: var(--spacing-md);
 }
 
 .reviewer-avatar {
-  width: 40px;
-  height: 40px;
-  background: var(--color-gray-200);
+  width: 2.5rem;
+  height: 2.5rem;
+  background: var(--color-border-subtle);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
+  font-size: var(--text-lg);
 }
 
 .reviewer-details {
@@ -839,51 +839,51 @@ const deleteVersion = async () => {
 }
 
 .reviewer-date {
-  font-size: 0.85rem;
-  color: var(--color-gray-500);
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
 }
 
 .review-rating {
   display: flex;
-  gap: 2px;
+  gap: var(--spacing-xs);
 }
 
 .review-title {
   font-weight: 500;
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--spacing-sm);
   color: var(--color-gray-700);
 }
 
 .review-content {
-  color: var(--color-gray-500);
+  color: var(--color-text-tertiary);
   line-height: 1.6;
 }
 
 .review-footer {
-  margin-top: 0.75rem;
+  margin-top: var(--spacing-md);
   text-align: right;
 }
 
 .verified-badge {
-  background: var(--color-green-100);
-  color: var(--color-emerald-800);
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.85rem;
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
 }
 
 .pagination {
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
-  margin-top: 2rem;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-2xl);
 }
 
 .page-btn {
-  padding: 0.5rem 0.75rem;
+  padding: var(--spacing-sm) var(--spacing-md);
   border: 1px solid var(--color-gray-300);
   background: var(--color-bg-light, white);
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
 }
 
@@ -895,23 +895,23 @@ const deleteVersion = async () => {
 
 .action-buttons {
   display: flex;
-  gap: 1rem;
+  gap: var(--spacing-md);
   justify-content: center;
-  margin-top: 2rem;
+  margin-top: var(--spacing-2xl);
 }
 
 .btn {
-  padding: 0.75rem 1.5rem;
+  padding: var(--spacing-sm) var(--spacing-xl);
   border: 1px solid var(--color-gray-300);
   background: var(--color-bg-light, white);
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  font-size: 1rem;
+  font-size: var(--text-base);
   transition: all 0.2s;
 }
 
 .btn:hover {
-  background: var(--color-gray-50);
+  background: var(--color-bg-elevated);
 }
 
 .btn.primary {
@@ -949,31 +949,31 @@ const deleteVersion = async () => {
 
 .modal-content {
   background: var(--color-bg-light, white);
-  border-radius: 8px;
-  padding: 2rem;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-2xl);
   max-width: 500px;
   width: 90%;
 }
 
 .modal-content h3 {
-  margin: 0 0 1rem 0;
+  margin: 0 0 var(--spacing-lg) 0;
 }
 
 .modal-content p {
-  color: var(--color-gray-500);
-  margin-bottom: 1.5rem;
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--spacing-xl);
 }
 
 .modal-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
 }
 
 .empty-state {
   text-align: center;
   padding: 3rem;
-  color: var(--color-gray-500);
+  color: var(--color-text-tertiary);
 }
 
 @media (max-width: 768px) {

@@ -157,10 +157,19 @@
 /* 文字颜色 */
 :root {
   /* 主要文字 */
-  --color-text-primary: var(--color-gray-900);
+  --color-text-main: var(--color-gray-900);
+  --color-text-primary: var(--color-text-main);
   --color-text-secondary: var(--color-gray-700);
   --color-text-tertiary: var(--color-gray-500);
   --color-text-quaternary: var(--color-gray-400);
+
+  /* 文字辅助 */
+  --color-text-muted: var(--color-gray-600);
+  --color-text-sub: var(--color-gray-700);
+  --color-text-disabled: var(--color-gray-400);
+
+  /* 主色文字 */
+  --color-text-on-primary: var(--color-white);
 
   /* 状态文字 */
   --color-text-success: var(--color-green-600);
@@ -176,8 +185,15 @@
 /* 背景颜色 */
 :root {
   /* 页面背景 */
-  --color-bg-page: var(--color-gray-50);
+  --color-bg-body: var(--color-gray-50);
+  --color-bg-page: var(--color-bg-body);
   --color-bg-page-alt: var(--color-white);
+  --color-bg-light: var(--color-gray-50);
+  --color-bg-dark: var(--color-gray-900);
+
+  /* 提升层背景 */
+  --color-bg-elevated: var(--color-gray-100);
+  --color-bg-overlay: rgba(0, 0, 0, 0.5);
 
   /* 卡片背景 */
   --color-bg-card: var(--color-white);
@@ -193,6 +209,7 @@
   --color-bg-input: var(--color-white);
   --color-bg-input-disabled: var(--color-gray-100);
   --color-bg-input-hover: var(--color-gray-50);
+  --color-bg-disabled: var(--color-gray-200);
 }
 
 /* 边框颜色 */
@@ -202,10 +219,9 @@
   --color-border-default: var(--color-gray-300);
   --color-border-strong: var(--color-gray-400);
   --color-border-focus: var(--color-blue-500);
-
-  /* 分割线 */
-  --color-divider: var(--color-gray-200);
-  --color-divider-light: var(--color-gray-100);
+  --color-border-muted: var(--color-gray-200);
+  --color-border-hover: var(--color-gray-300);
+  --color-border-active: var(--color-blue-500);
 }
 
 /* 状态颜色 */
@@ -215,38 +231,97 @@
   --color-success-border: var(--color-green-200);
   --color-success-text: var(--color-green-700);
   --color-success-icon: var(--color-green-500);
+  --color-success-soft: rgba(16, 185, 129, 0.15);
+  --color-success-10: rgba(16, 185, 129, 0.1);
+  --color-success-20: rgba(16, 185, 129, 0.2);
+  --color-success-30: rgba(16, 185, 129, 0.3);
 
   /* 警告状态 */
   --color-warning-bg: var(--color-orange-50);
   --color-warning-border: var(--color-orange-200);
   --color-warning-text: var(--color-orange-700);
   --color-warning-icon: var(--color-orange-500);
+  --color-warning-soft: rgba(249, 115, 22, 0.15);
+  --color-warning-10: rgba(249, 115, 22, 0.1);
+  --color-warning-20: rgba(249, 115, 22, 0.2);
+  --color-warning-30: rgba(249, 115, 22, 0.3);
 
   /* 错误状态 */
   --color-error-bg: var(--color-red-50);
   --color-error-border: var(--color-red-200);
   --color-error-text: var(--color-red-700);
   --color-error-icon: var(--color-red-500);
+  --color-error-soft: rgba(236, 72, 153, 0.15);
+  --color-error-10: rgba(236, 72, 153, 0.1);
+  --color-error-20: rgba(236, 72, 153, 0.2);
+  --color-error-30: rgba(236, 72, 153, 0.3);
 
   /* 信息状态 */
   --color-info-bg: var(--color-blue-50);
   --color-info-border: var(--color-blue-200);
   --color-info-text: var(--color-blue-700);
   --color-info-icon: var(--color-blue-500);
+  --color-info-soft: rgba(6, 182, 212, 0.15);
+  --color-info-10: rgba(6, 182, 212, 0.1);
+  --color-info-20: rgba(6, 182, 212, 0.2);
+  --color-info-30: rgba(6, 182, 212, 0.3);
+
+  /* 紫色状态 */
+  --color-purple-soft: rgba(168, 85, 247, 0.15);
+  --color-purple-10: rgba(168, 85, 247, 0.1);
+  --color-purple-20: rgba(168, 85, 247, 0.2);
+  --color-purple-30: rgba(168, 85, 247, 0.3);
+}
+
+/* 投资语义颜色 */
+:root {
+  /* 盈利状态 */
+  --color-profit: var(--color-emerald-500);
+  --color-profit-hover: var(--color-emerald-600);
+  --color-profit-bg: var(--color-emerald-50);
+  --color-profit-text: var(--color-emerald-700);
+  --color-profit-soft: rgba(16, 185, 129, 0.15);
+
+  /* 亏损状态 */
+  --color-loss: var(--color-red-500);
+  --color-loss-hover: var(--color-red-600);
+  --color-loss-bg: var(--color-red-50);
+  --color-loss-text: var(--color-red-700);
+  --color-loss-soft: rgba(236, 72, 153, 0.15);
 }
 
 /* 主色调 */
 :root {
   --color-primary: var(--color-blue-600);
+  --color-primary-base: var(--color-primary);
   --color-primary-hover: var(--color-blue-700);
   --color-primary-active: var(--color-blue-800);
   --color-primary-light: var(--color-blue-100);
   --color-primary-lighter: var(--color-blue-50);
   --color-primary-dark: var(--color-blue-500);
+  --color-primary-soft: rgba(59, 130, 246, 0.12);
+  --color-primary-10: rgba(59, 130, 246, 0.1);
+  --color-primary-20: rgba(59, 130, 246, 0.2);
+
+  /* 主色背景（兼容旧变量） */
+  --primary-soft-bg: var(--color-primary-lighter);
 
   /* 主色文本 */
   --color-primary-text: var(--color-white);
-  --color-primary-text- inverse: var(--color-blue-600);
+  --color-primary-text-inverse: var(--color-blue-600);
+
+  /* 其他品牌色（兼容旧变量） */
+  --color-info: var(--color-cyan-500);
+  --color-info-hover: var(--color-cyan-400);
+  --color-info-soft: rgba(6, 182, 212, 0.15);
+  --color-info-10: rgba(6, 182, 212, 0.1);
+  --color-info-30: rgba(6, 182, 212, 0.3);
+  --color-error: var(--color-pink-500);
+  --color-error-hover: var(--color-pink-400);
+  --color-error-soft: rgba(236, 72, 153, 0.15);
+  --color-purple: var(--color-purple-500);
+  --color-purple-hover: var(--color-purple-400);
+  --color-purple-soft: rgba(168, 85, 247, 0.15);
 }
 
 /* ==================== RGBA 颜色变量 ==================== */
@@ -351,7 +426,7 @@
   /* 卡片基础 */
   --card-bg: var(--color-bg-card);
   --card-border: var(--color-border-default);
-  --card-radius: var(--radius-lg);
+  --card-radius: 16px;
   --card-shadow-sm: var(--shadow-sm);
   --card-shadow-md: var(--shadow-md);
   --card-shadow-lg: var(--shadow-lg);
@@ -493,27 +568,43 @@
 
 /* 阴影 - shadows */
 :root {
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   --shadow-none: 0 0 #0000;
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-base: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-base: var(--shadow);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
   --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
-  --shadow-none: 0 0 #0000;
+
+  /* 特殊阴影 */
+  --shadow-primary: 0 10px 15px -3px rgba(59, 130, 246, 0.2), 0 4px 6px -2px rgba(59, 130, 246, 0.1);
+  --shadow-text: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* 字体系统 - typography */
 :root {
   /* 字族 */
-  --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", Arial, sans-serif;
+  --font-family-sans: 'Inter', var(--font-family-base);
   --font-family-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
 
   /* 字号 */
+  --font-size-base: 1rem;     /* 16px */
+  --font-weight-base: 400;    /* Normal */
+  --line-height-base: 1.6;    /* Normal */
+
+  /* 标题字号 */
+  --font-size-h1: 2.25rem;    /* 36px */
+  --font-size-h2: 1.875rem;   /* 30px */
+  --font-size-h3: 1.5rem;     /* 24px */
+  --font-size-h4: 1.25rem;    /* 20px */
+
+  /* 文本字号 */
   --text-xs: 0.75rem;    /* 12px */
   --text-sm: 0.875rem;   /* 14px */
-  --text-base: 1rem;     /* 16px */
+  --text-base: var(--font-size-base);
   --text-lg: 1.125rem;   /* 18px */
   --text-xl: 1.25rem;    /* 20px */
   --text-2xl: 1.5rem;    /* 24px */
@@ -526,17 +617,17 @@
   --text-9xl: 8rem;      /* 128px */
 
   /* 行高 */
-  --leading-none: 1;
-  --leading-tight: 1.25;
-  --leading-snug: 1.375;
-  --leading-normal: 1.5;
-  --leading-relaxed: 1.625;
-  --leading-loose: 2;
+  --line-height-none: 1;
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.375;
+  --line-height-normal: var(--line-height-base);
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 2;
 
   /* 字重 */
   --font-thin: 100;
   --font-light: 300;
-  --font-normal: 400;
+  --font-normal: var(--font-weight-base);
   --font-medium: 500;
   --font-semibold: 600;
   --font-bold: 700;
@@ -705,3 +796,23 @@
 .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
 .animate-spin { animation: spin 1s linear infinite; }
 .animate-bounce { animation: bounce 1s infinite; }
+
+/* ==================== 管理布局专用变量 ==================== */
+/* 用于后台管理系统的特定变量 */
+
+:root {
+  /* 管理侧边栏 */
+  --admin-sidebar-text: #ffffff;
+
+  /* 管理网格 */
+  --admin-grid-size: 40px;
+
+  /* 管理颜色（兼容旧变量） */
+  --color-secondary: #6b7280;
+  --color-background: #f3f4f6;
+  --color-dark: #1f2937;
+  --color-dark-dark: #111827;
+
+  /* 示例模块颜色（兼容旧变量） */
+  --color-primary-dark: #2563eb;
+}
