@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <!-- 使用 ListPage Pattern 组件 -->
   <ListPage
     title="分类管理"
@@ -138,7 +138,6 @@
         </n-space>
       </template>
     </n-modal>
-  </div>
 </template>
 
 <script setup lang="ts">
