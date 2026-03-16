@@ -1,48 +1,48 @@
 <template>
   <div class="container mx-auto px-4 py-8 h-[calc(100vh-64px)] flex flex-col">
     <div class="flex-1 bg-white rounded-xl shadow-lg overflow-hidden flex flex-col border border-gray-200">
-      <!-- èŠå¤©å¤´éƒ¨ -->
-      <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-4 text-var(--color-bg-light, white) flex justify-between items-center">
+      <!-- ÁÄÌìÍ·²¿ -->
+      <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-4 text-bg-light flex justify-between items-center">
         <h1 class="text-lg font-bold flex items-center gap-2">
-          <span>??</span> AI åŠ©æ‰‹ (æ¼”ç¤ºç‰ˆ)
+          <span>?</span> AI ÖúÊÖ (ÑİÊ¾°æ)
         </h1>
-        <span class="text-xs bg-white/20 px-2 py-1 rounded">åœ¨çº¿</span>
+        <span class="text-xs bg-white/20 px-2 py-1 rounded">ÔÚÏß</span>
       </div>
       
-      <!-- èŠå¤©è®°å½•åŒºåŸŸ -->
+      <!-- ÁÄÌì¼ÇÂ¼ÇøÓò -->
       <div class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50" ref="chatContainer">
         <div v-for="(msg, index) in messages" :key="index" 
              class="flex" :class="msg.role === 'user' ? 'justify-end' : 'justify-start'">
           <div class="max-w-[80%] rounded-lg p-3 shadow-sm"
-               :class="msg.role === 'user' ? 'bg-blue-600 text-var(--color-bg-light, white) rounded-tr-none' : 'bg-white text-gray-800 rounded-tl-none border border-gray-200'">
+               :class="msg.role === 'user' ? 'bg-blue-600 text-bg-light rounded-tr-none' : 'bg-white text-gray-800 rounded-tl-none border border-gray-200'">
             <p>{{ msg.content }}</p>
           </div>
         </div>
         
         <div v-if="loading" class="flex justify-start">
           <div class="bg-white text-gray-500 rounded-lg p-3 rounded-tl-none border border-gray-200 shadow-sm">
-            <span class="animate-pulse">æ­£åœ¨æ€è€ƒ...</span>
+            <span class="animate-pulse">ÕıÔÚË¼¿¼...</span>
           </div>
         </div>
       </div>
       
-      <!-- è¾“å…¥åŒºåŸŸ -->
+      <!-- ÊäÈëÇøÓò -->
       <div class="p-4 bg-white border-t border-gray-200">
         <div class="flex gap-2">
           <input 
             v-model="userInput" 
             @keyup.enter="sendMessage"
             type="text" 
-            placeholder="è¾“å…¥æ‚¨çš„é—®é¢˜..." 
+            placeholder="ÊäÈëÄúµÄÎÊÌâ..." 
             class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             :disabled="loading"
           />
           <button 
             @click="sendMessage"
-            class="bg-blue-600 text-var(--color-bg-light, white) px-6 py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            class="bg-blue-600 text-bg-light px-6 py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
             :disabled="loading || !userInput.trim()"
           >
-            å‘é€
+            ·¢ËÍ
           </button>
         </div>
       </div>
@@ -59,13 +59,13 @@ interface Message {
 }
 
 const messages = ref<Message[]>([
-  { role: 'assistant', content: 'ä½ å¥½ï¼æˆ‘æ˜¯ä½ çš„ AI åŠ©æ‰‹ã€‚æœ‰ä»€ä¹ˆæˆ‘å¯ä»¥å¸®ä½ çš„å—ï¼Ÿ' }
+  { role: 'assistant', content: 'ÄãºÃ£¡ÎÒÊÇÄãµÄ AI ÖúÊÖ¡£ÓĞÊ²Ã´ÎÒ¿ÉÒÔ°ïÄãµÄÂğ£¿' }
 ])
 const userInput = ref('')
 const loading = ref(false)
 const chatContainer = ref<HTMLElement | null>(null)
 
-// æ»šåŠ¨åˆ°åº•éƒ¨
+// ¹ö¶¯µ½µ×²¿
 const scrollToBottom = async () => {
   await nextTick()
   if (chatContainer.value) {
@@ -76,26 +76,25 @@ const scrollToBottom = async () => {
 const sendMessage = async () => {
   if (!userInput.value.trim() || loading.value) return
   
-  // æ·»åŠ ç”¨æˆ·æ¶ˆæ¯
+  // Ìí¼ÓÓÃ»§ÏûÏ¢
   messages.value.push({ role: 'user', content: userInput.value })
   const question = userInput.value
   userInput.value = ''
   loading.value = true
   await scrollToBottom()
   
-  // æ¨¡æ‹Ÿ API è°ƒç”¨å»¶è¿Ÿ
+  // Ä£Äâ API µ÷ÓÃÑÓ³Ù
   setTimeout(() => {
     messages.value.push({ 
       role: 'assistant', 
-      content: `è¿™æ˜¯å¯¹ "${question}" çš„æ¨¡æ‹Ÿå›å¤ã€‚å®é™…é¡¹ç›®ä¸­ï¼Œè¿™é‡Œä¼šè°ƒç”¨åç«¯ LLM æ¥å£ã€‚` 
+      content: `ÕâÊÇ¶Ô "${question}" µÄÄ£Äâ»Ø¸´¡£Êµ¼ÊÏîÄ¿ÖĞ£¬ÕâÀï»áµ÷ÓÃºó¶Ë LLM ½Ó¿Ú¡£` 
     })
     loading.value = false
     scrollToBottom()
   }, 1000)
   
-  // å®é™…é¡¹ç›®ä¸­è°ƒç”¨ API:
+  // Êµ¼ÊÏîÄ¿ÖĞµ÷ÓÃ API:
   // const api = useApi()
   // const response = await api.post('/chat', { message: question })
 }
 </script>
-
