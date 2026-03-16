@@ -198,10 +198,10 @@ onMounted(() => {
 
 .cognition-back-link {
   @apply inline-flex items-center px-4 py-2 rounded-lg;
-  @apply bg-var(--color-bg-light, white)/80 dark:bg-gray-800/80 backdrop-blur-sm;
+  @apply bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm;
   @apply border border-gray-200 dark:border-gray-700;
   @apply text-gray-700 dark:text-gray-300;
-  @apply hover:bg-var(--color-bg-light, white) dark:hover:bg-gray-800;
+  @apply hover:bg-white dark:hover:bg-gray-800;
   @apply hover:shadow-lg transition-all duration-200;
 }
 
@@ -240,7 +240,7 @@ onMounted(() => {
 
 /* 文章内容 */
 .cognition-article {
-  @apply bg-var(--color-bg-light, white)/90 dark:bg-gray-900/90 backdrop-blur-sm;
+  @apply bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm;
   @apply rounded-2xl shadow-xl;
   @apply border border-gray-200 dark:border-gray-700;
   @apply p-8 md:p-12;

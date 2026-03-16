@@ -10,19 +10,19 @@
     <!-- 统计卡片 -->
     <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
       <div class="task-stat-card">
-        <div class="task-stat-label">总任务</div>
+        <div class="task-stat-label">总任�?/div>
         <div class="task-stat-value">{{ stats?.Total || 0 }}</div>
       </div>
       <div class="task-stat-card">
-        <div class="task-stat-label">待处理</div>
+        <div class="task-stat-label">待处�?/div>
         <div class="task-stat-value task-stat-value-warning">{{ stats?.Pending || 0 }}</div>
       </div>
       <div class="task-stat-card">
-        <div class="task-stat-label">进行中</div>
+        <div class="task-stat-label">进行�?/div>
         <div class="task-stat-value task-stat-value-primary">{{ stats?.InProgress || 0 }}</div>
       </div>
       <div class="task-stat-card">
-        <div class="task-stat-label">已完成</div>
+        <div class="task-stat-label">已完�?/div>
         <div class="task-stat-value task-stat-value-success">{{ stats?.Completed || 0 }}</div>
       </div>
       <div class="task-stat-card">
@@ -34,26 +34,26 @@
     <!-- 筛选栏 -->
     <div class="task-filter-bar">
       <n-input v-model:value="keyword" @keyup.enter="fetchTasks" placeholder="搜索任务..." class="flex-1 min-w-[200px]" />
-      <n-select v-model:value="filterStatus" @update:value="fetchTasks" placeholder="全部状态" class="min-w-[120px]">
-        <n-option value="" label="全部状态" />
-        <n-option value="pending" label="待处理" />
-        <n-option value="in_progress" label="进行中" />
-        <n-option value="completed" label="已完成" />
-        <n-option value="cancelled" label="已取消" />
+      <n-select v-model:value="filterStatus" @update:value="fetchTasks" placeholder="全部状�? class="min-w-[120px]">
+        <n-option value="" label="全部状�? />
+        <n-option value="pending" label="待处�? />
+        <n-option value="in_progress" label="进行�? />
+        <n-option value="completed" label="已完�? />
+        <n-option value="cancelled" label="已取�? />
       </n-select>
-      <n-select v-model:value="filterPriority" @update:value="fetchTasks" placeholder="全部优先级" class="min-w-[120px]">
-        <n-option value="" label="全部优先级" />
-        <n-option value="0" label="低" />
-        <n-option value="1" label="中" />
-        <n-option value="2" label="高" />
-        <n-option value="3" label="紧急" />
+      <n-select v-model:value="filterPriority" @update:value="fetchTasks" placeholder="全部优先�? class="min-w-[120px]">
+        <n-option value="" label="全部优先�? />
+        <n-option value="0" label="�? />
+        <n-option value="1" label="�? />
+        <n-option value="2" label="�? />
+        <n-option value="3" label="紧�? />
       </n-select>
       <n-button @click="fetchTasks">搜索</n-button>
     </div>
 
     <!-- 任务列表 -->
     <div class="task-list-container">
-      <div v-if="loading" class="p-8 text-center task-list-loading">加载中...</div>
+      <div v-if="loading" class="p-8 text-center task-list-loading">加载�?..</div>
       <div v-else-if="tasks.length === 0" class="p-8 text-center task-list-empty">暂无任务</div>
       <div v-else class="task-list-divider">
         <div v-for="task in tasks" :key="task.id" class="task-list-item">
@@ -74,7 +74,7 @@
                 <span v-if="task.dueDate">截止: {{ formatDate(task.dueDate) }}</span>
                 <span>进度: {{ task.progress }}%</span>
               </div>
-              <!-- 进度条 -->
+              <!-- 进度�?-->
               <div class="mt-2 w-full task-list-progress-bg rounded-full h-2">
                 <div 
                   :class="getProgressColor(task.progress)"
@@ -96,32 +96,32 @@
     <n-modal v-model:show="showModal" preset="card" :title="editingTask ? '编辑任务' : '新建任务'" style="width: 800px; max-height: 90vh;">
       <n-form :model="taskForm" @submit.prevent="saveTask">
         <n-form-item label="任务标题" path="title">
-          <n-input v-model:value="taskForm.title" placeholder="请输入任务标题" />
+          <n-input v-model:value="taskForm.title" placeholder="请输入任务标�? />
         </n-form-item>
         <n-form-item label="任务描述" path="description">
-          <n-input v-model:value="taskForm.description" type="textarea" :rows="3" placeholder="请输入任务描述" />
+          <n-input v-model:value="taskForm.description" type="textarea" :rows="3" placeholder="请输入任务描�? />
         </n-form-item>
         <n-grid :cols="2" :x-gap="16">
-          <n-form-item-gi label="状态" path="status">
+          <n-form-item-gi label="状�? path="status">
             <n-select v-model:value="taskForm.status" :options="[
-              { label: '待处理', value: 'pending' },
-              { label: '进行中', value: 'in_progress' },
-              { label: '已完成', value: 'completed' },
-              { label: '已取消', value: 'cancelled' }
+              { label: '待处�?, value: 'pending' },
+              { label: '进行�?, value: 'in_progress' },
+              { label: '已完�?, value: 'completed' },
+              { label: '已取�?, value: 'cancelled' }
             ]" />
           </n-form-item-gi>
-          <n-form-item-gi label="优先级" path="priority">
+          <n-form-item-gi label="优先�? path="priority">
             <n-select v-model:value="taskForm.priority" :options="[
-              { label: '低', value: 0 },
-              { label: '中', value: 1 },
-              { label: '高', value: 2 },
-              { label: '紧急', value: 3 }
+              { label: '�?, value: 0 },
+              { label: '�?, value: 1 },
+              { label: '�?, value: 2 },
+              { label: '紧�?, value: 3 }
             ]" />
           </n-form-item-gi>
         </n-grid>
         <n-grid :cols="2" :x-gap="16">
           <n-form-item-gi label="分类" path="category">
-            <n-input v-model:value="taskForm.category" placeholder="请输入分类" />
+            <n-input v-model:value="taskForm.category" placeholder="请输入分�? />
           </n-form-item-gi>
           <n-form-item-gi label="截止日期" path="dueDate">
             <n-date-picker v-model:value="taskForm.dueDate" type="datetime" clearable />
@@ -182,8 +182,7 @@ const filterPriority = ref('')
 const showCreateModal = ref(false)
 const editingTask = ref<Task | null>(null)
 
-// 计算属性：模态框显示状态
-const showModal = computed({
+// 计算属性：模态框显示状�?const showModal = computed({
   get: () => showCreateModal.value || !!editingTask.value,
   set: (value: boolean) => {
     if (!value) {
@@ -219,8 +218,7 @@ const fetchTasks = async () => {
     if (res?.data?.Items) {
       tasks.value = res.data.Items
     } else if (Array.isArray(res?.data)) {
-      // 兼容直接返回数组的情况
-      tasks.value = res.data
+      // 兼容直接返回数组的情�?      tasks.value = res.data
     }
   } catch (error: any) {
     console.error('获取任务列表失败:', error)
@@ -245,13 +243,11 @@ const fetchStats = async () => {
 
 const saveTask = async () => {
   try {
-    // 处理日期：datetime-local 输入格式为 YYYY-MM-DDTHH:mm，需要转换为 ISO 字符串
-    let dueDateISO: string | null = null
+    // 处理日期：datetime-local 输入格式�?YYYY-MM-DDTHH:mm，需要转换为 ISO 字符�?    let dueDateISO: string | null = null
     if (taskForm.value.dueDate) {
       try {
         // datetime-local 格式：YYYY-MM-DDTHH:mm
-        // 转换为 Date 对象，然后转换为 ISO 字符串
-        const date = new Date(taskForm.value.dueDate)
+        // 转换�?Date 对象，然后转换为 ISO 字符�?        const date = new Date(taskForm.value.dueDate)
         if (!isNaN(date.getTime())) {
           dueDateISO = date.toISOString()
         }
@@ -292,7 +288,7 @@ const saveTask = async () => {
 
 const editTask = (task: Task) => {
   editingTask.value = task
-  // 处理日期格式：datetime-local 需要 YYYY-MM-DDTHH:mm 格式
+  // 处理日期格式：datetime-local 需�?YYYY-MM-DDTHH:mm 格式
   let dueDateFormatted = ''
   if (task.dueDate) {
     try {
@@ -305,7 +301,7 @@ const editTask = (task: Task) => {
       const minutes = String(date.getMinutes()).padStart(2, '0')
       dueDateFormatted = `${year}-${month}-${day}T${hours}:${minutes}`
     } catch (e) {
-      console.error('日期格式化失败:', e)
+      console.error('日期格式化失�?', e)
       dueDateFormatted = ''
     }
   }
@@ -323,7 +319,7 @@ const editTask = (task: Task) => {
 }
 
 const deleteTask = async (id: number) => {
-  if (!confirm('确定要删除这个任务吗？')) return
+  if (!confirm('确定要删除这个任务吗�?)) return
 
   try {
     await api.del(`/Tasks/${id}`)
@@ -364,10 +360,10 @@ const getStatusClass = (status: string) => {
 
 const getStatusText = (status: string) => {
   const texts: Record<string, string> = {
-    pending: '待处理',
-    in_progress: '进行中',
-    completed: '已完成',
-    cancelled: '已取消'
+    pending: '待处�?,
+    in_progress: '进行�?,
+    completed: '已完�?,
+    cancelled: '已取�?
   }
   return texts[status] || status
 }
@@ -384,12 +380,12 @@ const getPriorityClass = (priority: number) => {
 
 const getPriorityText = (priority: number) => {
   const texts: Record<number, string> = {
-    0: '低',
-    1: '中',
-    2: '高',
-    3: '紧急'
+    0: '�?,
+    1: '�?,
+    2: '�?,
+    3: '紧�?
   }
-  return texts[priority] || '低'
+  return texts[priority] || '�?
 }
 
 const getProgressColor = (progress: number) => {
@@ -465,7 +461,7 @@ onMounted(() => {
   box-shadow: var(--shadow-sm, 0 1px 2px 0 var(--color-border));
 }
 
-/* 任务状态样式 - 使用 CSS 变量 */
+/* 任务状态样�?- 使用 CSS 变量 */
 .task-status-pending {
   background: var(--color-warning-soft, rgba(251, 191, 36, 0.1));
   color: var(--color-warning, var(--color-warning));
@@ -502,7 +498,7 @@ onMounted(() => {
   font-weight: 500;
 }
 
-/* 任务优先级样式 - 使用 CSS 变量 */
+/* 任务优先级样�?- 使用 CSS 变量 */
 .task-priority-low {
   background: var(--color-bg-elevated, var(--color-gray-100));
   color: var(--color-text-muted, var(--color-text-sec));
@@ -539,7 +535,7 @@ onMounted(() => {
   font-weight: 500;
 }
 
-/* 任务进度条颜色样式 - 使用 CSS 变量 */
+/* 任务进度条颜色样�?- 使用 CSS 变量 */
 .task-progress-complete {
   background: var(--color-success, var(--color-success));
 }

@@ -17,7 +17,7 @@
       <div class="mb-6">
         <NuxtLink
           to="/projects"
-          class="inline-flex items-center px-4 py-2 bg-var(--color-bg-light, white)/70 backdrop-blur-sm rounded-lg shadow-sm hover:shadow-md transition-all duration-200 text-purple-700 hover:text-purple-800 border border-purple-200"
+          class="inline-flex items-center px-4 py-2 bg-white/70 backdrop-blur-sm rounded-lg shadow-sm hover:shadow-md transition-all duration-200 text-purple-700 hover:text-purple-800 border border-purple-200"
         >
           <i class="fas fa-arrow-left mr-2"></i>
           返回项目展示
@@ -27,7 +27,7 @@
       <!-- 项目内容 -->
       <div v-if="project" class="space-y-8">
         <!-- 项目信息头部 -->
-        <div class="bg-var(--color-bg-light, white)/80 backdrop-blur-sm rounded-2xl shadow-xl p-8">
+        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8">
           <div class="flex flex-col lg:flex-row gap-8">
             <div class="lg:w-1/3">
               <div class="h-64 bg-gradient-to-br from-purple-400 to-pink-600 rounded-xl flex items-center justify-center">
@@ -99,7 +99,7 @@
         </div>
         
         <!-- 详细内容 -->
-        <div class="bg-var(--color-bg-light, white)/80 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden">
+        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden">
           <div class="p-8">
             <div class="prose prose-lg max-w-none">
               <ContentRenderer :value="project" />
@@ -108,7 +108,7 @@
         </div>
         
         <!-- 相关项目推荐 -->
-        <div v-if="relatedProjects?.length" class="bg-var(--color-bg-light, white)/80 backdrop-blur-sm rounded-2xl shadow-xl p-8">
+        <div v-if="relatedProjects?.length" class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8">
           <h2 class="text-2xl font-bold text-gray-900 mb-6">相关项目推荐</h2>
           <div class="grid gap-6 md:grid-cols-2">
             <NuxtLink
@@ -132,7 +132,7 @@
       </div>
 
       <!-- 无数据状态 -->
-      <div v-else class="bg-var(--color-bg-light, white)/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 text-center">
+      <div v-else class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 text-center">
         <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
           <strong>警告:</strong> 没有找到项目数据！<br>
           当前 slug: {{ $route.params.slug }}<br>

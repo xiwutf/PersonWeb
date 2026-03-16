@@ -11,7 +11,7 @@
       </nav>
 
       <!-- 文章内容 -->
-      <article v-if="post" class="bg-var(--color-bg-light, white) shadow-sm border border-gray-100 rounded-none p-8 md:p-12 mb-12">
+      <article v-if="post" class="bg-white shadow-sm border border-gray-100 rounded-none p-8 md:p-12 mb-12">
         <!-- 文章头部 -->
         <header class="text-center mb-12">
           <div class="flex items-center justify-center gap-3 text-sm text-gray-400 mb-4 font-serif">

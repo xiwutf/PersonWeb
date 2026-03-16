@@ -10,7 +10,7 @@
       </div>
       <div class="header-actions">
         <button @click="refreshPrices" class="btn-secondary" :disabled="refreshing">
-          {{ refreshing ? '刷新中...' : '刷新价格' }}
+          {{ refreshing ? '刷新�?..' : '刷新价格' }}
         </button>
         <button @click="handleAddClick" class="btn-primary">+ 新增提醒</button>
       </div>
@@ -18,10 +18,10 @@
 
     <!-- 提醒列表 -->
     <div class="alert-list">
-      <div v-if="loading" class="loading">加载中...</div>
+      <div v-if="loading" class="loading">加载�?..</div>
       <div v-else-if="!alerts || alerts.length === 0" class="empty-state">
         <p>暂无价格提醒</p>
-        <button @click="handleAddClick" class="btn-primary">创建第一个提醒</button>
+        <button @click="handleAddClick" class="btn-primary">创建第一个提�?/button>
       </div>
       <div v-else class="alerts-grid">
         <div v-for="alert in alerts" :key="alert.id" class="alert-card" :class="{ triggered: alert.isTriggered }">
@@ -31,7 +31,7 @@
               <span class="alert-code">{{ alert.code }}</span>
             </div>
             <div class="alert-status">
-              <span v-if="alert.isTriggered" class="status-badge triggered">已触发</span>
+              <span v-if="alert.isTriggered" class="status-badge triggered">已触�?/span>
               <span v-else :class="['status-badge', alert.isActive ? 'active' : 'inactive']">
                 {{ alert.isActive ? '启用' : '停用' }}
               </span>
@@ -40,15 +40,15 @@
           <div class="alert-details">
             <div class="price-info">
               <div class="price-item">
-                <span class="label">目标价格：</span>
+                <span class="label">目标价格�?/span>
                 <span class="value target">¥{{ formatMoney(alert.targetPrice) }}</span>
               </div>
               <div class="price-item">
-                <span class="label">当前价格：</span>
+                <span class="label">当前价格�?/span>
                 <span class="value current">¥{{ formatMoney(alert.currentPrice) }}</span>
               </div>
               <div class="price-item">
-                <span class="label">提醒类型：</span>
+                <span class="label">提醒类型�?/span>
                 <span class="value">{{ getAlertTypeText(alert.alertType) }}</span>
               </div>
             </div>
@@ -78,7 +78,7 @@
               <input
                 v-model="formData.code"
                 type="text"
-                placeholder="请输入股票/基金代码"
+                placeholder="请输入股�?基金代码"
                 required
                 maxlength="20"
               />
@@ -88,7 +88,7 @@
               <input
                 v-model="formData.name"
                 type="text"
-                placeholder="自动获取或手动输入"
+                placeholder="自动获取或手动输�?
                 maxlength="100"
               />
               <button type="button" @click="handleAutoFill" class="btn-auto-fill">自动获取</button>
@@ -107,7 +107,7 @@
                 type="number"
                 step="0.01"
                 min="0.01"
-                placeholder="请输入目标价格"
+                placeholder="请输入目标价�?
                 required
               />
             </div>
@@ -133,13 +133,13 @@
               <textarea
                 v-model="formData.notes"
                 rows="3"
-                placeholder="可选备注信息"
+                placeholder="可选备注信�?
               />
             </div>
             <div class="form-actions">
               <button type="button" @click="closeModal" class="btn-secondary">取消</button>
               <button type="submit" class="btn-primary" :disabled="submitting">
-                {{ submitting ? '保存中...' : '保存' }}
+                {{ submitting ? '保存�?..' : '保存' }}
               </button>
             </div>
           </form>
@@ -154,8 +154,7 @@ import { ref, onMounted } from 'vue'
 import { useApi } from '~/composables/useApi'
 import { useNotification } from '~/composables/useToast'
 
-// 页面元数据
-definePageMeta({
+// 页面元数�?definePageMeta({
   layout: 'admin',
   middleware: 'admin-auth'
 })
@@ -199,8 +198,7 @@ const formData = ref({
 
 // 加载提醒列表
 const loadAlerts = async () => {
-  // 只在客户端执行
-  if (typeof window === 'undefined') return
+  // 只在客户端执�?  if (typeof window === 'undefined') return
   
   try {
     loading.value = true
@@ -209,8 +207,7 @@ const loadAlerts = async () => {
   } catch (err: any) {
     console.error('加载价格提醒失败:', err)
     error(err.message || '加载失败')
-    alerts.value = [] // 确保始终是数组
-  } finally {
+    alerts.value = [] // 确保始终是数�?  } finally {
     loading.value = false
   }
 }
@@ -230,13 +227,11 @@ const refreshPrices = async () => {
   }
 }
 
-// 格式化金额
-const formatMoney = (value: number) => {
+// 格式化金�?const formatMoney = (value: number) => {
   return value.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
 
-// 格式化日期时间
-const formatDateTime = (date: string) => {
+// 格式化日期时�?const formatDateTime = (date: string) => {
   return new Date(date).toLocaleString('zh-CN')
 }
 
@@ -282,7 +277,7 @@ const handleEditClick = (alert: PriceAlert) => {
 
 // 处理删除点击
 const handleDeleteClick = async (id: number) => {
-  if (!confirm('确定要删除这个价格提醒吗？')) {
+  if (!confirm('确定要删除这个价格提醒吗�?)) {
     return
   }
 
@@ -299,7 +294,7 @@ const handleDeleteClick = async (id: number) => {
 // 自动填充名称
 const handleAutoFill = async () => {
   if (!formData.value.code || !formData.value.type) {
-    warning('请先输入代码和类型')
+    warning('请先输入代码和类�?)
     return
   }
 
@@ -361,8 +356,7 @@ const closeModal = () => {
   editingAlert.value = null
 }
 
-// 页面加载时获取数据
-onMounted(() => {
+// 页面加载时获取数�?onMounted(() => {
   loadAlerts()
 })
 </script>
@@ -576,7 +570,7 @@ onMounted(() => {
   background: var(--color-error-hover);
 }
 
-/* 模态框样式（复用定投计划的样式） */
+/* 模态框样式（复用定投计划的样式�?*/
 .modal-overlay {
   position: fixed;
   top: 0;

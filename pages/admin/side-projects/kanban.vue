@@ -5,7 +5,7 @@
     </div>
 
     <div v-if="loading" class="loading-container">
-      加载中...
+      加载�?..
     </div>
 
     <div v-else-if="!hasData" class="empty-container">
@@ -24,10 +24,10 @@
     </div>
 
     <div v-else class="kanban-container">
-      <!-- 待开始 -->
+      <!-- 待开�?-->
       <div class="kanban-column">
         <div class="column-header">
-          <h3>待开始</h3>
+          <h3>待开�?/h3>
           <span class="count">{{ kanbanData.pending?.length || 0 }}</span>
         </div>
         <div class="column-content">
@@ -58,10 +58,10 @@
         </div>
       </div>
 
-      <!-- 进行中 -->
+      <!-- 进行�?-->
       <div class="kanban-column">
         <div class="column-header">
-          <h3>进行中</h3>
+          <h3>进行�?/h3>
           <span class="count">{{ kanbanData.inProgress?.length || 0 }}</span>
         </div>
         <div class="column-content">
@@ -117,10 +117,10 @@
         </div>
       </div>
 
-      <!-- 待验收 -->
+      <!-- 待验�?-->
       <div class="kanban-column">
         <div class="column-header">
-          <h3>待验收</h3>
+          <h3>待验�?/h3>
           <span class="count">{{ kanbanData.pendingReview?.length || 0 }}</span>
         </div>
         <div class="column-content">
@@ -140,10 +140,10 @@
         </div>
       </div>
 
-      <!-- 已完成 -->
+      <!-- 已完�?-->
       <div class="kanban-column">
         <div class="column-header">
-          <h3>已完成</h3>
+          <h3>已完�?/h3>
           <span class="count">{{ kanbanData.completed?.length || 0 }}</span>
         </div>
         <div class="column-content">
@@ -213,8 +213,7 @@ const fetchKanban = async () => {
   loading.value = true
   try {
     const res = await api.get<any>('/side-projects/kanban')
-    // 后端返回的字段名可能是大写开头（Pending, InProgress等）或驼峰命名
-    // 兼容两种格式
+    // 后端返回的字段名可能是大写开头（Pending, InProgress等）或驼峰命�?    // 兼容两种格式
     const data = res || {}
     kanbanData.value = {
       pending: data.pending || data.Pending || [],
@@ -236,35 +235,27 @@ const fetchKanban = async () => {
   }
 }
 
-// 卡片点击，跳转到详情页
-const handleCardClick = (id: number) => {
+// 卡片点击，跳转到详情�?const handleCardClick = (id: number) => {
   router.push(`/admin/side-projects/projects/${id}?from=kanban`)
 }
 
-// 获取优先级标签类型
-const getPriorityTagType = (priority?: number): 'default' | 'success' | 'error' | 'warning' | 'info' | 'primary' => {
+// 获取优先级标签类�?const getPriorityTagType = (priority?: number): 'default' | 'success' | 'error' | 'warning' | 'info' | 'primary' => {
   if (!priority) return 'default'
   switch (priority) {
-    case 3: return 'error' // 紧急
-    case 2: return 'warning' // 高
-    case 1: return 'info' // 中
-    default: return 'default' // 低
-  }
+    case 3: return 'error' // 紧�?    case 2: return 'warning' // �?    case 1: return 'info' // �?    default: return 'default' // �?  }
 }
 
-// 获取优先级文本
-const getPriorityText = (priority?: number): string => {
+// 获取优先级文�?const getPriorityText = (priority?: number): string => {
   if (!priority) return ''
   switch (priority) {
-    case 3: return '紧急'
-    case 2: return '高'
-    case 1: return '中'
-    default: return '低'
+    case 3: return '紧�?
+    case 2: return '�?
+    case 1: return '�?
+    default: return '�?
   }
 }
 
-// 格式化日期
-const formatDate = (dateStr: string): string => {
+// 格式化日�?const formatDate = (dateStr: string): string => {
   if (!dateStr) return '-'
   try {
     const date = new Date(dateStr)
@@ -278,8 +269,7 @@ const formatDate = (dateStr: string): string => {
   }
 }
 
-// 格式化数字
-const formatNumber = (num: number): string => {
+// 格式化数�?const formatNumber = (num: number): string => {
   if (typeof num !== 'number' || isNaN(num)) return '0'
   return num.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
@@ -392,7 +382,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
-  min-height: 0; /* 确保 flex 子元素可以正确收缩 */
+  min-height: 0; /* 确保 flex 子元素可以正确收�?*/
   /* 自定义滚动条样式 */
   scrollbar-width: thin;
   scrollbar-color: var(--color-border-subtle) transparent;

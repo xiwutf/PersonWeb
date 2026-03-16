@@ -18,7 +18,7 @@
         <n-select
           v-model:value="filters.status"
           :options="statusOptions"
-          placeholder="状态筛选"
+          placeholder="状态筛�?
           style="width: 150px"
           clearable
         />
@@ -179,8 +179,7 @@ const loading = ref(false)
 const notifications = ref<SideNotification[]>([])
 const unreadCount = ref(0)
 
-// 筛选条件
-const filters = ref<NotificationQueryParams>({
+// 筛选条�?const filters = ref<NotificationQueryParams>({
   status: 'unread',
   severity: undefined,
   type: undefined,
@@ -198,7 +197,7 @@ const pagination = ref({
 const statusOptions = [
   { label: '未读', value: 'unread' },
   { label: '全部', value: 'all' },
-  { label: '已忽略', value: 'dismissed' }
+  { label: '已忽�?, value: 'dismissed' }
 ]
 
 const severityOptions = [
@@ -210,12 +209,12 @@ const severityOptions = [
 const typeOptions = [
   { label: '项目即将到期', value: NotificationType.ProjectDueSoon },
   { label: '任务今天到期', value: NotificationType.TaskDueToday },
-  { label: '项目卡住超过2天', value: NotificationType.ProjectBlockedTooLong }
+  { label: '项目卡住超过2�?, value: NotificationType.ProjectBlockedTooLong }
 ]
 
 const snoozeOptions = [
-  { label: '延后1天', key: '1d' },
-  { label: '延后3天', key: '3d' },
+  { label: '延后1�?, key: '1d' },
+  { label: '延后3�?, key: '3d' },
   { label: '延后到下周一', key: 'nextMon' }
 ]
 
@@ -269,10 +268,10 @@ const handleMarkAllAsRead = async () => {
 
 // 忽略
 const handleDismiss = async (id: number) => {
-  if (!confirm('确定要忽略这条提醒吗？')) return
+  if (!confirm('确定要忽略这条提醒吗�?)) return
   try {
     await api.post(`/side-notifications/${id}/dismiss`)
-    notification.success('已忽略')
+    notification.success('已忽�?)
     await fetchNotifications()
   } catch (e: any) {
     notification.error('操作失败: ' + (e.message || '未知错误'))
@@ -283,7 +282,7 @@ const handleDismiss = async (id: number) => {
 const handleSnooze = async (id: number, preset: string) => {
   try {
     await api.post(`/side-notifications/${id}/snooze`, { preset })
-    notification.success('已延后')
+    notification.success('已延�?)
     await fetchNotifications()
   } catch (e: any) {
     notification.error('操作失败: ' + (e.message || '未知错误'))
@@ -351,7 +350,7 @@ const getSeverityTagType = (severity: NotificationSeverity): 'default' | 'succes
 const getSeverityText = (severity: NotificationSeverity): string => {
   switch (severity) {
     case NotificationSeverity.Danger:
-      return '紧急'
+      return '紧�?
     case NotificationSeverity.Warning:
       return '警告'
     case NotificationSeverity.Info:
@@ -376,8 +375,7 @@ const formatTime = (time: string): string => {
   return date.toLocaleDateString('zh-CN')
 }
 
-// 初始化
-onMounted(() => {
+// 初始�?onMounted(() => {
   fetchNotifications()
 })
 </script>

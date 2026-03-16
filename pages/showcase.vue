@@ -1,15 +1,15 @@
 <template>
   <div class="showcase-page min-h-screen py-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- 页面标题 -->
+      <!-- éĄľé˘ć é˘ -->
       <div class="text-center mb-12">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4">个性化展示墙</h1>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">ä¸Şć§ĺĺąç¤şĺ˘?/h1>
         <p class="text-lg text-gray-600 dark:text-gray-400">
-          记录想法、灵感、草图和代码片段
+          čŽ°ĺ˝ćłćłăçľćăčĺžĺäťŁç çćŽľ
         </p>
       </div>
 
-      <!-- 筛选栏 -->
+      <!-- ç­éć  -->
       <div class="mb-8 flex flex-wrap gap-4 justify-center">
         <button
           v-for="category in categories"
@@ -19,14 +19,14 @@
             'px-4 py-2 rounded-lg transition-all',
             activeCategory === category.value
               ? 'bg-blue-600 text-var(--color-bg-light, white) shadow-lg'
-              : 'bg-var(--color-bg-light, white) dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+              : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
           ]"
         >
           {{ category.label }}
         </button>
       </div>
 
-      <!-- 瀑布流展示 -->
+      <!-- çĺ¸ćľĺąç¤?-->
       <div class="showcase-grid">
         <div
           v-for="item in filteredItems"
@@ -36,23 +36,23 @@
           @click="openDetail(item)"
         >
           <div class="item-content">
-            <!-- 图片类型 -->
+            <!-- ĺžççąťĺ -->
             <div v-if="item.type === 'image'" class="item-image">
               <img :src="item.imageUrl" :alt="item.title" />
             </div>
 
-            <!-- 代码片段类型 -->
+            <!-- äťŁç çćŽľçąťĺ -->
             <div v-else-if="item.type === 'code'" class="item-code">
               <pre><code>{{ item.code }}</code></pre>
             </div>
 
-            <!-- 文本类型 -->
+            <!-- ććŹçąťĺ -->
             <div v-else class="item-text">
               <h3 class="item-title">{{ item.title }}</h3>
               <p class="item-description">{{ item.description }}</p>
             </div>
 
-            <!-- 标签 -->
+            <!-- ć ç­ž -->
             <div v-if="item.tags && item.tags.length > 0" class="item-tags">
               <span
                 v-for="tag in item.tags"
@@ -66,19 +66,19 @@
         </div>
       </div>
 
-      <!-- 空状态 -->
+      <!-- çŠşçść?-->
       <div v-if="filteredItems.length === 0" class="text-center py-20">
         <i class="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
-        <p class="text-gray-500">暂无内容</p>
+        <p class="text-gray-500">ćć ĺĺŽš</p>
       </div>
     </div>
 
-    <!-- 详情模态框 -->
+    <!-- čŻŚćć¨ĄććĄ -->
     <div v-if="selectedItem" class="modal-overlay" @click="closeDetail">
       <div class="modal-content" @click.stop>
         <div class="modal-header">
           <h2>{{ selectedItem.title }}</h2>
-          <button @click="closeDetail" class="modal-close">×</button>
+          <button @click="closeDetail" class="modal-close">Ă</button>
         </div>
         <div class="modal-body">
           <div v-if="selectedItem.type === 'image'">
@@ -122,12 +122,12 @@ interface ShowcaseItem {
 }
 
 const categories = [
-  { label: '全部', value: 'all' },
-  { label: '想法', value: 'idea' },
-  { label: '灵感', value: 'inspiration' },
-  { label: '草图', value: 'sketch' },
-  { label: '代码', value: 'code' },
-  { label: '图片', value: 'image' }
+  { label: 'ĺ¨é¨', value: 'all' },
+  { label: 'ćłćł', value: 'idea' },
+  { label: 'çľć', value: 'inspiration' },
+  { label: 'čĺž', value: 'sketch' },
+  { label: 'äťŁç ', value: 'code' },
+  { label: 'ĺžç', value: 'image' }
 ]
 
 const activeCategory = ref('all')
@@ -149,24 +149,24 @@ const closeDetail = () => {
   selectedItem.value = null
 }
 
-// TODO: 从API加载数据
+// TODO: äťAPIĺ č˝˝ć°ćŽ
 onMounted(() => {
-  // 示例数据
+  // ç¤şäžć°ćŽ
   items.value = [
     {
       id: 1,
       type: 'idea',
-      title: 'AI 助手优化想法',
-      description: '为AI助手添加上下文记忆功能',
-      tags: ['AI', '优化'],
+      title: 'AI ĺŠćäźĺćłćł',
+      description: 'ä¸şAIĺŠććˇťĺ ä¸ä¸ćčŽ°ĺżĺč?,
+      tags: ['AI', 'äźĺ'],
       createdAt: '2024-01-15'
     },
     {
       id: 2,
       type: 'code',
-      title: '优雅的错误处理',
+      title: 'äźéçéčŻŻĺ¤ç?,
       code: 'try {\n  // code\n} catch (e) {\n  handleError(e)\n}',
-      tags: ['代码', '最佳实践'],
+      tags: ['äťŁç ', 'ćä˝łĺŽčˇ?],
       createdAt: '2024-01-20'
     }
   ]

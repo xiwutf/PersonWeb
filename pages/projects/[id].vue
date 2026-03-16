@@ -33,7 +33,7 @@
             <div class="absolute bottom-0 left-0 right-0 p-8 text-var(--color-bg-light, white)">
               <div class="flex items-center gap-3 mb-3">
                 <span
-                  class="px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm bg-var(--color-bg-light, white)/20"
+                  class="px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm bg-white/20"
                   :class="{
                     'bg-green-500/80': project.status === 'Active',
                     'bg-gray-500/80': project.status === 'Completed',

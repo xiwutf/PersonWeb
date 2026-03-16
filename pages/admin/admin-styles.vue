@@ -21,7 +21,7 @@
         </button>
       </div>
 
-      <div v-if="loading" class="loading">加载中...</div>
+      <div v-if="loading" class="loading">加载�?..</div>
       <div v-else-if="globalStyles.length === 0" class="empty-state">暂无全局风格</div>
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div
@@ -33,7 +33,7 @@
         >
           <div class="absolute top-4 right-4">
             <span v-if="style.isDefault" class="badge badge-success">默认</span>
-            <span v-else-if="!style.enabled" class="badge badge-secondary">已禁用</span>
+            <span v-else-if="!style.enabled" class="badge badge-secondary">已禁�?/span>
           </div>
 
           <div class="mb-4">
@@ -81,7 +81,7 @@
         </button>
       </div>
 
-      <div v-if="loading" class="loading">加载中...</div>
+      <div v-if="loading" class="loading">加载�?..</div>
       <div v-else-if="moduleStyles.length === 0" class="empty-state">暂无模块风格</div>
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div
@@ -133,7 +133,7 @@
                 v-model="globalForm.styleKey"
                 type="text"
                 class="input"
-                placeholder="如: dark-tech, light-modern"
+                placeholder="�? dark-tech, light-modern"
                 :disabled="!!editingGlobalStyle?.id"
               />
             </div>
@@ -144,7 +144,7 @@
                 v-model="globalForm.styleName"
                 type="text"
                 class="input"
-                placeholder="如: 暗黑科技风"
+                placeholder="�? 暗黑科技�?
               />
             </div>
 
@@ -170,7 +170,7 @@
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">预览图 URL</label>
+              <label class="block text-sm font-medium text-gray-700 mb-1">预览�?URL</label>
               <input
                 v-model="globalForm.previewImage"
                 type="text"
@@ -186,7 +186,7 @@
                 id="globalEnabled"
                 class="mr-2"
               />
-              <label for="globalEnabled" class="text-sm text-gray-700">启用此风格</label>
+              <label for="globalEnabled" class="text-sm text-gray-700">启用此风�?/label>
             </div>
           </div>
         </div>
@@ -194,7 +194,7 @@
         <div class="modal-footer">
           <button @click="closeGlobalModal" class="btn-secondary">取消</button>
           <button @click="saveGlobalStyle" class="btn-primary" :disabled="saving">
-            {{ saving ? '保存中...' : '保存' }}
+            {{ saving ? '保存�?..' : '保存' }}
           </button>
         </div>
       </div>
@@ -218,7 +218,7 @@
                 v-model="moduleForm.moduleKey"
                 type="text"
                 class="input"
-                placeholder="如: articles, projects, tasks"
+                placeholder="�? articles, projects, tasks"
                 :disabled="!!editingModuleStyle?.id"
               />
             </div>
@@ -229,7 +229,7 @@
                 v-model="moduleForm.moduleName"
                 type="text"
                 class="input"
-                placeholder="如: 文章管理"
+                placeholder="�? 文章管理"
               />
             </div>
 
@@ -251,7 +251,7 @@
                 id="moduleEnabled"
                 class="mr-2"
               />
-              <label for="moduleEnabled" class="text-sm text-gray-700">启用此风格</label>
+              <label for="moduleEnabled" class="text-sm text-gray-700">启用此风�?/label>
             </div>
           </div>
         </div>
@@ -259,7 +259,7 @@
         <div class="modal-footer">
           <button @click="closeModuleModal" class="btn-secondary">取消</button>
           <button @click="saveModuleStyle" class="btn-primary" :disabled="saving">
-            {{ saving ? '保存中...' : '保存' }}
+            {{ saving ? '保存�?..' : '保存' }}
           </button>
         </div>
       </div>
@@ -359,7 +359,7 @@ const editGlobalStyle = (style: AdminGlobalStyle) => {
 
 // 设置默认全局风格
 const setDefaultGlobalStyle = async (id: number) => {
-  if (!confirm('确定要设置此风格为默认风格吗？')) return
+  if (!confirm('确定要设置此风格为默认风格吗�?)) return
 
   try {
     await api.post(`/AdminStyle/global/${id}/set-default`)

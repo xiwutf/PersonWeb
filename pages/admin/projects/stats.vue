@@ -1,24 +1,24 @@
 <template>
   <div>
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold text-gray-800 dark:text-var(--color-bg-light, white)">项目访问统计</h1>
+      <h1 class="text-2xl font-bold text-gray-800 dark:text-var(--color-bg-light, white)">éĄšçŽčŽżéŽçťčŽĄ</h1>
       <button @click="fetchStats" class="px-4 py-2 bg-blue-600 text-var(--color-bg-light, white) rounded hover:bg-blue-700 transition">
-        刷新数据
+        ĺˇć°ć°ćŽ
       </button>
     </div>
 
-    <!-- 总体统计 -->
+    <!-- ćťä˝çťčŽĄ -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">总项目数</div>
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">ćťéĄšçŽć°</div>
         <div class="text-3xl font-bold text-blue-600 dark:text-blue-400">{{ stats.TotalProjects || 0 }}</div>
       </div>
-      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">总访问量</div>
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">ćťčŽżéŽé</div>
         <div class="text-3xl font-bold text-green-600 dark:text-green-400">{{ stats.TotalViews || 0 }}</div>
       </div>
-      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">平均访问量</div>
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">ĺšłĺčŽżéŽé?/div>
         <div class="text-3xl font-bold text-purple-600 dark:text-purple-400">
           {{ stats.TotalProjects > 0 ? Math.round((stats.TotalViews || 0) / stats.TotalProjects) : 0 }}
         </div>
@@ -26,9 +26,9 @@
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <!-- 热门项目排行 -->
-      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <h2 class="text-lg font-bold text-gray-800 dark:text-var(--color-bg-light, white) mb-4">热门项目 Top 10</h2>
+      <!-- ç­é¨éĄšçŽćčĄ -->
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <h2 class="text-lg font-bold text-gray-800 dark:text-var(--color-bg-light, white) mb-4">ç­é¨éĄšçŽ Top 10</h2>
         <div class="space-y-3">
           <div
             v-for="(project, index) in (stats.TopProjects || stats.topProjects || [])"
@@ -56,21 +56,21 @@
             </div>
             <div class="text-right">
               <div class="font-semibold text-gray-900 dark:text-var(--color-bg-light, white)">{{ project.viewCount || 0 }}</div>
-              <div class="text-xs text-gray-500 dark:text-gray-400">次访问</div>
+              <div class="text-xs text-gray-500 dark:text-gray-400">ćŹĄčŽżé?/div>
             </div>
           </div>
           <div v-if="(!stats.TopProjects || stats.TopProjects.length === 0) && (!stats.topProjects || stats.topProjects.length === 0)" class="text-center text-gray-500 py-4">
-            暂无数据
+            ćć ć°ćŽ
           </div>
         </div>
       </div>
 
-      <!-- 项目访问趋势图表 -->
-      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+      <!-- éĄšçŽčŽżéŽčśĺżĺžčĄ¨ -->
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <div class="flex justify-between items-center mb-4">
-          <h2 class="text-lg font-bold text-gray-800 dark:text-var(--color-bg-light, white)">访问趋势</h2>
-          <select v-model="selectedProjectId" @change="fetchTrends" class="border border-gray-300 dark:border-gray-600 rounded px-3 py-1 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200 text-sm">
-            <option value="">选择项目</option>
+          <h2 class="text-lg font-bold text-gray-800 dark:text-var(--color-bg-light, white)">čŽżéŽčśĺż</h2>
+          <select v-model="selectedProjectId" @change="fetchTrends" class="border border-gray-300 dark:border-gray-600 rounded px-3 py-1 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 text-sm">
+            <option value="">éćŠéĄšçŽ</option>
             <option v-for="project in (stats.TopProjects || stats.topProjects || [])" :key="project.id" :value="project.id">
               {{ project.title }}
             </option>
@@ -80,8 +80,7 @@
           <Line :data="chartData" :options="chartOptions" />
         </div>
         <div v-else class="h-64 flex items-center justify-center text-gray-500 dark:text-gray-400">
-          请选择一个项目查看访问趋势
-        </div>
+          čŻˇéćŠä¸ä¸ŞéĄšçŽćĽçčŽżéŽčśĺ?        </div>
       </div>
     </div>
   </div>
@@ -136,7 +135,7 @@ const chartData = computed(() => {
     }
   }
 
-  // 后端返回的数据结构：{ Trends: [...] } 或 { trends: [...] }
+  // ĺçŤŻčżĺçć°ćŽçťćďź{ Trends: [...] } ć?{ trends: [...] }
   const trendsData = trends.value.Trends || trends.value.trends || []
   
   if (trendsData.length === 0) {
@@ -149,8 +148,7 @@ const chartData = computed(() => {
   return {
     labels: trendsData.map((t: any) => {
       const date = t.Date || t.date
-      // 如果是日期字符串，格式化为更友好的格式
-      if (typeof date === 'string') {
+      // ĺŚććŻćĽćĺ­çŹŚä¸˛ďźć źĺźĺä¸şć´ĺĺĽ˝çć źĺź?      if (typeof date === 'string') {
         const d = new Date(date)
         return d.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })
       }
@@ -158,7 +156,7 @@ const chartData = computed(() => {
     }),
     datasets: [
       {
-        label: '访问量',
+        label: 'čŽżéŽé?,
         data: trendsData.map((t: any) => t.Views || t.views || 0),
         borderColor: 'rgb(59, 130, 246)',
         backgroundColor: 'rgba(59, 130, 246, 0.1)',
@@ -198,14 +196,13 @@ const fetchStats = async () => {
     const res = await api.get<any>('/Projects/stats')
     if (res) {
       stats.value = res
-      // 默认选择第一个项目
-      if (res.topProjects && res.topProjects.length > 0) {
+      // éťčŽ¤éćŠçŹŹä¸ä¸ŞéĄšç?      if (res.topProjects && res.topProjects.length > 0) {
         selectedProjectId.value = res.topProjects[0].id
         await fetchTrends()
       }
     }
   } catch (e: unknown) {
-    handleError(e, '获取统计失败')
+    handleError(e, 'čˇĺçťčŽĄĺ¤ąč´Ľ')
   } finally {
     loading.value = false
   }
@@ -222,7 +219,7 @@ const fetchTrends = async () => {
       trends.value = res
     }
   } catch (e: unknown) {
-    handleError(e, '获取趋势数据失败')
+    handleError(e, 'čˇĺčśĺżć°ćŽĺ¤ąč´Ľ')
   }
 }
 

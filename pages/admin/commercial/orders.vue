@@ -7,16 +7,16 @@
     <!-- 筛选栏 -->
     <div class="filter-bar">
       <select v-model="filters.status" class="filter-input">
-        <option value="">全部状态</option>
-        <option value="pending">待支付</option>
-        <option value="paid">已支付</option>
+        <option value="">全部状�?/option>
+        <option value="pending">待支�?/option>
+        <option value="paid">已支�?/option>
         <option value="failed">支付失败</option>
-        <option value="refunded">已退款</option>
+        <option value="refunded">已退�?/option>
       </select>
       <select v-model="filters.paymentMethod" class="filter-input">
         <option value="">全部支付方式</option>
         <option value="wechat">微信支付</option>
-        <option value="alipay">支付宝</option>
+        <option value="alipay">支付�?/option>
         <option value="stripe">Stripe</option>
       </select>
       <button class="btn-secondary" @click="loadOrders">
@@ -35,7 +35,7 @@
             <th>用户ID</th>
             <th>金额</th>
             <th>支付方式</th>
-            <th>支付状态</th>
+            <th>支付状�?/th>
             <th>创建时间</th>
             <th>支付时间</th>
             <th>操作</th>
@@ -76,16 +76,14 @@
         :disabled="page === 1"
         @click="page--; loadOrders()"
       >
-        上一页
-      </button>
-      <span class="page-info">第 {{ page }} 页，共 {{ totalPages }} 页</span>
+        上一�?      </button>
+      <span class="page-info">�?{{ page }} 页，�?{{ totalPages }} �?/span>
       <button
         class="btn-secondary"
         :disabled="page >= totalPages"
         @click="page++; loadOrders()"
       >
-        下一页
-      </button>
+        下一�?      </button>
     </div>
   </div>
 </template>
@@ -141,7 +139,7 @@ const getTypeText = (type: string) => {
 const getPaymentMethodText = (method: string) => {
   const texts: Record<string, string> = {
     wechat: '微信支付',
-    alipay: '支付宝',
+    alipay: '支付�?,
     stripe: 'Stripe'
   }
   return texts[method] || method
@@ -159,10 +157,10 @@ const getStatusClass = (status: string) => {
 
 const getStatusText = (status: string) => {
   const texts: Record<string, string> = {
-    pending: '待支付',
-    paid: '已支付',
+    pending: '待支�?,
+    paid: '已支�?,
     failed: '支付失败',
-    refunded: '已退款'
+    refunded: '已退�?
   }
   return texts[status] || status
 }

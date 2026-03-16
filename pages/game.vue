@@ -1,41 +1,39 @@
 <template>
   <div class="min-h-screen relative overflow-hidden font-['Outfit']" style="background-color: var(--bg); color: var(--text-main);">
-    <!-- 全局背景噪点 -->
+    <!-- ĺ¨ĺąčćŻĺŞçš -->
     <div class="fixed inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none z-50"
          style="background-image: url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E&quot;);">
     </div>
 
-    <!-- 动态背景光斑 -->
+    <!-- ĺ¨ćčćŻĺć?-->
     <div class="fixed inset-0 overflow-hidden pointer-events-none">
       <div class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[100px] animate-blob mix-blend-screen"></div>
       <div class="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-pink-600/20 rounded-full blur-[100px] animate-blob animation-delay-2000 mix-blend-screen"></div>
     </div>
 
     <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <!-- 返回按钮 -->
+      <!-- čżĺćéŽ -->
       <div class="mb-8">
         <NuxtLink to="/" class="game-back-button">
           <svg class="game-back-button-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
-          <span>返回首页</span>
+          <span>čżĺéŚéĄľ</span>
         </NuxtLink>
       </div>
 
-      <!-- 页面头部 -->
+      <!-- éĄľé˘ĺ¤´é¨ -->
       <header class="text-center mb-16 relative">
         <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-xl border border-var(--color-bg-light, white)/10 mb-6 shadow-lg shadow-purple-500/10 animate-float">
-          <span class="text-4xl">🎮</span>
+          <span class="text-4xl">đŽ</span>
         </div>
         <h1 class="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-200 via-var(--color-bg-light, white) to-pink-200 tracking-tight">
-          小游戏
-        </h1>
+          ĺ°ć¸¸ć?        </h1>
         <p class="text-lg max-w-2xl mx-auto leading-relaxed" style="color: var(--text-secondary);">
-          放松一下，玩个小游戏，测试你的反应能力和手速
-        </p>
+          ćžćžä¸ä¸ďźçŠä¸Şĺ°ć¸¸ćďźćľčŻä˝ çĺĺşč˝ĺĺćé?        </p>
       </header>
 
-      <!-- 游戏列表 -->
+      <!-- ć¸¸ćĺčĄ¨ -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <TransitionGroup name="list">
           <div
@@ -56,7 +54,7 @@
             <div class="game-card-content">
               <div class="game-card-stats">
                 <div class="game-card-stat">
-                  <span class="game-card-stat-label">难度</span>
+                  <span class="game-card-stat-label">éžĺşŚ</span>
                   <div class="game-card-difficulty">
                     <span
                       v-for="i in 5"
@@ -67,7 +65,7 @@
                   </div>
                 </div>
                 <div class="game-card-stat">
-                  <span class="game-card-stat-label">最高分</span>
+                  <span class="game-card-stat-label">ćéŤĺ</span>
                   <span class="game-card-stat-value">{{ game.highScore || 0 }}</span>
                 </div>
               </div>
@@ -77,15 +75,14 @@
                 @click="startGame(game)"
                 class="game-card-play-btn"
               >
-                开始游戏
-              </button>
+                ĺźĺ§ć¸¸ć?              </button>
             </div>
           </div>
         </TransitionGroup>
       </div>
     </div>
 
-    <!-- 游戏画布（全屏显示） -->
+    <!-- ć¸¸ćçťĺ¸ďźĺ¨ĺąćžç¤şďź -->
     <div
       v-if="currentGame"
       class="fixed inset-0 z-50 bg-slate-900"
@@ -109,9 +106,9 @@ interface Game {
 const games = ref<Game[]>([
   {
     id: 'dodge',
-    name: '躲避方块',
-    description: '使用方向键或WASD移动，躲避红色方块，坚持越久分数越高',
-    icon: '🎯',
+    name: 'čş˛éżćšĺ',
+    description: 'ä˝żç¨ćšĺéŽćWASDç§ťĺ¨ďźčş˛éżçş˘č˛ćšĺďźĺćčśäšĺć°čśéŤ',
+    icon: 'đŻ',
     difficulty: 3,
     component: resolveComponent('DodgeGame'),
     highScore: 0
@@ -120,7 +117,7 @@ const games = ref<Game[]>([
 
 const currentGame = ref<Game | null>(null)
 
-// 加载最高分
+// ĺ č˝˝ćéŤĺ
 onMounted(() => {
   if (process.client) {
     games.value.forEach(game => {
@@ -138,7 +135,7 @@ const startGame = (game: Game) => {
 
 const closeGame = () => {
   currentGame.value = null
-  // 重新加载最高分
+  // éć°ĺ č˝˝ćéŤĺ
   if (process.client) {
     games.value.forEach(game => {
       const saved = localStorage.getItem(`game_${game.id}_high_score`)
@@ -154,15 +151,15 @@ definePageMeta({
 })
 
 useHead({
-  title: '小游戏 - 溪午听风',
+  title: 'ĺ°ć¸¸ć?- ćşŞĺĺŹéŁ',
   meta: [
-    { name: 'description', content: '放松一下，玩个小游戏，测试你的反应能力' }
+    { name: 'description', content: 'ćžćžä¸ä¸ďźçŠä¸Şĺ°ć¸¸ćďźćľčŻä˝ çĺĺşč˝ĺ' }
   ]
 })
 </script>
 
 <style scoped>
-/* 返回按钮 */
+/* čżĺćéŽ */
 .game-back-button {
   display: inline-flex;
   align-items: center;
@@ -188,7 +185,7 @@ useHead({
   height: 1.25rem;
 }
 
-/* 游戏卡片 */
+/* ć¸¸ćĺĄç */
 .game-card {
   background: var(--bg-card);
   backdrop-filter: blur(12px);
@@ -314,7 +311,7 @@ useHead({
   box-shadow: 0 10px 20px rgba(147, 51, 234, 0.3);
 }
 
-/* 动画 */
+/* ĺ¨çť */
 .list-enter-active,
 .list-leave-active {
   transition: all 0.5s ease;

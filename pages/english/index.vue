@@ -1,4 +1,4 @@
-ï»¿<template>
+<template>
   <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-mesh">
     <div class="max-w-7xl mx-auto">
       <!-- Header Section -->
@@ -49,7 +49,7 @@
             </div>
             <div class="md:w-1/2 flex justify-center">
                <div class="relative w-full max-w-md aspect-video bg-primary-100 rounded-2xl flex items-center justify-center overflow-hidden shadow-lg">
-                  <span class="text-6xl">ğŸŒ</span>
+                  <span class="text-6xl">??</span>
                </div>
             </div>
           </div>
@@ -60,7 +60,7 @@
 </template>
 
 <script setup lang="ts">
-// ä½¿ç”¨é»˜è®¤å¸ƒå±€ï¼ˆåŒ…å«é¡¶éƒ¨å¯¼èˆªæ ï¼‰
+// Ê¹ÓÃÄ¬ÈÏ²¼¾Ö£¨°üº¬¶¥²¿µ¼º½À¸£©
 definePageMeta({
   layout: 'default'
 })
@@ -70,7 +70,7 @@ import StreakTracker from '~/components/english/StreakTracker.vue'
 import QuickQuiz from '~/components/english/QuickQuiz.vue'
 
 useHead({
-  title: 'English Learning - æºªåˆå¬é£',
+  title: 'English Learning - ÏªÎçÌı·ç',
   meta: [
     { name: 'description', content: 'English learning resources, daily words, and reading materials.' }
   ]

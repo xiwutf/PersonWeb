@@ -1,6 +1,6 @@
-﻿<template>
+<template>
   <div>
-    <!-- 动态加载风格组件 -->
+    <!-- ��̬���ط����� -->
     <component :is="currentComponent" v-if="currentComponent" />
     <div v-else class="min-h-screen flex items-center justify-center bg-black text-var(--color-bg-light, white)">
       <div class="text-center">
@@ -20,34 +20,34 @@ import HomeHybridSuper from '~/components/home/HomeHybridSuper.vue'
 import HomeCreative from '~/components/home/HomeCreative.vue'
 
 const api = useApi()
-const style = ref<string>('creative') // 默认使用新的创意堆叠风格
+const style = ref<string>('creative') // Ĭ��ʹ���µĴ���ѵ����
 
-// 风格组件映射
+// ������ӳ��
 const componentMap: Record<string, any> = {
   'dark-lab': HomeDarkLab,
   'light-portfolio': HomeLightPortfolio,
   'hybrid-super': HomeHybridSuper,
-  'creative': HomeCreative // 新增风格
+  'creative': HomeCreative // �������
 }
 
-// 当前组件
+// ��ǰ���
 const currentComponent = computed(() => {
   return componentMap[style.value] || componentMap['creative']
 })
 
-// 获取当前启用的首页风格
+// ��ȡ��ǰ���õ���ҳ���
 const fetchHomeStyle = async () => {
   try {
     const res = await api.get<{ style: string }>('/config/home-style')
     if (res && res.style) {
-      // 优先使用后端配置，如果没有则使用默认
+      // ����ʹ�ú�����ã����û����ʹ��Ĭ��
       style.value = res.style || 'creative'
     } else {
       style.value = 'creative'
     }
   } catch (e) {
     console.error('Failed to fetch home style:', e)
-    // 默认使用 creative
+    // Ĭ��ʹ�� creative
     style.value = 'creative'
   }
 }
@@ -61,7 +61,7 @@ definePageMeta({
 })
 
 useHead({
-  title: '溪午听风 - 数字花园',
-  meta: [{ name: 'description', content: '溪午听风的个人网站，分享技术、生活与思考。' }]
+  title: 'Ϫ������ - ���ֻ�԰',
+  meta: [{ name: 'description', content: 'Ϫ������ĸ�����վ������������������˼����' }]
 })
 </script>

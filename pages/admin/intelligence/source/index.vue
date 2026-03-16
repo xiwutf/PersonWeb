@@ -12,19 +12,18 @@
         </n-button>
       </div>
 
-      <!-- 加载状态 -->
+      <!-- 加载状�?-->
       <div v-if="loading" class="loading-container">
         <n-spin size="large" />
       </div>
 
       <div v-else>
-        <!-- 空状态 -->
+        <!-- 空状�?-->
         <div v-if="sources.length === 0" class="empty-container">
           <i class="fas fa-rss"></i>
           <p>暂无情报来源</p>
           <n-button type="primary" @click="handleCreate">
-            新增第一个来源
-          </n-button>
+            新增第一个来�?          </n-button>
         </div>
 
         <!-- 来源列表 -->
@@ -54,7 +53,7 @@
             <div class="source-meta">
               <n-tag size="small" :bordered="false">{{ source.category }}</n-tag>
               <n-tag size="small" :bordered="false" type="info">{{ source.sourceType }}</n-tag>
-              <span class="priority-badge">优先级: {{ source.priority }}</span>
+              <span class="priority-badge">优先�? {{ source.priority }}</span>
               <span class="interval-badge">{{ source.fetchIntervalMinutes }} 分钟</span>
               <span v-if="source.lastFetchTime" class="last-fetch-time">
                 上次抓取: {{ formatTime(source.lastFetchTime) }}
@@ -112,7 +111,7 @@
           <n-form-item label="来源名称" path="sourceName">
             <n-input
               v-model:value="formData.sourceName"
-              placeholder="请输入来源名称"
+              placeholder="请输入来源名�?
             />
           </n-form-item>
 
@@ -126,14 +125,14 @@
           <n-form-item label="来源地址" path="sourceUrl">
             <n-input
               v-model:value="formData.sourceUrl"
-              placeholder="请输入 RSS 地址或网页地址"
+              placeholder="请输�?RSS 地址或网页地址"
             />
           </n-form-item>
 
           <n-form-item label="分类" path="category">
             <n-input
               v-model:value="formData.category"
-              placeholder="请输入分类，如：AI技术"
+              placeholder="请输入分类，如：AI技�?
             />
           </n-form-item>
 
@@ -141,7 +140,7 @@
             <n-dynamic-tags v-model:value="formData.tags" />
           </n-form-item>
 
-          <n-form-item label="优先级" path="priority">
+          <n-form-item label="优先�? path="priority">
             <n-input-number
               v-model:value="formData.priority"
               :min="0"
@@ -158,7 +157,7 @@
               class="full-width-input"
             />
             <template #feedback>
-              <span class="form-feedback-text">单位：分钟，最小 5 分钟</span>
+              <span class="form-feedback-text">单位：分钟，最�?5 分钟</span>
             </template>
           </n-form-item>
 
@@ -203,8 +202,7 @@ definePageMeta({
 const api = useIntelligenceApi()
 const notification = useNotification()
 
-// 状态
-const loading = ref(false)
+// 状�?const loading = ref(false)
 const sources = ref<IntelligenceSource[]>([])
 const showModal = ref(false)
 const isEditing = ref(false)
@@ -226,10 +224,10 @@ const formData = reactive<SourceRequest>({
 
 // 表单验证规则
 const formRules = {
-  sourceName: { required: true, message: '请输入来源名称', trigger: 'blur' },
+  sourceName: { required: true, message: '请输入来源名�?, trigger: 'blur' },
   sourceType: { required: true, message: '请选择来源类型', trigger: 'change' },
   sourceUrl: { required: true, message: '请输入来源地址', trigger: 'blur' },
-  category: { required: true, message: '请输入分类', trigger: 'blur' }
+  category: { required: true, message: '请输入分�?, trigger: 'blur' }
 }
 
 // 来源类型选项
@@ -280,7 +278,7 @@ const handleEdit = (source: IntelligenceSource) => {
 const handleDelete = async (source: IntelligenceSource) => {
   window.$dialog?.warning({
     title: '确认删除',
-    content: `确定要删除来源「${source.sourceName}」吗？`,
+    content: `确定要删除来源�?{source.sourceName}」吗？`,
     positiveText: '确定',
     negativeText: '取消',
     onPositiveClick: async () => {
@@ -300,11 +298,10 @@ const handleDelete = async (source: IntelligenceSource) => {
 const handleToggleEnabled = async (source: IntelligenceSource) => {
   try {
     await api.toggleSource(source.id, source.enabled)
-    notification.success(source.enabled ? '已启用' : '已禁用')
+    notification.success(source.enabled ? '已启�? : '已禁�?)
   } catch (error) {
     console.error('操作失败:', error)
-    // 恢复原状态
-    source.enabled = !source.enabled
+    // 恢复原状�?    source.enabled = !source.enabled
     notification.error('操作失败')
   }
 }
@@ -345,8 +342,7 @@ const resetForm = () => {
   })
 }
 
-// 格式化时间
-const formatTime = (time?: string) => {
+// 格式化时�?const formatTime = (time?: string) => {
   if (!time) return ''
   const d = new Date(time)
   const now = new Date()
@@ -360,8 +356,7 @@ const formatTime = (time?: string) => {
   return `${days}天前`
 }
 
-// 初始化
-onMounted(() => {
+// 初始�?onMounted(() => {
   fetchSources()
 })
 </script>

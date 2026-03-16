@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="page-header">
-      <h1 class="page-title">知识库管理</h1>
+      <h1 class="page-title">知识库管�?/h1>
       <button @click="showCreateModal = true" class="btn-primary">
         + 新建条目
       </button>
@@ -15,7 +15,7 @@
             <th class="table-header-cell">标题</th>
             <th class="table-header-cell">分类</th>
             <th class="table-header-cell">标签</th>
-            <th class="table-header-cell">查看数</th>
+            <th class="table-header-cell">查看�?/th>
             <th class="table-header-cell">更新时间</th>
             <th class="table-header-cell">操作</th>
           </tr>
@@ -42,7 +42,7 @@
       </table>
     </div>
 
-    <!-- 创建/编辑模态框 - 侧边滑出式 -->
+    <!-- 创建/编辑模态框 - 侧边滑出�?-->
     <Transition name="slide-fade">
       <div v-if="showCreateModal || editingItem" class="knowledge-modal-overlay" @click.self="cancelEdit">
         <div class="knowledge-modal-content" @click.stop>
@@ -55,8 +55,8 @@
                 </svg>
               </div>
               <div>
-                <h2 class="knowledge-modal-title">{{ editingItem ? '编辑' : '新建' }}知识库条目</h2>
-                <p class="knowledge-modal-subtitle">填写以下信息创建新的知识库条目</p>
+                <h2 class="knowledge-modal-title">{{ editingItem ? '编辑' : '新建' }}知识库条�?/h2>
+                <p class="knowledge-modal-subtitle">填写以下信息创建新的知识库条�?/p>
               </div>
             </div>
             <button @click="cancelEdit" class="knowledge-modal-close" aria-label="关闭">
@@ -86,7 +86,7 @@
                 </div>
               </div>
 
-              <!-- 分类和标签 - 并排显示 -->
+              <!-- 分类和标�?- 并排显示 -->
               <div class="knowledge-form-row">
                 <div class="knowledge-form-group knowledge-form-group-half">
                   <label class="knowledge-form-label">
@@ -95,7 +95,7 @@
                   <div class="knowledge-form-select-wrapper">
                     <select v-model="form.category" class="knowledge-form-select">
                       <option value="">选择分类</option>
-                      <option value="开发笔记">开发笔记</option>
+                      <option value="开发笔�?>开发笔�?/option>
                       <option value="踩坑记录">踩坑记录</option>
                       <option value="想法灵感">想法灵感</option>
                     </select>
@@ -108,7 +108,7 @@
                 <div class="knowledge-form-group knowledge-form-group-half">
                   <label class="knowledge-form-label">
                     <span class="knowledge-form-label-text">标签</span>
-                    <span class="knowledge-form-hint">（逗号分隔）</span>
+                    <span class="knowledge-form-hint">（逗号分隔�?/span>
                   </label>
                   <div class="knowledge-form-input-wrapper">
                     <input 
@@ -125,14 +125,14 @@
               <div class="knowledge-form-group">
                 <label class="knowledge-form-label">
                   <span class="knowledge-form-label-text">内容</span>
-                  <span class="knowledge-form-hint">（支持 Markdown）</span>
+                  <span class="knowledge-form-hint">（支�?Markdown�?/span>
                 </label>
                 <div class="knowledge-form-textarea-wrapper">
                   <textarea 
                     v-model="form.content" 
                     rows="12" 
                     class="knowledge-form-textarea"
-                    placeholder="在此输入 Markdown 格式的内容..."
+                    placeholder="在此输入 Markdown 格式的内�?.."
                   ></textarea>
                   <div class="knowledge-form-textarea-footer">
                     <span class="knowledge-form-textarea-hint">
@@ -147,7 +147,7 @@
             </div>
           </div>
 
-          <!-- 底部操作栏 -->
+          <!-- 底部操作�?-->
           <div class="knowledge-modal-footer">
             <button @click="cancelEdit" class="knowledge-btn knowledge-btn-secondary">
               取消
@@ -216,7 +216,7 @@ const saveItem = async () => {
   
   try {
     if (!form.value.title || !form.value.title.trim()) {
-      warning('请输入标题')
+      warning('请输入标�?)
       return
     }
 
@@ -238,12 +238,12 @@ const saveItem = async () => {
     cancelEdit()
     fetchList()
   } catch (e: unknown) {
-    handleError(e, '保存失败，请检查后端日志')
+    handleError(e, '保存失败，请检查后端日�?)
   }
 }
 
 const deleteItem = async (id: number) => {
-  if (!confirm('确定要删除吗？')) return
+  if (!confirm('确定要删除吗�?)) return
   
   const { success } = useNotification()
   const { handleError } = useErrorHandler()
@@ -282,7 +282,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* 模态框遮罩层 */
+/* 模态框遮罩�?*/
 .knowledge-modal-overlay {
   position: fixed;
   inset: 0;
@@ -557,7 +557,7 @@ onMounted(() => {
   height: 14px;
 }
 
-/* 底部操作栏 */
+/* 底部操作�?*/
 .knowledge-modal-footer {
   padding: 20px 28px;
   border-top: 1px solid var(--color-border, var(--color-border));
@@ -669,7 +669,7 @@ onMounted(() => {
   transform: translateX(100%);
 }
 
-/* 响应式设计 */
+/* 响应式设�?*/
 @media (max-width: 768px) {
   .knowledge-modal-content {
     max-width: 100%;

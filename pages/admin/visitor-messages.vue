@@ -13,7 +13,7 @@
         </div>
         <div class="stat-content">
           <div class="stat-value">{{ stats.pending }}</div>
-          <div class="stat-label">待审核</div>
+          <div class="stat-label">待审�?/div>
         </div>
       </div>
       <div class="stat-card">
@@ -31,7 +31,7 @@
         </div>
         <div class="stat-content">
           <div class="stat-value">{{ stats.rejected }}</div>
-          <div class="stat-label">已拒绝</div>
+          <div class="stat-label">已拒�?/div>
         </div>
       </div>
     </div>
@@ -39,10 +39,10 @@
     <!-- 筛选栏 -->
     <div class="filter-bar">
       <select v-model="statusFilter" @change="fetchMessages" class="filter-select">
-        <option value="">全部状态</option>
-        <option value="pending">待审核</option>
+        <option value="">全部状�?/option>
+        <option value="pending">待审�?/option>
         <option value="approved">已通过</option>
-        <option value="rejected">已拒绝</option>
+        <option value="rejected">已拒�?/option>
       </select>
       <select v-model="typeFilter" @change="fetchMessages" class="filter-select">
         <option value="">全部类型</option>
@@ -54,7 +54,7 @@
 
     <!-- 留言列表 -->
     <div class="messages-container">
-      <div v-if="loading" class="table-loading">加载中...</div>
+      <div v-if="loading" class="table-loading">加载�?..</div>
       <div v-else-if="messages.length === 0" class="table-empty">暂无留言</div>
       <div v-else class="messages-list">
         <div
@@ -149,8 +149,7 @@ const { handleError } = useErrorHandler()
 const message = useSafeMessage()
 
 const messages = ref<VisitorMessage[]>([])
-const allMessages = ref<VisitorMessage[]>([]) // 存储所有留言，用于统计
-const loading = ref(false)
+const allMessages = ref<VisitorMessage[]>([]) // 存储所有留言，用于统�?const loading = ref(false)
 const statusFilter = ref('')
 const typeFilter = ref('')
 
@@ -168,13 +167,11 @@ const stats = computed(() => {
 const filteredMessages = computed(() => {
   let result = [...allMessages.value]
   
-  // 根据状态筛选
-  if (statusFilter.value) {
+  // 根据状态筛�?  if (statusFilter.value) {
     result = result.filter(m => m.status === statusFilter.value)
   }
   
-  // 根据类型筛选
-  if (typeFilter.value) {
+  // 根据类型筛�?  if (typeFilter.value) {
     result = result.filter(m => m.messageType === typeFilter.value)
   }
   
@@ -184,21 +181,18 @@ const filteredMessages = computed(() => {
 const fetchMessages = async () => {
   loading.value = true
   try {
-    // 获取所有留言（不传筛选参数，用于统计）
-    const res = await api.get<VisitorMessage[]>('/VisitorInteraction/messages/all')
+    // 获取所有留言（不传筛选参数，用于统计�?    const res = await api.get<VisitorMessage[]>('/VisitorInteraction/messages/all')
     
-    // useApi 已经处理了 ApiResponse，res 应该是数组
-    let messageList: VisitorMessage[] = []
+    // useApi 已经处理�?ApiResponse，res 应该是数�?    let messageList: VisitorMessage[] = []
     if (Array.isArray(res)) {
       messageList = res
     } else if (res && typeof res === 'object' && 'data' in res) {
-      // 如果还是包装在 data 中（双重包装的情况）
+      // 如果还是包装�?data 中（双重包装的情况）
       messageList = Array.isArray((res as any).data) ? (res as any).data : []
     }
     
     allMessages.value = messageList
-    // 更新显示列表（会根据筛选器自动过滤）
-    messages.value = filteredMessages.value
+    // 更新显示列表（会根据筛选器自动过滤�?    messages.value = filteredMessages.value
   } catch (e) {
     console.error('加载留言失败:', e)
     handleError(e, '加载留言失败')
@@ -209,8 +203,7 @@ const fetchMessages = async () => {
   }
 }
 
-// 监听筛选器变化，更新显示列表
-watch([statusFilter, typeFilter], () => {
+// 监听筛选器变化，更新显示列�?watch([statusFilter, typeFilter], () => {
   messages.value = filteredMessages.value
 })
 
@@ -227,7 +220,7 @@ const approveMessage = async (id: number) => {
 const rejectMessage = async (id: number) => {
   try {
     await api.post(`/VisitorInteraction/message/${id}/reject`)
-    message.success('已拒绝')
+    message.success('已拒�?)
     await fetchMessages()
   } catch (e) {
     handleError(e, '操作失败')
@@ -254,9 +247,9 @@ const getTypeIcon = (type: string): string => {
 
 const getStatusName = (status: string): string => {
   const names: Record<string, string> = {
-    pending: '待审核',
+    pending: '待审�?,
     approved: '已通过',
-    rejected: '已拒绝'
+    rejected: '已拒�?
   }
   return names[status] || status
 }

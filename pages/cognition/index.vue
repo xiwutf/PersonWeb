@@ -1,10 +1,10 @@
 <template>
   <ModuleGuard module-key="cognition" :show-fallback="true">
     <div class="cognition-page">
-      <!-- 全局背景噪点 -->
+      <!-- å¨å±èæ¯åªç¹ -->
       <div class="cognition-background-noise"></div>
 
-      <!-- 动态背景光斑 -->
+      <!-- å¨æèæ¯åæ?-->
       <div class="cognition-background-container">
         <div class="cognition-background-blob cognition-background-blob--blue"></div>
         <div class="cognition-background-blob cognition-background-blob--purple"></div>
@@ -12,38 +12,37 @@
       </div>
 
       <div class="cognition-content">
-        <!-- 页面头部 -->
+        <!-- é¡µé¢å¤´é¨ -->
         <header class="cognition-header">
           <div class="cognition-header-icon">
-            <span>🧠</span>
+            <span>ð§ </span>
           </div>
-          <h1 class="cognition-title">个人认知使用说明书</h1>
+          <h1 class="cognition-title">ä¸ªäººè®¤ç¥ä½¿ç¨è¯´æä¹?/h1>
           <p class="cognition-subtitle">
-            偏理科思维、模型驱动、厌恶无效记忆的认知系统使用指南
+            åçç§æç»´ãæ¨¡åé©±å¨ãåæ¶æ æè®°å¿çè®¤ç¥ç³»ç»ä½¿ç¨æå
           </p>
           <div class="cognition-back-link-container">
             <NuxtLink to="/about" class="cognition-back-link">
               <i class="fas fa-arrow-left mr-2"></i>
-              返回关于我
-            </NuxtLink>
+              è¿åå³äºæ?            </NuxtLink>
           </div>
         </header>
 
-        <!-- 列表内容 -->
+        <!-- åè¡¨åå®¹ -->
         <div v-if="loading" class="cognition-loading">
           <div class="cognition-loading-spinner"></div>
-          <p class="cognition-loading-text">加载中...</p>
+          <p class="cognition-loading-text">å è½½ä¸?..</p>
         </div>
 
         <div v-else-if="!moduleEnabled" class="cognition-empty">
-          <div class="cognition-empty-icon">🔒</div>
-          <h3 class="cognition-empty-title">模块未启用</h3>
-          <p class="cognition-empty-text">请前往后台「系统设置 → 模块管理」启用「认知说明书」模块</p>
+          <div class="cognition-empty-icon">ð</div>
+          <h3 class="cognition-empty-title">æ¨¡åæªå¯ç?/h3>
+          <p class="cognition-empty-text">è¯·åå¾åå°ãç³»ç»è®¾ç½?â?æ¨¡åç®¡çãå¯ç¨ãè®¤ç¥è¯´æä¹¦ãæ¨¡å?/p>
         </div>
         <div v-else-if="docs.length === 0" class="cognition-empty">
-          <div class="cognition-empty-icon">📝</div>
-          <h3 class="cognition-empty-title">暂无内容</h3>
-          <p class="cognition-empty-text">认知说明书正在准备中...</p>
+          <div class="cognition-empty-icon">ð</div>
+          <h3 class="cognition-empty-title">ææ åå®¹</h3>
+          <p class="cognition-empty-text">è®¤ç¥è¯´æä¹¦æ­£å¨åå¤ä¸­...</p>
         </div>
 
         <div v-else class="cognition-list">
@@ -61,7 +60,7 @@
             </div>
             <p v-if="doc.summary" class="cognition-item-summary">{{ doc.summary }}</p>
             <div class="cognition-item-footer">
-              <span class="cognition-item-read-more">阅读全文 →</span>
+              <span class="cognition-item-read-more">éè¯»å¨æ â?/span>
             </div>
           </article>
         </div>
@@ -81,11 +80,9 @@ const { isModuleEnabled } = useModuleSystem()
 const docs = ref<any[]>([])
 const loading = ref(true)
 
-// 检查模块是否启用
-const moduleEnabled = computed(() => isModuleEnabled('cognition'))
+// æ£æ¥æ¨¡åæ¯å¦å¯ç?const moduleEnabled = computed(() => isModuleEnabled('cognition'))
 
-// 获取已发布的认知说明书列表
-const fetchDocs = async () => {
+// è·åå·²åå¸çè®¤ç¥è¯´æä¹¦åè¡?const fetchDocs = async () => {
   loading.value = true
   try {
     const res = await api.get('/CognitionDocs', {
@@ -96,13 +93,11 @@ const fetchDocs = async () => {
       }
     })
 
-    console.log('前台获取数据响应:', res) // 调试用
-
-    // 兼容 PascalCase 和 camelCase
+    console.log('åå°è·åæ°æ®ååº:', res) // è°è¯ç?
+    // å¼å®¹ PascalCase å?camelCase
     const list = res?.List || res?.list || []
     
-    // 转换字段名为 camelCase（如果后端返回的是 PascalCase）
-    docs.value = list.map((item: any) => ({
+    // è½¬æ¢å­æ®µåä¸º camelCaseï¼å¦æåç«¯è¿åçæ?PascalCaseï¼?    docs.value = list.map((item: any) => ({
       id: item.Id || item.id,
       title: item.Title || item.title,
       slug: item.Slug || item.slug,
@@ -111,8 +106,7 @@ const fetchDocs = async () => {
       updatedAt: item.UpdatedAt || item.updatedAt
     }))
 
-    console.log('前台处理后的数据:', docs.value) // 调试用
-  } catch (e) {
+    console.log('åå°å¤çåçæ°æ®:', docs.value) // è°è¯ç?  } catch (e) {
     console.error('Failed to fetch cognition docs:', e)
     docs.value = []
   } finally {
@@ -120,13 +114,12 @@ const fetchDocs = async () => {
   }
 }
 
-// 跳转到详情页
+// è·³è½¬å°è¯¦æé¡µ
 const goToDetail = (slug: string) => {
   router.push(`/cognition/${slug}`)
 }
 
-// 格式化日期
-const formatDate = (dateString?: string | Date) => {
+// æ ¼å¼åæ¥æ?const formatDate = (dateString?: string | Date) => {
   if (!dateString) return ''
   const date = typeof dateString === 'string' ? new Date(dateString) : dateString
   return date.toLocaleDateString('zh-CN', {
@@ -138,18 +131,18 @@ const formatDate = (dateString?: string | Date) => {
 
 // SEO
 useHead({
-  title: '个人认知使用说明书 - 溪午听风',
+  title: 'ä¸ªäººè®¤ç¥ä½¿ç¨è¯´æä¹?- æºªåå¬é£',
   meta: [
-    { name: 'description', content: '偏理科思维、模型驱动、厌恶无效记忆的认知系统使用指南' }
+    { name: 'description', content: 'åçç§æç»´ãæ¨¡åé©±å¨ãåæ¶æ æè®°å¿çè®¤ç¥ç³»ç»ä½¿ç¨æå' }
   ]
 })
 
 onMounted(() => {
-  console.log('认知模块是否启用:', moduleEnabled.value)
+  console.log('è®¤ç¥æ¨¡åæ¯å¦å¯ç¨:', moduleEnabled.value)
   if (moduleEnabled.value) {
     fetchDocs()
   } else {
-    console.warn('认知模块未启用，请前往后台启用')
+    console.warn('è®¤ç¥æ¨¡åæªå¯ç¨ï¼è¯·åå¾åå°å¯ç¨')
     loading.value = false
   }
 })
@@ -161,14 +154,14 @@ onMounted(() => {
   background: linear-gradient(135deg, var(--color-bg-body) 0%, var(--color-blue-200) 100%);
 }
 
-/* 背景噪点 */
+/* èæ¯åªç¹ */
 .cognition-background-noise {
   @apply fixed inset-0 opacity-[0.015] pointer-events-none;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   z-index: 0;
 }
 
-/* 动态背景光斑 */
+/* å¨æèæ¯åæ?*/
 .cognition-background-container {
   @apply fixed inset-0 pointer-events-none overflow-hidden;
   z-index: 0;
@@ -212,12 +205,12 @@ onMounted(() => {
   }
 }
 
-/* 内容区域 */
+/* åå®¹åºå */
 .cognition-content {
   @apply relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12;
 }
 
-/* 页面头部 */
+/* é¡µé¢å¤´é¨ */
 .cognition-header {
   @apply text-center mb-12;
 }
@@ -246,10 +239,10 @@ onMounted(() => {
 
 .cognition-back-link {
   @apply inline-flex items-center px-4 py-2 rounded-lg;
-  @apply bg-var(--color-bg-light, white)/80 dark:bg-gray-800/80 backdrop-blur-sm;
+  @apply bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm;
   @apply border border-gray-200 dark:border-gray-700;
   @apply text-gray-700 dark:text-gray-200;
-  @apply hover:bg-var(--color-bg-light, white) dark:hover:bg-gray-800;
+  @apply hover:bg-white dark:hover:bg-gray-800;
   @apply hover:shadow-lg transition-all duration-200;
   @apply font-medium;
 }
@@ -270,17 +263,17 @@ onMounted(() => {
   @apply text-gray-600 dark:text-gray-400;
 }
 
-/* 导航 */
+/* å¯¼èª */
 .cognition-nav {
   @apply flex items-center justify-center gap-4 mb-12;
 }
 
 .cognition-nav-link {
   @apply px-6 py-3 rounded-lg font-medium transition-all duration-200;
-  @apply bg-var(--color-bg-light, white)/80 dark:bg-gray-800/80 backdrop-blur-sm;
+  @apply bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm;
   @apply border border-gray-200 dark:border-gray-700;
   @apply text-gray-700 dark:text-gray-300;
-  @apply hover:bg-var(--color-bg-light, white) dark:hover:bg-gray-800;
+  @apply hover:bg-white dark:hover:bg-gray-800;
   @apply hover:shadow-lg hover:scale-105;
 }
 
@@ -290,9 +283,9 @@ onMounted(() => {
   @apply text-blue-700 dark:text-blue-300;
 }
 
-/* 文章内容 */
+/* æç« åå®¹ */
 .cognition-article {
-  @apply bg-var(--color-bg-light, white)/90 dark:bg-gray-900/90 backdrop-blur-sm;
+  @apply bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm;
   @apply rounded-2xl shadow-xl;
   @apply border border-gray-200 dark:border-gray-700;
   @apply p-8 md:p-12;
@@ -373,7 +366,7 @@ onMounted(() => {
   @apply text-blue-600 dark:text-blue-400 hover:underline;
 }
 
-/* 加载状态 */
+/* å è½½ç¶æ?*/
 .cognition-loading {
   @apply flex flex-col items-center justify-center py-20;
 }
@@ -393,13 +386,13 @@ onMounted(() => {
   @apply mt-4 text-gray-500 dark:text-gray-400;
 }
 
-/* 列表样式 */
+/* åè¡¨æ ·å¼ */
 .cognition-list {
   @apply space-y-6;
 }
 
 .cognition-item {
-  @apply bg-var(--color-bg-light, white)/90 dark:bg-gray-900/90 backdrop-blur-sm;
+  @apply bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm;
   @apply rounded-2xl shadow-xl;
   @apply border border-gray-200 dark:border-gray-700;
   @apply p-6 md:p-8;
@@ -418,7 +411,7 @@ onMounted(() => {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  /* 确保文字清晰可见 */
+  /* ç¡®ä¿æå­æ¸æ°å¯è§ */
   color: var(--color-primary-start);
 }
 
@@ -448,7 +441,7 @@ onMounted(() => {
   @apply hover:underline;
 }
 
-/* 空状态 */
+/* ç©ºç¶æ?*/
 .cognition-empty {
   @apply flex flex-col items-center justify-center py-20;
 }
@@ -465,7 +458,7 @@ onMounted(() => {
   @apply text-gray-500 dark:text-gray-400;
 }
 
-/* 响应式 */
+/* ååºå¼?*/
 @media (max-width: 640px) {
   .cognition-title {
     @apply text-3xl;

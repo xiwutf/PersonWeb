@@ -6,7 +6,7 @@
       <p>发现和安装丰富的功能模块，让您的网站更加强大</p>
     </div>
 
-    <!-- 搜索和筛选 -->
+    <!-- 搜索和筛�?-->
     <div class="store-controls">
       <div class="search-box">
         <input
@@ -24,20 +24,20 @@
 
       <div class="filter-controls">
         <select v-model="selectedCategory" class="category-select">
-          <option value="">所有分类</option>
+          <option value="">所有分�?/option>
           <option value="ai">AI</option>
           <option value="visitor">访客互动</option>
           <option value="3d">3D展示</option>
           <option value="admin">后台管理</option>
           <option value="performance">性能监控</option>
           <option value="i18n">多语言</option>
-          <option value="tools">工具集</option>
+          <option value="tools">工具�?/option>
           <option value="ui">UI组件</option>
         </select>
 
         <select v-model="sortBy" class="sort-select">
           <option value="popular">热门</option>
-          <option value="newest">最新</option>
+          <option value="newest">最�?/option>
           <option value="price-low">价格从低到高</option>
           <option value="price-high">价格从高到低</option>
         </select>
@@ -46,13 +46,13 @@
 
     <!-- 模块网格 -->
     <div class="modules-grid">
-      <!-- 加载状态 -->
+      <!-- 加载状�?-->
       <div v-if="isLoading" class="loading-state">
         <div class="loading-spinner"></div>
         <p>正在加载模块...</p>
       </div>
 
-      <!-- 错误状态 -->
+      <!-- 错误状�?-->
       <div v-else-if="error" class="error-state">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -80,8 +80,7 @@
         :disabled="currentPage === 1"
         class="page-btn"
       >
-        上一页
-      </button>
+        上一�?      </button>
 
       <div class="page-numbers">
         <button
@@ -99,8 +98,7 @@
         :disabled="currentPage === totalPages"
         class="page-btn"
       >
-        下一页
-      </button>
+        下一�?      </button>
     </div>
   </div>
 </template>
@@ -111,8 +109,7 @@ import ModuleCard from '~/components/ModuleCard.vue'
 import { useModuleStore } from '~/composables/useModuleStore'
 import { useModuleManager } from '~/composables/useModuleManager'
 
-// 状态
-const searchQuery = ref('')
+// 状�?const searchQuery = ref('')
 const selectedCategory = ref('')
 const sortBy = ref('popular')
 const currentPage = ref(1)
@@ -131,8 +128,7 @@ const { installModule, installMultipleModules } = useModuleManager()
 // 数据
 const modules = ref([])
 
-// 计算属性
-const filteredModules = computed(() => {
+// 计算属�?const filteredModules = computed(() => {
   let result = modules.value
 
   // 搜索过滤
@@ -190,13 +186,13 @@ async function handleInstall(moduleKey: string) {
     })
 
     if (success) {
-      alert('模块安装成功！')
+      alert('模块安装成功�?)
     } else {
       alert('模块安装失败，请重试')
     }
   } catch (e) {
     console.error('Failed to install module:', e)
-    alert('安装失败：' + e.message)
+    alert('安装失败�? + e.message)
   }
 }
 

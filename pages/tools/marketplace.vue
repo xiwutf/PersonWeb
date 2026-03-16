@@ -1,34 +1,33 @@
 <template>
   <div class="min-h-screen bg-[var(--color-text-main)] text-slate-200 relative overflow-hidden font-['Outfit']">
-    <!-- 全局背景 -->
+    <!-- ĺ¨ĺąčćŻ -->
     <div class="fixed inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none z-50"
          style="background-image: url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E&quot;);">
     </div>
 
     <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <!-- 返回按钮 -->
+      <!-- čżĺćéŽ -->
       <div class="tools-back-button-container">
         <NuxtLink to="/tools" class="tools-back-button">
           <svg class="tools-back-button-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
-          <span>返回插件工具</span>
+          <span>čżĺćäťśĺˇĽĺˇ</span>
         </NuxtLink>
       </div>
 
-      <!-- 页面头部 -->
+      <!-- éĄľé˘ĺ¤´é¨ -->
       <header class="text-center mb-12">
         <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-orange-200 via-var(--color-bg-light, white) to-red-200">
-          工具商城
+          ĺˇĽĺˇĺĺ
         </h1>
         <p class="text-lg text-slate-400 max-w-2xl mx-auto">
-          发现专业工具，提升工作效率
-        </p>
+          ĺç°ä¸ä¸ĺˇĽĺˇďźćĺĺˇĽä˝ćç?        </p>
       </header>
 
-      <!-- 筛选栏 -->
+      <!-- ç­éć  -->
       <div class="mb-8 flex flex-wrap gap-4 items-center justify-between">
-        <!-- 分类筛选 -->
+        <!-- ĺçąťç­é?-->
         <div class="flex flex-wrap gap-2">
           <button
             v-for="cat in categories"
@@ -47,36 +46,36 @@
           </button>
         </div>
 
-        <!-- 搜索和排序 -->
+        <!-- ćç´˘ĺćĺş?-->
         <div class="flex gap-2 flex-1 max-w-md">
           <input
             v-model="searchQuery"
             type="text"
-            placeholder="搜索工具..."
+            placeholder="ćç´˘ĺˇĽĺˇ..."
             class="flex-1 px-4 py-2 bg-slate-800/50 border border-var(--color-bg-light, white)/10 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:border-orange-500/50"
           />
           <select
             v-model="sortBy"
             class="px-4 py-2 bg-slate-800/50 border border-var(--color-bg-light, white)/10 rounded-xl text-slate-200 focus:outline-none focus:border-orange-500/50"
           >
-            <option value="popular">最受欢迎</option>
-            <option value="newest">最新发布</option>
-            <option value="rating">最高评分</option>
-            <option value="price">价格从低到高</option>
-            <option value="price_desc">价格从高到低</option>
+            <option value="popular">ćĺćŹ˘čż?/option>
+            <option value="newest">ćć°ĺĺ¸?/option>
+            <option value="rating">ćéŤčŻĺ?/option>
+            <option value="price">äťˇć źäťä˝ĺ°éŤ</option>
+            <option value="price_desc">äťˇć źäťéŤĺ°ä˝</option>
           </select>
         </div>
       </div>
 
-      <!-- 工具列表 -->
+      <!-- ĺˇĽĺˇĺčĄ¨ -->
       <div v-if="loading" class="text-center py-20">
         <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
-        <p class="mt-4 text-slate-400">加载中...</p>
+        <p class="mt-4 text-slate-400">ĺ č˝˝ä¸?..</p>
       </div>
 
       <div v-else-if="error" class="text-center py-20">
-        <div class="text-6xl mb-4 opacity-50">😵</div>
-        <h3 class="text-xl font-semibold text-slate-300 mb-2">加载失败</h3>
+        <div class="text-6xl mb-4 opacity-50">đľ</div>
+        <h3 class="text-xl font-semibold text-slate-300 mb-2">ĺ č˝˝ĺ¤ąč´Ľ</h3>
         <p class="text-slate-500">{{ error }}</p>
       </div>
 
@@ -87,22 +86,22 @@
             :key="tool.id"
             class="group relative bg-slate-800/30 backdrop-blur-md border border-var(--color-bg-light, white)/5 rounded-3xl overflow-hidden hover:bg-slate-800/50 transition-all duration-500 hover:border-orange-500/30 hover:shadow-[0_0_30px_rgba(249,115,22,0.15)] flex flex-col"
           >
-            <!-- 封面图片 -->
+            <!-- ĺ°é˘ĺžç -->
             <div v-if="tool.coverImage" class="h-48 overflow-hidden">
               <img :src="tool.coverImage" :alt="tool.name" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
             </div>
 
-            <!-- 卡片内容 -->
+            <!-- ĺĄçĺĺŽš -->
             <div class="p-6 flex-1 flex flex-col">
               <div class="flex items-start justify-between mb-4">
                 <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/20 border border-var(--color-bg-light, white)/10 flex items-center justify-center text-xl">
-                  {{ tool.icon || '🔧' }}
+                  {{ tool.icon || 'đ§' }}
                 </div>
                 <div class="text-right">
-                  <div v-if="tool.isFree" class="text-sm font-bold text-emerald-400">免费</div>
+                  <div v-if="tool.isFree" class="text-sm font-bold text-emerald-400">ĺč´š</div>
                   <div v-else>
-                    <div class="text-xl font-bold text-emerald-400">¥{{ tool.price }}</div>
-                    <div v-if="tool.originalPrice" class="text-xs text-slate-500 line-through">¥{{ tool.originalPrice }}</div>
+                    <div class="text-xl font-bold text-emerald-400">ÂĽ{{ tool.price }}</div>
+                    <div v-if="tool.originalPrice" class="text-xs text-slate-500 line-through">ÂĽ{{ tool.originalPrice }}</div>
                   </div>
                 </div>
               </div>
@@ -115,7 +114,7 @@
                 {{ tool.description }}
               </p>
 
-              <!-- 标签和分类 -->
+              <!-- ć ç­žĺĺçą?-->
               <div class="flex flex-wrap gap-2 mb-4">
                 <span
                   v-for="tag in tool.tags"
@@ -126,27 +125,27 @@
                 </span>
               </div>
 
-              <!-- 统计信息 -->
+              <!-- çťčŽĄäżĄćŻ -->
               <div class="flex items-center gap-4 text-xs text-slate-500 mb-4">
-                <span>⭐ {{ tool.rating.toFixed(1) }} ({{ tool.ratingCount }})</span>
-                <span>📦 {{ tool.purchaseCount }} 购买</span>
-                <span>👆 {{ tool.useCount }} 使用</span>
+                <span>â­?{{ tool.rating.toFixed(1) }} ({{ tool.ratingCount }})</span>
+                <span>đŚ {{ tool.purchaseCount }} č´­äš°</span>
+                <span>đ {{ tool.useCount }} ä˝żç¨</span>
               </div>
 
-              <!-- 底部按钮 -->
+              <!-- ĺşé¨ćéŽ -->
               <div class="flex gap-2 mt-auto">
                 <NuxtLink
                   :to="`/tools/${tool.slug}`"
                   class="flex-1 bg-slate-700/50 hover:bg-slate-600/50 text-slate-200 px-4 py-2 rounded-xl transition-all text-center text-sm"
                 >
-                  查看详情
+                  ćĽçčŻŚć
                 </NuxtLink>
                 <button
                   @click="handlePurchase(tool)"
                   :disabled="purchasing"
                   class="flex-1 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-var(--color-bg-light, white) px-4 py-2 rounded-xl transition-all text-sm font-medium disabled:opacity-50"
                 >
-                  {{ tool.isFree ? '免费获取' : '立即购买' }}
+                  {{ tool.isFree ? 'ĺč´ščˇĺ' : 'çŤĺłč´­äš°' }}
                 </button>
               </div>
             </div>
@@ -154,7 +153,7 @@
         </TransitionGroup>
       </div>
 
-      <!-- 分页 -->
+      <!-- ĺéĄľ -->
       <div v-if="totalPages > 1" class="mt-12 flex justify-center gap-2">
         <button
           v-for="page in totalPages"
@@ -214,7 +213,7 @@ const pageSize = 20
 const totalPages = ref(1)
 const purchasing = ref(false)
 
-// 获取分类
+// čˇĺĺçąť
 const fetchCategories = async () => {
   try {
     const res = await api.get('/Toolbox/categories')
@@ -222,11 +221,11 @@ const fetchCategories = async () => {
       categories.value = res as Category[]
     }
   } catch (e) {
-    console.error('获取分类失败', e)
+    console.error('čˇĺĺçąťĺ¤ąč´Ľ', e)
   }
 }
 
-// 获取工具列表
+// čˇĺĺˇĽĺˇĺčĄ¨
 const fetchTools = async () => {
   loading.value = true
   error.value = null
@@ -249,18 +248,18 @@ const fetchTools = async () => {
       totalPages.value = res.totalPages || 1
     }
   } catch (e) {
-    error.value = '加载工具列表失败'
-    console.error('获取工具列表失败', e)
+    error.value = 'ĺ č˝˝ĺˇĽĺˇĺčĄ¨ĺ¤ąč´Ľ'
+    console.error('čˇĺĺˇĽĺˇĺčĄ¨ĺ¤ąč´Ľ', e)
   } finally {
     loading.value = false
   }
 }
 
-// 购买工具
+// č´­äš°ĺˇĽĺˇ
 const handlePurchase = async (tool: Tool) => {
   const visitorId = localStorage.getItem('visitor_id')
   if (!visitorId) {
-    alert('请先登录')
+    alert('čŻˇĺçťĺ˝')
     return
   }
 
@@ -274,21 +273,20 @@ const handlePurchase = async (tool: Tool) => {
 
     if (res) {
       if (tool.isFree) {
-        alert('工具已添加到我的工具')
+        alert('ĺˇĽĺˇĺˇ˛ćˇťĺ ĺ°ćçĺˇĽĺˇ')
       } else {
-        alert('购买成功，请完成支付')
+        alert('č´­äš°ćĺďźčŻˇĺŽććŻäť')
       }
     }
   } catch (e) {
-    alert('购买失败，请重试')
-    console.error('购买失败', e)
+    alert('č´­äš°ĺ¤ąč´ĽďźčŻˇéčŻ')
+    console.error('č´­äš°ĺ¤ąč´Ľ', e)
   } finally {
     purchasing.value = false
   }
 }
 
-// 监听筛选条件变化
-watch([selectedCategory, searchQuery, sortBy, currentPage], () => {
+// çĺŹç­éćĄäťśĺĺ?watch([selectedCategory, searchQuery, sortBy, currentPage], () => {
   currentPage.value = 1
   fetchTools()
 })
@@ -299,15 +297,15 @@ onMounted(() => {
 })
 
 useHead({
-  title: '工具商城 - 溪午听风',
+  title: 'ĺˇĽĺˇĺĺ - ćşŞĺĺŹéŁ',
   meta: [
-    { name: 'description', content: '发现专业工具，提升工作效率' }
+    { name: 'description', content: 'ĺç°ä¸ä¸ĺˇĽĺˇďźćĺĺˇĽä˝ćç? }
   ]
 })
 </script>
 
 <style scoped>
-/* 返回按钮样式 */
+/* čżĺćéŽć ˇĺź */
 .tools-back-button-container {
   margin-bottom: 1.5rem;
 }

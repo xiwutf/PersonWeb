@@ -1,51 +1,51 @@
 <template>
   <div>
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold text-gray-800 dark:text-var(--color-bg-light, white)">年度目标管理</h1>
+      <h1 class="text-2xl font-bold text-gray-800 dark:text-var(--color-bg-light, white)">ĺš´ĺşŚçŽć çŽĄç</h1>
       <button @click="showCreateModal = true" class="px-4 py-2 bg-blue-600 text-var(--color-bg-light, white) rounded hover:bg-blue-700 transition-colors">
-        + 新建目标
+        + ć°ĺťşçŽć 
       </button>
     </div>
 
-    <!-- 统计卡片 -->
+    <!-- çťčŽĄĺĄç -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-        <div class="text-sm text-gray-500 dark:text-gray-400">总目标</div>
+      <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="text-sm text-gray-500 dark:text-gray-400">ćťçŽć ?/div>
         <div class="text-2xl font-bold text-gray-800 dark:text-var(--color-bg-light, white)">{{ stats?.Total || 0 }}</div>
       </div>
-      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-        <div class="text-sm text-gray-500 dark:text-gray-400">进行中</div>
+      <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="text-sm text-gray-500 dark:text-gray-400">čżčĄä¸?/div>
         <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">{{ stats?.Active || 0 }}</div>
       </div>
-      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-        <div class="text-sm text-gray-500 dark:text-gray-400">已完成</div>
+      <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="text-sm text-gray-500 dark:text-gray-400">ĺˇ˛ĺŽć?/div>
         <div class="text-2xl font-bold text-green-600 dark:text-green-400">{{ stats?.Completed || 0 }}</div>
       </div>
-      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-        <div class="text-sm text-gray-500 dark:text-gray-400">平均进度</div>
+      <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="text-sm text-gray-500 dark:text-gray-400">ĺšłĺčżĺşŚ</div>
         <div class="text-2xl font-bold text-purple-600 dark:text-purple-400">{{ stats?.AverageProgress || 0 }}%</div>
       </div>
     </div>
 
-    <!-- 筛选栏 -->
-    <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-6 flex gap-4 flex-wrap">
-      <select v-model.number="filterYear" @change="fetchGoals" class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-        <option :value="null">全部年份</option>
-        <option v-for="y in years" :key="y" :value="y">{{ y }}年</option>
+    <!-- ç­éć  -->
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-6 flex gap-4 flex-wrap">
+      <select v-model.number="filterYear" @change="fetchGoals" class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+        <option :value="null">ĺ¨é¨ĺš´äť˝</option>
+        <option v-for="y in years" :key="y" :value="y">{{ y }}ĺš?/option>
       </select>
-      <select v-model="filterStatus" @change="fetchGoals" class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-        <option value="">全部状态</option>
-        <option value="active">进行中</option>
-        <option value="completed">已完成</option>
-        <option value="archived">已归档</option>
+      <select v-model="filterStatus" @change="fetchGoals" class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+        <option value="">ĺ¨é¨çść?/option>
+        <option value="active">čżčĄä¸?/option>
+        <option value="completed">ĺˇ˛ĺŽć?/option>
+        <option value="archived">ĺˇ˛ĺ˝ćĄ?/option>
       </select>
-      <button @click="fetchGoals" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">刷新</button>
+      <button @click="fetchGoals" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">ĺˇć°</button>
     </div>
 
-    <!-- 目标列表 -->
-    <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-      <div v-if="loading" class="p-8 text-center text-gray-500 dark:text-gray-400">加载中...</div>
-      <div v-else-if="goals.length === 0" class="p-8 text-center text-gray-500 dark:text-gray-400">暂无目标</div>
+    <!-- çŽć ĺčĄ¨ -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div v-if="loading" class="p-8 text-center text-gray-500 dark:text-gray-400">ĺ č˝˝ä¸?..</div>
+      <div v-else-if="goals.length === 0" class="p-8 text-center text-gray-500 dark:text-gray-400">ćć çŽć </div>
       <div v-else class="divide-y divide-gray-200 dark:divide-gray-700">
         <div v-for="goal in goals" :key="goal.id" class="p-6 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
           <div class="flex items-start justify-between">
@@ -53,8 +53,7 @@
               <div class="flex items-center gap-3 mb-2">
                 <h3 class="text-lg font-semibold text-gray-800 dark:text-var(--color-bg-light, white)">{{ goal.title }}</h3>
                 <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded text-xs font-medium">
-                  {{ goal.year }}年
-                </span>
+                  {{ goal.year }}ĺš?                </span>
                 <span :class="getStatusClass(goal.status)" class="px-2 py-1 rounded text-xs font-medium">
                   {{ getStatusText(goal.status) }}
                 </span>
@@ -64,20 +63,20 @@
               </div>
               <p v-if="goal.description" class="text-sm text-gray-600 dark:text-gray-400 mb-3">{{ goal.description }}</p>
               
-              <!-- 目标数值 -->
+              <!-- çŽć ć°ĺ?-->
               <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 mb-3">
                 <span v-if="goal.targetValue">
-                  目标: <span class="font-semibold text-gray-800 dark:text-var(--color-bg-light, white)">{{ goal.targetValue }}{{ goal.unit || '' }}</span>
+                  çŽć : <span class="font-semibold text-gray-800 dark:text-var(--color-bg-light, white)">{{ goal.targetValue }}{{ goal.unit || '' }}</span>
                 </span>
                 <span>
-                  当前: <span class="font-semibold text-gray-800 dark:text-var(--color-bg-light, white)">{{ goal.currentValue }}{{ goal.unit || '' }}</span>
+                  ĺ˝ĺ: <span class="font-semibold text-gray-800 dark:text-var(--color-bg-light, white)">{{ goal.currentValue }}{{ goal.unit || '' }}</span>
                 </span>
                 <span>
-                  进度: <span class="font-semibold text-gray-800 dark:text-var(--color-bg-light, white)">{{ goal.progress }}%</span>
+                  čżĺşŚ: <span class="font-semibold text-gray-800 dark:text-var(--color-bg-light, white)">{{ goal.progress }}%</span>
                 </span>
               </div>
 
-              <!-- 进度条 -->
+              <!-- čżĺşŚć?-->
               <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 mb-3">
                 <div 
                   :class="getProgressColor(goal.progress)"
@@ -86,88 +85,87 @@
                 ></div>
               </div>
 
-              <!-- 月度 KPI 预览 -->
+              <!-- ćĺşŚ KPI é˘č§ -->
               <div v-if="goal.monthlyKpis && goal.monthlyKpis.length > 0" class="mt-3">
-                <div class="text-xs text-gray-500 dark:text-gray-400 mb-2">月度 KPI ({{ goal.monthlyKpis.length }})</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400 mb-2">ćĺşŚ KPI ({{ goal.monthlyKpis.length }})</div>
                 <div class="grid grid-cols-6 gap-2">
                   <div 
                     v-for="kpi in goal.monthlyKpis.slice(0, 6)" 
                     :key="kpi.id"
                     :class="getKpiStatusClass(kpi.status)"
                     class="px-2 py-1 rounded text-xs text-center"
-                    :title="`${kpi.month}月: ${kpi.progress}%`"
+                    :title="`${kpi.month}ć? ${kpi.progress}%`"
                   >
-                    {{ kpi.month }}月
-                  </div>
+                    {{ kpi.month }}ć?                  </div>
                 </div>
               </div>
             </div>
             <div class="flex gap-2 ml-4">
               <NuxtLink :to="`/admin/goals/${goal.id}/kpis`" class="px-3 py-1 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">KPI</NuxtLink>
-              <button @click="editGoal(goal)" class="px-3 py-1 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">编辑</button>
-              <button @click="deleteGoal(goal.id)" class="px-3 py-1 text-sm text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">删除</button>
+              <button @click="editGoal(goal)" class="px-3 py-1 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">çźčž</button>
+              <button @click="deleteGoal(goal.id)" class="px-3 py-1 text-sm text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">ĺ é¤</button>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 创建/编辑目标模态框 -->
+    <!-- ĺĺťş/çźčžçŽć ć¨ĄććĄ -->
     <div v-if="showCreateModal || editingGoal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" @click.self="closeModal">
-      <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
         <div class="p-6">
           <h2 class="text-xl font-bold text-gray-800 dark:text-var(--color-bg-light, white) mb-4">
-            {{ editingGoal ? '编辑目标' : '新建年度目标' }}
+            {{ editingGoal ? 'çźčžçŽć ' : 'ć°ĺťşĺš´ĺşŚçŽć ' }}
           </h2>
           <form @submit.prevent="saveGoal" class="space-y-4">
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">目标年份 *</label>
-                <input v-model.number="goalForm.year" type="number" required min="2020" max="2100" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">çŽć ĺš´äť˝ *</label>
+                <input v-model.number="goalForm.year" type="number" required min="2020" max="2100" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">分类</label>
-                <input v-model="goalForm.category" type="text" placeholder="工作/学习/生活等" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ĺçąť</label>
+                <input v-model="goalForm.category" type="text" placeholder="ĺˇĽä˝/ĺ­Śäš /çć´ťç­? class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
               </div>
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">目标标题 *</label>
-              <input v-model="goalForm.title" type="text" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">çŽć ć é˘ *</label>
+              <input v-model="goalForm.title" type="text" required class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">目标描述</label>
-              <textarea v-model="goalForm.description" rows="3" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200"></textarea>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">çŽć ćčż°</label>
+              <textarea v-model="goalForm.description" rows="3" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"></textarea>
             </div>
             <div class="grid grid-cols-3 gap-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">目标数值</label>
-                <input v-model.number="goalForm.targetValue" type="number" step="0.01" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">çŽć ć°ĺ?/label>
+                <input v-model.number="goalForm.targetValue" type="number" step="0.01" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">当前数值</label>
-                <input v-model.number="goalForm.currentValue" type="number" step="0.01" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ĺ˝ĺć°ĺ?/label>
+                <input v-model.number="goalForm.currentValue" type="number" step="0.01" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">单位</label>
-                <input v-model="goalForm.unit" type="text" placeholder="个/篇/小时等" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ĺä˝</label>
+                <input v-model="goalForm.unit" type="text" placeholder="ä¸?çŻ?ĺ°ćśç­? class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
               </div>
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">开始日期</label>
-                <input v-model="goalForm.startDate" type="date" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ĺźĺ§ćĽć?/label>
+                <input v-model="goalForm.startDate" type="date" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">结束日期</label>
-                <input v-model="goalForm.endDate" type="date" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">çťććĽć</label>
+                <input v-model="goalForm.endDate" type="date" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
               </div>
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">状态</label>
-              <select v-model="goalForm.status" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-var(--color-bg-light, white) dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-                <option value="active">进行中</option>
-                <option value="completed">已完成</option>
-                <option value="archived">已归档</option>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">çść?/label>
+              <select v-model="goalForm.status" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+                <option value="active">čżčĄä¸?/option>
+                <option value="completed">ĺˇ˛ĺŽć?/option>
+                <option value="archived">ĺˇ˛ĺ˝ćĄ?/option>
               </select>
             </div>
             <div class="flex justify-end gap-3 pt-4">
@@ -176,9 +174,9 @@
                 @click="closeModal" 
                 class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors font-bold border-2 border-gray-400 dark:border-gray-500 shadow-sm text-gray-900 dark:text-gray-100"
               >
-                <span class="dark:text-gray-100" style="color: inherit;">取消</span>
+                <span class="dark:text-gray-100" style="color: inherit;">ĺćś</span>
               </button>
-              <button type="submit" class="px-4 py-2 bg-blue-600 text-var(--color-bg-light, white) rounded hover:bg-blue-700 transition-colors font-medium shadow-md">保存</button>
+              <button type="submit" class="px-4 py-2 bg-blue-600 text-var(--color-bg-light, white) rounded hover:bg-blue-700 transition-colors font-medium shadow-md">äżĺ­</button>
             </div>
           </form>
         </div>
@@ -258,8 +256,8 @@ const fetchGoals = async () => {
       goals.value = res.data.Items
     }
   } catch (error) {
-    console.error('获取目标列表失败:', error)
-    toast.error('获取目标列表失败')
+    console.error('čˇĺçŽć ĺčĄ¨ĺ¤ąč´Ľ:', error)
+    toast.error('čˇĺçŽć ĺčĄ¨ĺ¤ąč´Ľ')
   } finally {
     loading.value = false
   }
@@ -274,7 +272,7 @@ const fetchStats = async () => {
       stats.value = res.data
     }
   } catch (error) {
-    console.error('获取统计失败:', error)
+    console.error('čˇĺçťčŽĄĺ¤ąč´Ľ:', error)
   }
 }
 
@@ -288,18 +286,18 @@ const saveGoal = async () => {
 
     if (editingGoal.value) {
       await api.put(`/Goals/${editingGoal.value.id}`, data)
-      toast.success('目标更新成功')
+      toast.success('çŽć ć´ć°ćĺ')
     } else {
       await api.post('/Goals', data)
-      toast.success('目标创建成功')
+      toast.success('çŽć ĺĺťşćĺ')
     }
 
     closeModal()
     fetchGoals()
     fetchStats()
   } catch (error) {
-    console.error('保存目标失败:', error)
-    toast.error('保存目标失败')
+    console.error('äżĺ­çŽć ĺ¤ąč´Ľ:', error)
+    toast.error('äżĺ­çŽć ĺ¤ąč´Ľ')
   }
 }
 
@@ -320,16 +318,16 @@ const editGoal = (goal: Goal) => {
 }
 
 const deleteGoal = async (id: number) => {
-  if (!confirm('确定要删除这个目标吗？删除后关联的月度 KPI 也会被删除。')) return
+  if (!confirm('çĄŽĺŽčŚĺ é¤čżä¸ŞçŽć ĺďźĺ é¤ĺĺłčçćĺş?KPI äšäźč˘Ťĺ é¤ă?)) return
 
   try {
     await api.delete(`/Goals/${id}`)
-    toast.success('目标删除成功')
+    toast.success('çŽć ĺ é¤ćĺ')
     fetchGoals()
     fetchStats()
   } catch (error) {
-    console.error('删除目标失败:', error)
-    toast.error('删除目标失败')
+    console.error('ĺ é¤çŽć ĺ¤ąč´Ľ:', error)
+    toast.error('ĺ é¤çŽć ĺ¤ąč´Ľ')
   }
 }
 
@@ -361,9 +359,9 @@ const getStatusClass = (status: string) => {
 
 const getStatusText = (status: string) => {
   const texts: Record<string, string> = {
-    active: '进行中',
-    completed: '已完成',
-    archived: '已归档'
+    active: 'čżčĄä¸?,
+    completed: 'ĺˇ˛ĺŽć?,
+    archived: 'ĺˇ˛ĺ˝ćĄ?
   }
   return texts[status] || status
 }

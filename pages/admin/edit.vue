@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="container mx-auto px-4 py-8 h-screen flex flex-col">
     <div class="flex justify-between items-center mb-4">
       <h1 class="text-2xl font-bold text-gray-800 dark:text-var(--color-bg-light, white)">
@@ -64,7 +64,7 @@ onMounted(async () => {
       const res = await $fetch<{ content: string }>(`/api/admin/articles?action=read&filename=${filename.value}`)
       content.value = res.content
     } catch (e: unknown) {
-      handleError(e, '加载文件失败')
+      handleError(e, '�����ļ�ʧ��')
       router.push('/admin')
     }
   }
@@ -75,7 +75,7 @@ const save = async () => {
   const { handleError } = useErrorHandler()
   
   if (!filename.value) {
-    warning('文件名不能为空')
+    warning('�ļ�������Ϊ��')
     return
   }
   
@@ -88,10 +88,10 @@ const save = async () => {
         content: content.value
       }
     })
-    success('保存成功')
+    success('����ɹ�')
     router.push('/admin')
   } catch (e: unknown) {
-    handleError(e, '保存失败')
+    handleError(e, '����ʧ��')
   } finally {
     saving.value = false
   }

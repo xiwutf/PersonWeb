@@ -1,6 +1,6 @@
-﻿<template>
+<template>
   <div class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
-    <div class="bg-var(--color-bg-light, white) dark:bg-gray-800 p-8 rounded-lg shadow-md w-96">
+    <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md w-96">
       <h1 class="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-var(--color-bg-light, white)">System Access</h1>
       <form @submit.prevent="handleLogin">
         <div class="mb-4">

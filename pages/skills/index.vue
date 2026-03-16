@@ -1,30 +1,30 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-slate-50 to-var(--color-bg-light, white) dark:from-gray-900 dark:to-gray-800 py-12">
     <div class="container mx-auto px-4 max-w-7xl">
-      <!-- 页面头部 -->
+      <!-- é¡µé¢å¤´é¨ -->
       <div class="text-center mb-12">
-        <h1 class="text-4xl font-bold text-gray-900 dark:text-var(--color-bg-light, white) mb-4">技能树</h1>
-        <p class="text-xl text-gray-600 dark:text-gray-400">我的技术能力展示</p>
+        <h1 class="text-4xl font-bold text-gray-900 dark:text-var(--color-bg-light, white) mb-4">æè½æ </h1>
+        <p class="text-xl text-gray-600 dark:text-gray-400">æçææ¯è½åå±ç¤?/p>
       </div>
 
-      <!-- 加载状态 -->
+      <!-- å è½½ç¶æ?-->
       <div v-if="loading" class="text-center py-20">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-        <p class="text-gray-600 dark:text-gray-400">加载中...</p>
+        <p class="text-gray-600 dark:text-gray-400">å è½½ä¸?..</p>
       </div>
 
-      <!-- 技能树内容 -->
+      <!-- æè½æ åå®¹ -->
       <div v-else class="space-y-8">
-        <!-- 雷达图 -->
+        <!-- é·è¾¾å?-->
         <div class="card p-8">
-          <h2 class="text-2xl font-bold text-gray-900 dark:text-var(--color-bg-light, white) mb-6">技能雷达图</h2>
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-var(--color-bg-light, white) mb-6">æè½é·è¾¾å¾</h2>
           <div class="flex gap-4 mb-4">
             <select
               v-model="selectedCategoryId"
               @change="updateRadarData"
               class="form-select"
             >
-              <option :value="null">全部分类</option>
+              <option :value="null">å¨é¨åç±»</option>
               <option v-for="cat in categories" :key="cat.id" :value="cat.id">
                 {{ cat.icon }} {{ cat.name }}
               </option>
@@ -34,21 +34,21 @@
               @change="updateRadarData"
               class="form-select"
             >
-              <option value="current">当前评级</option>
-              <option value="3months">3个月</option>
-              <option value="6months">6个月</option>
-              <option value="1year">1年</option>
+              <option value="current">å½åè¯çº§</option>
+              <option value="3months">3ä¸ªæ</option>
+              <option value="6months">6ä¸ªæ</option>
+              <option value="1year">1å¹?/option>
             </select>
           </div>
           <div v-if="radarData.labels.length > 0" class="h-96">
             <Radar :data="radarData" :options="radarOptions" />
           </div>
           <div v-else class="h-96 flex items-center justify-center text-gray-500 dark:text-gray-400">
-            暂无数据
+            ææ æ°æ®
           </div>
         </div>
 
-        <!-- 技能分类展示 -->
+        <!-- æè½åç±»å±ç¤?-->
         <div
           v-for="category in skillTree"
           :key="category.id"
@@ -63,8 +63,7 @@
               <div>
                 <h2 class="text-2xl font-bold text-gray-900 dark:text-var(--color-bg-light, white)">{{ category.name }}</h2>
                 <p class="text-sm text-gray-500 dark:text-gray-400">
-                  {{ category.skills?.length || 0 }} 个技能
-                </p>
+                  {{ category.skills?.length || 0 }} ä¸ªæè?                </p>
               </div>
             </div>
           </div>
@@ -87,7 +86,7 @@
                 </p>
                 <div class="space-y-2">
                   <div class="flex items-center justify-between">
-                    <span class="text-sm text-gray-500 dark:text-gray-400">当前评级</span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400">å½åè¯çº§</span>
                     <span class="text-xl font-bold" :class="getRatingColor(skill.currentRating)">
                       {{ skill.currentRating || 0 }} / 10
                     </span>
@@ -113,8 +112,7 @@
 </template>
 
 <script setup lang="ts">
-// 使用默认布局（包含顶部导航栏）
-definePageMeta({
+// ä½¿ç¨é»è®¤å¸å±ï¼åå«é¡¶é¨å¯¼èªæ ï¼?definePageMeta({
   layout: 'default'
 })
 
@@ -183,7 +181,7 @@ const updateRadarData = async () => {
       radarData.value = {
         labels: res.map((item: any) => item.skillName || item.SkillName),
         datasets: [{
-          label: '技能评级',
+          label: 'æè½è¯çº?,
           data: res.map((item: any) => 
             parseFloat(item.averageRating || item.AverageRating || item.rating || item.Rating || 0)
           ),
@@ -197,8 +195,7 @@ const updateRadarData = async () => {
         }]
       }
     } else if (timeRange.value === 'current') {
-      // 如果没有时间范围，使用当前评级
-      const allSkills: any[] = []
+      // å¦ææ²¡ææ¶é´èå´ï¼ä½¿ç¨å½åè¯çº?      const allSkills: any[] = []
       skillTree.value.forEach(cat => {
         if (!selectedCategoryId.value || cat.id === selectedCategoryId.value) {
           cat.skills?.forEach((skill: any) => {
@@ -215,7 +212,7 @@ const updateRadarData = async () => {
       radarData.value = {
         labels: allSkills.map(s => s.skillName),
         datasets: [{
-          label: '技能评级',
+          label: 'æè½è¯çº?,
           data: allSkills.map(s => parseFloat(s.rating)),
           backgroundColor: 'rgba(59, 130, 246, 0.2)',
           borderColor: 'rgb(59, 130, 246)',
@@ -269,159 +266,157 @@ const getRatingBarColor = (rating: number) => {
   return 'bg-red-500'
 }
 
-// 保留模拟数据作为注释，方便参考
-// const mockSkillTree = [
+// ä¿çæ¨¡ææ°æ®ä½ä¸ºæ³¨éï¼æ¹ä¾¿åè?// const mockSkillTree = [
 //   {
 //     id: 1,
-//     name: '前端开发',
-//     icon: '💻',
+//     name: 'åç«¯å¼å?,
+//     icon: 'ð»',
 //     color: 'var(--color-primary)',
 //     skills: [
 //       {
 //         id: 1,
 //         name: 'Vue.js',
-//         icon: '⚡',
-//         description: '渐进式JavaScript框架，用于构建用户界面',
+//         icon: 'â?,
+//         description: 'æ¸è¿å¼JavaScriptæ¡æ¶ï¼ç¨äºæå»ºç¨æ·çé?,
 //         currentRating: 8.5
 //       },
 //       {
 //         id: 2,
 //         name: 'Nuxt.js',
-//         icon: '🚀',
-//         description: '基于Vue.js的通用应用框架',
+//         icon: 'ð',
+//         description: 'åºäºVue.jsçéç¨åºç¨æ¡æ¶',
 //         currentRating: 8.0
 //       },
 //       {
 //         id: 3,
 //         name: 'TypeScript',
-//         icon: '📘',
-//         description: 'JavaScript的超集，提供静态类型检查',
+//         icon: 'ð',
+//         description: 'JavaScriptçè¶éï¼æä¾éæç±»åæ£æ?,
 //         currentRating: 7.5
 //       },
 //       {
 //         id: 4,
 //         name: 'Tailwind CSS',
-//         icon: '🎨',
-//         description: '实用优先的CSS框架',
+//         icon: 'ð¨',
+//         description: 'å®ç¨ä¼åçCSSæ¡æ¶',
 //         currentRating: 7.0
 //       }
 //     ]
 //   },
 //   {
 //     id: 2,
-//     name: '后端开发',
-//     icon: '⚙️',
+//     name: 'åç«¯å¼å?,
+//     icon: 'âï¸',
 //     color: 'var(--color-success)',
 //     skills: [
 //       {
 //         id: 5,
 //         name: '.NET Core',
-//         icon: '🔷',
-//         description: '跨平台的开源开发框架',
+//         icon: 'ð·',
+//         description: 'è·¨å¹³å°çå¼æºå¼åæ¡æ?,
 //         currentRating: 8.0
 //       },
 //       {
 //         id: 6,
 //         name: 'Node.js',
-//         icon: '🟢',
-//         description: '基于Chrome V8引擎的JavaScript运行时',
+//         icon: 'ð¢',
+//         description: 'åºäºChrome V8å¼æçJavaScriptè¿è¡æ?,
 //         currentRating: 7.5
 //       },
 //       {
 //         id: 7,
 //         name: 'Entity Framework',
-//         icon: '🗄️',
-//         description: 'Microsoft的ORM框架',
+//         icon: 'ðï¸?,
+//         description: 'MicrosoftçORMæ¡æ¶',
 //         currentRating: 7.5
 //       },
 //       {
 //         id: 8,
 //         name: 'RESTful API',
-//         icon: '🌐',
-//         description: '设计和开发RESTful风格的API',
+//         icon: 'ð',
+//         description: 'è®¾è®¡åå¼åRESTfulé£æ ¼çAPI',
 //         currentRating: 8.5
 //       }
 //     ]
 //   },
 //   {
 //     id: 3,
-//     name: '数据库',
-//     icon: '💾',
+//     name: 'æ°æ®åº?,
+//     icon: 'ð¾',
 //     color: 'var(--color-warning)',
 //     skills: [
 //       {
 //         id: 9,
 //         name: 'MySQL',
-//         icon: '🗄️',
-//         description: '开源关系型数据库管理系统',
+//         icon: 'ðï¸?,
+//         description: 'å¼æºå³ç³»åæ°æ®åºç®¡çç³»ç»?,
 //         currentRating: 7.5
 //       },
 //       {
 //         id: 10,
 //         name: 'PostgreSQL',
-//         icon: '🐘',
-//         description: '功能强大的开源对象关系数据库',
+//         icon: 'ð',
+//         description: 'åè½å¼ºå¤§çå¼æºå¯¹è±¡å³ç³»æ°æ®åº',
 //         currentRating: 6.5
 //       },
 //       {
 //         id: 11,
 //         name: 'Redis',
-//         icon: '🔴',
-//         description: '内存数据结构存储系统',
+//         icon: 'ð´',
+//         description: 'åå­æ°æ®ç»æå­å¨ç³»ç»',
 //         currentRating: 6.0
 //       }
 //     ]
 //   },
 //   {
 //     id: 4,
-//     name: 'AI & 机器学习',
-//     icon: '🤖',
+//     name: 'AI & æºå¨å­¦ä¹ ',
+//     icon: 'ð¤',
 //     color: 'var(--color-purple-500)',
 //     skills: [
 //       {
 //         id: 12,
 //         name: 'LangChain',
-//         icon: '🔗',
-//         description: '构建LLM应用的框架',
+//         icon: 'ð',
+//         description: 'æå»ºLLMåºç¨çæ¡æ?,
 //         currentRating: 7.0
 //       },
 //       {
 //         id: 13,
 //         name: 'OpenAI API',
-//         icon: '🧠',
-//         description: 'OpenAI的API集成和使用',
+//         icon: 'ð§ ',
+//         description: 'OpenAIçAPIéæåä½¿ç?,
 //         currentRating: 7.5
 //       },
 //       {
 //         id: 14,
 //         name: 'Python',
-//         icon: '🐍',
-//         description: '通用编程语言，AI领域常用',
+//         icon: 'ð',
+//         description: 'éç¨ç¼ç¨è¯­è¨ï¼AIé¢åå¸¸ç¨',
 //         currentRating: 7.0
 //       }
 //     ]
 //   }
 // ]
 
-// 保留模拟分类数据作为注释，方便参考
-// const mockCategories = [
-//   { id: 1, name: '前端开发', icon: '💻' },
-//   { id: 2, name: '后端开发', icon: '⚙️' },
-//   { id: 3, name: '数据库', icon: '💾' },
-//   { id: 4, name: 'AI & 机器学习', icon: '🤖' }
+// ä¿çæ¨¡æåç±»æ°æ®ä½ä¸ºæ³¨éï¼æ¹ä¾¿åè?// const mockCategories = [
+//   { id: 1, name: 'åç«¯å¼å?, icon: 'ð»' },
+//   { id: 2, name: 'åç«¯å¼å?, icon: 'âï¸' },
+//   { id: 3, name: 'æ°æ®åº?, icon: 'ð¾' },
+//   { id: 4, name: 'AI & æºå¨å­¦ä¹ ', icon: 'ð¤' }
 // ]
 
 const fetchSkillTree = async () => {
   loading.value = true
   try {
-    // 优先从新的MockData API获取
+    // ä¼åä»æ°çMockData APIè·å
     const res = await api.get<any>('/MockData/skill-tree')
     if (res && Array.isArray(res) && res.length > 0) {
       skillTree.value = res
       return
     }
     
-    // 如果新API没有数据，尝试从旧API获取
+    // å¦ææ°APIæ²¡ææ°æ®ï¼å°è¯ä»æ§APIè·å
     const oldRes = await api.get<any>('/SkillTree')
     skillTree.value = oldRes && Array.isArray(oldRes) && oldRes.length > 0 ? oldRes : []
   } catch (e) {
@@ -434,14 +429,14 @@ const fetchSkillTree = async () => {
 
 const fetchCategories = async () => {
   try {
-    // 优先从新的MockData API获取
+    // ä¼åä»æ°çMockData APIè·å
     const res = await api.get<any[]>('/MockData/skill-categories')
     if (res && Array.isArray(res) && res.length > 0) {
       categories.value = res
       return
     }
     
-    // 如果新API没有数据，尝试从旧API获取
+    // å¦ææ°APIæ²¡ææ°æ®ï¼å°è¯ä»æ§APIè·å
     const oldRes = await api.get<any[]>('/SkillTree/categories')
     categories.value = oldRes && Array.isArray(oldRes) && oldRes.length > 0 ? oldRes : []
   } catch (e) {
@@ -456,11 +451,11 @@ onMounted(async () => {
   await updateRadarData()
 })
 
-// 设置页面标题
+// è®¾ç½®é¡µé¢æ é¢
 useHead({
-  title: '技能树 - 溪午听风',
+  title: 'æè½æ  - æºªåå¬é£',
   meta: [
-    { name: 'description', content: '我的技术能力展示和技能树' }
+    { name: 'description', content: 'æçææ¯è½åå±ç¤ºåæè½æ ' }
   ]
 })
 </script>
@@ -473,7 +468,7 @@ useHead({
   overflow: hidden;
 }
 
-/* 技能树发光效果 */
+/* æè½æ ååææ */
 .skill-tree-card {
   transition: all 0.3s ease;
 }

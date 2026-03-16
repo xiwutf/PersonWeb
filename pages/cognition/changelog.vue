@@ -1,10 +1,10 @@
 <template>
   <ModuleGuard module-key="cognition">
     <div class="cognition-page">
-      <!-- 全局背景噪点 -->
+      <!-- å¨å±èæ¯åªç¹ -->
       <div class="cognition-background-noise"></div>
 
-      <!-- 动态背景光斑 -->
+      <!-- å¨æèæ¯åæ?-->
       <div class="cognition-background-container">
         <div class="cognition-background-blob cognition-background-blob--blue"></div>
         <div class="cognition-background-blob cognition-background-blob--purple"></div>
@@ -12,40 +12,39 @@
       </div>
 
       <div class="cognition-content">
-        <!-- 页面头部 -->
+        <!-- é¡µé¢å¤´é¨ -->
         <header class="cognition-header">
           <div class="cognition-header-icon">
-            <span>📝</span>
+            <span>ð</span>
           </div>
-          <h1 class="cognition-title">更新日志</h1>
+          <h1 class="cognition-title">æ´æ°æ¥å¿</h1>
           <p class="cognition-subtitle">
-            个人认知使用说明书的版本更新记录
+            ä¸ªäººè®¤ç¥ä½¿ç¨è¯´æä¹¦ççæ¬æ´æ°è®°å½
           </p>
         </header>
 
-        <!-- 导航链接 -->
+        <!-- å¯¼èªé¾æ¥ -->
         <nav class="cognition-nav">
           <NuxtLink to="/cognition" class="cognition-nav-link">
             <i class="fas fa-book mr-2"></i>
-            说明书
-          </NuxtLink>
+            è¯´æä¹?          </NuxtLink>
           <NuxtLink to="/cognition/changelog" class="cognition-nav-link cognition-nav-link--active">
             <i class="fas fa-history mr-2"></i>
-            更新日志
+            æ´æ°æ¥å¿
           </NuxtLink>
         </nav>
 
-        <!-- 主要内容 -->
+        <!-- ä¸»è¦åå®¹ -->
         <article v-if="doc" class="cognition-article">
           <div class="cognition-prose">
             <ContentRenderer :value="doc" />
           </div>
         </article>
 
-        <!-- 加载状态 -->
+        <!-- å è½½ç¶æ?-->
         <div v-else class="cognition-loading">
           <div class="cognition-loading-spinner"></div>
-          <p class="cognition-loading-text">加载中...</p>
+          <p class="cognition-loading-text">å è½½ä¸?..</p>
         </div>
       </div>
     </div>
@@ -57,21 +56,20 @@ definePageMeta({
   layout: 'default'
 })
 
-// 获取更新日志内容（Content v3: queryCollection）
-const { data: doc } = await useAsyncData('cognition-changelog', () =>
+// è·åæ´æ°æ¥å¿åå®¹ï¼Content v3: queryCollectionï¼?const { data: doc } = await useAsyncData('cognition-changelog', () =>
   queryCollection('content').path('/cognition/changelog').first()
 )
 
-// 404处理
+// 404å¤ç
 if (!doc.value) {
-  throw createError({ statusCode: 404, statusMessage: '内容不存在' })
+  throw createError({ statusCode: 404, statusMessage: 'åå®¹ä¸å­å? })
 }
 
 // SEO
 useHead({
-  title: '更新日志 - 个人认知使用说明书 - 溪午听风',
+  title: 'æ´æ°æ¥å¿ - ä¸ªäººè®¤ç¥ä½¿ç¨è¯´æä¹?- æºªåå¬é£',
   meta: [
-    { name: 'description', content: '个人认知使用说明书的版本更新记录' }
+    { name: 'description', content: 'ä¸ªäººè®¤ç¥ä½¿ç¨è¯´æä¹¦ççæ¬æ´æ°è®°å½' }
   ]
 })
 </script>
@@ -82,14 +80,14 @@ useHead({
   background: linear-gradient(135deg, var(--color-bg-body) 0%, var(--color-blue-200) 100%);
 }
 
-/* 背景噪点 */
+/* èæ¯åªç¹ */
 .cognition-background-noise {
   @apply fixed inset-0 opacity-[0.015] pointer-events-none;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   z-index: 0;
 }
 
-/* 动态背景光斑 */
+/* å¨æèæ¯åæ?*/
 .cognition-background-container {
   @apply fixed inset-0 pointer-events-none overflow-hidden;
   z-index: 0;
@@ -133,12 +131,12 @@ useHead({
   }
 }
 
-/* 内容区域 */
+/* åå®¹åºå */
 .cognition-content {
   @apply relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12;
 }
 
-/* 页面头部 */
+/* é¡µé¢å¤´é¨ */
 .cognition-header {
   @apply text-center mb-12;
 }
@@ -160,17 +158,17 @@ useHead({
   @apply text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-6;
 }
 
-/* 导航 */
+/* å¯¼èª */
 .cognition-nav {
   @apply flex items-center justify-center gap-4 mb-12;
 }
 
 .cognition-nav-link {
   @apply px-6 py-3 rounded-lg font-medium transition-all duration-200;
-  @apply bg-var(--color-bg-light, white)/80 dark:bg-gray-800/80 backdrop-blur-sm;
+  @apply bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm;
   @apply border border-gray-200 dark:border-gray-700;
   @apply text-gray-700 dark:text-gray-300;
-  @apply hover:bg-var(--color-bg-light, white) dark:hover:bg-gray-800;
+  @apply hover:bg-white dark:hover:bg-gray-800;
   @apply hover:shadow-lg hover:scale-105;
 }
 
@@ -180,9 +178,9 @@ useHead({
   @apply text-blue-700 dark:text-blue-300;
 }
 
-/* 文章内容 */
+/* æç« åå®¹ */
 .cognition-article {
-  @apply bg-var(--color-bg-light, white)/90 dark:bg-gray-900/90 backdrop-blur-sm;
+  @apply bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm;
   @apply rounded-2xl shadow-xl;
   @apply border border-gray-200 dark:border-gray-700;
   @apply p-8 md:p-12;
@@ -263,7 +261,7 @@ useHead({
   @apply text-blue-600 dark:text-blue-400 hover:underline;
 }
 
-/* 加载状态 */
+/* å è½½ç¶æ?*/
 .cognition-loading {
   @apply flex flex-col items-center justify-center py-20;
 }
@@ -283,7 +281,7 @@ useHead({
   @apply mt-4 text-gray-500 dark:text-gray-400;
 }
 
-/* 响应式 */
+/* ååºå¼?*/
 @media (max-width: 640px) {
   .cognition-title {
     @apply text-3xl;

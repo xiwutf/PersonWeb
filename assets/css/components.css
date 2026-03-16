@@ -90,7 +90,7 @@
   }
   /* ========== 卡片样式 ========== */
   .card {
-    @apply bg-bg-primary dark:bg-elevated rounded-lg shadow-sm border border-border-subtle;
+    @apply bg-bg-primary dark:bg-bg-elevated rounded-lg shadow-sm border border-border-subtle;
   }
 
   .card-hover {
@@ -194,7 +194,7 @@
   }
 
   .modal-content {
-    @apply bg-bg-primary dark:bg-elevated rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto;
+    @apply bg-bg-primary dark:bg-bg-elevated rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto;
   }
 
   .modal-header {
@@ -303,7 +303,7 @@
 
   /* ========== 筛选栏样式 ========== */
   .filter-bar {
-    @apply bg-bg-primary dark:bg-elevated p-4 rounded-lg shadow-sm border border-border-default flex gap-4 flex-wrap;
+    @apply bg-bg-primary dark:bg-bg-elevated p-4 rounded-lg shadow-sm border border-border-default flex gap-4 flex-wrap;
   }
 
   /* ========== 页面容器 ========== */

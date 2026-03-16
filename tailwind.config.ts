@@ -12,10 +12,13 @@ export default <Partial<Config>>{
                 secondary: 'var(--secondary)',
                 accent: 'var(--accent)',
 
-                // Backgrounds - for direct usage: bg-bg-app, bg-bg-body, bg-bg-surface-1, etc.
+                // Backgrounds - for direct usage: bg-bg-app, bg-bg-body, bg-bg-primary, etc.
                 bg: {
                     body: 'var(--color-bg-body)',
                     app: 'var(--bg-app)',
+                    primary: 'var(--color-bg-body)',
+                    secondary: 'var(--color-bg-elevated)',
+                    light: 'var(--color-bg-light)',
                     'surface-1': 'var(--bg-surface-1)',
                     'surface-2': 'var(--bg-surface-2)',
                     card: 'var(--bg-surface-1)',
@@ -32,9 +35,10 @@ export default <Partial<Config>>{
                     disabled: 'var(--color-text-disabled)', // 使用新的 CSS 变量
                 },
 
-                // Borders - for direct usage: border-border-subtle, etc.
+                // Borders - for direct usage: border-border-subtle, border-border-default, etc.
                 border: {
                     subtle: 'var(--border-subtle)',
+                    default: 'var(--color-border-default)',
                     focus: 'var(--border-focus)',
                 },
 

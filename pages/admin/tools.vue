@@ -1,35 +1,35 @@
-﻿<template>
+<template>
   <div class="space-y-6">
     <div class="page-header">
-      <h1 class="page-title">工具管理</h1>
+      <h1 class="page-title">���߹���</h1>
       <button @click="openModal()" class="btn-primary">
-        <i class="fas fa-plus mr-2"></i>新增工具
+        <i class="fas fa-plus mr-2"></i>��������
       </button>
     </div>
 
-    <!-- 统计卡片 -->
+    <!-- ͳ�ƿ�Ƭ -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
       <div class="card p-4">
-        <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">总工具数</div>
+        <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">�ܹ�����</div>
         <div class="text-2xl font-bold text-gray-800 dark:text-var(--color-bg-light, white)">{{ stats.total }}</div>
       </div>
       <div class="card p-4">
-        <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">已发布</div>
+        <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">�ѷ���</div>
         <div class="text-2xl font-bold text-green-600 dark:text-green-400">{{ stats.published }}</div>
       </div>
       <div class="card p-4">
-        <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">草稿</div>
+        <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">�ݸ�</div>
         <div class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{{ stats.draft }}</div>
       </div>
       <div class="card p-4">
-        <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">已归档</div>
+        <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">�ѹ鵵</div>
         <div class="text-2xl font-bold text-gray-600 dark:text-gray-400">{{ stats.archived }}</div>
       </div>
     </div>
 
-    <!-- 图表区域 -->
+    <!-- ͼ������ -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-      <!-- 状态分布饼图 -->
+      <!-- ״̬�ֲ���ͼ -->
       <div class="card p-6">
         <h3 class="text-lg font-bold text-gray-800 dark:text-var(--color-bg-light, white) mb-4">状态分布</h3>
         <ClientOnly>
@@ -37,12 +37,12 @@
             <v-chart :option="statusChartOption" autoresize class="w-full h-full" />
           </div>
           <div v-else class="h-64 flex items-center justify-center text-gray-500 dark:text-gray-400">
-            暂无数据
+            ��������
           </div>
         </ClientOnly>
       </div>
 
-      <!-- 价格分布柱状图 -->
+      <!-- �۸�ֲ���״ͼ -->
       <div class="card p-6">
         <h3 class="text-lg font-bold text-gray-800 dark:text-var(--color-bg-light, white) mb-4">价格分布</h3>
         <ClientOnly>
@@ -50,19 +50,19 @@
             <v-chart :option="priceChartOption" autoresize class="w-full h-full" />
           </div>
           <div v-else class="h-64 flex items-center justify-center text-gray-500 dark:text-gray-400">
-            暂无数据
+            ��������
           </div>
         </ClientOnly>
       </div>
     </div>
 
-    <!-- 工具列表 -->
+    <!-- �����б� -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <div v-for="tool in tools" :key="tool.id" class="card p-6 flex flex-col">
         <div class="flex items-start justify-between mb-4">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-2xl">
-              {{ tool.icon || '🛠️' }}
+              {{ tool.icon || '???' }}
             </div>
             <div>
               <h3 class="font-bold text-gray-800 dark:text-var(--color-bg-light, white)">{{ tool.name }}</h3>
@@ -72,7 +72,7 @@
                   'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300': tool.status === 'draft',
                   'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300': tool.status === 'archived'
                 }">
-                  {{ tool.status === 'published' ? '已发布' : tool.status === 'draft' ? '草稿' : '已归档' }}
+                  {{ tool.status === 'published' ? '�ѷ���' : tool.status === 'draft' ? '�ݸ�' : '�ѹ鵵' }}
                 </span>
                 <span v-if="tool.category" class="text-xs text-gray-500 dark:text-gray-400">
                   {{ tool.category.name }}
@@ -82,97 +82,97 @@
           </div>
           <div class="flex gap-2">
             <button @click="openModal(tool)" class="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-              <span class="sr-only">编辑</span>
-              ✏️
+              <span class="sr-only">�༭</span>
+              ??
             </button>
             <button @click="handleDelete(tool)" class="text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors">
-              <span class="sr-only">删除</span>
-              🗑️
+              <span class="sr-only">ɾ��</span>
+              ???
             </button>
           </div>
         </div>
-        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 flex-1">{{ tool.description || '暂无描述' }}</p>
+        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 flex-1">{{ tool.description || '��������' }}</p>
         <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-500">
-          <span>价格: {{ tool.isFree ? '免费' : `¥${tool.price}` }}</span>
+          <span>�۸�: {{ tool.isFree ? '���' : `��${tool.price}` }}</span>
           <span v-if="tool.demoUrl">
-            <a :href="tool.demoUrl" target="_blank" class="btn-link btn-link--blue">演示</a>
+            <a :href="tool.demoUrl" target="_blank" class="btn-link btn-link--blue">��ʾ</a>
           </span>
         </div>
       </div>
       
-      <!-- 空状态 -->
+      <!-- ��״̬ -->
       <div v-if="tools.length === 0" class="col-span-full text-center py-12 empty-state card border-dashed">
-        暂无工具数据
+        ���޹�������
       </div>
     </div>
 
-    <!-- 编辑/新建弹窗 -->
+    <!-- �༭/�½����� -->
     <div v-if="showModal" class="modal-overlay">
       <div class="modal-content max-w-lg max-h-[90vh] overflow-y-auto">
         <div class="modal-header">
           <h3 class="modal-title">
-            {{ isEdit ? '编辑工具' : '新增工具' }}
+            {{ isEdit ? '�༭����' : '��������' }}
           </h3>
         </div>
         
         <div class="modal-body space-y-4">
           <div class="form-group">
-            <label class="form-label">名称 *</label>
-            <input v-model="form.name" type="text" class="form-input" placeholder="例如：JSON 格式化工具" required>
+            <label class="form-label">���� *</label>
+            <input v-model="form.name" type="text" class="form-input" placeholder="���磺JSON ��ʽ������" required>
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div class="form-group">
-              <label class="form-label">别名 (Slug) *</label>
+              <label class="form-label">���� (Slug) *</label>
               <input v-model="form.slug" type="text" class="form-input" placeholder="json-formatter" required>
             </div>
             <div class="form-group">
-              <label class="form-label">图标 (Emoji)</label>
-              <input v-model="form.icon" type="text" class="form-input" placeholder="🔧">
+              <label class="form-label">ͼ�� (Emoji)</label>
+              <input v-model="form.icon" type="text" class="form-input" placeholder="??">
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">描述</label>
-            <textarea v-model="form.description" class="form-textarea h-24" placeholder="简短描述该工具的作用..."></textarea>
+            <label class="form-label">����</label>
+            <textarea v-model="form.description" class="form-textarea h-24" placeholder="��������ù��ߵ�����..."></textarea>
           </div>
           <div class="form-group">
-            <label class="form-label">演示地址</label>
+            <label class="form-label">��ʾ��ַ</label>
             <input v-model="form.demoUrl" type="text" class="form-input" placeholder="https://...">
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div class="form-group">
-              <label class="form-label">价格</label>
+              <label class="form-label">�۸�</label>
               <input v-model.number="form.price" type="number" step="0.01" class="form-input" placeholder="0.00">
             </div>
             <div class="form-group">
-              <label class="form-label">原价</label>
+              <label class="form-label">ԭ��</label>
               <input v-model.number="form.originalPrice" type="number" step="0.01" class="form-input" placeholder="0.00">
             </div>
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div class="form-group">
-              <label class="form-label">状态</label>
+              <label class="form-label">״̬</label>
               <select v-model="form.status" class="form-input">
-                <option value="draft">草稿</option>
-                <option value="published">已发布</option>
-                <option value="archived">已归档</option>
+                <option value="draft">�ݸ�</option>
+                <option value="published">�ѷ���</option>
+                <option value="archived">�ѹ鵵</option>
               </select>
             </div>
             <div class="form-group">
               <label class="flex items-center gap-2">
                 <input v-model="form.isFree" type="checkbox" class="form-checkbox">
-                <span>免费工具</span>
+                <span>��ѹ���</span>
               </label>
               <label class="flex items-center gap-2 mt-2">
                 <input v-model="form.isPremium" type="checkbox" class="form-checkbox">
-                <span>高级工具</span>
+                <span>�߼�����</span>
               </label>
             </div>
           </div>
         </div>
 
         <div class="modal-footer">
-          <button @click="showModal = false" class="btn-secondary">取消</button>
-          <button @click="handleSave" class="btn-primary">保存</button>
+          <button @click="showModal = false" class="btn-secondary">ȡ��</button>
+          <button @click="handleSave" class="btn-primary">����</button>
         </div>
       </div>
     </div>
@@ -213,7 +213,7 @@ import {
 } from 'echarts/components'
 import VChart from 'vue-echarts'
 
-// 注册 ECharts 组件
+// ע�� ECharts ���
 use([
   CanvasRenderer,
   PieChart,
@@ -227,7 +227,7 @@ use([
 definePageMeta({
   layout: 'admin',
   middleware: 'admin-auth',
-  ssr: false // 禁用 SSR，避免 ECharts 在服务端渲染时出错
+  ssr: false // ���� SSR������ ECharts �ڷ������Ⱦʱ����
 })
 
 const api = useApi()
@@ -247,20 +247,20 @@ const form = ref({
   status: 'draft'
 })
 
-// 使用 useAsyncData 避免 SSR/客户端重复请求
+// ʹ�� useAsyncData ���� SSR/�ͻ����ظ�����
 const { data: toolsData, pending: toolsPending, refresh: refreshTools } = useAsyncData(
   'admin-tools-list',
   async () => {
     try {
-      // 使用后端 API 获取数据库中的工具数据（去掉 /api/ 前缀，让 useApi 正确添加后端 baseURL）
+      // ʹ�ú�� API ��ȡ���ݿ��еĹ������ݣ�ȥ�� /api/ ǰ׺���� useApi ��ȷ���Ӻ�� baseURL��
       const res = await api.get('/Toolbox/admin/list?pageSize=1000')
       if (res && res.tools) {
         return res.tools as Tool[]
       } else if (res && res.data && res.data.tools) {
-        // 兼容 ApiResponse 格式
+        // ���� ApiResponse ��ʽ
         return res.data.tools as Tool[]
       } else if (Array.isArray(res)) {
-        // 兼容直接返回数组的情况
+        // ����ֱ�ӷ�����������
         return res as Tool[]
       } else {
         return [] as Tool[]
@@ -273,16 +273,16 @@ const { data: toolsData, pending: toolsPending, refresh: refreshTools } = useAsy
     }
   },
   {
-    server: true,  // 在服务端也执行
-    default: () => [] as Tool[]  // 默认值
+    server: true,  // �ڷ����Ҳִ��
+    default: () => [] as Tool[]  // Ĭ��ֵ
   }
 )
 
-// 将 useAsyncData 返回的数据绑定到响应式变量
+// �� useAsyncData ���ص����ݰ󶨵���Ӧʽ����
 const tools = computed(() => toolsData.value || [])
 const loading = computed(() => toolsPending.value)
 
-// 统计数据
+// ͳ������
 const stats = computed(() => {
   const total = tools.value.length
   const published = tools.value.filter(t => t.status === 'published').length
@@ -297,7 +297,7 @@ const stats = computed(() => {
   }
 })
 
-// 获取 CSS 变量的辅助函数
+// ��ȡ CSS �����ĸ�������
 const getCssVar = (varName: string): string => {
   if (process.client) {
     const root = document.documentElement
@@ -306,7 +306,7 @@ const getCssVar = (varName: string): string => {
   return ''
 }
 
-// 状态分布饼图配置
+// ״̬�ֲ���ͼ����
 const statusChartOption = computed(() => {
   if (stats.value.total === 0) return null
   
@@ -327,7 +327,7 @@ const statusChartOption = computed(() => {
     },
     series: [
       {
-        name: '工具状态',
+        name: '����״̬',
         type: 'pie',
         radius: ['40%', '70%'],
         avoidLabelOverlap: false,
@@ -349,31 +349,31 @@ const statusChartOption = computed(() => {
           }
         },
         data: [
-          { value: stats.value.published, name: '已发布', itemStyle: { color: getCssVar('--color-success') || 'var(--color-success)' } },
-          { value: stats.value.draft, name: '草稿', itemStyle: { color: getCssVar('--color-warning') || 'var(--color-warning)' } },
-          { value: stats.value.archived, name: '已归档', itemStyle: { color: getCssVar('--color-text-muted') || 'var(--color-text-sec)' } }
+          { value: stats.value.published, name: '�ѷ���', itemStyle: { color: getCssVar('--color-success') || 'var(--color-success)' } },
+          { value: stats.value.draft, name: '�ݸ�', itemStyle: { color: getCssVar('--color-warning') || 'var(--color-warning)' } },
+          { value: stats.value.archived, name: '�ѹ鵵', itemStyle: { color: getCssVar('--color-text-muted') || 'var(--color-text-sec)' } }
         ]
       }
     ]
   }
 })
 
-// 价格分布柱状图配置
+// �۸�ֲ���״ͼ����
 const priceChartOption = computed(() => {
   if (tools.value.length === 0) return null
   
   const textColor = getCssVar('--color-text-main') || getCssVar('--n-text-color')
   const gridColor = getCssVar('--color-border-subtle') || getCssVar('--n-border-color')
   
-  // 统计价格区间
+  // ͳ�Ƽ۸�����
   const freeCount = tools.value.filter(t => t.isFree).length
   const paidTools = tools.value.filter(t => !t.isFree && t.price > 0)
   const priceRanges = [
-    { name: '免费', count: freeCount },
-    { name: '0-50元', count: paidTools.filter(t => t.price <= 50).length },
-    { name: '50-100元', count: paidTools.filter(t => t.price > 50 && t.price <= 100).length },
-    { name: '100-200元', count: paidTools.filter(t => t.price > 100 && t.price <= 200).length },
-    { name: '200元以上', count: paidTools.filter(t => t.price > 200).length }
+    { name: '���', count: freeCount },
+    { name: '0-50Ԫ', count: paidTools.filter(t => t.price <= 50).length },
+    { name: '50-100Ԫ', count: paidTools.filter(t => t.price > 50 && t.price <= 100).length },
+    { name: '100-200Ԫ', count: paidTools.filter(t => t.price > 100 && t.price <= 200).length },
+    { name: '200Ԫ����', count: paidTools.filter(t => t.price > 200).length }
   ].filter(r => r.count > 0)
   
   return {
@@ -419,7 +419,7 @@ const priceChartOption = computed(() => {
     },
     series: [
       {
-        name: '工具数量',
+        name: '��������',
         type: 'bar',
         data: priceRanges.map(r => r.count),
         itemStyle: {
@@ -441,7 +441,7 @@ const priceChartOption = computed(() => {
   }
 })
 
-// 手动刷新函数（用于保存/删除后刷新）
+// �ֶ�ˢ�º��������ڱ���/ɾ����ˢ�£�
 const fetchTools = async () => {
   await refreshTools()
 }
@@ -486,41 +486,41 @@ const handleSave = async () => {
   const { handleError } = useErrorHandler()
   
   if (!form.value.name) {
-    warning('请输入工具名称')
+    warning('�����빤������')
     return
   }
   
   try {
-    // 使用后端 API（去掉 /api/ 前缀，让 useApi 正确添加后端 baseURL）
+    // ʹ�ú�� API��ȥ�� /api/ ǰ׺���� useApi ��ȷ���Ӻ�� baseURL��
     if (isEdit.value && editingToolId.value) {
       await api.put(`/Toolbox/${editingToolId.value}`, form.value)
     } else {
       await api.post('/Toolbox', form.value)
     }
-    success('保存成功')
+    success('����ɹ�')
     showModal.value = false
     editingToolId.value = null
     fetchTools()
   } catch (e: unknown) {
-    handleError(e, '保存失败')
+    handleError(e, '����ʧ��')
   }
 }
 
 const handleDelete = async (item: Tool) => {
-  if (!confirm(`确定要删除工具 "${item.name}" 吗？`)) return
+  if (!confirm(`ȷ��Ҫɾ������ "${item.name}" ��`)) return
   
   const { success } = useNotification()
   const { handleError } = useErrorHandler()
   
   try {
-    // 使用后端 API（去掉 /api/ 前缀，让 useApi 正确添加后端 baseURL）
+    // ʹ�ú�� API��ȥ�� /api/ ǰ׺���� useApi ��ȷ���Ӻ�� baseURL��
     await api.del(`/Toolbox/${item.id}`)
-    success('删除成功')
+    success('ɾ���ɹ�')
     fetchTools()
   } catch (e: unknown) {
-    handleError(e, '删除失败')
+    handleError(e, 'ɾ��ʧ��')
   }
 }
 
-// 使用 useAsyncData 后，不需要在 onMounted 中调用，数据会自动加载
+// ʹ�� useAsyncData �󣬲���Ҫ�� onMounted �е��ã����ݻ��Զ�����
 </script>

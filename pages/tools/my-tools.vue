@@ -1,39 +1,39 @@
 <template>
   <div class="min-h-screen bg-[var(--color-text-main)] text-slate-200 relative overflow-hidden font-['Outfit']">
     <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <!-- 返回按钮 -->
+      <!-- čżĺćéŽ -->
       <div class="tools-back-button-container">
         <NuxtLink to="/tools" class="tools-back-button">
           <svg class="tools-back-button-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
-          <span>返回插件工具</span>
+          <span>čżĺćäťśĺˇĽĺˇ</span>
         </NuxtLink>
       </div>
 
-      <!-- 页面头部 -->
+      <!-- éĄľé˘ĺ¤´é¨ -->
       <header class="text-center mb-12">
         <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-orange-200 via-var(--color-bg-light, white) to-red-200">
-          我的工具
+          ćçĺˇĽĺˇ
         </h1>
-        <p class="text-lg text-slate-400">管理您已购买的工具</p>
+        <p class="text-lg text-slate-400">çŽĄçć¨ĺˇ˛č´­äš°çĺˇĽĺ?/p>
       </header>
 
-      <!-- 工具列表 -->
+      <!-- ĺˇĽĺˇĺčĄ¨ -->
       <div v-if="loading" class="text-center py-20">
         <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
-        <p class="mt-4 text-slate-400">加载中...</p>
+        <p class="mt-4 text-slate-400">ĺ č˝˝ä¸?..</p>
       </div>
 
       <div v-else-if="tools.length === 0" class="text-center py-20">
-        <div class="text-6xl mb-4 opacity-50">📦</div>
-        <h3 class="text-xl font-semibold text-slate-300 mb-2">还没有工具</h3>
-        <p class="text-slate-500 mb-6">去工具商城发现好工具吧</p>
+        <div class="text-6xl mb-4 opacity-50">đŚ</div>
+        <h3 class="text-xl font-semibold text-slate-300 mb-2">čżć˛ĄćĺˇĽĺ?/h3>
+        <p class="text-slate-500 mb-6">ĺťĺˇĽĺˇĺĺĺç°ĺĽ˝ĺˇĽĺˇĺ?/p>
         <NuxtLink
           to="/tools/marketplace"
           class="inline-block px-6 py-3 bg-gradient-to-r from-orange-600 to-red-600 text-var(--color-bg-light, white) rounded-xl hover:from-orange-500 hover:to-red-500 transition-all"
         >
-          浏览工具商城
+          ćľč§ĺˇĽĺˇĺĺ
         </NuxtLink>
       </div>
 
@@ -45,12 +45,12 @@
         >
           <div class="flex items-start justify-between mb-4">
             <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/20 border border-var(--color-bg-light, white)/10 flex items-center justify-center text-xl">
-              {{ purchase.tool.icon || '🔧' }}
+              {{ purchase.tool.icon || 'đ§' }}
             </div>
             <div class="text-right text-xs text-slate-500">
               <div>{{ formatDate(purchase.purchasedAt) }}</div>
               <div v-if="purchase.expiresAt" class="mt-1">
-                到期：{{ formatDate(purchase.expiresAt) }}
+                ĺ°ćďź{{ formatDate(purchase.expiresAt) }}
               </div>
             </div>
           </div>
@@ -63,20 +63,20 @@
               :to="`/tools/${purchase.tool.slug}`"
               class="flex-1 bg-slate-700/50 hover:bg-slate-600/50 text-slate-200 px-4 py-2 rounded-xl transition-all text-center text-sm"
             >
-              使用工具
+              ä˝żç¨ĺˇĽĺˇ
             </NuxtLink>
             <button
               v-if="purchase.tool.apiEndpoint"
               @click="showApiKeyModal(purchase.tool.id)"
               class="px-4 py-2 bg-slate-700/50 hover:bg-slate-600/50 text-slate-200 rounded-xl transition-all text-sm"
             >
-              API密钥
+              APIĺŻéĽ
             </button>
           </div>
         </div>
       </div>
 
-      <!-- API密钥模态框 -->
+      <!-- APIĺŻéĽć¨ĄććĄ -->
       <div
         v-if="showApiKeyModal"
         class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
@@ -84,28 +84,27 @@
       >
         <div class="bg-slate-800 rounded-3xl p-8 max-w-2xl w-full">
           <div class="flex items-center justify-between mb-6">
-            <h2 class="text-2xl font-bold">生成 API 密钥</h2>
+            <h2 class="text-2xl font-bold">çć API ĺŻéĽ</h2>
             <button
               @click="showApiKeyModal = false"
               class="text-slate-400 hover:text-var(--color-bg-light, white)"
             >
-              ✕
-            </button>
+              â?            </button>
           </div>
 
           <div class="space-y-4">
             <div>
-              <label class="block text-sm font-medium mb-2">密钥名称</label>
+              <label class="block text-sm font-medium mb-2">ĺŻéĽĺç§°</label>
               <input
                 v-model="apiKeyName"
                 type="text"
-                placeholder="例如：生产环境密钥"
+                placeholder="äžĺŚďźçäş§çŻĺ˘ĺŻé?
                 class="w-full px-4 py-2 bg-slate-700/50 border border-var(--color-bg-light, white)/10 rounded-xl text-slate-200 focus:outline-none focus:border-orange-500/50"
               />
             </div>
 
             <div>
-              <label class="block text-sm font-medium mb-2">速率限制（每小时）</label>
+              <label class="block text-sm font-medium mb-2">éçéĺśďźćŻĺ°ćśďź?/label>
               <input
                 v-model.number="rateLimit"
                 type="number"
@@ -116,13 +115,13 @@
             </div>
 
             <div v-if="generatedApiKey" class="p-4 bg-slate-900 rounded-xl">
-              <div class="text-sm text-slate-400 mb-2">您的 API 密钥（请妥善保管，只显示一次）：</div>
+              <div class="text-sm text-slate-400 mb-2">ć¨ç API ĺŻéĽďźčŻˇĺŚĽĺäżçŽĄďźĺŞćžç¤şä¸ćŹĄďźďź?/div>
               <div class="font-mono text-sm bg-slate-800 p-3 rounded break-all">{{ generatedApiKey }}</div>
               <button
                 @click="copyApiKey"
                 class="mt-2 px-4 py-2 bg-orange-600 hover:bg-orange-500 text-var(--color-bg-light, white) rounded-lg text-sm"
               >
-                复制密钥
+                ĺ¤ĺśĺŻéĽ
               </button>
             </div>
 
@@ -132,13 +131,13 @@
                 :disabled="generating"
                 class="flex-1 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-var(--color-bg-light, white) px-6 py-3 rounded-xl transition-all font-medium disabled:opacity-50"
               >
-                {{ generating ? '生成中...' : '生成密钥' }}
+                {{ generating ? 'çćä¸?..' : 'çćĺŻéĽ' }}
               </button>
               <button
                 @click="showApiKeyModal = false"
                 class="px-6 py-3 bg-slate-700/50 hover:bg-slate-600/50 text-slate-200 rounded-xl transition-all"
               >
-                关闭
+                ĺłé­
               </button>
             </div>
           </div>
@@ -181,7 +180,7 @@ const rateLimit = ref(1000)
 const generatedApiKey = ref('')
 const generating = ref(false)
 
-// 获取我的工具
+// čˇĺćçĺˇĽĺˇ
 const fetchMyTools = async () => {
   const visitorId = localStorage.getItem('visitor_id')
   if (!visitorId) {
@@ -195,13 +194,13 @@ const fetchMyTools = async () => {
       tools.value = res as Purchase[]
     }
   } catch (e) {
-    console.error('获取我的工具失败', e)
+    console.error('čˇĺćçĺˇĽĺˇĺ¤ąč´Ľ', e)
   } finally {
     loading.value = false
   }
 }
 
-// 显示API密钥模态框
+// ćžç¤şAPIĺŻéĽć¨ĄććĄ
 const showApiKeyModalHandler = (toolId: number) => {
   currentToolId.value = toolId
   showApiKeyModal.value = true
@@ -210,13 +209,13 @@ const showApiKeyModalHandler = (toolId: number) => {
   rateLimit.value = 1000
 }
 
-// 生成API密钥
+// çćAPIĺŻéĽ
 const generateApiKey = async () => {
   if (!currentToolId.value) return
 
   const visitorId = localStorage.getItem('visitor_id')
   if (!visitorId) {
-    alert('请先登录')
+    alert('čŻˇĺçťĺ˝')
     return
   }
 
@@ -233,23 +232,22 @@ const generateApiKey = async () => {
       generatedApiKey.value = res.apiKey
     }
   } catch (e) {
-    alert('生成API密钥失败')
-    console.error('生成API密钥失败', e)
+    alert('çćAPIĺŻéĽĺ¤ąč´Ľ')
+    console.error('çćAPIĺŻéĽĺ¤ąč´Ľ', e)
   } finally {
     generating.value = false
   }
 }
 
-// 复制API密钥
+// ĺ¤ĺśAPIĺŻéĽ
 const copyApiKey = () => {
   if (generatedApiKey.value) {
     navigator.clipboard.writeText(generatedApiKey.value)
-    alert('已复制到剪贴板')
+    alert('ĺˇ˛ĺ¤ĺśĺ°ĺŞč´´ć?)
   }
 }
 
-// 格式化日期
-const formatDate = (dateString: string) => {
+// ć źĺźĺćĽć?const formatDate = (dateString: string) => {
   const date = new Date(dateString)
   return date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' })
 }
@@ -259,15 +257,15 @@ onMounted(() => {
 })
 
 useHead({
-  title: '我的工具 - 溪午听风',
+  title: 'ćçĺˇĽĺˇ - ćşŞĺĺŹéŁ',
   meta: [
-    { name: 'description', content: '管理您已购买的工具' }
+    { name: 'description', content: 'çŽĄçć¨ĺˇ˛č´­äš°çĺˇĽĺ? }
   ]
 })
 </script>
 
 <style scoped>
-/* 返回按钮样式 */
+/* čżĺćéŽć ˇĺź */
 .tools-back-button-container {
   margin-bottom: 1.5rem;
 }
