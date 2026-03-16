@@ -3,26 +3,26 @@
     <div class="max-w-7xl mx-auto">
       <div class="text-center mb-12">
         <h1 class="text-4xl font-bold mb-2" style="color: var(--color-primary);">
-          数字孪生仪表�?        </h1>
-        <p class="text-sm" style="color: var(--color-text-muted);">量化自我与生活指�?· 记录和追踪个人数据，帮助了解自己的生活状态和成长轨迹</p>
+          ????????        </h1>
+        <p class="text-sm" style="color: var(--color-text-muted);">???????????????????????????????????</p>
       </div>
 
-      <!-- 核心指标卡片 -->
+      <!-- ?????? -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
         <!-- Life Battery -->
         <div class="dashboard-card rounded-2xl p-6 shadow-lg relative overflow-hidden group">
           <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
             <svg class="w-24 h-24 dashboard-card__icon--green" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"></path></svg>
           </div>
-          <h3 class="dashboard-card__label text-sm mb-2">生活电量</h3>
+          <h3 class="dashboard-card__label text-sm mb-2">????</h3>
           <div class="flex items-end gap-2">
             <span class="text-4xl font-bold dashboard-card__value">{{ latest.energy }}%</span>
-            <span class="text-sm mb-1 dashboard-card__accent--green">精力�?/span>
+            <span class="text-sm mb-1 dashboard-card__accent--green">???</span>
           </div>
           <div class="dashboard-card__track w-full rounded-full h-2 mt-4">
             <div class="dashboard-card__fill--green h-2 rounded-full transition-all duration-1000" :style="{ width: latest.energy + '%' }"></div>
           </div>
-          <p class="dashboard-card__hint text-xs mt-2">睡眠: {{ latest.sleep }}小时</p>
+          <p class="dashboard-card__hint text-xs mt-2">??: {{ latest.sleep }}??</p>
         </div>
 
         <!-- Activity -->
@@ -30,15 +30,15 @@
           <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
             <svg class="w-24 h-24 dashboard-card__icon--orange" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path></svg>
           </div>
-          <h3 class="dashboard-card__label text-sm mb-2">日常活动</h3>
+          <h3 class="dashboard-card__label text-sm mb-2">????</h3>
           <div class="flex items-end gap-2">
             <span class="text-4xl font-bold dashboard-card__value">{{ latest.steps }}</span>
-            <span class="text-sm mb-1 dashboard-card__accent--orange">步数</span>
+            <span class="text-sm mb-1 dashboard-card__accent--orange">??</span>
           </div>
           <div class="dashboard-card__track w-full rounded-full h-2 mt-4">
             <div class="dashboard-card__fill--orange h-2 rounded-full transition-all duration-1000" :style="{ width: Math.min((latest.steps / 10000) * 100, 100) + '%' }"></div>
           </div>
-          <p class="dashboard-card__hint text-xs mt-2">目标: 10,000 �?/p>
+          <p class="dashboard-card__hint text-xs mt-2">??: 10,000 ?</p>
         </div>
 
         <!-- Physique -->
@@ -46,10 +46,10 @@
           <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
             <svg class="w-24 h-24 dashboard-card__icon--blue" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
           </div>
-          <h3 class="dashboard-card__label text-sm mb-2">身体状况</h3>
+          <h3 class="dashboard-card__label text-sm mb-2">????</h3>
           <div class="flex items-end gap-2">
             <span class="text-4xl font-bold dashboard-card__value">{{ latest.weight }}</span>
-            <span class="text-sm mb-1 dashboard-card__accent--blue">公斤</span>
+            <span class="text-sm mb-1 dashboard-card__accent--blue">??</span>
           </div>
           <div class="mt-4">
              <span class="dashboard-card__badge--blue text-xs px-2 py-1 rounded">BMI: {{ (latest.weight / (1.75 * 1.75)).toFixed(1) }}</span>
@@ -61,126 +61,126 @@
           <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
             <svg class="w-24 h-24 dashboard-card__icon--purple" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"></path><path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"></path></svg>
           </div>
-          <h3 class="dashboard-card__label text-sm mb-2">净资产</h3>
+          <h3 class="dashboard-card__label text-sm mb-2">???</h3>
           <div class="flex items-end gap-2">
-            <span class="text-4xl font-bold dashboard-card__value">¥{{ (latest.netWorth / 10000).toFixed(1) }}</span>
-            <span class="text-sm mb-1 dashboard-card__accent--purple">万元</span>
+            <span class="text-4xl font-bold dashboard-card__value">?{{ (latest.netWorth / 10000).toFixed(1) }}</span>
+            <span class="text-sm mb-1 dashboard-card__accent--purple">??</span>
           </div>
           <div class="mt-4 flex items-center text-xs dashboard-card__accent--green">
             <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-            <span>增长�?/span>
+            <span>???</span>
           </div>
         </div>
       </div>
 
-      <!-- 图表区域 -->
+      <!-- ???? -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-        <!-- 趋势�?-->
+        <!-- ????-->
         <div class="dashboard-card rounded-2xl p-6 shadow-lg">
-          <h3 class="dashboard-section-title text-lg font-bold mb-6">健康趋势</h3>
+          <h3 class="dashboard-section-title text-lg font-bold mb-6">????</h3>
           <div class="h-64">
             <Line :data="healthChartData" :options="chartOptions" />
           </div>
         </div>
 
-        <!-- 财富趋势 -->
+        <!-- ???? -->
         <div class="dashboard-card rounded-2xl p-6 shadow-lg">
-          <h3 class="dashboard-section-title text-lg font-bold mb-6">财富增长</h3>
+          <h3 class="dashboard-section-title text-lg font-bold mb-6">????</h3>
           <div class="h-64">
             <Line :data="wealthChartData" :options="chartOptions" />
           </div>
         </div>
       </div>
 
-      <!-- 任务统计 -->
+      <!-- ???? -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-        <!-- 任务统计卡片 -->
+        <!-- ?????? -->
         <div class="dashboard-card rounded-2xl p-6 shadow-lg">
           <div class="flex items-center justify-between mb-6">
-            <h3 class="dashboard-section-title text-lg font-bold">任务统计</h3>
+            <h3 class="dashboard-section-title text-lg font-bold">????</h3>
             <a 
               v-if="isAuthenticated"
               href="/admin/tasks" 
               class="dashboard-link text-sm"
               @click.prevent="router.push('/admin/tasks')"
             >
-              管理任务 �?            </a>
+              ????            </a>
             <a 
               v-else
               href="#" 
               class="dashboard-link--muted text-sm cursor-not-allowed"
               @click.prevent="handleUnauthorizedClick"
-              title="需要登录才能访�?
+              title="????"
             >
-              管理任务 �?            </a>
+              ????            </a>
           </div>
           <div v-if="taskStats" class="grid grid-cols-2 gap-4">
             <div class="dashboard-stat-card dashboard-stat-card--yellow rounded-xl p-4">
-              <div class="dashboard-stat-label text-sm mb-1">待处�?/div>
+              <div class="dashboard-stat-label text-sm mb-1">???</div>
               <div class="dashboard-stat-value text-2xl font-bold">{{ taskStats.Pending || 0 }}</div>
             </div>
             <div class="dashboard-stat-card dashboard-stat-card--blue rounded-xl p-4">
-              <div class="dashboard-stat-label text-sm mb-1">进行�?/div>
+              <div class="dashboard-stat-label text-sm mb-1">???</div>
               <div class="dashboard-stat-value text-2xl font-bold">{{ taskStats.InProgress || 0 }}</div>
             </div>
             <div class="dashboard-stat-card dashboard-stat-card--green rounded-xl p-4">
-              <div class="dashboard-stat-label text-sm mb-1">已完�?/div>
+              <div class="dashboard-stat-label text-sm mb-1">???</div>
               <div class="dashboard-stat-value text-2xl font-bold">{{ taskStats.Completed || 0 }}</div>
             </div>
             <div class="dashboard-stat-card dashboard-stat-card--red rounded-xl p-4">
-              <div class="dashboard-stat-label text-sm mb-1">已逾期</div>
+              <div class="dashboard-stat-label text-sm mb-1">???</div>
               <div class="dashboard-stat-value text-2xl font-bold">{{ taskStats.Overdue || 0 }}</div>
             </div>
           </div>
-          <div v-else class="text-center py-8 dashboard-hint">加载�?..</div>
+          <div v-else class="text-center py-8 dashboard-hint">????..</div>
         </div>
 
-        <!-- 年度目标卡片 -->
+        <!-- ?????? -->
         <div class="dashboard-card rounded-2xl p-6 shadow-lg">
           <div class="flex items-center justify-between mb-6">
-            <h3 class="dashboard-section-title text-lg font-bold">年度目标</h3>
+            <h3 class="dashboard-section-title text-lg font-bold">????</h3>
             <a 
               v-if="isAuthenticated"
               href="/admin/goals" 
               class="dashboard-link text-sm"
               @click.prevent="router.push('/admin/goals')"
             >
-              管理目标 �?            </a>
+              ????            </a>
             <a 
               v-else
               href="#" 
               class="dashboard-link--muted text-sm cursor-not-allowed"
               @click.prevent="handleUnauthorizedClick"
-              title="需要登录才能访�?
+              title="????"
             >
-              管理目标 �?            </a>
+              ????            </a>
           </div>
-          <div v-if="goalsLoading" class="text-center py-8 dashboard-hint">加载�?..</div>
+          <div v-if="goalsLoading" class="text-center py-8 dashboard-hint">????..</div>
           <div v-else-if="activeGoals.length === 0" class="text-center py-8 dashboard-hint">
-            <p class="mb-4">暂无年度目标</p>
+            <p class="mb-4">??????</p>
             <a 
               v-if="isAuthenticated"
               href="/admin/goals" 
               class="dashboard-link text-sm"
               @click.prevent="router.push('/admin/goals')"
             >
-              创建目标
+              ????
             </a>
             <a 
               v-else
               href="#" 
               class="dashboard-link--muted text-sm cursor-not-allowed"
               @click.prevent="handleUnauthorizedClick"
-              title="需要登录才能访�?
+              title="????"
             >
-              创建目标
+              ????
             </a>
           </div>
           <div v-else class="space-y-4 max-h-64 overflow-y-auto">
             <div v-for="goal in activeGoals" :key="goal.id" class="dashboard-goal-item p-4 rounded-xl">
               <div class="flex items-start justify-between mb-2">
                 <h4 class="font-semibold text-sm dashboard-card__value">{{ goal.title }}</h4>
-                <span class="text-xs dashboard-card__hint">{{ goal.year }}�?/span>
+                <span class="text-xs dashboard-card__hint">{{ goal.year }}?</span>
               </div>
               <div v-if="goal.targetValue" class="text-xs dashboard-card__hint mb-2">
                 {{ goal.currentValue }}{{ goal.unit || '' }} / {{ goal.targetValue }}{{ goal.unit || '' }}
@@ -198,14 +198,14 @@
         </div>
       </div>
 
-      <!-- 今日任务列表 -->
+      <!-- ?????? -->
       <div class="dashboard-card rounded-2xl p-6 shadow-lg mb-8">
         <div class="flex items-center justify-between mb-6">
-          <h3 class="dashboard-section-title text-lg font-bold">今日任务</h3>
-          <button type="button" @click="fetchTodayTasks" class="dashboard-link text-sm">刷新</button>
+          <h3 class="dashboard-section-title text-lg font-bold">????</h3>
+          <button type="button" @click="fetchTodayTasks" class="dashboard-link text-sm">??</button>
         </div>
-        <div v-if="todayTasksLoading" class="text-center py-8 dashboard-hint">加载�?..</div>
-        <div v-else-if="todayTasks.length === 0" class="text-center py-8 dashboard-hint">暂无任务</div>
+        <div v-if="todayTasksLoading" class="text-center py-8 dashboard-hint">????..</div>
+        <div v-else-if="todayTasks.length === 0" class="text-center py-8 dashboard-hint">????</div>
         <div v-else class="space-y-3 max-h-64 overflow-y-auto">
           <div v-for="task in todayTasks" :key="task.id" class="dashboard-task-item p-3 rounded-lg">
             <div class="flex items-start justify-between">
@@ -217,8 +217,8 @@
                   </span>
                 </div>
                 <div class="flex items-center gap-4 text-xs dashboard-card__hint">
-                  <span>进度: {{ task.progress }}%</span>
-                  <span v-if="task.dueDate">截止: {{ formatTaskDate(task.dueDate) }}</span>
+                  <span>??: {{ task.progress }}%</span>
+                  <span v-if="task.dueDate">??: {{ formatTaskDate(task.dueDate) }}</span>
                 </div>
                 <div class="dashboard-card__track mt-2 w-full rounded-full h-1.5">
                   <div 
@@ -233,44 +233,44 @@
         </div>
       </div>
 
-      <!-- GitHub 代码统计 -->
+      <!-- GitHub ???? -->
       <div v-if="githubStats" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- 代码语言分布 -->
+        <!-- ?????? -->
         <div class="dashboard-card rounded-2xl p-6 shadow-lg">
-          <h3 class="dashboard-section-title text-lg font-bold mb-6">代码语言分布</h3>
+          <h3 class="dashboard-section-title text-lg font-bold mb-6">??????</h3>
           <div v-if="githubLanguages.length > 0" class="h-64">
             <Doughnut :data="languageChartData" :options="languageChartOptions" />
           </div>
           <div v-else class="h-64 flex items-center justify-center dashboard-hint">
-            暂无数据
+            ????
           </div>
         </div>
 
-        <!-- GitHub 贡献统计 -->
+        <!-- GitHub ???? -->
         <div class="dashboard-card rounded-2xl p-6 shadow-lg">
-          <h3 class="text-lg font-bold mb-6 dashboard-section-title">仓库统计</h3>
+          <h3 class="text-lg font-bold mb-6 dashboard-section-title">????</h3>
           <div v-if="githubStats" class="space-y-4">
             <div class="stat-grid">
               <div class="stat-card stat-card--blue">
-                <div class="stat-label">星标�?/div>
+                <div class="stat-label">???</div>
                 <div class="stat-value">{{ githubStats.stars || 0 }}</div>
               </div>
               <div class="stat-card stat-card--green">
-                <div class="stat-label">Fork�?/div>
+                <div class="stat-label">Fork?</div>
                 <div class="stat-value">{{ githubStats.forks || 0 }}</div>
               </div>
               <div class="stat-card stat-card--purple">
-                <div class="stat-label">关注�?/div>
+                <div class="stat-label">???</div>
                 <div class="stat-value">{{ githubStats.watchers || 0 }}</div>
               </div>
               <div class="stat-card stat-card--orange">
-                <div class="stat-label">代码�?/div>
+                <div class="stat-label">???</div>
                 <div class="stat-value">{{ formatSize(githubStats.size || 0) }}</div>
               </div>
             </div>
           </div>
           <div v-else class="h-64 flex items-center justify-center dashboard-hint">
-            暂无数据
+            ????
           </div>
         </div>
       </div>
@@ -279,7 +279,7 @@
 </template>
 
 <style scoped>
-/* 使用主题 CSS 变量，避免硬编码颜色 */
+/* ???? CSS ?????????? */
 .dashboard-card {
   background-color: var(--color-bg-card);
   border: 1px solid var(--color-border-subtle);
@@ -329,7 +329,8 @@
 </style>
 
 <script setup lang="ts">
-// 使用默认布局（包含顶部导航栏�?definePageMeta({
+// ??????
+definePageMeta({
   layout: 'default'
 })
 
@@ -363,7 +364,7 @@ ChartJS.register(
 const api = useApi()
 const router = useRouter()
 
-// 检查用户是否已登录
+// ?????????
 const isAuthenticated = computed(() => {
   if (process.client) {
     const token = localStorage.getItem('admin_token')
@@ -373,16 +374,17 @@ const isAuthenticated = computed(() => {
   return false
 })
 
-// 处理未授权点�?const handleUnauthorizedClick = () => {
+// ???????
+const handleUnauthorizedClick = () => {
   if (process.client) {
-    if (confirm('需要登录才能访问后台管理功能，是否前往登录页面�?)) {
+    if (confirm('???????????????????')) {
       router.push('/admin/login')
     }
   }
 }
 
 const metrics = ref<any[]>([])
-// 保留模拟数据作为注释，方便参�?// const mockMetrics = [
+// ????????????????// const mockMetrics = [
 //   { date: '2024-01-01', steps: 8500, sleep: 7.5, weight: 70, netWorth: 50000, energy: 75 },
 //   { date: '2024-01-02', steps: 9200, sleep: 8.0, weight: 70, netWorth: 50200, energy: 80 },
 //   { date: '2024-01-03', steps: 7800, sleep: 7.0, weight: 70.2, netWorth: 50500, energy: 70 },
@@ -407,9 +409,9 @@ const todayTasksLoading = ref(false)
 const activeGoals = ref<any[]>([])
 const goalsLoading = ref(false)
 
-// GitHub 仓库配置（可以从配置中心获取�?const githubRepo = ref<string | null>(null)
+// GitHub ????????????????const githubRepo = ref<string | null>(null)
 
-// 从主�?CSS 变量读取图表颜色，随主题切换生效
+// ????CSS ????????????????
 const { currentTheme } = useTheme()
 const chartTheme = ref({
   text: 'var(--color-text-sec)',
@@ -482,7 +484,7 @@ const healthChartData = computed(() => {
     labels,
     datasets: [
       {
-        label: '步数',
+        label: '??',
         data: steps,
         borderColor: t.chartNonary,
         backgroundColor: hexToRgba(t.chartNonary, 0.1),
@@ -491,7 +493,7 @@ const healthChartData = computed(() => {
         tension: 0.4
       },
       {
-        label: '体重 (公斤)',
+        label: '?? (??)',
         data: weight,
         borderColor: t.chartPrimary,
         backgroundColor: hexToRgba(t.chartPrimary, 0.1),
@@ -512,7 +514,7 @@ const wealthChartData = computed(() => {
     labels,
     datasets: [
       {
-        label: '净资产',
+        label: '???',
         data: netWorth,
         borderColor: t.chartQuinary,
         backgroundColor: hexToRgba(t.chartQuinary, 0.1),
@@ -523,13 +525,14 @@ const wealthChartData = computed(() => {
   }
 })
 
-// 格式化文件大�?const formatSize = (kb: number): string => {
+// ???????
+const formatSize = (kb: number): string => {
   if (kb < 1024) return `${kb} KB`
   if (kb < 1024 * 1024) return `${(kb / 1024).toFixed(1)} MB`
   return `${(kb / (1024 * 1024)).toFixed(1)} GB`
 }
 
-// 语言图表数据
+// ??????
 const languageChartData = computed(() => {
   if (githubLanguages.value.length === 0) {
     return {
@@ -538,7 +541,7 @@ const languageChartData = computed(() => {
     }
   }
 
-  // 语言颜色映射
+  // ??????
   const languageColors: Record<string, string> = {
     'JavaScript': '#f7df1e',
     'TypeScript': '#3178c6',
@@ -570,7 +573,7 @@ const languageChartData = computed(() => {
   return {
     labels: githubLanguages.value.map((lang: any) => lang.language),
     datasets: [{
-      label: '代码�?,
+      label: '????',
       data: githubLanguages.value.map((lang: any) => parseFloat(lang.percentage)),
       backgroundColor: colors,
       borderColor: colors.map(c => c + '80'),
@@ -604,7 +607,7 @@ const languageChartOptions = computed(() => ({
   }
 }))
 
-// 加载任务统计
+// ??????
 const loadTaskStats = async () => {
   try {
     const res = await api.get('/Tasks/stats')
@@ -612,11 +615,11 @@ const loadTaskStats = async () => {
       taskStats.value = res.data
     }
   } catch (error) {
-    console.error('加载任务统计失败:', error)
+    console.error('????????:', error)
   }
 }
 
-// 加载年度目标
+// ??????
 const loadGoals = async () => {
   goalsLoading.value = true
   try {
@@ -628,15 +631,16 @@ const loadGoals = async () => {
       }
     })
     if (res?.data?.Items) {
-      activeGoals.value = res.data.Items.slice(0, 5) // 只显示前5�?    }
+      activeGoals.value = res.data.Items.slice(0, 5) // ??5?
+      }
   } catch (error) {
-    console.error('加载年度目标失败:', error)
+    console.error('????????:', error)
   } finally {
     goalsLoading.value = false
   }
 }
 
-// 加载今日任务
+// ??????
 const fetchTodayTasks = async () => {
   todayTasksLoading.value = true
   try {
@@ -654,13 +658,15 @@ const fetchTodayTasks = async () => {
     })
     
     if (res?.data?.Items) {
-      // 筛选出今日任务（截止日期在今天或之前，且未完成�?      todayTasks.value = res.data.Items.filter((task: any) => {
+      // ??????
+      todayTasks.value = res.data.Items.filter((task: any) => {
         if (!task.dueDate) return false
         const dueDate = new Date(task.dueDate)
         return dueDate >= todayStart && dueDate < todayEnd && task.status !== 'completed'
-      }).slice(0, 5) // 只显示前5�?    }
+      }).slice(0, 5) // ??5?
+    }
   } catch (error) {
-    console.error('加载今日任务失败:', error)
+    console.error('????????:', error)
   } finally {
     todayTasksLoading.value = false
   }
@@ -678,10 +684,10 @@ const getStatusClass = (status: string) => {
 
 const getStatusText = (status: string) => {
   const texts: Record<string, string> = {
-    pending: '待处�?,
-    in_progress: '进行�?,
-    completed: '已完�?,
-    cancelled: '已取�?
+    pending: '???',
+    in_progress: '???',
+    completed: '???',
+    cancelled: '???'
   }
   return texts[status] || status
 }
@@ -706,22 +712,24 @@ const formatTaskDate = (date: string) => {
   return `${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`
 }
 
-// 加载 GitHub 统计数据
+// ?? GitHub ????
 const loadGithubStats = async () => {
-  // 从配置或环境变量获取 GitHub 仓库
-  // 这里先使用一个示例仓库，实际应该从配置中心获�?  const defaultRepo = process.env.GITHUB_REPO || 'your-username/your-repo'
+  // ?????????? GitHub ??
+  // ??????? GitHub ??
+  const defaultRepo = process.env.GITHUB_REPO || 'your-username/your-repo'
   
   if (!defaultRepo || defaultRepo === 'your-username/your-repo') {
-    return // 如果没有配置，跳�?  }
+    return // ?????
+  }
 
   try {
-    // 获取语言分布
+    // ??????
     const languages = await api.get<any[]>(`/github/stats?repo=${defaultRepo}&type=languages`)
     if (languages && Array.isArray(languages)) {
       githubLanguages.value = languages
     }
 
-    // 获取仓库统计
+    // ??????
     const stats = await api.get<any>(`/github/stats?repo=${defaultRepo}&type=contributions`)
     if (stats) {
       githubStats.value = stats
@@ -738,7 +746,7 @@ watch(currentTheme, () => {
 onMounted(async () => {
   updateChartTheme()
   try {
-    // 优先从新的MockData API获取数据
+    // ?????MockData API????
     const mockRes = await api.get<any[]>('/MockData/dashboard-metrics?days=30')
     if (mockRes && Array.isArray(mockRes) && mockRes.length > 0) {
       metrics.value = mockRes.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
@@ -746,7 +754,7 @@ onMounted(async () => {
         latest.value = metrics.value[metrics.value.length - 1]
       }
     } else {
-      // 如果新API没有数据，尝试从旧API获取
+      // ???API?????????API??
       const res = await api.get<any[]>('/Metrics')
       if (res && Array.isArray(res) && res.length > 0) {
         metrics.value = res.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
@@ -760,13 +768,14 @@ onMounted(async () => {
       }
     }
 
-    // 加载任务统计和今日任�?    await loadTaskStats()
+    // ??????
+    await loadTaskStats()
     await fetchTodayTasks()
 
-    // 加载年度目标
+    // ??????
     await loadGoals()
 
-    // 加载 GitHub 统计数据
+    // ?? GitHub ????
     await loadGithubStats()
   } catch (e) {
     console.error(e)

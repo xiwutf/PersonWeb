@@ -19,7 +19,7 @@
               class="event-icon"
               :style="{ backgroundColor: event.color || 'var(--color-primary, var(--color-primary))' }"
             >
-              {{ event.icon || '�? }}
+              {{ event.icon || '📝' }}
             </div>
             <div class="event-info">
               <div class="event-header">
@@ -38,22 +38,22 @@
                 <template #trigger>
                   <n-button size="small" type="error" quaternary>删除</n-button>
                 </template>
-                确定要删除吗�?              </n-popconfirm>
+                确定要删除吗？?              </n-popconfirm>
               <template #fallback>
-                <n-button size="small" type="error" quaternary @click="() => { if(confirm('确定要删除吗�?)) deleteEvent(event.id) }">删除</n-button>
+                <n-button size="small" type="error" quaternary @click="() => { if(confirm('确定要删除吗？')) deleteEvent(event.id) }">删除</n-button>
               </template>
             </ClientOnly>
           </div>
         </div>
       </n-card>
-      <n-empty v-if="events.length === 0" description="暂无时间线事�? />
+      <n-empty v-if="events.length === 0" description="暂无时间线事件" />
     </div>
 
     <!-- 创建/编辑模态框 -->
     <n-modal
       v-model:show="isModalVisible"
       preset="card"
-      :title="editingEvent ? '编辑时间线事�? : '新建时间线事�?"
+      title="编辑时间线"
       style="width: 600px"
     >
       <n-form
@@ -67,17 +67,17 @@
           <n-input-number v-model:value="form.year" :min="1900" :max="2100" style="width: 100%" />
         </n-form-item>
         <n-form-item label="标题" path="title">
-          <n-input v-model:value="form.title" placeholder="请输入标�? />
+          <n-input v-model:value="form.title" placeholder="请输入标题" />
         </n-form-item>
         <n-form-item label="描述" path="description">
           <n-input
             v-model:value="form.description"
             type="textarea"
             :rows="3"
-            placeholder="请输入描�?
+            placeholder="请输入描述"
           />
         </n-form-item>
-        <n-form-item label="图标（emoji�? path="icon">
+        <n-form-item label="图标（emoji）" path="icon">
           <n-input v-model:value="form.icon" placeholder="例如: 🚀" />
         </n-form-item>
         <n-form-item label="颜色" path="color">
@@ -103,23 +103,24 @@ import { useErrorHandler } from '~/composables/useErrorHandler'
 definePageMeta({
   layout: 'admin',
   middleware: 'admin-auth',
-  ssr: false // 禁用 SSR，避�?Naive UI 组件在服务端渲染时出�?})
+  ssr: false // 禁用 SSR，避免 Naive UI 组件在服务端渲染时出错
+})
 
 const api = useApi()
 const { handleError } = useErrorHandler()
 
-// 使用安全�?Naive UI composables，避�?provider 未挂载时的错�?const message = useSafeMessage()
+// 使用安全�?Naive UI composables，避�?provider 未挂载时的错�?const message = useSafeMessage()
 
 const events = ref<TimelineEvent[]>([])
 const loading = ref(false)
 const showCreateModal = ref(false)
-const editingEvent = ref<TimelineEvent | null>(null)
+<TimelineEvent | null>(null)
 const formRef = ref<FormInst | null>(null)
 const form = ref({
   year: new Date().getFullYear(),
   title: '',
   description: '',
-  icon: '�?,
+  icon: '📝',
   color: 'var(--color-primary, var(--color-primary))'
 })
 
@@ -139,12 +140,12 @@ const rules: FormRules = {
   year: {
     required: true,
     type: 'number',
-    message: '请输入年�?,
+    message: '请输入年份',
     trigger: 'blur'
   },
   title: {
     required: true,
-    message: '请输入标�?,
+    message: '请输入标题',
     trigger: 'blur'
   }
 }
@@ -162,7 +163,7 @@ const fetchEvents = async () => {
     if (process.env.NODE_ENV === 'development') {
       console.error('Failed to fetch timeline:', e)
     }
-    message.error('加载时间线事件失�?)
+    message.error('加载时间线事件失败')
   } finally {
     loading.value = false
   }
@@ -174,7 +175,7 @@ const editEvent = (event: TimelineEvent) => {
     year: event.year,
     title: event.title,
     description: event.description || '',
-    icon: event.icon || '�?,
+    icon: event.icon || '📝',
     color: event.color || 'var(--color-primary, var(--color-primary))'
   }
 }
@@ -230,7 +231,7 @@ const cancelEdit = () => {
     year: new Date().getFullYear(),
     title: '',
     description: '',
-    icon: '�?,
+    icon: '📝',
     color: 'var(--color-primary, var(--color-primary))'
   }
 }
@@ -251,7 +252,7 @@ onMounted(() => {
   gap: 1rem;
 }
 
-/* event-card 样式已移除，�?themeOverrides.Card 统一控制 */
+/* event-card 样式已移除，�?themeOverrides.Card 统一控制 */
 
 .event-content {
   display: flex;

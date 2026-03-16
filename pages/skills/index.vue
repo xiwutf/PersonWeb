@@ -1,30 +1,30 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-slate-50 to-var(--color-bg-light, white) dark:from-gray-900 dark:to-gray-800 py-12">
     <div class="container mx-auto px-4 max-w-7xl">
-      <!-- é¡µé¢å¤´é¨ -->
+      <!-- ???? -->
       <div class="text-center mb-12">
-        <h1 class="text-4xl font-bold text-gray-900 dark:text-var(--color-bg-light, white) mb-4">æè½æ </h1>
-        <p class="text-xl text-gray-600 dark:text-gray-400">æçææ¯è½åå±ç¤?/p>
+        <h1 class="text-4xl font-bold text-gray-900 dark:text-var(--color-bg-light, white) mb-4">???</h1>
+        <p class="text-xl text-gray-600 dark:text-gray-400">????????</p>
       </div>
 
-      <!-- å è½½ç¶æ?-->
+      <!-- ?????-->
       <div v-if="loading" class="text-center py-20">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-        <p class="text-gray-600 dark:text-gray-400">å è½½ä¸?..</p>
+        <p class="text-gray-600 dark:text-gray-400">????..</p>
       </div>
 
-      <!-- æè½æ åå®¹ -->
+      <!-- ????? -->
       <div v-else class="space-y-8">
-        <!-- é·è¾¾å?-->
+        <!-- ????-->
         <div class="card p-8">
-          <h2 class="text-2xl font-bold text-gray-900 dark:text-var(--color-bg-light, white) mb-6">æè½é·è¾¾å¾</h2>
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-var(--color-bg-light, white) mb-6">?????</h2>
           <div class="flex gap-4 mb-4">
             <select
               v-model="selectedCategoryId"
               @change="updateRadarData"
               class="form-select"
             >
-              <option :value="null">å¨é¨åç±»</option>
+              <option :value="null">????</option>
               <option v-for="cat in categories" :key="cat.id" :value="cat.id">
                 {{ cat.icon }} {{ cat.name }}
               </option>
@@ -34,21 +34,21 @@
               @change="updateRadarData"
               class="form-select"
             >
-              <option value="current">å½åè¯çº§</option>
-              <option value="3months">3ä¸ªæ</option>
-              <option value="6months">6ä¸ªæ</option>
-              <option value="1year">1å¹?/option>
+              <option value="current">????</option>
+              <option value="3months">3??</option>
+              <option value="6months">6??</option>
+              <option value="1year">1?</option>
             </select>
           </div>
           <div v-if="radarData.labels.length > 0" class="h-96">
             <Radar :data="radarData" :options="radarOptions" />
           </div>
           <div v-else class="h-96 flex items-center justify-center text-gray-500 dark:text-gray-400">
-            ææ æ°æ®
+            ????
           </div>
         </div>
 
-        <!-- æè½åç±»å±ç¤?-->
+        <!-- ???????-->
         <div
           v-for="category in skillTree"
           :key="category.id"
@@ -63,7 +63,7 @@
               <div>
                 <h2 class="text-2xl font-bold text-gray-900 dark:text-var(--color-bg-light, white)">{{ category.name }}</h2>
                 <p class="text-sm text-gray-500 dark:text-gray-400">
-                  {{ category.skills?.length || 0 }} ä¸ªæè?                </p>
+                  {{ category.skills?.length || 0 }} ????                </p>
               </div>
             </div>
           </div>
@@ -86,7 +86,7 @@
                 </p>
                 <div class="space-y-2">
                   <div class="flex items-center justify-between">
-                    <span class="text-sm text-gray-500 dark:text-gray-400">å½åè¯çº§</span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400">????</span>
                     <span class="text-xl font-bold" :class="getRatingColor(skill.currentRating)">
                       {{ skill.currentRating || 0 }} / 10
                     </span>
@@ -112,7 +112,8 @@
 </template>
 
 <script setup lang="ts">
-// ä½¿ç¨é»è®¤å¸å±ï¼åå«é¡¶é¨å¯¼èªæ ï¼?definePageMeta({
+// ???????????????
+definePageMeta({
   layout: 'default'
 })
 
@@ -181,7 +182,7 @@ const updateRadarData = async () => {
       radarData.value = {
         labels: res.map((item: any) => item.skillName || item.SkillName),
         datasets: [{
-          label: 'æè½è¯çº?,
+          label: '????',
           data: res.map((item: any) => 
             parseFloat(item.averageRating || item.AverageRating || item.rating || item.Rating || 0)
           ),
@@ -195,7 +196,7 @@ const updateRadarData = async () => {
         }]
       }
     } else if (timeRange.value === 'current') {
-      // å¦ææ²¡ææ¶é´èå´ï¼ä½¿ç¨å½åè¯çº?      const allSkills: any[] = []
+      // ????????????????      const allSkills: any[] = []
       skillTree.value.forEach(cat => {
         if (!selectedCategoryId.value || cat.id === selectedCategoryId.value) {
           cat.skills?.forEach((skill: any) => {
@@ -212,7 +213,7 @@ const updateRadarData = async () => {
       radarData.value = {
         labels: allSkills.map(s => s.skillName),
         datasets: [{
-          label: 'æè½è¯çº?,
+          label: '????',
           data: allSkills.map(s => parseFloat(s.rating)),
           backgroundColor: 'rgba(59, 130, 246, 0.2)',
           borderColor: 'rgb(59, 130, 246)',
@@ -266,157 +267,157 @@ const getRatingBarColor = (rating: number) => {
   return 'bg-red-500'
 }
 
-// ä¿çæ¨¡ææ°æ®ä½ä¸ºæ³¨éï¼æ¹ä¾¿åè?// const mockSkillTree = [
+// ????????????????// const mockSkillTree = [
 //   {
 //     id: 1,
-//     name: 'åç«¯å¼å?,
-//     icon: 'ð»',
+//     name: '?????,
+//     icon: '??',
 //     color: 'var(--color-primary)',
 //     skills: [
 //       {
 //         id: 1,
 //         name: 'Vue.js',
-//         icon: 'â?,
-//         description: 'æ¸è¿å¼JavaScriptæ¡æ¶ï¼ç¨äºæå»ºç¨æ·çé?,
+//         icon: '??,
+//         description: '???JavaScript????????????,
 //         currentRating: 8.5
 //       },
 //       {
 //         id: 2,
 //         name: 'Nuxt.js',
-//         icon: 'ð',
-//         description: 'åºäºVue.jsçéç¨åºç¨æ¡æ¶',
+//         icon: '??',
+//         description: '??Vue.js???????',
 //         currentRating: 8.0
 //       },
 //       {
 //         id: 3,
 //         name: 'TypeScript',
-//         icon: 'ð',
-//         description: 'JavaScriptçè¶éï¼æä¾éæç±»åæ£æ?,
+//         icon: '??',
+//         description: 'JavaScript?????????????,
 //         currentRating: 7.5
 //       },
 //       {
 //         id: 4,
 //         name: 'Tailwind CSS',
-//         icon: 'ð¨',
-//         description: 'å®ç¨ä¼åçCSSæ¡æ¶',
+//         icon: '??',
+//         description: '?????CSS??',
 //         currentRating: 7.0
 //       }
 //     ]
 //   },
 //   {
 //     id: 2,
-//     name: 'åç«¯å¼å?,
-//     icon: 'âï¸',
+//     name: '?????,
+//     icon: '??',
 //     color: 'var(--color-success)',
 //     skills: [
 //       {
 //         id: 5,
 //         name: '.NET Core',
-//         icon: 'ð·',
-//         description: 'è·¨å¹³å°çå¼æºå¼åæ¡æ?,
+//         icon: '??',
+//         description: '???????????,
 //         currentRating: 8.0
 //       },
 //       {
 //         id: 6,
 //         name: 'Node.js',
-//         icon: 'ð¢',
-//         description: 'åºäºChrome V8å¼æçJavaScriptè¿è¡æ?,
+//         icon: '??',
+//         description: '??Chrome V8???JavaScript????,
 //         currentRating: 7.5
 //       },
 //       {
 //         id: 7,
 //         name: 'Entity Framework',
-//         icon: 'ðï¸?,
-//         description: 'MicrosoftçORMæ¡æ¶',
+//         icon: '????,
+//         description: 'Microsoft?ORM??',
 //         currentRating: 7.5
 //       },
 //       {
 //         id: 8,
 //         name: 'RESTful API',
-//         icon: 'ð',
-//         description: 'è®¾è®¡åå¼åRESTfulé£æ ¼çAPI',
+//         icon: '??',
+//         description: '?????RESTful???API',
 //         currentRating: 8.5
 //       }
 //     ]
 //   },
 //   {
 //     id: 3,
-//     name: 'æ°æ®åº?,
-//     icon: 'ð¾',
+//     name: '????,
+//     icon: '??',
 //     color: 'var(--color-warning)',
 //     skills: [
 //       {
 //         id: 9,
 //         name: 'MySQL',
-//         icon: 'ðï¸?,
-//         description: 'å¼æºå³ç³»åæ°æ®åºç®¡çç³»ç»?,
+//         icon: '????,
+//         description: '?????????????,
 //         currentRating: 7.5
 //       },
 //       {
 //         id: 10,
 //         name: 'PostgreSQL',
-//         icon: 'ð',
-//         description: 'åè½å¼ºå¤§çå¼æºå¯¹è±¡å³ç³»æ°æ®åº',
+//         icon: '??',
+//         description: '??????????????',
 //         currentRating: 6.5
 //       },
 //       {
 //         id: 11,
 //         name: 'Redis',
-//         icon: 'ð´',
-//         description: 'åå­æ°æ®ç»æå­å¨ç³»ç»',
+//         icon: '??',
+//         description: '??????????',
 //         currentRating: 6.0
 //       }
 //     ]
 //   },
 //   {
 //     id: 4,
-//     name: 'AI & æºå¨å­¦ä¹ ',
-//     icon: 'ð¤',
+//     name: 'AI & ????',
+//     icon: '??',
 //     color: 'var(--color-purple-500)',
 //     skills: [
 //       {
 //         id: 12,
 //         name: 'LangChain',
-//         icon: 'ð',
-//         description: 'æå»ºLLMåºç¨çæ¡æ?,
+//         icon: '??',
+//         description: '??LLM??????,
 //         currentRating: 7.0
 //       },
 //       {
 //         id: 13,
 //         name: 'OpenAI API',
-//         icon: 'ð§ ',
-//         description: 'OpenAIçAPIéæåä½¿ç?,
+//         icon: '??',
+//         description: 'OpenAI?API??????,
 //         currentRating: 7.5
 //       },
 //       {
 //         id: 14,
 //         name: 'Python',
-//         icon: 'ð',
-//         description: 'éç¨ç¼ç¨è¯­è¨ï¼AIé¢åå¸¸ç¨',
+//         icon: '??',
+//         description: '???????AI????',
 //         currentRating: 7.0
 //       }
 //     ]
 //   }
 // ]
 
-// ä¿çæ¨¡æåç±»æ°æ®ä½ä¸ºæ³¨éï¼æ¹ä¾¿åè?// const mockCategories = [
-//   { id: 1, name: 'åç«¯å¼å?, icon: 'ð»' },
-//   { id: 2, name: 'åç«¯å¼å?, icon: 'âï¸' },
-//   { id: 3, name: 'æ°æ®åº?, icon: 'ð¾' },
-//   { id: 4, name: 'AI & æºå¨å­¦ä¹ ', icon: 'ð¤' }
+// ??????????????????// const mockCategories = [
+//   { id: 1, name: '?????, icon: '??' },
+//   { id: 2, name: '?????, icon: '??' },
+//   { id: 3, name: '????, icon: '??' },
+//   { id: 4, name: 'AI & ????', icon: '??' }
 // ]
 
 const fetchSkillTree = async () => {
   loading.value = true
   try {
-    // ä¼åä»æ°çMockData APIè·å
+    // ?????MockData API??
     const res = await api.get<any>('/MockData/skill-tree')
     if (res && Array.isArray(res) && res.length > 0) {
       skillTree.value = res
       return
     }
     
-    // å¦ææ°APIæ²¡ææ°æ®ï¼å°è¯ä»æ§APIè·å
+    // ???API?????????API??
     const oldRes = await api.get<any>('/SkillTree')
     skillTree.value = oldRes && Array.isArray(oldRes) && oldRes.length > 0 ? oldRes : []
   } catch (e) {
@@ -429,14 +430,14 @@ const fetchSkillTree = async () => {
 
 const fetchCategories = async () => {
   try {
-    // ä¼åä»æ°çMockData APIè·å
+    // ?????MockData API??
     const res = await api.get<any[]>('/MockData/skill-categories')
     if (res && Array.isArray(res) && res.length > 0) {
       categories.value = res
       return
     }
     
-    // å¦ææ°APIæ²¡ææ°æ®ï¼å°è¯ä»æ§APIè·å
+    // ???API?????????API??
     const oldRes = await api.get<any[]>('/SkillTree/categories')
     categories.value = oldRes && Array.isArray(oldRes) && oldRes.length > 0 ? oldRes : []
   } catch (e) {
@@ -451,11 +452,11 @@ onMounted(async () => {
   await updateRadarData()
 })
 
-// è®¾ç½®é¡µé¢æ é¢
+// ??????
 useHead({
-  title: 'æè½æ  - æºªåå¬é£',
+  title: '??? - ????',
   meta: [
-    { name: 'description', content: 'æçææ¯è½åå±ç¤ºåæè½æ ' }
+    { name: 'description', content: '????????????' }
   ]
 })
 </script>
@@ -468,7 +469,7 @@ useHead({
   overflow: hidden;
 }
 
-/* æè½æ ååææ */
+/* ??????? */
 .skill-tree-card {
   transition: all 0.3s ease;
 }

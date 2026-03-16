@@ -1,8 +1,8 @@
 <template>
-  <!-- 使用 ListPage Pattern 组件 -->
+  <!-- ?? ListPage Pattern ?? -->
   <ListPage
-    title="分类管理"
-    description="管理全站文章分类及其排序"
+    title="????"
+    description="????????????"
     :show-stats="true"
     :stats="stats"
     :columns="internalColumns"
@@ -16,17 +16,17 @@
     }"
     :empty-config="{
       icon: 'fas fa-inbox',
-      text: '暂无分类数据'
+      text: '??????'
     }"
     @row-click="handleRowClick"
   >
-    <!-- 头部操作按钮区域：搜索框 + 新建按钮 -->
+    <!-- ???????????? + ???? -->
     <template #header-actions>
       <n-space :size="12">
-        <!-- 搜索�?-->
+        <!-- ????-->
         <n-input
           v-model:value="searchQuery"
-          placeholder="搜索分类..."
+          placeholder="????..."
           clearable
           style="width: 240px"
         >
@@ -35,17 +35,17 @@
           </template>
         </n-input>
 
-        <!-- 新建按钮 -->
+        <!-- ???? -->
         <n-button type="primary" @click="openModal()">
           <template #icon>
             <i class="fas fa-plus"></i>
           </template>
-          新建分类
+          ????
         </n-button>
       </n-space>
     </template>
 
-    <!-- 统计卡片 -->
+    <!-- ???? -->
     <template #stats>
       <n-grid :x-gap="16" :y-gap="16" :cols="3">
         <n-gi>
@@ -56,7 +56,7 @@
               </div>
               <div class="stat-info">
                 <div class="stat-value">{{ categories.length }}</div>
-                <div class="stat-label">总分类数</div>
+                <div class="stat-label">????</div>
               </div>
             </div>
           </n-card>
@@ -69,7 +69,7 @@
               </div>
               <div class="stat-info">
                 <div class="stat-value truncate">{{ lastUpdatedText }}</div>
-                <div class="stat-label">最近更�?/div>
+                <div class="stat-label">????</div>
               </div>
             </div>
           </n-card>
@@ -82,7 +82,7 @@
               </div>
               <div class="stat-info">
                 <div class="stat-value">{{ maxSortValue }}</div>
-                <div class="stat-label">最大排序�?/div>
+                <div class="stat-label">?????</div>
               </div>
             </div>
           </n-card>
@@ -91,11 +91,11 @@
     </template>
   </ListPage>
 
-    <!-- 编辑/新建弹窗 -->
+    <!-- ??/???? -->
     <n-modal
       v-model:show="showModal"
       preset="card"
-      :title="isEdit ? '编辑分类' : '新建分类'"
+      :title="isEdit ? '????' : '????'"
       style="width: 550px"
       :bordered="false"
       size="huge"
@@ -111,29 +111,29 @@
         require-mark-placement="right-hanging"
         class="py-4"
       >
-        <n-form-item label="名称" path="name">
-          <n-input v-model:value="form.name" placeholder="请输入分类名称（如：前端开发）" maxlength="20" show-count />
+        <n-form-item label="??" path="name">
+          <n-input v-model:value="form.name" placeholder="???????????????" maxlength="20" show-count />
         </n-form-item>
-        <n-form-item label="别名 (Slug)" path="slug">
-          <n-input v-model:value="form.slug" placeholder="请输入英文别名（如：frontend�? />
+        <n-form-item label="?? (Slug)" path="slug">
+          <n-input v-model:value="form.slug" placeholder="???frontend" />
           <template #feedback>
-            <span class="text-xs text-gray-400">用于 URL 路径，建议使用小写英�?/span>
+            <span class="text-xs text-gray-400">?? URL ???????????</span>
           </template>
         </n-form-item>
-        <n-form-item label="排序" path="sort">
-          <n-input-number v-model:value="form.sort" :min="0" placeholder="数字越小越靠�? style="width: 100%" />
+        <n-form-item label="??" path="sort">
+          <n-input-number v-model:value="form.sort" :min="0" placeholder="0" style="width: 100%" />
         </n-form-item>
       </n-form>
       <template #footer>
         <n-space justify="end" :size="16">
           <n-button quaternary @click="showModal = false" size="medium">
-            取消
+            ??
           </n-button>
           <n-button type="primary" @click="handleSave" :loading="saving" size="medium">
             <template #icon>
               <i class="fas fa-save"></i>
             </template>
-            保存
+            ??
           </n-button>
         </n-space>
       </template>
@@ -175,11 +175,11 @@ const formRef = ref<FormInst | null>(null)
 const searchQuery = ref('')
 const pagination = ref({ pageSize: 10, page: 1, total: 0 })
 
-// 统计卡片配置（保留用于类型推断）
+// ????????????????
 const stats = computed<StatConfig[]>(() => [
-  { label: '总分类数', value: categories.length, icon: 'fas fa-folder', iconColor: 'var(--color-blue-500)' },
-  { label: '最近更�?, value: lastUpdatedText.value, icon: 'fas fa-clock', iconColor: 'var(--color-green-500)' },
-  { label: '最大排序�?, value: maxSortValue.value, icon: 'fas fa-sort-amount-down', iconColor: 'var(--color-purple-500)' }
+  { label: '????', value: categories.length, icon: 'fas fa-folder', iconColor: 'var(--color-blue-500)' },
+  { label: '????', value: lastUpdatedText.value, icon: 'fas fa-clock', iconColor: 'var(--color-green-500)' },
+  { label: '????', value: maxSortValue.value, icon: 'fas fa-sort-amount-down', iconColor: 'var(--color-purple-500)' }
 ])
 
 // Form
@@ -191,8 +191,8 @@ const form = ref({
 })
 
 const rules: FormRules = {
-  name: { required: true, message: '请输入分类名�?, trigger: 'blur' },
-  slug: { required: true, message: '请输入分类别�?, trigger: 'blur' }
+  name: { required: true, message: '???????', trigger: 'blur' },
+  slug: { required: true, message: '??????', trigger: 'blur' }
 }
 
 // Computed for Stats
@@ -221,7 +221,7 @@ const lastUpdatedText = computed(() => {
 // Table Columns
 const internalColumns: DataTableColumns<Category> = [
   {
-    title: '名称',
+    title: '??',
     key: 'name',
     width: 200,
     render(row) {
@@ -229,7 +229,7 @@ const internalColumns: DataTableColumns<Category> = [
     }
   },
   {
-    title: '别名 (Slug)',
+    title: '?? (Slug)',
     key: 'slug',
     width: 150,
     render(row) {
@@ -239,7 +239,7 @@ const internalColumns: DataTableColumns<Category> = [
     }
   },
   {
-    title: '排序',
+    title: '??',
     key: 'sort',
     sorter: (a, b) => a.sort - b.sort,
     width: 100,
@@ -248,7 +248,7 @@ const internalColumns: DataTableColumns<Category> = [
     }
   },
   {
-    title: '创建时间',
+    title: '????',
     key: 'createdAt',
     width: 180,
     render(row) {
@@ -258,7 +258,7 @@ const internalColumns: DataTableColumns<Category> = [
     }
   },
   {
-    title: '操作',
+    title: '??',
     key: 'actions',
     width: 150,
     fixed: 'right',
@@ -280,8 +280,8 @@ const internalColumns: DataTableColumns<Category> = [
             NPopconfirm,
             {
               onPositiveClick: () => handleDelete(row),
-              negativeText: '取消',
-              positiveText: '确认删除',
+              negativeText: '??',
+              positiveText: '????',
             },
             {
               trigger: () => h(
@@ -295,8 +295,8 @@ const internalColumns: DataTableColumns<Category> = [
                 { icon: () => h('i', { class: 'fas fa-trash' }) }
               ),
               default: () => h('div', [
-                h('div', { class: 'font-bold mb-1' }, '确认删除�?),
-                h('div', { class: 'text-xs text-gray-500' }, `分类 "${row.name}" 删除后不可恢复。`)
+                h('div', { class: 'font-bold mb-1' }, '????'),
+                h('div', { class: 'text-xs text-gray-500' }, `??? "${row.name}" ?? URL ??`)
               ])
             }
           )
@@ -306,7 +306,7 @@ const internalColumns: DataTableColumns<Category> = [
   }
 ]
 
-// 内部分页配置
+// ??????
 const internalPagination = computed(() => ({
   page: 1,
   pageSize: 10,
@@ -324,10 +324,10 @@ const fetchCategories = async () => {
     categories.value = Array.isArray(res) ? res : []
   } catch (e: unknown) {
     if (process.env.NODE_ENV === 'development') console.error(e)
-    message.error('加载列表失败，请稍后重试')
+    message.error('????????????')
     categories.value = []
   } finally {
-    // 模拟最小加载时间，防止闪烁，让骨架屏展示一�?    setTimeout(() => { loading.value = false }, 300)
+    // ???????????????????????    setTimeout(() => { loading.value = false }, 300)
   }
 }
 
@@ -353,11 +353,11 @@ const handleSave = async () => {
         } else {
           await api.post('/Categories', form.value)
         }
-        message.success(isEdit.value ? '分类已更�? : '新分类创建成�?)
+        message.success(isEdit.value ? '????' : '????')
         showModal.value = false
         fetchCategories()
       } catch (e: unknown) {
-        handleError(e, '保存失败')
+        handleError(e, '????')
       } finally {
         saving.value = false
       }
@@ -368,15 +368,17 @@ const handleSave = async () => {
 const handleDelete = async (item: Category) => {
   try {
     await api.del(`/Categories/${item.id}`)
-    message.success('分类已删�?)
+    message.success('????')
     fetchCategories()
   } catch (e: unknown) {
-    handleError(e, '删除失败')
+    handleError(e, '????')
   }
 }
 
-// 处理行点�?const handleRowClick = (row: Category) => {
-  // 可以在这里实现行点击后查看详�?  openModal(row)
+// ???
+  const handleRowClick = (row: Category) => {
+    // ??????
+    openModal(row)
 }
 
 onMounted(() => {
@@ -385,7 +387,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* 统计卡片样式 */
+/* ?????? */
 :deep(.stat-card) {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -428,7 +430,7 @@ onMounted(() => {
   margin-top: var(--spacing-xs);
 }
 
-/* 表格行样�?*/
+/* ??????*/
 :deep(.category-row td) {
   transition: background-color 0.2s ease;
 }

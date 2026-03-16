@@ -1,86 +1,86 @@
 <template>
   <ClientOnly>
     <div class="name-tool-page">
-    <!-- 页面头部 -->
+    <!-- ???? -->
     <div class="name-tool-header">
-      <h1 class="name-tool-title">智能取名助手</h1>
-      <p class="name-tool-subtitle">游戏�?/ 网名 / 英文名，一键生成可收藏</p>
+      <h1 class="name-tool-title">??????</h1>
+      <p class="name-tool-subtitle">????/ ?? / ???????????</p>
     </div>
 
     <div class="name-tool-content">
-      <!-- 左侧筛选表�?-->
+      <!-- ???????-->
       <n-card class="name-tool-form-card">
         <template #header>
-          <span>筛选条�?/span>
+          <span>????</span>
         </template>
         <n-form :model="formData" :rules="formRules" ref="formRef" label-placement="top" @submit.prevent>
-          <!-- 取名类型 -->
-          <n-form-item label="取名类型" path="type">
+          <!-- ???? -->
+          <n-form-item label="????" path="type">
             <n-select
               v-model:value="formData.type"
               :options="typeOptions"
-              placeholder="请选择取名类型"
+              placeholder="???????"
             />
           </n-form-item>
 
-          <!-- 风格 -->
-          <n-form-item label="风格" path="style">
+          <!-- ?? -->
+          <n-form-item label="??" path="style">
             <n-select
               v-model:value="formData.style"
               :options="styleOptions"
               multiple
-              placeholder="请选择风格（可多选）"
+              placeholder="??????????"
             />
           </n-form-item>
 
-          <!-- 性别 -->
-          <n-form-item label="性别" path="gender">
+          <!-- ?? -->
+          <n-form-item label="??" path="gender">
             <n-select
               v-model:value="formData.gender"
               :options="genderOptions"
-              placeholder="可�?
+              placeholder="??"
               clearable
             />
           </n-form-item>
 
-          <!-- 名字长度 -->
-          <n-form-item label="名字长度" path="length">
+          <!-- ???? -->
+          <n-form-item label="????" path="length">
             <n-select
               v-model:value="formData.length"
               :options="lengthOptions"
-              placeholder="可�?
+              placeholder="??"
               clearable
             />
           </n-form-item>
 
-          <!-- 关键�?-->
-          <n-form-item label="关键�? path="keywords">
+          <!-- ????-->
+          <n-form-item label="???" path="keywords">
             <n-input
               v-model:value="formData.keywords"
-              placeholder="多个关键词用逗号分隔（可选）"
+              placeholder="??????????????"
               clearable
             />
           </n-form-item>
 
-          <!-- 语言 -->
-          <n-form-item label="语言" path="language">
+          <!-- ?? -->
+          <n-form-item label="??" path="language">
             <n-select
               v-model:value="formData.language"
               :options="languageOptions"
-              placeholder="默认自动"
+              placeholder="????"
             />
           </n-form-item>
 
-          <!-- 禁用�?-->
-          <n-form-item label="禁用�? path="banned">
+          <!-- ????-->
+          <n-form-item label="???" path="banned">
             <n-input
               v-model:value="formData.banned"
-              placeholder="不希望出现的词，多个用逗号分隔（可选）"
+              placeholder="???????????????????"
               clearable
             />
           </n-form-item>
 
-          <!-- 操作按钮 -->
+          <!-- ???? -->
           <n-form-item>
             <n-space>
               <n-button
@@ -89,7 +89,7 @@
                 @click="handleGenerate"
                 :disabled="!canGenerate"
               >
-                生成
+                ??
               </n-button>
               <n-button
                 secondary
@@ -97,21 +97,21 @@
                 @click="handleRegenerate"
                 :disabled="!canRegenerate"
               >
-                再来一�?              </n-button>
-              <n-button quaternary @click="handleReset">重置</n-button>
+                ?????              </n-button>
+              <n-button quaternary @click="handleReset">??</n-button>
             </n-space>
           </n-form-item>
         </n-form>
       </n-card>
 
-      <!-- 右侧结果�?-->
+      <!-- ??????-->
       <n-card class="name-tool-result-card">
         <template #header>
           <div class="name-tool-result-header">
             <div>
-              <span>结果列表</span>
+              <span>????</span>
               <n-text depth="3" class="name-tool-result-count">
-                （本�?{{ results.length }} 个）
+                ????{{ results.length }} ??
               </n-text>
             </div>
             <div class="name-tool-result-actions">
@@ -122,18 +122,18 @@
                 size="small"
               />
               <n-button size="small" @click="showFavorites = true">
-                我的收藏
+                ????
               </n-button>
             </div>
           </div>
         </template>
 
-        <!-- 加载状�?-->
+        <!-- ?????-->
         <div v-if="generating || regenerating" class="name-tool-loading">
           <n-spin size="large" />
           <div class="name-tool-loading-content">
-            <p class="name-tool-loading-text">正在生成名字...</p>
-            <p class="name-tool-loading-hint">AI 正在思考中，请稍候（通常需�?30-90 秒）</p>
+            <p class="name-tool-loading-text">??????...</p>
+            <p class="name-tool-loading-hint">AI ???????????????30-90 ??</p>
             <n-progress
               type="line"
               :percentage="loadingProgress"
@@ -146,7 +146,7 @@
           </div>
         </div>
 
-        <!-- 结果列表 -->
+        <!-- ???? -->
         <div v-else-if="results.length > 0" class="name-tool-results">
           <TransitionGroup name="name-item">
             <div
@@ -154,28 +154,28 @@
               :key="`${item.name}-${index}`"
               class="name-item-card"
             >
-              <!-- 名字和总分 -->
+              <!-- ????? -->
               <div class="name-item-header">
                 <h3 class="name-item-name">{{ item.name }}</h3>
                 <n-tag :type="getScoreTagType(item.totalScore)" size="large">
-                  总分: {{ item.totalScore }}
+                  ??: {{ item.totalScore }}
                 </n-tag>
               </div>
 
-              <!-- 四个维度�?-->
+              <!-- ??????-->
               <div class="name-item-scores">
-                <n-tag size="small" type="info">好记�? {{ item.scores.memorability }}</n-tag>
-                <n-tag size="small" type="success">独特�? {{ item.scores.uniqueness }}</n-tag>
-                <n-tag size="small" type="warning">贴合�? {{ item.scores.fit }}</n-tag>
-                <n-tag size="small" type="error">美观�? {{ item.scores.aesthetics }}</n-tag>
+                <n-tag size="small" type="info">???? {{ item.scores.memorability }}</n-tag>
+                <n-tag size="small" type="success">???? {{ item.scores.uniqueness }}</n-tag>
+                <n-tag size="small" type="warning">???? {{ item.scores.fit }}</n-tag>
+                <n-tag size="small" type="error">???? {{ item.scores.aesthetics }}</n-tag>
               </div>
 
-              <!-- 理由 -->
+              <!-- ?? -->
               <div class="name-item-reason">
                 <n-text depth="3">{{ item.reason }}</n-text>
               </div>
 
-              <!-- 标签 -->
+              <!-- ?? -->
               <div v-if="item.tags && item.tags.length > 0" class="name-item-tags">
                 <n-tag
                   v-for="tag in item.tags"
@@ -187,38 +187,38 @@
                 </n-tag>
               </div>
 
-              <!-- 操作按钮 -->
+              <!-- ???? -->
               <div class="name-item-actions">
                 <n-button size="small" @click="handleCopy(item.name)">
-                  复制
+                  ??
                 </n-button>
                 <n-button
                   size="small"
                   :type="isFavorite(item.name) ? 'primary' : 'default'"
                   @click="handleToggleFavorite(item)"
                 >
-                  {{ isFavorite(item.name) ? '已收�? : '收藏' }}
+                  {{ isFavorite(item.name) ? '???' : '??' }}
                 </n-button>
               </div>
             </div>
           </TransitionGroup>
         </div>
 
-        <!-- 空状�?-->
-        <n-empty v-else description="请填写筛选条件并点击生成按钮" />
+        <!-- ????-->
+        <n-empty v-else description="??????????????" />
       </n-card>
     </div>
 
-    <!-- 收藏抽屉 -->
+    <!-- ???? -->
     <n-drawer v-model:show="showFavorites" :width="400" placement="right">
       <template #header>
-        <span>我的收藏</span>
+        <span>????</span>
       </template>
       <div v-if="favoritesLoading" class="name-tool-loading">
         <n-spin size="large" />
       </div>
       <div v-else-if="favorites.length === 0" class="name-tool-empty">
-        <n-empty description="暂无收藏" />
+        <n-empty description="????" />
       </div>
       <div v-else class="name-tool-favorites">
         <div
@@ -231,8 +231,8 @@
             <n-tag size="small">{{ fav.type }}</n-tag>
           </div>
           <div class="name-favorite-meta">
-            <n-text depth="3">风格: {{ fav.style }}</n-text>
-            <n-text depth="3">评分: {{ fav.totalScore }}</n-text>
+            <n-text depth="3">??: {{ fav.style }}</n-text>
+            <n-text depth="3">??: {{ fav.totalScore }}</n-text>
             <n-text depth="3">{{ formatDate(fav.createdAt) }}</n-text>
           </div>
           <div class="name-favorite-reason">
@@ -240,10 +240,10 @@
           </div>
           <div class="name-favorite-actions">
             <n-button size="small" @click="handleCopy(fav.name)">
-              复制
+              ??
             </n-button>
             <n-button size="small" type="error" @click="handleRemoveFavorite(fav.id)">
-              取消收藏
+              ????
             </n-button>
           </div>
         </div>
@@ -255,7 +255,7 @@
       <div class="name-tool-page">
         <div class="name-tool-loading">
           <n-spin size="large" />
-          <p>正在加载...</p>
+          <p>????...</p>
         </div>
       </div>
     </template>
@@ -290,7 +290,7 @@ import type {
 } from '~/types/name-tool'
 import { useNameTool } from '~/composables/useNameTool'
 
-// 使用 default 布局
+// ?? default ??
 definePageMeta({
   layout: 'default'
 })
@@ -298,104 +298,105 @@ definePageMeta({
 const nameTool = useNameTool()
 const formRef = ref<FormInst | null>(null)
 
-// 表单数据
+// ????
 const formData = ref<NameGenerateRequest>({
   type: 'game',
-  style: ['霸气'],
+  style: ['??'],
   gender: undefined,
   length: undefined,
   keywords: undefined,
-  language: '自动',
+  language: '??',
   banned: undefined,
   traceId: undefined
 })
 
-// 表单验证规则
+// ??????
 const formRules = {
   type: {
     required: true,
-    message: '请选择取名类型',
+    message: '???????',
     trigger: 'change'
   },
   style: {
     required: true,
     type: 'array',
     min: 1,
-    message: '请至少选择一个风�?,
+    message: '???????',
     trigger: 'change'
   }
 }
 
-// 选项数据
+// ????
 const typeOptions = [
-  { label: '游戏�?, value: 'game' },
-  { label: '网名', value: 'nickname' },
-  { label: '英文�?, value: 'english' },
-  { label: '品牌�?, value: 'brand' },
-  { label: '产品�?, value: 'product' },
-  { label: '团队�?, value: 'team' },
-  { label: '项目�?, value: 'project' },
-  { label: '角色�?, value: 'character' }
+  { label: '???', value: 'game' },
+  { label: '??', value: 'nickname' },
+  { label: '???', value: 'english' },
+  { label: '??', value: 'brand' },
+  { label: '??', value: 'product' },
+  { label: '??', value: 'team' },
+  { label: '??', value: 'project' },
+  { label: '??', value: 'character' }
 ]
 
 const styleOptions = [
-  { label: '霸气', value: '霸气' },
-  { label: '可爱', value: '可爱' },
-  { label: '文艺', value: '文艺' },
-  { label: '搞笑', value: '搞笑' },
-  { label: '克制', value: '克制' },
-  { label: '科幻', value: '科幻' },
-  { label: '二次�?, value: '二次�? },
-  { label: '古风', value: '古风' },
-  { label: '赛博', value: '赛博' },
-  { label: '优雅', value: '优雅' },
-  { label: '简�?, value: '简�? },
-  { label: '神秘', value: '神秘' },
-  { label: '温暖', value: '温暖' },
-  { label: '冷酷', value: '冷酷' },
-  { label: '活泼', value: '活泼' },
-  { label: '沉稳', value: '沉稳' },
-  { label: '浪漫', value: '浪漫' },
-  { label: '现代', value: '现代' },
-  { label: '复古', value: '复古' },
-  { label: '未来', value: '未来' },
-  { label: '自然', value: '自然' },
-  { label: '梦幻', value: '梦幻' }
+  { label: '??', value: '??' },
+  { label: '??', value: '??' },
+  { label: '??', value: '??' },
+  { label: '??', value: '??' },
+  { label: '??', value: '??' },
+  { label: '??', value: '??' },
+  { label: '??', value: 'ancient' },
+  { label: '??', value: '??' },
+  { label: '??', value: '??' },
+  { label: '??', value: '??' },
+  { label: '??', value: 'poetic' },
+  { label: '??', value: '??' },
+  { label: '??', value: '??' },
+  { label: '??', value: '??' },
+  { label: '??', value: '??' },
+  { label: '??', value: '??' },
+  { label: '??', value: '??' },
+  { label: '??', value: '??' },
+  { label: '??', value: '??' },
+  { label: '??', value: '??' },
+  { label: '??', value: '??' },
+  { label: '??', value: '??' }
 ]
 
 const genderOptions = [
-  { label: '�?, value: '�? },
-  { label: '�?, value: '�? },
-  { label: '中�?, value: '中�? }
+  { label: '?', value: 'male' },
+  { label: '?', value: 'female' },
+  { label: '??', value: 'neutral' }
 ]
 
 const lengthOptions = [
-  { label: '短（1-2字）', value: '�? },
-  { label: '中（3-4字）', value: '�? },
-  { label: '长（5-6字）', value: '�? },
-  { label: '超长�?字以上）', value: '超长' }
+  { label: '1-2?', value: 'short' },
+  { label: '3-4?', value: 'medium' },
+  { label: '5-6?', value: 'long' },
+  { label: '??', value: 'any' }
 ]
 
 const languageOptions = [
-  { label: '自动', value: '自动' },
-  { label: '中文', value: '中文' },
-  { label: '英文', value: '英文' },
-  { label: '混合', value: '混合' },
-  { label: '日文', value: '日文' },
-  { label: '韩文', value: '韩文' },
-  { label: '数字', value: '数字' },
-  { label: '符号', value: '符号' }
+  { label: '??', value: 'zh' },
+  { label: '??', value: 'en' },
+  { label: '??', value: 'ja' },
+  { label: '??', value: 'ko' },
+  { label: '??', value: 'fr' },
+  { label: '??', value: 'de' },
+  { label: '????', value: 'es' },
+  { label: '??', value: 'mixed' }
 ]
 
 const sortOptions = [
-  { label: '总分从高到低', value: 'totalScore' },
-  { label: '独特性从高到�?, value: 'uniqueness' },
-  { label: '好记度从高到�?, value: 'memorability' },
-  { label: '贴合度从高到�?, value: 'fit' },
-  { label: '美观度从高到�?, value: 'aesthetics' }
+  { label: '??', value: 'totalScore' },
+  { label: '???', value: 'uniqueness' },
+  { label: '???', value: 'memorability' },
+  { label: '???', value: 'fit' },
+  { label: '???', value: 'aesthetics' }
 ]
 
-// 状�?const generating = ref(false)
+// ??
+const generating = ref(false)
 const regenerating = ref(false)
 const results = ref<NameItem[]>([])
 const traceId = ref<string | undefined>(undefined)
@@ -405,20 +406,22 @@ const favorites = ref<NameFavorite[]>([])
 const favoritesLoading = ref(false)
 const favoriteNames = ref<Set<string>>(new Set())
 
-// 加载进度和提�?const loadingProgress = ref(0)
-const loadingTip = ref('正在准备生成...')
+// ????
+const loadingProgress = ref(0)
+const loadingTip = ref('??????...')
 const loadingTips = [
-  '正在分析你的需�?..',
-  '正在构建 Prompt...',
-  '正在调用 AI 模型...',
-  'AI 正在思考中...',
-  '正在生成名字列表...',
-  '正在评分和筛�?..',
-  '即将完成...'
+  '?????????..',
+  '???? Prompt...',
+  '???? AI ??...',
+  'AI ?????...',
+  '????????...',
+  '????????..',
+  '????...'
 ]
 let loadingInterval: NodeJS.Timeout | null = null
 
-// 计算属�?const canGenerate = computed(() => {
+// ??????
+const canGenerate = computed(() => {
   return formData.value.type && formData.value.style && formData.value.style.length > 0
 })
 
@@ -444,12 +447,13 @@ const sortedResults = computed(() => {
   }
 })
 
-// 开始加载动�?const startLoadingAnimation = () => {
+// ??????
+const startLoadingAnimation = () => {
   loadingProgress.value = 0
   let tipIndex = 0
   loadingTip.value = loadingTips[tipIndex]
   
-  // 模拟进度（实际进度由后端控制，这里只是视觉反馈）
+  // ????????????????????????
   loadingInterval = setInterval(() => {
     if (loadingProgress.value < 90) {
       loadingProgress.value += Math.random() * 5
@@ -458,28 +462,29 @@ const sortedResults = computed(() => {
       }
     }
     
-    // �?10 秒切换一次提�?    if (tipIndex < loadingTips.length - 1 && loadingProgress.value > (tipIndex + 1) * 12) {
+    // ? 10% ?????
+    if (tipIndex < loadingTips.length - 1 && loadingProgress.value > (tipIndex + 1) * 12) {
       tipIndex++
       loadingTip.value = loadingTips[tipIndex]
     }
   }, 1000)
 }
 
-// 停止加载动画
+// ??????
 const stopLoadingAnimation = () => {
   if (loadingInterval) {
     clearInterval(loadingInterval)
     loadingInterval = null
   }
   loadingProgress.value = 100
-  loadingTip.value = '完成�?
+  loadingTip.value = '??'
   setTimeout(() => {
     loadingProgress.value = 0
-    loadingTip.value = '正在准备生成...'
+    loadingTip.value = '????...'
   }, 500)
 }
 
-// 方法
+// ??
 const handleGenerate = async (e?: Event) => {
   if (e) {
     e.preventDefault()
@@ -498,7 +503,7 @@ const handleGenerate = async (e?: Event) => {
           formData.value.traceId = response.traceId
         }
       } catch (error) {
-        console.error('生成名字时出�?', error)
+        console.error('????????', error)
       } finally {
         stopLoadingAnimation()
         generating.value = false
@@ -519,7 +524,7 @@ const handleRegenerate = async () => {
     const response = await nameTool.regenerateNames(request)
     if (response) {
       results.value = response.items
-      // traceId 保持不变
+      // traceId ????
     }
   } finally {
     stopLoadingAnimation()
@@ -530,11 +535,11 @@ const handleRegenerate = async () => {
 const handleReset = () => {
   formData.value = {
     type: 'game',
-    style: ['霸气'],
+    style: ['??'],
     gender: undefined,
     length: undefined,
     keywords: undefined,
-    language: '自动',
+    language: '??',
     banned: undefined,
     traceId: undefined
   }
@@ -549,18 +554,18 @@ const handleCopy = async (name: string) => {
 
 const handleToggleFavorite = async (item: NameItem) => {
   if (isFavorite(item.name)) {
-    // 取消收藏：需要从收藏列表中找到对应的ID
+    // ?? traceId ????
     const favorite = favorites.value.find(f => f.name === item.name)
     if (favorite) {
       await handleRemoveFavorite(favorite.id)
     }
   } else {
-    // 添加收藏
+    // ????
     const favoriteRequest: FavoriteCreateRequest = {
       name: item.name,
       type: formData.value.type!,
       style: formData.value.style!,
-      language: formData.value.language || '自动',
+      language: formData.value.language || '??',
       totalScore: item.totalScore,
       reason: item.reason,
       scores: item.scores,
@@ -624,7 +629,7 @@ const formatDate = (dateString: string): string => {
   })
 }
 
-// 监听收藏抽屉打开
+// ????????
 watch(showFavorites, (newVal) => {
   if (newVal) {
     loadFavorites()
@@ -632,13 +637,14 @@ watch(showFavorites, (newVal) => {
 })
 
 onMounted(() => {
-  // 页面加载时预加载收藏列表（用于判断是否已收藏�?  loadFavorites()
+  // ???????????
+  loadFavorites()
 })
 
 useHead({
-  title: '智能取名助手 - 溪午听风',
+  title: '???? - ????',
   meta: [
-    { name: 'description', content: '游戏名、网名、英文名一键生成，支持评分和收�? }
+    { name: 'description', content: 'AI ????????????????????????' }
   ]
 })
 </script>
@@ -841,7 +847,7 @@ useHead({
   text-align: center;
 }
 
-/* 过渡动画 */
+/* ???? */
 .name-item-enter-active,
 .name-item-leave-active {
   transition: all 0.3s ease;
@@ -857,11 +863,12 @@ useHead({
   transform: translateY(10px);
 }
 
-/* 响应�?*/
+/* ????*/
 @media (max-width: 1024px) {
   .name-tool-content {
     grid-template-columns: 1fr;
   }
 }
 </style>
+
 

@@ -1,10 +1,10 @@
 <template>
   <div class="asset-decision-panel">
-    <!-- 页面头部 -->
+    <!-- ???? -->
     <div class="panel-header">
       <div class="header-title-section">
-        <h1 class="panel-title">个人资产决策面板</h1>
-        <p class="panel-subtitle">一个不依赖任何交易平台的个人投资分析系�?/p>
+        <h1 class="panel-title">???????</h1>
+        <p class="panel-subtitle">????????????????????</p>
       </div>
       <div class="header-actions">
         <div class="auto-refresh-control">
@@ -14,81 +14,81 @@
               v-model="autoRefreshEnabled"
               class="auto-refresh-checkbox"
             />
-            <span class="auto-refresh-label">自动刷新</span>
+            <span class="auto-refresh-label">????</span>
           </label>
           <span v-if="lastRefreshTime" class="last-refresh-time">
-            上次刷新: {{ formatRefreshTime(lastRefreshTime) }}
+            ????: {{ formatRefreshTime(lastRefreshTime) }}
           </span>
         </div>
         <button @click="refreshPrices" class="btn-action-secondary" :disabled="refreshingPrices">
-          <span v-if="refreshingPrices">刷新�?..</span>
-          <span v-else>🔄 刷新价格</span>
+          <span v-if="refreshingPrices">????..</span>
+          <span v-else>?? ????</span>
         </button>
         <div class="export-menu-container">
-          <button @click="handleExportClick" class="btn-action-secondary">📥 导出数据</button>
+          <button @click="handleExportClick" class="btn-action-secondary">?? ????</button>
           <div v-if="showExportMenu" class="export-menu">
-            <button @click="exportData('investments')" class="export-menu-item">导出投资记录</button>
-            <button @click="exportData('transactions')" class="export-menu-item">导出交易记录</button>
-            <button @click="exportData('stats')" class="export-menu-item">导出统计数据</button>
+            <button @click="exportData('investments')" class="export-menu-item">??????</button>
+            <button @click="exportData('transactions')" class="export-menu-item">??????</button>
+            <button @click="exportData('stats')" class="export-menu-item">??????</button>
           </div>
         </div>
-        <button @click="handleAddClick" class="btn-action-primary">+ 新增投资</button>
+        <button @click="handleAddClick" class="btn-action-primary">+ ????</button>
       </div>
     </div>
 
-    <!-- 模块说明 -->
+    <!-- ???? -->
     <div class="module-description">
       <div class="description-header" @click="toggleDescription">
-        <span class="description-icon">ℹ️</span>
-        <span class="description-title">模块说明</span>
-        <span class="description-toggle">{{ showDescription ? '�? : '�? }}</span>
+        <span class="description-icon">??</span>
+        <span class="description-title">????</span>
+        <span class="description-toggle">{{ showDescription ? '??' : '??' }}</span>
       </div>
       <div v-show="showDescription" class="description-content">
         <p class="description-text">
-          本模块用于记录你的真实投资持仓，并自动同步市场行情，
-          帮助你清晰了解资产结构、盈亏情况与长期收益表现�?        </p>
+          ??????????????????????????
+          ?????????????????????????        </p>
         <p class="description-warning">
-          ⚠️ 不提供交易功能，不接入任何第三方账户，仅用于个人资产管理与分析�?        </p>
+          ?? ?????????????????????????????????        </p>
       </div>
     </div>
 
-    <!-- 功能说明卡片 -->
+    <!-- ?????? -->
     <div class="feature-card">
-      <h3 class="feature-card-title">核心功能</h3>
+      <h3 class="feature-card-title">????</h3>
       <div class="feature-list">
-        <div class="feature-item" :title="'汇总基�?/ ETF / 股票的当前市值与盈亏'">
-          <div class="feature-icon">📊</div>
+        <div class="feature-item" :title="'?? / ETF / ???????'">
+          <div class="feature-icon">??</div>
           <div class="feature-content">
-            <div class="feature-name">汇总资产与盈亏</div>
+            <div class="feature-name">???????</div>
           </div>
         </div>
-        <div class="feature-item" :title="'自动获取最新市场价格，实时计算收益'">
-          <div class="feature-icon">🔄</div>
+        <div class="feature-item" :title="'?????????????????'">
+          <div class="feature-icon">??</div>
           <div class="feature-content">
-            <div class="feature-name">实时市场行情</div>
+            <div class="feature-name">??????</div>
           </div>
         </div>
-        <div class="feature-item" :title="'用数据，而不是感觉，辅助投资决策'">
-          <div class="feature-icon">📈</div>
+        <div class="feature-item" :title="'????????????????'">
+          <div class="feature-icon">??</div>
           <div class="feature-content">
-            <div class="feature-name">数据驱动决策</div>
+            <div class="feature-name">??????</div>
           </div>
         </div>
-        <div class="feature-item" :title="'数据完全由用户掌控，不绑定任何平台账�?">
-          <div class="feature-icon">🔒</div>
+        <div class="feature-item" :title="'??? Excel/CSV ??????'">
+          <div class="feature-icon">??</div>
           <div class="feature-content">
-            <div class="feature-name">数据完全掌控</div>
+            <div class="feature-name">??????</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 交易记录导入入口 -->
+    <!-- ???????? -->
     <div class="import-section">
       <div class="import-card">
         <div class="import-header">
-          <h3 class="import-title">交易记录导入（半自动同步�?/h3>
-          <span class="import-info-icon" :title="'由于交易平台未开放接口，本系统不支持自动登录同步。支持导入官方交易记录文件，系统将自动识别并生成持仓数据。不需要账号密码，不涉及隐私授权�?">ℹ️</span>
+          <h3 class="import-title">??????</h3>
+          <span class="import-info-icon" :title="'?? Excel/CSV ????????????????????'">??</span>
         </div>
         <div class="import-content">
           <div class="import-formats">
@@ -96,8 +96,8 @@
             <span class="format-tag">CSV</span>
           </div>
           <button @click="handleImportClick" class="btn-import">
-            <span class="import-icon">📥</span>
-            选择文件导入
+            <span class="import-icon">??</span>
+            ??????
           </button>
           <input
             ref="fileInput"
@@ -110,110 +110,110 @@
       </div>
     </div>
 
-    <!-- 统计卡片 -->
+    <!-- ???? -->
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-label">总成�?/div>
-        <div class="stat-value">¥{{ formatMoney(stats.TotalCost || 0) }}</div>
+        <div class="stat-label">???</div>
+        <div class="stat-value">?{{ formatMoney(stats.TotalCost || 0) }}</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">总市�?/div>
-        <div class="stat-value-blue">¥{{ formatMoney(stats.TotalMarketValue || 0) }}</div>
+        <div class="stat-label">???</div>
+        <div class="stat-value-blue">?{{ formatMoney(stats.TotalMarketValue || 0) }}</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">总盈�?/div>
+        <div class="stat-label">???</div>
         <div :class="(stats.TotalProfitLoss || 0) >= 0 ? 'stat-value-positive' : 'stat-value-negative'">
-          ¥{{ formatMoney(stats.TotalProfitLoss || 0) }}
+          ?{{ formatMoney(stats.TotalProfitLoss || 0) }}
         </div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">收益�?/div>
+        <div class="stat-label">???</div>
         <div :class="(stats.TotalProfitRate || 0) >= 0 ? 'stat-value-positive' : 'stat-value-negative'">
           {{ formatPercent(stats.TotalProfitRate || 0) }}%
         </div>
       </div>
     </div>
 
-    <!-- 图表分析区域 -->
+    <!-- ?????? -->
     <div class="charts-grid">
-      <!-- 资产类型分布饼状�?-->
+      <!-- ??????????-->
       <div class="chart-container">
-        <h2 class="chart-title">资产类型分布</h2>
+        <h2 class="chart-title">??????</h2>
         <div v-if="stats.ByType && stats.ByType.length > 0" class="chart-wrapper">
           <v-chart :option="typeChartOption" :theme="isDark ? 'dark-custom' : 'light-custom'" autoresize />
         </div>
-        <div v-else class="chart-empty">暂无数据</div>
+        <div v-else class="chart-empty">????</div>
       </div>
 
-      <!-- 盈亏状态分布饼状图 -->
+      <!-- ????????? -->
       <div class="chart-container">
-        <h2 class="chart-title">盈亏状态分�?/h2>
+        <h2 class="chart-title">????</h2>
         <div v-if="stats.ByProfitStatus && stats.ByProfitStatus.length > 0" class="chart-wrapper">
           <v-chart :option="profitStatusChartOption" :theme="isDark ? 'dark-custom' : 'light-custom'" autoresize />
         </div>
-        <div v-else class="chart-empty">暂无数据</div>
+        <div v-else class="chart-empty">????</div>
       </div>
 
-      <!-- 资产分布（按代码）饼状图 -->
+      <!-- ???????????? -->
       <div class="chart-container">
-        <h2 class="chart-title">资产分布（Top 10�?/h2>
+        <h2 class="chart-title">???? Top 10</h2>
         <div v-if="assetDistributionChartOption.series && assetDistributionChartOption.series[0].data.length > 0" class="chart-wrapper">
           <v-chart :option="assetDistributionChartOption" :theme="isDark ? 'dark-custom' : 'light-custom'" autoresize />
         </div>
-        <div v-else class="chart-empty">暂无数据</div>
+        <div v-else class="chart-empty">????</div>
       </div>
 
-      <!-- 收益排行柱状�?-->
+      <!-- ????????-->
       <div class="chart-container">
-        <h2 class="chart-title">收益排行（Top 5�?/h2>
+        <h2 class="chart-title">?? Top 5</h2>
         <div v-if="stats.TopByProfit && stats.TopByProfit.length > 0" class="chart-wrapper">
           <v-chart :option="profitRankChartOption" :theme="isDark ? 'dark-custom' : 'light-custom'" autoresize />
         </div>
-        <div v-else class="chart-empty">暂无数据</div>
+        <div v-else class="chart-empty">????</div>
       </div>
     </div>
 
-    <!-- 统计表格 -->
+    <!-- ???? -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-      <!-- 按类型统计表�?-->
+      <!-- ????????-->
       <div class="stats-table-container">
-        <h2 class="chart-title">按类型统�?/h2>
+        <h2 class="chart-title">????</h2>
         <div class="overflow-x-auto">
           <table class="stats-table">
             <thead>
               <tr>
-                <th>类型</th>
-                <th>数量</th>
-                <th>总成�?/th>
-                <th>总市�?/th>
-                <th>盈亏</th>
-                <th>收益�?/th>
+                <th>??</th>
+                <th>??</th>
+                <th>???</th>
+                <th>???</th>
+                <th>??</th>
+                <th>???</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(item, index) in stats.ByType" :key="index">
                 <td>{{ item.TypeName || item.Type }}</td>
                 <td>{{ item.Count }}</td>
-                <td>¥{{ formatMoney(item.TotalCost) }}</td>
-                <td>¥{{ formatMoney(item.TotalMarketValue) }}</td>
+                <td>?{{ formatMoney(item.TotalCost) }}</td>
+                <td>?{{ formatMoney(item.TotalMarketValue) }}</td>
                 <td :class="item.ProfitLoss >= 0 ? 'profit-positive' : 'profit-negative'">
-                  ¥{{ formatMoney(item.ProfitLoss) }}
+                  ?{{ formatMoney(item.ProfitLoss) }}
                 </td>
                 <td :class="item.ProfitRate >= 0 ? 'profit-positive' : 'profit-negative'">
                   {{ formatPercent(item.ProfitRate) }}%
                 </td>
               </tr>
               <tr v-if="!stats.ByType || stats.ByType.length === 0">
-                <td colspan="6" class="stats-table-empty">暂无数据</td>
+                <td colspan="6" class="stats-table-empty">????</td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
 
-      <!-- Top 5 持仓 -->
+      <!-- Top 5 ?? -->
       <div class="top-holdings-container">
-        <h2 class="top-holdings-title">Top 5 持仓（按市值）</h2>
+        <h2 class="top-holdings-title">Top 5 ???????</h2>
         <div class="top-holdings-list">
           <div
             v-for="(item, index) in stats.TopByMarketValue"
@@ -237,13 +237,13 @@
                   {{ item.Name }} ({{ item.Code }})
                 </div>
                 <div class="holding-type">
-                  {{ item.Type === 'stock' ? '股票' : '基金' }}
+                  {{ item.Type === 'stock' ? '??' : '??' }}
                 </div>
               </div>
             </div>
             <div class="holding-value">
               <div class="holding-value-amount">
-                ¥{{ formatMoney(item.MarketValue) }}
+                ?{{ formatMoney(item.MarketValue) }}
               </div>
               <div 
                 class="holding-value-rate"
@@ -254,28 +254,28 @@
             </div>
           </div>
           <div v-if="!stats.TopByMarketValue || stats.TopByMarketValue.length === 0" class="empty-state">
-            暂无数据
+            ????
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 投资列表 -->
+    <!-- ???? -->
     <div class="table-container">
       <table class="investment-table">
         <thead>
           <tr>
-            <th>代码</th>
-            <th>名称</th>
-            <th>类型</th>
-            <th>持仓</th>
-            <th>成本�?/th>
-            <th>当前�?
-              <span class="table-header-hint" title="如果显示为�?.00，请点击上方�?刷新价格'按钮">💡</span>
+            <th>??</th>
+            <th>??</th>
+            <th>??</th>
+            <th>??</th>
+            <th>???</th>
+            <th>????
+              <span class="table-header-hint" title="???????.00????????????'??">??</span>
             </th>
-            <th>市�?/th>
-            <th>盈亏</th>
-            <th>操作</th>
+            <th>??</th>
+            <th>??</th>
+            <th>??</th>
           </tr>
         </thead>
         <tbody>
@@ -284,25 +284,25 @@
             <td>{{ item.name }}</td>
             <td>
               <span :class="item.type === 'stock' ? 'badge-stock' : 'badge-fund'">
-                {{ item.type === 'stock' ? '股票' : '基金' }}
+                {{ item.type === 'stock' ? '??' : '??' }}
               </span>
             </td>
             <td>{{ item.quantity }}</td>
-            <td>¥{{ formatMoney(item.costPrice) }}</td>
+            <td>?{{ formatMoney(item.costPrice) }}</td>
             <td>
-              <span v-if="item.currentPrice > 0">¥{{ formatMoney(item.currentPrice) }}</span>
-              <span v-else class="price-zero-hint" title="当前价为0，请点击上方�?刷新价格'按钮获取最新价�?>
-                ¥0.00
-                <span class="hint-icon">⚠️</span>
+              <span v-if="item.currentPrice > 0">?{{ formatMoney(item.currentPrice) }}</span>
+              <span v-else class="price-zero-hint" title="??????? 0.00???????"
+                ?0.00
+                <span class="hint-icon">??</span>
               </span>
             </td>
             <td>
-              <span v-if="item.marketValue > 0">¥{{ formatMoney(item.marketValue) }}</span>
-              <span v-else class="price-zero-hint">¥0.00</span>
+              <span v-if="item.marketValue > 0">?{{ formatMoney(item.marketValue) }}</span>
+              <span v-else class="price-zero-hint">?0.00</span>
             </td>
             <td>
               <div :class="item.profitLoss >= 0 ? 'profit-positive' : 'profit-negative'">
-                ¥{{ formatMoney(item.profitLoss) }}
+                ?{{ formatMoney(item.profitLoss) }}
               </div>
               <div :class="item.profitRate >= 0 ? 'profit-rate-positive' : 'profit-rate-negative'">
                 {{ formatPercent(item.profitRate) }}%
@@ -310,9 +310,9 @@
             </td>
             <td>
               <div class="action-buttons">
-                <button @click="editItem(item)" class="btn-edit">编辑</button>
-                <button @click="addTransaction(item)" class="btn-transaction">交易</button>
-                <button @click="deleteItem(item.id)" class="btn-delete">删除</button>
+                <button @click="editItem(item)" class="btn-edit">??</button>
+                <button @click="addTransaction(item)" class="btn-transaction">??</button>
+                <button @click="deleteItem(item.id)" class="btn-delete">??</button>
               </div>
             </td>
           </tr>
@@ -320,21 +320,21 @@
       </table>
     </div>
 
-    <!-- 创建/编辑模态框 -->
+    <!-- ??/????? -->
     <div v-if="showCreateModal || editingItem" class="modal-overlay">
       <div class="modal-content">
         <div class="modal-body">
-          <h2 class="modal-title">{{ editingItem ? '编辑' : '新增' }}投资</h2>
+          <h2 class="modal-title">{{ editingItem ? '??' : '??' }}??</h2>
           
           <div class="modal-form">
             <div class="form-group">
-              <label class="form-label">代码 <span class="text-red-500">*</span></label>
+              <label class="form-label">?? <span class="text-red-500">*</span></label>
               <div class="form-input-group">
                 <input 
                   v-model="form.code" 
                   type="text" 
                   class="form-input" 
-                  placeholder="例如: 000001 (股票) �?005918 (基金)" 
+                  placeholder="??: 000001 (??) ??005918 (??)" 
                   @blur="autoDetectType"
                 />
                 <button 
@@ -344,57 +344,57 @@
                   type="button"
                 >
                   <span v-if="isAutoFilling" class="spinner"></span>
-                  <span v-else>🔍 自动获取</span>
+                  <span v-else>?? ????</span>
                 </button>
               </div>
               <div class="form-hint">
-                输入6位数字代码，点击"自动获取"可自动填充名称和当前价格
+                ??6????????"????"????????????
                 <br />
-                <span class="form-hint-tip">💡 <strong>场外基金（如005918）无法自动获�?/strong>，这是正常的。请手动填写名称，或使用下方�?快速估�?模式直接录入</span>
+                <span class="form-hint-tip">?? <strong>??????005918???????</strong>?????????????????????????????????</span>
               </div>
             </div>
             <div class="form-group">
-              <label class="form-label">名称 <span class="text-red-500">*</span></label>
-              <input v-model="form.name" type="text" class="form-input" placeholder="例如: 天弘沪深300ETF联接C、平安银�? />
+              <label class="form-label">?? <span class="text-red-500">*</span></label>
+              <input v-model="form.name" type="text" class="form-input" placeholder="??: ????300ETF??C?????? />
               <div class="form-hint">
-                投资标的的名�?                <br />
-                <span class="form-hint-tip">💡 <strong>场外基金（如005918�?/strong>：可以从支付宝等平台复制基金名称，例�?天弘沪深300ETF联接C"</span>
+                ????????                <br />
+                <span class="form-hint-tip">?? <strong>??????005918?</strong>????????????????????????300ETF??C"</span>
               </div>
             </div>
             <div class="form-group">
-              <label class="form-label">类型 <span class="text-red-500">*</span></label>
+              <label class="form-label">?? <span class="text-red-500">*</span></label>
               <select v-model="form.type" class="form-select">
-                <option value="stock">股票</option>
-                <option value="fund">基金</option>
+                <option value="stock">??</option>
+                <option value="fund">??</option>
               </select>
-              <div class="form-hint">根据代码自动识别，可手动修改</div>
+              <div class="form-hint">??????????????</div>
             </div>
-            <!-- 录入模式切换 -->
+            <!-- ?????? -->
             <div class="form-group">
               <div class="input-mode-switch">
-                <label class="switch-label">录入模式�?/label>
+                <label class="switch-label">?????</label>
                 <div class="switch-buttons">
                   <button 
                     :class="['switch-btn', { active: inputMode === 'quick' }]"
                     @click="inputMode = 'quick'"
                     type="button"
                   >
-                    🚀 快速估�?                  </button>
+                    ?? ?????                  </button>
                   <button 
                     :class="['switch-btn', { active: inputMode === 'detail' }]"
                     @click="inputMode = 'detail'"
                     type="button"
                   >
-                    📊 详细录入
+                    ?? ????
                   </button>
                 </div>
               </div>
             </div>
 
-            <!-- 快速估算模�?-->
+            <!-- ???????-->
             <template v-if="inputMode === 'quick'">
               <div class="form-group">
-                <label class="form-label">总投资金�?<span class="text-red-500">*</span></label>
+                <label class="form-label">??????<span class="text-red-500">*</span></label>
                 <div class="input-with-unit">
                   <input 
                     v-model.number="quickInput.totalAmount" 
@@ -402,18 +402,18 @@
                     step="0.01" 
                     min="0.01"
                     class="form-input" 
-                    placeholder="例如: 1000" 
+                    placeholder="??: 1000" 
                     @input="calculateQuickEstimate"
                   />
-                  <span class="input-unit">�?/span>
+                  <span class="input-unit">?</span>
                 </div>
               <div class="form-hint">
-                您总共投入的金额（比如买了1000元的基金�?                  <br />
-                  <span class="form-hint-tip">💡 <strong>推荐使用此模式！</strong> 只需要知道总投入金额，系统会自动计算持仓数量。可以从支付宝等平台查看您的总投入金�?/span>
+                ?????????????1000??????                  <br />
+                  <span class="form-hint-tip">?? <strong>????????</strong> ?????????????????????????????????????????</span>
                 </div>
               </div>
               <div class="form-group">
-                <label class="form-label">大概买入价格 <span class="text-red-500">*</span></label>
+                <label class="form-label">?????? <span class="text-red-500">*</span></label>
                 <div class="input-with-unit">
                   <input 
                     v-model.number="quickInput.estimatedPrice" 
@@ -421,69 +421,69 @@
                     step="0.01" 
                     min="0.01"
                     class="form-input" 
-                    placeholder="例如: 1.4" 
+                    placeholder="??: 1.4" 
                     @input="calculateQuickEstimate"
                   />
-                  <span class="input-unit">�?�?/span>
+                  <span class="input-unit">???</span>
                 </div>
                 <div class="form-hint">
-                  您大概记得的买入价格，如果不记得可以用当前价�?                  <br />
-                  <span class="form-hint-tip">💡 <strong>对于场外基金（如005918�?/strong>：如果不记得精确价格，可以填写大概价格（�?.4），系统会自动计算持仓数量。稍后可以编辑修�?/span>
+                  ????????????????????????                  <br />
+                  <span class="form-hint-tip">?? <strong>????????005918?</strong>??????????????????????.4??????????????????????</span>
                 </div>
               </div>
               <div v-if="quickEstimate.quantity > 0" class="form-group">
                 <div class="estimate-result">
                   <div class="estimate-item">
-                    <span class="estimate-label">自动计算持仓数量�?/span>
-                    <span class="estimate-value">{{ formatMoney(quickEstimate.quantity) }} �?/span>
+                    <span class="estimate-label">?????????</span>
+                    <span class="estimate-value">{{ formatMoney(quickEstimate.quantity) }} ?</span>
                   </div>
                   <div class="estimate-item">
-                    <span class="estimate-label">成本价：</span>
-                    <span class="estimate-value">¥{{ formatMoney(quickEstimate.costPrice) }}</span>
+                    <span class="estimate-label">????</span>
+                    <span class="estimate-value">?{{ formatMoney(quickEstimate.costPrice) }}</span>
                   </div>
                 </div>
               </div>
             </template>
 
-            <!-- 详细录入模式 -->
+            <!-- ?????? -->
             <template v-else>
               <div class="form-group">
-                <label class="form-label">持仓数量 <span class="text-red-500">*</span></label>
+                <label class="form-label">???? <span class="text-red-500">*</span></label>
                 <input 
                   v-model.number="form.quantity" 
                   type="number" 
                   step="0.01" 
                   min="0.01"
                   class="form-input" 
-                  placeholder="例如: 1000" 
+                  placeholder="??: 1000" 
                   required
                 />
                 <div class="form-hint">
-                  您持有的数量（股数或份额），必须大于0
+                  ??????????????????0
                   <br />
-                  <span class="form-hint-tip">💡 可以从支付宝等平台查看您的持仓份�?/span>
+                  <span class="form-hint-tip">?? ?????????????????</span>
                 </div>
               </div>
               <div class="form-group">
-                <label class="form-label">成本�?<span class="text-red-500">*</span></label>
+                <label class="form-label">????<span class="text-red-500">*</span></label>
                 <input 
                   v-model.number="form.costPrice" 
                   type="number" 
                   step="0.01" 
                   min="0.01"
                   class="form-input" 
-                  placeholder="例如: 1.4078" 
+                  placeholder="??: 1.4078" 
                   required
                 />
                 <div class="form-hint">
-                  您买入时的价格（�?�?�?�?份），必须大�?
+                  ????????????????????????
                   <br />
-                  <span class="form-hint-tip">💡 如果不记得精确价格，可以填写大概价格，稍后可以编辑修�?/span>
+                  <span class="form-hint-tip">?? ???????????????????????????</span>
                 </div>
               </div>
             </template>
             <div class="form-group">
-              <label class="form-label">当前价格 <span class="text-red-500">*</span></label>
+              <label class="form-label">???? <span class="text-red-500">*</span></label>
               <div class="input-with-unit">
                 <input 
                   v-model.number="form.currentPrice" 
@@ -491,56 +491,56 @@
                   step="0.0001" 
                   min="0"
                   class="form-input" 
-                  placeholder="例如: 1.4012" 
+                  placeholder="??: 1.4012" 
                   required
                 />
-                <span class="input-unit">�?�?/span>
+                <span class="input-unit">???</span>
               </div>
               <div class="form-hint">
-                当前市场价格（元/�?�?�?份）
+                ????????/????????
                 <br />
-                <span class="form-hint-tip">💡 <strong>如果自动获取失败</strong>：可以从支付宝等平台查看当前净值，手动填写。例如：金额995.34�?÷ 持仓710.3282�?�?1.4012�?�?/span>
+                <span class="form-hint-tip">?? <strong>????????</strong>???????????????????????????995.34??? ??710.3282????1.4012???</span>
               </div>
             </div>
             <div class="form-group">
-              <label class="form-label">备注</label>
-              <textarea v-model="form.notes" rows="3" class="form-textarea" placeholder="可选：其他备注信息"></textarea>
+              <label class="form-label">??</label>
+              <textarea v-model="form.notes" rows="3" class="form-textarea" placeholder="?????????"></textarea>
             </div>
           </div>
 
           <div class="modal-actions">
-            <button @click="saveItem" class="btn-save">保存</button>
-            <button @click="cancelEdit" class="btn-cancel">取消</button>
+            <button @click="saveItem" class="btn-save">??</button>
+            <button @click="cancelEdit" class="btn-cancel">??</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 导入模态框 -->
+    <!-- ????? -->
     <div v-if="showImportModal" class="modal-overlay" @click="closeImportModal">
       <div class="modal-content" @click.stop>
         <div class="modal-body">
-          <h2 class="modal-title">导入交易记录</h2>
+          <h2 class="modal-title">??????</h2>
           
           <div v-if="importing" class="import-status">
             <div class="spinner"></div>
-            <p>正在导入，请稍�?..</p>
+            <p>?????????..</p>
           </div>
 
           <div v-else-if="importResult" class="import-result">
             <div class="result-summary">
               <div class="result-item success">
-                <span class="result-label">成功�?/span>
-                <span class="result-value">{{ importResult.successCount }} �?/span>
+                <span class="result-label">???</span>
+                <span class="result-value">{{ importResult.successCount }} ?</span>
               </div>
               <div class="result-item error">
-                <span class="result-label">失败�?/span>
-                <span class="result-value">{{ importResult.failCount }} �?/span>
+                <span class="result-label">???</span>
+                <span class="result-value">{{ importResult.failCount }} ?</span>
               </div>
             </div>
             
             <div v-if="importResult.errors.length > 0" class="result-errors">
-              <h4>错误详情�?/h4>
+              <h4>?????</h4>
               <ul>
                 <li v-for="(error, index) in importResult.errors" :key="index">{{ error }}</li>
               </ul>
@@ -549,24 +549,24 @@
 
           <div v-else class="import-info">
             <p class="import-hint">
-              <strong>文件格式要求�?/strong>
+              <strong>???????</strong>
             </p>
             <ul class="import-format-list">
-              <li>支持 CSV �?Excel 格式�?csv, .xlsx, .xls�?/li>
-              <li>CSV 文件格式：代�?名称,类型,交易类型,数量,价格,交易日期,备注</li>
-              <li>第一行为表头，从第二行开始为数据</li>
-              <li>类型：stock（股票）�?fund（基金）</li>
-              <li>交易类型：buy（买入）�?sell（卖出）</li>
+              <li>?? CSV ??Excel ????csv, .xlsx, .xls?</li>
+              <li>CSV ??????????,??,????,??,??,????,??</li>
+              <li>????????????????</li>
+              <li>???stock??????fund????</li>
+              <li>?????buy??????sell????</li>
             </ul>
             <div class="import-example">
-              <p><strong>示例�?/strong></p>
-              <pre>代码,名称,类型,交易类型,数量,价格,交易日期,备注
-005918,天弘沪深300ETF联接C,fund,buy,1000,1.4078,2024-01-01,支付宝购�?000001,平安银行,stock,buy,100,12.50,2024-01-02,</pre>
+              <p><strong>???</strong></p>
+              <pre>??,??,??,????,??,??,????,??
+005918,????300ETF??C,fund,buy,1000,1.4078,2024-01-01,??????000001,????,stock,buy,100,12.50,2024-01-02,</pre>
             </div>
           </div>
 
           <div class="modal-actions">
-            <button @click="closeImportModal" class="btn-cancel">关闭</button>
+            <button @click="closeImportModal" class="btn-cancel">??</button>
           </div>
         </div>
       </div>
@@ -588,7 +588,7 @@ import VChart from 'vue-echarts'
 import { useEChartsTheme } from '~/composables/useEChartsTheme'
 import { registerTheme } from 'echarts/core'
 
-// 注册 ECharts 组件
+// ?? ECharts ??
 use([
   CanvasRenderer,
   PieChart,
@@ -599,10 +599,10 @@ use([
   GridComponent
 ])
 
-// 使用 ECharts 主题配置
+// ?? ECharts ????
 const { isDark, darkTheme, lightTheme } = useEChartsTheme()
 
-// 注册自定义深色主�?registerTheme('dark-custom', {
+// ??????????registerTheme('dark-custom', {
   backgroundColor: 'transparent',
   textStyle: {
     color: 'var(--color-bg-card)'
@@ -626,7 +626,7 @@ const { isDark, darkTheme, lightTheme } = useEChartsTheme()
   }
 })
 
-// 注册自定义浅色主�?registerTheme('light-custom', {
+// ??????????registerTheme('light-custom', {
   backgroundColor: 'transparent',
   textStyle: {
     color: 'var(--color-text-main)'
@@ -717,7 +717,7 @@ const stats = ref<{
 const showCreateModal = ref(false)
 const editingItem = ref<Investment | null>(null)
 const isAutoFilling = ref(false)
-const inputMode = ref<'quick' | 'detail'>('quick') // 默认使用快速估算模�?const showDescription = ref(false) // 模块说明默认折叠
+const inputMode = ref<'quick' | 'detail'>('quick') // ???????????const showDescription = ref(false) // ????????
 const form = ref({
   code: '',
   name: '',
@@ -728,20 +728,20 @@ const form = ref({
   notes: ''
 })
 
-// 快速估算输�?const quickInput = ref({
-  totalAmount: 0,      // 总投资金�?  estimatedPrice: 0    // 大概买入价格
+// ???????const quickInput = ref({
+  totalAmount: 0,      // ??????  estimatedPrice: 0    // ??????
 })
 
-// 快速估算结�?const quickEstimate = ref({
-  quantity: 0,         // 计算出的持仓数量
-  costPrice: 0         // 成本价（等于estimatedPrice�?})
+// ???????const quickEstimate = ref({
+  quantity: 0,         // ????????
+  costPrice: 0         // ??????estimatedPrice??})
 
-// 计算快速估�?const calculateQuickEstimate = () => {
+// ???????const calculateQuickEstimate = () => {
   if (quickInput.value.totalAmount > 0 && quickInput.value.estimatedPrice > 0) {
     quickEstimate.value.quantity = quickInput.value.totalAmount / quickInput.value.estimatedPrice
     quickEstimate.value.costPrice = quickInput.value.estimatedPrice
     
-    // 同步到表�?    form.value.quantity = quickEstimate.value.quantity
+    // ??????    form.value.quantity = quickEstimate.value.quantity
     form.value.costPrice = quickEstimate.value.costPrice
   } else {
     quickEstimate.value.quantity = 0
@@ -749,14 +749,14 @@ const form = ref({
   }
 }
 
-// 监听当前价格变化，自动填充到快速估�?watch(() => form.value.currentPrice, (newPrice) => {
+// ???????????????????watch(() => form.value.currentPrice, (newPrice) => {
   if (newPrice > 0 && inputMode.value === 'quick' && quickInput.value.estimatedPrice === 0) {
     quickInput.value.estimatedPrice = newPrice
     calculateQuickEstimate()
   }
 })
 
-// 转换后端数据格式（PascalCase -> camelCase�?const transformInvestment = (item: any): Investment => {
+// ?????????PascalCase -> camelCase??const transformInvestment = (item: any): Investment => {
   return {
     id: item.id || item.Id || 0,
     code: item.code || item.Code || '',
@@ -780,7 +780,7 @@ const fetchList = async () => {
   try {
     const res = await api.get<any>('/Investment')
     
-    // 处理投资列表数据
+    // ????????
     let investmentList: any[] = []
     if (Array.isArray(res)) {
       investmentList = res
@@ -790,13 +790,13 @@ const fetchList = async () => {
       investmentList = res.data
     }
     
-    // 转换数据格式
+    // ??????
     investments.value = investmentList.map(transformInvestment)
 
-    // 获取统计数据
+    // ??????
     const statsRes = await api.get<any>('/Investment/stats')
     if (statsRes) {
-      // 统计数据字段名转换（后端返回 PascalCase，前端使�?camelCase�?      stats.value = {
+      // ?????????????? PascalCase??????camelCase??      stats.value = {
         TotalCost: statsRes.TotalCost ?? statsRes.totalCost ?? 0,
         TotalMarketValue: statsRes.TotalMarketValue ?? statsRes.totalMarketValue ?? 0,
         TotalProfitLoss: statsRes.TotalProfitLoss ?? statsRes.totalProfitLoss ?? 0,
@@ -804,7 +804,7 @@ const fetchList = async () => {
         TotalCount: statsRes.TotalCount ?? statsRes.totalCount ?? 0,
         ByType: (statsRes.ByType ?? statsRes.byType ?? []).map((item: any) => ({
           Type: item.Type ?? item.type ?? '',
-          TypeName: item.TypeName ?? item.typeName ?? (item.Type === 'stock' || item.type === 'stock' ? '股票' : '基金'),
+          TypeName: item.TypeName ?? item.typeName ?? (item.Type === 'stock' || item.type === 'stock' ? '??' : '??'),
           Count: item.Count ?? item.count ?? 0,
           TotalCost: item.TotalCost ?? item.totalCost ?? 0,
           TotalMarketValue: item.TotalMarketValue ?? item.totalMarketValue ?? 0,
@@ -813,7 +813,7 @@ const fetchList = async () => {
         })),
         ByProfitStatus: (statsRes.ByProfitStatus ?? statsRes.byProfitStatus ?? []).map((item: any) => ({
           Status: item.Status ?? item.status ?? '',
-          StatusName: item.StatusName ?? item.statusName ?? (item.Status === 'profit' || item.status === 'profit' ? '盈利' : '亏损'),
+          StatusName: item.StatusName ?? item.statusName ?? (item.Status === 'profit' || item.status === 'profit' ? '??' : '??'),
           Count: item.Count ?? item.count ?? 0,
           TotalCost: item.TotalCost ?? item.totalCost ?? 0,
           TotalMarketValue: item.TotalMarketValue ?? item.totalMarketValue ?? 0,
@@ -865,18 +865,18 @@ const refreshPrices = async () => {
   
   refreshingPrices.value = true
   try {
-    // useApi 已经处理了响应格式，如果成功会返�?data（可能为 null），如果失败会抛出异�?    await api.post('/Investment/refresh-prices')
-    // 等待一小段时间确保后端数据已保�?    await new Promise(resolve => setTimeout(resolve, 500))
-    // 重新获取列表和统计数�?    await fetchList()
+    // useApi ??????????????????data???? null????????????    await api.post('/Investment/refresh-prices')
+    // ?????????????????    await new Promise(resolve => setTimeout(resolve, 500))
+    // ????????????    await fetchList()
     lastRefreshTime.value = new Date()
-    // 只在手动刷新时显示提示，自动刷新时不显示（避免打扰）
+    // ??????????????????????????
     if (!autoRefreshInterval.value || !autoRefreshEnabled.value) {
-      success('价格刷新成功，数据已更新')
+      success('????????????')
     } else {
-      console.log('[自动刷新] 价格刷新成功')
+      console.log('[????] ??????')
     }
   } catch (e: unknown) {
-    handleError(e, '刷新失败')
+    handleError(e, '????')
   } finally {
     refreshingPrices.value = false
   }
@@ -896,43 +896,43 @@ const editItem = (item: Investment) => {
 }
 
 const addTransaction = (item: Investment) => {
-  // TODO: 实现交易记录功能
+  // TODO: ????????
   const { info } = useNotification()
-  info('交易功能开发中...')
+  info('???????...')
 }
 
 const saveItem = async () => {
   const { warning, success } = useNotification()
   const { handleError } = useErrorHandler()
   
-  // 前端表单验证
+  // ??????
   if (!form.value.code || !form.value.code.trim()) {
-    warning('请填写代�?)
+    warning('??????)
     return
   }
   
   if (!form.value.name || !form.value.name.trim()) {
-    warning('请填写名�?)
+    warning('??????)
     return
   }
   
   if (!form.value.type) {
-    warning('请选择类型')
+    warning('?????')
     return
   }
   
   if (!form.value.quantity || form.value.quantity <= 0) {
-    warning('请填写持仓数量，必须大于0')
+    warning('????????????0')
     return
   }
   
   if (!form.value.costPrice || form.value.costPrice <= 0) {
-    warning('请填写成本价，必须大�?')
+    warning('????????????')
     return
   }
   
   if (!form.value.currentPrice || form.value.currentPrice <= 0) {
-    warning('请填写当前价格，必须大于0')
+    warning('????????????0')
     return
   }
   
@@ -943,7 +943,7 @@ const saveItem = async () => {
       type: form.value.type,
       quantity: form.value.quantity,
       costPrice: form.value.costPrice,
-      currentPrice: form.value.currentPrice, // 包含当前价格
+      currentPrice: form.value.currentPrice, // ??????
       notes: form.value.notes || undefined
     }
     
@@ -954,34 +954,34 @@ const saveItem = async () => {
       response = await api.post('/Investment', payload)
     }
 
-    // 检查返回的消息，如果是合并持仓的提示，显示特殊消息
-    const message = response?.message || '保存成功'
+    // ?????????????????????????
+    const message = response?.message || '????'
     success(message)
     cancelEdit()
     fetchList()
   } catch (e: unknown) {
-    handleError(e, '保存失败')
+    handleError(e, '????')
   }
 }
 
 const deleteItem = async (id: number) => {
-  if (!confirm('确定要删除吗�?)) return
+  if (!confirm('????????)) return
   
   const { success } = useNotification()
   const { handleError } = useErrorHandler()
   
   try {
-    // 确保 ID 是数字类�?    const investmentId = Number(id)
+    // ?? ID ??????    const investmentId = Number(id)
     if (isNaN(investmentId) || investmentId <= 0) {
-      throw new Error('无效的投资记�?ID')
+      throw new Error('????????ID')
     }
     
     const response = await api.delete(`/Investment/${investmentId}`)
-    success('删除成功')
+    success('????')
     fetchList()
   } catch (e: unknown) {
-    console.error('删除失败:', e)
-    handleError(e, '删除失败')
+    console.error('????:', e)
+    handleError(e, '????')
   }
 }
 
@@ -990,7 +990,7 @@ const handleAddClick = () => {
   editingItem.value = null
   form.value = { code: '', name: '', type: 'stock', quantity: 0, costPrice: 0, currentPrice: 0, notes: '' }
   isAutoFilling.value = false
-  // 重置快速估算输�?  inputMode.value = 'quick' // 默认使用快速估算模�?  quickInput.value = { totalAmount: 0, estimatedPrice: 0 }
+  // ?????????  inputMode.value = 'quick' // ???????????  quickInput.value = { totalAmount: 0, estimatedPrice: 0 }
   quickEstimate.value = { quantity: 0, costPrice: 0 }
 }
 
@@ -1021,10 +1021,10 @@ const exportData = async (type: 'investments' | 'transactions' | 'stats') => {
     })
 
     if (!response.ok) {
-      throw new Error('导出失败')
+      throw new Error('????')
     }
 
-    // 获取文件�?    const contentDisposition = response.headers.get('Content-Disposition')
+    // ??????    const contentDisposition = response.headers.get('Content-Disposition')
     let fileName = `export_${Date.now()}.csv`
     if (contentDisposition) {
       const fileNameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/)
@@ -1033,7 +1033,7 @@ const exportData = async (type: 'investments' | 'transactions' | 'stats') => {
       }
     }
 
-    // 下载文件
+    // ????
     const blob = await response.blob()
     const url_blob = window.URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -1044,22 +1044,22 @@ const exportData = async (type: 'investments' | 'transactions' | 'stats') => {
     document.body.removeChild(a)
     window.URL.revokeObjectURL(url_blob)
 
-    success('导出成功')
+    success('????')
     showExportMenu.value = false
   } catch (err: any) {
-    console.error('导出失败:', err)
+    console.error('????:', err)
     handleError(err)
-    showError(err.message || '导出失败')
+    showError(err.message || '????')
   }
 }
 
-// 根据代码自动识别类型
+// ??????????
 const autoDetectType = () => {
   const code = form.value.code.trim()
   if (!code) return
   
-  // 基金代码通常�?6 位数字，且以 0�?�? 开�?  // 股票代码通常�?6 位数字，�?0�?�? 开�?  if (code.length === 6 && /^\d+$/.test(code)) {
-    // 基金代码常见开头：00�?1�?5�?5�?6�?1�?2�?3�?4�?5�?6�?7�?8�?9
+  // ????????6 ?????? 0???? ???  // ????????6 ??????0???? ???  if (code.length === 6 && /^\d+$/.test(code)) {
+    // ?????????00??1??5??5??6??1??2??3??4??5??6??7??8??9
     if (code.startsWith('00') || code.startsWith('01') || code.startsWith('05') || 
         code.startsWith('15') || code.startsWith('16') || code.startsWith('51') || 
         code.startsWith('52') || code.startsWith('53') || code.startsWith('54') || 
@@ -1067,15 +1067,15 @@ const autoDetectType = () => {
         code.startsWith('58') || code.startsWith('59')) {
       form.value.type = 'fund'
       
-      // 检测到场外基金�?0�?1�?5开头），提示用户使用快速估算模�?      if (code.startsWith('00') || code.startsWith('01') || code.startsWith('05')) {
+      // ?????????0??1??5?????????????????      if (code.startsWith('00') || code.startsWith('01') || code.startsWith('05')) {
         const { info } = useNotification()
-        // 延迟一下，避免和自动获取的提示冲突
+        // ?????????????????
         setTimeout(() => {
-          info('检测到场外基金代码，建议使�?快速估�?模式，只需输入总投入金额即�?)
+          info('???????????????????????????????????)
         }, 500)
       }
     } else if (code.startsWith('0') || code.startsWith('3') || code.startsWith('6')) {
-      // A股股票代码：0开头（深市）�?开头（创业板）�?开头（沪市�?      form.value.type = 'stock'
+      // A??????0????????????????????????      form.value.type = 'stock'
     }
   }
 }
@@ -1087,7 +1087,7 @@ const cancelEdit = () => {
   isAutoFilling.value = false
 }
 
-// 处理导入点击
+// ??????
 const toggleDescription = () => {
   showDescription.value = !showDescription.value
 }
@@ -1106,16 +1106,16 @@ const handleFileSelect = async (event: Event) => {
   const file = target.files?.[0]
   if (!file) return
 
-  // 验证文件类型
+  // ??????
   const allowedExtensions = ['.csv', '.xlsx', '.xls']
   const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase()
   if (!allowedExtensions.includes(fileExtension)) {
     const { error } = useNotification()
-    error('不支持的文件类型。请选择 CSV �?Excel 文件')
+    error('???????????? CSV ??Excel ??')
     return
   }
 
-  // 显示导入模态框
+  // ???????
   showImportModal.value = true
   importFile(file)
 }
@@ -1148,7 +1148,7 @@ const importFile = async (file: File) => {
     })
 
     if (response.code !== undefined && response.code !== 0) {
-      throw new Error(response.message || '导入失败')
+      throw new Error(response.message || '????')
     }
 
     const result = response.code === 0 ? response.data : response
@@ -1159,21 +1159,21 @@ const importFile = async (file: File) => {
     }
 
     if (result.successCount > 0) {
-      success(`导入成功�?{result.successCount} 条记录`)
-      // 刷新列表
+      success(`??????{result.successCount} ???`)
+      // ????
       await fetchList()
     }
 
     if (result.failCount > 0) {
-      showError(`导入失败�?{result.failCount} 条记录`)
+      showError(`??????{result.failCount} ???`)
     }
   } catch (err: any) {
-    console.error('导入失败:', err)
+    console.error('????:', err)
     handleError(err)
-    showError(err.message || '导入失败')
+    showError(err.message || '????')
   } finally {
     importing.value = false
-    // 清空文件输入
+    // ??????
     if (fileInput.value) {
       fileInput.value.value = ''
     }
@@ -1185,10 +1185,10 @@ const closeImportModal = () => {
   importResult.value = null
 }
 
-// 自动获取名称和价�?const autoFillFromCode = async () => {
+// ??????????const autoFillFromCode = async () => {
   if (!form.value.code || !form.value.type) {
     const { warning } = useNotification()
-    warning('请先输入代码并选择类型')
+    warning('???????????')
     return
   }
 
@@ -1197,15 +1197,15 @@ const closeImportModal = () => {
   const { handleError } = useErrorHandler()
 
   try {
-    // 确保代码�?位数�?    const code = form.value.code.trim().padStart(6, '0')
+    // ??????????    const code = form.value.code.trim().padStart(6, '0')
     const type = form.value.type
     
     const res = await api.get<any>(`/Investment/auto-fill?code=${encodeURIComponent(code)}&type=${encodeURIComponent(type)}`)
     
-    // useApi 已经自动解包了响应，res 就是 data 部分
-    // 注意：后端返回的�?camelCase (name, currentPrice)，不�?PascalCase (Name, CurrentPrice)
+    // useApi ??????????res ?? data ??
+    // ??????????camelCase (name, currentPrice)????PascalCase (Name, CurrentPrice)
     if (res) {
-      // 兼容两种格式：camelCase �?PascalCase
+      // ???????camelCase ??PascalCase
       const name = res.name || res.Name || ''
       const currentPrice = res.currentPrice || res.CurrentPrice || 0
       
@@ -1214,30 +1214,30 @@ const closeImportModal = () => {
       }
       if (currentPrice && currentPrice > 0) {
         form.value.currentPrice = currentPrice
-        // 如果成本价为0，可以用当前价格作为参�?        if (form.value.costPrice === 0) {
+        // ??????0?????????????        if (form.value.costPrice === 0) {
           form.value.costPrice = currentPrice
         }
-        success(`已自动获取：${name}，当前价�?¥${formatMoney(currentPrice)}`)
+        success(`??????${name}???????${formatMoney(currentPrice)}`)
       } else {
         if (name) {
-          success(`已自动获取名称：${name}，但无法获取当前价格（可能不在交易时间或该代码不在API支持范围内）`)
+          success(`????????${name}?????????????????????????API??????`)
         } else {
-          // 场外基金无法自动获取，提供友好的提示和下一步指�?          const isOTC = form.value.code.startsWith('00') || form.value.code.startsWith('01') || form.value.code.startsWith('05')
+          // ?????????????????????????          const isOTC = form.value.code.startsWith('00') || form.value.code.startsWith('01') || form.value.code.startsWith('05')
           if (isOTC && form.value.type === 'fund') {
-            warning('这是场外基金，API无法自动获取。请手动填写名称和价格，或使�?快速估�?模式直接录入')
+            warning('???????API?????????????????????????????????')
           } else {
-            warning('无法从API获取信息。该代码可能不在东方财富API支持范围内，请手动填写名称和价格')
+            warning('???API????????????????API????????????????')
           }
         }
       }
     } else {
-      warning('无法获取信息，请检查代码是否正�?)
+      warning('?????????????????)
     }
   } catch (e: unknown) {
-    // 如果�?400 错误，提供更友好的提�?    if ((e as any)?.response?.status === 400 || (e as any)?.code === 400) {
-      warning('请求参数错误，请检查代码和类型是否正确')
+    // ????400 ????????????    if ((e as any)?.response?.status === 400 || (e as any)?.code === 400) {
+      warning('???????????????????')
     } else {
-      handleError(e, '自动获取失败')
+      handleError(e, '??????')
     }
   } finally {
     isAutoFilling.value = false
@@ -1252,15 +1252,15 @@ const formatPercent = (value: number) => {
   return value.toFixed(2)
 }
 
-// 格式化刷新时�?const formatRefreshTime = (time: Date | null) => {
+// ????????const formatRefreshTime = (time: Date | null) => {
   if (!time) return ''
   const now = new Date()
-  const diff = Math.floor((now.getTime() - time.getTime()) / 1000) // �?  if (diff < 60) return `${diff}秒前`
-  if (diff < 3600) return `${Math.floor(diff / 60)}分钟前`
+  const diff = Math.floor((now.getTime() - time.getTime()) / 1000) // ??  if (diff < 60) return `${diff}??`
+  if (diff < 3600) return `${Math.floor(diff / 60)}???`
   return time.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
 }
 
-// 生成图表颜色
+// ??????
 const generateColors = (count: number) => {
   const colors = [
     '#3B82F6', // blue
@@ -1277,10 +1277,10 @@ const generateColors = (count: number) => {
   return colors.slice(0, count)
 }
 
-// ECharts 通用配置
+// ECharts ????
 const getCommonPieOption = () => {
   const theme = isDark.value ? darkTheme.value : lightTheme.value
-  // 安全检查，如果 theme 未定义，使用默认�?  if (!theme) {
+  // ??????? theme ??????????  if (!theme) {
     return {
       backgroundColor: 'transparent',
       textStyle: {
@@ -1295,7 +1295,7 @@ const getCommonPieOption = () => {
         },
         formatter: (params: any) => {
           const { name, value, percent } = params
-          return `${name}<br/>¥${value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (${percent}%)`
+          return `${name}<br/>?${value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (${percent}%)`
         }
       },
       legend: {
@@ -1320,7 +1320,7 @@ const getCommonPieOption = () => {
       textStyle: theme.tooltip?.textStyle || { color: isDark.value ? 'var(--color-bg-card)' : 'var(--color-text-main)' },
       formatter: (params: any) => {
         const { name, value, percent } = params
-        return `${name}<br/>¥${value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (${percent}%)`
+        return `${name}<br/>?${value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (${percent}%)`
       }
     },
     legend: {
@@ -1336,14 +1336,14 @@ const getCommonPieOption = () => {
   }
 }
 
-// 资产类型分布图表配置
+// ??????????
 const typeChartOption = computed(() => {
   if (!stats.value.ByType || stats.value.ByType.length === 0) {
     return {}
   }
   const theme = isDark.value ? darkTheme.value : lightTheme.value
   const data = stats.value.ByType.map((t: any) => ({
-    name: t.TypeName || (t.Type === 'stock' ? '股票' : '基金'),
+    name: t.TypeName || (t.Type === 'stock' ? '??' : '??'),
     value: t.TotalMarketValue || 0
   }))
   const colors = generateColors(data.length)
@@ -1353,12 +1353,12 @@ const typeChartOption = computed(() => {
     backgroundColor: theme.backgroundColor,
     textStyle: {
       ...theme.textStyle,
-      color: theme.textStyle.color // 确保文字颜色应用
+      color: theme.textStyle.color // ????????
     },
     color: colors,
     series: [{
       type: 'pie',
-      radius: ['40%', '70%'], // 环形图，更美�?      avoidLabelOverlap: true,
+      radius: ['40%', '70%'], // ????????      avoidLabelOverlap: true,
       itemStyle: {
         borderRadius: 8,
         borderColor: isDark.value ? 'var(--color-gray-800)' : 'var(--color-bg-card)',
@@ -1366,7 +1366,7 @@ const typeChartOption = computed(() => {
       },
       label: {
         show: true,
-        color: theme.textStyle.color, // 使用主题文字颜色
+        color: theme.textStyle.color, // ????????
         fontSize: 13,
         fontWeight: 'normal',
         formatter: (params: any) => {
@@ -1396,13 +1396,13 @@ const typeChartOption = computed(() => {
   }
 })
 
-// 盈亏状态分布图表配�?const profitStatusChartOption = computed(() => {
+// ???????????const profitStatusChartOption = computed(() => {
   if (!stats.value.ByProfitStatus || stats.value.ByProfitStatus.length === 0) {
     return {}
   }
   const theme = isDark.value ? darkTheme.value : lightTheme.value
   const data = stats.value.ByProfitStatus.map((s: any) => ({
-    name: s.StatusName || (s.Status === 'profit' ? '盈利' : '亏损'),
+    name: s.StatusName || (s.Status === 'profit' ? '??' : '??'),
     value: s.Count || 0
   }))
   const colors = stats.value.ByProfitStatus.map((s: any) => s.Status === 'profit' ? '#10B981' : '#EF4444')
@@ -1417,7 +1417,7 @@ const typeChartOption = computed(() => {
     color: colors,
     series: [{
       type: 'pie',
-      radius: ['40%', '70%'], // 环形�?      avoidLabelOverlap: true,
+      radius: ['40%', '70%'], // ????      avoidLabelOverlap: true,
       itemStyle: {
         borderRadius: 8,
         borderColor: isDark.value ? 'var(--color-gray-800)' : 'var(--color-bg-card)',
@@ -1429,7 +1429,7 @@ const typeChartOption = computed(() => {
         fontSize: 13,
         fontWeight: 'normal',
         formatter: (params: any) => {
-          return `${params.name}\n${params.value}个`
+          return `${params.name}\n${params.value}?`
         }
       },
       labelLine: {
@@ -1455,7 +1455,7 @@ const typeChartOption = computed(() => {
   }
 })
 
-// 资产分布图表配置（Top 10�?const assetDistributionChartOption = computed(() => {
+// ?????????Top 10??const assetDistributionChartOption = computed(() => {
   if (!stats.value.AssetDistribution || stats.value.AssetDistribution.length === 0) {
     return { series: [{ data: [] }] }
   }
@@ -1500,7 +1500,7 @@ const typeChartOption = computed(() => {
         color: theme.textStyle.color,
         fontSize: 11,
         formatter: (params: any) => {
-          return `${params.name}\n¥${params.value.toLocaleString('zh-CN')}`
+          return `${params.name}\n?${params.value.toLocaleString('zh-CN')}`
         }
       },
       labelLine: {
@@ -1526,7 +1526,7 @@ const typeChartOption = computed(() => {
   }
 })
 
-// 收益排行图表配置
+// ????????
 const profitRankChartOption = computed(() => {
   if (!stats.value.TopByProfit || stats.value.TopByProfit.length === 0) {
     return {}
@@ -1536,7 +1536,7 @@ const profitRankChartOption = computed(() => {
   const data = stats.value.TopByProfit.map((p: any) => p.ProfitLoss || 0)
   const colors = data.map((d: number) => d >= 0 ? '#10B981' : '#EF4444')
   
-  // 安全检�?  if (!theme) {
+  // ?????  if (!theme) {
     return {
       backgroundColor: 'transparent',
       textStyle: { color: isDark.value ? 'var(--color-bg-card)' : 'var(--color-text-main)' },
@@ -1548,7 +1548,7 @@ const profitRankChartOption = computed(() => {
         textStyle: { color: isDark.value ? 'var(--color-bg-card)' : 'var(--color-text-main)' },
         formatter: (params: any) => {
           const param = params[0]
-          return `${param.name}<br/>盈亏: ¥${param.value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+          return `${param.name}<br/>??: ?${param.value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         }
       },
       grid: {
@@ -1578,7 +1578,7 @@ const profitRankChartOption = computed(() => {
         type: 'value',
         axisLabel: {
           color: isDark.value ? 'var(--color-bg-card)' : 'var(--color-text-main)',
-          formatter: (value: number) => '¥' + value.toLocaleString('zh-CN')
+          formatter: (value: number) => '?' + value.toLocaleString('zh-CN')
         },
         axisLine: {
           lineStyle: {
@@ -1605,7 +1605,7 @@ const profitRankChartOption = computed(() => {
           fontSize: 11,
           formatter: (params: any) => {
             const value = params.value
-            return value >= 0 ? '+' : '' + '¥' + value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+            return value >= 0 ? '+' : '' + '?' + value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
           }
         }
       }]
@@ -1625,7 +1625,7 @@ const profitRankChartOption = computed(() => {
       textStyle: theme.tooltip?.textStyle || { color: isDark.value ? 'var(--color-bg-card)' : 'var(--color-text-main)' },
       formatter: (params: any) => {
         const param = params[0]
-        return `${param.name}<br/>盈亏: ¥${param.value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        return `${param.name}<br/>??: ?${param.value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
       }
     },
     grid: {
@@ -1657,7 +1657,7 @@ const profitRankChartOption = computed(() => {
       type: 'value',
       axisLabel: {
         color: theme.textStyle.color,
-        formatter: (value: number) => '¥' + value.toLocaleString('zh-CN')
+        formatter: (value: number) => '?' + value.toLocaleString('zh-CN')
       },
       axisLine: {
         lineStyle: {
@@ -1686,32 +1686,32 @@ const profitRankChartOption = computed(() => {
         fontSize: 11,
         formatter: (params: any) => {
           const value = params.value
-          return value >= 0 ? '+' : '' + '¥' + value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+          return value >= 0 ? '+' : '' + '?' + value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
         }
       }
     }]
   }
 })
 
-// 自动刷新相关
-const autoRefreshEnabled = ref(true) // 默认开启自动刷�?const autoRefreshInterval = ref<NodeJS.Timeout | null>(null)
+// ??????
+const autoRefreshEnabled = ref(true) // ?????????const autoRefreshInterval = ref<NodeJS.Timeout | null>(null)
 const lastRefreshTime = ref<Date | null>(null)
 
-// 自动刷新价格和数�?const startAutoRefresh = () => {
-  // 清除旧的定时�?  if (autoRefreshInterval.value) {
+// ??????????const startAutoRefresh = () => {
+  // ????????  if (autoRefreshInterval.value) {
     clearInterval(autoRefreshInterval.value)
   }
   
-  // �?分钟自动刷新一次价�?  autoRefreshInterval.value = setInterval(async () => {
+  // ?????????????  autoRefreshInterval.value = setInterval(async () => {
     if (!refreshingPrices.value) {
-      console.log('[自动刷新] 开始自动刷新价�?..')
+      console.log('[????] ?????????..')
       await refreshPrices()
       lastRefreshTime.value = new Date()
     }
-  }, 5 * 60 * 1000) // 5分钟
+  }, 5 * 60 * 1000) // 5??
 }
 
-// 停止自动刷新
+// ??????
 const stopAutoRefresh = () => {
   if (autoRefreshInterval.value) {
     clearInterval(autoRefreshInterval.value)
@@ -1719,7 +1719,7 @@ const stopAutoRefresh = () => {
   }
 }
 
-// 监听自动刷新开�?watch(autoRefreshEnabled, (enabled) => {
+// ?????????watch(autoRefreshEnabled, (enabled) => {
   if (enabled) {
     startAutoRefresh()
   } else {
@@ -1728,35 +1728,35 @@ const stopAutoRefresh = () => {
 })
 
 onMounted(() => {
-  // 首次加载数据
+  // ??????
   fetchList()
   
-  // 页面加载后自动刷新一次价格（确保看到最新数据）
+  // ???????????????????????
   setTimeout(async () => {
     if (autoRefreshEnabled.value) {
-      console.log('[页面加载] 自动刷新价格...')
+      console.log('[????] ??????...')
       await refreshPrices()
       lastRefreshTime.value = new Date()
-      // 然后启动定时刷新
+      // ????????
       startAutoRefresh()
     }
-  }, 2000) // 延迟2秒，避免页面加载时立即请�?})
+  }, 2000) // ??2??????????????})
 
-// 页面卸载时清理定时器
+// ??????????
 onUnmounted(() => {
   stopAutoRefresh()
 })
 </script>
 
 <style scoped>
-/* 页面容器 */
+/* ???? */
 .asset-decision-panel {
   padding: 1.5rem;
   max-width: 1400px;
   margin: 0 auto;
 }
 
-/* 页面头部 */
+/* ???? */
 .panel-header {
   display: flex;
   justify-content: space-between;
@@ -1826,7 +1826,7 @@ onUnmounted(() => {
   border-color: var(--color-border-subtle);
 }
 
-/* 模块说明 */
+/* ???? */
 .module-description {
   background: var(--color-bg-elevated);
   border: 1px solid var(--color-border-default, var(--color-border));
@@ -1884,7 +1884,7 @@ onUnmounted(() => {
   border-top: 1px solid var(--color-border-default, var(--color-border));
 }
 
-/* 功能说明卡片 */
+/* ?????? */
 .feature-card {
   background: var(--color-bg-card, var(--color-bg-card));
   border: 1px solid var(--color-border-default, var(--color-border));
@@ -1939,7 +1939,7 @@ onUnmounted(() => {
   color: var(--color-text-main, var(--color-text-main));
 }
 
-/* 交易记录导入 */
+/* ?????? */
 .import-section {
   margin-bottom: 2rem;
 }
@@ -2045,7 +2045,7 @@ onUnmounted(() => {
   font-weight: 500;
 }
 
-/* 确保模态框可见 */
+/* ??????? */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -2259,7 +2259,7 @@ onUnmounted(() => {
   margin-left: auto;
 }
 
-/* 录入模式切换 */
+/* ?????? */
 .input-mode-switch {
   display: flex;
   align-items: center;
@@ -2307,7 +2307,7 @@ onUnmounted(() => {
   font-weight: 500;
 }
 
-/* 带单位的输入�?*/
+/* ????????*/
 .input-with-unit {
   position: relative;
   display: flex;
@@ -2327,7 +2327,7 @@ onUnmounted(() => {
   font-weight: 500;
 }
 
-/* 快速估算结�?*/
+/* ???????*/
 .estimate-result {
   padding: 1rem;
   background: var(--color-primary-soft, var(--color-blue-50));
@@ -2359,7 +2359,7 @@ onUnmounted(() => {
   color: var(--color-primary, var(--color-primary));
 }
 
-/* 统计卡片网格 */
+/* ?????? */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -2403,7 +2403,7 @@ onUnmounted(() => {
   color: var(--error, var(--color-error, var(--color-danger)));
 }
 
-/* 图表网格 */
+/* ???? */
 .charts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -2441,7 +2441,7 @@ onUnmounted(() => {
   font-size: 0.875rem;
 }
 
-/* 投资列表表格 */
+/* ?????? */
 .investment-table-container {
   background: var(--color-bg-card, var(--color-bg-card));
   border: 1px solid var(--color-border-default, var(--color-border));
@@ -2591,7 +2591,7 @@ onUnmounted(() => {
   color: var(--color-text-on-primary, var(--color-bg-card));
 }
 
-/* 导入相关样式 */
+/* ?????? */
 .import-status {
   text-align: center;
   padding: 2rem;
@@ -2717,7 +2717,7 @@ onUnmounted(() => {
   overflow-x: auto;
 }
 
-/* 导出菜单样式 */
+/* ?????? */
 .export-menu-container {
   position: relative;
 }
@@ -2761,7 +2761,7 @@ onUnmounted(() => {
   border-bottom-right-radius: 4px;
 }
 
-/* 自动刷新控件 */
+/* ?????? */
 .auto-refresh-control {
   display: flex;
   flex-direction: column;

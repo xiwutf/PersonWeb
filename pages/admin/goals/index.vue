@@ -10,15 +10,15 @@
     <!-- çťčŽĄĺĄç -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
       <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-        <div class="text-sm text-gray-500 dark:text-gray-400">ćťçŽć ?/div>
+        <div class="text-sm text-gray-500 dark:text-gray-400">ćťçŽć ?</div>
         <div class="text-2xl font-bold text-gray-800 dark:text-var(--color-bg-light, white)">{{ stats?.Total || 0 }}</div>
       </div>
       <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-        <div class="text-sm text-gray-500 dark:text-gray-400">čżčĄä¸?/div>
+        <div class="text-sm text-gray-500 dark:text-gray-400">čżčĄä¸?</div>
         <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">{{ stats?.Active || 0 }}</div>
       </div>
       <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-        <div class="text-sm text-gray-500 dark:text-gray-400">ĺˇ˛ĺŽć?/div>
+        <div class="text-sm text-gray-500 dark:text-gray-400">ĺˇ˛ĺŽć?</div>
         <div class="text-2xl font-bold text-green-600 dark:text-green-400">{{ stats?.Completed || 0 }}</div>
       </div>
       <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
@@ -31,13 +31,13 @@
     <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-6 flex gap-4 flex-wrap">
       <select v-model.number="filterYear" @change="fetchGoals" class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
         <option :value="null">ĺ¨é¨ĺš´äť˝</option>
-        <option v-for="y in years" :key="y" :value="y">{{ y }}ĺš?/option>
+        <option v-for="y in years" :key="y" :value="y">{{ y }}ĺš?</option>
       </select>
       <select v-model="filterStatus" @change="fetchGoals" class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
         <option value="">ĺ¨é¨çść?/option>
-        <option value="active">čżčĄä¸?/option>
-        <option value="completed">ĺˇ˛ĺŽć?/option>
-        <option value="archived">ĺˇ˛ĺ˝ćĄ?/option>
+        <option value="active">čżčĄä¸?</option>
+        <option value="completed">ĺˇ˛ĺŽć?</option>
+        <option value="archived">ĺˇ˛ĺ˝ćĄ?</option>
       </select>
       <button @click="fetchGoals" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">ĺˇć°</button>
     </div>
@@ -125,7 +125,7 @@
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ĺçąť</label>
-                <input v-model="goalForm.category" type="text" placeholder="ĺˇĽä˝/ĺ­Śäš /çć´ťç­? class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
+                <input v-model="goalForm.category" type="text" placeholder="ĺˇĽä˝/ĺ­Śäš /çć´ťç­?" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
               </div>
             </div>
             <div>
@@ -138,21 +138,21 @@
             </div>
             <div class="grid grid-cols-3 gap-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">çŽć ć°ĺ?/label>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">çŽć ć°ĺ?</label>
                 <input v-model.number="goalForm.targetValue" type="number" step="0.01" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ĺ˝ĺć°ĺ?/label>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ĺ˝ĺć°ĺ?</label>
                 <input v-model.number="goalForm.currentValue" type="number" step="0.01" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ĺä˝</label>
-                <input v-model="goalForm.unit" type="text" placeholder="ä¸?çŻ?ĺ°ćśç­? class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
+                <input v-model="goalForm.unit" type="text" placeholder="ä¸?çŻ?ĺ°ćśç­?" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
               </div>
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ĺźĺ§ćĽć?/label>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ĺźĺ§ćĽć?</label>
                 <input v-model="goalForm.startDate" type="date" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" />
               </div>
               <div>
@@ -163,9 +163,9 @@
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">çść?/label>
               <select v-model="goalForm.status" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-                <option value="active">čżčĄä¸?/option>
-                <option value="completed">ĺˇ˛ĺŽć?/option>
-                <option value="archived">ĺˇ˛ĺ˝ćĄ?/option>
+                <option value="active">čżčĄä¸?</option>
+                <option value="completed">ĺˇ˛ĺŽć?</option>
+                <option value="archived">ĺˇ˛ĺ˝ćĄ?</option>
               </select>
             </div>
             <div class="flex justify-end gap-3 pt-4">
@@ -359,9 +359,9 @@ const getStatusClass = (status: string) => {
 
 const getStatusText = (status: string) => {
   const texts: Record<string, string> = {
-    active: 'čżčĄä¸?,
-    completed: 'ĺˇ˛ĺŽć?,
-    archived: 'ĺˇ˛ĺ˝ćĄ?
+    active: 'čżčĄä¸?',
+    completed: 'ĺˇ˛ĺŽć?',
+    archived: 'ĺˇ˛ĺ˝ćĄ?'
   }
   return texts[status] || status
 }

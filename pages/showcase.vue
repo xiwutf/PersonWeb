@@ -1,15 +1,15 @@
 <template>
   <div class="showcase-page min-h-screen py-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- éĄľé˘ć é˘ -->
+      <!-- ???? -->
       <div class="text-center mb-12">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4">ä¸Şć§ĺĺąç¤şĺ˘?/h1>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">????</h1>
         <p class="text-lg text-gray-600 dark:text-gray-400">
-          čŽ°ĺ˝ćłćłăçľćăčĺžĺäťŁç çćŽľ
+          ???????????????
         </p>
       </div>
 
-      <!-- ç­éć  -->
+      <!-- ??? -->
       <div class="mb-8 flex flex-wrap gap-4 justify-center">
         <button
           v-for="category in categories"
@@ -26,7 +26,7 @@
         </button>
       </div>
 
-      <!-- çĺ¸ćľĺąç¤?-->
+      <!-- ??????-->
       <div class="showcase-grid">
         <div
           v-for="item in filteredItems"
@@ -36,23 +36,23 @@
           @click="openDetail(item)"
         >
           <div class="item-content">
-            <!-- ĺžççąťĺ -->
+            <!-- ???? -->
             <div v-if="item.type === 'image'" class="item-image">
               <img :src="item.imageUrl" :alt="item.title" />
             </div>
 
-            <!-- äťŁç çćŽľçąťĺ -->
+            <!-- ?????? -->
             <div v-else-if="item.type === 'code'" class="item-code">
               <pre><code>{{ item.code }}</code></pre>
             </div>
 
-            <!-- ććŹçąťĺ -->
+            <!-- ???? -->
             <div v-else class="item-text">
               <h3 class="item-title">{{ item.title }}</h3>
               <p class="item-description">{{ item.description }}</p>
             </div>
 
-            <!-- ć ç­ž -->
+            <!-- ?? -->
             <div v-if="item.tags && item.tags.length > 0" class="item-tags">
               <span
                 v-for="tag in item.tags"
@@ -66,19 +66,19 @@
         </div>
       </div>
 
-      <!-- çŠşçść?-->
+      <!-- ????-->
       <div v-if="filteredItems.length === 0" class="text-center py-20">
         <i class="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
-        <p class="text-gray-500">ćć ĺĺŽš</p>
+        <p class="text-gray-500">????</p>
       </div>
     </div>
 
-    <!-- čŻŚćć¨ĄććĄ -->
+    <!-- ????? -->
     <div v-if="selectedItem" class="modal-overlay" @click="closeDetail">
       <div class="modal-content" @click.stop>
         <div class="modal-header">
           <h2>{{ selectedItem.title }}</h2>
-          <button @click="closeDetail" class="modal-close">Ă</button>
+          <button @click="closeDetail" class="modal-close">?</button>
         </div>
         <div class="modal-body">
           <div v-if="selectedItem.type === 'image'">
@@ -122,12 +122,12 @@ interface ShowcaseItem {
 }
 
 const categories = [
-  { label: 'ĺ¨é¨', value: 'all' },
-  { label: 'ćłćł', value: 'idea' },
-  { label: 'çľć', value: 'inspiration' },
-  { label: 'čĺž', value: 'sketch' },
-  { label: 'äťŁç ', value: 'code' },
-  { label: 'ĺžç', value: 'image' }
+  { label: '??', value: 'all' },
+  { label: '??', value: 'idea' },
+  { label: '??', value: 'inspiration' },
+  { label: '??', value: 'sketch' },
+  { label: '??', value: 'code' },
+  { label: '??', value: 'image' }
 ]
 
 const activeCategory = ref('all')
@@ -149,24 +149,24 @@ const closeDetail = () => {
   selectedItem.value = null
 }
 
-// TODO: äťAPIĺ č˝˝ć°ćŽ
+// TODO: ?API????
 onMounted(() => {
-  // ç¤şäžć°ćŽ
+  // ????
   items.value = [
     {
       id: 1,
       type: 'idea',
-      title: 'AI ĺŠćäźĺćłćł',
-      description: 'ä¸şAIĺŠććˇťĺ ä¸ä¸ćčŽ°ĺżĺč?,
-      tags: ['AI', 'äźĺ'],
+      title: 'AI ??????',
+      description: '?AI???????????',
+      tags: ['AI', '??'],
       createdAt: '2024-01-15'
     },
     {
       id: 2,
       type: 'code',
-      title: 'äźéçéčŻŻĺ¤ç?,
+      title: '???????',
       code: 'try {\n  // code\n} catch (e) {\n  handleError(e)\n}',
-      tags: ['äťŁç ', 'ćä˝łĺŽčˇ?],
+      tags: ['??', '????'],
       createdAt: '2024-01-20'
     }
   ]

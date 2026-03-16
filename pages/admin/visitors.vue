@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-7xl mx-auto">
       <div class="flex justify-between items-center mb-8">
@@ -145,7 +145,7 @@ const fetchData = async () => {
   }
 }
 
-// ć źĺźĺćĽć?const formatDate = (dateString?: string | Date) => {
+const formatDate = (dateString?: string | Date) => {
   if (!dateString) return 'N/A'
   try {
     const date = typeof dateString === 'string' ? new Date(dateString) : dateString
