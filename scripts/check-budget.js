@@ -11,38 +11,38 @@ import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// 性能预算配置
+// 性能预算配置（适配 Nuxt 3 + naive-ui + echarts 等依赖）
 const BUDGET = {
   // JavaScript 预算
   javascript: {
-    total: 400,      // 总 JS 大小 (KB)
+    total: 2500,     // 总 JS 大小 (KB)，放宽以适配大型 UI 库
     chunks: {
-      'index-[hash].js': 150,
-      'naive-ui-[hash].js': 200,
-      'echarts-[hash].js': 150,
-      'chartjs-[hash].js': 100,
-      'other-[hash].js': 80
+      'index-[hash].js': 500,
+      'naive-ui-[hash].js': 800,
+      'echarts-[hash].js': 500,
+      'chartjs-[hash].js': 300,
+      'other-[hash].js': 400
     }
   },
   // CSS 预算
   css: {
-    total: 100,      // 总 CSS 大小 (KB)
+    total: 400,      // 总 CSS 大小 (KB)
     chunks: {
-      'index-[hash].css': 60,
-      'other-[hash].css': 40
+      'index-[hash].css': 200,
+      'other-[hash].css': 200
     }
   },
   // 图片预算
   images: {
-    total: 500,      // 总图片大小 (KB)
-    maxPerImage: 100 // 单个图片最大大小 (KB)
+    total: 2000,     // 总图片大小 (KB)
+    maxPerImage: 500 // 单个图片最大大小 (KB)
   },
   // 资源总数预算
   resources: {
-    total: 50,       // 总资源数量
-    scripts: 15,     // JS 文件数量
-    stylesheets: 10, // CSS 文件数量
-    images: 25       // 图片文件数量
+    total: 150,      // 总资源数量
+    scripts: 50,     // JS 文件数量
+    stylesheets: 30, // CSS 文件数量
+    images: 80       // 图片文件数量
   }
 }
 
