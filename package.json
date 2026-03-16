@@ -21,11 +21,11 @@
     "blog"
   ],
   "scripts": {
-    "dev": "cross-env SASS_SILENCE_DEPRECATIONS=legacy-js-api nuxt dev",
-    "dev:mobile": "cross-env SASS_SILENCE_DEPRECATIONS=legacy-js-api nuxt dev --host 0.0.0.0",
-    "dev:prod": "cross-env SASS_SILENCE_DEPRECATIONS=legacy-js-api NODE_ENV=production nuxt dev",
-    "build": "cross-env SASS_SILENCE_DEPRECATIONS=legacy-js-api NODE_ENV=production nuxt build",
-    "generate": "cross-env SASS_SILENCE_DEPRECATIONS=legacy-js-api NODE_ENV=production nuxt generate",
+    "dev": "node node_modules/cross-env/dist/bin/cross-env.js SASS_SILENCE_DEPRECATIONS=legacy-js-api node node_modules/nuxt/bin/nuxt.mjs dev",
+    "dev:mobile": "node node_modules/cross-env/dist/bin/cross-env.js SASS_SILENCE_DEPRECATIONS=legacy-js-api node node_modules/nuxt/bin/nuxt.mjs dev --host 0.0.0.0",
+    "dev:prod": "node node_modules/cross-env/dist/bin/cross-env.js SASS_SILENCE_DEPRECATIONS=legacy-js-api NODE_ENV=production node node_modules/nuxt/bin/nuxt.mjs dev",
+    "build": "node node_modules/cross-env/dist/bin/cross-env.js SASS_SILENCE_DEPRECATIONS=legacy-js-api NODE_ENV=production node node_modules/nuxt/bin/nuxt.mjs build",
+    "generate": "node node_modules/cross-env/dist/bin/cross-env.js SASS_SILENCE_DEPRECATIONS=legacy-js-api NODE_ENV=production node node_modules/nuxt/bin/nuxt.mjs generate",
     "preview": "nuxt preview",
     "postinstall": "node scripts/fix-vue-toast-sourcemap.js",
     "lint:colors": "node scripts/lint-colors.js",
@@ -45,7 +45,7 @@
     "perf:analyze": "node scripts/performance-recommendations.js",
     "perf:lighthouse": "lhci autorun --collect.url=http://localhost:3000/ --collect.numRuns=1",
     "lighthouse:report": "lhci collect --url=http://localhost:3000/ --numberOfRuns=3",
-    "build:analyze": "cross-env ANALYZE=true npm run build",
+    "build:analyze": "node node_modules/cross-env/dist/bin/cross-env.js ANALYZE=true npm run build",
     "bundle:analyze": "nuxt build --analyze",
     "perf:regression:test": "node scripts/test-performance-regression.js test",
     "perf:baseline:update": "node scripts/test-performance-regression.js update-baseline"
@@ -73,7 +73,6 @@
     "vitest": "^4.1.0"
   },
   "dependencies": {
-    "web-vitals": "^4.2.4",
     "@bytemd/plugin-gfm": "^1.22.0",
     "@bytemd/plugin-highlight": "^1.22.0",
     "@bytemd/plugin-math": "^1.22.0",
@@ -95,7 +94,8 @@
     "vfonts": "^0.0.3",
     "vue-chartjs": "^4.1.1",
     "vue-echarts": "^8.0.1",
-    "vue-toast-notification": "^3.1.3"
+    "vue-toast-notification": "^3.1.3",
+    "web-vitals": "^4.2.4"
   },
   "optionalDependencies": {
     "better-sqlite3": "^12.6.2"
