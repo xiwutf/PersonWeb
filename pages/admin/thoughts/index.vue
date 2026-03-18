@@ -39,10 +39,10 @@
         />
         <div v-else-if="loading" class="table-loading">
           <n-spin size="large" />
-          <p>加载�?..</p>
+          <p>加载中..</p>
         </div>
         <div v-else class="table-empty">
-          <n-empty description="暂无思维记录，点击「新建记录」开�? />
+          <n-empty description="暂无思维记录，点击「新建记录」开始" />
         </div>
       </div>
     </div>
@@ -114,12 +114,12 @@ const columns: DataTableColumns<any> = [
     ellipsis: { tooltip: true }
   },
   {
-    title: '状�?,
+    title: '状态',
     key: 'status',
     width: 100,
     render: (row) => {
       const type = row.status === 1 ? 'success' : 'default'
-      const text = row.status === 1 ? '已批�? : '未批�?
+      const text = row.status === 1 ? '已批准' : '未批准'
       return h(NTag, { type }, { default: () => text })
     }
   },
@@ -156,9 +156,9 @@ const fetchList = async () => {
     const rawList = data?.List ?? data?.list ?? []
     list.value = rawList.map((item: any) => ({
       id: item.Id ?? item.id,
-      summary: item.Summary ?? item.summary ?? '',
-      status: item.Status ?? item.status ?? 0,
-      createdAt: item.CreatedAt ?? item.createdAt
+      summary: item.summary ?? item.Summary ?? '',
+      status: item.status ?? item.Status ?? 0,
+      createdAt: item.createdAt ?? item.CreatedAt ?? ''
     }))
     pagination.value.itemCount = total
   } catch (e) {

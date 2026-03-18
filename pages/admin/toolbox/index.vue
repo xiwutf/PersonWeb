@@ -30,7 +30,7 @@
         <div class="text-2xl font-bold">{{ stats.totalUses }}</div>
       </div>
       <div class="card p-4">
-        <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">总收�?/div>
+        <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">总收入</div>
         <div class="text-2xl font-bold text-green-600 dark:text-green-400">¥{{ stats.totalRevenue.toFixed(2) }}</div>
       </div>
     </div>
@@ -45,10 +45,10 @@
               v-model="filterStatus"
               class="px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-sm"
             >
-              <option value="">全部状�?/option>
-              <option value="published">已发�?/option>
+              <option value="">全部状态</option>
+              <option value="published">已发布</option>
               <option value="draft">草稿</option>
-              <option value="archived">已归�?/option>
+              <option value="archived">已归档</option>
             </select>
             <input
               v-model="searchQuery"
@@ -70,10 +70,10 @@
                 <th class="text-left p-3 text-sm font-medium">工具名称</th>
                 <th class="text-left p-3 text-sm font-medium">分类</th>
                 <th class="text-left p-3 text-sm font-medium">价格</th>
-                <th class="text-left p-3 text-sm font-medium">购买�?/th>
-                <th class="text-left p-3 text-sm font-medium">使用�?/th>
+                <th class="text-left p-3 text-sm font-medium">购买数</th>
+                <th class="text-left p-3 text-sm font-medium">使用数</th>
                 <th class="text-left p-3 text-sm font-medium">评分</th>
-                <th class="text-left p-3 text-sm font-medium">状�?/th>
+                <th class="text-left p-3 text-sm font-medium">状态</th>
                 <th class="text-right p-3 text-sm font-medium">操作</th>
               </tr>
             </thead>
@@ -101,7 +101,7 @@
                 <td class="p-3 text-sm">{{ tool.useCount }}</td>
                 <td class="p-3 text-sm">
                   <span v-if="tool.ratingCount > 0">
-                    �?{{ tool.rating.toFixed(1) }} ({{ tool.ratingCount }})
+                    {{ tool.rating.toFixed(1) }} ({{ tool.ratingCount }})
                   </span>
                   <span v-else class="text-gray-500">暂无评分</span>
                 </td>
@@ -114,7 +114,7 @@
                       'bg-gray-500/20 text-gray-400'
                     ]"
                   >
-                    {{ tool.status === 'published' ? '已发�? : tool.status === 'draft' ? '草稿' : '已归�? }}
+                    {{ tool.status === 'published' ? '已发布' : tool.status === 'draft' ? '草稿' : '已归档' }}
                   </span>
                 </td>
                 <td class="p-3 text-right">
@@ -138,7 +138,7 @@
                       class="text-red-400 hover:text-red-300 transition-colors"
                       title="删除"
                     >
-                      🗑�?                    </button>
+                      🗑删除                    </button>
                   </div>
                 </td>
               </tr>
@@ -153,7 +153,7 @@
       <div class="modal-content max-w-4xl">
         <div class="modal-header">
           <h2 class="modal-title">{{ isEdit ? '编辑工具' : '新增工具' }}</h2>
-          <button @click="showModal = false" class="modal-close">�?/button>
+          <button @click="showModal = false" class="modal-close">✕</button>
         </div>
         <div class="modal-body">
           <!-- 工具表单 -->
@@ -172,7 +172,7 @@
             <div>
               <label class="form-label">分类</label>
               <select v-model="form.categoryId" class="form-input">
-                <option :value="null">无分�?/option>
+                <option :value="null">无分类</option>
                 <option
                   v-for="cat in categories"
                   :key="cat.id"
@@ -189,7 +189,7 @@
             </div>
 
             <div>
-              <label class="form-label">详细描述（Markdown�?/label>
+              <label class="form-label">详细描述（Markdown）</label>
               <textarea v-model="form.detailedDescription" rows="10" class="form-input font-mono text-sm"></textarea>
             </div>
 
@@ -221,7 +221,7 @@
                 <input v-model="form.apiEndpoint" type="text" class="form-input" />
               </div>
               <div>
-                <label class="form-label">版本�?/label>
+                <label class="form-label">版本</label>
                 <input v-model="form.version" type="text" class="form-input" />
               </div>
             </div>
@@ -238,11 +238,11 @@
             </div>
 
             <div>
-              <label class="form-label">状�?/label>
+              <label class="form-label">状态</label>
               <select v-model="form.status" class="form-input">
                 <option value="draft">草稿</option>
-                <option value="published">已发�?/option>
-                <option value="archived">已归�?/option>
+                <option value="published">已发布</option>
+                <option value="archived">已归档</option>
               </select>
             </div>
           </div>
@@ -362,14 +362,14 @@ const fetchTools = async () => {
   
   try {
     // 管理后台使用 admin/list 接口，可以查看所有状态的工具
-    const res = await api.get('/Toolbox/admin/list?pageSize=1000')
+    const res = await api.get('/Toolbox/admin/listpageSize=1000')
     if (res && res.tools) {
       tools.value = res.tools as Tool[]
       stats.value.totalTools = tools.value.length
       stats.value.totalPurchases = tools.value.reduce((sum, t) => sum + t.purchaseCount, 0)
       stats.value.totalUses = tools.value.reduce((sum, t) => sum + t.useCount, 0)
     } else if (res && Array.isArray(res)) {
-      // 兼容直接返回数组的情�?      tools.value = res as Tool[]
+      // 兼容直接返回数组的情�      tools.value = res as Tool[]
       stats.value.totalTools = tools.value.length
       stats.value.totalPurchases = tools.value.reduce((sum, t) => sum + t.purchaseCount, 0)
       stats.value.totalUses = tools.value.reduce((sum, t) => sum + t.useCount, 0)
@@ -442,7 +442,8 @@ const handleSave = async () => {
   }
 
   try {
-    // TODO: 实现保存逻辑（需要后端API支持�?    success('保存成功')
+    // TODO: 实现保存逻辑（需要后端API支持）
+    success('保存成功')
     showModal.value = false
     fetchTools()
   } catch (e) {
@@ -451,12 +452,13 @@ const handleSave = async () => {
 }
 
 const handleDelete = async (item: Tool) => {
-  if (!confirm(`确定要删除工�?"${item.name}" 吗？`)) {
+  if (!confirm(`确定要删除工�"${item.name}" 吗？`)) {
     return
   }
 
   try {
-    // TODO: 实现删除逻辑（需要后端API支持�?    success('删除成功')
+    // TODO: 实现删除逻辑（需要后端API支持）
+    success('删除成功')
     fetchTools()
   } catch (e) {
     handleError(e, '删除失败')
@@ -470,6 +472,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* 使用 admin layout 的样�?*/
+/* 使用 admin layout 的样式 */
 </style>
 

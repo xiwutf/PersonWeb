@@ -16,7 +16,7 @@
             <th class="table-header-cell">链接</th>
             <th class="table-header-cell">描述</th>
             <th class="table-header-cell">排序</th>
-            <th class="table-header-cell">状�?/th>
+            <th class="table-header-cell">状�</th>
             <th class="table-header-cell text-right">操作</th>
           </tr>
         </thead>
@@ -98,7 +98,7 @@ const fetchFriendLinks = async () => {
 }
 
 const handleDelete = async (id: number) => {
-  if (!confirm('确定要删除这个友情链接吗�?)) return
+  if (!confirm('确定要删除这个友情链接吗？')) return
   
   try {
     await api.del(`/FriendLinks/${id}`)

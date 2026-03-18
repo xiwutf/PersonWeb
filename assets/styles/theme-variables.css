@@ -759,6 +759,7 @@
 
 /* 边框颜色 */
 .border-primary { border-color: var(--color-primary); }
+.border-primary-hover { border-color: var(--color-primary-hover); }
 .border-success { border-color: var(--color-success-border); }
 .border-warning { border-color: var(--color-warning-border); }
 .border-error { border-color: var(--color-error-border); }

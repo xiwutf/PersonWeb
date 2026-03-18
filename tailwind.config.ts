@@ -9,6 +9,8 @@ export default <Partial<Config>>{
             colors: {
                 // Aurora Design System V3 Mappings
                 primary: 'var(--primary)',
+                'primary-hover': 'var(--color-primary-hover)',
+                'primary-soft': 'var(--color-primary-soft)',
                 secondary: 'var(--secondary)',
                 accent: 'var(--accent)',
 
@@ -44,8 +46,17 @@ export default <Partial<Config>>{
 
                 // Status
                 success: 'var(--success)',
+                'success-hover': 'var(--color-success-hover)',
+                'success-soft': 'var(--color-success-soft)',
                 warning: 'var(--warning)',
+                'warning-hover': 'var(--color-warning-hover)',
+                'warning-soft': 'var(--color-warning-soft)',
                 error: 'var(--error)',
+                'error-hover': 'var(--color-error-hover)',
+                'error-soft': 'var(--color-error-soft)',
+                info: 'var(--color-info)',
+                'info-hover': 'var(--color-info-hover)',
+                'info-soft': 'var(--color-info-soft)',
 
                 // Chart colors - for direct usage: text-chart-primary, bg-chart-secondary, etc.
                 chart: {

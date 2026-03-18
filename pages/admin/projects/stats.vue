@@ -18,7 +18,7 @@
         <div class="text-3xl font-bold text-green-600 dark:text-green-400">{{ stats.TotalViews || 0 }}</div>
       </div>
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">ĺšłĺčŽżéŽé?/div>
+        <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">ĺšłĺčŽżéŽé</div>
         <div class="text-3xl font-bold text-purple-600 dark:text-purple-400">
           {{ stats.TotalProjects > 0 ? Math.round((stats.TotalViews || 0) / stats.TotalProjects) : 0 }}
         </div>
@@ -56,7 +56,7 @@
             </div>
             <div class="text-right">
               <div class="font-semibold text-gray-900 dark:text-var(--color-bg-light, white)">{{ project.viewCount || 0 }}</div>
-              <div class="text-xs text-gray-500 dark:text-gray-400">ćŹĄčŽżé?/div>
+              <div class="text-xs text-gray-500 dark:text-gray-400">ćŹĄčŽżé</div>
             </div>
           </div>
           <div v-if="(!stats.TopProjects || stats.TopProjects.length === 0) && (!stats.topProjects || stats.topProjects.length === 0)" class="text-center text-gray-500 py-4">
@@ -148,7 +148,8 @@ const chartData = computed(() => {
   return {
     labels: trendsData.map((t: any) => {
       const date = t.Date || t.date
-      // ĺŚććŻćĽćĺ­çŹŚä¸˛ďźć źĺźĺä¸şć´ĺĺĽ˝çć źĺź?      if (typeof date === 'string') {
+      // 如果是日期字符串，格式化为更友好的格式
+      if (typeof date === 'string') {
         const d = new Date(date)
         return d.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })
       }
@@ -156,7 +157,7 @@ const chartData = computed(() => {
     }),
     datasets: [
       {
-        label: 'čŽżéŽé?,
+        label: '浏览量',
         data: trendsData.map((t: any) => t.Views || t.views || 0),
         borderColor: 'rgb(59, 130, 246)',
         backgroundColor: 'rgba(59, 130, 246, 0.1)',
@@ -196,7 +197,8 @@ const fetchStats = async () => {
     const res = await api.get<any>('/Projects/stats')
     if (res) {
       stats.value = res
-      // éťčŽ¤éćŠçŹŹä¸ä¸ŞéĄšç?      if (res.topProjects && res.topProjects.length > 0) {
+      // 默认选中第一个项目
+      if (res.topProjects && res.topProjects.length > 0) {
         selectedProjectId.value = res.topProjects[0].id
         await fetchTrends()
       }

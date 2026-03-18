@@ -291,7 +291,7 @@
             <td>?{{ formatMoney(item.costPrice) }}</td>
             <td>
               <span v-if="item.currentPrice > 0">?{{ formatMoney(item.currentPrice) }}</span>
-              <span v-else class="price-zero-hint" title="??????? 0.00???????"
+              <span v-else class="price-zero-hint" title="??????? 0.00???????">
                 ?0.00
                 <span class="hint-icon">??</span>
               </span>
@@ -355,10 +355,10 @@
             </div>
             <div class="form-group">
               <label class="form-label">?? <span class="text-red-500">*</span></label>
-              <input v-model="form.name" type="text" class="form-input" placeholder="??: ????300ETF??C?????? />
+              <input v-model="form.name" type="text" class="form-input" placeholder="??: ????300ETF??C????" />
               <div class="form-hint">
                 ????????                <br />
-                <span class="form-hint-tip">?? <strong>??????005918?</strong>????????????????????????300ETF??C"</span>
+                <span class="form-hint-tip">?? <strong>??????005918?</strong>????????????????????????300ETF??C\"</span>
               </div>
             </div>
             <div class="form-group">
@@ -575,6 +575,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed, ref, watch, onMounted, onUnmounted } from 'vue'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { PieChart, BarChart } from 'echarts/charts'
@@ -602,7 +603,7 @@ use([
 // ?? ECharts ????
 const { isDark, darkTheme, lightTheme } = useEChartsTheme()
 
-// ??????????registerTheme('dark-custom', {
+registerTheme('dark-custom', {
   backgroundColor: 'transparent',
   textStyle: {
     color: 'var(--color-bg-card)'
@@ -626,7 +627,7 @@ const { isDark, darkTheme, lightTheme } = useEChartsTheme()
   }
 })
 
-// ??????????registerTheme('light-custom', {
+registerTheme('light-custom', {
   backgroundColor: 'transparent',
   textStyle: {
     color: 'var(--color-text-main)'
@@ -717,7 +718,7 @@ const stats = ref<{
 const showCreateModal = ref(false)
 const editingItem = ref<Investment | null>(null)
 const isAutoFilling = ref(false)
-const inputMode = ref<'quick' | 'detail'>('quick') // ???????????const showDescription = ref(false) // ????????
+const inputMode = ref<'quick' | 'detail'>('quick') // 组件卸载时清理??const showDescription = ref(false) // ????????
 const form = ref({
   code: '',
   name: '',
@@ -728,20 +729,23 @@ const form = ref({
   notes: ''
 })
 
-// ???????const quickInput = ref({
-  totalAmount: 0,      // ??????  estimatedPrice: 0    // ??????
+const quickInput = ref({
+  totalAmount: 0,      // ?????
+  estimatedPrice: 0    // ?????
 })
 
-// ???????const quickEstimate = ref({
-  quantity: 0,         // ????????
-  costPrice: 0         // ??????estimatedPrice??})
+const quickEstimate = ref({
+  quantity: 0,         // ????
+  costPrice: 0          // ????
+})
 
-// ???????const calculateQuickEstimate = () => {
+const calculateQuickEstimate = () => {
   if (quickInput.value.totalAmount > 0 && quickInput.value.estimatedPrice > 0) {
     quickEstimate.value.quantity = quickInput.value.totalAmount / quickInput.value.estimatedPrice
     quickEstimate.value.costPrice = quickInput.value.estimatedPrice
-    
-    // ??????    form.value.quantity = quickEstimate.value.quantity
+
+    // ????
+    form.value.quantity = quickEstimate.value.quantity
     form.value.costPrice = quickEstimate.value.costPrice
   } else {
     quickEstimate.value.quantity = 0
@@ -749,14 +753,14 @@ const form = ref({
   }
 }
 
-// ???????????????????watch(() => form.value.currentPrice, (newPrice) => {
+watch(() => form.value.currentPrice, (newPrice) => {
   if (newPrice > 0 && inputMode.value === 'quick' && quickInput.value.estimatedPrice === 0) {
     quickInput.value.estimatedPrice = newPrice
     calculateQuickEstimate()
   }
 })
 
-// ?????????PascalCase -> camelCase??const transformInvestment = (item: any): Investment => {
+const transformInvestment = (item: any): Investment => {
   return {
     id: item.id || item.Id || 0,
     code: item.code || item.Code || '',
@@ -796,7 +800,7 @@ const fetchList = async () => {
     // ??????
     const statsRes = await api.get<any>('/Investment/stats')
     if (statsRes) {
-      // ?????????????? PascalCase??????camelCase??      stats.value = {
+      stats.value = {
         TotalCost: statsRes.TotalCost ?? statsRes.totalCost ?? 0,
         TotalMarketValue: statsRes.TotalMarketValue ?? statsRes.totalMarketValue ?? 0,
         TotalProfitLoss: statsRes.TotalProfitLoss ?? statsRes.totalProfitLoss ?? 0,
@@ -866,10 +870,10 @@ const refreshPrices = async () => {
   refreshingPrices.value = true
   try {
     // useApi ??????????????????data???? null????????????    await api.post('/Investment/refresh-prices')
-    // ?????????????????    await new Promise(resolve => setTimeout(resolve, 500))
-    // ????????????    await fetchList()
+    // 组件卸载时清理????????    await new Promise(resolve => setTimeout(resolve, 500))
+    // 组件卸载时清理???    await fetchList()
     lastRefreshTime.value = new Date()
-    // ??????????????????????????
+    // 组件卸载时清理?????????????????
     if (!autoRefreshInterval.value || !autoRefreshEnabled.value) {
       success('????????????')
     } else {
@@ -907,12 +911,12 @@ const saveItem = async () => {
   
   // ??????
   if (!form.value.code || !form.value.code.trim()) {
-    warning('??????)
+    warning('???????')
     return
   }
   
   if (!form.value.name || !form.value.name.trim()) {
-    warning('??????)
+    warning('???????')
     return
   }
   
@@ -954,7 +958,7 @@ const saveItem = async () => {
       response = await api.post('/Investment', payload)
     }
 
-    // ?????????????????????????
+    // 组件卸载时清理????????????????
     const message = response?.message || '????'
     success(message)
     cancelEdit()
@@ -965,23 +969,24 @@ const saveItem = async () => {
 }
 
 const deleteItem = async (id: number) => {
-  if (!confirm('????????)) return
+  if (!confirm('确定要删除这条记录吗？')) return
   
   const { success } = useNotification()
   const { handleError } = useErrorHandler()
   
   try {
-    // ?? ID ??????    const investmentId = Number(id)
+    // 根据 ID 删除投资
+    const investmentId = Number(id)
     if (isNaN(investmentId) || investmentId <= 0) {
-      throw new Error('????????ID')
+      throw new Error('无效的投资ID')
     }
     
     const response = await api.delete(`/Investment/${investmentId}`)
-    success('????')
+    success('删除成功')
     fetchList()
   } catch (e: unknown) {
-    console.error('????:', e)
-    handleError(e, '????')
+    console.error('删除失败:', e)
+    handleError(e, '删除投资')
   }
 }
 
@@ -990,7 +995,8 @@ const handleAddClick = () => {
   editingItem.value = null
   form.value = { code: '', name: '', type: 'stock', quantity: 0, costPrice: 0, currentPrice: 0, notes: '' }
   isAutoFilling.value = false
-  // ?????????  inputMode.value = 'quick' // ???????????  quickInput.value = { totalAmount: 0, estimatedPrice: 0 }
+  inputMode.value = 'quick'
+  quickInput.value = { totalAmount: 0, estimatedPrice: 0 }
   quickEstimate.value = { quantity: 0, costPrice: 0 }
 }
 
@@ -1021,10 +1027,11 @@ const exportData = async (type: 'investments' | 'transactions' | 'stats') => {
     })
 
     if (!response.ok) {
-      throw new Error('????')
+      throw new Error('Export failed')
     }
 
-    // ??????    const contentDisposition = response.headers.get('Content-Disposition')
+    // 从响应头获取文件名
+    const contentDisposition = response.headers.get('Content-Disposition')
     let fileName = `export_${Date.now()}.csv`
     if (contentDisposition) {
       const fileNameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/)
@@ -1053,31 +1060,31 @@ const exportData = async (type: 'investments' | 'transactions' | 'stats') => {
   }
 }
 
-// ??????????
+// 组件卸载时清理?
 const autoDetectType = () => {
   const code = form.value.code.trim()
   if (!code) return
   
-  // ????????6 ?????? 0???? ???  // ????????6 ??????0???? ???  if (code.length === 6 && /^\d+$/.test(code)) {
-    // ?????????00??1??5??5??6??1??2??3??4??5??6??7??8??9
+  if (code.length === 6 && /^d+$/.test(code)) {
+    // 基金代码前缀：00、01、05、15、16、51-59
     if (code.startsWith('00') || code.startsWith('01') || code.startsWith('05') || 
         code.startsWith('15') || code.startsWith('16') || code.startsWith('51') || 
         code.startsWith('52') || code.startsWith('53') || code.startsWith('54') || 
         code.startsWith('55') || code.startsWith('56') || code.startsWith('57') || 
         code.startsWith('58') || code.startsWith('59')) {
       form.value.type = 'fund'
-      
-      // ?????????0??1??5?????????????????      if (code.startsWith('00') || code.startsWith('01') || code.startsWith('05')) {
+
+      if (code.startsWith('00') || code.startsWith('01') || code.startsWith('05')) {
         const { info } = useNotification()
-        // ?????????????????
+        // 组件卸载时清理????????
         setTimeout(() => {
-          info('???????????????????????????????????)
+          info('证券代码已自动识别为股票，请核对！')
         }, 500)
       }
-    } else if (code.startsWith('0') || code.startsWith('3') || code.startsWith('6')) {
-      // A??????0????????????????????????      form.value.type = 'stock'
     }
-  }
+  } else if (code.startsWith('0') || code.startsWith('3') || code.startsWith('6')) {
+      form.value.type = 'stock'
+    }
 }
 
 const cancelEdit = () => {
@@ -1173,7 +1180,7 @@ const importFile = async (file: File) => {
     showError(err.message || '????')
   } finally {
     importing.value = false
-    // ??????
+
     if (fileInput.value) {
       fileInput.value.value = ''
     }
@@ -1185,10 +1192,10 @@ const closeImportModal = () => {
   importResult.value = null
 }
 
-// ??????????const autoFillFromCode = async () => {
+const autoFillFromCode = async () => {
   if (!form.value.code || !form.value.type) {
     const { warning } = useNotification()
-    warning('???????????')
+      warning('请输入正确的基金代码！')
     return
   }
 
@@ -1197,47 +1204,43 @@ const closeImportModal = () => {
   const { handleError } = useErrorHandler()
 
   try {
-    // ??????????    const code = form.value.code.trim().padStart(6, '0')
+    const code = form.value.code.trim().padStart(6, '0')
     const type = form.value.type
-    
     const res = await api.get<any>(`/Investment/auto-fill?code=${encodeURIComponent(code)}&type=${encodeURIComponent(type)}`)
-    
-    // useApi ??????????res ?? data ??
-    // ??????????camelCase (name, currentPrice)????PascalCase (Name, CurrentPrice)
+
     if (res) {
-      // ???????camelCase ??PascalCase
       const name = res.name || res.Name || ''
       const currentPrice = res.currentPrice || res.CurrentPrice || 0
-      
+
       if (name) {
         form.value.name = name
       }
       if (currentPrice && currentPrice > 0) {
         form.value.currentPrice = currentPrice
-        // ??????0?????????????        if (form.value.costPrice === 0) {
+        if (form.value.costPrice === 0) {
           form.value.costPrice = currentPrice
         }
-        success(`??????${name}???????${formatMoney(currentPrice)}`)
+        success(`自动获取成功：${name}，当前价格：¥${formatMoney(currentPrice)}`)
       } else {
         if (name) {
-          success(`????????${name}?????????????????????????API??????`)
+          success(`自动获取成功：${name}，但暂无实时价格数据，可能不在交易时间内或API数据延迟`)
         } else {
-          // ?????????????????????????          const isOTC = form.value.code.startsWith('00') || form.value.code.startsWith('01') || form.value.code.startsWith('05')
+          const isOTC = form.value.code.startsWith('00') || form.value.code.startsWith('01') || form.value.code.startsWith('05')
           if (isOTC && form.value.type === 'fund') {
-            warning('???????API?????????????????????????????????')
+            warning('该基金可能是场外基金，暂不支持实时价格查询，请手动输入')
           } else {
-            warning('???API????????????????API????????????????')
+            warning('获取价格失败，请检查代码是否正确或稍后重试')
           }
         }
       }
     } else {
-      warning('?????????????????)
+      warning('未能获取到任何数据，请检查代码是否正确')
     }
   } catch (e: unknown) {
-    // ????400 ????????????    if ((e as any)?.response?.status === 400 || (e as any)?.code === 400) {
-      warning('???????????????????')
+    if ((e as any)?.response?.status === 400 || (e as any)?.code === 400) {
+      warning('输入的代码不正确，请检查')
     } else {
-      handleError(e, '??????')
+      handleError(e, '自动获取')
     }
   } finally {
     isAutoFilling.value = false
@@ -1252,11 +1255,13 @@ const formatPercent = (value: number) => {
   return value.toFixed(2)
 }
 
-// ????????const formatRefreshTime = (time: Date | null) => {
+// 刷新时间格式化函数
+const formatRefreshTime = (time: Date | null) => {
   if (!time) return ''
   const now = new Date()
-  const diff = Math.floor((now.getTime() - time.getTime()) / 1000) // ??  if (diff < 60) return `${diff}??`
-  if (diff < 3600) return `${Math.floor(diff / 60)}???`
+  const diff = Math.floor((now.getTime() - time.getTime()) / 1000)
+  if (diff < 60) return `${diff}秒前`
+  if (diff < 3600) return `${Math.floor(diff / 60)}分钟前`
   return time.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
 }
 
@@ -1280,7 +1285,8 @@ const generateColors = (count: number) => {
 // ECharts ????
 const getCommonPieOption = () => {
   const theme = isDark.value ? darkTheme.value : lightTheme.value
-  // ??????? theme ??????????  if (!theme) {
+  // 如果主题不存在，使用默认配置
+  if (!theme) {
     return {
       backgroundColor: 'transparent',
       textStyle: {
@@ -1295,7 +1301,7 @@ const getCommonPieOption = () => {
         },
         formatter: (params: any) => {
           const { name, value, percent } = params
-          return `${name}<br/>?${value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (${percent}%)`
+          return `${name}<br/>¥${value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (${percent}%)`
         }
       },
       legend: {
@@ -1320,7 +1326,7 @@ const getCommonPieOption = () => {
       textStyle: theme.tooltip?.textStyle || { color: isDark.value ? 'var(--color-bg-card)' : 'var(--color-text-main)' },
       formatter: (params: any) => {
         const { name, value, percent } = params
-        return `${name}<br/>?${value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (${percent}%)`
+        return `${name}<br/>¥${value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (${percent}%)`
       }
     },
     legend: {
@@ -1336,7 +1342,7 @@ const getCommonPieOption = () => {
   }
 }
 
-// ??????????
+// 组件卸载时清理?
 const typeChartOption = computed(() => {
   if (!stats.value.ByType || stats.value.ByType.length === 0) {
     return {}
@@ -1396,7 +1402,8 @@ const typeChartOption = computed(() => {
   }
 })
 
-// ???????????const profitStatusChartOption = computed(() => {
+// 盈亏状态图表选项
+const profitStatusChartOption = computed(() => {
   if (!stats.value.ByProfitStatus || stats.value.ByProfitStatus.length === 0) {
     return {}
   }
@@ -1455,7 +1462,8 @@ const typeChartOption = computed(() => {
   }
 })
 
-// ?????????Top 10??const assetDistributionChartOption = computed(() => {
+// 资产分布图表 Top 10
+const assetDistributionChartOption = computed(() => {
   if (!stats.value.AssetDistribution || stats.value.AssetDistribution.length === 0) {
     return { series: [{ data: [] }] }
   }
@@ -1536,7 +1544,7 @@ const profitRankChartOption = computed(() => {
   const data = stats.value.TopByProfit.map((p: any) => p.ProfitLoss || 0)
   const colors = data.map((d: number) => d >= 0 ? '#10B981' : '#EF4444')
   
-  // ?????  if (!theme) {
+  if (!theme) {
     return {
       backgroundColor: 'transparent',
       textStyle: { color: isDark.value ? 'var(--color-bg-card)' : 'var(--color-text-main)' },
@@ -1548,7 +1556,7 @@ const profitRankChartOption = computed(() => {
         textStyle: { color: isDark.value ? 'var(--color-bg-card)' : 'var(--color-text-main)' },
         formatter: (params: any) => {
           const param = params[0]
-          return `${param.name}<br/>??: ?${param.value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+          return `${param.name}<br/>¥: ${param.value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         }
       },
       grid: {
@@ -1605,7 +1613,7 @@ const profitRankChartOption = computed(() => {
           fontSize: 11,
           formatter: (params: any) => {
             const value = params.value
-            return value >= 0 ? '+' : '' + '?' + value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+            return value >= 0 ? '+' : '¥' + value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
           }
         }
       }]
@@ -1625,7 +1633,7 @@ const profitRankChartOption = computed(() => {
       textStyle: theme.tooltip?.textStyle || { color: isDark.value ? 'var(--color-bg-card)' : 'var(--color-text-main)' },
       formatter: (params: any) => {
         const param = params[0]
-        return `${param.name}<br/>??: ?${param.value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        return `${param.name}<br/>¥: ${param.value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
       }
     },
     grid: {
@@ -1686,29 +1694,29 @@ const profitRankChartOption = computed(() => {
         fontSize: 11,
         formatter: (params: any) => {
           const value = params.value
-          return value >= 0 ? '+' : '' + '?' + value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+          return value >= 0 ? '+' : '¥' + value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
         }
       }
     }]
   }
 })
 
-// ??????
-const autoRefreshEnabled = ref(true) // ?????????const autoRefreshInterval = ref<NodeJS.Timeout | null>(null)
+const autoRefreshEnabled = ref(true)
+const autoRefreshInterval = ref<NodeJS.Timeout | null>(null)
 const lastRefreshTime = ref<Date | null>(null)
 
-// ??????????const startAutoRefresh = () => {
-  // ????????  if (autoRefreshInterval.value) {
+const startAutoRefresh = () => {
+  if (autoRefreshInterval.value) {
     clearInterval(autoRefreshInterval.value)
   }
-  
-  // ?????????????  autoRefreshInterval.value = setInterval(async () => {
+
+  autoRefreshInterval.value = setInterval(async () => {
     if (!refreshingPrices.value) {
-      console.log('[????] ?????????..')
+      console.log('[自动刷新] 刷新价格...')
       await refreshPrices()
       lastRefreshTime.value = new Date()
     }
-  }, 5 * 60 * 1000) // 5??
+  }, 5 * 60 * 1000) // 5分钟
 }
 
 // ??????
@@ -1719,7 +1727,7 @@ const stopAutoRefresh = () => {
   }
 }
 
-// ?????????watch(autoRefreshEnabled, (enabled) => {
+watch(autoRefreshEnabled, (enabled) => {
   if (enabled) {
     startAutoRefresh()
   } else {
@@ -1731,7 +1739,7 @@ onMounted(() => {
   // ??????
   fetchList()
   
-  // ???????????????????????
+  // 组件卸载时清理??????????????
   setTimeout(async () => {
     if (autoRefreshEnabled.value) {
       console.log('[????] ??????...')
@@ -1740,9 +1748,10 @@ onMounted(() => {
       // ????????
       startAutoRefresh()
     }
-  }, 2000) // ??2??????????????})
+  }, 2000) // 延迟2秒加载，避免初始化冲突
+})
 
-// ??????????
+// 组件卸载时清理
 onUnmounted(() => {
   stopAutoRefresh()
 })
@@ -1801,7 +1810,7 @@ onUnmounted(() => {
   cursor: pointer;
   transition: all 0.2s;
   border: none;
-  var(--color-bg-light, white)-space: nowrap;
+  white-space: nowrap;
 }
 
 .btn-action-primary {
@@ -2201,7 +2210,7 @@ onUnmounted(() => {
   background: var(--color-primary, var(--color-primary));
   color: var(--color-text-on-primary, var(--color-bg-card));
   border: none;
-  var(--color-bg-light, white)-space: nowrap;
+  white-space: nowrap;
   display: flex;
   align-items: center;
   gap: 0.25rem;
@@ -2274,7 +2283,7 @@ onUnmounted(() => {
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--color-text-main, var(--color-text-main));
-  var(--color-bg-light, white)-space: nowrap;
+  white-space: nowrap;
 }
 
 .switch-buttons {

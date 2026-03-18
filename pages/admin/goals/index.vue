@@ -34,7 +34,7 @@
         <option v-for="y in years" :key="y" :value="y">{{ y }}ĺš?</option>
       </select>
       <select v-model="filterStatus" @change="fetchGoals" class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-        <option value="">ĺ¨é¨çść?/option>
+        <option value="">ĺ¨é¨çść?</option>
         <option value="active">čżčĄä¸?</option>
         <option value="completed">ĺˇ˛ĺŽć?</option>
         <option value="archived">ĺˇ˛ĺ˝ćĄ?</option>
@@ -161,7 +161,7 @@
               </div>
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">çść?/label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">çść?</label>
               <select v-model="goalForm.status" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
                 <option value="active">čżčĄä¸?</option>
                 <option value="completed">ĺˇ˛ĺŽć?</option>
@@ -318,7 +318,7 @@ const editGoal = (goal: Goal) => {
 }
 
 const deleteGoal = async (id: number) => {
-  if (!confirm('çĄŽĺŽčŚĺ é¤čżä¸ŞçŽć ĺďźĺ é¤ĺĺłčçćĺş?KPI äšäźč˘Ťĺ é¤ă?)) return
+  if (!confirm('确定要删除这个目标吗？删除后关联的月度KPI也会被删除。')) return
 
   try {
     await api.delete(`/Goals/${id}`)

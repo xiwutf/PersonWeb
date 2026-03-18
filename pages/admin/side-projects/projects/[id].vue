@@ -995,7 +995,7 @@ onMounted(() => {
   padding: var(--spacing-md);
   background: var(--color-bg-elevated);
   border-radius: var(--radius-md);
-  var(--color-bg-light, white)-space: pre-wrap;
+  white-space: pre-wrap;
   min-height: 100px;
 }
 
@@ -1066,7 +1066,7 @@ onMounted(() => {
 
 .log-content {
   margin-bottom: var(--spacing-sm);
-  var(--color-bg-light, white)-space: pre-wrap;
+  white-space: pre-wrap;
 }
 
 .log-todo {

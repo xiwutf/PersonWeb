@@ -1,4 +1,4 @@
-﻿<template>
+﻿\<template>
   <div class="payment-cancel">
     <div class="container">
       <div class="cancel-icon">

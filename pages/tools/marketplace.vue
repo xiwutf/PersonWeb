@@ -58,9 +58,9 @@
             v-model="sortBy"
             class="px-4 py-2 bg-slate-800/50 border border-var(--color-bg-light, white)/10 rounded-xl text-slate-200 focus:outline-none focus:border-orange-500/50"
           >
-            <option value="popular">ćĺćŹ˘čż?/option>
-            <option value="newest">ćć°ĺĺ¸?/option>
-            <option value="rating">ćéŤčŻĺ?/option>
+            <option value="popular">ćĺćŹ˘čż</option>
+            <option value="newest">ćć°ĺĺ¸</option>
+            <option value="rating">ćéŤčŻĺ</option>
             <option value="price">äťˇć źäťä˝ĺ°éŤ</option>
             <option value="price_desc">äťˇć źäťéŤĺ°ä˝</option>
           </select>
@@ -114,7 +114,7 @@
                 {{ tool.description }}
               </p>
 
-              <!-- ć ç­žĺĺçą?-->
+              
               <div class="flex flex-wrap gap-2 mb-4">
                 <span
                   v-for="tag in tool.tags"
@@ -286,7 +286,8 @@ const handlePurchase = async (tool: Tool) => {
   }
 }
 
-// çĺŹç­éćĄäťśĺĺ?watch([selectedCategory, searchQuery, sortBy, currentPage], () => {
+// 监听筛选条件变化
+watch([selectedCategory, searchQuery, sortBy, currentPage], () => {
   currentPage.value = 1
   fetchTools()
 })
@@ -297,15 +298,15 @@ onMounted(() => {
 })
 
 useHead({
-  title: 'ĺˇĽĺˇĺĺ - ćşŞĺĺŹéŁ',
+  title: '工具市场 - 溪午听风',
   meta: [
-    { name: 'description', content: 'ĺç°ä¸ä¸ĺˇĽĺˇďźćĺĺˇĽä˝ćç? }
+    { name: 'description', content: '发现专业工具，提升工作效率' }
   ]
 })
 </script>
 
 <style scoped>
-/* čżĺćéŽć ˇĺź */
+/* 工具市场样式 */
 .tools-back-button-container {
   margin-bottom: 1.5rem;
 }
@@ -350,4 +351,3 @@ useHead({
   overflow: hidden;
 }
 </style>
-

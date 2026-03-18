@@ -121,9 +121,9 @@ const viewDetail = (id: number) => {
 
 const getCategoryClass = (category: string) => {
   const classes: Record<string, string> = {
-'????': 'badge-blue',
-      '????': 'badge-yellow',
-      '????': 'badge-purple'
+    '知识': 'badge-blue',
+    '文档': 'badge-yellow',
+    '文章': 'badge-purple'
   }
   return classes[category || ''] || 'badge-gray'
 }

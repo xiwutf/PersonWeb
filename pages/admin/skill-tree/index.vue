@@ -28,7 +28,7 @@
             <span class="text-2xl">{{ category.icon }}</span>
             <div>
               <h2 class="text-xl font-semibold category-name">{{ category.name }}</h2>
-              <p class="text-sm category-count">{{ category.skills?.length || 0 }} ä¸Şćč?/p>
+              <p class="text-sm category-count">{{ category.skills?.length || 0 }} ä¸Şćč</p>
             </div>
           </div>
           <div
@@ -75,7 +75,7 @@
               {{ skill.description }}
             </p>
             <div class="flex items-center gap-2">
-              <span class="text-xs skill-label">ĺ˝ĺčŻçş§ďź?/span>
+              <span class="text-xs skill-label">ĺ˝ĺčŻçş§ďź</span>
               <div class="flex items-center gap-1">
                 <span class="text-lg font-bold" :class="getRatingColor(skill.currentRating)">
                   {{ skill.currentRating || 0 }}
@@ -102,7 +102,7 @@
 
       <!-- çŠşçść?-->
       <div v-if="skillTree.length === 0" class="text-center py-12 empty-state">
-        <p class="empty-state-text">ćć ćč˝ć°ćŽďźčŻˇĺćˇťĺ ĺçąťĺćč?/p>
+        <p class="empty-state-text">ćć ćč˝ć°ćŽďźčŻˇĺćˇťĺ ĺçąťĺćč</p>
       </div>
     </div>
 
@@ -113,7 +113,7 @@
       @click.self="showAddCategoryDialog = false"
     >
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
-        <h2 class="text-xl font-bold text-gray-900 dark:text-var(--color-bg-light, white) mb-4">ćˇťĺ ćč˝ĺçą?/h2>
+        <h2 class="text-xl font-bold text-gray-900 dark:text-var(--color-bg-light, white) mb-4">ćˇťĺ ćč˝ĺçą</h2>
         <form @submit.prevent="addCategory" class="space-y-4">
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ĺçąťĺç§°</label>
@@ -125,16 +125,16 @@
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ĺžć </label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">图标</label>
             <input
               v-model="categoryForm.icon"
               type="text"
-              placeholder="đť"
+              placeholder="📌"
               class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">é˘č˛</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">颜色</label>
             <input
               v-model="categoryForm.color"
               type="color"
@@ -142,7 +142,7 @@
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ćĺş</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">排序</label>
             <input
               v-model.number="categoryForm.sortOrder"
               type="number"
@@ -175,10 +175,10 @@
       @click.self="showAddSkillDialog = false"
     >
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
-        <h2 class="text-xl font-bold text-gray-900 dark:text-var(--color-bg-light, white) mb-4">ćˇťĺ ćč?/h2>
+        <h2 class="text-xl font-bold text-gray-900 dark:text-var(--color-bg-light, white) mb-4">ćˇťĺ ćč</h2>
         <form @submit.prevent="addSkill" class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ćč˝ĺç§?/label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ćč˝ĺç§</label>
             <input
               v-model="skillForm.name"
               type="text"
@@ -187,7 +187,7 @@
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ćĺąĺçą?/label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ćĺąĺçą</label>
             <select
               v-model.number="skillForm.categoryId"
               required
@@ -200,7 +200,7 @@
             </select>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ćč˝ćčż?/label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ćč˝ćčż</label>
             <textarea
               v-model="skillForm.description"
               rows="3"
@@ -208,11 +208,11 @@
             ></textarea>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ĺžć </label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"></label>
             <input
               v-model="skillForm.icon"
               type="text"
-              placeholder="â?
+              placeholder="⚡"
               class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
             />
           </div>
@@ -396,7 +396,8 @@ const api = useApi()
 const { success } = useNotification()
 const { handleError } = useErrorHandler()
 
-// čˇĺéťčŽ¤é˘č˛ďźäť CSS ĺéďź?const getDefaultCategoryColor = () => {
+// 获取默认颜色（从 CSS 变量）
+const getDefaultCategoryColor = () => {
   if (process.client) {
     return getComputedStyle(document.documentElement).getPropertyValue('--color-text-muted').trim() || 'var(--color-text-sec)'
   }
@@ -475,7 +476,7 @@ const fetchSkillTree = async () => {
     const res = await api.get<any>('/SkillTree')
     skillTree.value = res || []
   } catch (e: unknown) {
-    handleError(e, 'čˇĺćč˝ć ĺ¤ąč´Ľ')
+    handleError(e, '添加技能失败')
   } finally {
     loading.value = false
   }
@@ -493,7 +494,7 @@ const fetchCategories = async () => {
 const addCategory = async () => {
   try {
     await api.post('/SkillTree/categories', categoryForm.value)
-    success('ĺçąťćˇťĺ ćĺ')
+    success('添加成功')
     showAddCategoryDialog.value = false
     categoryForm.value = { name: '', icon: '', color: defaultCategoryColor, sortOrder: 0 }
     await fetchCategories()
@@ -506,12 +507,12 @@ const addCategory = async () => {
 const addSkill = async () => {
   try {
     await api.post('/SkillTree/skills', skillForm.value)
-    success('ćč˝ćˇťĺ ćĺ?)
+    success('添加成功')
     showAddSkillDialog.value = false
     skillForm.value = { name: '', categoryId: null, description: '', icon: '', sortOrder: 0 }
     await fetchSkillTree()
   } catch (e: unknown) {
-    handleError(e, 'ćˇťĺ ćč˝ĺ¤ąč´?)
+    handleError(e, '添加技能失败')
   }
 }
 
@@ -534,7 +535,7 @@ const submitRating = async () => {
       notes: ratingForm.value.notes,
       recordedAt: ratingForm.value.recordedAt
     })
-    success('čŻçş§čŽ°ĺ˝ćĺ')
+    success('添加成功')
     showRatingDialog.value = false
     await fetchSkillTree()
   } catch (e: unknown) {
@@ -567,7 +568,7 @@ const submitLearningLog = async () => {
       resourceUrl: learningLogForm.value.resourceUrl,
       learnedAt: learningLogForm.value.learnedAt
     })
-    success('ĺ­Śäš ćĽĺżćˇťĺ ćĺ')
+    success('添加成功')
     showLearningLogDialog.value = false
   } catch (e: unknown) {
     handleError(e, 'ćˇťĺ ĺ­Śäš ćĽĺżĺ¤ąč´Ľ')

@@ -80,7 +80,7 @@
                     <i class="fas fa-check-circle mr-2"></i>
                     适合这些人
                   </h4>
-                  <div class="text-sm text-green-700 var(--color-bg-light, white)space-pre-line">{{ tool.fitFor }}</div>
+                  <div class="text-sm text-green-700 whitespace-pre-line">{{ tool.fitFor }}</div>
                 </div>
 
                 <!-- 不适合情况 -->
@@ -89,7 +89,7 @@
                     <i class="fas fa-times-circle mr-2"></i>
                     不适合这些情况
                   </h4>
-                  <div class="text-sm text-red-700 var(--color-bg-light, white)space-pre-line">{{ tool.notFitFor }}</div>
+                  <div class="text-sm text-red-700 whitespace-pre-line">{{ tool.notFitFor }}</div>
                 </div>
               </div>
               

@@ -16,7 +16,7 @@
       <div class="filters-bar">
         <n-input
           v-model:value="filters.keyword"
-          placeholder="搜索标题、内�?.."
+          placeholder="搜索标题、内容..."
           clearable
           @keyup.enter="handleSearch"
         >
@@ -26,13 +26,13 @@
         </n-input>
         <n-select
           v-model:value="filters.category"
-          placeholder="分类筛�?
+          placeholder="分类筛选"
           clearable
           :options="categoryOptions"
         />
         <n-select
           v-model:value="filters.sourceId"
-          placeholder="来源筛�?
+          placeholder="来源筛选"
           clearable
           :options="sourceOptions"
           label-field="label"
@@ -46,7 +46,8 @@
           class="date-range-picker"
         />
         <n-checkbox v-model:checked="filters.highValueOnly">
-          仅看高价�?        </n-checkbox>
+          仅看高价内容
+        </n-checkbox>
         <n-button type="primary" @click="handleSearch">搜索</n-button>
         <n-button @click="handleReset">重置</n-button>
       </div>
@@ -88,7 +89,7 @@
                     size="small"
                     :bordered="false"
                   >
-                    高价�?                  </n-tag>
+                    高价内容                  </n-tag>
                   <n-tag size="small" :bordered="false">
                     {{ content.category }}
                   </n-tag>
@@ -100,10 +101,10 @@
                 <div class="content-meta">
                   <span>{{ formatTime(content.createdAt) }}</span>
                   <n-tag size="tiny" :bordered="false">
-                    相关�? {{ content.relevanceScore }}
+                    相关性: {{ content.relevanceScore }}
                   </n-tag>
                   <n-tag size="tiny" :bordered="false">
-                    学习价�? {{ content.learningValue }}
+                    学习价值: {{ content.learningValue }}
                   </n-tag>
                 </div>
                 <div class="content-actions">
@@ -161,13 +162,15 @@ definePageMeta({
 const route = useRoute()
 const api = useIntelligenceApi()
 
-// 状�?const loading = ref(false)
+// 加载状态
+const loading = ref(false)
 const contents = ref<ContentItemDto[]>([])
 const categoryStats = ref<CategoryStatDto[]>([])
 const sources = ref<any[]>([])
 const dateRange = ref<[number, number] | null>(null)
 
-// 筛选条�?const filters = reactive({
+// 筛选条件
+const filters = reactive({
   keyword: '',
   category: '',
   sourceId: null as number | null,
@@ -183,7 +186,8 @@ const pagination = reactive({
   total: 0
 })
 
-// 计算属�?const categoryOptions = computed(() => {
+// 计算属性
+const categoryOptions = computed(() => {
   return categoryStats.value.map(s => ({
     label: s.category,
     value: s.category
@@ -284,7 +288,8 @@ const openOriginalUrl = (url: string) => {
   window.open(url, '_blank')
 }
 
-// 格式化时�?const formatTime = (time: string) => {
+// 格式化时间
+const formatTime = (time: string) => {
   const d = new Date(time)
   const now = new Date()
   const diff = now.getTime() - d.getTime()
@@ -298,7 +303,8 @@ const openOriginalUrl = (url: string) => {
   return d.toLocaleDateString('zh-CN')
 }
 
-// �?URL 查询参数初始化筛选条�?onMounted(async () => {
+// 初始化筛选条件
+onMounted(async () => {
   if (route.query.category) {
     filters.category = route.query.category as string
   }
@@ -370,7 +376,7 @@ const openOriginalUrl = (url: string) => {
   margin: 0 0 var(--spacing-md) 0;
 }
 
-/* 分类统计�?*/
+/* 分类统计�?*/
 .category-stats-bar {
   display: flex;
   flex-wrap: wrap;

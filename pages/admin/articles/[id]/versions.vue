@@ -283,7 +283,7 @@ onMounted(() => {
 .diff-content {
   font-family: 'Courier New', monospace;
   line-height: 1.8;
-  var(--color-bg-light, white)-space: pre-wrap;
+  white-space: pre-wrap;
   word-wrap: break-word;
 }
 

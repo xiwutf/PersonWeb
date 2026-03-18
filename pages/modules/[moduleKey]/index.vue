@@ -1074,7 +1074,7 @@ const submitReview = async () => {
 }
 
 .modal-body pre {
-  var(--color-bg-light, white)-space: pre-wrap;
+  white-space: pre-wrap;
   word-break: break-word;
   margin: 0;
   background: var(--color-bg-elevated);

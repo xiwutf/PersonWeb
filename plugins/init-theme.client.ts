@@ -22,6 +22,8 @@
  * - 模块主题和 tokens 失败不影响全局主题应用
  */
 
+import { normalizeTheme } from '~/constants/design/tokens'
+
 export default defineNuxtPlugin(async () => {
   // 只在客户端执行
   if (!process.client) return
@@ -38,7 +40,6 @@ export default defineNuxtPlugin(async () => {
       // 重构说明（2024-12-XX）：
       // - 现在只支持 light 和 dark 两个主题
       // - 如果后端返回旧主题（tech-blue、paper、forest 等），会自动映射为 light 或 dark
-      const { normalizeTheme } = await import('~/constants/design/tokens')
       const themeFromBackend = response.theme
       const normalizedTheme = normalizeTheme(themeFromBackend)
       globalTheme = normalizedTheme

@@ -285,7 +285,7 @@ useHead({
 
 /* ?????? */
 .about-cognition-card {
-  @apply bg-bg-light/80 dark:bg-gray-800/80 backdrop-blur-sm;
+  @apply bg-gray-50/80 dark:bg-gray-800/80 backdrop-blur-sm;
   @apply rounded-2xl shadow-lg;
   @apply border border-gray-200 dark:border-gray-700;
   @apply p-6 md:p-8;

@@ -113,6 +113,11 @@ export default defineNuxtConfig({
 
   // Vite 配置
   vite: {
+    resolve: {
+      alias: {
+        '#app-manifest': require('path').resolve(__dirname, 'app-manifest-stub.js')
+      }
+    },
     css: {
       preprocessorOptions: {
         scss: {
@@ -142,8 +147,8 @@ export default defineNuxtConfig({
           }
         }
       },
-      // 减少 chunk 大小警告阈值
-      chunkSizeWarningLimit: 1000
+      // 减少 chunk 大小警告阈值（naive-ui、echarts、@nuxt/content sqlite 等依赖较大）
+      chunkSizeWarningLimit: 2000
     }
   },
 

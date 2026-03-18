@@ -26,7 +26,7 @@
         </div>
       </div>
 
-      <!-- 加载状�?-->
+      <!-- 加载状�?-->
       <div v-if="loading" class="loading-container">
         <n-spin size="large" />
       </div>
@@ -49,7 +49,7 @@
             </div>
             <div class="kpi-content">
               <div class="kpi-value">{{ dashboard.todayHighValue }}</div>
-              <div class="kpi-label">今日高价�?/div>
+              <div class="kpi-label">今日高价</div>
             </div>
           </div>
           <div class="kpi-card kpi-icon-cyan clickable" @click="navigateTo('/admin/intelligence/daily-report')">
@@ -73,10 +73,10 @@
         </div>
 
         <div class="content-grid">
-          <!-- 最新日�?-->
+          <!-- 最新日�?-->
           <div class="content-section">
             <div class="section-header">
-              <h2 class="section-title">最新日�?/h2>
+              <h2 class="section-title">最新日报</h2>
               <n-button text @click="navigateTo('/admin/intelligence/daily-report')">
                 查看更多 <i class="fas fa-arrow-right ml-1"></i>
               </n-button>
@@ -85,7 +85,7 @@
               <div class="report-date">{{ formatDate(dashboard.latestReport.reportDate) }}</div>
               <div class="report-title">{{ dashboard.latestReport.title }}</div>
               <div class="report-meta">
-                <span><i class="fas fa-list"></i> {{ dashboard.latestReport.itemCount }} 条内�?/span>
+                <span><i class="fas fa-list"></i> {{ dashboard.latestReport.itemCount }} 条内容</span>
                 <span><i class="fas fa-clock"></i> {{ formatTime(dashboard.latestReport.generatedAt) }}</span>
               </div>
             </div>
@@ -93,14 +93,15 @@
               <i class="fas fa-file-alt"></i>
               <p>暂无日报数据</p>
               <n-button type="primary" size="small" @click="runGenerateReport">
-                生成第一份日�?              </n-button>
+                生成第一份日报
+              </n-button>
             </div>
           </div>
 
-          <!-- 最近任务状�?-->
+          <!-- 最近任务状态 -->
           <div class="content-section">
             <div class="section-header">
-              <h2 class="section-title">最近任务状�?/h2>
+              <h2 class="section-title">最近任务状态</h2>
               <n-button text @click="navigateTo('/admin/intelligence/tasks')">
                 查看更多 <i class="fas fa-arrow-right ml-1"></i>
               </n-button>
@@ -154,10 +155,10 @@
             </div>
           </div>
 
-          <!-- 最新内�?-->
+          <!-- 最新内�?-->
           <div class="content-section">
             <div class="section-header">
-              <h2 class="section-title">最新内�?/h2>
+              <h2 class="section-title">最新内容</h2>
               <n-button text @click="navigateTo('/admin/intelligence/content')">
                 查看更多 <i class="fas fa-arrow-right ml-1"></i>
               </n-button>
@@ -176,7 +177,7 @@
                   <span class="content-time">{{ formatTime(content.createdAt) }}</span>
                 </div>
                 <div class="content-score">
-                  <span v-if="content.relevanceScore >= 70" class="high-value">高价�?/span>
+                  <span v-if="content.relevanceScore >= 70" class="high-value">高价内容</span>
                 </div>
               </div>
             </div>
@@ -208,7 +209,8 @@ definePageMeta({
 const api = useIntelligenceApi()
 const notification = useNotification()
 
-// 状�?const loading = ref(true)
+// 状态
+const loading = ref(true)
 const taskRunning = ref(false)
 const dashboard = ref<DashboardStats>({
   todayCollected: 0,
@@ -218,17 +220,19 @@ const dashboard = ref<DashboardStats>({
   categoryStats: []
 })
 
-// 计算属�?const maxCategoryCount = computed(() => {
+// 计算属性
+const maxCategoryCount = computed(() => {
   const counts = dashboard.value.categoryStats.map(s => s.count)
   return counts.length > 0 ? Math.max(...counts) : 1
 })
 
-// 获取仪表盘数�?const fetchDashboard = async () => {
+// 获取仪表盘数据
+const fetchDashboard = async () => {
   loading.value = true
   try {
     dashboard.value = await api.getDashboardStats()
   } catch (error) {
-    console.error('获取仪表盘数据失�?', error)
+    console.error('获取仪表盘数据失败:', error)
   } finally {
     loading.value = false
   }
@@ -239,7 +243,7 @@ const runCollectTask = async () => {
   taskRunning.value = true
   try {
     const result = await api.runCollectTask()
-    notification.success(result.message || '采集任务已提�?)
+    notification.success(result.message || '采集任务已提交')
     await fetchDashboard()
   } catch (error) {
     console.error('触发采集任务失败:', error)
@@ -254,7 +258,7 @@ const runAnalyzeTask = async () => {
   taskRunning.value = true
   try {
     const result = await api.runAnalyzeTask()
-    notification.success(result.message || '分析任务已提�?)
+    notification.success(result.message || '分析任务已提交')
     await fetchDashboard()
   } catch (error) {
     console.error('触发分析任务失败:', error)
@@ -269,7 +273,7 @@ const runGenerateReport = async () => {
   taskRunning.value = true
   try {
     const result = await api.runGenerateReport()
-    notification.success(result.message || '日报生成任务已提�?)
+    notification.success(result.message || '日报生成任务已提交')
     await fetchDashboard()
   } catch (error) {
     console.error('生成日报失败:', error)
@@ -279,13 +283,15 @@ const runGenerateReport = async () => {
   }
 }
 
-// 格式化日�?const formatDate = (date: string) => {
+// 格式化日期
+const formatDate = (date: string) => {
   if (!date) return ''
   const d = new Date(date)
-  return `${d.getFullYear()}�?{d.getMonth() + 1}�?{d.getDate()}日`
+  return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`
 }
 
-// 格式化时�?const formatTime = (time?: string) => {
+// 格式化时间
+const formatTime = (time?: string) => {
   if (!time) return ''
   const d = new Date(time)
   const now = new Date()
@@ -299,7 +305,8 @@ const runGenerateReport = async () => {
   return `${days}天前`
 }
 
-// 获取状态标签类�?const getStatusTagType = (status: string) => {
+// 获取状态标签类型
+const getStatusTagType = (status: string) => {
   switch (status) {
     case 'running': return 'info'
     case 'success': return 'success'
@@ -308,16 +315,18 @@ const runGenerateReport = async () => {
   }
 }
 
-// 获取状态文�?const getStatusText = (status: string) => {
+// 获取状态文本
+const getStatusText = (status: string) => {
   switch (status) {
-    case 'running': return '运行�?
+    case 'running': return '运行中'
     case 'success': return '成功'
     case 'failed': return '失败'
     default: return status
   }
 }
 
-// 初始�?onMounted(() => {
+// 初始数据
+onMounted(() => {
   fetchDashboard()
 })
 </script>
@@ -394,7 +403,7 @@ const runGenerateReport = async () => {
   font-size: var(--text-2xl);
 }
 
-/* KPI 图标背景�?*/
+/* KPI 图标背景�?*/
 .kpi-card.kpi-icon-blue .kpi-icon {
   background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-purple-600) 100%);
 }
@@ -457,7 +466,7 @@ const runGenerateReport = async () => {
   margin: 0;
 }
 
-/* 最新日�?*/
+/* 最新日�?*/
 .latest-report-card {
   background: var(--color-primary);
   border-radius: var(--radius-md);
@@ -495,7 +504,7 @@ const runGenerateReport = async () => {
   margin-right: var(--spacing-xs);
 }
 
-/* 任务状态卡�?*/
+/* 任务状态卡�?*/
 .task-status-card {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
@@ -597,7 +606,7 @@ const runGenerateReport = async () => {
   margin-bottom: var(--spacing-sm);
   overflow: hidden;
   text-overflow: ellipsis;
-  var(--color-bg-light, white)-space: nowrap;
+  white-space: nowrap;
 }
 
 .content-meta {
@@ -611,7 +620,7 @@ const runGenerateReport = async () => {
 .content-source {
   overflow: hidden;
   text-overflow: ellipsis;
-  var(--color-bg-light, white)-space: nowrap;
+  white-space: nowrap;
 }
 
 .content-time {
@@ -632,7 +641,7 @@ const runGenerateReport = async () => {
   border-radius: var(--radius-sm);
 }
 
-/* 空状�?*/
+/* 空状�?*/
 .empty-state {
   display: flex;
   flex-direction: column;

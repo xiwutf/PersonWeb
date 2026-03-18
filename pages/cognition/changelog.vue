@@ -1,10 +1,10 @@
 <template>
   <ModuleGuard module-key="cognition">
     <div class="cognition-page">
-      <!-- å¨å±èæ¯åªç¹ -->
+      
       <div class="cognition-background-noise"></div>
 
-      <!-- å¨æèæ¯åæ?-->
+        
       <div class="cognition-background-container">
         <div class="cognition-background-blob cognition-background-blob--blue"></div>
         <div class="cognition-background-blob cognition-background-blob--purple"></div>
@@ -12,7 +12,7 @@
       </div>
 
       <div class="cognition-content">
-        <!-- é¡µé¢å¤´é¨ -->
+        
         <header class="cognition-header">
           <div class="cognition-header-icon">
             <span>ð</span>
@@ -56,20 +56,21 @@ definePageMeta({
   layout: 'default'
 })
 
-// è·åæ´æ°æ¥å¿åå®¹ï¼Content v3: queryCollectionï¼?const { data: doc } = await useAsyncData('cognition-changelog', () =>
+// 获取更新日志内容
+const { data: doc } = await useAsyncData('cognition-changelog', () =>
   queryCollection('content').path('/cognition/changelog').first()
 )
 
-// 404å¤ç
+// 404 处理
 if (!doc.value) {
-  throw createError({ statusCode: 404, statusMessage: 'åå®¹ä¸å­å? })
+  throw createError({ statusCode: 404, statusMessage: '内容不存在' })
 }
 
 // SEO
 useHead({
-  title: 'æ´æ°æ¥å¿ - ä¸ªäººè®¤ç¥ä½¿ç¨è¯´æä¹?- æºªåå¬é£',
+  title: '更新日志 - 个人认知使用说明 - 溪午听风',
   meta: [
-    { name: 'description', content: 'ä¸ªäººè®¤ç¥ä½¿ç¨è¯´æä¹¦ççæ¬æ´æ°è®°å½' }
+    { name: 'description', content: '个人认知使用说明书的版本更新记录' }
   ]
 })
 </script>

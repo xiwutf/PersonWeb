@@ -93,7 +93,7 @@
                   v-if="project.demoUrl" 
                   :href="project.demoUrl" 
                   target="_blank" 
-                  class="projects-card-cover-button projects-card-cover-button--var(--color-bg-light, white)"
+                  class="projects-card-cover-button projects-card-cover-button--white"
                   @click.stop
                 >
                   Live Demo

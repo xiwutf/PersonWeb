@@ -2,7 +2,7 @@
   <ClientOnly>
     <div class="admin-assistant-page">
       <div class="assistant-container">
-        <!-- 左侧：会话列�?-->
+        <!-- 左侧：会话列�?-->
         <div class="sessions-sidebar">
           <div class="sidebar-header">
             <h3 class="sidebar-title">会话列表</h3>
@@ -28,19 +28,20 @@
               <div class="session-title">{{ session.title }}</div>
               <div class="session-meta">
                 <span class="session-time">{{ formatDate(session.updatedAt) }}</span>
-                <span class="session-count">{{ session.messageCount }} 条消�?/span>
+                <span class="session-count">{{ session.messageCount }} 条消息</span>
               </div>
             </div>
             <div v-if="sessions.length === 0" class="sessions-empty">
-              暂无会话，点击「新建会话」开�?            </div>
+              暂无会话，点击「新建会话」开始新的对话
+            </div>
           </div>
         </div>
 
-        <!-- 右侧：对话区�?-->
+        <!-- 右侧：对话区域 -->
         <div class="chat-area">
           <div class="chat-header">
-            <h2 class="chat-title">个人助理智能�?/h2>
-            <p class="chat-subtitle">这是只为你服务的后台 AI 助理，可以帮你分析线索、规划学习、安排项目优先级等�?/p>
+            <h2 class="chat-title">个人助理智能助手</h2>
+            <p class="chat-subtitle">这是只为你服务的后台 AI 助理，可以帮你分析线索、规划学习、安排项目优先级等</p>
           </div>
 
           <!-- 消息列表 -->
@@ -48,7 +49,7 @@
             <div v-if="messages.length === 0" class="welcome-message">
               <div class="welcome-content">
                 <i class="fas fa-robot welcome-icon"></i>
-                <p class="welcome-text">你好！我是你的个�?AI 助理，有什么可以帮你的吗？</p>
+                <p class="welcome-text">你好！我是你的个人 AI 助理，有什么可以帮你的吗？</p>
               </div>
             </div>
 
@@ -75,7 +76,7 @@
               <div class="message-bubble">
                 <div class="message-content">
                   <n-spin size="small" />
-                  <span class="ml-2">正在思�?..</span>
+                  <span class="ml-2">正在思考..</span>
                 </div>
               </div>
             </div>
@@ -101,12 +102,12 @@
               v-model:value="inputMessage"
               type="textarea"
               :rows="3"
-              placeholder="输入你的问题或指�?.."
+              placeholder="输入你的问题或指令.."
               @keydown.enter.ctrl="sendMessage"
               @keydown.enter.exact.prevent="sendMessage"
             />
             <div class="input-actions">
-              <span class="input-hint">�?Enter 发送，Ctrl+Enter 换行</span>
+              <span class="input-hint">按回车/Enter 发送，Ctrl+Enter 换行</span>
               <n-button
                 type="primary"
                 :loading="loading"
@@ -116,7 +117,8 @@
                 <template #icon>
                   <i class="fas fa-paper-plane"></i>
                 </template>
-                发�?              </n-button>
+                发送
+              </n-button>
             </div>
           </div>
         </div>
@@ -148,7 +150,7 @@ const suggestions = ref<string[]>([])
 const messagesContainer = ref<HTMLElement | null>(null)
 
 // 当前用户 ID（应从登录状态获取）
-const currentUserId = ref(1) // TODO: 从认证状态获�?
+const currentUserId = ref(1)  
 // 加载会话列表
 const loadSessions = async () => {
   try {
@@ -163,7 +165,8 @@ const loadSessions = async () => {
   }
 }
 
-// 创建新会�?const createNewSession = () => {
+// 创建新会话
+const createNewSession = () => {
   currentSessionId.value = null
   messages.value = []
   suggestions.value = []
@@ -188,13 +191,15 @@ const loadSession = async (sessionId: number) => {
   }
 }
 
-// 发送消�?const sendMessage = async () => {
+// 发送消息
+const sendMessage = async () => {
   if (!inputMessage.value.trim() || loading.value) return
 
   const userMessage = inputMessage.value.trim()
   inputMessage.value = ''
 
-  // 添加用户消息到界�?  messages.value.push({
+  // 添加用户消息到界面
+  messages.value.push({
     role: 'User',
     content: userMessage,
     createdAt: new Date().toISOString()
@@ -230,27 +235,29 @@ const loadSession = async (sessionId: number) => {
         suggestions.value = res.suggestions
       }
     } else {
-      message.error(res?.errorMessage || '发送消息失�?)
+      message.error(res?.errorMessage || '发送消息失败')
     }
   } catch (e: any) {
-    console.error('发送消息失�?', e)
-    message.error(e.response?.data?.message || e.message || '发送消息失�?)
+    console.error('发送消息失败:', e)
+    message.error(e.response?.data?.message || e.message || '发送消息失败')
   } finally {
     loading.value = false
     scrollToBottom()
   }
 }
 
-// 发送快捷消�?const sendQuickMessage = (text: string) => {
+// 发送快捷消息
+const sendQuickMessage = (text: string) => {
   inputMessage.value = text
   sendMessage()
 }
 
-// 格式化消息（Markdown �?HTML�?const formatMessage = (content: string): string => {
+const formatMessage = (content: string): string => {
   return markdownToHtml(content)
 }
 
-// 格式化日�?const formatDate = (dateString: string): string => {
+// 格式化日期
+const formatDate = (dateString: string): string => {
   if (!dateString) return '-'
   const date = new Date(dateString)
   const now = new Date()
@@ -263,12 +270,14 @@ const loadSession = async (sessionId: number) => {
   return date.toLocaleDateString('zh-CN')
 }
 
-// 格式化时�?const formatTime = (dateString: string): string => {
+// 格式化时间
+const formatTime = (dateString: string): string => {
   if (!dateString) return ''
   return new Date(dateString).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
 }
 
-// 滚动到底�?const scrollToBottom = () => {
+// 滚动到底部
+const scrollToBottom = () => {
   nextTick(() => {
     if (messagesContainer.value) {
       messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight
@@ -276,7 +285,8 @@ const loadSession = async (sessionId: number) => {
   })
 }
 
-// 监听消息变化，自动滚�?watch(messages, () => {
+// 监听消息变化，自动滚动
+watch(messages, () => {
   scrollToBottom()
 }, { deep: true })
 

@@ -59,7 +59,7 @@
 
       <!-- ććĺé?-->
       <div>
-        <h2 class="text-2xl font-bold mb-6">ććĺé?/h2>
+        <h2 class="text-2xl font-bold mb-6">ććĺé</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <div
             v-for="collection in collections"
@@ -72,7 +72,7 @@
               <div class="flex items-center justify-between">
                 <div>
                   <div class="text-lg font-bold text-emerald-400">ÂĽ{{ collection.price }}</div>
-                  <div class="text-xs text-slate-500">{{ collection.toolCount }} ä¸ŞĺˇĽĺ?/div>
+                  <div class="text-xs text-slate-500">{{ collection.toolCount }} ä¸ŞĺˇĽĺ</div>
                 </div>
                 <button
                   @click="handlePurchaseCollection(collection)"

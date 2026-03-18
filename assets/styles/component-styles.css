@@ -10,26 +10,52 @@
 }
 
 .btn-primary {
-  @apply btn bg-primary text-white hover:bg-primary-hover;
+  @apply btn bg-primary text-white;
+  background-color: var(--color-primary);
   box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+  transition: background-color 0.2s;
+}
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
 }
 
 .btn-secondary {
-  @apply btn bg-transparent text-primary border border-primary hover:bg-primary-soft;
+  @apply btn bg-transparent text-primary border border-primary;
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  transition: background-color 0.2s;
+}
+.btn-secondary:hover {
+  background-color: var(--color-primary-soft);
 }
 
 .btn-success {
-  @apply btn bg-success text-white hover:bg-success-hover;
+  @apply btn bg-success text-white;
+  background-color: var(--color-success-bg);
   box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+  transition: background-color 0.2s;
+}
+.btn-success:hover {
+  background-color: var(--color-emerald-600);
 }
 
 .btn-danger {
-  @apply btn bg-error text-white hover:bg-error-hover;
+  @apply btn bg-error text-white;
+  background-color: var(--color-error-bg);
   box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+  transition: background-color 0.2s;
+}
+.btn-danger:hover {
+  background-color: var(--color-error-hover);
 }
 
 .btn-outline {
-  @apply btn border border-primary bg-transparent hover:bg-primary-soft;
+  @apply btn border border-primary bg-transparent;
+  border-color: var(--color-primary);
+  transition: background-color 0.2s;
+}
+.btn-outline:hover {
+  background-color: var(--color-primary-soft);
 }
 
 .btn-sm {
@@ -47,7 +73,7 @@
 }
 
 .card-hover {
-  @apply card hover:shadow-md hover:border-primary-hover;
+  @apply card hover:shadow-md hover:border-primary-hover border border-transparent;
   transform: translateY(-2px);
 }
 

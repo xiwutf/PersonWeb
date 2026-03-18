@@ -2,7 +2,7 @@
   <div>
     <!-- 调试信息 -->
     <div v-if="false" class="p-4 bg-yellow-100 text-yellow-800 mb-4 rounded">
-      调试：当前路�?= {{ $route.path }}
+      调试：当前路径= {{ $route.path }}
     </div>
     
     <div class="flex justify-between items-center mb-6">
@@ -32,12 +32,12 @@
               v-model="form.slug" 
               type="text" 
               class="flex-1 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" 
-              placeholder="article-slug-url（留空将自动生成�? 
+              placeholder="article-slug-url（留空将自动生成）" 
             />
             <button 
               @click="generateSlugFromTitle" 
               type="button" 
-              class="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm var(--color-bg-light, white)space-nowrap"
+              class="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 text-sm whitespace-nowrap"
             >
               自动生成
             </button>
@@ -48,16 +48,16 @@
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">分类</label>
             <select v-model="form.categoryId" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-              <option :value="0">无分�?/option>
+              <option :value="0">无分类</option>
               <option v-for="cat in categories" :key="cat.id" :value="cat.id">
                 {{ cat.name }}
               </option>
             </select>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">封面�?/label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">封面图</label>
             <div class="flex gap-2">
-              <input v-model="form.coverUrl" type="text" class="flex-1 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" placeholder="输入 URL 或上�? />
+              <input v-model="form.coverUrl" type="text" class="flex-1 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" placeholder="输入 URL 或上传" />
               <button @click="triggerUpload" type="button" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300">上传</button>
               <input ref="fileInput" type="file" class="hidden" accept="image/*" @change="handleUpload" />
             </div>
@@ -66,19 +66,19 @@
 
         <div>
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">摘要</label>
-          <textarea v-model="form.summary" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 h-20 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" placeholder="文章简短描�?.."></textarea>
+          <textarea v-model="form.summary" class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 h-20 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200" placeholder="文章简短描述.."></textarea>
         </div>
 
         <!-- 正文编辑区：明显区块 + 说明，便于找到可填写位置 -->
         <div class="article-content-section">
           <div class="article-content-section-header">
             <label class="article-content-section-label">内容 (Markdown)</label>
-            <span class="article-content-section-hint">左侧输入 Markdown，右侧实时预�?/span>
+            <span class="article-content-section-hint">左侧输入 Markdown，右侧实时预览</span>
           </div>
           <div class="article-content-section-editor">
             <AdminSimpleMarkdownEditor
               v-model="form.contentMd"
-              placeholder="开始编写你的文章内�?..支持 Markdown 语法（标题、列表、代码块等）"
+              placeholder="开始编写你的文章内容..支持 Markdown 语法（标题、列表、代码块等）"
               :min-rows="24"
               :max-rows="60"
             />
@@ -87,9 +87,10 @@
 
         <div class="flex justify-end gap-4 pt-4 border-t border-gray-100 dark:border-gray-700">
           <button @click="handleSave(0)" type="button" class="px-6 py-2 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700" :disabled="saving">
-            存草�?          </button>
+            存草稿
+          </button>
           <button @click="handleSave(1)" type="button" class="px-6 py-2 bg-blue-600 text-var(--color-bg-light, white) rounded hover:bg-blue-700" :disabled="saving">
-            {{ saving ? '保存�?..' : '发布文章' }}
+            {{ saving ? '保存中..' : '发布文章' }}
           </button>
         </div>
       </form>
@@ -135,7 +136,7 @@ const fetchCategories = async () => {
   }
 }
 
-// 自动生成 Slug（从标题�?const generateSlugFromTitle = () => {
+  const generateSlugFromTitle = () => {
   if (!form.value.title) {
     const { warning } = useNotification()
     warning('请先输入标题')
@@ -154,14 +155,14 @@ const fetchCategories = async () => {
     // 移除开头和结尾的连字符
     .replace(/^-+|-+$/g, '')
   
-  // 如果生成�?slug 为空或只包含连字符，使用时间�?  if (!slug || slug === '-') {
+    if (!slug || slug === '-') {
     slug = `article-${Date.now()}`
   }
   
   form.value.slug = slug
 }
 
-// 当标题变化时自动生成 Slug（仅�?slug 为空时）
+// 当标题变化时自动生成 Slug（仅�slug 为空时）
 const autoGenerateSlug = () => {
   if (!form.value.slug && form.value.title) {
     generateSlugFromTitle()
@@ -185,7 +186,7 @@ const handleUpload = async (event: Event) => {
     return
   }
 
-  // 验证文件大小（限�?5MB�?  if (file.size > 5 * 1024 * 1024) {
+   if (file.size > 5 * 1024 * 1024) {
     warning('图片大小不能超过 5MB')
     return
   }
@@ -194,7 +195,7 @@ const handleUpload = async (event: Event) => {
   formData.append('file', file)
 
   try {
-    // 注意：API 路径�?/Media/upload（大�?M�?    const res = await api.post<{ url: string }>('/Media/upload', formData)
+    const res = await api.post<{ url: string }>('/Media/upload', formData)
     if (res && res.url) {
       form.value.coverUrl = res.url
       const { success } = useNotification()
@@ -215,15 +216,15 @@ const handleSave = async (status: number) => {
   
   // 验证必填字段
   if (!form.value.title || !form.value.title.trim()) {
-    warning('请输入文章标�?)
+    warning('请输入文章标题')
     return
   }
 
-  // 如果没有 slug，自动生�?  if (!form.value.slug || !form.value.slug.trim()) {
+   if (!form.value.slug || !form.value.slug.trim()) {
     generateSlugFromTitle()
   }
 
-  // 验证 slug 格式（只能包含小写字母、数字和连字符，且不能以连字符开头或结尾�?  const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+   const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
   if (form.value.slug && !slugPattern.test(form.value.slug)) {
     warning('URL Slug 格式不正确：只能包含小写字母、数字和连字符，且不能以连字符开头或结尾')
     return
@@ -232,12 +233,13 @@ const handleSave = async (status: number) => {
   saving.value = true
   try {
     const payload = {
-      id: 0, // 新增�?id �?0
+      id: 0, // 新增�id �0
       title: form.value.title.trim(),
       slug: form.value.slug.trim() || null,
       summary: form.value.summary?.trim() || null,
       contentMd: form.value.contentMd?.trim() || null,
-      contentHtml: null, // 后端可以自动转换，或前端转换后传�?      coverUrl: form.value.coverUrl?.trim() || null,
+      contentHtml: null, 
+         coverUrl: form.value.coverUrl?.trim() || null,
       categoryId: form.value.categoryId || null,
       status: status,
       tags: form.value.tags || []
@@ -261,7 +263,7 @@ onMounted(async () => {
   // 加载分类列表
   await fetchCategories()
   
-  // 初始化表�?  form.value = {
+   form.value = {
     id: 0,
     title: '',
     slug: '',

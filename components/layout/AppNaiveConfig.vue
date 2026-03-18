@@ -159,7 +159,6 @@ const naiveThemeOverrides = computed<GlobalThemeOverrides>(() => {
       borderHover: colors.borderHover,
       borderFocus: colors.primary,
       placeholderColor: colors.textSec,
-      color: isDark ? 'rgba(255, 255, 255, 0.03)' : '#FFFFFF',
       colorFocus: isDark ? 'rgba(0, 0, 0, 0.2)' : '#FFFFFF',
       boxShadowFocus: `0 0 0 2px ${colors.primarySuppl}`,
       caretColor: colors.primary,
@@ -441,7 +440,7 @@ onMounted(async () => {
           })
         })
       }
-    })
+    }))
   } catch (error) {
     console.error('Failed to load Naive UI components:', error)
   }

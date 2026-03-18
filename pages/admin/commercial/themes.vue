@@ -19,10 +19,10 @@
           v-model="filters.status" 
           class="form-input"
         >
-          <option value="">全部状�?/option>
+          <option value="">全部状态</option>
           <option value="draft">草稿</option>
-          <option value="published">已发�?/option>
-          <option value="archived">已归�?/option>
+          <option value="published">已发布</option>
+          <option value="archived">已归档</option>
         </select>
         <input
           v-model="filters.search"
@@ -47,10 +47,10 @@
               <th class="text-text-main">ID</th>
               <th class="text-text-main">主题名称</th>
               <th class="text-text-main">价格</th>
-              <th class="text-text-main">下载�?/th>
-              <th class="text-text-main">购买�?/th>
+              <th class="text-text-main">下载量</th>
+              <th class="text-text-main">购买量</th>
               <th class="text-text-main">评分</th>
-              <th class="text-text-main">状�?/th>
+              <th class="text-text-main">状态</th>
               <th class="text-text-main">创建时间</th>
               <th class="text-text-main">操作</th>
             </tr>
@@ -97,14 +97,14 @@
         :disabled="page === 1"
         @click="page--; loadThemes()"
       >
-        上一�?      </AppButton>
-      <span class="text-text-muted">�?{{ page }} 页，�?{{ totalPages }} �?/span>
+        上一页     </AppButton>
+      <span class="text-text-muted">{{ page }} 页，{{ totalPages }} 页</span>
       <AppButton
         variant="secondary"
         :disabled="page >= totalPages"
         @click="page++; loadThemes()"
       >
-        下一�?      </AppButton>
+        下一页     </AppButton>
     </div>
   </div>
 </template>
@@ -115,7 +115,8 @@ import AppButton from '~/components/ui/AppButton.vue'
 definePageMeta({
   layout: 'admin',
   middleware: 'admin-auth',
-  ssr: false // 禁用 SSR，避�?Naive UI 组件在服务端渲染时出�?})
+  ssr: false // 禁用 SSR，避免 Naive UI 组件在服务端渲染时出错
+})
 
 const api = useApi()
 
@@ -161,8 +162,8 @@ const getStatusClass = (status: string) => {
 const getStatusText = (status: string) => {
   const texts: Record<string, string> = {
     draft: '草稿',
-    published: '已发�?,
-    archived: '已归�?
+    published: '已发布',
+    archived: '已归档'
   }
   return texts[status] || status
 }
@@ -177,7 +178,7 @@ const editTheme = (theme: any) => {
 }
 
 const deleteTheme = async (id: number) => {
-  if (!confirm('确定要删除这个主题吗�?)) return
+  if (!confirm('确定要删除这个主题吗？')) return
   // TODO: 实现删除功能
   console.log('删除主题:', id)
 }
@@ -229,7 +230,7 @@ onMounted(() => {
   border-bottom: none;
 }
 
-/* 状态标�?*/
+/* 状态标�?*/
 .status-badge {
   display: inline-block;
   padding: 0.25rem 0.75rem;
@@ -256,7 +257,7 @@ onMounted(() => {
   border: 1px solid rgba(148, 163, 184, 0.4);
 }
 
-/* 表单输入�?*/
+/* 表单输入�?*/
 .form-input {
   padding: 0.5rem 0.75rem;
   background: rgba(255, 255, 255, 0.1);

@@ -20,7 +20,7 @@
       </n-input>
       <n-select
         v-model:value="filterStatus"
-        placeholder="状态筛�?
+        placeholder="状态筛选"
         clearable
         style="width: 150px;"
         :options="statusOptions"
@@ -31,7 +31,7 @@
 
     <!-- 数据表格 -->
     <div class="table-container">
-      <div v-if="loading" class="table-loading">加载�?..</div>
+      <div v-if="loading" class="table-loading">加载中..</div>
       <div v-else-if="consultations.length === 0" class="table-empty">暂无咨询数据</div>
       <table v-else class="data-table">
         <thead class="table-header">
@@ -44,7 +44,7 @@
             <th>期望时间</th>
             <th>AI 评分</th>
             <th>AI 标签</th>
-            <th>状�?/th>
+            <th>状态</th>
             <th>创建时间</th>
             <th>操作</th>
           </tr>
@@ -121,18 +121,18 @@
 
       <!-- 分页 -->
       <div v-if="pagination.itemCount > 0" class="table-pagination">
-        <div class="pagination-info">�?{{ pagination.itemCount }} 条记�?/div>
+        <div class="pagination-info">共 {{ pagination.itemCount }} 条记录</div>
         <div class="pagination-controls">
           <select v-model="pagination.pageSize" @change="handlePageSizeChange" class="pagination-select">
-            <option :value="10">10/�?/option>
-            <option :value="20">20/�?/option>
-            <option :value="50">50/�?/option>
+            <option :value="10">10/页</option>
+            <option :value="20">20/页</option>
+            <option :value="50">50/页</option>
           </select>
           <div class="pagination-buttons">
             <button @click="pagination.page = 1; fetchConsultations()" :disabled="pagination.page === 1" class="pagination-btn">首页</button>
-            <button @click="pagination.page--; fetchConsultations()" :disabled="pagination.page === 1" class="pagination-btn">上一�?/button>
+            <button @click="pagination.page--; fetchConsultations()" :disabled="pagination.page === 1" class="pagination-btn">上一页</button>
             <span class="pagination-info">{{ pagination.page }} / {{ pagination.totalPages }}</span>
-            <button @click="pagination.page++; fetchConsultations()" :disabled="pagination.page >= pagination.totalPages" class="pagination-btn">下一�?/button>
+            <button @click="pagination.page++; fetchConsultations()" :disabled="pagination.page >= pagination.totalPages" class="pagination-btn">下一页</button>
             <button @click="pagination.page = pagination.totalPages; fetchConsultations()" :disabled="pagination.page >= pagination.totalPages" class="pagination-btn">末页</button>
           </div>
         </div>
@@ -146,30 +146,30 @@
           <n-descriptions-item label="咨询ID">#{{ currentConsultation.id }}</n-descriptions-item>
           <n-descriptions-item label="商品名称">{{ currentConsultation.productNameSnapshot }}</n-descriptions-item>
           <n-descriptions-item label="客户姓名">{{ currentConsultation.customerName }}</n-descriptions-item>
-          <n-descriptions-item label="手机�?>{{ currentConsultation.customerPhone || '-' }}</n-descriptions-item>
-          <n-descriptions-item label="微信�?>{{ currentConsultation.customerWeChat || '-' }}</n-descriptions-item>
+          <n-descriptions-item label="手机">{{ currentConsultation.customerPhone || '-' }}</n-descriptions-item>
+          <n-descriptions-item label="微信">{{ currentConsultation.customerWeChat || '-' }}</n-descriptions-item>
           <n-descriptions-item label="邮箱">{{ currentConsultation.customerEmail || '-' }}</n-descriptions-item>
           <n-descriptions-item label="预算范围">{{ currentConsultation.budgetRange || '-' }}</n-descriptions-item>
           <n-descriptions-item label="期望完成时间">{{ currentConsultation.expectedDeadline || '-' }}</n-descriptions-item>
-          <n-descriptions-item label="咨询状�?>
+          <n-descriptions-item label="咨询状态">
             <n-select v-model:value="editForm.status" :options="statusOptions" />
           </n-descriptions-item>
           <n-descriptions-item label="创建时间">{{ formatDate(currentConsultation.createdAt) }}</n-descriptions-item>
-          <n-descriptions-item label="需求描�? :span="2">
-            <div class="var(--color-bg-light, white)space-pre-line bg-gray-50 p-3 rounded">{{ currentConsultation.requirementDescription }}</div>
+          <n-descriptions-item label="需求描述" :span="2">
+            <div class="whitespace-pre-line bg-gray-50 p-3 rounded">{{ currentConsultation.requirementDescription }}</div>
           </n-descriptions-item>
           <n-descriptions-item v-if="currentConsultation.summary" label="AI 摘要" :span="2">
-            <div class="var(--color-bg-light, white)space-pre-line bg-blue-50 p-3 rounded">{{ currentConsultation.summary }}</div>
+            <div class="whitespace-pre-line bg-blue-50 p-3 rounded">{{ currentConsultation.summary }}</div>
           </n-descriptions-item>
           <n-descriptions-item v-if="currentConsultation.aiRecommendation" label="AI 推荐建议" :span="2">
-            <div class="var(--color-bg-light, white)space-pre-line bg-green-50 p-3 rounded">{{ currentConsultation.aiRecommendation }}</div>
+            <div class="whitespace-pre-line bg-green-50 p-3 rounded">{{ currentConsultation.aiRecommendation }}</div>
           </n-descriptions-item>
           <n-descriptions-item label="内部备注" :span="2">
             <n-input
               v-model:value="editForm.internalNote"
               type="textarea"
               :rows="3"
-              placeholder="请输入内部备�?
+              placeholder="请输入内部备注（仅管理员可见）"
             />
           </n-descriptions-item>
         </n-descriptions>
@@ -210,7 +210,7 @@
             </tbody>
             <tfoot>
               <tr>
-                <td colspan="4" class="text-right font-bold">总计�?/td>
+                <td colspan="4" class="text-right font-bold">总计</td>
                 <td class="font-bold">¥{{ currentQuotation.totalAmount.toFixed(2) }}</td>
               </tr>
             </tfoot>
@@ -219,16 +219,16 @@
 
         <div class="quotation-details">
           <div v-if="currentQuotation.paymentTerms" class="detail-item">
-            <strong>付款方式�?/strong>{{ currentQuotation.paymentTerms }}
+            <strong>付款方式</strong>{{ currentQuotation.paymentTerms }}
           </div>
           <div v-if="currentQuotation.deliveryTime" class="detail-item">
-            <strong>交付时间�?/strong>{{ currentQuotation.deliveryTime }}
+            <strong>交付时间</strong>{{ currentQuotation.deliveryTime }}
           </div>
           <div v-if="currentQuotation.warranty" class="detail-item">
-            <strong>质保说明�?/strong>{{ currentQuotation.warranty }}
+            <strong>质保说明</strong>{{ currentQuotation.warranty }}
           </div>
           <div v-if="currentQuotation.notes" class="detail-item">
-            <strong>备注�?/strong>{{ currentQuotation.notes }}
+            <strong>备注</strong>{{ currentQuotation.notes }}
           </div>
         </div>
       </div>
@@ -239,7 +239,7 @@
         <div class="page-header">
           <h1 class="page-title">咨询管理</h1>
         </div>
-        <div class="table-loading">加载�?..</div>
+        <div class="table-loading">加载中..</div>
       </div>
     </template>
   </ClientOnly>
@@ -251,7 +251,8 @@ import { NInput, NSelect, NButton, NModal, NDescriptions, NDescriptionsItem } fr
 definePageMeta({
   layout: 'admin',
   middleware: 'admin-auth',
-  ssr: false // 禁用 SSR，避�?Naive UI 组件在服务端渲染时出�?})
+  ssr: false // 禁用 SSR，避免 Naive UI 组件在服务端渲染时出错
+})
 
 const api = useApi()
 const message = useSafeMessage()
@@ -269,10 +270,10 @@ const pagination = ref({
 })
 
 const statusOptions = [
-  { label: '新咨�?, value: 0 },
-  { label: '已联�?, value: 1 },
-  { label: '已转为订�?, value: 2 },
-  { label: '已关�?, value: 3 }
+  { label: '新咨询', value: 0 },
+  { label: '已联系', value: 1 },
+  { label: '已转为订单', value: 2 },
+  { label: '已关闭', value: 3 }
 ]
 
 const showDetailModal = ref(false)
@@ -304,7 +305,7 @@ const fetchConsultations = async () => {
     // 后端返回格式：{ code: 0, data: { Total: xxx, List: [], ... } }
     // useApi 处理后，res 就是 { Total: xxx, List: [], ... }
     if (res) {
-      // 检�?res 是否包含 List 字段（后端使用大写）
+   
       if (res.List && Array.isArray(res.List)) {
         consultations.value = res.List
         pagination.value.itemCount = res.Total ?? res.total ?? 0
@@ -384,18 +385,18 @@ const handleViewDetail = async (consultation: any) => {
 // 转为订单
 const handleConvertToOrder = async (consultation: any) => {
   try {
-    // useApi 已经处理了响应格式，如果成功会返�?data，如果失败会抛出异常
+    // useApi 已经处理了响应格式，如果成功会返�data，如果失败会抛出异常
     const res = await api.post<any>(`/admin/consultations/${consultation.id}/convert-to-order`)
-    // res 可能�?{ orderNo: 'xxx' } �?{ OrderNo: 'xxx' } 格式
+    // res 可能�?{ orderNo: 'xxx' } �?{ OrderNo: 'xxx' } 格式
     const orderNo = res?.orderNo || res?.OrderNo
     if (orderNo) {
       message.success(`转换成功！新订单号：${orderNo}`)
       fetchConsultations()
     } else {
-      message.error('转换失败：未返回订单�?)
+      message.error('转换失败：未返回订单号')
     }
   } catch (e: any) {
-    console.error('转换咨询为订单失�?', e)
+    console.error('转换咨询为订单失?', e)
     const errorMessage = e.response?.data?.message || e.message || '转换失败'
     message.error(errorMessage)
   }
@@ -423,7 +424,7 @@ const handleAiAnalyze = async (consultation: any) => {
       await fetchConsultations() // 刷新列表
     } else {
       const errorMsg = res?.errorMessage || res?.message || '分析失败'
-      message.error(`AI 分析失败: ${errorMsg}。请检�?AI 服务是否正常运行。`)
+      message.error(`AI 分析失败: ${errorMsg}。请检�AI 服务是否正常运行。`)
     }
   } catch (e: any) {
     message.destroyAll()
@@ -438,7 +439,7 @@ const handleAiAnalyze = async (consultation: any) => {
   }
 }
 
-// 解析标签（支�?JSON 数组和逗号分隔字符串）
+// 解析标签（支�JSON 数组和逗号分隔字符串）
 const parseTags = (tags: string): string[] => {
   if (!tags) return []
   try {
@@ -453,7 +454,7 @@ const parseTags = (tags: string): string[] => {
   return []
 }
 
-// 获取评分样式�?const getScoreClass = (score: number): string => {
+const getScoreClass = (score: number): string => {
   if (score >= 80) return 'score-high'
   if (score >= 60) return 'score-medium'
   return 'score-low'
@@ -477,7 +478,7 @@ const handleAiQuotation = async (consultation: any) => {
       currentQuotation.value = res.quotation
     } else {
       const errorMsg = res?.errorMessage || res?.message || '生成报价失败'
-      message.error(`AI 报价失败: ${errorMsg}。请检�?AI 服务是否正常运行。`)
+      message.error(`AI 报价失败: ${errorMsg}。请检�AI 服务是否正常运行。`)
     }
   } catch (e: any) {
     message.destroyAll()
@@ -492,21 +493,21 @@ const handleAiQuotation = async (consultation: any) => {
   }
 }
 
-// 保存状�?const handleSaveStatus = async () => {
+const handleSaveStatus = async () => {
   if (!currentConsultation.value) return
 
   try {
-    // useApi 已经处理了响应格式，如果成功会返�?data（可能为 null），如果失败会抛出异�?    await api.put<any>(`/admin/consultations/${currentConsultation.value.id}`, {
+await api.put<any>(`/admin/consultations/${currentConsultation.value.id}`, {
       status: editForm.value.status,
       internalNote: editForm.value.internalNote
     })
 
-    // 如果没有抛出异常，说明保存成�?    message.success('保存成功')
+    message.success('保存成功')
     showDetailModal.value = false
     fetchConsultations()
   } catch (e: any) {
-    console.error('保存咨询状态失�?', e)
-    // 显示详细的错误信�?    const errorMessage = e.response?.data?.message || e.message || '保存失败'
+    console.error('保存咨询状态失�?', e)
+const errorMessage = e.response?.data?.message || e.message || '保存失败'
     message.error(errorMessage)
   }
 }
@@ -517,12 +518,12 @@ const handlePageSizeChange = () => {
   fetchConsultations()
 }
 
-// 获取状态文�?const getStatusText = (status: number): string => {
+const getStatusText = (status: number): string => {
   const statusMap: Record<number, string> = {
-    0: '新咨�?,
-    1: '已联�?,
-    2: '已转为订�?,
-    3: '已关�?
+    0: '新咨询',
+    1: '已联系',
+    2: '已转为订单',
+    3: '已关闭'
   }
   return statusMap[status] || '未知'
 }
@@ -538,7 +539,7 @@ const getStatusTagClass = (status: number): string => {
   return classMap[status] || 'tag tag-default'
 }
 
-// 格式化日�?const formatDate = (dateString: string) => {
+const formatDate = (dateString: string) => {
   if (!dateString) return '-'
   return new Date(dateString).toLocaleString('zh-CN')
 }

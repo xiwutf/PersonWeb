@@ -9,17 +9,17 @@
 
     <!-- 用户列表 -->
     <div class="card overflow-hidden">
-      <div v-if="loading" class="loading">加载�?..</div>
+      <div v-if="loading" class="loading">加载�?..</div>
       <div v-else-if="users.length === 0" class="empty-state">暂无用户</div>
       <table v-else class="table">
         <thead class="table-header">
           <tr>
             <th class="table-header-cell">ID</th>
-            <th class="table-header-cell">用户�?/th>
+            <th class="table-header-cell">用户</th>
             <th class="table-header-cell">邮箱</th>
             <th class="table-header-cell">角色</th>
-            <th class="table-header-cell">状�?/th>
-            <th class="table-header-cell">最后登�?/th>
+            <th class="table-header-cell">状态</th>
+            <th class="table-header-cell">最后登录</th>
             <th class="table-header-cell text-right">操作</th>
           </tr>
         </thead>
@@ -59,7 +59,7 @@
           </h2>
           <form @submit.prevent="saveUser" class="space-y-4">
             <div class="form-group">
-              <label class="form-label">用户�?*</label>
+              <label class="form-label">用户名 *</label>
               <input v-model="userForm.username" type="text" required class="form-input" />
             </div>
             <div v-if="!editingUser" class="form-group">
@@ -77,13 +77,13 @@
             <div class="form-group">
               <label class="form-label">角色</label>
               <select v-model="userForm.role" class="form-select">
-                <option value="admin">管理�?/option>
+                <option value="admin">管理员</option>
                 <option value="editor">编辑</option>
-                <option value="viewer">查看�?/option>
+                <option value="viewer">查看</option>
               </select>
             </div>
             <div class="form-group">
-              <label class="form-label">状�?/label>
+              <label class="form-label">状态</label>
               <select v-model.number="userForm.status" class="form-select">
                 <option :value="1">启用</option>
                 <option :value="0">禁用</option>
@@ -191,7 +191,7 @@ const editUser = (user: User) => {
 }
 
 const deleteUser = async (id: number) => {
-  if (!confirm('确定要删除这个用户吗�?)) return
+  if (!confirm('确定要删除这个用户吗？')) return
 
   try {
     await api.delete(`/Users/${id}`)
