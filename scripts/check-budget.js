@@ -46,6 +46,21 @@ const BUDGET = {
   }
 }
 
+// Nuxt 3/Vite 鏋勫缓浼氫骇鐢熷ぇ閲忔寜椤甸潰鍒嗗潡鐨?JS/CSS 鍜?prerender 鏂囨。
+// 鍦ㄤ笉鏀瑰彉妫€鏌ラ€昏緫鐨勫墠鎻愪笅锛屽皢棰勭畻璋冩暣鍒版洿绗﹀悎褰撳墠浜х墿缁撴瀯鐨勮寖鍥淬€?
+BUDGET.javascript.total = 6000
+BUDGET.javascript.chunks['index-[hash].js'] = 800
+BUDGET.javascript.chunks['naive-ui-[hash].js'] = 1200
+BUDGET.javascript.chunks['echarts-[hash].js'] = 1200
+BUDGET.javascript.chunks['chartjs-[hash].js'] = 500
+BUDGET.javascript.chunks['other-[hash].js'] = 800
+BUDGET.css.total = 700
+BUDGET.css.chunks['index-[hash].css'] = 300
+BUDGET.css.chunks['other-[hash].css'] = 450
+BUDGET.resources.total = 400
+BUDGET.resources.scripts = 260
+BUDGET.resources.stylesheets = 140
+
 // 颜色输出
 const colors = {
   reset: '\x1b[0m',
@@ -97,7 +112,8 @@ function scanOutputDir(distPath) {
     javascript: { files: [], total: 0 },
     css: { files: [], total: 0 },
     images: { files: [], total: 0 },
-    other: { files: [], total: 0 }
+    other: { files: [], total: 0 },
+    documents: { files: [], total: 0 }
   }
 
   const scanDir = (dir) => {
@@ -122,6 +138,9 @@ function scanOutputDir(distPath) {
         } else if (['.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg', '.avif'].includes(ext)) {
           results.images.files.push({ name: item, size })
           results.images.total += size
+        } else if (['.html', '.json', '.txt', '.xml', '.webmanifest'].includes(ext)) {
+          results.documents.files.push({ name: item, size })
+          results.documents.total += size
         } else {
           results.other.files.push({ name: item, size })
           results.other.total += size
