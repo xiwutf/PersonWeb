@@ -14,11 +14,16 @@
     </div>
     
     <!-- 3D 旋转空间 -->
-    <Project3DSpace 
-      v-if="viewMode === '3d' && !loading && projects.length > 0" 
-      :projects="projects"
-      @back-to-list="viewMode = 'grid'"
-    />
+    <template v-if="viewMode === '3d' && !loading && projects.length > 0">
+      <ClientOnly>
+        <component
+          :is="project3DSpaceComponent"
+          v-if="project3DSpaceComponent"
+          :projects="projects"
+          @back-to-list="viewMode = 'grid'"
+        />
+      </ClientOnly>
+    </template>
     
     <!-- 传统网格视图 -->
     <div v-else class="projects-container">
@@ -113,7 +118,14 @@
             <div v-if="project.githubUrl && project.chartData" class="projects-card-chart">
               <p class="projects-card-chart-label">GitHub Activity (Last Year)</p>
               <div class="projects-card-chart-container">
-                <Bar :data="project.chartData" :options="chartOptions" />
+                <ClientOnly>
+                  <component
+                    :is="barChartComponent"
+                    v-if="barChartComponent"
+                    :data="project.chartData"
+                    :options="chartOptions"
+                  />
+                </ClientOnly>
               </div>
             </div>
           </div>
@@ -130,22 +142,10 @@ definePageMeta({
   ssr: false
 })
 
-import * as ChartJsPkg from 'chart.js'
-import { Bar } from 'vue-chartjs'
 import type { Project } from '~/types/api'
 
-const {
-  Chart: ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  BarElement,
-  CategoryScale,
-  LinearScale
-} = ChartJsPkg
 
 // 注册 Chart.js 组件
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 const api = useApi()
 const projects = ref<Project[]>([])
@@ -153,10 +153,17 @@ const loading = ref(true)
 const error = ref('')
 const debugData = ref('')
 const viewMode = ref<'grid' | '3d'>('grid')
+const barChartComponent = shallowRef<any>(null)
+const project3DSpaceComponent = shallowRef<any>(null)
 
 // 切换3D视图处理函数
 const handleToggle3DView = () => {
   console.log('切换3D视图，当前模式:', viewMode.value)
+  if (!project3DSpaceComponent.value) {
+    import('~/components/three/Project3DSpace.vue').then((module) => {
+      project3DSpaceComponent.value = module.default
+    })
+  }
   viewMode.value = '3d'
   console.log('切换后模式:', viewMode.value)
 }
@@ -377,7 +384,25 @@ const loadGithubStats = async () => {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
+  const [{ Bar }, chartJsPkg] = await Promise.all([
+    import('vue-chartjs'),
+    import('chart.js')
+  ])
+
+  const {
+    Chart: ChartJS,
+    Title,
+    Tooltip,
+    Legend,
+    BarElement,
+    CategoryScale,
+    LinearScale
+  } = chartJsPkg
+
+  ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
+  barChartComponent.value = Bar
+
   fetchProjects()
 })
 </script>

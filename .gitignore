@@ -108,6 +108,7 @@ backups/
 # ============================================
 coverage/
 .nyc_output/
+.lighthouseci/
 cypress/videos/
 cypress/screenshots/
 test-documents/
@@ -125,6 +126,7 @@ test-documents/
 .docker/
 *.tmp
 *.temp
+*.err
 *.suo
 *.userprefs
 
