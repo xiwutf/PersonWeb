@@ -1,15 +1,15 @@
-<template>
+﻿<template>
   <div class="showcase-page min-h-screen py-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- ???? -->
+      <!-- 页面标题 -->
       <div class="text-center mb-12">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4">????</h1>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">个性化展示墙</h1>
         <p class="text-lg text-gray-600 dark:text-gray-400">
-          ???????????????
+          记录想法、灵感、草图和代码片段
         </p>
       </div>
 
-      <!-- ??? -->
+      <!-- 筛选栏 -->
       <div class="mb-8 flex flex-wrap gap-4 justify-center">
         <button
           v-for="category in categories"
@@ -26,7 +26,7 @@
         </button>
       </div>
 
-      <!-- ??????-->
+      <!-- 瀑布流展示 -->
       <div class="showcase-grid">
         <div
           v-for="item in filteredItems"
@@ -36,23 +36,23 @@
           @click="openDetail(item)"
         >
           <div class="item-content">
-            <!-- ???? -->
+            <!-- 图片类型 -->
             <div v-if="item.type === 'image'" class="item-image">
               <img :src="item.imageUrl" :alt="item.title" />
             </div>
 
-            <!-- ?????? -->
+            <!-- 代码片段类型 -->
             <div v-else-if="item.type === 'code'" class="item-code">
               <pre><code>{{ item.code }}</code></pre>
             </div>
 
-            <!-- ???? -->
+            <!-- 文本类型 -->
             <div v-else class="item-text">
               <h3 class="item-title">{{ item.title }}</h3>
               <p class="item-description">{{ item.description }}</p>
             </div>
 
-            <!-- ?? -->
+            <!-- 标签 -->
             <div v-if="item.tags && item.tags.length > 0" class="item-tags">
               <span
                 v-for="tag in item.tags"
@@ -66,19 +66,19 @@
         </div>
       </div>
 
-      <!-- ????-->
+      <!-- 空状态 -->
       <div v-if="filteredItems.length === 0" class="text-center py-20">
         <i class="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
-        <p class="text-gray-500">????</p>
+        <p class="text-gray-500">暂无内容</p>
       </div>
     </div>
 
-    <!-- ????? -->
+    <!-- 详情模态框 -->
     <div v-if="selectedItem" class="modal-overlay" @click="closeDetail">
       <div class="modal-content" @click.stop>
         <div class="modal-header">
           <h2>{{ selectedItem.title }}</h2>
-          <button @click="closeDetail" class="modal-close">?</button>
+          <button @click="closeDetail" class="modal-close">×</button>
         </div>
         <div class="modal-body">
           <div v-if="selectedItem.type === 'image'">
@@ -122,12 +122,12 @@ interface ShowcaseItem {
 }
 
 const categories = [
-  { label: '??', value: 'all' },
-  { label: '??', value: 'idea' },
-  { label: '??', value: 'inspiration' },
-  { label: '??', value: 'sketch' },
-  { label: '??', value: 'code' },
-  { label: '??', value: 'image' }
+  { label: '全部', value: 'all' },
+  { label: '想法', value: 'idea' },
+  { label: '灵感', value: 'inspiration' },
+  { label: '草图', value: 'sketch' },
+  { label: '代码', value: 'code' },
+  { label: '图片', value: 'image' }
 ]
 
 const activeCategory = ref('all')
@@ -149,24 +149,24 @@ const closeDetail = () => {
   selectedItem.value = null
 }
 
-// TODO: ?API????
+// TODO: 从API加载数据
 onMounted(() => {
-  // ????
+  // 示例数据
   items.value = [
     {
       id: 1,
       type: 'idea',
-      title: 'AI ??????',
-      description: '?AI???????????',
-      tags: ['AI', '??'],
+      title: 'AI 助手优化想法',
+      description: '为AI助手添加上下文记忆功能',
+      tags: ['AI', '优化'],
       createdAt: '2024-01-15'
     },
     {
       id: 2,
       type: 'code',
-      title: '???????',
+      title: '优雅的错误处理',
       code: 'try {\n  // code\n} catch (e) {\n  handleError(e)\n}',
-      tags: ['??', '????'],
+      tags: ['代码', '最佳实践'],
       createdAt: '2024-01-20'
     }
   ]
@@ -295,4 +295,5 @@ onMounted(() => {
   overflow-x: auto;
 }
 </style>
+
 

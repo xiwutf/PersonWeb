@@ -1,30 +1,30 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-50 to-var(--color-bg-light, white) dark:from-gray-900 dark:to-gray-800 py-12">
+  <div class="min-h-screen bg-gradient-to-br from-slate-50 to-white dark:from-gray-900 dark:to-gray-800 py-12">
     <div class="container mx-auto px-4 max-w-7xl">
-      <!-- ???? -->
+      <!-- 页面头部 -->
       <div class="text-center mb-12">
-        <h1 class="text-4xl font-bold text-gray-900 dark:text-var(--color-bg-light, white) mb-4">???</h1>
-        <p class="text-xl text-gray-600 dark:text-gray-400">????????</p>
+        <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">技能树</h1>
+        <p class="text-xl text-gray-600 dark:text-gray-400">我的技术能力展示</p>
       </div>
 
-      <!-- ?????-->
+      <!-- 加载状态 -->
       <div v-if="loading" class="text-center py-20">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-        <p class="text-gray-600 dark:text-gray-400">????..</p>
+        <p class="text-gray-600 dark:text-gray-400">加载中...</p>
       </div>
 
-      <!-- ????? -->
+      <!-- 技能树内容 -->
       <div v-else class="space-y-8">
-        <!-- ????-->
+        <!-- 雷达图 -->
         <div class="card p-8">
-          <h2 class="text-2xl font-bold text-gray-900 dark:text-var(--color-bg-light, white) mb-6">?????</h2>
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">技能雷达图</h2>
           <div class="flex gap-4 mb-4">
             <select
               v-model="selectedCategoryId"
               @change="updateRadarData"
               class="form-select"
             >
-              <option :value="null">????</option>
+              <option :value="null">全部分类</option>
               <option v-for="cat in categories" :key="cat.id" :value="cat.id">
                 {{ cat.icon }} {{ cat.name }}
               </option>
@@ -34,21 +34,21 @@
               @change="updateRadarData"
               class="form-select"
             >
-              <option value="current">????</option>
-              <option value="3months">3??</option>
-              <option value="6months">6??</option>
-              <option value="1year">1?</option>
+              <option value="current">当前评级</option>
+              <option value="3months">3个月</option>
+              <option value="6months">6个月</option>
+              <option value="1year">1年</option>
             </select>
           </div>
           <div v-if="radarData.labels.length > 0" class="h-96">
             <Radar :data="radarData" :options="radarOptions" />
           </div>
           <div v-else class="h-96 flex items-center justify-center text-gray-500 dark:text-gray-400">
-            ????
+            暂无数据
           </div>
         </div>
 
-        <!-- ???????-->
+        <!-- 技能分类展示 -->
         <div
           v-for="category in skillTree"
           :key="category.id"
@@ -61,9 +61,10 @@
             <div class="flex items-center gap-3">
               <span class="text-3xl">{{ category.icon }}</span>
               <div>
-                <h2 class="text-2xl font-bold text-gray-900 dark:text-var(--color-bg-light, white)">{{ category.name }}</h2>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{{ category.name }}</h2>
                 <p class="text-sm text-gray-500 dark:text-gray-400">
-                  {{ category.skills?.length || 0 }} ????                </p>
+                  {{ category.skills?.length || 0 }} 个技能
+                </p>
               </div>
             </div>
           </div>
@@ -78,7 +79,7 @@
                 <div class="flex items-start justify-between mb-4">
                   <div class="flex items-center gap-2">
                     <span v-if="skill.icon" class="text-2xl">{{ skill.icon }}</span>
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-var(--color-bg-light, white)">{{ skill.name }}</h3>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ skill.name }}</h3>
                   </div>
                 </div>
                 <p v-if="skill.description" class="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
@@ -86,7 +87,7 @@
                 </p>
                 <div class="space-y-2">
                   <div class="flex items-center justify-between">
-                    <span class="text-sm text-gray-500 dark:text-gray-400">????</span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400">当前评级</span>
                     <span class="text-xl font-bold" :class="getRatingColor(skill.currentRating)">
                       {{ skill.currentRating || 0 }} / 10
                     </span>
@@ -112,21 +113,22 @@
 </template>
 
 <script setup lang="ts">
-// ???????????????
-definePageMeta({
-  layout: 'default'
-})
+import * as ChartJsPkg from 'chart.js'
+import { Radar } from 'vue-chartjs'
 
-import {
-  Chart as ChartJS,
+const {
+  Chart: ChartJS,
   RadialLinearScale,
   PointElement,
   LineElement,
   Filler,
   Tooltip,
   Legend
-} from 'chart.js'
-import { Radar } from 'vue-chartjs'
+} = ChartJsPkg
+
+definePageMeta({
+  ssr: false
+})
 
 ChartJS.register(
   RadialLinearScale,
@@ -182,7 +184,7 @@ const updateRadarData = async () => {
       radarData.value = {
         labels: res.map((item: any) => item.skillName || item.SkillName),
         datasets: [{
-          label: '????',
+          label: '技能评级',
           data: res.map((item: any) => 
             parseFloat(item.averageRating || item.AverageRating || item.rating || item.Rating || 0)
           ),
@@ -190,13 +192,14 @@ const updateRadarData = async () => {
           borderColor: 'rgb(59, 130, 246)',
           borderWidth: 2,
           pointBackgroundColor: 'rgb(59, 130, 246)',
-          pointBorderColor: 'var(--color-bg-light, white)',
-          pointHoverBackgroundColor: 'var(--color-bg-light, white)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
           pointHoverBorderColor: 'rgb(59, 130, 246)'
         }]
       }
     } else if (timeRange.value === 'current') {
-      // ????????????????      const allSkills: any[] = []
+      // 如果没有时间范围，使用当前评级
+      const allSkills: any[] = []
       skillTree.value.forEach(cat => {
         if (!selectedCategoryId.value || cat.id === selectedCategoryId.value) {
           cat.skills?.forEach((skill: any) => {
@@ -213,14 +216,14 @@ const updateRadarData = async () => {
       radarData.value = {
         labels: allSkills.map(s => s.skillName),
         datasets: [{
-          label: '????',
+          label: '技能评级',
           data: allSkills.map(s => parseFloat(s.rating)),
           backgroundColor: 'rgba(59, 130, 246, 0.2)',
           borderColor: 'rgb(59, 130, 246)',
           borderWidth: 2,
           pointBackgroundColor: 'rgb(59, 130, 246)',
-          pointBorderColor: 'var(--color-bg-light, white)',
-          pointHoverBackgroundColor: 'var(--color-bg-light, white)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
           pointHoverBorderColor: 'rgb(59, 130, 246)'
         }]
       }
@@ -267,162 +270,13 @@ const getRatingBarColor = (rating: number) => {
   return 'bg-red-500'
 }
 
-// ????????????????// const mockSkillTree = [
-//   {
-//     id: 1,
-//     name: '?????,
-//     icon: '??',
-//     color: 'var(--color-primary)',
-//     skills: [
-//       {
-//         id: 1,
-//         name: 'Vue.js',
-//         icon: '??,
-//         description: '???JavaScript????????????,
-//         currentRating: 8.5
-//       },
-//       {
-//         id: 2,
-//         name: 'Nuxt.js',
-//         icon: '??',
-//         description: '??Vue.js???????',
-//         currentRating: 8.0
-//       },
-//       {
-//         id: 3,
-//         name: 'TypeScript',
-//         icon: '??',
-//         description: 'JavaScript?????????????,
-//         currentRating: 7.5
-//       },
-//       {
-//         id: 4,
-//         name: 'Tailwind CSS',
-//         icon: '??',
-//         description: '?????CSS??',
-//         currentRating: 7.0
-//       }
-//     ]
-//   },
-//   {
-//     id: 2,
-//     name: '?????,
-//     icon: '??',
-//     color: 'var(--color-success)',
-//     skills: [
-//       {
-//         id: 5,
-//         name: '.NET Core',
-//         icon: '??',
-//         description: '???????????,
-//         currentRating: 8.0
-//       },
-//       {
-//         id: 6,
-//         name: 'Node.js',
-//         icon: '??',
-//         description: '??Chrome V8???JavaScript????,
-//         currentRating: 7.5
-//       },
-//       {
-//         id: 7,
-//         name: 'Entity Framework',
-//         icon: '????,
-//         description: 'Microsoft?ORM??',
-//         currentRating: 7.5
-//       },
-//       {
-//         id: 8,
-//         name: 'RESTful API',
-//         icon: '??',
-//         description: '?????RESTful???API',
-//         currentRating: 8.5
-//       }
-//     ]
-//   },
-//   {
-//     id: 3,
-//     name: '????,
-//     icon: '??',
-//     color: 'var(--color-warning)',
-//     skills: [
-//       {
-//         id: 9,
-//         name: 'MySQL',
-//         icon: '????,
-//         description: '?????????????,
-//         currentRating: 7.5
-//       },
-//       {
-//         id: 10,
-//         name: 'PostgreSQL',
-//         icon: '??',
-//         description: '??????????????',
-//         currentRating: 6.5
-//       },
-//       {
-//         id: 11,
-//         name: 'Redis',
-//         icon: '??',
-//         description: '??????????',
-//         currentRating: 6.0
-//       }
-//     ]
-//   },
-//   {
-//     id: 4,
-//     name: 'AI & ????',
-//     icon: '??',
-//     color: 'var(--color-purple-500)',
-//     skills: [
-//       {
-//         id: 12,
-//         name: 'LangChain',
-//         icon: '??',
-//         description: '??LLM??????,
-//         currentRating: 7.0
-//       },
-//       {
-//         id: 13,
-//         name: 'OpenAI API',
-//         icon: '??',
-//         description: 'OpenAI?API??????,
-//         currentRating: 7.5
-//       },
-//       {
-//         id: 14,
-//         name: 'Python',
-//         icon: '??',
-//         description: '???????AI????',
-//         currentRating: 7.0
-//       }
-//     ]
-//   }
-// ]
-
-// ??????????????????// const mockCategories = [
-//   { id: 1, name: '?????, icon: '??' },
-//   { id: 2, name: '?????, icon: '??' },
-//   { id: 3, name: '????, icon: '??' },
-//   { id: 4, name: 'AI & ????', icon: '??' }
-// ]
-
 const fetchSkillTree = async () => {
   loading.value = true
   try {
-    // ?????MockData API??
-    const res = await api.get<any>('/MockData/skill-tree')
-    if (res && Array.isArray(res) && res.length > 0) {
-      skillTree.value = res
-      return
-    }
-    
-    // ???API?????????API??
-    const oldRes = await api.get<any>('/SkillTree')
-    skillTree.value = oldRes && Array.isArray(oldRes) && oldRes.length > 0 ? oldRes : []
+    const res = await api.get<any>('/SkillTree')
+    skillTree.value = res || []
   } catch (e) {
     console.error('Failed to fetch skill tree:', e)
-    skillTree.value = []
   } finally {
     loading.value = false
   }
@@ -430,19 +284,10 @@ const fetchSkillTree = async () => {
 
 const fetchCategories = async () => {
   try {
-    // ?????MockData API??
-    const res = await api.get<any[]>('/MockData/skill-categories')
-    if (res && Array.isArray(res) && res.length > 0) {
-      categories.value = res
-      return
-    }
-    
-    // ???API?????????API??
-    const oldRes = await api.get<any[]>('/SkillTree/categories')
-    categories.value = oldRes && Array.isArray(oldRes) && oldRes.length > 0 ? oldRes : []
+    const res = await api.get<any[]>('/SkillTree/categories')
+    categories.value = res || []
   } catch (e) {
     console.error('Failed to fetch categories:', e)
-    categories.value = []
   }
 }
 
@@ -452,11 +297,11 @@ onMounted(async () => {
   await updateRadarData()
 })
 
-// ??????
+// 设置页面标题
 useHead({
-  title: '??? - ????',
+  title: '技能树 - 溪午听风',
   meta: [
-    { name: 'description', content: '????????????' }
+    { name: 'description', content: '我的技术能力展示和技能树' }
   ]
 })
 </script>
@@ -469,7 +314,7 @@ useHead({
   overflow: hidden;
 }
 
-/* ??????? */
+/* 技能树发光效果 */
 .skill-tree-card {
   transition: all 0.3s ease;
 }
@@ -477,7 +322,7 @@ useHead({
 :global(.skill-tree-glowing) .skill-tree-card {
   animation: skill-tree-glow 3s ease-in-out;
   box-shadow: 0 0 30px rgba(59, 130, 246, 0.6);
-  border-color: var(--theme-primary);
+  border-color: rgba(59, 130, 246, 0.5);
 }
 
 @keyframes skill-tree-glow {
@@ -491,4 +336,3 @@ useHead({
   }
 }
 </style>
-

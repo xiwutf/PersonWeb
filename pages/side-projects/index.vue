@@ -612,7 +612,7 @@ onMounted(() => {
   opacity: 0.7;
 }
 
-/* 加载和空状�?*/
+/* 加载和空状态 */
 .loading-container,
 .empty-container,
 .error-container {
@@ -663,7 +663,7 @@ onMounted(() => {
   margin: 0;
 }
 
-/* 响应�?*/
+/* 响应式 */
 @media (max-width: 768px) {
   .side-projects-page {
     padding: var(--spacing-xl) var(--spacing-md);

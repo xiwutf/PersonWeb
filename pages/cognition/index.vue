@@ -1,10 +1,10 @@
 <template>
   <ModuleGuard module-key="cognition" :show-fallback="true">
     <div class="cognition-page">
-      <!-- ?????? -->
+      <!-- 全局背景噪点 -->
       <div class="cognition-background-noise"></div>
 
-      <!-- ???????-->
+      <!-- 动态背景光斑 -->
       <div class="cognition-background-container">
         <div class="cognition-background-blob cognition-background-blob--blue"></div>
         <div class="cognition-background-blob cognition-background-blob--purple"></div>
@@ -12,37 +12,37 @@
       </div>
 
       <div class="cognition-content">
-        <!-- ???? -->
+        <!-- 页面头部 -->
         <header class="cognition-header">
           <div class="cognition-header-icon">
-            <span>??</span>
+            <span>🧠</span>
           </div>
-          <h1 class="cognition-title">?????????</h1>
+          <h1 class="cognition-title">个人认知使用说明书</h1>
           <p class="cognition-subtitle">
-            ??????????????????????????
+
           </p>
           <div class="cognition-back-link-container">
             <NuxtLink to="/about" class="cognition-back-link">
               <i class="fas fa-arrow-left mr-2"></i>
-              ??????            </NuxtLink>
+            </NuxtLink>
           </div>
         </header>
 
-        <!-- ???? -->
+      <!-- 动态背景光斑 -->
         <div v-if="loading" class="cognition-loading">
           <div class="cognition-loading-spinner"></div>
-          <p class="cognition-loading-text">????..</p>
+          <div class="cognition-loading-spinner"></div>
         </div>
 
         <div v-else-if="!moduleEnabled" class="cognition-empty">
-          <div class="cognition-empty-icon">??</div>
-          <h3 class="cognition-empty-title">?????</h3>
-          <p class="cognition-empty-text">?????????????????????????????</p>
+          <div class="cognition-empty-icon">🔒</div>
+          <div class="cognition-empty-icon">🔒</div>
+          <h3 class="cognition-empty-title">模块未启用</h3>
         </div>
         <div v-else-if="docs.length === 0" class="cognition-empty">
-          <div class="cognition-empty-icon">??</div>
-          <h3 class="cognition-empty-title">????</h3>
-          <p class="cognition-empty-text">??????????...</p>
+          <div class="cognition-empty-icon">🔒</div>
+          <div class="cognition-empty-icon">📝</div>
+          <h3 class="cognition-empty-title">暂无内容</h3>
         </div>
 
         <div v-else class="cognition-list">
@@ -60,7 +60,7 @@
             </div>
             <p v-if="doc.summary" class="cognition-item-summary">{{ doc.summary }}</p>
             <div class="cognition-item-footer">
-              <span class="cognition-item-read-more">???? ?</span>
+              <span class="cognition-item-read-more">阅读全文 →</span>
             </div>
           </article>
         </div>
@@ -80,9 +80,9 @@ const { isModuleEnabled } = useModuleSystem()
 const docs = ref<any[]>([])
 const loading = ref(true)
 
-// ?????????const moduleEnabled = computed(() => isModuleEnabled('cognition'))
+const moduleEnabled = computed(() => isModuleEnabled('cognition'))
 
-// ????????
+// 检查模块是否启用
 const fetchDocs = async () => {
   loading.value = true
   try {
@@ -94,11 +94,11 @@ const fetchDocs = async () => {
       }
     })
 
-    console.log('????????:', res) // ????
-    // ?? PascalCase ??camelCase
+    console.log('前台获取数据响应:', res) // 调试用
+    // 兼容 PascalCase 和 camelCase
     const list = res?.List || res?.list || []
     
-    // ?? camelCase ? PascalCase
+    // 转换字段名为 camelCase（如果后端返回的是 PascalCase）
     docs.value = list.map((item: any) => ({
       id: item.Id || item.id,
       title: item.Title || item.title,
@@ -108,7 +108,7 @@ const fetchDocs = async () => {
       updatedAt: item.UpdatedAt || item.updatedAt
     }))
 
-    console.log('????:', docs.value)
+    console.log('前台处理后的数据:', docs.value) // 调试用
   } catch (e) {
     console.error('Failed to fetch cognition docs:', e)
     docs.value = []
@@ -117,12 +117,12 @@ const fetchDocs = async () => {
   }
 }
 
-// ??????
+// 跳转到详情页
 const goToDetail = (slug: string) => {
   router.push(`/cognition/${slug}`)
 }
 
-// ?????
+// 跳转到详情页
 const formatDate = (dateString?: string | Date) => {
   if (!dateString) return ''
   const date = typeof dateString === 'string' ? new Date(dateString) : dateString
@@ -135,18 +135,18 @@ const formatDate = (dateString?: string | Date) => {
 
 // SEO
 useHead({
-  title: '??????????- ????',
+  title: '个人认知使用说明书 - 溪午听风',
   meta: [
-    { name: 'description', content: '??????????????????????????' }
+    { name: 'description', content: '偏理科思维、模型驱动、厌恶无效记忆的认知系统使用指南' }
   ]
 })
 
 onMounted(() => {
-  console.log('????????:', moduleEnabled.value)
+  console.log('认知模块是否启用:', moduleEnabled.value)
   if (moduleEnabled.value) {
     fetchDocs()
   } else {
-    console.warn('???????????????')
+    console.warn('认知模块未启用，请前往后台启用')
     loading.value = false
   }
 })
@@ -158,14 +158,14 @@ onMounted(() => {
   background: linear-gradient(135deg, var(--color-bg-body) 0%, var(--color-blue-200) 100%);
 }
 
-/* ???? */
+/* 背景噪点 */
 .cognition-background-noise {
   @apply fixed inset-0 opacity-[0.015] pointer-events-none;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   z-index: 0;
 }
 
-/* ???????*/
+/* 背景噪点 */
 .cognition-background-container {
   @apply fixed inset-0 pointer-events-none overflow-hidden;
   z-index: 0;
@@ -209,12 +209,12 @@ onMounted(() => {
   }
 }
 
-/* ???? */
+/* 内容区域 */
 .cognition-content {
   @apply relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12;
 }
 
-/* ???? */
+/* 内容区域 */
 .cognition-header {
   @apply text-center mb-12;
 }
@@ -267,7 +267,7 @@ onMounted(() => {
   @apply text-gray-600 dark:text-gray-400;
 }
 
-/* ?? */
+/* 导航 */
 .cognition-nav {
   @apply flex items-center justify-center gap-4 mb-12;
 }
@@ -287,7 +287,7 @@ onMounted(() => {
   @apply text-blue-700 dark:text-blue-300;
 }
 
-/* ???? */
+/* 导航 */
 .cognition-article {
   @apply bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm;
   @apply rounded-2xl shadow-xl;
@@ -370,7 +370,7 @@ onMounted(() => {
   @apply text-blue-600 dark:text-blue-400 hover:underline;
 }
 
-/* ?????*/
+/* 加载状态 */
 .cognition-loading {
   @apply flex flex-col items-center justify-center py-20;
 }
@@ -390,7 +390,7 @@ onMounted(() => {
   @apply mt-4 text-gray-500 dark:text-gray-400;
 }
 
-/* ???? */
+/* 加载状态 */
 .cognition-list {
   @apply space-y-6;
 }
@@ -415,7 +415,7 @@ onMounted(() => {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  /* ???????? */
+/* 列表样式 */
   color: var(--color-primary-start);
 }
 
@@ -445,7 +445,7 @@ onMounted(() => {
   @apply hover:underline;
 }
 
-/* ????*/
+/* 空状态 */
 .cognition-empty {
   @apply flex flex-col items-center justify-center py-20;
 }
@@ -462,7 +462,7 @@ onMounted(() => {
   @apply text-gray-500 dark:text-gray-400;
 }
 
-/* ????*/
+/* 空状态 */
 @media (max-width: 640px) {
   .cognition-title {
     @apply text-3xl;

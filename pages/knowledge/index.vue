@@ -1,25 +1,25 @@
 <template>
   <div class="min-h-screen bg-slate-50 py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- ?? -->
+      <!-- 头部 -->
       <div class="mb-8">
-        <h1 class="text-3xl font-bold text-slate-900 mb-2">?????</h1>
-        <p class="text-slate-600">??????????</p>
+        <h1 class="text-3xl font-bold text-slate-900 mb-2">个人知识库</h1>
+        <p class="text-slate-600">记录学习、思考与成长</p>
       </div>
 
-      <!-- ??? -->
+      <!-- 筛选栏 -->
       <div class="filter-bar mb-6">
         <select v-model="categoryFilter" @change="fetchList" class="form-select">
-          <option value="">????</option>
-          <option value="????">????</option>
-          <option value="????">????</option>
-          <option value="????">????</option>
+          <option value="">全部分类</option>
+          <option value="开发笔记">开发笔记</option>
+          <option value="踩坑记录">踩坑记录</option>
+          <option value="想法灵感">想法灵感</option>
         </select>
 
         <input
           v-model="searchKeyword"
           type="text"
-          placeholder="??????.."
+          placeholder="搜索关键词..."
           class="form-input flex-1 min-w-[200px]"
           @keyup.enter="fetchList"
         />
@@ -28,11 +28,11 @@
           @click="fetchList"
           class="btn-primary"
         >
-          ??
+          搜索
         </button>
       </div>
 
-      <!-- ??????-->
+      <!-- 知识库列表 -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div
           v-for="item in knowledgeList"
@@ -45,7 +45,7 @@
               class="badge"
               :class="getCategoryClass(item.category)"
             >
-              {{ item.category || '???' }}
+              {{ item.category || '未分类' }}
             </span>
             <span class="text-xs text-gray-500">{{ formatDate(item.updatedAt) }}</span>
           </div>
@@ -53,7 +53,7 @@
             {{ item.title }}
           </h3>
           <div class="flex items-center justify-between text-sm text-gray-500">
-            <span>?? {{ item.viewCount }}</span>
+            <span>👁 {{ item.viewCount }}</span>
             <div v-if="item.tags" class="flex gap-1">
               <span
                 v-for="tag in parseTags(item.tags)"
@@ -67,15 +67,16 @@
         </div>
       </div>
 
-      <div v-if="loading" class="text-center py-8 loading">????..</div>
+      <div v-if="loading" class="text-center py-8 loading">加载中...</div>
       <div v-if="!loading && knowledgeList.length === 0" class="text-center py-8 empty-state">
-        ????????      </div>
+        暂无知识库内容
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-// ??????
+// 使用默认布局（包含顶部导航栏）
 definePageMeta({
   layout: 'default'
 })
@@ -121,9 +122,9 @@ const viewDetail = (id: number) => {
 
 const getCategoryClass = (category: string) => {
   const classes: Record<string, string> = {
-    '知识': 'badge-blue',
-    '文档': 'badge-yellow',
-    '文章': 'badge-purple'
+    '开发笔记': 'badge-blue',
+    '踩坑记录': 'badge-yellow',
+    '想法灵感': 'badge-purple'
   }
   return classes[category || ''] || 'badge-gray'
 }

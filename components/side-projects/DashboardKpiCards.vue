@@ -49,33 +49,37 @@ const cards = computed(() => {
   }
 
   // 计算进度条（相对于最大值的百分比，这里简化处理）
+  const totalIncome = Number(summary.totalIncome) || 0
+  const totalProjects = Number(summary.totalProjects) || 0
+  const avgProjectPrice = Number(summary.avgProjectPrice) || 0
+  const avgDurationDays = Number(summary.avgDurationDays) || 0
   const maxIncome = 100000 // 假设最大收入为10万
-  const incomeProgress = Math.min((summary.totalIncome / maxIncome) * 100, 100)
+  const incomeProgress = Math.min((totalIncome / maxIncome) * 100, 100)
 
   return [
     {
       label: '总收入',
-      value: `¥${summary.totalIncome.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      value: `¥${totalIncome.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
       icon: CashOutline as Component,
       progress: incomeProgress
     },
     {
       label: '项目总数',
-      value: `${summary.totalProjects}`,
+      value: `${totalProjects}`,
       icon: FolderOutline as Component,
-      progress: Math.min((summary.totalProjects / 50) * 100, 100) // 假设最大50个项目
+      progress: Math.min((totalProjects / 50) * 100, 100) // 假设最大50个项目
     },
     {
       label: '平均单价',
-      value: `¥${summary.avgProjectPrice.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      value: `¥${avgProjectPrice.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
       icon: TrendingUpOutline as Component,
-      progress: Math.min((summary.avgProjectPrice / 50000) * 100, 100) // 假设最大5万
+      progress: Math.min((avgProjectPrice / 50000) * 100, 100) // 假设最大5万
     },
     {
       label: '平均周期',
-      value: `${Math.round(summary.avgDurationDays)}天`,
+      value: `${Math.round(avgDurationDays)}天`,
       icon: TimeOutline as Component,
-      progress: Math.min((summary.avgDurationDays / 90) * 100, 100) // 假设最大90天
+      progress: Math.min((avgDurationDays / 90) * 100, 100) // 假设最大90天
     }
   ]
 })

@@ -9,7 +9,7 @@
 
     <!-- 用户列表 -->
     <div class="card overflow-hidden">
-      <div v-if="loading" class="loading">加载�?..</div>
+      <div v-if="loading" class="loading">加载中...</div>
       <div v-else-if="users.length === 0" class="empty-state">暂无用户</div>
       <table v-else class="table">
         <thead class="table-header">

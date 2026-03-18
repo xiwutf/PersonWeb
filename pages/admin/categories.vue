@@ -1,188 +1,91 @@
 <template>
-  <!-- ?? ListPage Pattern ?? -->
-  <ListPage
-    title="????"
-    description="????????????"
-    :show-stats="true"
-    :stats="stats"
-    :columns="internalColumns"
-    :data="filteredCategories"
-    :loading="loading"
-    :pagination="internalPagination"
-    :table-config="{
-      rowKey: (row: Category) => row.id,
-      singleLine: false,
-      rowClassName: () => 'category-row'
-    }"
-    :empty-config="{
-      icon: 'fas fa-inbox',
-      text: '??????'
-    }"
-    @row-click="handleRowClick"
-  >
-    <!-- ???????????? + ???? -->
-    <template #header-actions>
-      <n-space :size="12">
-        <!-- ????-->
-        <n-input
-          v-model:value="searchQuery"
-          placeholder="????..."
-          clearable
-          style="width: 240px"
-        >
-          <template #prefix>
-            <i class="fas fa-search text-gray-400"></i>
-          </template>
-        </n-input>
+  <div class="space-y-6">
+    <div class="flex justify-between items-center">
+      <h1 class="text-2xl font-bold text-gray-800 dark:text-white">分类管理</h1>
+      <button @click="openModal()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+        <i class="fas fa-plus mr-2"></i>新建分类
+      </button>
+    </div>
 
-        <!-- ???? -->
-        <n-button type="primary" @click="openModal()">
-          <template #icon>
-            <i class="fas fa-plus"></i>
-          </template>
-          ????
-        </n-button>
-      </n-space>
-    </template>
+    <!-- 分类列表 -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+      <table class="w-full text-left">
+        <thead class="bg-gray-50 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400">
+          <tr>
+            <th class="px-6 py-4 font-medium">名称</th>
+            <th class="px-6 py-4 font-medium">别名 (Slug)</th>
+            <th class="px-6 py-4 font-medium">排序</th>
+            <th class="px-6 py-4 font-medium">创建时间</th>
+            <th class="px-6 py-4 font-medium text-right">操作</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+          <tr v-for="item in categories" :key="item.id" class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+            <td class="px-6 py-4 text-gray-800 dark:text-gray-200 font-medium">{{ item.name }}</td>
+            <td class="px-6 py-4 text-gray-500 dark:text-gray-400">{{ item.slug || '-' }}</td>
+            <td class="px-6 py-4 text-gray-500 dark:text-gray-400">{{ item.sort }}</td>
+            <td class="px-6 py-4 text-gray-500 dark:text-gray-400 text-sm">
+              {{ new Date(item.createdAt).toLocaleDateString() }}
+            </td>
+            <td class="px-6 py-4 text-right space-x-2">
+              <button @click="openModal(item)" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+                编辑
+              </button>
+              <button @click="handleDelete(item)" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
+                删除
+              </button>
+            </td>
+          </tr>
+          <tr v-if="categories.length === 0">
+            <td colspan="5" class="px-6 py-12 text-center text-gray-400">
+              暂无分类数据
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-    <!-- ???? -->
-    <template #stats>
-      <n-grid :x-gap="16" :y-gap="16" :cols="3">
-        <n-gi>
-          <n-card :bordered="false" class="stat-card">
-            <div class="stat-content">
-              <div class="stat-icon" style="color: var(--color-blue-500)">
-                <i class="fas fa-folder"></i>
-              </div>
-              <div class="stat-info">
-                <div class="stat-value">{{ categories.length }}</div>
-                <div class="stat-label">????</div>
-              </div>
-            </div>
-          </n-card>
-        </n-gi>
-        <n-gi>
-          <n-card :bordered="false" class="stat-card">
-            <div class="stat-content">
-              <div class="stat-icon" style="color: var(--color-green-500)">
-                <i class="fas fa-clock"></i>
-              </div>
-              <div class="stat-info">
-                <div class="stat-value truncate">{{ lastUpdatedText }}</div>
-                <div class="stat-label">????</div>
-              </div>
-            </div>
-          </n-card>
-        </n-gi>
-        <n-gi>
-          <n-card :bordered="false" class="stat-card">
-            <div class="stat-content">
-              <div class="stat-icon" style="color: var(--color-purple-500)">
-                <i class="fas fa-sort-amount-down"></i>
-              </div>
-              <div class="stat-info">
-                <div class="stat-value">{{ maxSortValue }}</div>
-                <div class="stat-label">?????</div>
-              </div>
-            </div>
-          </n-card>
-        </n-gi>
-      </n-grid>
-    </template>
-  </ListPage>
+    <!-- 编辑/新建弹窗 -->
+    <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-md p-6 space-y-4">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white">
+          {{ isEdit ? '编辑分类' : '新建分类' }}
+        </h3>
+        
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">名称</label>
+            <input v-model="form.name" type="text" class="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all" placeholder="例如：前端开发">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">别名 (Slug)</label>
+            <input v-model="form.slug" type="text" class="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all" placeholder="例如：frontend">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">排序 (越小越靠前)</label>
+            <input v-model.number="form.sort" type="number" class="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+          </div>
+        </div>
 
-    <!-- ??/???? -->
-    <n-modal
-      v-model:show="showModal"
-      preset="card"
-      :title="isEdit ? '????' : '????'"
-      style="width: 550px"
-      :bordered="false"
-      size="huge"
-      class="modal-premium"
-      :mask-closable="false"
-    >
-      <n-form
-        ref="formRef"
-        :model="form"
-        :rules="rules"
-        label-placement="left"
-        label-width="100"
-        require-mark-placement="right-hanging"
-        class="py-4"
-      >
-        <n-form-item label="??" path="name">
-          <n-input v-model:value="form.name" placeholder="???????????????" maxlength="20" show-count />
-        </n-form-item>
-        <n-form-item label="?? (Slug)" path="slug">
-          <n-input v-model:value="form.slug" placeholder="???frontend" />
-          <template #feedback>
-            <span class="text-xs text-gray-400">?? URL ???????????</span>
-          </template>
-        </n-form-item>
-        <n-form-item label="??" path="sort">
-          <n-input-number v-model:value="form.sort" :min="0" placeholder="0" style="width: 100%" />
-        </n-form-item>
-      </n-form>
-      <template #footer>
-        <n-space justify="end" :size="16">
-          <n-button quaternary @click="showModal = false" size="medium">
-            ??
-          </n-button>
-          <n-button type="primary" @click="handleSave" :loading="saving" size="medium">
-            <template #icon>
-              <i class="fas fa-save"></i>
-            </template>
-            ??
-          </n-button>
-        </n-space>
-      </template>
-    </n-modal>
+        <div class="flex justify-end space-x-3 pt-4">
+          <button @click="showModal = false" class="px-4 py-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">取消</button>
+          <button @click="handleSave" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">保存</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { h, ref, computed, onMounted } from 'vue'
-import {
-  NButton, NModal, NForm, NFormItem, NInput, NInputNumber,
-  NCard, NSpace, NTag, NPopconfirm, NGrid, NGi
-} from 'naive-ui'
-import type { FormInst, FormRules, DataTableColumns } from 'naive-ui'
-import { formatDistanceToNow } from 'date-fns'
-import { zhCN } from 'date-fns/locale'
-import type { Category } from '~/types/api'
-import { useSafeMessage } from '~/composables/useNaiveUI'
-import { useErrorHandler } from '~/composables/useErrorHandler'
-import ListPage from '~/components/admin/patterns/ListPage.vue'
-import type { StatConfig } from '~/components/admin/patterns/ListPage.vue'
-
 definePageMeta({
   layout: 'admin',
-  middleware: 'admin-auth',
-  ssr: false
+  middleware: 'admin-auth'
 })
 
 const api = useApi()
-const { handleError } = useErrorHandler()
-const message = useSafeMessage()
-
-// State
-const categories = ref<Category[]>([])
-const loading = ref(false)
-const saving = ref(false)
+const categories = ref<any[]>([])
 const showModal = ref(false)
 const isEdit = ref(false)
-const formRef = ref<FormInst | null>(null)
-const searchQuery = ref('')
-const pagination = ref({ pageSize: 10, page: 1, total: 0 })
-
-// ????????????????
-const stats = computed<StatConfig[]>(() => [
-  { label: '????', value: categories.length, icon: 'fas fa-folder', iconColor: 'var(--color-blue-500)' },
-  { label: '????', value: lastUpdatedText.value, icon: 'fas fa-clock', iconColor: 'var(--color-green-500)' },
-  { label: '????', value: maxSortValue.value, icon: 'fas fa-sort-amount-down', iconColor: 'var(--color-purple-500)' }
-])
-
-// Form
 const form = ref({
   id: 0,
   name: '',
@@ -190,195 +93,51 @@ const form = ref({
   sort: 0
 })
 
-const rules: FormRules = {
-  name: { required: true, message: '???????', trigger: 'blur' },
-  slug: { required: true, message: '??????', trigger: 'blur' }
-}
-
-// Computed for Stats
-const filteredCategories = computed(() => {
-  if (!searchQuery.value) return categories.value
-  const q = searchQuery.value.toLowerCase()
-  return categories.value.filter(c => 
-    c.name.toLowerCase().includes(q) || 
-    (c.slug && c.slug.toLowerCase().includes(q))
-  )
-})
-
-const maxSortValue = computed(() => {
-  if (categories.value.length === 0) return 0
-  return Math.max(...categories.value.map(c => c.sort))
-})
-
-const lastUpdatedText = computed(() => {
-  if (categories.value.length === 0) return '-'
-  // Find the latest createdAt (assuming no updatedAt field for now, or fallback)
-  // Ideally backend should provide updatedAt. For now using createdAt of newest item.
-  const latestDate = new Date(Math.max(...categories.value.map(c => new Date(c.createdAt).getTime())))
-  return formatDistanceToNow(latestDate, { addSuffix: true, locale: zhCN })
-})
-
-// Table Columns
-const internalColumns: DataTableColumns<Category> = [
-  {
-    title: '??',
-    key: 'name',
-    width: 200,
-    render(row) {
-      return h('div', { class: 'font-semibold text-base', style: 'color: var(--color-text-main)' }, row.name)
-    }
-  },
-  {
-    title: '?? (Slug)',
-    key: 'slug',
-    width: 150,
-    render(row) {
-      return row.slug
-        ? h(NTag, { type: 'info', size: 'small', bordered: false, style: 'font-weight: 500' }, { default: () => row.slug })
-        : h('span', { class: 'text-gray-300' }, '-')
-    }
-  },
-  {
-    title: '??',
-    key: 'sort',
-    sorter: (a, b) => a.sort - b.sort,
-    width: 100,
-    render(row) {
-      return h('div', { class: 'font-mono text-gray-500' }, row.sort)
-    }
-  },
-  {
-    title: '????',
-    key: 'createdAt',
-    width: 180,
-    render(row) {
-      return h('div', { class: 'text-gray-500 text-sm' },
-        new Date(row.createdAt).toLocaleDateString() + ' ' + new Date(row.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
-      )
-    }
-  },
-  {
-    title: '??',
-    key: 'actions',
-    width: 150,
-    fixed: 'right',
-    render(row) {
-      return h(NSpace, null, {
-        default: () => [
-          h(
-            NButton,
-            {
-              size: 'small',
-              quaternary: true,
-              type: 'primary',
-              class: 'action-btn',
-              onClick: () => openModal(row)
-            },
-            { icon: () => h('i', { class: 'fas fa-edit' }) }
-          ),
-          h(
-            NPopconfirm,
-            {
-              onPositiveClick: () => handleDelete(row),
-              negativeText: '??',
-              positiveText: '????',
-            },
-            {
-              trigger: () => h(
-                NButton,
-                {
-                  size: 'small',
-                  quaternary: true,
-                  type: 'error',
-                  class: 'action-btn'
-                },
-                { icon: () => h('i', { class: 'fas fa-trash' }) }
-              ),
-              default: () => h('div', [
-                h('div', { class: 'font-bold mb-1' }, '????'),
-                h('div', { class: 'text-xs text-gray-500' }, `??? "${row.name}" ?? URL ??`)
-              ])
-            }
-          )
-        ]
-      })
-    }
-  }
-]
-
-// ??????
-const internalPagination = computed(() => ({
-  page: 1,
-  pageSize: 10,
-  pageCount: Math.ceil(filteredCategories.value.length / 10),
-  showSizePicker: true,
-  pageSizes: [10, 20, 50, 100],
-  showQuickJumper: true
-}))
-
-// Actions
 const fetchCategories = async () => {
-  loading.value = true
   try {
-    const res = await api.get<Category[]>('/Categories')
-    categories.value = Array.isArray(res) ? res : []
-  } catch (e: unknown) {
-    if (process.env.NODE_ENV === 'development') console.error(e)
-    message.error('????????????')
-    categories.value = []
-  } finally {
-    // ???????????????????????    setTimeout(() => { loading.value = false }, 300)
+    const res = await api.get<any[]>('/Categories')
+    categories.value = res
+  } catch (e) {
+    console.error(e)
   }
 }
 
-const openModal = (item?: Category) => {
+const openModal = (item?: any) => {
   if (item) {
     isEdit.value = true
     form.value = { ...item }
   } else {
     isEdit.value = false
-    form.value = { id: 0, name: '', slug: '', sort: (maxSortValue.value || 0) + 1 } // Auto increment sort
+    form.value = { id: 0, name: '', slug: '', sort: 0 }
   }
   showModal.value = true
 }
 
 const handleSave = async () => {
-  if (!formRef.value) return
-  await formRef.value.validate(async (errors) => {
-    if (!errors) {
-      saving.value = true
-      try {
-        if (isEdit.value) {
-          await api.put(`/Categories/${form.value.id}`, form.value)
-        } else {
-          await api.post('/Categories', form.value)
-        }
-        message.success(isEdit.value ? '????' : '????')
-        showModal.value = false
-        fetchCategories()
-      } catch (e: unknown) {
-        handleError(e, '????')
-      } finally {
-        saving.value = false
-      }
-    }
-  })
-}
-
-const handleDelete = async (item: Category) => {
+  if (!form.value.name) return alert('请输入分类名称')
+  
   try {
-    await api.del(`/Categories/${item.id}`)
-    message.success('????')
+    if (isEdit.value) {
+      await api.put(`/Categories/${form.value.id}`, form.value)
+    } else {
+      await api.post('/Categories', form.value)
+    }
+    showModal.value = false
     fetchCategories()
-  } catch (e: unknown) {
-    handleError(e, '????')
+  } catch (e: any) {
+    alert(e.message || '保存失败')
   }
 }
 
-// ???
-  const handleRowClick = (row: Category) => {
-    // ??????
-    openModal(row)
+const handleDelete = async (item: any) => {
+  if (!confirm(`确定要删除分类 "${item.name}" 吗？`)) return
+  
+  try {
+    await api.del(`/Categories/${item.id}`)
+    fetchCategories()
+  } catch (e: any) {
+    alert(e.message || '删除失败')
+  }
 }
 
 onMounted(() => {
@@ -386,63 +145,3 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
-/* ?????? */
-:deep(.stat-card) {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-:deep(.stat-card:hover) {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-:deep(.stat-content) {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-lg);
-}
-
-:deep(.stat-icon) {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.05);
-  font-size: var(--text-xl);
-}
-
-:deep(.stat-info) {
-  flex: 1;
-}
-
-:deep(.stat-value) {
-  font-size: var(--text-2xl);
-  font-weight: 700;
-  color: var(--color-text-main);
-  line-height: 1.2;
-}
-
-:deep(.stat-label) {
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
-  margin-top: var(--spacing-xs);
-}
-
-/* ??????*/
-:deep(.category-row td) {
-  transition: background-color 0.2s ease;
-}
-:deep(.category-row:hover td) {
-  background-color: var(--color-bg-elevated) !important;
-}
-
-.action-btn {
-  transition: opacity 0.2s;
-  opacity: 0.8;
-}
-:deep(.category-row:hover .action-btn) {
-  opacity: 1;
-}
-</style>

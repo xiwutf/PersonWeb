@@ -239,7 +239,12 @@ import { ref, onMounted, computed } from 'vue'
 
 // 状态管理
 const modules = ref([])
-const stats = ref({})
+const stats = ref({
+  totalModules: 0,
+  enabledModules: 0,
+  disabledModules: 0,
+  avgRating: 0
+})
 const loading = ref(true)
 const searchQuery = ref('')
 const selectedCategory = ref('')

@@ -19,13 +19,13 @@
     </div>
 
     <!-- Trend -->
-    <div v-if="trend !== null && !loading" class="flex items-center text-xs font-medium mt-1">
+    <div v-if="trend != null && trend !== undefined && !loading" class="flex items-center text-xs font-medium mt-1">
       <span 
         class="flex items-center gap-1 px-1.5 py-0.5 rounded-md"
-        :class="trend >= 0 ? 'text-success bg-success/10' : 'text-error bg-error/10'"
+        :class="(trend ?? 0) >= 0 ? 'text-success bg-success/10' : 'text-error bg-error/10'"
       >
-        <span>{{ trend >= 0 ? '↑' : '↓' }}</span>
-        <span>{{ Math.abs(trend).toFixed(1) }}%</span>
+        <span>{{ (trend ?? 0) >= 0 ? '↑' : '↓' }}</span>
+        <span>{{ Math.abs(Number(trend) || 0).toFixed(1) }}%</span>
       </span>
       <span class="text-muted ml-2 transform scale-90 origin-left">较昨日</span>
     </div>
@@ -49,9 +49,11 @@ const props = defineProps<{
 
 const formattedValue = computed(() => {
   if (typeof props.value === 'string') return props.value
-  return props.value.toLocaleString('zh-CN', {
-    minimumFractionDigits: props.precision || 0,
-    maximumFractionDigits: props.precision || 0
+  const num = Number(props.value)
+  if (Number.isNaN(num)) return '0'
+  return num.toLocaleString('zh-CN', {
+    minimumFractionDigits: props.precision ?? 0,
+    maximumFractionDigits: props.precision ?? 0
   })
 })
 </script>

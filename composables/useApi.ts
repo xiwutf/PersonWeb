@@ -44,13 +44,14 @@ export const useApi = () => {
 
     // 通用请求处理
     const request = async <T>(url: string, options: any = {}) => {
+        const { silent, ...fetchOptions } = options
         try {
             // 自动携带 Token
             if (typeof window !== 'undefined') {
                 const token = localStorage.getItem('admin_token')
                 if (token) {
-                    options.headers = {
-                        ...options.headers,
+                    fetchOptions.headers = {
+                        ...fetchOptions.headers,
                         Authorization: `Bearer ${token}`
                     }
                 }
@@ -87,7 +88,7 @@ export const useApi = () => {
             
             const response = await $fetch<ApiResponse<T>>(url, {
                 baseURL: finalBaseURL,
-                ...options
+                ...fetchOptions
             })
 
             // 统一错误处理
@@ -112,9 +113,11 @@ export const useApi = () => {
             // }
             return result
         } catch (error: any) {
-            console.error('API Error:', error)
-            console.error('API Error URL:', url)
-            console.error('API Error Response:', error.response)
+            if (!silent && typeof window !== 'undefined') {
+                console.error('API Error:', error)
+                console.error('API Error URL:', url)
+                console.error('API Error Response:', error.response)
+            }
             // 如果是 401，跳转登录
             if (error.response?.status === 401 && typeof window !== 'undefined') {
                 localStorage.removeItem('admin_token')

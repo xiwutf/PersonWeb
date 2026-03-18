@@ -1,68 +1,68 @@
 <template>
   <div class="space-y-6">
     <div class="page-header">
-      <h1 class="page-title">???????</h1>
+      <h1 class="page-title">工具管理</h1>
       <button @click="openModal()" class="btn-primary">
-        <i class="fas fa-plus mr-2"></i>???????
+        <i class="fas fa-plus mr-2"></i>新增工具
       </button>
     </div>
 
-    <!-- ????? -->
+    <!-- 统计卡片 -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
       <div class="card p-4">
-        <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">????????</div>
+        <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">工具总数</div>
         <div class="text-2xl font-bold text-gray-800 dark:text-var(--color-bg-light, white)">{{ stats.total }}</div>
       </div>
       <div class="card p-4">
-        <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">?????</div>
+        <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">已发布</div>
         <div class="text-2xl font-bold text-green-600 dark:text-green-400">{{ stats.published }}</div>
       </div>
       <div class="card p-4">
-        <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">???</div>
+        <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">草稿</div>
         <div class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{{ stats.draft }}</div>
       </div>
       <div class="card p-4">
-        <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">???r</div>
+        <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">已归档</div>
         <div class="text-2xl font-bold text-gray-600 dark:text-gray-400">{{ stats.archived }}</div>
       </div>
     </div>
 
-    <!-- ??????? -->
+    <!-- 图表分析 -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-      <!-- ???????? -->
+      <!-- 状态分布图 -->
       <div class="card p-6">
-        <h3 class="text-lg font-bold text-gray-800 dark:text-var(--color-bg-light, white) mb-4">?????</h3>
+        <h3 class="text-lg font-bold text-gray-800 dark:text-var(--color-bg-light, white) mb-4">状态分布</h3>
         <ClientOnly>
           <div v-if="statusChartOption" class="h-64">
             <v-chart :option="statusChartOption" autoresize class="w-full h-full" />
           </div>
           <div v-else class="h-64 flex items-center justify-center text-gray-500 dark:text-gray-400">
-            ??????...
+            正在加载...
           </div>
         </ClientOnly>
       </div>
 
-      <!-- ????? -->
+      <!-- 价格分布 -->
       <div class="card p-6">
-        <h3 class="text-lg font-bold text-gray-800 dark:text-var(--color-bg-light, white) mb-4">?????</h3>
+        <h3 class="text-lg font-bold text-gray-800 dark:text-var(--color-bg-light, white) mb-4">价格分布</h3>
         <ClientOnly>
           <div v-if="priceChartOption" class="h-64">
             <v-chart :option="priceChartOption" autoresize class="w-full h-full" />
           </div>
           <div v-else class="h-64 flex items-center justify-center text-gray-500 dark:text-gray-400">
-            ??????...
+            正在加载...
           </div>
         </ClientOnly>
       </div>
     </div>
 
-    <!-- ???????? -->
+    <!-- 工具列表 -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <div v-for="tool in tools" :key="tool.id" class="card p-6 flex flex-col">
         <div class="flex items-start justify-between mb-4">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-2xl">
-              {{ tool.icon || '?' }}
+              {{ tool.icon || '🛠️' }}
             </div>
             <div>
               <h3 class="font-bold text-gray-800 dark:text-var(--color-bg-light, white)">{{ tool.name }}</h3>
@@ -72,7 +72,7 @@
                   'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300': tool.status === 'draft',
                   'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300': tool.status === 'archived'
                 }">
-                  {{ tool.status === 'published' ? '?????' : tool.status === 'draft' ? '???' : '???r' }}
+                  {{ tool.status === 'published' ? '已发布' : tool.status === 'draft' ? '草稿' : '已归档' }}
                 </span>
                 <span v-if="tool.category" class="text-xs text-gray-500 dark:text-gray-400">
                   {{ tool.category.name }}
@@ -82,97 +82,97 @@
           </div>
           <div class="flex gap-2">
             <button @click="openModal(tool)" class="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-              <span class="sr-only">??</span>
+              <span class="sr-only">编辑</span>
               <i class="fas fa-edit"></i>
             </button>
             <button @click="handleDelete(tool)" class="text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors">
-              <span class="sr-only">???</span>
+              <span class="sr-only">删除</span>
               <i class="fas fa-trash"></i>
             </button>
           </div>
         </div>
-        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 flex-1">{{ tool.description || '????????' }}</p>
+        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 flex-1">{{ tool.description || '暂无工具描述' }}</p>
         <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-500">
-          <span>???: {{ tool.isFree ? '???' : `?${tool.price}` }}</span>
+          <span>价格: {{ tool.isFree ? '免费' : `￥${tool.price}` }}</span>
           <span v-if="tool.demoUrl">
-            <a :href="tool.demoUrl" target="_blank" class="btn-link btn-link--blue">???</a>
+            <a :href="tool.demoUrl" target="_blank" class="btn-link btn-link--blue">演示</a>
           </span>
         </div>
       </div>
       
-      <!-- ???? -->
+      <!-- 空状态 -->
       <div v-if="tools.length === 0" class="col-span-full text-center py-12 empty-state card border-dashed">
-        ���޹�������
+        暂无工具数据
       </div>
     </div>
 
-    <!-- ??/??????? -->
+    <!-- 新建/编辑弹窗 -->
     <div v-if="showModal" class="modal-overlay">
       <div class="modal-content max-w-lg max-h-[90vh] overflow-y-auto">
         <div class="modal-header">
           <h3 class="modal-title">
-            {{ isEdit ? '??????' : '???????' }}
+            {{ isEdit ? '编辑工具' : '新增工具' }}
           </h3>
         </div>
         
         <div class="modal-body space-y-4">
           <div class="form-group">
-            <label class="form-label">???????? *</label>
-            <input v-model="form.name" type="text" class="form-input" placeholder="?????JSON ?????????" required>
+            <label class="form-label">工具名称 *</label>
+            <input v-model="form.name" type="text" class="form-input" placeholder="例如：JSON 格式化工具" required>
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div class="form-group">
-              <label class="form-label">????? (Slug) *</label>
+              <label class="form-label">工具标识 (Slug) *</label>
               <input v-model="form.slug" type="text" class="form-input" placeholder="json-formatter" required>
             </div>
             <div class="form-group">
-              <label class="form-label">??? (Emoji)</label>
-              <input v-model="form.icon" type="text" class="form-input" placeholder="?">
+              <label class="form-label">图标 (Emoji)</label>
+              <input v-model="form.icon" type="text" class="form-input" placeholder="🔧">
             </div>
           </div>
           <div class="form-group">
-            <label class="form-label">????</label>
-            <textarea v-model="form.description" class="form-textarea h-24" placeholder="???????????????????..."></textarea>
+            <label class="form-label">描述</label>
+            <textarea v-model="form.description" class="form-textarea h-24" placeholder="请输入工具简介、适用场景与核心功能..."></textarea>
           </div>
           <div class="form-group">
-            <label class="form-label">??????</label>
+            <label class="form-label">演示链接</label>
             <input v-model="form.demoUrl" type="text" class="form-input" placeholder="https://...">
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div class="form-group">
-              <label class="form-label">???</label>
+              <label class="form-label">售价</label>
               <input v-model.number="form.price" type="number" step="0.01" class="form-input" placeholder="0.00">
             </div>
             <div class="form-group">
-              <label class="form-label">???</label>
+              <label class="form-label">原价</label>
               <input v-model.number="form.originalPrice" type="number" step="0.01" class="form-input" placeholder="0.00">
             </div>
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div class="form-group">
-              <label class="form-label">??</label>
+              <label class="form-label">状态</label>
               <select v-model="form.status" class="form-input">
-                <option value="draft">???</option>
-                <option value="published">?????</option>
-                <option value="archived">???r</option>
+                <option value="draft">草稿</option>
+                <option value="published">已发布</option>
+                <option value="archived">已归档</option>
               </select>
             </div>
             <div class="form-group">
               <label class="flex items-center gap-2">
                 <input v-model="form.isFree" type="checkbox" class="form-checkbox">
-                <span>??????</span>
+                <span>免费工具</span>
               </label>
               <label class="flex items-center gap-2 mt-2">
                 <input v-model="form.isPremium" type="checkbox" class="form-checkbox">
-                <span>??????</span>
+                <span>精品工具</span>
               </label>
             </div>
           </div>
         </div>
 
         <div class="modal-footer">
-          <button @click="showModal = false" class="btn-secondary">???</button>
-          <button @click="handleSave" class="btn-primary">????</button>
+          <button @click="showModal = false" class="btn-secondary">取消</button>
+          <button @click="handleSave" class="btn-primary">保存</button>
         </div>
       </div>
     </div>
@@ -213,7 +213,7 @@ import {
 } from 'echarts/components'
 import VChart from 'vue-echarts'
 
-// ??? ECharts ???
+// 注册 ECharts 组件
 use([
   CanvasRenderer,
   PieChart,
@@ -227,7 +227,7 @@ use([
 definePageMeta({
   layout: 'admin',
   middleware: 'admin-auth',
-  ssr: false // ???? SSR?????? ECharts ??????????????
+  ssr: false // 关闭 SSR，避免 ECharts 服务端渲染报错
 })
 
 const api = useApi()
@@ -247,20 +247,22 @@ const form = ref({
   status: 'draft'
 })
 
-// ??? useAsyncData ???? SSR/????? hydration ?????
+// 使用 useAsyncData 避免 SSR/客户端 hydration 不一致
 const { data: toolsData, pending: toolsPending, refresh: refreshTools } = useAsyncData(
   'admin-tools-list',
   async () => {
     try {
-      // ??? useApi??????????? /api/ ????useApi ???????? baseURL
-      const res = await api.get('/Toolbox/admin/list?pageSize=1000')
+      // 使用 silent 降低构建期后端不可达时的日志噪音
+      const res = await api.get('/Toolbox/admin/list?pageSize=1000', {
+        silent: true
+      })
       if (res && res.tools) {
         return res.tools as Tool[]
       } else if (res && res.data && res.data.tools) {
-        // ???? ApiResponse ???
+        // 兼容 ApiResponse 格式
         return res.data.tools as Tool[]
       } else if (Array.isArray(res)) {
-        // ??????????????????
+        // 兼容直接返回数组
         return res as Tool[]
       } else {
         return [] as Tool[]
@@ -273,16 +275,16 @@ const { data: toolsData, pending: toolsPending, refresh: refreshTools } = useAsy
     }
   },
   {
-    server: true,  // ??????????
-    default: () => [] as Tool[]  // ????
+    server: false,  // 管理页构建时不需要服务端预取
+    default: () => [] as Tool[]  // 默认空数组
   }
 )
 
-// ?? useAsyncData ????????????
+// 将 useAsyncData 返回值映射为视图层数据
 const tools = computed(() => toolsData.value || [])
 const loading = computed(() => toolsPending.value)
 
-// ???????
+// 统计信息
 const stats = computed(() => {
   const total = tools.value.length
   const published = tools.value.filter(t => t.status === 'published').length
@@ -297,7 +299,7 @@ const stats = computed(() => {
   }
 })
 
-// ??? CSS ????????????????
+// 读取 CSS 变量，保证图表颜色跟随主题
 const getCssVar = (varName: string): string => {
   if (process.client) {
     const root = document.documentElement
@@ -306,7 +308,7 @@ const getCssVar = (varName: string): string => {
   return ''
 }
 
-// ????????????
+// 状态分布图配置
 const statusChartOption = computed(() => {
   if (stats.value.total === 0) return null
   
@@ -327,7 +329,7 @@ const statusChartOption = computed(() => {
     },
     series: [
       {
-        name: '??????',
+        name: '工具状态',
         type: 'pie',
         radius: ['40%', '70%'],
         avoidLabelOverlap: false,
@@ -349,31 +351,31 @@ const statusChartOption = computed(() => {
           }
         },
         data: [
-          { value: stats.value.published, name: '?????', itemStyle: { color: getCssVar('--color-success') || 'var(--color-success)' } },
-          { value: stats.value.draft, name: '???', itemStyle: { color: getCssVar('--color-warning') || 'var(--color-warning)' } },
-          { value: stats.value.archived, name: '???r', itemStyle: { color: getCssVar('--color-text-muted') || 'var(--color-text-sec)' } }
+          { value: stats.value.published, name: '已发布', itemStyle: { color: getCssVar('--color-success') || 'var(--color-success)' } },
+          { value: stats.value.draft, name: '草稿', itemStyle: { color: getCssVar('--color-warning') || 'var(--color-warning)' } },
+          { value: stats.value.archived, name: '已归档', itemStyle: { color: getCssVar('--color-text-muted') || 'var(--color-text-sec)' } }
         ]
       }
     ]
   }
 })
 
-// ??????????????
+// 价格分布图配置
 const priceChartOption = computed(() => {
   if (tools.value.length === 0) return null
   
   const textColor = getCssVar('--color-text-main') || getCssVar('--n-text-color')
   const gridColor = getCssVar('--color-border-subtle') || getCssVar('--n-border-color')
   
-  // ?????????
+  // 统计价格区间
   const freeCount = tools.value.filter(t => t.isFree).length
   const paidTools = tools.value.filter(t => !t.isFree && t.price > 0)
   const priceRanges = [
-    { name: '???', count: freeCount },
-    { name: '0-50?', count: paidTools.filter(t => t.price <= 50).length },
-    { name: '50-100?', count: paidTools.filter(t => t.price > 50 && t.price <= 100).length },
-    { name: '100-200?', count: paidTools.filter(t => t.price > 100 && t.price <= 200).length },
-    { name: '200?????', count: paidTools.filter(t => t.price > 200).length }
+    { name: '免费', count: freeCount },
+    { name: '0-50元', count: paidTools.filter(t => t.price <= 50).length },
+    { name: '50-100元', count: paidTools.filter(t => t.price > 50 && t.price <= 100).length },
+    { name: '100-200元', count: paidTools.filter(t => t.price > 100 && t.price <= 200).length },
+    { name: '200元以上', count: paidTools.filter(t => t.price > 200).length }
   ].filter(r => r.count > 0)
   
   return {
@@ -419,7 +421,7 @@ const priceChartOption = computed(() => {
     },
     series: [
       {
-        name: '????????',
+        name: '工具数量',
         type: 'bar',
         data: priceRanges.map(r => r.count),
         itemStyle: {
@@ -441,7 +443,7 @@ const priceChartOption = computed(() => {
   }
 })
 
-// ????/????????????
+// 刷新工具列表
 const fetchTools = async () => {
   await refreshTools()
 }
@@ -486,41 +488,41 @@ const handleSave = async () => {
   const { handleError } = useErrorHandler()
   
   if (!form.value.name) {
-    warning('??????????????')
+    warning('请输入工具名称')
     return
   }
   
   try {
-    // ??? useApi??????????? /api/ ????useApi ???????? baseURL
+    // 使用后端 API，去掉 /api/ 前缀，让 useApi 正确拼接后端 baseURL
     if (isEdit.value && editingToolId.value) {
       await api.put(`/Toolbox/${editingToolId.value}`, form.value)
     } else {
       await api.post('/Toolbox', form.value)
     }
-    success('??????')
+    success('保存成功')
     showModal.value = false
     editingToolId.value = null
     fetchTools()
   } catch (e: unknown) {
-    handleError(e, '???????')
+    handleError(e, '保存工具失败')
   }
 }
 
 const handleDelete = async (item: Tool) => {
-  if (!confirm(`??????????? "${item.name}" ??`)) return
+  if (!confirm(`确定要删除工具 "${item.name}" 吗？`)) return
   
   const { success } = useNotification()
   const { handleError } = useErrorHandler()
   
   try {
-    // ??? useApi??????????? /api/ ????useApi ???????? baseURL
+    // 使用后端 API，去掉 /api/ 前缀，让 useApi 正确拼接后端 baseURL
     await api.del(`/Toolbox/${item.id}`)
-    success('??????')
+    success('删除成功')
     fetchTools()
   } catch (e: unknown) {
-    handleError(e, '??????')
+    handleError(e, '删除工具失败')
   }
 }
 
-// ??? useAsyncData ??????? onMounted ????????? fetch
+// 使用 useAsyncData，不再额外 onMounted 拉取数据
 </script>

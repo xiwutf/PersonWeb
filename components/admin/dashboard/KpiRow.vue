@@ -14,10 +14,10 @@
       <div class="kpi-card-content">
         <div class="kpi-card-label">{{ kpi.label }}</div>
         <div class="kpi-card-value">{{ formatValue(kpi.value) }}</div>
-        <div class="kpi-card-trend" v-if="kpi.trend !== null">
-          <span :class="kpi.trend > 0 ? 'trend-up' : 'trend-down'">
-            {{ kpi.trend > 0 ? '↑' : '↓' }}
-            {{ Math.abs(kpi.trend).toFixed(1) }}%
+        <div class="kpi-card-trend" v-if="kpi.trend != null && kpi.trend !== undefined">
+          <span :class="(kpi.trend ?? 0) > 0 ? 'trend-up' : 'trend-down'">
+            {{ (kpi.trend ?? 0) > 0 ? '↑' : '↓' }}
+            {{ Math.abs(Number(kpi.trend) || 0).toFixed(1) }}%
           </span>
         </div>
         <div class="kpi-card-trend" v-else>--</div>
@@ -45,10 +45,12 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const formatValue = (value: number) => {
-  if (value >= 10000) {
-    return (value / 10000).toFixed(1) + 'w'
+  const num = Number(value)
+  if (Number.isNaN(num)) return '0'
+  if (num >= 10000) {
+    return (num / 10000).toFixed(1) + 'w'
   }
-  return value.toLocaleString('zh-CN')
+  return num.toLocaleString('zh-CN')
 }
 </script>
 

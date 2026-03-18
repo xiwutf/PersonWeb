@@ -1,30 +1,30 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50">
-    <!-- ???? -->
+    <!-- 页面头部 -->
     <section class="py-16 bg-gradient-to-r from-indigo-600 to-purple-600 text-bg-light">
       <div class="max-w-6xl mx-auto px-4 text-center">
         <div class="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-          <span class="text-3xl">??</span>
+          <span class="text-3xl">🔗</span>
         </div>
-        <h1 class="text-4xl lg:text-5xl font-bold mb-4">????</h1>
+        <h1 class="text-4xl lg:text-5xl font-bold mb-4">友情链接</h1>
         <p class="text-xl text-indigo-100 max-w-3xl mx-auto">
-          ?????????????????
+          与志同道合的朋友们分享链接
         </p>
       </div>
     </section>
 
-    <!-- ???? -->
+    <!-- 链接列表 -->
     <section class="py-20">
       <div class="max-w-6xl mx-auto px-4">
         <div v-if="loading" class="text-center py-16">
           <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mb-4"></div>
-          <p class="text-gray-600">???...</p>
+          <p class="text-gray-600">加载中...</p>
         </div>
 
         <div v-else-if="friendLinks.length === 0" class="text-center py-16">
-          <div class="text-6xl mb-4">??</div>
-          <h3 class="text-2xl font-semibold text-gray-700 mb-2">??????</h3>
-          <p class="text-gray-500">??????????????????</p>
+          <div class="text-6xl mb-4">🔗</div>
+          <h3 class="text-2xl font-semibold text-gray-700 mb-2">暂无友情链接</h3>
+          <p class="text-gray-500">还没有添加任何友情链接</p>
         </div>
 
         <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -50,7 +50,7 @@
               </div>
             </div>
 
-            <!-- ?? -->
+            <!-- 内容 -->
             <div class="flex-1 min-w-0">
               <h3 class="text-lg font-semibold text-gray-900 mb-1 group-hover:text-indigo-600 transition-colors">
                 {{ link.name }}
@@ -64,7 +64,7 @@
               </div>
             </div>
 
-            <!-- ?? -->
+            <!-- 箭头图标 -->
             <div class="flex-shrink-0 text-gray-400 group-hover:text-indigo-600 transition-colors">
               <i class="fas fa-chevron-right"></i>
             </div>
@@ -119,9 +119,9 @@ onMounted(() => {
 })
 
 useHead({
-  title: '???? - ????',
+  title: '友情链接 - 溪午听风',
   meta: [
-    { name: 'description', content: '???? - ?????????' }
+    { name: 'description', content: '友情链接 - 与志同道合的朋友们分享链接' }
   ]
 })
 </script>

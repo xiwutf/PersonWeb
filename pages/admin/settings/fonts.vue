@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="font-management-page">
     <div class="page-header">
       <h1 class="page-title">字体管理</h1>
@@ -51,7 +51,7 @@
               </option>
             </select>
             <div class="font-preview">
-              <p class="preview-label">预览效果</p>
+              <p class="preview-label">预览效果：</p>
               <p class="preview-text" :style="{ fontFamily: fontSettings.fontFamily }">
                 这是字体预览文字：溪午听风 - 数字花园
               </p>
@@ -70,13 +70,13 @@
               class="form-input"
             >
               <option :value="12">12px - 较小</option>
-              <option :value="14">14px - 较小</option>
+              <option :value="14">14px - 小</option>
               <option :value="16">16px - 标准（推荐）</option>
-              <option :value="18">18px - 较大</option>
-              <option :value="20">20px - 很大</option>
+              <option :value="18">18px - 大</option>
+              <option :value="20">20px - 较大</option>
             </select>
             <div class="font-preview">
-              <p class="preview-label">预览效果</p>
+              <p class="preview-label">预览效果：</p>
               <p class="preview-text" :style="{ fontSize: `${fontSettings.baseFontSize}px` }">
                 这是字号预览文字：溪午听风 - 数字花园
               </p>
@@ -101,7 +101,7 @@
               <option value="700">Bold (700)</option>
             </select>
             <div class="font-preview">
-              <p class="preview-label">预览效果</p>
+              <p class="preview-label">预览效果：</p>
               <p class="preview-text" :style="{ fontWeight: fontSettings.defaultFontWeight }">
                 这是字重预览文字：溪午听风 - 数字花园
               </p>
@@ -127,7 +127,7 @@
               <option :value="2.0">2.0 - 很宽松</option>
             </select>
             <div class="font-preview">
-              <p class="preview-label">预览效果</p>
+              <p class="preview-label">预览效果：</p>
               <p class="preview-text" :style="{ lineHeight: fontSettings.defaultLineHeight }">
                 这是行高预览文字：溪午听风 - 数字花园<br>
                 第二行文字用于展示行高效果
@@ -154,7 +154,7 @@
               <option value="rgba(255, 255, 255, 0.75)">浅白（深色主题）</option>
             </select>
             <div class="font-preview">
-              <p class="preview-label">预览效果</p>
+              <p class="preview-label">预览效果：</p>
               <p class="preview-text" :style="{ color: fontSettings.textMainColor }">
                 这是主文字颜色预览：溪午听风 - 数字花园
               </p>
@@ -180,7 +180,7 @@
               <option value="rgba(255, 255, 255, 0.5)">浅白（深色主题）</option>
             </select>
             <div class="font-preview">
-              <p class="preview-label">预览效果</p>
+              <p class="preview-label">预览效果：</p>
               <p class="preview-text" :style="{ color: fontSettings.textMutedColor }">
                 这是次要文字颜色预览：溪午听风 - 数字花园
               </p>
@@ -207,12 +207,12 @@
                 v-model.number="fontSettings.h1FontSize"
                 class="form-input"
               >
-                <option :value="24">24px - 较小</option>
+                <option :value="24">24px - 小</option>
                 <option :value="28">28px - 中小</option>
                 <option :value="32">32px - 标准（推荐）</option>
-                <option :value="36">36px - 较大</option>
-                <option :value="40">40px - 很大</option>
-                <option :value="48">48px - 超大</option>
+                <option :value="36">36px - 大</option>
+                <option :value="40">40px - 较大</option>
+                <option :value="48">48px - 很大</option>
               </select>
               <div class="font-preview-small">
                 <h1 :style="{ fontSize: `${fontSettings.h1FontSize}px` }">H1 标题预览</h1>
@@ -225,12 +225,12 @@
                 v-model.number="fontSettings.h2FontSize"
                 class="form-input"
               >
-                <option :value="20">20px - 较小</option>
+                <option :value="20">20px - 小</option>
                 <option :value="22">22px - 中小</option>
                 <option :value="24">24px - 标准（推荐）</option>
-                <option :value="28">28px - 较大</option>
-                <option :value="32">32px - 很大</option>
-                <option :value="36">36px - 超大</option>
+                <option :value="28">28px - 大</option>
+                <option :value="32">32px - 较大</option>
+                <option :value="36">36px - 很大</option>
               </select>
               <div class="font-preview-small">
                 <h2 :style="{ fontSize: `${fontSettings.h2FontSize}px` }">H2 标题预览</h2>
@@ -245,12 +245,12 @@
                 v-model.number="fontSettings.h3FontSize"
                 class="form-input"
               >
-                <option :value="18">18px - 较小</option>
+                <option :value="18">18px - 小</option>
                 <option :value="19">19px - 中小</option>
                 <option :value="20">20px - 标准（推荐）</option>
-                <option :value="22">22px - 较大</option>
-                <option :value="24">24px - 很大</option>
-                <option :value="28">28px - 超大</option>
+                <option :value="22">22px - 大</option>
+                <option :value="24">24px - 较大</option>
+                <option :value="28">28px - 很大</option>
               </select>
               <div class="font-preview-small">
                 <h3 :style="{ fontSize: `${fontSettings.h3FontSize}px` }">H3 标题预览</h3>
@@ -263,10 +263,10 @@
                 v-model.number="fontSettings.h4FontSize"
                 class="form-input"
               >
-                <option :value="16">16px - 较小</option>
+                <option :value="16">16px - 小</option>
                 <option :value="17">17px - 中小</option>
                 <option :value="18">18px - 标准（推荐）</option>
-                <option :value="20">20px - 较大</option>
+                <option :value="20">20px - 大</option>
                 <option :value="22">22px - 较大</option>
                 <option :value="24">24px - 很大</option>
               </select>
@@ -419,7 +419,8 @@ const fetchFontSettings = async () => {
     
     const root = document.documentElement
     
-    // 应用字体�    root.style.setProperty('--font-family-base', fontSettings.value.fontFamily)
+    // 应用字体族
+    root.style.setProperty('--font-family-base', fontSettings.value.fontFamily)
     
     // 应用基础字号
     root.style.setProperty('--font-size-base', `${fontSettings.value.baseFontSize}px`)
@@ -440,7 +441,7 @@ const fetchFontSettings = async () => {
     root.style.setProperty('--color-text-main', fontSettings.value.textMainColor)
     root.style.setProperty('--color-text-muted', fontSettings.value.textMutedColor)
     
-    // 应用�body
+    // 应用到 body
     document.body.style.fontFamily = fontSettings.value.fontFamily
     document.body.style.fontSize = `${fontSettings.value.baseFontSize}px`
     document.body.style.fontWeight = fontSettings.value.defaultFontWeight
@@ -468,7 +469,7 @@ const saveFontSettings = async () => {
 
     // 立即应用字体设置
     applyFontSettings()
-
+    
     success('字体设置保存成功，已立即应用到当前页面')
   } catch (e) {
     handleError(e, '保存字体设置失败')
@@ -477,7 +478,7 @@ const saveFontSettings = async () => {
   }
 }
 
-// 恢复默认字体
+// 恢复默认字体族
 const resetFontFamily = () => {
   fontSettings.value.fontFamily = defaultFontSettings.fontFamily
   success('已恢复默认字体族')
@@ -519,12 +520,12 @@ const previewFontSettings = () => {
           </style>
         </head>
         <body>
-          <h1>H1 标题：溪午听�?- 数字花园</h1>
+          <h1>H1 标题：溪午听风 - 数字花园</h1>
           <h2>H2 标题：AI 创作空间</h2>
-          <h3>H3 标题：技术博�/h3>
-          <h4>H4 标题：项目展�/h4>
-          <p>这是正文内容。我是一名软件与算法开发者，正在打造一个能持续增长的个人数字资产平台。这里记录我的作品、思考、实验项目和未来计划�/p>
-          <p>同时，我正探�AI 技术如何助力个人成长、创作与商业化。通过整合内容、项目、工具和 AI 实验室，构建一个围绕个�IP 的创作操作系统�/p>
+          <h3>H3 标题：技术博客</h3>
+          <h4>H4 标题：项目展示</h4>
+          <p>这是正文内容。我是一名软件与算法开发者，正在打造一个能持续增长的个人数字资产平台。这里记录我的作品、思考、实验项目和未来计划。</p>
+          <p>同时，我正探索 AI 技术如何助力个人成长、创作与商业化。通过整合内容、项目、工具和 AI 实验室，构建一个围绕个人 IP 的创作操作系统。</p>
         </body>
       </html>
     `)
@@ -550,72 +551,72 @@ onMounted(() => {
 <style scoped>
 .font-management-page {
   width: 100%;
-  padding: var(--spacing-md);
+  padding: 1rem;
 }
 
 .page-header {
-  margin-bottom: var(--spacing-2xl);
+  margin-bottom: 2rem;
 }
 
 .page-title {
-  font-size: var(--text-2xl);
+  font-size: 1.875rem;
   font-weight: 700;
   color: var(--color-text-main, var(--color-bg-card));
-  margin-bottom: var(--spacing-sm);
+  margin-bottom: 0.5rem;
 }
 
 .page-description {
   color: var(--color-text-muted, rgba(255, 255, 255, 0.6));
-  font-size: var(--text-sm);
+  font-size: 0.875rem;
 }
 
 .font-settings-container {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-2xl);
+  gap: 2rem;
 }
 
 .settings-section {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-xl);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
 }
 
 .section-header {
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: 1.5rem;
 }
 
 .section-title {
-  font-size: var(--text-lg);
+  font-size: 1.25rem;
   font-weight: 600;
   color: var(--color-text-main, var(--color-bg-card));
-  margin-bottom: var(--spacing-sm);
+  margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
 }
 
 .section-description {
   color: var(--color-text-muted, rgba(255, 255, 255, 0.6));
-  font-size: var(--text-sm);
+  font-size: 0.875rem;
 }
 
 .settings-form {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xl);
+  gap: 1.5rem;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
+  gap: 0.5rem;
 }
 
 .form-label {
   color: var(--color-text-main, var(--color-bg-card));
-  font-size: var(--text-sm);
+  font-size: 0.875rem;
   font-weight: 500;
   display: flex;
   align-items: center;
@@ -623,17 +624,17 @@ onMounted(() => {
 
 .form-hint {
   color: var(--color-text-muted, rgba(255, 255, 255, 0.5));
-  font-size: var(--text-xs);
-  margin-top: calc(var(--spacing-sm) * -0.5);
+  font-size: 0.75rem;
+  margin-top: -0.25rem;
 }
 
 .form-input {
-  padding: var(--spacing-md);
+  padding: 0.75rem;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: var(--radius-md);
+  border-radius: 0.5rem;
   color: var(--color-text-main, var(--color-bg-card));
-  font-size: var(--text-sm);
+  font-size: 0.875rem;
   transition: all 0.2s;
 }
 
@@ -650,7 +651,7 @@ onMounted(() => {
 .form-row {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: var(--spacing-xl);
+  gap: 1.5rem;
 }
 
 @media (max-width: 768px) {
@@ -661,7 +662,7 @@ onMounted(() => {
 
 .font-family-input-group {
   display: flex;
-  gap: var(--spacing-sm);
+  gap: 0.5rem;
 }
 
 .font-family-input-group .form-input {
@@ -671,7 +672,7 @@ onMounted(() => {
 .font-size-input-group {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: 0.5rem;
 }
 
 .font-size-input-group .form-input {
@@ -680,30 +681,30 @@ onMounted(() => {
 
 .input-unit {
   color: var(--color-text-muted, rgba(255, 255, 255, 0.6));
-  font-size: var(--text-sm);
-  min-width: var(--spacing-2xl);
+  font-size: 0.875rem;
+  min-width: 2rem;
 }
 
 .font-preview {
-  margin-top: var(--spacing-md);
-  padding: var(--spacing-lg);
+  margin-top: 0.75rem;
+  padding: 1rem;
   background: rgba(0, 0, 0, 0.3);
-  border-radius: var(--radius-md);
+  border-radius: 0.5rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .font-preview-small {
-  margin-top: var(--spacing-sm);
-  padding: var(--spacing-md);
+  margin-top: 0.5rem;
+  padding: 0.75rem;
   background: rgba(0, 0, 0, 0.3);
-  border-radius: var(--radius-md);
+  border-radius: 0.5rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .preview-label {
   color: var(--color-text-muted, rgba(255, 255, 255, 0.6));
-  font-size: var(--text-xs);
-  margin-bottom: var(--spacing-sm);
+  font-size: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 .preview-text {
@@ -721,16 +722,16 @@ onMounted(() => {
 
 .actions-section {
   display: flex;
-  gap: var(--spacing-md);
-  padding-top: var(--spacing-md);
+  gap: 1rem;
+  padding-top: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .btn-primary,
 .btn-secondary {
-  padding: var(--spacing-md) var(--spacing-xl);
-  border-radius: var(--radius-md);
-  font-size: var(--text-sm);
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;

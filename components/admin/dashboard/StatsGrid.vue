@@ -46,10 +46,12 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const formatValue = (value: number) => {
-  if (value >= 10000) {
-    return (value / 10000).toFixed(1) + 'w'
+  const num = Number(value)
+  if (Number.isNaN(num)) return '0'
+  if (num >= 10000) {
+    return (num / 10000).toFixed(1) + 'w'
   }
-  return value.toLocaleString('zh-CN')
+  return num.toLocaleString('zh-CN')
 }
 </script>
 

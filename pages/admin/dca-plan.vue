@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="dca-plan-page">
     <!-- 页面头部 -->
     <div class="page-header">
@@ -8,142 +8,138 @@
         </NuxtLink>
         <h1 class="page-title">定投计划管理</h1>
       </div>
-      <button @click="handleAddClick" class="asset-management-btn-primary">+ 新增定投计划</button>
+      <button @click="handleAddClick" class="btn-primary">+ 新增定投计划</button>
     </div>
 
     <!-- 定投计划列表 -->
     <div class="plan-list">
-      <div v-if="loading" class="asset-management-loading">加载�?..</div>
-      <div v-else-if="!plans || plans.length === 0" class="asset-management-empty-state">
+      <div v-if="loading" class="loading">加载中...</div>
+      <div v-else-if="!plans || plans.length === 0" class="empty-state">
         <p>暂无定投计划</p>
-        <button @click="handleAddClick" class="asset-management-btn-primary">创建第一个定投计划</button>
+        <button @click="handleAddClick" class="btn-primary">创建第一个定投计划</button>
       </div>
-      <div v-else class="asset-management-assets-grid">
-        <div v-for="plan in plans" :key="plan.id" class="asset-management-card">
-          <div class="asset-management-card-header">
-            <div>
-              <h3 class="asset-management-card-title">{{ plan.name }}</h3>
-              <span style="font-size: 12px; color: var(--color-text-sec);">{{ plan.code }}</span>
+      <div v-else class="plans-grid">
+        <div v-for="plan in plans" :key="plan.id" class="plan-card">
+          <div class="plan-header">
+            <div class="plan-title">
+              <h3>{{ plan.name }}</h3>
+              <span class="plan-code">{{ plan.code }}</span>
             </div>
-            <div>
-              <span :class="['asset-management-badge', plan.isActive ? 'asset-management-badge-success' : 'asset-management-badge-warning']">
+            <div class="plan-status">
+              <span :class="['status-badge', plan.isActive ? 'active' : 'inactive']">
                 {{ plan.isActive ? '启用' : '停用' }}
               </span>
             </div>
           </div>
-          <div class="asset-management-asset-details">
-            <div class="asset-management-detail-item">
-              <span class="asset-management-detail-label">类型�</span>
-              <span class="asset-management-detail-value">{{ plan.type === 'fund' ? '基金' : '股票' }}</span>
+          <div class="plan-details">
+            <div class="detail-item">
+              <span class="label">类型：</span>
+              <span class="value">{{ plan.type === 'fund' ? '基金' : '股票' }}</span>
             </div>
-            <div class="asset-management-detail-item">
-              <span class="asset-management-detail-label">定投金额�</span>
-              <span class="asset-management-detail-value">¥{{ formatMoney(plan.amount) }}</span>
+            <div class="detail-item">
+              <span class="label">定投金额：</span>
+              <span class="value">¥{{ formatMoney(plan.amount) }}</span>
             </div>
-            <div class="asset-management-detail-item">
-              <span class="asset-management-detail-label">频率�</span>
-              <span class="asset-management-detail-value">{{ getFrequencyText(plan.frequency) }}</span>
+            <div class="detail-item">
+              <span class="label">频率：</span>
+              <span class="value">{{ getFrequencyText(plan.frequency) }}</span>
             </div>
-            <div class="asset-management-detail-item">
-              <span class="asset-management-detail-label">执行次数�</span>
-              <span class="asset-management-detail-value">{{ plan.totalExecutions }} �</span>
+            <div class="detail-item">
+              <span class="label">执行次数：</span>
+              <span class="value">{{ plan.totalExecutions }} 次</span>
             </div>
-            <div class="asset-management-detail-item">
-              <span class="asset-management-detail-label">累计投入�</span>
-              <span class="asset-management-detail-value">¥{{ formatMoney(plan.totalInvested) }}</span>
+            <div class="detail-item">
+              <span class="label">累计投入：</span>
+              <span class="value">¥{{ formatMoney(plan.totalInvested) }}</span>
             </div>
-            <div class="asset-management-detail-item">
-              <span class="asset-management-detail-label">下次执行�</span>
-              <span class="asset-management-detail-value">{{ formatDate(plan.nextExecutionDate) }}</span>
+            <div class="detail-item">
+              <span class="label">下次执行：</span>
+              <span class="value">{{ formatDate(plan.nextExecutionDate) }}</span>
             </div>
           </div>
-          <div class="asset-management-asset-actions">
-            <button @click="handleExecuteClick(plan.id)" class="asset-management-btn-primary" :disabled="!plan.isActive">
+          <div class="plan-actions">
+            <button @click="handleExecuteClick(plan.id)" class="btn-action" :disabled="!plan.isActive">
               立即执行
             </button>
-            <button @click="handleEditClick(plan)" class="asset-management-btn-secondary">编辑</button>
-            <button @click="handleDeleteClick(plan.id)" class="asset-management-btn-danger">删除</button>
+            <button @click="handleEditClick(plan)" class="btn-secondary">编辑</button>
+            <button @click="handleDeleteClick(plan.id)" class="btn-danger">删除</button>
           </div>
         </div>
       </div>
     </div>
 
     <!-- 新增/编辑模态框 -->
-    <div v-if="showModal" class="asset-management-modal-overlay" @click="closeModal">
-      <div class="asset-management-modal-content" @click.stop>
-        <div class="asset-management-modal-header">
+    <div v-if="showModal" class="modal-overlay" @click="closeModal">
+      <div class="modal-content" @click.stop>
+        <div class="modal-header">
           <h2>{{ editingPlan ? '编辑定投计划' : '新增定投计划' }}</h2>
-          <button @click="closeModal" class="asset-management-modal-close">×</button>
+          <button @click="closeModal" class="modal-close">×</button>
         </div>
-        <div class="asset-management-modal-body">
+        <div class="modal-body">
           <form @submit.prevent="handleSubmit">
-            <div class="asset-management-form-group">
-              <label class="asset-management-form-label">代码 <span class="required">*</span></label>
+            <div class="form-group">
+              <label>代码 <span class="required">*</span></label>
               <input
                 v-model="formData.code"
                 type="text"
-                class="asset-management-form-input"
-                placeholder="请输入股�?基金代码"
+                placeholder="请输入股票/基金代码"
                 required
                 maxlength="20"
               />
             </div>
-            <div class="asset-management-form-group">
-              <label class="asset-management-form-label">名称</label>
+            <div class="form-group">
+              <label>名称</label>
               <input
                 v-model="formData.name"
                 type="text"
-                class="asset-management-form-input"
-                placeholder="自动填充或手动输入"
+                placeholder="自动获取或手动输入"
                 maxlength="100"
               />
               <button type="button" @click="handleAutoFill" class="btn-auto-fill">自动获取</button>
             </div>
-            <div class="asset-management-form-group">
-              <label class="asset-management-form-label">类型 <span class="required">*</span></label>
-              <select v-model="formData.type" class="asset-management-form-select" required>
+            <div class="form-group">
+              <label>类型 <span class="required">*</span></label>
+              <select v-model="formData.type" required>
                 <option value="fund">基金</option>
                 <option value="stock">股票</option>
               </select>
             </div>
-            <div class="asset-management-form-group">
-              <label class="asset-management-form-label">定投金额 <span class="required">*</span></label>
+            <div class="form-group">
+              <label>定投金额 <span class="required">*</span></label>
               <input
                 v-model.number="formData.amount"
                 type="number"
-                class="asset-management-form-input"
                 step="0.01"
+                min="0.01"
                 placeholder="请输入定投金额"
                 required
               />
             </div>
-            <div class="asset-management-form-group">
-              <label class="asset-management-form-label">频率 <span class="required">*</span></label>
-              <select v-model="formData.frequency" class="asset-management-form-select" required>
+            <div class="form-group">
+              <label>频率 <span class="required">*</span></label>
+              <select v-model="formData.frequency" required>
                 <option value="daily">每日</option>
                 <option value="weekly">每周</option>
                 <option value="monthly">每月</option>
-                <option value="quarterly">每季�</option>
+                <option value="quarterly">每季度</option>
               </select>
             </div>
-            <div class="asset-management-form-group">
-              <label class="asset-management-form-label">开始日�</label>
+            <div class="form-group">
+              <label>开始日期</label>
               <input
                 v-model="formData.startDate"
                 type="date"
-                class="asset-management-form-input"
               />
             </div>
-            <div class="asset-management-form-group">
-              <label class="asset-management-form-label">结束日期（可选）</label>
+            <div class="form-group">
+              <label>结束日期（可选）</label>
               <input
                 v-model="formData.endDate"
                 type="date"
-                class="asset-management-form-input"
               />
             </div>
-            <div class="asset-management-form-group">
-              <label class="asset-management-form-label">
+            <div class="form-group">
+              <label>
                 <input
                   v-model="formData.isActive"
                   type="checkbox"
@@ -151,18 +147,18 @@
                 启用定投计划
               </label>
             </div>
-            <div class="asset-management-form-group">
-              <label class="asset-management-form-label">备注</label>
+            <div class="form-group">
+              <label>备注</label>
               <textarea
                 v-model="formData.notes"
-                class="asset-management-form-textarea"
-                placeholder="可选备注"
+                rows="3"
+                placeholder="可选备注信息"
               />
             </div>
-            <div class="asset-management-form-actions">
-              <button type="button" @click="closeModal" class="asset-management-btn-secondary">取消</button>
-              <button type="submit" class="asset-management-btn-primary" :disabled="submitting">
-                {{ submitting ? '保存�?..' : '保存' }}
+            <div class="form-actions">
+              <button type="button" @click="closeModal" class="btn-secondary">取消</button>
+              <button type="submit" class="btn-primary" :disabled="submitting">
+                {{ submitting ? '保存中...' : '保存' }}
               </button>
             </div>
           </form>
@@ -177,6 +173,7 @@ import { ref, onMounted } from 'vue'
 import { useApi } from '~/composables/useApi'
 import { useNotification } from '~/composables/useToast'
 
+// 页面元数据
 definePageMeta({
   layout: 'admin',
   middleware: 'admin-auth'
@@ -224,7 +221,8 @@ const formData = ref({
 
 // 加载定投计划列表
 const loadPlans = async () => {
-  // 只在客户端执�?  if (typeof window === 'undefined') return
+  // 只在客户端执行
+  if (typeof window === 'undefined') return
   
   try {
     loading.value = true
@@ -233,15 +231,18 @@ const loadPlans = async () => {
   } catch (err: any) {
     console.error('加载定投计划失败:', err)
     error(err.message || '加载失败')
-    plans.value = [] // 确保始终是数�?  } finally {
+    plans.value = [] // 确保始终是数组
+  } finally {
     loading.value = false
   }
 }
 
+// 格式化金额
 const formatMoney = (value: number) => {
   return value.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
 
+// 格式化日期
 const formatDate = (date: string | null) => {
   if (!date) return '-'
   return new Date(date).toLocaleDateString('zh-CN')
@@ -253,8 +254,10 @@ const getFrequencyText = (frequency: string) => {
     daily: '每日',
     weekly: '每周',
     monthly: '每月',
-    quarterly: '每季',
-    }
+    quarterly: '每季度'
+  }
+  return map[frequency] || frequency
+}
 
 // 处理新增点击
 const handleAddClick = () => {
@@ -328,31 +331,20 @@ const handleAutoFill = async () => {
     warning('请先输入代码和类型')
     return
   }
+
   try {
-    const res = await api.get<any>(
-      `/Investment/auto-fill?code=${encodeURIComponent(code)}&type=${encodeURIComponent(formData.value.type)}`
+    const data = await api.get<{ Name: string; CurrentPrice: number }>(
+      `/Investment/auto-fill?code=${formData.value.code}&type=${formData.value.type}`
     )
-    
-    // useApi 已经自动解包了响应，res 就是 data 部分
-    // 兼容两种格式：camelCase �?PascalCase
-    const name = res?.name || res?.Name || ''
-    
-    if (name) {
-      formData.value.name = name
-      success(`自动获取成功�?{name}`)
+    if (data && data.Name) {
+      formData.value.name = data.Name
+      success('自动获取成功')
     } else {
-      // 场外基金可能无法自动获取
-      const isOTC = code.startsWith('00') || code.startsWith('01') || code.startsWith('05')
-      if (isOTC && formData.value.type === 'fund') {
-        warning('这是场外基金，无法自动获取名称。请手动输入基金名称，例如：天弘沪深300ETF联接C')
-      } else {
-        warning('无法自动获取，请手动输入')
-      }
+      warning('无法自动获取，请手动输入')
     }
   } catch (err: any) {
     console.error('自动获取失败:', err)
-    const errorMessage = err.response?.data?.message || err.message || '获取失败'
-    warning(`自动获取失败�?{errorMessage}，请手动输入`)
+    warning('自动获取失败，请手动输入')
   }
 }
 
@@ -397,19 +389,16 @@ const closeModal = () => {
   editingPlan.value = null
 }
 
+// 页面加载时获取数据
 onMounted(() => {
   loadPlans()
 })
-}
 </script>
 
 <style scoped>
-/* 使用统一样式类，样式定义�?assets/css/admin-asset-management.css */
-/* 只保留组件特有的样式，使�?CSS 变量 */
-
 .dca-plan-page {
-  padding: var(--spacing-lg);
-  max-width: 1600px;
+  padding: 24px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -417,7 +406,7 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: 24px;
 }
 
 .header-left {
@@ -447,43 +436,156 @@ onMounted(() => {
   font-size: 24px;
   font-weight: 600;
   margin: 0;
-  color: var(--color-text-main);
 }
 
-.loading {
+.btn-primary {
+  padding: 8px 16px;
+  background: #1890ff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-primary:hover {
+  background: #40a9ff;
+}
+
+.btn-primary:disabled {
+  background: #d9d9d9;
+  cursor: not-allowed;
+}
+
+.loading, .empty-state {
   text-align: center;
   padding: 48px;
-  color: var(--color-text-muted);
+  color: #999;
 }
 
-/* 状态徽�?*/
-.asset-management-badge {
-  padding: 4px 8px;
-  border-radius: var(--radius-sm);
+.plans-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 24px;
+}
+
+.plan-card {
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 20px;
+  background: white;
+}
+
+.plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.plan-title h3 {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.plan-code {
+  color: #999;
   font-size: 12px;
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.status-badge.active {
+  background: #f6ffed;
+  color: #52c41a;
+  border: 1px solid #b7eb8f;
+}
+
+.status-badge.inactive {
+  background: #fff2e8;
+  color: #fa8c16;
+  border: 1px solid #ffd591;
+}
+
+.plan-details {
+  margin-bottom: 16px;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.detail-item .label {
+  color: #666;
+}
+
+.detail-item .value {
   font-weight: 500;
 }
 
-.asset-management-badge-success {
-  background: var(--color-success-bg, rgba(82, 196, 26, 0.1));
-  color: var(--color-success, var(--color-green-500));
-  border: 1px solid var(--color-success-border, rgba(82, 196, 26, 0.3));
+.plan-actions {
+  display: flex;
+  gap: 8px;
 }
 
-.asset-management-badge-warning {
-  background: var(--color-warning-bg, rgba(250, 140, 22, 0.1));
-  color: var(--color-warning, var(--color-orange-500));
-  border: 1px solid var(--color-warning-border, rgba(250, 140, 22, 0.3));
+.btn-action, .btn-secondary, .btn-danger {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
 }
 
-/* 模态框样式 - 使用统一样式�?*/
+.btn-action {
+  background: #1890ff;
+  color: white;
+}
+
+.btn-action:hover:not(:disabled) {
+  background: #40a9ff;
+}
+
+.btn-action:disabled {
+  background: #d9d9d9;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.btn-secondary:hover {
+  background: #e0e0e0;
+}
+
+.btn-danger {
+  background: #ff4d4f;
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #ff7875;
+}
+
+/* 模态框样式 */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--overlay-color, rgba(0, 0, 0, 0.5));
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -491,27 +593,25 @@ onMounted(() => {
 }
 
 .modal-content {
-  background: var(--color-bg-card);
-  border-radius: var(--radius-lg);
+  background: white;
+  border-radius: 8px;
   width: 90%;
   max-width: 600px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: var(--shadow-card);
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-lg);
-  border-bottom: 1px solid var(--color-border);
+  padding: 20px;
+  border-bottom: 1px solid #e8e8e8;
 }
 
 .modal-header h2 {
   margin: 0;
   font-size: 20px;
-  color: var(--color-text-main);
 }
 
 .modal-close {
@@ -519,80 +619,57 @@ onMounted(() => {
   border: none;
   font-size: 24px;
   cursor: pointer;
-  color: var(--color-text-sec);
-  transition: color 0.2s;
-}
-
-.modal-close:hover {
-  color: var(--color-text-main);
+  color: #999;
 }
 
 .modal-body {
-  padding: var(--spacing-lg);
+  padding: 20px;
 }
 
 .form-group {
-  margin-bottom: var(--spacing-md);
+  margin-bottom: 16px;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: var(--spacing-sm);
+  margin-bottom: 8px;
   font-weight: 500;
   font-size: 14px;
-  color: var(--color-text-main);
 }
 
 .form-group .required {
-  color: var(--color-error);
+  color: #ff4d4f;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
   width: 100%;
-  padding: var(--spacing-sm) var(--spacing-md);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
   font-size: 14px;
-  background: var(--color-bg-card);
-  color: var(--color-text-main);
-  transition: border-color 0.2s;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: var(--color-primary);
 }
 
 .form-group input[type="checkbox"] {
   width: auto;
-  margin-right: var(--spacing-sm);
+  margin-right: 8px;
 }
 
 .btn-auto-fill {
-  margin-top: var(--spacing-sm);
-  padding: 4px var(--spacing-md);
-  background: var(--color-bg-body);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  margin-top: 8px;
+  padding: 4px 12px;
+  background: #f0f0f0;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
   cursor: pointer;
   font-size: 12px;
-  color: var(--color-text-main);
-  transition: all 0.2s;
-}
-
-.btn-auto-fill:hover {
-  background: var(--color-bg-card);
-  border-color: var(--color-primary);
 }
 
 .form-actions {
   display: flex;
   justify-content: flex-end;
-  gap: var(--spacing-md);
-  margin-top: var(--spacing-lg);
+  gap: 12px;
+  margin-top: 24px;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="my-licenses">
     <div class="container">
-      <h1>??????</h1>
+      <h1>我的许可证</h1>
 
       <div class="license-list" v-if="licenses.length > 0">
         <div v-for="license in licenses" :key="license.id" class="license-card">
@@ -13,22 +13,22 @@
           </div>
 
           <div class="license-details">
-            <p><strong>???</strong> v{{ license.version }}</p>
-            <p><strong>???</strong> {{ getLicenseTypeText(license.type) }}</p>
-            <p><strong>????</strong> {{ formatDate(license.validFrom) }} ? {{ license.validUntil ? formatDate(license.validUntil) : '??' }}</p>
-            <p><strong>??????</strong> {{ license.activationsUsed }} / {{ license.maxActivations }}</p>
-            <p v-if="license.lastActivatedAt"><strong>??????</strong> {{ formatDate(license.lastActivatedAt) }}</p>
+            <p><strong>版本：</strong> v{{ license.version }}</p>
+            <p><strong>类型：</strong> {{ getLicenseTypeText(license.type) }}</p>
+            <p><strong>有效期：</strong> {{ formatDate(license.validFrom) }} 至 {{ license.validUntil ? formatDate(license.validUntil) : '永久' }}</p>
+            <p><strong>激活次数：</strong> {{ license.activationsUsed }} / {{ license.maxActivations }}</p>
+            <p v-if="license.lastActivatedAt"><strong>最后激活：</strong> {{ formatDate(license.lastActivatedAt) }}</p>
           </div>
 
           <div class="license-actions">
             <button @click="copyLicenseKey(license.licenseKey)" class="btn btn-sm">
-              <i class="fas fa-copy"></i> ????
+              <i class="fas fa-copy"></i> 复制密钥
             </button>
             <button @click="downloadLicense(license)" class="btn btn-sm btn-primary">
-              <i class="fas fa-download"></i> ??????
+              <i class="fas fa-download"></i> 下载许可证
             </button>
             <button @click="activateLicense(license)" class="btn btn-sm btn-secondary">
-              <i class="fas fa-plus"></i> ????
+              <i class="fas fa-plus"></i> 激活设备
             </button>
           </div>
         </div>
@@ -36,38 +36,38 @@
 
       <div v-else class="empty-state">
         <i class="fas fa-inbox"></i>
-        <p>??????????</p>
+        <p>您还没有任何许可证</p>
         <button @click="goToModules" class="btn btn-primary">
-          ???????
+          浏览模块商店
         </button>
       </div>
     </div>
 
-    <!-- ??????????-->
+    <!-- 激活许可证对话框 -->
     <div v-if="showActivationDialog" class="modal" @click.self="closeActivationDialog">
       <div class="modal-content">
-        <h3>??????</h3>
+        <h3>激活许可证</h3>
         <div class="form-group">
-          <label for="deviceId">??ID</label>
+          <label for="deviceId">设备ID</label>
           <input
             type="text"
             id="deviceId"
             v-model="deviceId"
-            placeholder="?????????"
+            placeholder="输入设备唯一标识"
           >
         </div>
         <div class="form-group">
-          <label for="deviceName">?????????</label>
+          <label for="deviceName">设备名称（可选）</label>
           <input
             type="text"
             id="deviceName"
             v-model="deviceName"
-            placeholder="????????????"
+            placeholder="例如：我的笔记本电脑"
           >
         </div>
         <div class="modal-actions">
-          <button @click="closeActivationDialog" class="btn btn-outline">??</button>
-          <button @click="confirmActivation" class="btn btn-primary">??</button>
+          <button @click="closeActivationDialog" class="btn btn-outline">取消</button>
+          <button @click="confirmActivation" class="btn btn-primary">激活</button>
         </div>
       </div>
     </div>
@@ -105,18 +105,18 @@ const fetchLicenses = async () => {
 
 const getStatusText = (status) => {
   const statusMap = {
-    active: '??',
-    expired: '???',
-    revoked: '???'
+    active: '有效',
+    expired: '已过期',
+    revoked: '已撤销'
   }
   return statusMap[status] || status
 }
 
 const getLicenseTypeText = (type) => {
   const typeMap = {
-    permanent: '??',
-    subscription: '??',
-    trial: '??'
+    permanent: '永久',
+    subscription: '订阅',
+    trial: '试用'
   }
   return typeMap[type] || type
 }
@@ -129,24 +129,26 @@ const formatDate = (dateString) => {
 const copyLicenseKey = async (key) => {
   try {
     await navigator.clipboard.writeText(key)
-    alert('???????')
+    alert('许可证密钥已复制到剪贴板')
   } catch (error) {
     console.error('Failed to copy license key:', error)
   }
 }
 
 const downloadLicense = (license) => {
-  const content = `???????================
-??????? ${license.licenseKey}
-????: ${license.moduleKey}
-??: v${license.version}
-??: ${getLicenseTypeText(license.type)}
-????: ${formatDate(license.validFrom)}
-????: ${license.validUntil ? formatDate(license.validUntil) : '??'}
-??? ${getStatusText(license.status)}
-????: ${formatDate(license.createdAt)}
+  const content = `许可证文件
+================
+许可证密钥: ${license.licenseKey}
+模块标识: ${license.moduleKey}
+版本: v${license.version}
+类型: ${getLicenseTypeText(license.type)}
+生效时间: ${formatDate(license.validFrom)}
+到期时间: ${license.validUntil ? formatDate(license.validUntil) : '永久'}
+状态: ${getStatusText(license.status)}
+创建时间: ${formatDate(license.createdAt)}
 
-????????????????????????`
+此文件请妥善保管，用于激活和使用模块。
+`
 
   const blob = new Blob([content], { type: 'text/plain' })
   const url = URL.createObjectURL(blob)
@@ -173,7 +175,7 @@ const closeActivationDialog = () => {
 
 const confirmActivation = async () => {
   if (!deviceId.value) {
-    alert('?????ID')
+    alert('请输入设备ID')
     return
   }
 
@@ -188,15 +190,15 @@ const confirmActivation = async () => {
     })
 
     if (data.value?.success !== false) {
-      alert(`?? ${deviceName.value || deviceId.value} ??????`)
+      alert(`设备 ${deviceName.value || deviceId.value} 激活成功！`)
       closeActivationDialog()
       await fetchLicenses()
     } else {
-      alert(data.value?.error || '????')
+      alert(data.value?.error || '激活失败，请重试')
     }
   } catch (error) {
     console.error('Activation failed:', error)
-    alert('????')
+    alert('激活失败，请重试')
   }
 }
 

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="document-agent-page">
     <!-- 页面标题 -->
     <div class="page-header">
@@ -116,7 +116,7 @@
           上一页
         </button>
         <span class="page-info">
-          {{ currentPage }} / {{ totalPages }} 页，共 {{ total }} 个文档
+          第 {{ currentPage }} / {{ totalPages }} 页，共 {{ total }} 条
         </span>
         <button
           @click="changePage(currentPage + 1)"
@@ -192,7 +192,7 @@
             class="btn-primary"
             type="button"
           >
-            <span v-if="uploading">上传中..</span>
+            <span v-if="uploading">上传中...</span>
             <span v-else>上传</span>
           </button>
         </div>
@@ -253,7 +253,7 @@
                     <div v-if="!item.loading && item.answer" class="answer-text">
                       <div class="answer-label">
                         <i class="fas fa-lightbulb"></i>
-                        <span>AI 回答</span>
+                        <span>AI 回答：</span>
                       </div>
                       <div class="answer-body" v-html="formatAnswer(item.answer)"></div>
                     </div>
@@ -274,7 +274,7 @@
               <div v-if="queryHistory.length === 0 && !querying" class="empty-history">
                 <i class="fas fa-comments"></i>
                 <p>暂无问答记录</p>
-                <p class="empty-hint">输入问题开始对话吧</p>
+                <p class="empty-hint">输入问题开始对话吧！</p>
               </div>
             </div>
           </div>
@@ -364,7 +364,7 @@ const handleUpload = async () => {
     return
   }
 
-  console.log('开始上传文档:', uploadFile.value.name, uploadFile.value.size)
+  console.log('开始上传文件:', uploadFile.value.name, uploadFile.value.size)
 
   uploading.value = true
   try {
@@ -374,9 +374,10 @@ const handleUpload = async () => {
       formData.append('title', uploadTitle.value)
     }
 
-    console.log('FormData 已创建，准备发送请求..')
+    console.log('FormData 已创建，准备发送请求...')
 
-   const config = useRuntimeConfig()
+    // 使用 $fetch 直接上传，不要手动设置 Content-Type，让浏览器自动处理
+    const config = useRuntimeConfig()
     const baseUrl = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
       ? 'http://localhost:5234/api'
       : config.public.apiBase
@@ -447,7 +448,7 @@ const viewDocument = async (doc: any) => {
     const result = await api.get(`/Document/${doc.id}`)
     console.log('文档详情:', result)
     // TODO: 可以打开详情模态框显示更多信息
-    alert(`文档详情:\n标题: ${result.title}\n摘要: ${result.summary || '暂无摘要'}\n状态: ${result.status}`)
+    alert(`文档详情:\n标题: ${result.title}\n摘要: ${result.summary || '无'}\n状态: ${result.status}`)
   } catch (error: any) {
     console.error('获取文档详情失败:', error)
     alert('获取文档详情失败: ' + (error.message || '未知错误'))
@@ -479,7 +480,8 @@ const submitQuery = async () => {
   }
   queryHistory.value.push(queryItem)
 
-nextTick(() => {
+  // 滚动到底部
+  nextTick(() => {
     scrollToBottom()
   })
 
@@ -494,11 +496,12 @@ nextTick(() => {
     queryItem.loading = false
     
     // 解析返回的数据（支持多种格式）
-    // 注意：API 返回格式可能为 { data: { answer: "...", relevantChunks: [...] } }
+    // 注意：API 返回格式可能是 { data: { answer: "...", relevantChunks: [...] } }
     let answer = ''
     let relevantChunks: any[] = []
     
-     if (result.data) {
+    // 尝试多种可能的路径
+    if (result.data) {
       // 格式: { data: { answer: "...", relevantChunks: [...] } }
       answer = result.data.answer || result.data.Answer || ''
       relevantChunks = result.data.relevantChunks || result.data.RelevantChunks || []
@@ -520,6 +523,7 @@ nextTick(() => {
     
     queryItem.relevantChunks = relevantChunks || []
     
+    // 检查是否是模拟回复（说明 API 调用失败）
     const isMockResponse = String(answer).includes('【模拟模型回复】') || 
                           String(answer).includes('【模拟流式回复】') ||
                           String(answer).includes('模拟模型回复') ||
@@ -528,21 +532,23 @@ nextTick(() => {
     if (isMockResponse) {
       queryItem.error = '⚠️ DeepSeek API 调用失败，返回了模拟数据。请检查：1) DEEPSEEK_API_KEY 是否配置 2) API Key 是否有效 3) 网络连接是否正常 4) 查看 Python 服务日志'
       queryItem.answer = ''
-      console.error('检测到模拟回复，说�DeepSeek API 调用失败')
-      console.error('请检�ai-service/.env 文件中的 DEEPSEEK_API_KEY �DEEPSEEK_BASE_URL 配置')
+      console.error('检测到模拟回复，说明 DeepSeek API 调用失败')
+      console.error('请检查 ai-service/.env 文件中的 DEEPSEEK_API_KEY 和 DEEPSEEK_BASE_URL 配置')
       console.error('完整返回结果:', JSON.stringify(result, null, 2))
     } else if (!answer || (typeof answer === 'string' && answer.trim() === '')) {
-      queryItem.error = '未能获取到答案，请检查：1) 文档是否已处理完�2) 查看控制台日志获取完整返回结果 3) 检查 DeepSeek API 配置和 Python 服务日志'
+      queryItem.error = '未能获取到答案，请检查：1) 文档是否已处理完成 2) 查看控制台日志'
       queryItem.answer = ''
-      console.error('答案为空，完整返回结�?', JSON.stringify(result, null, 2))
+      console.error('答案为空，完整返回结果:', JSON.stringify(result, null, 2))
     } else {
       queryItem.error = null
-    const formatted = formatAnswer(String(answer))
-      console.log('答案格式- 原始 (00字符):', String(answer).substring(0, 200))
-      console.log('答案格式- 处理(0字符):', formatted.substring(0, 200))
+      // 格式化答案（但不过度清理）
+      const formatted = formatAnswer(String(answer))
+      console.log('答案格式化 - 原始 (前200字符):', String(answer).substring(0, 200))
+      console.log('答案格式化 - 处理后 (前200字符):', formatted.substring(0, 200))
       
-     if (formatted.length < 20 && String(answer).length > 20) {
-        console.warn('格式化后答案过短，使用原始答案显示')
+      // 如果格式化后答案太短，使用原始答案
+      if (formatted.length < 20 && String(answer).length > 20) {
+        console.warn('格式化后答案过短，使用原始答案')
         queryItem.answer = String(answer)
       } else {
         queryItem.answer = formatted || String(answer)
@@ -554,7 +560,8 @@ nextTick(() => {
     queryItem.error = '问答失败: ' + (error.message || error.response?.data?.message || '未知错误')
   } finally {
     querying.value = false
-   nextTick(() => {
+    // 滚动到底部显示答案
+    nextTick(() => {
       scrollToBottom()
     })
   }
@@ -570,27 +577,31 @@ const formatAnswer = (answer: string): string => {
   formatted = formatted
     .replace(/【系统提示[^】]*】/g, '')
     .replace(/\[系统提示[^\]]*\]/g, '')
-    .replace(/系统提示[?][^\n]*/g, '')
+    .replace(/系统提示[：:][^\n]*/g, '')
     .replace(/【模拟模型回复】/g, '')
     .replace(/【模拟流式回复】/g, '')
     .replace(/模拟模型回复/g, '')
     .replace(/模拟流式回复/g, '')
   
-  // 第二步：移除"用户问题:"及其后面的问题内容（只移除开头的�?  // 匹配模式：用户问� xxx �?用户问题：xxx
-  formatted = formatted.replace(/^用户问题[�?]\s*[^\n]+\n*/i, '')
-  formatted = formatted.replace(/^问题[�?]\s*[^\n]+\n*/i, '')
+  // 第二步：移除"用户问题:"及其后面的问题内容（只移除开头的）
+  // 匹配模式：用户问题: xxx 或 用户问题：xxx
+  formatted = formatted.replace(/^用户问题[：:]\s*[^\n]+\n*/i, '')
+  formatted = formatted.replace(/^问题[：:]\s*[^\n]+\n*/i, '')
   
-  // 第三步：移除"相关文档片段:"及其后面的所有片段内�?  // 匹配�?相关文档片段:"开始到字符串结尾的所有内� 
-   const relatedChunksIndex = formatted.search(/相关(文档)?片段[�?]/i)
+  // 第三步：移除"相关文档片段:"及其后面的所有片段内容
+  // 匹配从"相关文档片段:"开始到字符串结尾的所有内容
+  const relatedChunksIndex = formatted.search(/相关(文档)?片段[：:]/i)
   if (relatedChunksIndex >= 0) {
     formatted = formatted.substring(0, relatedChunksIndex).trim()
   }
   
-  // 第四步：移除所有片段标记（�?[片段 0]: ... �?[片段0]: ...�?  // 匹配完整的片段块，包括多行内� 
-   formatted = formatted.replace(/\[片段\s*\d+\][�?]\s*[^\n]*(?:\n(?!\[片段)[^\n]*)*/g, '')
+  // 第四步：移除所有片段标记（如 [片段 0]: ... 或 [片段0]: ...）
+  // 匹配完整的片段块，包括多行内容
+  formatted = formatted.replace(/\[片段\s*\d+\][：:]\s*[^\n]*(?:\n(?!\[片段)[^\n]*)*/g, '')
   
-  // 第五步：移除"片段摘要:"等标�  formatted = formatted.replace(/片段摘要[�?][^\n]*/g, '')
-  formatted = formatted.replace(/片段\s*\d+\s*的摘要[�?][^\n]*/g, '')
+  // 第五步：移除"片段摘要:"等标记
+  formatted = formatted.replace(/片段摘要[：:][^\n]*/g, '')
+  formatted = formatted.replace(/片段\s*\d+\s*的摘要[：:][^\n]*/g, '')
   
   // 第六步：清理多余的空白和换行
   formatted = formatted.replace(/\n{3,}/g, '\n\n')
@@ -598,15 +609,15 @@ const formatAnswer = (answer: string): string => {
   
   // 第七步：如果清理后答案为空或太短，尝试提取可能的答案部分
   if (!formatted || formatted.length < 10) {
-    // 尝试从原始答案中提取可能的答案（�?用户问题"之后�?相关文档片段"之前 
-      const userQIndex = answer.search(/用户问题[�?]/i)
-    const relatedIndex = answer.search(/相关(文档)?片段[�?]/i)
+    // 尝试从原始答案中提取可能的答案（在"用户问题"之后，"相关文档片段"之前）
+    const userQIndex = answer.search(/用户问题[：:]/i)
+    const relatedIndex = answer.search(/相关(文档)?片段[：:]/i)
     
     if (userQIndex >= 0 && relatedIndex > userQIndex) {
       // 提取用户问题和相关片段之间的内容
       let extracted = answer.substring(userQIndex, relatedIndex)
       // 移除"用户问题: xxx"部分
-      extracted = extracted.replace(/用户问题[�?]\s*[^\n]+\n*/i, '')
+      extracted = extracted.replace(/用户问题[：:]\s*[^\n]+\n*/i, '')
       extracted = extracted.trim()
       
       if (extracted.length > 10) {
@@ -615,14 +626,14 @@ const formatAnswer = (answer: string): string => {
     }
   }
   
-  // 第八步：如果还是为空，返回提示信� 
-   if (!formatted || formatted.length < 5) {
-    console.warn('答案格式化后为空，原始答', answer.substring(0, 200))
-    return '<p>抱歉，未能从返回内容中提取到有效答案。这可能是由LLM 返回格式异常。请检DeepSeek API 配置是否正确/p>'
+  // 第八步：如果还是为空，返回提示信息
+  if (!formatted || formatted.length < 5) {
+    console.warn('答案格式化后为空，原始答案:', answer.substring(0, 200))
+    return '<p>抱歉，未能从返回内容中提取到有效答案。这可能是由于 LLM 返回格式异常。请检查 DeepSeek API 配置是否正确。</p>'
   }
   
-  // 第九步：格式化输出（转换HTML 
-   formatted = formatted.replace(/\n\n+/g, '</p><p>')
+  // 第九步：格式化输出（转换为 HTML）
+  formatted = formatted.replace(/\n\n+/g, '</p><p>')
   formatted = formatted.replace(/\n/g, '<br>')
   if (!formatted.startsWith('<p>')) {
     formatted = '<p>' + formatted
@@ -641,6 +652,7 @@ const truncateText = (text: string, maxLength: number): string => {
   return text.substring(0, maxLength) + '...'
 }
 
+// 滚动到底部
 const queryHistoryRef = ref<HTMLElement | null>(null)
 const scrollToBottom = () => {
   if (queryHistoryRef.value) {
@@ -650,7 +662,7 @@ const scrollToBottom = () => {
 
 // 重试处理文档
 const retryProcessDocument = async (id: number) => {
-  if (!confirm('确定要重新处理这个文档吗?')) return
+  if (!confirm('确定要重新处理这个文档吗？')) return
 
   try {
     await api.post(`/Document/${id}/retry`)
@@ -664,7 +676,7 @@ const retryProcessDocument = async (id: number) => {
 
 // 删除文档
 const deleteDocument = async (id: number) => {
-  if (!confirm('确定要删除这个文档吗?')) return
+  if (!confirm('确定要删除这个文档吗？')) return
 
   try {
     await api.delete(`/Document/${id}`)
@@ -714,18 +726,18 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* 全局移除所有文字发光效�?*/
+/* 全局移除所有文字发光效果 */
 .document-agent-page,
 .document-agent-page *,
 .modal-content,
 .modal-content * {
   text-shadow: none !important;
-  filter: none !important; /* 移除可能的滤镜效�?*/
+  filter: none !important; /* 移除可能的滤镜效果 */
 }
 
 .document-agent-page {
   padding: 24px;
-  color: var(--color-border-default) !important; /* 确保页面文字是深�?*/
+  color: #1e293b !important; /* 确保页面文字是深色 */
   background: transparent !important;
 }
 
@@ -740,7 +752,7 @@ onMounted(() => {
 .document-agent-page .document-table td,
 .document-agent-page .filter-select,
 .document-agent-page .btn-refresh {
-  color: var(--color-border-default) !important;
+  color: #1e293b !important;
   text-shadow: none !important; /* 移除文字发光效果 */
 }
 
@@ -749,7 +761,7 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
-  color: var(--color-border-default) !important;
+  color: #1e293b !important;
   gap: 20px;
 }
 
@@ -757,13 +769,13 @@ onMounted(() => {
   font-size: 24px;
   font-weight: 600;
   margin: 0;
-  color: var(--color-border-default) !important;
-  text-shadow: none !important; /* 移除所有文字发光效�?*/
+  color: #1e293b !important;
+  text-shadow: none !important; /* 移除所有文字发光效果 */
 }
 
 .btn-primary {
-  background: var(--color-primary);
-  color: var(--color-bg-light, white);
+  background: #3b82f6;
+  color: white;
   border: none;
   padding: 10px 24px;
   border-radius: 6px;
@@ -778,12 +790,12 @@ onMounted(() => {
   min-width: 100px;
   font-weight: 500;
   transition: all 0.2s;
-  box-shadow: 0 1px 2px 0 var(--color-border);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--color-primary-hover);
-  box-shadow: 0 4px 6px -1px var(--shadow);
+  background: #2563eb;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   transform: translateY(-1px);
 }
 
@@ -792,7 +804,7 @@ onMounted(() => {
 }
 
 .btn-primary:disabled {
-  background: var(--color-gray-400);
+  background: #9ca3af;
   cursor: not-allowed;
   opacity: 0.6;
   transform: none;
@@ -800,11 +812,11 @@ onMounted(() => {
 }
 
 .document-list-section {
-  background: var(--color-bg-light, white) !important;
+  background: white !important;
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 1px 3px var(--shadow);
-  color: var(--color-border-default) !important; /* 确保文字是深�?*/
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  color: #1e293b !important; /* 确保文字是深色 */
 }
 
 .section-header {
@@ -817,7 +829,7 @@ onMounted(() => {
 .section-header h2 {
   font-size: 18px;
   font-weight: 600;
-  color: var(--color-border-default) !important;
+  color: #1e293b !important;
   margin: 0;
   text-shadow: none !important; /* 移除文字发光效果 */
 }
@@ -830,34 +842,34 @@ onMounted(() => {
 
 .filter-select {
   padding: 8px 12px;
-  border: 1px solid var(--color-border-subtle);
+  border: 1px solid #d1d5db;
   border-radius: 6px;
   font-size: 14px;
-  background: var(--color-bg-light) !important;
-  color: var(--color-border-default) !important;
+  background: white !important;
+  color: #1e293b !important;
 }
 
 .filter-select option {
-  background: var(--color-bg-light);
-  color: var(--color-border-default);
+  background: white;
+  color: #1e293b;
 }
 
 .btn-refresh {
-  background: var(--color-bg-elevated);
-  border: 1px solid var(--color-border-subtle);
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
   padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 6px;
-  color: var(--color-border-default) !important;
+  color: #1e293b !important;
   transition: all 0.2s;
 }
 
 .btn-refresh:hover {
-  background: var(--color-border);
-  color: var(--color-text-main) !important;
+  background: #e5e7eb;
+  color: #0f172a !important;
 }
 
 .table-container {
@@ -870,35 +882,35 @@ onMounted(() => {
 }
 
 .document-table th {
-  background: var(--color-bg-elevated) !important;
+  background: #f9fafb !important;
   padding: 12px;
   text-align: left;
   font-weight: 600;
-  border-bottom: 2px solid var(--color-border);
-  color: var(--color-border-default) !important;
+  border-bottom: 2px solid #e5e7eb;
+  color: #1e293b !important;
   font-size: 14px;
   text-shadow: none !important; /* 移除文字发光效果 */
 }
 
 .document-table td {
   padding: 12px;
-  border-bottom: 1px solid var(--color-border);
-  color: var(--color-border-default) !important;
+  border-bottom: 1px solid #e5e7eb;
+  color: #1e293b !important;
   font-size: 14px;
-  background: var(--color-bg-light) !important;
+  background: white !important;
   text-shadow: none !important; /* 移除文字发光效果 */
 }
 
 .document-row {
-  background: var(--color-bg-light) !important;
+  background: white !important;
 }
 
 .document-row:hover {
-  background: var(--color-bg-elevated) !important;
+  background: #f9fafb !important;
 }
 
 .document-row td {
-  color: var(--color-border-default) !important;
+  color: #1e293b !important;
   background: inherit !important;
 }
 
@@ -910,7 +922,7 @@ onMounted(() => {
   font-weight: 600;
   display: block;
   margin-bottom: 4px;
-  color: var(--color-text-main);
+  color: #111827;
   font-size: 14px;
   text-decoration: none;
   cursor: default;
@@ -920,7 +932,7 @@ onMounted(() => {
 
 .doc-summary {
   font-size: 12px;
-  color: var(--color-text-sec);
+  color: #6b7280;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -941,29 +953,29 @@ onMounted(() => {
 }
 
 .status-pending {
-  background: var(--color-warning-soft);
-  color: var(--color-warning-dark);
+  background: #fef3c7;
+  color: #92400e;
 }
 
 .status-processing {
-  background: var(--color-primary-soft);
-  color: var(--color-primary-dark);
+  background: #dbeafe;
+  color: #1e40af;
 }
 
 .status-completed {
-  background: var(--color-success-soft);
-  color: var(--color-success-dark);
+  background: #d1fae5;
+  color: #065f46;
 }
 
 .status-failed {
-  background: var(--color-danger-soft);
-  color: var(--color-danger-dark);
+  background: #fee2e2;
+  color: #991b1b;
 }
 
 .error-message {
   margin-top: 4px;
   font-size: 11px;
-  color: var(--color-danger-dark);
+  color: #dc2626;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -982,16 +994,16 @@ onMounted(() => {
 
 .btn-action {
   background: transparent;
-  border: 1px solid var(--color-border-subtle);
+  border: 1px solid #d1d5db;
   padding: 6px 10px;
   border-radius: 4px;
   cursor: pointer;
-  color: var(--color-text-sec);
+  color: #6b7280;
 }
 
 .btn-action:hover:not(:disabled) {
-  background: var(--color-bg-elevated);
-  color: var(--color-text-main);
+  background: #f3f4f6;
+  color: #374151;
 }
 
 .btn-action:disabled {
@@ -1000,25 +1012,25 @@ onMounted(() => {
 }
 
 .btn-danger:hover:not(:disabled) {
-  background: var(--color-danger-soft);
-  color: var(--color-danger-dark);
-  border-color: var(--color-danger-400);
+  background: #fee2e2;
+  color: #dc2626;
+  border-color: #fca5a5;
 }
 
 .btn-retry {
-  color: var(--color-primary);
-  border-color: var(--color-primary);
+  color: #3b82f6;
+  border-color: #3b82f6;
 }
 
 .btn-retry:hover:not(:disabled) {
-  background: var(--color-primary-soft);
-  color: var(--color-primary-hover);
-  border-color: var(--color-primary-hover);
+  background: #eff6ff;
+  color: #2563eb;
+  border-color: #2563eb;
 }
 
 .empty-cell {
   text-align: center;
-  color: var(--color-text-muted);
+  color: #9ca3af;
   padding: 40px;
 }
 
@@ -1032,14 +1044,14 @@ onMounted(() => {
 
 .page-btn {
   padding: 8px 16px;
-  border: 1px solid var(--color-border-subtle);
-  background: var(--color-bg-light);
+  border: 1px solid #d1d5db;
+  background: white;
   border-radius: 6px;
   cursor: pointer;
 }
 
 .page-btn:hover:not(:disabled) {
-  background: var(--color-bg-elevated);
+  background: #f9fafb;
 }
 
 .page-btn:disabled {
@@ -1063,7 +1075,7 @@ onMounted(() => {
 }
 
 .modal-content {
-  background: var(--color-bg-light) !important;
+  background: white !important;
   border-radius: 8px;
   width: 90%;
   max-width: 600px;
@@ -1074,13 +1086,13 @@ onMounted(() => {
   flex-direction: column;
   position: relative;
   z-index: 10000;
-  color: var(--color-border-default) !important; /* 确保模态框内所有文字都是深�?*/
+  color: #1e293b !important; /* 确保模态框内所有文字都是深色 */
 }
 
 /* 强制覆盖全局深色主题样式 */
 .modal-content * {
   color: inherit;
-  text-shadow: none !important; /* 移除所有文字发光效�?*/
+  text-shadow: none !important; /* 移除所有文字发光效果 */
 }
 
 .modal-content .query-question,
@@ -1089,7 +1101,7 @@ onMounted(() => {
 .modal-content .chunk-content,
 .modal-content .chunk-index,
 .modal-content .chunks-title {
-  color: var(--color-border-default) !important;
+  color: #1e293b !important;
   text-shadow: none !important; /* 移除文字发光效果 */
 }
 
@@ -1102,15 +1114,15 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid var(--color-border);
-  background: var(--color-bg-light) !important;
-  color: var(--color-border-default) !important;
+  border-bottom: 1px solid #e5e7eb;
+  background: white !important;
+  color: #1e293b !important;
 }
 
 .modal-header h3 {
   margin: 0;
   font-size: 20px;
-  color: var(--color-border-default) !important;
+  color: #1e293b !important;
   font-weight: 600;
   text-shadow: none !important; /* 移除文字发光效果 */
 }
@@ -1120,7 +1132,7 @@ onMounted(() => {
   border: none;
   font-size: 20px;
   cursor: pointer;
-  color: var(--color-text-sec);
+  color: #6b7280;
 }
 
 .modal-body {
@@ -1134,29 +1146,29 @@ onMounted(() => {
   justify-content: flex-end;
   gap: 10px;
   padding: 20px;
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid #e5e7eb;
   position: relative;
   z-index: 10001;
-  background: var(--color-bg-light);
+  background: white;
   flex-shrink: 0;
   margin-top: auto;
 }
 
 .btn-cancel {
   padding: 10px 20px;
-  border: 1px solid var(--color-border-subtle);
-  background: var(--color-bg-light);
+  border: 1px solid #d1d5db;
+  background: white;
   border-radius: 6px;
   cursor: pointer;
 }
 
 .btn-cancel:hover {
-  background: var(--color-bg-elevated);
+  background: #f9fafb;
 }
 
 /* 上传区域 */
 .upload-area {
-  border: 2px dashed var(--color-border-subtle);
+  border: 2px dashed #d1d5db;
   border-radius: 8px;
   padding: 40px;
   text-align: center;
@@ -1164,7 +1176,7 @@ onMounted(() => {
 }
 
 .upload-placeholder {
-  color: var(--color-text-sec);
+  color: #6b7280;
 }
 
 .upload-placeholder i {
@@ -1175,7 +1187,7 @@ onMounted(() => {
 
 .upload-hint {
   font-size: 12px;
-  color: var(--color-text-muted);
+  color: #9ca3af;
   margin-top: 8px;
 }
 
@@ -1184,15 +1196,15 @@ onMounted(() => {
   align-items: center;
   gap: 12px;
   padding: 12px;
-  background: var(--color-bg-elevated);
+  background: #f9fafb;
   border-radius: 6px;
 }
 
 .btn-select-file {
   margin-top: 16px;
   padding: 10px 20px;
-  background: var(--color-primary);
-  color: var(--color-bg-light, white);
+  background: #3b82f6;
+  color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -1202,7 +1214,7 @@ onMounted(() => {
   margin-left: auto;
   background: transparent;
   border: none;
-  color: var(--color-danger);
+  color: #ef4444;
   cursor: pointer;
 }
 
@@ -1219,7 +1231,7 @@ onMounted(() => {
 .form-input {
   width: 100%;
   padding: 10px;
-  border: 1px solid var(--color-border-subtle);
+  border: 1px solid #d1d5db;
   border-radius: 6px;
   font-size: 14px;
 }
@@ -1237,42 +1249,42 @@ onMounted(() => {
 
 .query-input-area {
   padding: 20px;
-  border-bottom: 2px solid var(--color-border);
+  border-bottom: 2px solid #e5e7eb;
   display: flex;
   gap: 12px;
-  background: var(--color-bg-elevated) !important;
-  color: var(--color-border-default) !important;
+  background: #fafbfc !important;
+  color: #1e293b !important;
 }
 
 .query-input {
   flex: 1;
   padding: 12px;
-  border: 1px solid var(--color-border-subtle);
+  border: 1px solid #d1d5db;
   border-radius: 6px;
   font-size: 14px;
   resize: none;
   font-family: inherit;
   transition: border-color 0.2s;
-  background: var(--color-bg-light) !important;
-  color: var(--color-border-default) !important;
+  background: white !important;
+  color: #1e293b !important;
 }
 
 .query-input:focus {
   outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--color-primary-soft);
-  background: var(--color-bg-light) !important;
-  color: var(--color-border-default) !important;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  background: white !important;
+  color: #1e293b !important;
 }
 
 .query-input::placeholder {
-  color: var(--color-text-muted) !important;
+  color: #9ca3af !important;
 }
 
 .btn-query {
   padding: 12px 24px;
-  background: var(--color-primary);
-  color: var(--color-bg-light, white);
+  background: #3b82f6;
+  color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -1283,9 +1295,9 @@ onMounted(() => {
 }
 
 .btn-query:hover:not(:disabled) {
-  background: var(--color-primary-hover);
+  background: #2563eb;
   transform: translateY(-1px);
-  box-shadow: 0 4px 6px var(--shadow);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .btn-query:disabled {
@@ -1297,8 +1309,8 @@ onMounted(() => {
   flex: 1;
   overflow-y: auto;
   padding: 24px;
-  background: var(--color-bg-card) !important;
-  color: var(--color-border-default) !important;
+  background: #ffffff !important;
+  color: #1e293b !important;
 }
 
 .query-history::-webkit-scrollbar {
@@ -1306,17 +1318,17 @@ onMounted(() => {
 }
 
 .query-history::-webkit-scrollbar-track {
-  background: var(--color-bg-elevated);
+  background: #f1f5f9;
   border-radius: 4px;
 }
 
 .query-history::-webkit-scrollbar-thumb {
-  background: var(--color-border-subtle);
+  background: #cbd5e1;
   border-radius: 4px;
 }
 
 .query-history::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-muted);
+  background: #94a3b8;
 }
 
 .query-item {
@@ -1329,10 +1341,10 @@ onMounted(() => {
   gap: 12px;
   margin-bottom: 16px;
   padding: 16px;
-  background: var(--color-bg-elevated);
-  border: 1px solid var(--color-text-sub);
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
   border-radius: 8px;
-  box-shadow: 0 1px 2px var(--color-border);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .query-question * {
@@ -1340,14 +1352,14 @@ onMounted(() => {
 }
 
 .query-question i {
-  color: var(--color-primary);
+  color: #3b82f6;
   margin-top: 4px;
   font-size: 16px;
   flex-shrink: 0;
 }
 
 .query-question span {
-  color: var(--color-border-default) !important;
+  color: #1e293b !important;
   font-size: 15px;
   font-weight: 500;
   line-height: 1.6;
@@ -1360,15 +1372,15 @@ onMounted(() => {
   align-items: flex-start;
   gap: 12px;
   padding: 16px;
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-text-sub);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   margin-bottom: 20px;
 }
 
 .query-answer i {
-  color: var(--color-success);
+  color: #10b981;
   margin-top: 4px;
   font-size: 16px;
   flex-shrink: 0;
@@ -1389,38 +1401,38 @@ onMounted(() => {
   gap: 8px;
   margin-bottom: 12px;
   font-weight: 600;
-  color: var(--color-primary-hover) !important;
+  color: #2563eb !important;
   font-size: 15px;
 }
 
 .answer-label i {
-  color: var(--color-warning);
+  color: #fbbf24;
   font-size: 16px;
 }
 
 .answer-body {
   line-height: 1.8;
-  color: var(--color-text-main) !important;
+  color: #111827 !important;
   font-size: 15px;
   font-weight: 400;
   word-wrap: break-word;
   word-break: break-word;
   padding: 16px;
-  background: var(--color-bg-card);
+  background: #ffffff;
   border-radius: 8px;
-  border-left: 4px solid var(--color-primary);
-  box-shadow: 0 1px 3px var(--shadow);
+  border-left: 4px solid #3b82f6;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   text-shadow: none !important; /* 移除文字发光效果 */
 }
 
 .answer-body p {
   margin: 0 0 12px 0;
-  color: var(--color-text-main) !important;
+  color: #111827 !important;
   font-weight: 400;
 }
 
 .answer-body * {
-  color: var(--color-text-main) !important;
+  color: #111827 !important;
 }
 
 /* 确保所有文本元素都清晰可见 */
@@ -1430,7 +1442,7 @@ onMounted(() => {
 .answer-body em,
 .answer-body b,
 .answer-body i:not(.fas):not(.far):not(.fab) {
-  color: var(--color-text-main) !important;
+  color: #111827 !important;
   text-shadow: none !important; /* 移除文字发光效果 */
 }
 
@@ -1442,29 +1454,29 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: var(--color-text-sec);
+  color: #6b7280;
   font-size: 14px;
   padding: 12px;
-  background: var(--color-bg-elevated);
+  background: #f9fafb;
   border-radius: 6px;
-  border: 1px dashed var(--color-border-subtle);
+  border: 1px dashed #d1d5db;
 }
 
 .no-answer i {
-  color: var(--color-text-sec);
+  color: #6b7280;
 }
 
 .loading-answer {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: var(--color-text-sec);
+  color: #475569;
   font-size: 14px;
   padding: 8px 0;
 }
 
 .loading-answer i {
-  color: var(--color-primary);
+  color: #3b82f6;
   font-size: 16px;
   animation: spin 1s linear infinite;
 }
@@ -1478,57 +1490,57 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: var(--color-danger-dark);
+  color: #dc2626;
   font-size: 14px;
   font-weight: 500;
   padding: 8px 0;
 }
 
 .error-answer i {
-  color: var(--color-danger-dark);
+  color: #dc2626;
   font-size: 16px;
 }
 
 .relevant-chunks {
   margin-top: 16px;
   padding-top: 16px;
-  border-top: 1px solid var(--color-primary-soft);
+  border-top: 1px solid #dbeafe;
 }
 
 .chunks-title {
   font-weight: 600;
   margin-bottom: 12px;
-  color: var(--color-primary-dark);
+  color: #1e40af;
 }
 
 .chunk-item {
   margin-bottom: 12px;
   padding: 12px;
-  background: var(--color-bg-light);
+  background: white;
   border-radius: 6px;
-  border: 1px solid var(--color-primary-soft);
+  border: 1px solid #dbeafe;
 }
 
 .chunk-index {
   font-weight: 600;
-  color: var(--color-primary);
+  color: #3b82f6;
   margin-right: 12px;
 }
 
 .chunk-score {
-  color: var(--color-text-sec);
+  color: #6b7280;
   font-size: 12px;
 }
 
 .chunk-content {
   margin-top: 8px;
-  color: var(--color-text-main);
+  color: #374151;
   line-height: 1.6;
 }
 
 .empty-history {
   text-align: center;
-  color: var(--color-text-muted);
+  color: #9ca3af;
   padding: 80px 20px;
   display: flex;
   flex-direction: column;
@@ -1538,7 +1550,7 @@ onMounted(() => {
 
 .empty-history i {
   font-size: 48px;
-  color: var(--color-border-subtle);
+  color: #d1d5db;
   margin-bottom: 8px;
 }
 
@@ -1549,7 +1561,7 @@ onMounted(() => {
 
 .empty-hint {
   font-size: 13px;
-  color: var(--color-text-muted);
+  color: #9ca3af;
 }
 </style>
 

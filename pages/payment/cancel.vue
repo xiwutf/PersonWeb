@@ -1,18 +1,18 @@
-﻿\<template>
+<template>
   <div class="payment-cancel">
     <div class="container">
       <div class="cancel-icon">
         <i class="fas fa-times-circle"></i>
       </div>
-      <h1>支付已取�</h1>
-      <p>您已取消本次支付，订单尚未完成�</p>
+      <h1>支付已取消</h1>
+      <p>您已取消本次支付，订单尚未完成。</p>
 
       <div class="reasons">
         <h3>可能的原因：</h3>
         <ul>
           <li>您不想继续购买此模块</li>
-          <li>支付过程中出现错�</li>
-          <li>需要使用其他支付方�</li>
+          <li>支付过程中出现错误</li>
+          <li>需要使用其他支付方式</li>
         </ul>
       </div>
 
@@ -38,7 +38,6 @@ const route = useRoute()
 const router = useRouter()
 
 const retryPayment = () => {
-  // 获取订单ID并重新跳转到支付页面
   const orderId = route.query.orderId
   if (orderId) {
     router.push(`/payment?orderId=${orderId}`)
@@ -52,7 +51,6 @@ const goToModules = () => {
 }
 
 const contactSupport = () => {
-  // 打开客服联系方式
   window.open('mailto:support@example.com?subject=支付咨询', '_blank')
 }
 </script>

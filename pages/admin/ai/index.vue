@@ -1,20 +1,22 @@
-﻿<template>
+<template>
   <ClientOnly>
     <div class="admin-ai-center-page">
       <!-- Hero 区域 -->
       <n-card class="hero-card mb-6">
         <div class="hero-content">
-          <h1 class="hero-title">AI 智能体中�</h1>
+          <h1 class="hero-title">AI 智能体中心</h1>
           <p class="hero-subtitle">
-            统一管理内容创作、项目展示和客户线索处理的自动化智能工具，让个人网站像一家公司一样自动运转�?          </p>
+            统一管理内容创作、项目展示和客户线索处理的自动化智能工具，让个人网站像一家公司一样自动运转。
+          </p>
           <p class="hero-description">
-            这些智能体协助完成高质量文案生成、项目介绍自动化、线索评分与标签化，提升效率与专业度�?          </p>
+            这些智能体协助完成高质量文案生成、项目介绍自动化、线索评分与标签化，提升效率与专业度。
+          </p>
         </div>
       </n-card>
 
-      <!-- 智能体卡片（响应式网格，支持多行�?-->
+      <!-- 智能体卡片（响应式网格，支持多行） -->
       <div class="agents-grid">
-        <!-- 内容生成智能�?-->
+        <!-- 内容生成智能体 -->
         <n-card class="agent-card" hoverable>
           <template #header>
             <div class="agent-header">
@@ -22,14 +24,15 @@
                 <span class="agent-icon-emoji">📄</span>
               </div>
               <div class="agent-header-text">
-                <h3 class="agent-title">内容生成智能�</h3>
+                <h3 class="agent-title">内容生成智能体</h3>
                 <p class="agent-subtitle">Content Agent</p>
               </div>
             </div>
           </template>
           <div class="agent-body">
             <p class="agent-description">
-              自动生成文章草稿、项目介绍、工具说明等高质量内容�?            </p>
+              自动生成文章草稿、项目介绍、工具说明等高质量内容。
+            </p>
             <div class="agent-features">
               <div class="feature-item">
                 <i class="fas fa-check-circle feature-icon"></i>
@@ -45,7 +48,7 @@
               </div>
               <div class="feature-item">
                 <i class="fas fa-check-circle feature-icon"></i>
-                <span>多种语气可�</span>
+                <span>多种语气可选</span>
               </div>
             </div>
           </div>
@@ -56,7 +59,7 @@
           </template>
         </n-card>
 
-        <!-- Demo 上架智能�?-->
+        <!-- Demo 上架智能体 -->
         <n-card class="agent-card" hoverable>
           <template #header>
             <div class="agent-header">
@@ -64,14 +67,15 @@
                 <span class="agent-icon-emoji">🧩</span>
               </div>
               <div class="agent-header-text">
-                <h3 class="agent-title">Demo 上架智能�</h3>
+                <h3 class="agent-title">Demo 上架智能体</h3>
                 <p class="agent-subtitle">Demo Agent</p>
               </div>
             </div>
           </template>
           <div class="agent-body">
             <p class="agent-description">
-              自动为工�?项目生成展示级文案，包括卖点、场景、目标用户等�?            </p>
+              自动为工具/项目生成展示级文案，包括卖点、场景、目标用户等。
+            </p>
             <div class="agent-features">
               <div class="feature-item">
                 <i class="fas fa-check-circle feature-icon"></i>
@@ -83,11 +87,11 @@
               </div>
               <div class="feature-item">
                 <i class="fas fa-check-circle feature-icon"></i>
-                <span>写回项目数据库字�</span>
+                <span>写回项目数据库字段</span>
               </div>
               <div class="feature-item">
                 <i class="fas fa-check-circle feature-icon"></i>
-                <span>快速上�?Demo</span>
+                <span>快速上架 Demo</span>
               </div>
             </div>
           </div>
@@ -98,7 +102,7 @@
           </template>
         </n-card>
 
-        <!-- 表单线索智能�?-->
+        <!-- 表单线索智能体 -->
         <n-card class="agent-card" hoverable>
           <template #header>
             <div class="agent-header">
@@ -106,14 +110,15 @@
                 <span class="agent-icon-emoji">🎯</span>
               </div>
               <div class="agent-header-text">
-                <h3 class="agent-title">表单线索智能�</h3>
+                <h3 class="agent-title">表单线索智能体</h3>
                 <p class="agent-subtitle">Lead Agent</p>
               </div>
             </div>
           </template>
           <div class="agent-body">
             <p class="agent-description">
-              自动分析客户需求，生成摘要、标签和评分�?            </p>
+              自动分析客户需求，生成摘要、标签和评分。
+            </p>
             <div class="agent-features">
               <div class="feature-item">
                 <i class="fas fa-check-circle feature-icon"></i>
@@ -125,7 +130,7 @@
               </div>
               <div class="feature-item">
                 <i class="fas fa-check-circle feature-icon"></i>
-                <span>优先级评�</span>
+                <span>优先级评分</span>
               </div>
               <div class="feature-item">
                 <i class="fas fa-check-circle feature-icon"></i>
@@ -140,7 +145,7 @@
           </template>
         </n-card>
 
-        <!-- 客服问答智能�?-->
+        <!-- 客服问答智能体 -->
         <n-card class="agent-card" hoverable>
           <template #header>
             <div class="agent-header">
@@ -148,14 +153,15 @@
                 <span class="agent-icon-emoji">💬</span>
               </div>
               <div class="agent-header-text">
-                <h3 class="agent-title">客服问答智能�</h3>
+                <h3 class="agent-title">客服问答智能体</h3>
                 <p class="agent-subtitle">Support Agent</p>
               </div>
             </div>
           </template>
           <div class="agent-body">
             <p class="agent-description">
-              为网站访客提供智能客服问答，自动回答服务内容、项目开发、工具使用等问题�?            </p>
+              为网站访客提供智能客服问答，自动回答服务内容、项目开发、工具使用等问题。
+            </p>
             <div class="agent-features">
               <div class="feature-item">
                 <i class="fas fa-check-circle feature-icon"></i>
@@ -163,7 +169,7 @@
               </div>
               <div class="feature-item">
                 <i class="fas fa-check-circle feature-icon"></i>
-                <span>FAQ 知识库支�</span>
+                <span>FAQ 知识库支持</span>
               </div>
               <div class="feature-item">
                 <i class="fas fa-check-circle feature-icon"></i>
@@ -182,7 +188,7 @@
           </template>
         </n-card>
 
-        <!-- 个人助理智能�?-->
+        <!-- 个人助理智能体 -->
         <n-card class="agent-card" hoverable>
           <template #header>
             <div class="agent-header">
@@ -190,14 +196,15 @@
                 <span class="agent-icon-emoji">🤖</span>
               </div>
               <div class="agent-header-text">
-                <h3 class="agent-title">个人助理智能�</h3>
+                <h3 class="agent-title">个人助理智能体</h3>
                 <p class="agent-subtitle">Assistant Agent</p>
               </div>
             </div>
           </template>
           <div class="agent-body">
             <p class="agent-description">
-              为管理员提供专属 AI 助理，帮助分析线索、规划学习、安排项目优先级等�?            </p>
+              为管理员提供专属 AI 助理，帮助分析线索、规划学习、安排项目优先级等。
+            </p>
             <div class="agent-features">
               <div class="feature-item">
                 <i class="fas fa-check-circle feature-icon"></i>
@@ -205,7 +212,7 @@
               </div>
               <div class="feature-item">
                 <i class="fas fa-check-circle feature-icon"></i>
-                <span>上下文感�</span>
+                <span>上下文感知</span>
               </div>
               <div class="feature-item">
                 <i class="fas fa-check-circle feature-icon"></i>
@@ -224,7 +231,7 @@
           </template>
         </n-card>
 
-        <!-- 自动报价智能�?-->
+        <!-- 自动报价智能体 -->
         <n-card class="agent-card" hoverable>
           <template #header>
             <div class="agent-header">
@@ -232,14 +239,15 @@
                 <span class="agent-icon-emoji">💰</span>
               </div>
               <div class="agent-header-text">
-                <h3 class="agent-title">自动报价智能�</h3>
+                <h3 class="agent-title">自动报价智能体</h3>
                 <p class="agent-subtitle">Quotation Agent</p>
               </div>
             </div>
           </template>
           <div class="agent-body">
             <p class="agent-description">
-              根据客户需求和项目信息，自动生成专业的报价方案，包括明细、付款方式、交付时间等�?            </p>
+              根据客户需求和项目信息，自动生成专业的报价方案，包括明细、付款方式、交付时间等。
+            </p>
             <div class="agent-features">
               <div class="feature-item">
                 <i class="fas fa-check-circle feature-icon"></i>
@@ -267,22 +275,23 @@
         </n-card>
       </div>
 
-      <!-- 底部区域：工作流提示 + 模型状态面�?-->
+      <!-- 底部区域：工作流提示 + 模型状态面板 -->
       <div class="bottom-section">
-        <!-- 工作流提示卡�?-->
+        <!-- 工作流提示卡片 -->
         <n-card class="workflow-tip-card">
           <div class="workflow-tip-content">
             <i class="fas fa-lightbulb tip-icon"></i>
             <p class="tip-text">
-              你可以随时扩展新的智能体，所有智能体共享统一�?AI 调用框架�?            </p>
+              你可以随时扩展新的智能体，所有智能体共享统一的 AI 调用框架。
+            </p>
           </div>
         </n-card>
 
-        <!-- 模型状态面�?-->
+        <!-- 模型状态面板 -->
         <n-card class="model-status-card">
           <template #header>
             <div class="status-header">
-              <h3 class="status-title">模型状�</h3>
+              <h3 class="status-title">模型状态</h3>
               <n-button
                 text
                 size="small"
@@ -298,7 +307,7 @@
           </template>
           <div class="status-content">
             <div class="status-item">
-              <span class="status-label">服务状�</span>
+              <span class="status-label">服务状态</span>
               <n-tag :type="serviceStatus.type" size="small">
                 <template #icon>
                   <i :class="serviceStatus.icon"></i>
@@ -319,8 +328,8 @@
               <span class="status-value">{{ modelInfo.maxTokens }}</span>
             </div>
             <div class="status-item">
-              <span class="status-label">日志状�</span>
-              <n-tag type="success" size="small">已启�</n-tag>
+              <span class="status-label">日志状态</span>
+              <n-tag type="success" size="small">已启用</n-tag>
             </div>
             <div class="status-actions">
               <n-button
@@ -354,7 +363,7 @@ definePageMeta({
 const api = useApi()
 const message = useSafeMessage()
 
-
+// 模型状态信息
 const statusLoading = ref(false)
 const serviceStatus = ref({
   type: 'default' as 'success' | 'warning' | 'error' | 'info' | 'default',
@@ -368,11 +377,11 @@ const modelInfo = ref({
   maxTokens: null as number | null
 })
 
-
+// 检查 AI 服务状态
 const checkAiServiceStatus = async () => {
   statusLoading.value = true
   try {
-    
+    // 调用后端健康检查接口
     const res = await api.get('/ai/health').catch(() => null)
     
     if (res && res.success) {
@@ -382,7 +391,7 @@ const checkAiServiceStatus = async () => {
         icon: 'fas fa-check-circle'
       }
       
-      
+      // 设置默认模型信息（可以从配置或响应中获取）
       modelInfo.value = {
         model: 'DeepSeek',
         temperature: 0.7,
@@ -434,19 +443,19 @@ const checkAiServiceStatus = async () => {
       temperature: null,
       maxTokens: null
     }
-    console.error('检�?AI 服务状态失�?', e)
+    console.error('检查 AI 服务状态失败:', e)
   } finally {
     statusLoading.value = false
   }
 }
 
-
+// 页面加载时检查状态
 onMounted(() => {
   checkAiServiceStatus()
 })
 
 useHead({
-  title: 'AI 智能体中�?- 后台管理',
+  title: 'AI 智能体中心 - 后台管理',
   meta: [
     { name: 'description', content: 'AI 智能体中心，提供内容生成、Demo 上架、线索处理等 AI 能力' }
   ]
@@ -496,7 +505,7 @@ useHead({
   margin: 0 auto;
 }
 
-/* 智能体卡片网�?*/
+/* 智能体卡片网格 */
 .agents-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -504,7 +513,7 @@ useHead({
   margin-bottom: var(--spacing-6);
 }
 
-/* 智能体卡片样�?*/
+/* 智能体卡片样式 */
 .agent-card {
   transition: all 0.3s ease;
   border: 1px solid var(--n-border-color);
@@ -531,7 +540,7 @@ useHead({
   flex-shrink: 0;
 }
 
-/* 智能体图标样�?- 使用 CSS 变量 */
+/* 智能体图标样式 - 使用 CSS 变量 */
 .agent-icon-blue {
   background: linear-gradient(135deg, var(--color-primary, var(--color-primary)) 0%, var(--color-primary-hover, var(--color-primary-hover)) 100%);
 }
@@ -624,7 +633,7 @@ useHead({
   }
 }
 
-/* 工作流提示卡�?- 使用 CSS 变量 */
+/* 工作流提示卡片 - 使用 CSS 变量 */
 .workflow-tip-card {
   background: linear-gradient(135deg, var(--color-warning-soft, var(--color-amber-100)) 0%, var(--color-warning-soft, var(--color-amber-200)) 100%);
   border: 1px solid var(--color-warning, var(--color-amber-400));
@@ -650,7 +659,7 @@ useHead({
   line-height: 1.6;
 }
 
-/* 模型状态面�?*/
+/* 模型状态面板 */
 .model-status-card {
   border: 1px solid var(--n-border-color);
 }
@@ -704,7 +713,7 @@ useHead({
   border-top: 1px solid var(--n-border-color);
 }
 
-/* 响应式设�?*/
+/* 响应式设计 */
 @media (max-width: 768px) {
   .admin-ai-center-page {
     padding: var(--spacing-4);

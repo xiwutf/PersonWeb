@@ -1,39 +1,39 @@
-<template>
+﻿<template>
   <div class="min-h-screen bg-[var(--color-text-main)] text-slate-200 relative overflow-hidden font-['Outfit']">
     <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <!-- ???? -->
+      <!-- 返回按钮 -->
       <div class="tools-back-button-container">
         <NuxtLink to="/tools" class="tools-back-button">
           <svg class="tools-back-button-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
-          <span>??????</span>
+          <span>返回插件工具</span>
         </NuxtLink>
       </div>
 
-      <!-- ???? -->
+      <!-- 页面头部 -->
       <header class="text-center mb-12">
         <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-orange-200 via-var(--color-bg-light, white) to-red-200">
-          ????
+          我的工具
         </h1>
-        <p class="text-lg text-slate-400">?????????</p>
+        <p class="text-lg text-slate-400">管理您已购买的工具</p>
       </header>
 
-      <!-- ???? -->
+      <!-- 工具列表 -->
       <div v-if="loading" class="text-center py-20">
         <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
-        <p class="mt-4 text-slate-400">????..</p>
+        <p class="mt-4 text-slate-400">加载中...</p>
       </div>
 
       <div v-else-if="tools.length === 0" class="text-center py-20">
-        <div class="text-6xl mb-4 opacity-50">??</div>
-        <h3 class="text-xl font-semibold text-slate-300 mb-2">?????</h3>
-        <p class="text-slate-500 mb-6">???????????</p>
+        <div class="text-6xl mb-4 opacity-50">📦</div>
+        <h3 class="text-xl font-semibold text-slate-300 mb-2">还没有工具</h3>
+        <p class="text-slate-500 mb-6">去工具商城发现好工具吧</p>
         <NuxtLink
           to="/tools/marketplace"
           class="inline-block px-6 py-3 bg-gradient-to-r from-orange-600 to-red-600 text-var(--color-bg-light, white) rounded-xl hover:from-orange-500 hover:to-red-500 transition-all"
         >
-          ??????
+          浏览工具商城
         </NuxtLink>
       </div>
 
@@ -45,12 +45,12 @@
         >
           <div class="flex items-start justify-between mb-4">
             <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/20 border border-var(--color-bg-light, white)/10 flex items-center justify-center text-xl">
-              {{ purchase.tool.icon || '??' }}
+              {{ purchase.tool.icon || '🔧' }}
             </div>
             <div class="text-right text-xs text-slate-500">
               <div>{{ formatDate(purchase.purchasedAt) }}</div>
               <div v-if="purchase.expiresAt" class="mt-1">
-                ???{{ formatDate(purchase.expiresAt) }}
+                到期：{{ formatDate(purchase.expiresAt) }}
               </div>
             </div>
           </div>
@@ -63,20 +63,20 @@
               :to="`/tools/${purchase.tool.slug}`"
               class="flex-1 bg-slate-700/50 hover:bg-slate-600/50 text-slate-200 px-4 py-2 rounded-xl transition-all text-center text-sm"
             >
-              ????
+              使用工具
             </NuxtLink>
             <button
               v-if="purchase.tool.apiEndpoint"
               @click="showApiKeyModal(purchase.tool.id)"
               class="px-4 py-2 bg-slate-700/50 hover:bg-slate-600/50 text-slate-200 rounded-xl transition-all text-sm"
             >
-              API??
+              API密钥
             </button>
           </div>
         </div>
       </div>
 
-      <!-- API????? -->
+      <!-- API密钥模态框 -->
       <div
         v-if="showApiKeyModal"
         class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
@@ -84,27 +84,27 @@
       >
         <div class="bg-slate-800 rounded-3xl p-8 max-w-2xl w-full">
           <div class="flex items-center justify-between mb-6">
-            <h2 class="text-2xl font-bold">?? API ??</h2>
+            <h2 class="text-2xl font-bold">生成 API 密钥</h2>
             <button
               @click="showApiKeyModal = false"
               class="text-slate-400 hover:text-var(--color-bg-light, white)"
             >
-              ??            </button>
+            </button>
           </div>
 
           <div class="space-y-4">
             <div>
-              <label class="block text-sm font-medium mb-2">????</label>
+              <label class="block text-sm font-medium mb-2">密钥名称</label>
               <input
                 v-model="apiKeyName"
                 type="text"
-                placeholder="API????"
+                placeholder="例如：生产环境密钥"
                 class="w-full px-4 py-2 bg-slate-700/50 border border-var(--color-bg-light, white)/10 rounded-xl text-slate-200 focus:outline-none focus:border-orange-500/50"
               />
             </div>
 
             <div>
-              <label class="block text-sm font-medium mb-2">?????????</label>
+              <label class="block text-sm font-medium mb-2">密钥名称</label>
               <input
                 v-model.number="rateLimit"
                 type="number"
@@ -115,13 +115,13 @@
             </div>
 
             <div v-if="generatedApiKey" class="p-4 bg-slate-900 rounded-xl">
-              <div class="text-sm text-slate-400 mb-2">?? API ????????????????</div>
+              <div class="text-sm text-slate-400 mb-2">您的 API 密钥（请妥善保管，只显示一次）：</div>
               <div class="font-mono text-sm bg-slate-800 p-3 rounded break-all">{{ generatedApiKey }}</div>
               <button
                 @click="copyApiKey"
                 class="mt-2 px-4 py-2 bg-orange-600 hover:bg-orange-500 text-var(--color-bg-light, white) rounded-lg text-sm"
               >
-                ????
+
               </button>
             </div>
 
@@ -131,13 +131,13 @@
                 :disabled="generating"
                 class="flex-1 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-var(--color-bg-light, white) px-6 py-3 rounded-xl transition-all font-medium disabled:opacity-50"
               >
-                {{ generating ? '????..' : '????' }}
+                {{ generating ? '生成中...' : '生成密钥' }}
               </button>
               <button
                 @click="showApiKeyModal = false"
                 class="px-6 py-3 bg-slate-700/50 hover:bg-slate-600/50 text-slate-200 rounded-xl transition-all"
               >
-                ??
+
               </button>
             </div>
           </div>
@@ -180,7 +180,7 @@ const rateLimit = ref(1000)
 const generatedApiKey = ref('')
 const generating = ref(false)
 
-// ??????
+// 获取我的工具
 const fetchMyTools = async () => {
   const visitorId = localStorage.getItem('visitor_id')
   if (!visitorId) {
@@ -194,13 +194,13 @@ const fetchMyTools = async () => {
       tools.value = res as Purchase[]
     }
   } catch (e) {
-    console.error('????????', e)
+    console.error('获取我的工具失败', e)
   } finally {
     loading.value = false
   }
 }
 
-// ??API?????
+// 显示API密钥模态框
 const showApiKeyModalHandler = (toolId: number) => {
   currentToolId.value = toolId
   showApiKeyModal.value = true
@@ -209,13 +209,13 @@ const showApiKeyModalHandler = (toolId: number) => {
   rateLimit.value = 1000
 }
 
-// ??API??
+// 显示API密钥模态框
 const generateApiKey = async () => {
   if (!currentToolId.value) return
 
   const visitorId = localStorage.getItem('visitor_id')
   if (!visitorId) {
-    alert('????')
+    alert('请先登录')
     return
   }
 
@@ -232,22 +232,22 @@ const generateApiKey = async () => {
       generatedApiKey.value = res.apiKey
     }
   } catch (e) {
-    alert('??API????')
-    console.error('??API????', e)
+    alert('生成API密钥失败')
+    console.error('生成API密钥失败', e)
   } finally {
     generating.value = false
   }
 }
 
-// ??API??
+// 复制API密钥
 const copyApiKey = () => {
   if (generatedApiKey.value) {
     navigator.clipboard.writeText(generatedApiKey.value)
-    alert('???????')
+    alert('已复制到剪贴板')
   }
 }
 
-// ?????
+// 格式化日期
 const formatDate = (dateString: string) => {
   const date = new Date(dateString)
   return date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' })
@@ -258,15 +258,15 @@ onMounted(() => {
 })
 
 useHead({
-  title: '???? - ????',
+  title: '我的工具 - 溪午听风',
   meta: [
-    { name: 'description', content: '?????????' }
+    { name: 'description', content: '管理您已购买的工具' }
   ]
 })
 </script>
 
 <style scoped>
-/* ?????? */
+/* 返回按钮样式 */
 .tools-back-button-container {
   margin-bottom: 1.5rem;
 }
@@ -301,4 +301,5 @@ useHead({
   overflow: hidden;
 }
 </style>
+
 

@@ -1,18 +1,18 @@
 <template>
   <div class="module-store">
-    <!-- ???? -->
+    <!-- 页面头部 -->
     <div class="store-header">
-      <h1>????</h1>
-      <p>??????????????????????</p>
+      <h1>模块商店</h1>
+      <p>发现和安装丰富的功能模块，让您的网站更加强大</p>
     </div>
 
-    <!-- ??????-->
+    <!-- 搜索和筛选 -->
     <div class="store-controls">
       <div class="search-box">
         <input
           v-model="searchQuery"
           type="text"
-          placeholder="????..."
+          placeholder="搜索模块..."
           class="search-input"
         />
         <button class="search-btn">
@@ -24,44 +24,44 @@
 
       <div class="filter-controls">
         <select v-model="selectedCategory" class="category-select">
-          <option value="">????</option>
+          <option value="">所有分类</option>
           <option value="ai">AI</option>
-          <option value="visitor">????</option>
-          <option value="3d">3D??</option>
-          <option value="admin">????</option>
-          <option value="performance">????</option>
-          <option value="i18n">???</option>
-          <option value="tools">???</option>
-          <option value="ui">UI??</option>
+          <option value="visitor">访客互动</option>
+          <option value="3d">3D展示</option>
+          <option value="admin">后台管理</option>
+          <option value="performance">性能监控</option>
+          <option value="i18n">多语言</option>
+          <option value="tools">工具集</option>
+          <option value="ui">UI组件</option>
         </select>
 
         <select v-model="sortBy" class="sort-select">
-          <option value="popular">??</option>
-          <option value="newest">??</option>
-          <option value="price-low">??????</option>
-          <option value="price-high">??????</option>
+          <option value="popular">热门</option>
+          <option value="newest">最新</option>
+          <option value="price-low">价格从低到高</option>
+          <option value="price-high">价格从高到低</option>
         </select>
       </div>
     </div>
 
-    <!-- ???? -->
+    <!-- 模块网格 -->
     <div class="modules-grid">
-      <!-- ?????-->
+      <!-- 加载状态 -->
       <div v-if="isLoading" class="loading-state">
         <div class="loading-spinner"></div>
-        <p>??????...</p>
+        <p>正在加载模块...</p>
       </div>
 
-      <!-- ?????-->
+      <!-- 错误状态 -->
       <div v-else-if="error" class="error-state">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
         <p>{{ error }}</p>
-        <button @click="loadModules" class="retry-btn">??</button>
+        <button @click="loadModules" class="retry-btn">重试</button>
       </div>
 
-      <!-- ???? -->
+      <!-- 模块列表 -->
       <div v-else class="modules-list">
         <ModuleCard
           v-for="module in filteredModules"
@@ -73,14 +73,14 @@
       </div>
     </div>
 
-    <!-- ?? -->
+    <!-- 分页 -->
     <div v-if="!isLoading && !error && filteredModules.length > 0" class="pagination">
       <button
         @click="currentPage = Math.max(1, currentPage - 1)"
         :disabled="currentPage === 1"
         class="page-btn"
       >
-        ????      </button>
+      </button>
 
       <div class="page-numbers">
         <button
@@ -98,7 +98,7 @@
         :disabled="currentPage === totalPages"
         class="page-btn"
       >
-        ????      </button>
+      </button>
     </div>
   </div>
 </template>
@@ -109,7 +109,7 @@ import ModuleCard from '~/components/ModuleCard.vue'
 import { useModuleStore } from '~/composables/useModuleStore'
 import { useModuleManager } from '~/composables/useModuleManager'
 
-// ???const searchQuery = ref('')
+const searchQuery = ref('')
 const selectedCategory = ref('')
 const sortBy = ref('popular')
 const currentPage = ref(1)
@@ -125,28 +125,28 @@ const {
 
 const { installModule, installMultipleModules } = useModuleManager()
 
-// ??
+// 状态
 const modules = ref([])
 
-// ????
+// 数据
 const filteredModules = computed(() => {
   let result = modules.value
 
-  // ????
+// 状态
   if (searchQuery.value) {
-    result = searchModules(searchQuery.value.value, {
+    result = searchModules(searchQuery.value, {
       category: selectedCategory.value,
       sortBy: sortBy.value,
       page: currentPage.value,
       pageSize: pageSize.value
     }).modules
   } else {
-    // ????
+// 数据
     if (selectedCategory.value) {
       result = result.filter(m => m.category === selectedCategory.value)
     }
 
-    // ??
+// 数据
     result.sort((a, b) => {
       switch (sortBy.value) {
         case 'popular':
@@ -170,7 +170,7 @@ const totalPages = computed(() => {
   return Math.ceil(filteredModules.value.length / pageSize.value)
 })
 
-// ??
+    // 排序
 async function loadModules() {
   try {
     await getModules()
@@ -187,22 +187,22 @@ async function handleInstall(moduleKey: string) {
     })
 
     if (success) {
-      alert('????')
+      alert('模块安装成功！')
     } else {
-      alert('??????????')
+      alert('模块安装成功！')
     }
   } catch (e) {
     console.error('Failed to install module:', e)
-    alert('?????' + e.message)
+    alert('安装失败：' + e.message)
   }
 }
 
 function handlePreview(moduleKey: string) {
-  // ??????????
+// 方法
   console.log('Preview module:', moduleKey)
 }
 
-// ????
+  // 这里可以打开预览弹窗
 onMounted(() => {
   loadModules()
 })

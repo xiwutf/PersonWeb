@@ -76,37 +76,33 @@
             </option>
           </select>
         </div>
-        <div v-if="selectedProjectId && trends" class="h-64">
-          <Line :data="chartData" :options="chartOptions" />
-        </div>
+        <template v-if="selectedProjectId && trends">
+          <ClientOnly>
+            <div class="h-64">
+              <Line :data="chartData" :options="chartOptions" />
+            </div>
+            <template #fallback>
+              <div class="h-64" />
+            </template>
+          </ClientOnly>
+        </template>
         <div v-else class="h-64 flex items-center justify-center text-gray-500 dark:text-gray-400">
-          čŻˇéćŠä¸ä¸ŞéĄšçŽćĽçčŽżéŽčśĺ?        </div>
+          请选择一个项目查看趋势
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-} from 'chart.js'
-import { Line } from 'vue-chartjs'
+import { defineAsyncComponent } from 'vue'
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
+// Chart.js 仅在客户端加载，避免 SSR 预渲染时的 CommonJS 兼容性问题
+const Line = defineAsyncComponent(() =>
+  import('vue-chartjs').then(async () => {
+    await import('chart.js/auto')
+    return (await import('vue-chartjs')).Line
+  })
 )
 
 definePageMeta({

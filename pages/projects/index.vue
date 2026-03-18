@@ -1,92 +1,60 @@
 <template>
   <div class="projects-page">
-    <!-- 3D ????????????????-->
+    <!-- 3D 旋转空间视图切换（移动端隐藏） -->
     <div class="projects-view-toggle-container">
       <button
         v-if="viewMode === 'grid'"
         @click.stop.prevent="handleToggle3DView"
         class="projects-view-toggle-button"
-        title="????D??"
+        title="切换到3D视图"
       >
-        <span class="projects-view-toggle-icon">??</span>
-        <span class="projects-view-toggle-text">3D??</span>
+        <span class="projects-view-toggle-icon">🌐</span>
+        <span class="projects-view-toggle-text">3D视图</span>
       </button>
     </div>
     
-    <!-- 3D ???? -->
+    <!-- 3D 旋转空间 -->
     <Project3DSpace 
       v-if="viewMode === '3d' && !loading && projects.length > 0" 
       :projects="projects"
       @back-to-list="viewMode = 'grid'"
     />
     
-    <!-- ?????? -->
+    <!-- 传统网格视图 -->
     <div v-else class="projects-container">
       <div class="projects-header">
-        <h1 class="projects-title">????</h1>
-        <p class="projects-subtitle">?????????????</p>
-      </div>
-
-      <!-- ???? Tab -->
-      <div class="projects-filters">
-        <button
-          v-for="category in projectCategories"
-          :key="category"
-          @click="selectedCategory = category"
-          class="projects-filter-tab"
-          :class="{ 'projects-filter-tab--active': selectedCategory === category }"
-        >
-          {{ category }}
-        </button>
+        <h1 class="projects-title">项目展示</h1>
+        <p class="projects-subtitle">探索我的开源项目和技术实验</p>
       </div>
 
       <div v-if="loading" class="projects-loading">
         <div class="projects-loading-spinner"></div>
       </div>
 
-      <!-- ???? -->
+      <!-- 错误提示 -->
       <div v-if="error" class="projects-error">
-        <p class="projects-error-title">????</p>
+        <p class="projects-error-title">加载失败</p>
         <p class="projects-error-message">{{ error }}</p>
         <p v-if="debugData" class="projects-error-debug">{{ debugData }}</p>
       </div>
       
-      <!-- ??????-->
+      <!-- 无数据提示 -->
       <div v-if="projects.length === 0 && !loading && !error" class="projects-empty">
-        <div class="projects-empty-icon">??</div>
-        <h3 class="projects-empty-title">????</h3>
-        <p class="projects-empty-text">??????????????????????</p>
+        <div class="projects-empty-icon">📦</div>
+        <h3 class="projects-empty-title">暂无项目</h3>
+        <p class="projects-empty-text">还没有添加任何项目，请先在后台管理中创建项目</p>
       </div>
 
       <div v-else class="projects-grid">
         <NuxtLink 
-          v-for="project in filteredProjects" 
+          v-for="project in projects" 
           :key="project.id" 
-          :to="getProjectLink(project)" 
+          :to="`/projects/${project.id}`" 
           class="projects-card"
         >
-          <!-- ????-->
+          <!-- 封面图 -->
           <div class="projects-card-cover">
-            <img 
-              v-if="project.coverUrl && !imageLoadErrors[project.id]" 
-              :src="project.coverUrl" 
-              :alt="project.title"
-              @error="handleImageError(project.id)"
-              @load="handleImageLoad(project.id)"
-              style="display: block;"
-            />
-            <div 
-              v-if="!project.coverUrl || imageLoadErrors[project.id]"
-              class="projects-card-cover-placeholder"
-              :class="getPlaceholderClass(project)"
-            >
-              <div class="projects-card-cover-placeholder-icon">
-                {{ getPlaceholderIcon(project) }}
-              </div>
-              <div class="projects-card-cover-placeholder-text">
-                {{ project.title }}
-              </div>
-            </div>
+            <img :src="project.coverUrl || 'https://placehold.co/600x400'" :alt="project.title" />
             <div class="projects-card-cover-overlay">
               <div class="projects-card-cover-actions">
                 <a 
@@ -111,7 +79,7 @@
             </div>
           </div>
 
-          <!-- ?? -->
+          <!-- 内容 -->
           <div class="projects-card-body">
             <div class="projects-card-header">
               <h3 class="projects-card-title">{{ project.title }}</h3>
@@ -128,7 +96,7 @@
             
             <p class="projects-card-description">{{ project.description }}</p>
 
-            <!-- ??? -->
+            <!-- 技术栈 -->
             <div class="projects-card-tech-stack">
               <span 
                 v-for="tech in project.techStack" 
@@ -156,26 +124,27 @@
 </template>
 
 <script setup lang="ts">
-import Project3DSpace from '~/components/three/Project3DSpace.vue'
-
-// ???? default ????? Header?
+// 确保使用 default 布局（包含 Header）
 definePageMeta({
-  layout: 'default'
+  layout: 'default',
+  ssr: false
 })
 
-import {
-  Chart as ChartJS,
+import * as ChartJsPkg from 'chart.js'
+import { Bar } from 'vue-chartjs'
+import type { Project } from '~/types/api'
+
+const {
+  Chart: ChartJS,
   Title,
   Tooltip,
   Legend,
   BarElement,
   CategoryScale,
   LinearScale
-} from 'chart.js'
-import { Bar } from 'vue-chartjs'
-import type { Project } from '~/types/api'
+} = ChartJsPkg
 
-// ?? Chart.js ??
+// 注册 Chart.js 组件
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 const api = useApi()
@@ -184,83 +153,15 @@ const loading = ref(true)
 const error = ref('')
 const debugData = ref('')
 const viewMode = ref<'grid' | '3d'>('grid')
-const imageLoadErrors = ref<Record<number | string, boolean>>({})
 
-// ????
-const projectCategories = ref(['??', 'AI??', 'Web ??', '??', '??'])
-const selectedCategory = ref('??')
-
-// ????? AI/??? ????
-const isAiProject = (project: Project) => {
-  const title = (project.title || '').toLowerCase()
-  const description = (project.description || '').toLowerCase()
-  const techStack = Array.isArray(project.techStack) 
-    ? project.techStack.join(' ').toLowerCase()
-    : (project.techStack || '').toLowerCase()
-  
-  const aiKeywords = ['ai', '??', '???', 'agent', 'rag', 'llm', 'gpt', 'openai', 'langchain', '????', '????', 'ml']
-  const text = `${title} ${description} ${techStack}`
-  
-  return aiKeywords.some(keyword => text.includes(keyword))
-}
-
-// ????? Web ??
-const isWebProject = (project: Project) => {
-  const title = (project.title || '').toLowerCase()
-  const description = (project.description || '').toLowerCase()
-  const techStack = Array.isArray(project.techStack) 
-    ? project.techStack.join(' ').toLowerCase()
-    : (project.techStack || '').toLowerCase()
-  
-  const webKeywords = ['web', '??', '??', 'vue', 'react', 'nuxt', 'next', '??', '??', '??']
-  const text = `${title} ${description} ${techStack}`
-  
-  return webKeywords.some(keyword => text.includes(keyword)) && !isAiProject(project)
-}
-
-// ??????????
-const isPluginProject = (project: Project) => {
-  const title = (project.title || '').toLowerCase()
-  const description = (project.description || '').toLowerCase()
-  
-  const pluginKeywords = ['??', 'plugin', 'extension', '??', 'tool', 'vscode', 'chrome', '???']
-  const text = `${title} ${description}`
-  
-  return pluginKeywords.some(keyword => text.includes(keyword)) && !isAiProject(project) && !isWebProject(project)
-}
-
-// ??????
-const filteredProjects = computed(() => {
-  if (selectedCategory.value === '??') {
-    return projects.value
-  }
-  
-  if (selectedCategory.value === 'AI??') {
-    return projects.value.filter(isAiProject)
-  }
-  
-  if (selectedCategory.value === 'Web ??') {
-    return projects.value.filter(isWebProject)
-  }
-  
-  if (selectedCategory.value === '??') {
-    return projects.value.filter(isPluginProject)
-  }
-  
-  // ????
-  return projects.value.filter(project => 
-    !isAiProject(project) && 
-    !isWebProject(project) && 
-    !isPluginProject(project)
-  )
-})
-
-// ??3D??????
+// 切换3D视图处理函数
 const handleToggle3DView = () => {
+  console.log('切换3D视图，当前模式:', viewMode.value)
   viewMode.value = '3d'
+  console.log('切换后模式:', viewMode.value)
 }
 
-// ????
+// 图表配置
 const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
@@ -288,11 +189,11 @@ const fetchProjects = async () => {
     loading.value = true
     error.value = ''
     
-    // ?? API
+    // 调用后端 API
     const res = await api.get<Project[]>('/Projects')
     debugData.value = JSON.stringify(res)
     
-    // ????
+    // 处理响应数据
     if (Array.isArray(res)) {
       // Process projects to match frontend expectations
       let processedProjects = res.map(p => ({
@@ -303,19 +204,19 @@ const fetchProjects = async () => {
           : (Array.isArray(p.techStack) ? p.techStack : [])
       }))
       
-      // ??????
+      // 去重：根据标题去重，保留最早创建的版本
       const titleMap = new Map<string, any>()
       processedProjects.forEach(project => {
         const title = (project.title || project.Title || '').trim()
-        if (!title) return // ?????
+        if (!title) return // 跳过无标题的项目
         
-        // ?????
+        // 标准化标题用于比较（去除空格、转换为小写）
         const normalizedTitle = title.toLowerCase().replace(/\s+/g, '')
         
         if (!titleMap.has(normalizedTitle)) {
           titleMap.set(normalizedTitle, project)
         } else {
-          // ?????
+          // 如果已存在，比较创建时间，保留更早的
           const existing = titleMap.get(normalizedTitle)!
           const existingDate = new Date(existing.createdAt || existing.CreatedAt || 0)
           const currentDate = new Date(project.createdAt || project.CreatedAt || 0)
@@ -325,25 +226,25 @@ const fetchProjects = async () => {
         }
       })
       
-      // ??
+      // 转换为数组
       let uniqueProjects = Array.from(titleMap.values())
       
-      // ????
+      // 进一步去重相似标题（处理已知的重复项）
       const finalProjects: any[] = []
       const seenTitles = new Set<string>()
       
-      // ??????? -> ??????
+      // 定义重复项映射（保留的标题 -> 要排除的标题）
       const duplicateMap: Record<string, string[]> = {
-        'Revit': ['Revit', 'Revit v2'],
-        'AI??': ['AI??'],
-        'Google Analytics': ['Google Analytics']
+        '个人数字资产平台': ['个人网站系统', '个人网站v2'],
+        'ai创作助手': ['ai智能助手'],
+        '访客分析系统（analytics）': ['访客分析系统']
       }
       
       uniqueProjects.forEach(project => {
         const title = (project.title || project.Title || '').trim()
         const normalizedTitle = title.toLowerCase().replace(/\s+/g, '')
         
-        // ?????
+        // 检查是否应该被排除
         let shouldExclude = false
         for (const [keepTitle, excludeTitles] of Object.entries(duplicateMap)) {
           const keepNormalized = keepTitle.toLowerCase().replace(/\s+/g, '')
@@ -358,24 +259,21 @@ const fetchProjects = async () => {
           }
         }
         
-        // ?????
+        // 如果应该排除，跳过
         if (shouldExclude) return
         
-        // ????
+        // 添加到最终列表
         finalProjects.push(project)
         seenTitles.add(normalizedTitle)
       })
       
       projects.value = finalProjects
       
-      // ??????
-      imageLoadErrors.value = {}
-      
-      // ?? GitHub ??
+      // 异步加载 GitHub 数据
       loadGithubStats()
     } else {
       projects.value = []
-      error.value = 'API ??????'
+      error.value = 'API 返回格式错误'
     }
   } catch (e: any) {
     console.error('Failed to fetch projects', e)
@@ -386,11 +284,11 @@ const fetchProjects = async () => {
   }
 }
 
-// ???????
+// 获取技术栈标签样式类名
 const getTechTagClass = (tech: string) => {
   const techLower = tech.toLowerCase()
   
-  // ????
+  // 前端技术
   if (techLower.includes('vue') || techLower.includes('react') || techLower.includes('angular') || techLower.includes('nuxt') || techLower.includes('next')) {
     return 'projects-tech-tag--vue'
   }
@@ -406,107 +304,59 @@ const getTechTagClass = (tech: string) => {
   if (techLower.includes('node') || techLower.includes('express')) {
     return 'projects-tech-tag--node'
   }
-  // ???
+  // 数据库
   if (techLower.includes('mysql') || techLower.includes('postgresql') || techLower.includes('mongodb') || techLower.includes('redis')) {
     return 'projects-tech-tag--database'
   }
-  // ??
+  // 框架
   if (techLower.includes('spring') || techLower.includes('fastapi') || techLower.includes('django') || techLower.includes('flask')) {
     return 'projects-tech-tag--framework'
   }
-  // ???
-  if (techLower.includes('miniprogram') || techLower.includes('wechat')) {
+  // 小程序
+  if (techLower.includes('小程序') || techLower.includes('wechat') || techLower.includes('miniprogram')) {
     return 'projects-tech-tag--miniprogram'
   }
   // AI/ML
   if (techLower.includes('ai') || techLower.includes('ml') || techLower.includes('langchain') || techLower.includes('openai')) {
     return 'projects-tech-tag--ai'
   }
-  // ????
+  // 默认样式
   return 'projects-tech-tag--default'
 }
 
-// ?????
+// 获取技术栈图标
 const getTechIcon = (tech: string) => {
   const techLower = tech.toLowerCase()
   
-  if (techLower.includes('vue')) return 'i-mdi-vuejs'
-  if (techLower.includes('react')) return 'i-mdi-react'
-  if (techLower.includes('python')) return 'i-mdi-language-python'
-  if (techLower.includes('node')) return 'i-mdi-nodejs'
-  if (techLower.includes('mysql')) return 'i-mdi-database'
-  if (techLower.includes('redis')) return 'i-mdi-database'
-  if (techLower.includes('miniprogram') || techLower.includes('wechat')) return 'i-mdi-wechat'
-  if (techLower.includes('ai') || techLower.includes('langchain')) return 'i-mdi-robot'
-  if (techLower.includes('spring')) return 'i-mdi-leaf'
-  if (techLower.includes('docker')) return 'i-mdi-docker'
-  if (techLower.includes('kubernetes')) return 'i-mdi-kubernetes'
-  if (techLower.includes('git')) return 'i-mdi-git'
-
-  return 'i-mdi-code-tags'
-}
-
-// ??????
-const getPlaceholderClass = (project: Project) => {
-  if (isAiProject(project)) {
-    return 'projects-card-cover-placeholder--ai'
-  }
-  if (isWebProject(project)) {
-    return 'projects-card-cover-placeholder--web'
-  }
-  if (isPluginProject(project)) {
-    return 'projects-card-cover-placeholder--plugin'
-  }
-  return 'projects-card-cover-placeholder--default'
-}
-
-// ????????????
-const getPlaceholderIcon = (project: Project) => {
-  if (isAiProject(project)) {
-    return 'i-mdi-robot'
-  }
-  if (isWebProject(project)) {
-    return 'i-mdi-web'
-  }
-  if (isPluginProject(project)) {
-    return 'i-mdi-puzzle'
-  }
-  return 'i-mdi-folder'
-}
-
-// ??????????? Vue Router "No match found"
-const getProjectLink = (project: Project) => {
-  const id = project.id
-  if (id == null || id === '') return '/projects'
-  if (typeof id === 'number') return `/projects/${id}`
-  const s = String(id)
-  if (s.startsWith('/') || /\.(png|jpg|jpeg|gif|webp|svg)(\?|$)/i.test(s)) return '/projects'
-  return `/projects/${id}`
-}
-
-// ??????
-const handleImageError = (projectId: number | string) => {
-  imageLoadErrors.value[projectId] = true
-}
-
-// ??????
-const handleImageLoad = (projectId: number | string) => {
-  imageLoadErrors.value[projectId] = false
+  if (techLower.includes('vue')) return '⚡'
+  if (techLower.includes('react')) return '⚛️'
+  if (techLower.includes('python')) return '🐍'
+  if (techLower.includes('node')) return '🟢'
+  if (techLower.includes('mysql')) return '🗄️'
+  if (techLower.includes('redis')) return '🔴'
+  if (techLower.includes('小程序')) return '💬'
+  if (techLower.includes('ai') || techLower.includes('langchain')) return '🤖'
+  if (techLower.includes('spring')) return '🍃'
+  if (techLower.includes('docker')) return '🐳'
+  if (techLower.includes('kubernetes')) return '☸️'
+  if (techLower.includes('git')) return '📦'
+  
+  return '💻'
 }
 
 const loadGithubStats = async () => {
   for (const project of projects.value) {
     if (project.githubUrl) {
       try {
-        // ?? owner/repo
+        // 解析 owner/repo
         const match = project.githubUrl.match(/github\.com\/([^\/]+\/[^\/]+)/)
         if (match) {
           const repo = match[1]
           const stats = await api.get<any[]>(`/github/stats?repo=${repo}`)
           
           if (stats && Array.isArray(stats)) {
-            // stats ??????: { total: number, week: timestamp, days: [] }
-            // ????26 ??(??)
+            // stats 是周数据数组: { total: number, week: timestamp, days: [] }
+            // 我们取最近 26 周 (半年)
             const recentStats = stats.slice(-26)
             
             project.chartData = {
@@ -514,8 +364,8 @@ const loadGithubStats = async () => {
               datasets: [{
                 label: 'Commits',
                 data: recentStats.map(w => w.total),
-                backgroundColor: 'var(--color-primary)',
-                hoverBackgroundColor: 'var(--color-primary-hover)'
+                backgroundColor: '#3b82f6',
+                hoverBackgroundColor: '#2563eb'
               }]
             }
           }
@@ -533,6 +383,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* ??????????assets/css/projects.css */
-/* ??????????????????*/
+/* 页面特有样式已移至 assets/css/projects.css */
+/* 这里只保留组件特有的样式（如果有） */
 </style>

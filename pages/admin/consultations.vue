@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <ClientOnly>
     <div class="admin-consultations-page">
       <div class="page-header">
@@ -31,7 +31,7 @@
 
     <!-- 数据表格 -->
     <div class="table-container">
-      <div v-if="loading" class="table-loading">加载中..</div>
+      <div v-if="loading" class="table-loading">加载中...</div>
       <div v-else-if="consultations.length === 0" class="table-empty">暂无咨询数据</div>
       <table v-else class="data-table">
         <thead class="table-header">
@@ -146,8 +146,8 @@
           <n-descriptions-item label="咨询ID">#{{ currentConsultation.id }}</n-descriptions-item>
           <n-descriptions-item label="商品名称">{{ currentConsultation.productNameSnapshot }}</n-descriptions-item>
           <n-descriptions-item label="客户姓名">{{ currentConsultation.customerName }}</n-descriptions-item>
-          <n-descriptions-item label="手机">{{ currentConsultation.customerPhone || '-' }}</n-descriptions-item>
-          <n-descriptions-item label="微信">{{ currentConsultation.customerWeChat || '-' }}</n-descriptions-item>
+          <n-descriptions-item label="手机号">{{ currentConsultation.customerPhone || '-' }}</n-descriptions-item>
+          <n-descriptions-item label="微信号">{{ currentConsultation.customerWeChat || '-' }}</n-descriptions-item>
           <n-descriptions-item label="邮箱">{{ currentConsultation.customerEmail || '-' }}</n-descriptions-item>
           <n-descriptions-item label="预算范围">{{ currentConsultation.budgetRange || '-' }}</n-descriptions-item>
           <n-descriptions-item label="期望完成时间">{{ currentConsultation.expectedDeadline || '-' }}</n-descriptions-item>
@@ -169,7 +169,7 @@
               v-model:value="editForm.internalNote"
               type="textarea"
               :rows="3"
-              placeholder="请输入内部备注（仅管理员可见）"
+              placeholder="请输入内部备注"
             />
           </n-descriptions-item>
         </n-descriptions>
@@ -210,7 +210,7 @@
             </tbody>
             <tfoot>
               <tr>
-                <td colspan="4" class="text-right font-bold">总计</td>
+                <td colspan="4" class="text-right font-bold">总计：</td>
                 <td class="font-bold">¥{{ currentQuotation.totalAmount.toFixed(2) }}</td>
               </tr>
             </tfoot>
@@ -219,16 +219,16 @@
 
         <div class="quotation-details">
           <div v-if="currentQuotation.paymentTerms" class="detail-item">
-            <strong>付款方式</strong>{{ currentQuotation.paymentTerms }}
+            <strong>付款方式：</strong>{{ currentQuotation.paymentTerms }}
           </div>
           <div v-if="currentQuotation.deliveryTime" class="detail-item">
-            <strong>交付时间</strong>{{ currentQuotation.deliveryTime }}
+            <strong>交付时间：</strong>{{ currentQuotation.deliveryTime }}
           </div>
           <div v-if="currentQuotation.warranty" class="detail-item">
-            <strong>质保说明</strong>{{ currentQuotation.warranty }}
+            <strong>质保说明：</strong>{{ currentQuotation.warranty }}
           </div>
           <div v-if="currentQuotation.notes" class="detail-item">
-            <strong>备注</strong>{{ currentQuotation.notes }}
+            <strong>备注：</strong>{{ currentQuotation.notes }}
           </div>
         </div>
       </div>
@@ -239,7 +239,7 @@
         <div class="page-header">
           <h1 class="page-title">咨询管理</h1>
         </div>
-        <div class="table-loading">加载中..</div>
+        <div class="table-loading">加载中...</div>
       </div>
     </template>
   </ClientOnly>
@@ -305,7 +305,7 @@ const fetchConsultations = async () => {
     // 后端返回格式：{ code: 0, data: { Total: xxx, List: [], ... } }
     // useApi 处理后，res 就是 { Total: xxx, List: [], ... }
     if (res) {
-   
+      // 检查 res 是否包含 List 字段（后端使用大写）
       if (res.List && Array.isArray(res.List)) {
         consultations.value = res.List
         pagination.value.itemCount = res.Total ?? res.total ?? 0
@@ -385,9 +385,9 @@ const handleViewDetail = async (consultation: any) => {
 // 转为订单
 const handleConvertToOrder = async (consultation: any) => {
   try {
-    // useApi 已经处理了响应格式，如果成功会返�data，如果失败会抛出异常
+    // useApi 已经处理了响应格式，如果成功会返回 data，如果失败会抛出异常
     const res = await api.post<any>(`/admin/consultations/${consultation.id}/convert-to-order`)
-    // res 可能�?{ orderNo: 'xxx' } �?{ OrderNo: 'xxx' } 格式
+    // res 可能是 { orderNo: 'xxx' } 或 { OrderNo: 'xxx' } 格式
     const orderNo = res?.orderNo || res?.OrderNo
     if (orderNo) {
       message.success(`转换成功！新订单号：${orderNo}`)
@@ -396,7 +396,7 @@ const handleConvertToOrder = async (consultation: any) => {
       message.error('转换失败：未返回订单号')
     }
   } catch (e: any) {
-    console.error('转换咨询为订单失?', e)
+    console.error('转换咨询为订单失败:', e)
     const errorMessage = e.response?.data?.message || e.message || '转换失败'
     message.error(errorMessage)
   }
@@ -424,7 +424,7 @@ const handleAiAnalyze = async (consultation: any) => {
       await fetchConsultations() // 刷新列表
     } else {
       const errorMsg = res?.errorMessage || res?.message || '分析失败'
-      message.error(`AI 分析失败: ${errorMsg}。请检�AI 服务是否正常运行。`)
+      message.error(`AI 分析失败: ${errorMsg}。请检查 AI 服务是否正常运行。`)
     }
   } catch (e: any) {
     message.destroyAll()
@@ -439,7 +439,7 @@ const handleAiAnalyze = async (consultation: any) => {
   }
 }
 
-// 解析标签（支�JSON 数组和逗号分隔字符串）
+// 解析标签（支持 JSON 数组和逗号分隔字符串）
 const parseTags = (tags: string): string[] => {
   if (!tags) return []
   try {
@@ -454,6 +454,7 @@ const parseTags = (tags: string): string[] => {
   return []
 }
 
+// 获取评分样式类
 const getScoreClass = (score: number): string => {
   if (score >= 80) return 'score-high'
   if (score >= 60) return 'score-medium'
@@ -478,7 +479,7 @@ const handleAiQuotation = async (consultation: any) => {
       currentQuotation.value = res.quotation
     } else {
       const errorMsg = res?.errorMessage || res?.message || '生成报价失败'
-      message.error(`AI 报价失败: ${errorMsg}。请检�AI 服务是否正常运行。`)
+      message.error(`AI 报价失败: ${errorMsg}。请检查 AI 服务是否正常运行。`)
     }
   } catch (e: any) {
     message.destroyAll()
@@ -493,21 +494,25 @@ const handleAiQuotation = async (consultation: any) => {
   }
 }
 
+// 保存状态
 const handleSaveStatus = async () => {
   if (!currentConsultation.value) return
 
   try {
-await api.put<any>(`/admin/consultations/${currentConsultation.value.id}`, {
+    // useApi 已经处理了响应格式，如果成功会返回 data（可能为 null），如果失败会抛出异常
+    await api.put<any>(`/admin/consultations/${currentConsultation.value.id}`, {
       status: editForm.value.status,
       internalNote: editForm.value.internalNote
     })
 
+    // 如果没有抛出异常，说明保存成功
     message.success('保存成功')
     showDetailModal.value = false
     fetchConsultations()
   } catch (e: any) {
-    console.error('保存咨询状态失�?', e)
-const errorMessage = e.response?.data?.message || e.message || '保存失败'
+    console.error('保存咨询状态失败:', e)
+    // 显示详细的错误信息
+    const errorMessage = e.response?.data?.message || e.message || '保存失败'
     message.error(errorMessage)
   }
 }
@@ -518,6 +523,7 @@ const handlePageSizeChange = () => {
   fetchConsultations()
 }
 
+// 获取状态文本
 const getStatusText = (status: number): string => {
   const statusMap: Record<number, string> = {
     0: '新咨询',
@@ -539,6 +545,7 @@ const getStatusTagClass = (status: number): string => {
   return classMap[status] || 'tag tag-default'
 }
 
+// 格式化日期
 const formatDate = (dateString: string) => {
   if (!dateString) return '-'
   return new Date(dateString).toLocaleString('zh-CN')
@@ -821,7 +828,7 @@ useHead({
 
 .pagination-select {
   padding: 4px 8px;
-  border: 1px solid var(--color-border-default, var(--color-gray-300));
+  border: 1px solid var(--color-border-default, #d1d5db);
   border-radius: 4px;
 }
 
@@ -833,8 +840,8 @@ useHead({
 
 .pagination-btn {
   padding: 4px 12px;
-  border: 1px solid var(--color-border-default, var(--color-gray-300));
-  background: var(--color-bg-card, var(--color-bg-light, white));
+  border: 1px solid var(--color-border-default, #d1d5db);
+  background: var(--color-bg-card, white);
   border-radius: 4px;
   cursor: pointer;
 }

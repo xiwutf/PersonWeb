@@ -1,11 +1,11 @@
-<template>
+﻿<template>
   <div class="themes-management-page">
     <div class="page-header">
       <h1 class="page-title">主题风格管理</h1>
       <p class="text-gray-400 text-sm">管理网站主题风格和动态背景效果</p>
     </div>
 
-    <!-- 标签�?-->
+    <!-- 标签页 -->
     <div class="tabs-container">
       <div class="tabs">
         <button
@@ -18,7 +18,8 @@
           @click="activeTab = 'backgrounds'"
           :class="['tab-button', { 'tab-button-active': activeTab === 'backgrounds' }]"
         >
-          动态背�?        </button>
+          动态背景
+        </button>
         <button
           @click="activeTab = 'settings'"
           :class="['tab-button', { 'tab-button-active': activeTab === 'settings' }]"
@@ -34,8 +35,9 @@
         <h2 class="section-title">主题风格列表</h2>
         <div class="flex items-center gap-4">
           <p class="text-sm text-gray-400">
-            目前仅保留两套稳定主题，后续如果有需要再新增�?          </p>
-          <!-- 暂时禁用新增按钮，因为只支持 light �dark -->
+            目前仅保留两套稳定主题，后续如果有需要再新增。
+          </p>
+          <!-- 暂时禁用新增按钮，因为只支持 light 和 dark -->
           <!-- <button @click="openThemeModal()" class="btn-primary">
             <i class="fas fa-plus mr-2"></i>
             新增主题
@@ -43,7 +45,7 @@
         </div>
       </div>
 
-      <div v-if="loading" class="table-loading">加载�?..</div>
+      <div v-if="loading" class="table-loading">加载中...</div>
       <div v-else-if="themes.length === 0" class="table-empty">暂无主题</div>
       <div v-else class="themes-grid">
         <div
@@ -165,7 +167,7 @@
             class="form-input"
           >
             <option value="light">浅色主题（light）</option>
-            <option value="dark">浅色主题（light）dark）</option>
+            <option value="dark">深色主题（dark）</option>
           </select>
           <small class="form-hint">目前只支持 light 和 dark 两个主题</small>
         </div>
@@ -214,7 +216,7 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">预览URL</label>
+            <label class="form-label">预览图 URL</label>
             <input v-model="themeForm.previewImage" type="text" class="form-input" />
           </div>
 
@@ -263,7 +265,6 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
 import { useSafeMessage } from '~/composables/useNaiveUI'
 import { useErrorHandler } from '~/composables/useErrorHandler'
 
@@ -329,17 +330,17 @@ const themeForm = ref({
 const fetchThemes = async () => {
   loading.value = true
   try {
-    // 重构说明�024-12-XX）：现在只支�light �dark 两个主题
-    // 从后端获取主题列表，但只显示 light �dark
+    // 重构说明（2024-12-XX）：现在只支持 light 和 dark 两个主题
+    // 从后端获取主题列表，但只显示 light 和 dark
     const res = await api.get<Theme[]>('/Theme/admin/themes')
     const allThemes = Array.isArray(res) ? res : []
     
-    // 只保�light �dark 主题，其他主题过滤掉
+    // 只保留 light 和 dark 主题，其他主题过滤掉
     themes.value = allThemes.filter(theme => 
       theme.code === 'light' || theme.code === 'dark'
     )
     
-    // 如果数据库中没有 light 或 dark，创建默认数据
+    // 如果数据库中没有 light 和 dark，创建默认数据
     if (themes.value.length === 0) {
       themes.value = [
         {
@@ -431,9 +432,9 @@ const openThemeModal = (theme?: Theme) => {
 }
 
 const saveTheme = async () => {
-  // 重构说明�024-12-XX）：只允许保�light �dark 主题
+  // 重构说明（2024-12-XX）：只允许保存 light 或 dark 主题
   if (themeForm.value.code !== 'light' && themeForm.value.code !== 'dark') {
-    message.error('目前只支�light �dark 两个主题')
+    message.error('目前只支持 light 和 dark 两个主题')
     return
   }
   
@@ -458,7 +459,7 @@ const setDefaultTheme = async (id: number) => {
 }
 
 const deleteTheme = async (id: number) => {
-    if (!confirm('确定要删除这个主题吗？')) return
+  if (!confirm('确定要删除这个主题吗？')) return
 
   try {
     await api.del(`/Theme/admin/themes/${id}`)
@@ -491,17 +492,17 @@ onMounted(() => {
 }
 
 .tabs-container {
-  margin-bottom: var(--spacing-2xl);
+  margin-bottom: 2rem;
 }
 
 .tabs {
   display: flex;
-  gap: var(--spacing-sm);
+  gap: 0.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .tab-button {
-  padding: var(--spacing-md) var(--spacing-xl);
+  padding: 0.75rem 1.5rem;
   background: transparent;
   border: none;
   border-bottom: 2px solid transparent;
@@ -523,19 +524,19 @@ onMounted(() => {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-xl);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: 1.5rem;
 }
 
 .section-title {
-  font-size: var(--text-lg);
+  font-size: 1.25rem;
   font-weight: 600;
   color: var(--color-bg-card);
 }
@@ -544,15 +545,15 @@ onMounted(() => {
 .backgrounds-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: var(--spacing-xl);
+  gap: 1.5rem;
 }
 
 .theme-card,
 .background-card {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-10);
+  border-radius: 0.5rem;
+  padding: 1.25rem;
   transition: all 0.3s ease;
 }
 
@@ -577,18 +578,18 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: var(--spacing-md);
+  margin-bottom: 1rem;
 }
 
 .theme-card-title h3 {
-  font-size: var(--text-base);
+  font-size: 1rem;
   font-weight: 600;
   color: var(--color-bg-card);
-  margin-bottom: var(--spacing-xs);
+  margin-bottom: 0.25rem;
 }
 
 .theme-code {
-  font-size: var(--text-xs);
+  font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.6);
   font-family: monospace;
 }
@@ -598,8 +599,8 @@ onMounted(() => {
   width: 100%;
   aspect-ratio: 16 / 9;
   background: rgba(0, 0, 0, 0.2);
-  border-radius: var(--radius-sm);
-  margin-bottom: var(--spacing-md);
+  border-radius: 0.25rem;
+  margin-bottom: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -614,27 +615,27 @@ onMounted(() => {
 }
 
 .theme-info {
-  margin-top: var(--spacing-md);
+  margin-top: 1rem;
 }
 
 .theme-description,
 .background-description {
-  font-size: var(--text-sm);
+  font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.7);
-  margin-bottom: var(--spacing-md);
+  margin-bottom: 1rem;
 }
 
 .theme-actions {
   display: flex;
-  gap: var(--spacing-sm);
-  padding-top: var(--spacing-md);
+  gap: 0.5rem;
+  padding-top: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .badge {
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--radius-sm);
-  font-size: var(--text-xs);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
   font-weight: 500;
 }
 
@@ -655,33 +656,33 @@ onMounted(() => {
 }
 
 .form-group {
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: 1.5rem;
 }
 
 .form-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-md);
+  gap: 1rem;
 }
 
 .form-label {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: 0.5rem;
   color: rgba(255, 255, 255, 0.9);
-  font-size: var(--text-sm);
+  font-size: 0.875rem;
   font-weight: 500;
-  margin-bottom: var(--spacing-sm);
+  margin-bottom: 0.5rem;
 }
 
 .form-input {
   width: 100%;
-  padding: var(--spacing-md);
+  padding: 0.75rem;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: var(--radius-sm);
+  border-radius: 0.25rem;
   color: var(--color-bg-card);
-  font-size: var(--text-sm);
+  font-size: 0.875rem;
 }
 
 .form-input:focus {
@@ -692,8 +693,8 @@ onMounted(() => {
 
 .form-hint {
   display: block;
-  margin-top: var(--spacing-xs);
-  font-size: var(--text-xs);
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.5);
 }
 
@@ -711,7 +712,7 @@ onMounted(() => {
   background: rgba(30, 41, 59, 0.95);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-lg);
+  border-radius: 0.75rem;
   width: 90%;
   max-width: 600px;
   max-height: 90vh;
@@ -722,12 +723,12 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-xl);
+  padding: 1.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .modal-header h2 {
-  font-size: var(--text-lg);
+  font-size: 1.25rem;
   font-weight: 600;
   color: var(--color-bg-card);
 }
@@ -736,14 +737,14 @@ onMounted(() => {
   background: none;
   border: none;
   color: rgba(255, 255, 255, 0.7);
-  font-size: var(--text-3xl);
+  font-size: 1.5rem;
   cursor: pointer;
-  width: var(--spacing-2xl);
-  height: var(--spacing-2xl);
+  width: 2rem;
+  height: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--radius-sm);
+  border-radius: 0.25rem;
   transition: all 0.2s ease;
 }
 
@@ -753,23 +754,23 @@ onMounted(() => {
 }
 
 .modal-body {
-  padding: var(--spacing-xl);
+  padding: 1.5rem;
 }
 
 .modal-footer {
   display: flex;
   justify-content: flex-end;
-  gap: var(--spacing-lg);
-  padding-top: var(--spacing-xl);
+  gap: 0.75rem;
+  padding-top: 1.5rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  margin-top: var(--spacing-xl);
+  margin-top: 1.5rem;
 }
 
 .btn-primary {
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: 0.5rem 1rem;
   background: var(--theme-primary);
   border: 1px solid var(--theme-primary);
-  border-radius: var(--radius-sm);
+  border-radius: 0.25rem;
   color: var(--color-bg-card);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -780,10 +781,10 @@ onMounted(() => {
 }
 
 .btn-secondary {
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: 0.5rem 1rem;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: var(--radius-sm);
+  border-radius: 0.25rem;
   color: rgba(255, 255, 255, 0.9);
   cursor: pointer;
 }
@@ -792,7 +793,7 @@ onMounted(() => {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: var(--text-sm);
+  font-size: 0.875rem;
 }
 
 .btn-link-blue {

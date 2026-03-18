@@ -1,6 +1,14 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
+  debug: {
+    hooks: false
+  },
+  ignoreOptions: {
+    // Work around Nuxt component scanning passing absolute Windows paths
+    // from dependency runtime components (for example @nuxtjs/mdc prose components).
+    allowRelativePaths: true
+  },
   modules: [
     '@nuxt/content',
     '@nuxtjs/tailwindcss'

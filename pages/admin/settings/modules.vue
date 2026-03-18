@@ -2,7 +2,7 @@
   <div class="modules-management-page">
     <div class="page-header">
       <h1 class="page-title">模块管理</h1>
-      <p class="text-gray-400 text-sm">管理功能模块的启�?禁用，实现按需加载</p>
+      <p class="text-gray-400 text-sm">管理功能模块的启用/禁用，实现按需加载</p>
     </div>
 
     <!-- 模块列表 -->
@@ -27,7 +27,7 @@
         </div>
       </div>
 
-      <div v-if="loading" class="table-loading">加载�?..</div>
+      <div v-if="loading" class="table-loading">加载中...</div>
       <div v-else class="modules-grid">
         <div
           v-for="module in filteredModules"

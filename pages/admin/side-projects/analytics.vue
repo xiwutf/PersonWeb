@@ -79,13 +79,13 @@
       </n-card>
     </div>
 
-    <!-- 图表�?-->
+    <!-- 图表区 -->
     <div v-if="loading" class="loading-container">
       <n-spin size="large" />
     </div>
 
     <div v-else class="charts-grid">
-      <!-- 项目状态分�?-->
+      <!-- 项目状态分布 -->
       <n-card class="chart-card">
         <template #header>
           <h3>项目状态分布</h3>
@@ -423,7 +423,7 @@ const deliveryChartOption = computed(() => {
       trigger: 'axis',
       formatter: (params: any) => {
         const param = params[0]
-        return `${param.name}<br/>平均天数: ${param.value.toFixed(1)}�br/>项目�? ${param.data.count}`
+        return `${param.name}<br/>平均天数: ${param.value.toFixed(1)}天<br/>项目数: ${param.data.count}`
       }
     },
     xAxis: {

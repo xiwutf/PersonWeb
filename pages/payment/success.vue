@@ -4,24 +4,27 @@
       <div class="success-icon">
         <i class="fas fa-check-circle"></i>
       </div>
-      <h1>?????</h1>
-      <p>????????????????</p>
+      <h1>支付成功！</h1>
+      <p>感谢您的购买，您的许可证已生成。</p>
 
       <div class="order-info" v-if="orderData">
-        <h3>????</h3>
-        <p><strong>?????</strong>{{ orderData.orderNumber }}</p>
-        <p><strong>?????</strong>?{{ orderData.price.toFixed(2) }}</p>
-        <p><strong>?????</strong>{{ orderData.moduleKey }} v{{ orderData.version }}</p>
-        <p><strong>??????</strong>{{ orderData.licenseKey }}</p>
+        <h3>订单信息</h3>
+        <p><strong>订单编号：</strong>{{ orderData.orderNumber }}</p>
+        <p><strong>支付金额：</strong>¥{{ orderData.price.toFixed(2) }}</p>
+        <p><strong>购买模块：</strong>{{ orderData.moduleKey }} v{{ orderData.version }}</p>
+        <p><strong>许可证密钥：</strong>{{ orderData.licenseKey }}</p>
       </div>
 
       <div class="actions">
         <button @click="copyLicense" class="btn btn-secondary">
-          <i class="fas fa-copy"></i> ??????        </button>
+          <i class="fas fa-copy"></i> 复制许可证
+        </button>
         <button @click="downloadLicense" class="btn btn-primary">
-          <i class="fas fa-download"></i> ????????        </button>
+          <i class="fas fa-download"></i> 下载许可证文件
+        </button>
         <button @click="goToMyLicenses" class="btn btn-outline">
-          ????????        </button>
+          查看我的许可证
+        </button>
       </div>
     </div>
   </div>
@@ -35,16 +38,16 @@ const route = useRoute()
 const orderData = ref(null)
 
 onMounted(async () => {
-  // ??????????ID
+  // 从路由参数中获取订单ID
   const orderId = route.query.orderId
 
   if (orderId) {
     try {
-      // ??????API??????
+      // 这里应该调用API获取订单详情
       // const response = await fetch(`/api/payment/orders/${orderId}`)
       // orderData.value = await response.json()
 
-      // ????
+      // 模拟数据
       orderData.value = {
         id: orderId,
         orderNumber: `ORDER_${Date.now()}`,
@@ -63,7 +66,7 @@ const copyLicense = async () => {
   if (orderData.value?.licenseKey) {
     try {
       await navigator.clipboard.writeText(orderData.value.licenseKey)
-      alert('??????????')
+      alert('许可证已复制到剪贴板')
     } catch (error) {
       console.error('Failed to copy license:', error)
     }
@@ -87,7 +90,7 @@ const downloadLicense = () => {
 }
 
 const goToMyLicenses = () => {
-  // ??????????
+  // 跳转到我的许可证页面
   router.push('/my-licenses')
 }
 </script>

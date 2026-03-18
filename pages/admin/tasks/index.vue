@@ -74,7 +74,7 @@
                 <span v-if="task.dueDate">截止: {{ formatDate(task.dueDate) }}</span>
                 <span>进度: {{ task.progress }}%</span>
               </div>
-              <!-- 进度�?-->
+              <!-- 进度条 -->
               <div class="mt-2 w-full task-list-progress-bg rounded-full h-2">
                 <div 
                   :class="getProgressColor(task.progress)"

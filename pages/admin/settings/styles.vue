@@ -5,7 +5,7 @@
       <p class="text-gray-400 text-sm">统一管理系统样式配置，支持动态修改、删除和新增</p>
     </div>
 
-    <!-- 分类标签�?-->
+    <!-- 分类标签页 -->
     <div class="tabs-container">
       <div class="tabs">
         <button
@@ -40,7 +40,7 @@
         </div>
       </div>
 
-      <div v-if="loading" class="table-loading">加载�?..</div>
+      <div v-if="loading" class="table-loading">加载中...</div>
       <div v-else-if="styles.length === 0" class="table-empty">暂无样式</div>
       <div v-else class="styles-grid">
         <div
@@ -457,7 +457,7 @@ const initDefaultStyles = async () => {
       if (process.client) {
         window.dispatchEvent(new CustomEvent('show-toast', {
           detail: {
-            message: `成功初始�?${res.count} 个默认样式`,
+            message: `成功初始化 ${res.count} 个默认样式`,
             type: 'success',
             duration: 3000
           }
@@ -500,7 +500,7 @@ onMounted(() => {
   width: 100%;
 }
 
-/* 标签�?*/
+/* 标签页 */
 .tabs-container {
   margin-bottom: var(--spacing-2xl);
 }
