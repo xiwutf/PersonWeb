@@ -193,6 +193,7 @@ definePageMeta({
   layout: 'default'
 })
 const api = useApi()
+usePageStyle('tools')
 const tools = ref<any[]>([])
 const pending = ref(true)
 const error = ref<string | null>(null)

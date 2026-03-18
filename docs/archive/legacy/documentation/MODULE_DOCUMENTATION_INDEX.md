@@ -1,4 +1,4 @@
-# 模块化专题文档索引
+﻿# 模块化专题文档索引
 
 **最后更新**：2024-03-13
 **专题**：PersonWeb 模块系统文档
@@ -216,7 +216,7 @@ npm run test:module:coverage
 
 ## 📞 支持
 
-- 📖 [完整文档索引](DOCUMENTATION_INDEX.md)
+- 📖 [文档主体入口](../README.md)
 - 🐛 [问题反馈](https://github.com/personweb/personweb/issues)
 - 💬 [技术讨论](https://github.com/personweb/personweb/discussions)
 
