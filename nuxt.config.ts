@@ -102,6 +102,8 @@ export default defineNuxtConfig({
     prerender: {
       // 自动爬取链接，但排除 admin 页面
       crawlLinks: true,
+      // 显式指定 Lighthouse CI 测试的页面，确保 generate 时预渲染
+      routes: ['/', '/about', '/projects', '/blog', '/tools', '/life'],
       // 排除需要认证的 admin 页面
       ignore: [
         '/admin/**'
