@@ -83,6 +83,8 @@
 </template>
 
 <script setup lang="ts">
+import '~/assets/css/game.css'
+
 interface Game {
   id: string
   name: string

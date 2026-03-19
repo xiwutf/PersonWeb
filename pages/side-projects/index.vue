@@ -165,6 +165,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useApi } from '~/composables/useApi'
+import '~/assets/css/side-projects.css'
 
 definePageMeta({
   layout: 'default'

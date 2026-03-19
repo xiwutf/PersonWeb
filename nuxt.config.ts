@@ -95,11 +95,6 @@ export default defineNuxtConfig({
     '~/assets/css/home.css', // 首页组件统一样式
     '~/assets/css/home-creative.css', // 首页创意组件样式
     '~/assets/css/visitor-interaction.css',
-    '~/assets/css/cognition.css',
-    '~/assets/css/game.css',
-    '~/assets/css/side-projects.css',
-    '~/assets/css/skills.css',
-    '~/assets/css/english.css',
     '~/assets/css/charts.css'
   ],
 
@@ -121,6 +116,27 @@ export default defineNuxtConfig({
 
   // Vite 配置
   vite: {
+    optimizeDeps: {
+      include: [
+        'naive-ui',
+        'vueuc',
+        '@css-render/vue3-ssr',
+        '@vicons/ionicons5',
+        'echarts/core',
+        'echarts/renderers',
+        'echarts/charts',
+        'echarts/components',
+        'vue-echarts',
+        'chart.js',
+        'vue-chartjs',
+        'markdown-it',
+        '@bytemd/vue-next',
+        '@bytemd/plugin-gfm',
+        '@bytemd/plugin-highlight',
+        '@bytemd/plugin-math',
+        '@bytemd/plugin-medium-zoom'
+      ]
+    },
     resolve: {
       alias: {
         '#app-manifest': require('path').resolve(__dirname, 'app-manifest-stub.js')
@@ -142,6 +158,21 @@ export default defineNuxtConfig({
       hmr: {
         protocol: 'ws',
         host: 'localhost'
+      },
+      watch: {
+        ignored: [
+          '**/.git/**',
+          '**/.data/**',
+          '**/.nuxt/**',
+          '**/.output/**',
+          '**/ai-service/**',
+          '**/backend/**',
+          '**/database/**',
+          '**/docs/**',
+          '**/examples/**',
+          '**/test/**',
+          '**/test-documents/**'
+        ]
       }
     },
     build: {

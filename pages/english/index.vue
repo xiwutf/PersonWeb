@@ -94,6 +94,8 @@
 </template>
 
 <script setup lang="ts">
+import '~/assets/css/english.css'
+
 import DailyWord from '~/components/english/DailyWord.vue'
 import QuickQuiz from '~/components/english/QuickQuiz.vue'
 import StreakTracker from '~/components/english/StreakTracker.vue'

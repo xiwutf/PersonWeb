@@ -162,6 +162,8 @@
 </template>
 
 <script setup lang="ts">
+import '~/assets/css/skills.css'
+
 type SkillItem = {
   id: number | string
   name: string

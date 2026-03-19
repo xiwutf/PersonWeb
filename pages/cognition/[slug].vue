@@ -63,6 +63,8 @@
 </template>
 
 <script setup lang="ts">
+import '~/assets/css/cognition.css'
+
 definePageMeta({
   layout: 'default'
 })
