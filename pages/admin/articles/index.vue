@@ -39,6 +39,16 @@
             <i class="fas fa-search"></i>
           </template>
         </n-input>
+
+        <n-select
+          v-model="sourceType"
+          placeholder="来源类型"
+          :options="sourceTypeOptions"
+          clearable
+          style="width: 150px"
+          @update:value="handleSearchChange"
+        />
+
         <n-button type="primary" @click="fetchArticles">搜索</n-button>
       </div>
     </template>
@@ -46,8 +56,8 @@
 </template>
 
 <script setup lang="ts">
-import { h, computed } from 'vue'
-import { NButton, NInput, NSpace, NTag } from 'naive-ui'
+import { h, computed, ref } from 'vue'
+import { NButton, NInput, NSpace, NTag, NSelect } from 'naive-ui'
 import type { Article, ArticleListResponse } from '~/types/api'
 import { useSafeMessage } from '~/composables/useNaiveUI'
 import { useErrorHandler } from '~/composables/useErrorHandler'
@@ -62,13 +72,13 @@ definePageMeta({
 
 const router = useRouter()
 const api = useApi()
+const message = useSafeMessage()
 const { handleError } = useErrorHandler()
-
-//  使用 useSafeMessage 包装 message，确保在组件卸载后调用 message 不会报错
 
 const articles = ref<Article[]>([])
 const loading = ref(false)
 const keyword = ref('')
+const sourceType = ref<string>('')
 const page = ref(1)
 const pageSize = ref(10)
 const total = ref(0)
@@ -92,6 +102,24 @@ const internalColumns: DataTableColumns<Article> = [
         size: 'small',
         bordered: false
       }, { default: () => row.categoryName || '未分类' })
+    }
+  },
+  {
+    title: '来源类型',
+    key: 'sourceType',
+    width: 120,
+    render(row) {
+      const sourceTypeMap: Record<string, string> = {
+        'manual': '手动创建',
+        'ai_generated': 'AI生成',
+        'ai_optimized': 'AI优化',
+        'imported': '导入'
+      }
+      return h(NTag, {
+        type: row.sourceType === 'ai_generated' ? 'warning' : 'default',
+        size: 'small',
+        bordered: false
+      }, { default: () => sourceTypeMap[row.sourceType] || '未知' })
     }
   },
   {
@@ -134,6 +162,14 @@ const internalColumns: DataTableColumns<Article> = [
   }
 ]
 
+// 来源类型选项
+const sourceTypeOptions = [
+  { label: '手动创建', value: 'manual' },
+  { label: 'AI生成', value: 'ai_generated' },
+  { label: 'AI优化', value: 'ai_optimized' },
+  { label: '导入', value: 'imported' }
+]
+
 // 内部分页配置
 const internalPagination = computed(() => ({
   page: page.value,
@@ -147,12 +183,18 @@ const internalPagination = computed(() => ({
 const fetchArticles = async () => {
   loading.value = true
   try {
+    const params: any = {
+      page: page.value,
+      pageSize: pageSize.value,
+      keyword: keyword.value
+    }
+
+    if (sourceType.value) {
+      params.sourceType = sourceType.value
+    }
+
     const res = await api.get<ArticleListResponse>('/Articles', {
-      params: {
-        page: page.value,
-        pageSize: pageSize.value,
-        keyword: keyword.value
-      }
+      params
     })
 
     // .NET API returns { Total: int, List: [] }

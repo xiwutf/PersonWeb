@@ -45,6 +45,13 @@ public class Article
     [Column("status")]
     public sbyte Status { get; set; } = 1;
 
+    /// <summary>
+    /// 来源类型：manual（手动创建）、ai_generated（AI生成）、ai_optimized（AI优化）、imported（导入）
+    /// </summary>
+    [Column("source_type")]
+    [MaxLength(50)]
+    public string? SourceType { get; set; } = "manual";
+
     [Column("author_id")]
     public long? AuthorId { get; set; }
 

@@ -121,7 +121,10 @@
           </div>
 
           <div v-if="metrics.length > 0" class="dashboard-chart-body">
-            <Line :data="healthChartData" :options="chartOptions" />
+            <component :is="lineChart" v-if="lineChart && chartsLoaded" :data="healthChartData" :options="chartOptions" />
+            <div v-else class="dashboard-empty-state">
+              <p>图表加载中...</p>
+            </div>
           </div>
           <div v-else class="dashboard-empty-state">
             <i class="fas fa-chart-line"></i>
@@ -139,7 +142,10 @@
           </div>
 
           <div v-if="metrics.length > 0" class="dashboard-chart-body">
-            <Line :data="wealthChartData" :options="chartOptions" />
+            <component :is="lineChart" v-if="lineChart && chartsLoaded" :data="wealthChartData" :options="chartOptions" />
+            <div v-else class="dashboard-empty-state">
+              <p>图表加载中...</p>
+            </div>
           </div>
           <div v-else class="dashboard-empty-state">
             <i class="fas fa-coins"></i>
@@ -152,20 +158,8 @@
 </template>
 
 <script setup lang="ts">
-import * as ChartJsPkg from 'chart.js'
-import { Line } from 'vue-chartjs'
-
-const {
-  Chart: ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  Filler
-} = ChartJsPkg
+import { shallowRef } from 'vue'
+import '~/assets/css/dashboard.css'
 
 definePageMeta({
   ssr: false
@@ -180,16 +174,40 @@ useHead({
   ]
 })
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  Filler
-)
+const lineChart = shallowRef<any>(null)
+const chartsLoaded = ref(false)
+
+const loadCharts = async () => {
+  if (chartsLoaded.value) return
+
+  const chartModule = await import('chart.js')
+  const vueChartModule = await import('vue-chartjs')
+  const {
+    Chart,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
+    Filler
+  } = chartModule
+
+  Chart.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
+    Filler
+  )
+
+  lineChart.value = vueChartModule.Line
+  chartsLoaded.value = true
+}
 
 type MetricRecord = {
   date: string
@@ -318,6 +336,7 @@ const wealthChartData = computed(() => {
 
 onMounted(async () => {
   try {
+    await loadCharts()
     const res = await api.get<MetricRecord[]>('/Metrics')
 
     metrics.value = [...res]

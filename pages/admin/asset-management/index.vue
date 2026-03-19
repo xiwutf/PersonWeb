@@ -78,6 +78,7 @@ import { useApi } from '~/composables/useApi'
 import { useNotification } from '~/composables/useToast'
 import AdminAssetAssetOverview from '~/components/admin/asset/AssetOverview.vue'
 import AdminAssetDataImportExport from '~/components/admin/asset/DataImportExport.vue'
+import '~/assets/css/admin-asset-management.css'
 
 // 页面元数据
 definePageMeta({

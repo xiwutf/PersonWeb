@@ -454,7 +454,7 @@ onMounted(() => {
 /* Header 容器样式 */
 .header-container {
   position: fixed !important;
-  top: 1rem !important;
+  top: calc(var(--safe-area-top, 0px) + 1rem) !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
   z-index: 10000 !important; /* 提高 z-index，确保在所有元素之上 */
@@ -579,7 +579,7 @@ onMounted(() => {
 @media (max-width: 640px) {
   .floating-nav {
     width: calc(100% - 1rem);
-    top: 0.5rem;
+    top: calc(var(--safe-area-top, 0px) + 0.5rem);
     border-radius: 0.75rem;
   }
 }

@@ -192,6 +192,7 @@ import {
   NBreadcrumbItem,
   useMessage
 } from 'naive-ui';
+import '~/assets/css/tools.css'
 
 definePageMeta({
   layout: 'default'

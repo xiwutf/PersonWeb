@@ -15,6 +15,7 @@ export const adminMenu: AdminMenuItem[] = [
   {
     label: '内容中心',
     children: [
+      { label: '内容中枢', path: '/admin/content-hub' },
       { label: '文章管理', path: '/admin/articles' },
       { label: '项目管理', path: '/admin/projects' },
       { label: '工具管理', path: '/admin/tools' },

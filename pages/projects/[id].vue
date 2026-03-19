@@ -170,6 +170,7 @@
 <script setup lang="ts">
 import type { Project } from '~/types/api'
 import { useMarkdown } from '~/composables/useMarkdown'
+import '~/assets/css/projects.css'
 
 definePageMeta({
   layout: 'default'

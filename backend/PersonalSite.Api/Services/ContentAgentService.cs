@@ -312,6 +312,7 @@ public class ContentAgentService : AiAgentService
                 Summary = result.Content.Summary,
                 ContentMd = result.Content.Body,
                 Status = 0, // 草稿状态
+                SourceType = "ai_generated", // AI生成
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now
             };

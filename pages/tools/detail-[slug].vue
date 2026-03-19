@@ -222,6 +222,7 @@ import {
   NResult,
   useMessage
 } from 'naive-ui';
+import '~/assets/css/tools.css'
 
 const router = useRouter();
 const route = useRoute();

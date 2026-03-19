@@ -3,7 +3,7 @@
 /* Header 容器 */
 .header-container {
   position: fixed !important;
-  top: 1rem !important;
+  top: calc(var(--safe-area-top, 0px) + 1rem) !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
   z-index: 10000 !important; /* 提高 z-index，确保在所有元素之上 */

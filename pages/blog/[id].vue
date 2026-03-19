@@ -91,6 +91,7 @@
 
 <script setup lang="ts">
 import MarkdownIt from 'markdown-it'
+import '~/assets/css/blog.css'
 
 const route = useRoute()
 const api = useApi()

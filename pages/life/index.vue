@@ -89,6 +89,8 @@
 </template>
 
 <script setup>
+import '~/assets/css/life.css'
+
 const { data: posts } = await useAsyncData('life-posts', () =>
   queryContent('/life').sort({ date: -1 }).find()
 )

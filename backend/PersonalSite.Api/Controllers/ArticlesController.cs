@@ -24,14 +24,16 @@ public class ArticlesController : ControllerBase
     /// <param name="page">页码</param>
     /// <param name="pageSize">每页数量</param>
     /// <param name="status">状态筛选 (0-草稿 1-已发布 2-下线)</param>
+    /// <param name="sourceType">来源类型筛选 (manual/ai_generated/ai_optimized/imported)</param>
     /// <param name="categoryId">分类ID筛选</param>
     /// <param name="keyword">关键词搜索</param>
     /// <returns></returns>
     [HttpGet]
     public async Task<ActionResult<ApiResponse<object>>> GetArticles(
-        [FromQuery] int page = 1, 
+        [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10,
         [FromQuery] sbyte? status = null,
+        [FromQuery] string? sourceType = null,
         [FromQuery] long? categoryId = null,
         [FromQuery] string? keyword = null)
     {
@@ -40,6 +42,11 @@ public class ArticlesController : ControllerBase
         if (status.HasValue)
         {
             query = query.Where(a => a.Status == status.Value);
+        }
+
+        if (!string.IsNullOrEmpty(sourceType))
+        {
+            query = query.Where(a => a.SourceType == sourceType);
         }
 
         if (categoryId.HasValue)
@@ -58,7 +65,7 @@ public class ArticlesController : ControllerBase
             .OrderByDescending(a => a.CreatedAt)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Select(a => new 
+            .Select(a => new
             {
                 a.Id,
                 a.Title,
@@ -66,6 +73,7 @@ public class ArticlesController : ControllerBase
                 a.Summary,
                 a.CoverUrl,
                 a.Status,
+                a.SourceType,
                 a.CreatedAt,
                 a.PublishTime,
                 CategoryName = a.Category != null ? a.Category.Name : null
@@ -344,5 +352,103 @@ public class ArticlesController : ControllerBase
 
         await _context.SaveChangesAsync();
         return Ok(ApiResponse.Success(null, "恢复成功"));
+    }
+
+    /// <summary>
+    /// 内容中枢总览接口
+    /// </summary>
+    [HttpGet("overview")]
+    public async Task<ActionResult<ApiResponse<object>>> GetContentHubOverview()
+    {
+        try
+        {
+            // 文章统计
+            var articleStats = new
+            {
+                Total = await _context.Articles.CountAsync(),
+                Draft = await _context.Articles.CountAsync(a => a.Status == 0),
+                Published = await _context.Articles.CountAsync(a => a.Status == 1),
+                Offline = await _context.Articles.CountAsync(a => a.Status == 2),
+                AiGenerated = await _context.Articles.CountAsync(a => a.SourceType == "ai_generated"),
+                AiOptimized = await _context.Articles.CountAsync(a => a.SourceType == "ai_optimized"),
+                Manual = await _context.Articles.CountAsync(a => a.SourceType == "manual")
+            };
+
+            // 最近更新的文章（取最新的5条）
+            var recentArticles = await _context.Articles
+                .Where(a => a.Status != 2) // 排除下线的
+                .OrderByDescending(a => a.UpdatedAt)
+                .Take(5)
+                .Select(a => new
+                {
+                    a.Id,
+                    a.Title,
+                    a.Status,
+                    a.SourceType,
+                    a.UpdatedAt,
+                    CategoryName = a.Category != null ? a.Category.Name : null
+                })
+                .ToListAsync();
+
+            // 处理返回的数据（在内存中进行 switch 操作）
+            var processedArticles = recentArticles.Select(a => new
+            {
+                a.Id,
+                a.Title,
+                a.Status,
+                a.SourceType,
+                a.UpdatedAt,
+                TypeName = a.CategoryName ?? "未分类",
+                SourceTypeName = a.SourceType switch
+                {
+                    "manual" => "手动创建",
+                    "ai_generated" => "AI生成",
+                    "ai_optimized" => "AI优化",
+                    "imported" => "导入",
+                    _ => "未知"
+                },
+                StatusName = a.Status switch
+                {
+                    0 => "草稿",
+                    1 => "已发布",
+                    2 => "下线",
+                    _ => "未知"
+                }
+            }).ToList();
+
+            // 项目统计（Project.Status: Active/Completed/Archived）
+            var projectStats = new
+            {
+                Total = await _context.Projects.CountAsync(),
+                Published = await _context.Projects.CountAsync(p => p.Status == "Active" || p.Status == "Completed")
+            };
+
+            // 工具统计（Tool.Status: draft/published）
+            var toolStats = new
+            {
+                Total = await _context.Tools.CountAsync(),
+                Published = await _context.Tools.CountAsync(t => t.Status == "published")
+            };
+
+            // 文档统计（Document.Status: pending/processing/completed/failed）
+            var docStats = new
+            {
+                Total = await _context.Documents.CountAsync(),
+                Published = await _context.Documents.CountAsync(d => d.Status == "completed")
+            };
+
+            return Ok(ApiResponse.Success(new
+            {
+                Articles = articleStats,
+                RecentArticles = processedArticles,
+                Projects = projectStats,
+                Tools = toolStats,
+                Documents = docStats
+            }));
+        }
+        catch (Exception ex)
+        {
+            return Ok(ApiResponse.Error($"获取总览数据失败: {ex.Message}"));
+        }
     }
 }

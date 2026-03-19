@@ -291,6 +291,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
+import '~/assets/css/blog.css'
 
 definePageMeta({
   layout: 'default'

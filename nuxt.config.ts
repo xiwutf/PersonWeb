@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  devtools: { enabled: process.env.NODE_ENV !== 'production' },
   debug: {
     hooks: false
   },
@@ -41,9 +41,9 @@ export default defineNuxtConfig({
         highlight: {
           theme: { default: 'dracula', dark: 'dracula' },
           langs: [
-            'javascript', 'typescript', 'vue', 'html', 'css', 'scss', 'python', 'java',
-            'cpp', 'c', 'json', 'yaml', 'xml', 'sql', 'bash', 'shell', 'markdown',
-            'php', 'go', 'rust', 'dart', 'kotlin', 'swift'
+            'javascript', 'typescript', 'vue', 'html', 'css', 'scss',
+            'json', 'yaml', 'sql', 'bash', 'shell', 'markdown',
+            'python', 'csharp'
           ]
         }
       }
@@ -56,7 +56,7 @@ export default defineNuxtConfig({
       title: '溪午听风 - 个人开发者网站',
       meta: [
         { charset: 'utf-8' },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover' },
         {
           name: 'description',
           content: '溪午听风的个人网站，展示插件工具、项目作品和技术博客。开发让生活更高效，代码就是我的魔方。'
@@ -95,20 +95,12 @@ export default defineNuxtConfig({
     '~/assets/css/home.css', // 首页组件统一样式
     '~/assets/css/home-creative.css', // 首页创意组件样式
     '~/assets/css/visitor-interaction.css',
-    '~/assets/css/about.css',
     '~/assets/css/cognition.css',
     '~/assets/css/game.css',
     '~/assets/css/side-projects.css',
-    '~/assets/css/tools.css',
-    '~/assets/css/life.css',
-    '~/assets/css/blog.css',
-    '~/assets/css/projects.css',
     '~/assets/css/skills.css',
     '~/assets/css/english.css',
-    '~/assets/css/dashboard.css',
-    '~/assets/css/investment.css',
-    '~/assets/css/charts.css',
-    '~/assets/css/admin-asset-management.css'
+    '~/assets/css/charts.css'
   ],
 
   // Nitro 配置（用于静态生成优化）

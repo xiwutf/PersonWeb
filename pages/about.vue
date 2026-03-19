@@ -280,6 +280,8 @@
 </template>
 
 <script setup lang="ts">
+import '~/assets/css/about.css'
+
 definePageMeta({
   layout: 'default'
 })

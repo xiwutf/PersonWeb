@@ -263,6 +263,7 @@
 
 <script setup lang="ts">
 import type { Component } from 'vue'
+import '~/assets/css/projects.css'
 
 definePageMeta({
   layout: 'default',

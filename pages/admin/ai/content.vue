@@ -257,7 +257,8 @@ const handleSaveArticle = async () => {
       title: result.value.content.title,
       summary: result.value.content.summary,
       contentMd: result.value.content.body,
-      status: 0 // 草稿状态
+      status: 0, // 草稿状态
+      sourceType: 'ai_generated' // AI生成
     })
 
     if (res && res.id) {

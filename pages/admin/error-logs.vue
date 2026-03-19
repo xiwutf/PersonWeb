@@ -35,7 +35,8 @@
       <article class="panel-card">
         <h2 class="panel-card__title">错误类型分布</h2>
         <div v-if="stats.ByType && stats.ByType.length > 0" class="chart-shell">
-          <Doughnut :data="typeChartData" :options="typeChartOptions" />
+          <component :is="doughnutChart" v-if="doughnutChart && chartsLoaded" :data="typeChartData" :options="typeChartOptions" />
+          <div v-else class="empty-state">图表加载中...</div>
         </div>
         <div v-else class="empty-state">暂无数据</div>
       </article>
@@ -43,7 +44,8 @@
       <article class="panel-card">
         <h2 class="panel-card__title">最近 7 天错误趋势</h2>
         <div v-if="stats.RecentErrors && stats.RecentErrors.length > 0" class="chart-shell">
-          <Line :data="trendChartData" :options="trendChartOptions" />
+          <component :is="lineChart" v-if="lineChart && chartsLoaded" :data="trendChartData" :options="trendChartOptions" />
+          <div v-else class="empty-state">图表加载中...</div>
         </div>
         <div v-else class="empty-state">暂无数据</div>
       </article>
@@ -209,36 +211,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, shallowRef } from 'vue'
 import { useNotification } from '~/composables/useToast'
 import { useErrorHandler } from '~/composables/useErrorHandler'
 import { useTheme } from '~/composables/useTheme'
 import PageHeader from '~/components/admin/patterns/PageHeader.vue'
-import * as ChartJsPkg from 'chart.js'
-import { Line, Doughnut } from 'vue-chartjs'
-
-const {
-  Chart: ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend
-} = ChartJsPkg
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend
-)
 
 definePageMeta({
   layout: 'admin',
@@ -250,6 +227,42 @@ const api = useApi()
 const { success } = useNotification()
 const { handleError } = useErrorHandler()
 const { currentTheme } = useTheme()
+const lineChart = shallowRef<any>(null)
+const doughnutChart = shallowRef<any>(null)
+const chartsLoaded = ref(false)
+
+const loadCharts = async () => {
+  if (chartsLoaded.value) return
+
+  const chartModule = await import('chart.js')
+  const vueChartModule = await import('vue-chartjs')
+  const {
+    Chart,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    ArcElement,
+    Title,
+    Tooltip,
+    Legend
+  } = chartModule
+
+  Chart.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    ArcElement,
+    Title,
+    Tooltip,
+    Legend
+  )
+
+  lineChart.value = vueChartModule.Line
+  doughnutChart.value = vueChartModule.Doughnut
+  chartsLoaded.value = true
+}
 
 const errorLogs = ref<any[]>([])
 const loading = ref(true)
@@ -458,6 +471,7 @@ const updateStatus = async (id: number, status: number) => {
 }
 
 onMounted(() => {
+  loadCharts()
   fetchErrorLogs()
   fetchStats()
 })

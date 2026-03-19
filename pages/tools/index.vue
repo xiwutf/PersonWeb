@@ -250,6 +250,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import '~/assets/css/tools.css'
 
 definePageMeta({
   layout: 'default'

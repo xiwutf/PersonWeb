@@ -141,6 +141,29 @@
     letter-spacing: -0.01em;
   }
 
+  #__nuxt {
+    min-height: var(--app-height, 100vh);
+  }
+
+  .min-h-screen {
+    min-height: var(--app-height, 100vh) !important;
+  }
+
+  .h-screen {
+    height: var(--app-height, 100vh) !important;
+  }
+
+  html.is-wechat-browser body {
+    min-height: var(--app-height, 100vh);
+    padding-bottom: var(--safe-area-bottom, 0px);
+  }
+
+  html.is-wechat-browser .min-h-screen,
+  html.is-wechat-browser .h-screen {
+    min-height: var(--app-height, 100vh) !important;
+    height: var(--app-height, 100vh) !important;
+  }
+
   h1,
   h2,
   h3,
