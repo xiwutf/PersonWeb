@@ -137,6 +137,11 @@ public class AppDbContext : DbContext
     public DbSet<IntelligenceDailyReport> IntelligenceDailyReports { get; set; }
     public DbSet<IntelligenceTaskLog> IntelligenceTaskLogs { get; set; }
 
+    // 前端页面样式配置相关表
+    public DbSet<FrontendPageStyle> FrontendPageStyles { get; set; }
+    public DbSet<FrontendStyleVariable> FrontendStyleVariables { get; set; }
+    public DbSet<FrontendStyleRule> FrontendStyleRules { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

@@ -1,136 +1,109 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 py-8">
-    <div class="container mx-auto px-4 max-w-4xl">
-      <!-- 面包屑导航 -->
-      <nav class="mb-8">
-        <div class="flex items-center space-x-2 text-sm text-gray-600">
-          <NuxtLink to="/" class="hover:text-orange-600 transition-colors">首页</NuxtLink>
-          <span>/</span>
-          <NuxtLink to="/tools" class="hover:text-orange-600 transition-colors">插件工具</NuxtLink>
-          <span>/</span>
-          <span class="text-gray-900">{{ tool?.title || '加载中...' }}</span>
-        </div>
-      </nav>
+  <div class="tools-page">
+    <!-- 背景动画 -->
+    <div class="tools-background-noise"></div>
+    <div class="tools-background-container">
+      <div class="tools-background-blob tools-background-blob--orange"></div>
+      <div class="tools-background-blob tools-background-blob--red"></div>
+      <div class="tools-background-blob tools-background-blob--amber"></div>
+    </div>
 
-      <!-- 返回按钮 -->
-      <div class="mb-6">
+    <!-- 页面内容 -->
+    <div class="tools-content">
+      <!-- 面包屑和返回按钮 -->
+      <nav class="mb-8 flex items-center justify-between">
+        <n-breadcrumb>
+          <n-breadcrumb-item>
+            <NuxtLink to="/">首页</NuxtLink>
+          </n-breadcrumb-item>
+          <n-breadcrumb-item>
+            <NuxtLink to="/tools">插件工具</NuxtLink>
+          </n-breadcrumb-item>
+          <n-breadcrumb-item>{{ tool?.title || '...' }}</n-breadcrumb-item>
+        </n-breadcrumb>
         <NuxtLink
           to="/tools"
-          class="inline-flex items-center px-4 py-2 bg-white/70 backdrop-blur-sm rounded-lg shadow-sm hover:shadow-md transition-all duration-200 text-orange-700 hover:text-orange-800 border border-orange-200"
+          class="tools-card-button tools-card-button--secondary"
+          style="height: 36px; padding: 0 16px;"
         >
           <i class="fas fa-arrow-left mr-2"></i>
-          返回工具列表
+          返回
         </NuxtLink>
-      </div>
+      </nav>
 
       <!-- 加载状态 -->
-      <div v-if="loading" class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 text-center">
-        <div class="animate-pulse">
-          <div class="h-8 bg-gray-200 rounded mb-4"></div>
-          <div class="h-4 bg-gray-200 rounded mb-2"></div>
-          <div class="h-4 bg-gray-200 rounded mb-2"></div>
-          <div class="h-4 bg-gray-200 rounded w-2/3 mx-auto"></div>
-        </div>
+      <div v-if="loading" class="tools-loading">
+        <div class="tools-loading-spinner"></div>
+        <p class="tools-loading-text">正在解构工具数据...</p>
       </div>
+
+      <!-- 错误状态 -->
+       <div v-else-if="error" class="tools-error">
+        <n-result
+          status="warning"
+          title="无法加载工具"
+          :description="error || `未找到 slug 为 '${$route.params.slug}' 的工具。`"
+        >
+          <template #footer>
+            <n-button @click="router.push('/tools')" type="primary">返回工具列表</n-button>
+          </template>
+        </n-result>
+      </div>
+
 
       <!-- 工具内容 -->
       <div v-else-if="tool" class="space-y-8">
-        <!-- 工具信息头部 -->
-        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8">
-          <div class="flex flex-col lg:flex-row gap-8">
-            <div class="lg:w-1/3">
-              <div class="h-64 bg-gradient-to-br from-orange-400 to-red-600 rounded-xl flex items-center justify-center">
-                <div class="text-center text-var(--color-bg-light, white)">
-                  <span class="text-4xl mb-2 block">🔧</span>
-                  <p class="text-lg font-semibold">专业工具</p>
-                </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <!-- 左侧-详细介绍 -->
+          <div class="lg:col-span-2 space-y-8">
+            <div class="tools-card !p-8">
+              <h1 class="tools-card-title text-3xl mb-4">{{ tool.title }}</h1>
+              <p class="tools-card-description text-base leading-relaxed">{{ tool.description }}</p>
+              <div class="tools-card-tags">
+                <span v-for="tag in tool.tags" :key="tag" class="tools-card-tag">{{ tag }}</span>
               </div>
             </div>
-            <div class="lg:w-2/3">
-              <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center space-x-2">
-                  <span class="text-3xl font-bold text-green-600">¥{{ tool.price }}</span>
-                  <span class="text-sm text-gray-500 line-through">¥{{ Math.round(tool.price * 1.5) }}</span>
-                </div>
-                <span class="text-sm text-gray-500">{{ formatDate(tool.date) }}</span>
-              </div>
-              
-              <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ tool.title }}</h1>
-              <p class="text-gray-600 mb-6 text-lg leading-relaxed">{{ tool.description }}</p>
-              
-              <!-- 标签 -->
-              <div class="mb-6">
-                <h3 class="text-sm font-medium text-gray-700 mb-3">特性标签</h3>
-                <div class="flex flex-wrap gap-2">
-                  <span
-                    v-for="tag in tool.tags"
-                    :key="tag"
-                    class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-medium"
-                  >
-                    {{ tag }}
-                  </span>
-                </div>
-              </div>
 
-              <!-- 适合人群 / 不适合人群 -->
-              <div v-if="tool.fitFor || tool.notFitFor" class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- 适合人群 -->
-                <div v-if="tool.fitFor" class="bg-green-50 border border-green-200 rounded-lg p-4">
-                  <h4 class="text-sm font-semibold text-green-800 mb-2 flex items-center">
-                    <i class="fas fa-check-circle mr-2"></i>
-                    适合这些人
-                  </h4>
-                  <div class="text-sm text-green-700 whitespace-pre-line">{{ tool.fitFor }}</div>
-                </div>
+            <div class="tools-card !p-8">
+              <h2 class="tools-card-title text-2xl mb-6">详细介绍</h2>
+              <div
+                v-if="tool.content"
+                class="prose-content"
+                v-html="renderMarkdown(tool.content)"
+              ></div>
+              <div v-else class="text-slate-400 italic">暂无详细描述</div>
+            </div>
+          </div>
 
-                <!-- 不适合情况 -->
-                <div v-if="tool.notFitFor" class="bg-red-50 border border-red-200 rounded-lg p-4">
-                  <h4 class="text-sm font-semibold text-red-800 mb-2 flex items-center">
-                    <i class="fas fa-times-circle mr-2"></i>
-                    不适合这些情况
-                  </h4>
-                  <div class="text-sm text-red-700 whitespace-pre-line">{{ tool.notFitFor }}</div>
+          <!-- 右侧-价格和适用性 -->
+          <div class="lg:col-span-1 space-y-8">
+             <div class="tools-card !p-6 sticky top-8">
+                <div class="tools-card-price mb-6">
+                  <span class="tools-card-price-current">¥{{ tool.price }}</span>
+                  <span class="tools-card-price-original">¥{{ Math.round(tool.price * 1.5) }}</span>
                 </div>
-              </div>
-              
-              <!-- 操作按钮 -->
-              <div class="flex flex-wrap gap-4">
-                <!-- 咨询按钮（主按钮） -->
                 <button
                   @click="showConsultationDialog = true"
-                  class="bg-gradient-to-r from-orange-500 to-red-500 text-var(--color-bg-light, white) px-8 py-3 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all font-medium inline-flex items-center gap-2 shadow-lg"
+                  class="tools-card-button tools-card-button--primary w-full"
                 >
                   <i class="fas fa-comments"></i>
-                  咨询
+                  咨询详情
                 </button>
-              </div>
-            </div>
+             </div>
+             <div class="tools-card !p-6">
+                <h3 class="tools-card-title text-lg mb-4">适用性</h3>
+                <div class="space-y-4">
+                  <div v-if="tool.fitFor" class="bg-green-900/30 border border-green-500/30 rounded-lg p-4">
+                    <h4 class="font-semibold text-green-300 mb-2 flex items-center gap-2"><i class="fas fa-check-circle"></i>适合人群</h4>
+                    <div class="text-sm text-green-300/80 whitespace-pre-line">{{ tool.fitFor }}</div>
+                  </div>
+                  <div v-if="tool.notFitFor" class="bg-red-900/30 border border-red-500/30 rounded-lg p-4">
+                    <h4 class="font-semibold text-red-300 mb-2 flex items-center gap-2"><i class="fas fa-times-circle"></i>不适合情况</h4>
+                    <div class="text-sm text-red-300/80 whitespace-pre-line">{{ tool.notFitFor }}</div>
+                  </div>
+                </div>
+             </div>
           </div>
-        </div>
-        
-        <!-- 详细内容 -->
-        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden">
-          <div class="p-8">
-            <div class="prose prose-lg max-w-none">
-              <div v-if="tool.content" v-html="renderMarkdown(tool.content)"></div>
-              <div v-else class="text-gray-500 italic">暂无详细描述</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 无数据状态 -->
-      <div v-else class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 text-center">
-        <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
-          <strong>警告:</strong> 没有找到工具数据！<br>
-          当前 slug: {{ $route.params.slug }}<br>
-          查询错误: {{ error }}
-        </div>
-        <div class="animate-pulse">
-          <div class="h-8 bg-gray-200 rounded mb-4"></div>
-          <div class="h-4 bg-gray-200 rounded mb-2"></div>
-          <div class="h-4 bg-gray-200 rounded mb-2"></div>
-          <div class="h-4 bg-gray-200 rounded w-2/3"></div>
         </div>
       </div>
     </div>
@@ -146,47 +119,46 @@
 </template>
 
 <script setup lang="ts">
-import MarkdownIt from 'markdown-it'
+import MarkdownIt from 'markdown-it';
+import {
+  NBreadcrumb,
+  NBreadcrumbItem,
+  NButton,
+  NResult,
+  useMessage
+} from 'naive-ui';
 
-const route = useRoute()
-const router = useRouter()
-const api = useApi()
-const message = useSafeMessage()
-const slug = route.params.slug as string
+const router = useRouter();
+const route = useRoute();
+const api = useApi();
+const message = useMessage();
+const slug = route.params.slug as string;
 
-const tool = ref<any>(null)
-const toolId = ref<number>(0)
-const loading = ref(true)
-const error = ref<string | null>(null)
-const showConsultationDialog = ref(false)
+const tool = ref<any>(null);
+const loading = ref(true);
+const error = ref<string | null>(null);
+const showConsultationDialog = ref(false);
 
-// 初始化 markdown 渲染器
 const md = new MarkdownIt({
   html: true,
   linkify: true,
   typographer: true
-})
+});
 
-// 获取具体工具数据
 const fetchTool = async () => {
-  loading.value = true
-  error.value = null
+  loading.value = true;
+  error.value = null;
   try {
-    // 先通过 slug 搜索工具
     const searchRes = await api.get<any>('/Toolbox/marketplace', {
       params: { search: slug }
-    })
+    });
     
     if (searchRes && searchRes.tools && searchRes.tools.length > 0) {
-      // 找到匹配的工具（优先精确匹配 slug）
-      const matchedTool = searchRes.tools.find((t: any) => t.slug === slug) || searchRes.tools[0]
-      const currentToolId = matchedTool.id
+      const matchedTool = searchRes.tools.find((t: any) => t.slug === slug) || searchRes.tools[0];
+      const currentToolId = matchedTool.id;
       
-      // 获取工具详情
-      const detailRes = await api.get<any>(`/Toolbox/${currentToolId}`)
+      const detailRes = await api.get<any>(`/Toolbox/${currentToolId}`);
       if (detailRes) {
-        toolId.value = currentToolId
-        // 转换为页面需要的格式
         tool.value = {
           id: detailRes.id,
           title: detailRes.name,
@@ -194,143 +166,152 @@ const fetchTool = async () => {
           price: detailRes.price || 0,
           date: detailRes.createdAt || new Date().toISOString(),
           tags: detailRes.tags || [],
-          buy_link: detailRes.isFree ? '#' : '#',
           _path: `/tools/${detailRes.slug}`,
           content: detailRes.detailedDescription || detailRes.description || '',
           fitFor: detailRes.fitFor || null,
           notFitFor: detailRes.notFitFor || null,
-          enableOnlineOrder: detailRes.enableOnlineOrder === true || detailRes.enableOnlineOrder === 1
-        }
-        
-        console.log('工具详情加载完成:', {
-          id: tool.value.id,
-          enableOnlineOrder: tool.value.enableOnlineOrder,
-          detailResEnableOnlineOrder: detailRes.enableOnlineOrder
-        })
+        };
+      } else {
+        throw new Error('无法获取工具的详细信息');
       }
     } else {
-      error.value = '未找到工具数据'
+      throw new Error('未在市场中找到该工具');
     }
   } catch (e: any) {
-    console.error('获取工具详情失败:', e)
-    error.value = e.message || '获取工具数据失败'
+    console.error('获取工具详情失败:', e);
+    error.value = e.message || '获取工具数据失败';
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
-// 格式化日期
 const formatDate = (dateString: string) => {
-  if (!dateString) return ''
+  if (!dateString) return '';
   return new Date(dateString).toLocaleDateString('zh-CN', {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
-  })
-}
+  });
+};
 
-// 渲染 Markdown
 const renderMarkdown = (markdown: string) => {
-  if (!markdown) return ''
-  return md.render(markdown)
-}
+  if (!markdown) return '';
+  return md.render(markdown);
+};
 
-// 处理直接下单
-const handleDirectOrder = () => {
-  console.log('点击直接下单，工具信息:', {
-    id: tool.value?.id,
-    enableOnlineOrder: tool.value?.enableOnlineOrder
-  })
-  
-  if (tool.value?.id) {
-    // 使用 router.push 确保在当前窗口跳转，而不是新开窗口
-    const targetUrl = `/order/create?productId=${tool.value.id}`
-    console.log('跳转到:', targetUrl)
-    router.push(targetUrl)
-  } else {
-    console.error('工具 ID 不存在，无法跳转到下单页面')
-    message.error('工具信息不完整，请刷新页面重试')
-  }
-}
-
-// 处理咨询成功
 const handleConsultationSuccess = () => {
-  // 咨询提交成功后的处理（可以显示提示等）
-  console.log('咨询提交成功')
-}
+  message.success('咨询请求已发送，我们会尽快与您联系！');
+};
 
 onMounted(() => {
-  fetchTool()
-})
+  fetchTool();
+});
 
-// 设置页面标题和SEO
 useHead({
   title: computed(() => `${tool.value?.title || '工具详情'} - 插件工具 - 溪午听风`),
   meta: [
     { name: 'description', content: computed(() => tool.value?.description || '工具详情页面') },
     { name: 'keywords', content: computed(() => tool.value?.tags?.join(', ') || '插件工具') }
   ]
-})
+});
 </script>
 
 <style scoped>
-/* 优化代码块背景 */
-:deep(.prose pre) {
-  @apply bg-gray-900 text-gray-100;
+/* 使用 a 标签替代 n-breadcrumb-item 中的 span，以便 NuxtLink 生效 */
+:deep(.n-breadcrumb-item .n-breadcrumb-item__link) {
+  display: contents;
+}
+:deep(.n-breadcrumb-item .n-breadcrumb-item__separator) {
+  color: #64748b; /* slate-500 */
+}
+:deep(.n-breadcrumb a) {
+  color: #94a3b8; /* slate-400 */
+  transition: color 0.2s;
+}
+:deep(.n-breadcrumb a:hover) {
+  color: #f1f5f9; /* slate-100 */
+}
+:deep(.n-breadcrumb .n-breadcrumb-item:last-child .n-breadcrumb-item__link) {
+  color: #f8fafc; /* slate-50 */
+  font-weight: 600;
+}
+:deep(.n-result .n-result-header__title) {
+  color: white;
+}
+:deep(.n-result .n-result-header__description) {
+  color: #94a3b8; /* slate-400 */
+}
+
+.prose-content {
+  color: #cbd5e1; /* slate-300 */
+  line-height: 1.8;
+}
+
+:deep(.prose-content h1),
+:deep(.prose-content h2),
+:deep(.prose-content h3),
+:deep(.prose-content h4) {
+  color: #f1f5f9; /* slate-100 */
+  font-weight: 600;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #334155; /* slate-700 */
+  padding-bottom: 0.5rem;
+}
+:deep(.prose-content h2) { margin-top: 2rem; }
+:deep(.prose-content h3) { margin-top: 1.5rem; }
+
+:deep(.prose-content p) {
+  margin-bottom: 1rem;
+}
+
+:deep(.prose-content ul),
+:deep(.prose-content ol) {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+:deep(.prose-content li::marker) {
+  color: #64748b; /* slate-500 */
+}
+
+:deep(.prose-content a) {
+  color: #fb923c; /* orange-400 */
+  text-decoration: none;
+  transition: color 0.2s, border-bottom 0.2s;
+  border-bottom: 1px solid transparent;
+}
+:deep(.prose-content a:hover) {
+  color: #fdba74; /* orange-300 */
+  border-bottom-color: #fdba74; /* orange-300 */
+}
+
+:deep(.prose-content blockquote) {
+  border-left: 4px solid #f97316; /* orange-500 */
+  background-color: rgba(15, 23, 42, 0.5); /* slate-900/50 */
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  color: #94a3b8; /* slate-400 */
+  border-radius: 0 8px 8px 0;
+}
+
+:deep(.prose-content code) {
+  background-color: #334155; /* slate-700 */
+  color: #e2e8f0; /* slate-200 */
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+:deep(.prose-content pre) {
+  background-color: #0f172a; /* slate-900 */
+  border: 1px solid #334155; /* slate-700 */
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: 1rem;
   overflow-x: auto;
 }
 
-:deep(.prose code) {
-  @apply bg-gray-100 text-gray-800 px-1 py-0.5 rounded text-sm;
+:deep(.prose-content pre code) {
+  background-color: transparent;
+  padding: 0;
+  border: none;
 }
-
-:deep(.prose pre code) {
-  @apply bg-transparent text-gray-100 px-0 py-0;
-}
-
-/* 优化标题样式 */
-:deep(.prose h1) {
-  @apply text-2xl font-bold text-gray-800 mb-4;
-}
-
-:deep(.prose h2) {
-  @apply text-xl font-semibold text-gray-800 mb-3 mt-6;
-}
-
-:deep(.prose h3) {
-  @apply text-lg font-medium text-gray-800 mb-2 mt-4;
-}
-
-/* 优化列表样式 */
-:deep(.prose ul) {
-  @apply list-disc pl-6 mb-4;
-}
-
-:deep(.prose ol) {
-  @apply list-decimal pl-6 mb-4;
-}
-
-:deep(.prose li) {
-  @apply mb-1;
-}
-
-/* 优化表格样式 */
-:deep(.prose table) {
-  @apply border-collapse border border-gray-200 rounded-lg overflow-hidden;
-}
-
-:deep(.prose th) {
-  @apply bg-gray-50 border border-gray-200 px-4 py-2;
-}
-
-:deep(.prose td) {
-  @apply border border-gray-200 px-4 py-2;
-}
-
-/* 优化引用样式 */
-:deep(.prose blockquote) {
-  @apply border-l-4 border-orange-500 bg-orange-50 pl-4 py-2 my-4 rounded-r-lg;
-}
-</style> 
+</style>

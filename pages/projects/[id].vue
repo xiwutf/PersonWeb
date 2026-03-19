@@ -1,120 +1,162 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-50 to-var(--color-bg-light, white) py-12">
-    <div class="container mx-auto px-4 max-w-5xl">
-      <!-- 返回按钮 -->
-      <div class="mb-6">
-        <NuxtLink
-          to="/projects"
-          class="btn-secondary inline-flex items-center"
-        >
-          <i class="fas fa-arrow-left mr-2"></i>
-          返回项目展示
-        </NuxtLink>
-      </div>
+  <div class="projects-detail-page">
+    <div class="projects-detail-background">
+      <div class="projects-detail-blob projects-detail-blob--blue"></div>
+      <div class="projects-detail-blob projects-detail-blob--violet"></div>
+      <div class="projects-detail-grid"></div>
+    </div>
 
-      <!-- 加载状态 -->
-      <div v-if="loading" class="text-center py-20">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-        <p class="text-slate-600">加载中...</p>
-      </div>
+    <div class="projects-detail-shell">
+      <NuxtLink to="/projects" class="projects-detail-back">
+        <i class="fas fa-arrow-left"></i>
+        返回项目展示
+      </NuxtLink>
 
-      <!-- 项目详情 -->
-      <div v-else-if="project" class="space-y-8">
-        <!-- 项目头部 -->
-        <div class="card overflow-hidden">
-          <div class="h-64 bg-gradient-to-br from-blue-500 to-purple-600 relative overflow-hidden">
-            <img
-              v-if="project.coverUrl"
-              :src="project.coverUrl"
-              :alt="project.title"
-              class="w-full h-full object-cover"
-            />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-            <div class="absolute bottom-0 left-0 right-0 p-8 text-var(--color-bg-light, white)">
-              <div class="flex items-center gap-3 mb-3">
-                <span
-                  class="px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm bg-white/20"
-                  :class="{
-                    'bg-green-500/80': project.status === 'Active',
-                    'bg-gray-500/80': project.status === 'Completed',
-                    'bg-slate-500/80': project.status === 'Archived'
-                  }"
-                >
-                  {{ project.status === 'Active' ? '进行中' : project.status === 'Completed' ? '已完成' : '已归档' }}
-                </span>
-                <span class="text-sm text-var(--color-bg-light, white)/80 flex items-center gap-1">
-                  <i class="fas fa-eye"></i>
-                  {{ project.viewCount || 0 }} 次浏览
-                </span>
+      <section v-if="loading" class="projects-detail-state">
+        <div class="projects-loading-spinner"></div>
+        <p class="projects-state-title">项目详情加载中</p>
+        <p class="projects-state-text">正在整理项目资料、技术栈与正文内容，请稍候。</p>
+      </section>
+
+      <section v-else-if="project" class="projects-detail-layout">
+        <div class="projects-detail-main">
+          <header class="projects-detail-hero">
+            <div
+              class="projects-detail-cover"
+              :class="getProjectToneClass(project)"
+            >
+              <img
+                v-if="project.coverUrl"
+                :src="project.coverUrl"
+                :alt="project.title"
+                class="projects-detail-cover-image"
+              />
+
+              <div class="projects-detail-cover-overlay"></div>
+
+              <div class="projects-detail-hero-content">
+                <div class="projects-detail-meta-row">
+                  <span class="projects-card-status" :class="getStatusClass(project.status)">
+                    {{ getStatusText(project.status) }}
+                  </span>
+                  <span class="projects-detail-meta-pill">
+                    <i class="fas fa-eye"></i>
+                    {{ project.viewCount || 0 }} 次浏览
+                  </span>
+                </div>
+
+                <h1 class="projects-detail-title">{{ project.title }}</h1>
+                <p class="projects-detail-description">
+                  {{ project.description || '这个项目正在持续完善中，后续会补充更完整的介绍与演示说明。' }}
+                </p>
+
+                <div class="projects-detail-actions">
+                  <a
+                    v-if="project.demoUrl"
+                    :href="project.demoUrl"
+                    target="_blank"
+                    rel="noreferrer"
+                    class="projects-detail-button projects-detail-button--primary"
+                  >
+                    <i class="fas fa-external-link-alt"></i>
+                    在线体验
+                  </a>
+                  <a
+                    v-if="project.githubUrl"
+                    :href="project.githubUrl"
+                    target="_blank"
+                    rel="noreferrer"
+                    class="projects-detail-button projects-detail-button--secondary"
+                  >
+                    <i class="fab fa-github"></i>
+                    查看源码
+                  </a>
+                </div>
               </div>
-              <h1 class="text-4xl font-bold mb-2">{{ project.title }}</h1>
-              <p class="text-lg text-var(--color-bg-light, white)/90">{{ project.description }}</p>
             </div>
-          </div>
+          </header>
 
-          <div class="p-8">
-            <!-- 技术栈 -->
-            <div v-if="techStackArray.length > 0" class="mb-6">
-              <h3 class="text-sm font-medium text-slate-700 mb-3">技术栈</h3>
-              <div class="flex flex-wrap gap-2">
-                <span
-                  v-for="tech in techStackArray"
-                  :key="tech"
-                  class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 shadow-sm hover:shadow-md"
-                  :class="getTechTagClass(tech)"
-                >
-                  <span class="mr-1.5">{{ getTechIcon(tech) }}</span>
-                  {{ tech }}
-                </span>
+          <article v-if="markdownContent" class="projects-detail-content-card">
+            <div class="projects-detail-section-head">
+              <div>
+                <p class="projects-detail-section-kicker">Project Notes</p>
+                <h2 class="projects-detail-section-title">项目说明</h2>
               </div>
             </div>
+            <div
+              class="projects-detail-content prose prose-lg max-w-none"
+              v-html="markdownContent"
+            ></div>
+          </article>
 
-            <!-- 链接按钮 -->
-            <div class="flex flex-wrap gap-4">
-              <a
-                v-if="project.demoUrl"
-                :href="project.demoUrl"
-                target="_blank"
-                class="btn-primary inline-flex items-center gap-2"
-              >
-                <i class="fas fa-external-link-alt"></i>
-                在线体验
-              </a>
-              <a
-                v-if="project.githubUrl"
-                :href="project.githubUrl"
-                target="_blank"
-                class="btn-secondary inline-flex items-center gap-2"
-              >
-                <i class="fab fa-github"></i>
-                查看源码
-              </a>
+          <article v-else class="projects-detail-content-card">
+            <div class="projects-detail-section-head">
+              <div>
+                <p class="projects-detail-section-kicker">Overview</p>
+                <h2 class="projects-detail-section-title">项目概览</h2>
+              </div>
             </div>
-          </div>
+            <p class="projects-detail-empty-copy">
+              当前项目还没有补充完整正文内容，后续会继续整理背景、功能结构与实现思路。
+            </p>
+          </article>
         </div>
 
-        <!-- 项目内容 -->
-        <div v-if="project.content" class="card p-8">
-          <div class="prose prose-lg max-w-none">
-            <ContentRenderer :value="markdownContent" />
-          </div>
-        </div>
-      </div>
+        <aside class="projects-detail-sidebar">
+          <section class="projects-detail-panel">
+            <div class="projects-detail-panel-head">
+              <p class="projects-detail-panel-kicker">Snapshot</p>
+              <h2 class="projects-detail-panel-title">项目信息</h2>
+            </div>
 
-      <!-- 错误状态 -->
-      <div v-else class="card p-8 text-center">
-        <div class="text-red-600 mb-4">
-          <i class="fas fa-exclamation-triangle text-4xl"></i>
-        </div>
-        <h2 class="text-2xl font-bold text-slate-900 mb-2">项目不存在</h2>
-        <p class="text-slate-600 mb-6">未找到该项目，可能已被删除或 ID 不正确。</p>
-        <NuxtLink
-          to="/projects"
-          class="btn-primary inline-flex items-center"
-        >
-          返回项目展示
+            <div class="projects-detail-facts">
+              <div class="projects-detail-fact">
+                <span class="projects-detail-fact-label">当前状态</span>
+                <span class="projects-detail-fact-value">{{ getStatusText(project.status) }}</span>
+              </div>
+              <div class="projects-detail-fact">
+                <span class="projects-detail-fact-label">访问热度</span>
+                <span class="projects-detail-fact-value">{{ project.viewCount || 0 }} 次</span>
+              </div>
+              <div class="projects-detail-fact">
+                <span class="projects-detail-fact-label">演示地址</span>
+                <span class="projects-detail-fact-value">{{ project.demoUrl ? '可体验' : '暂无' }}</span>
+              </div>
+              <div class="projects-detail-fact">
+                <span class="projects-detail-fact-label">源码仓库</span>
+                <span class="projects-detail-fact-value">{{ project.githubUrl ? '已开放' : '未公开' }}</span>
+              </div>
+            </div>
+          </section>
+
+          <section v-if="techStackArray.length > 0" class="projects-detail-panel">
+            <div class="projects-detail-panel-head">
+              <p class="projects-detail-panel-kicker">Stack</p>
+              <h2 class="projects-detail-panel-title">技术栈</h2>
+            </div>
+            <div class="projects-card-tech-stack projects-detail-tech-stack">
+              <span
+                v-for="tech in techStackArray"
+                :key="tech"
+                class="projects-tech-tag"
+                :class="getTechTagClass(tech)"
+              >
+                <span class="projects-tech-tag-icon">{{ getTechIcon(tech) }}</span>
+                {{ tech }}
+              </span>
+            </div>
+          </section>
+        </aside>
+      </section>
+
+      <section v-else class="projects-detail-state projects-detail-state--error">
+        <div class="projects-empty-icon">!</div>
+        <p class="projects-state-title">没有找到这个项目</p>
+        <p class="projects-state-text">项目可能已被删除、隐藏，或者当前访问链接不正确。</p>
+        <NuxtLink to="/projects" class="projects-detail-button projects-detail-button--primary">
+          返回项目列表
         </NuxtLink>
-      </div>
+      </section>
     </div>
   </div>
 </template>
@@ -123,115 +165,152 @@
 import type { Project } from '~/types/api'
 import { useMarkdown } from '~/composables/useMarkdown'
 
+definePageMeta({
+  layout: 'default'
+})
+
 const route = useRoute()
 const api = useApi()
+usePageStyle('projects')
 
 const project = ref<Project | null>(null)
 const loading = ref(true)
-const markdownContent = ref<string>('')
+const markdownContent = ref('')
 
-// 解析技术栈
 const techStackArray = computed(() => {
-  if (!project.value?.techStack) return []
-  if (Array.isArray(project.value.techStack)) {
-    return project.value.techStack
+  const techStack = project.value?.techStack
+  if (!techStack) return []
+
+  if (Array.isArray(techStack)) {
+    return techStack.filter((item): item is string => typeof item === 'string' && Boolean(item.trim()))
   }
-  if (typeof project.value.techStack === 'string') {
+
+  if (typeof techStack === 'string') {
     try {
-      const parsed = JSON.parse(project.value.techStack)
-      return Array.isArray(parsed) ? parsed : project.value.techStack.split(',').map(t => t.trim())
+      const parsed = JSON.parse(techStack)
+      if (Array.isArray(parsed)) {
+        return parsed.filter((item): item is string => typeof item === 'string' && Boolean(item.trim()))
+      }
     } catch {
-      return project.value.techStack.split(',').map(t => t.trim())
+      return techStack.split(',').map(item => item.trim()).filter(Boolean)
     }
+
+    return techStack.split(',').map(item => item.trim()).filter(Boolean)
   }
+
   return []
 })
 
-// 获取技术栈标签样式
 const getTechTagClass = (tech: string) => {
-  const techLower = tech.toLowerCase()
-  
-  // 前端技术
-  if (techLower.includes('vue') || techLower.includes('react') || techLower.includes('angular') || techLower.includes('nuxt') || techLower.includes('next')) {
-    return 'bg-gradient-to-r from-blue-500 to-blue-600 text-var(--color-bg-light, white)'
+  const value = tech.toLowerCase()
+
+  if (value.includes('vue') || value.includes('react') || value.includes('angular') || value.includes('nuxt') || value.includes('next')) {
+    return 'projects-tech-tag--vue'
   }
-  // JavaScript/TypeScript
-  if (techLower.includes('javascript') || techLower.includes('typescript') || techLower.includes('js') || techLower.includes('ts')) {
-    return 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900'
+  if (value.includes('javascript') || value.includes('typescript') || value.includes(' js') || value.includes(' ts')) {
+    return 'projects-tech-tag--js'
   }
-  // Python
-  if (techLower.includes('python')) {
-    return 'bg-gradient-to-r from-blue-400 to-blue-500 text-var(--color-bg-light, white)'
+  if (value.includes('python')) {
+    return 'projects-tech-tag--python'
   }
-  // Node.js
-  if (techLower.includes('node') || techLower.includes('express')) {
-    return 'bg-gradient-to-r from-green-500 to-green-600 text-var(--color-bg-light, white)'
+  if (value.includes('node') || value.includes('express')) {
+    return 'projects-tech-tag--node'
   }
-  // 数据库
-  if (techLower.includes('mysql') || techLower.includes('postgresql') || techLower.includes('mongodb') || techLower.includes('redis')) {
-    return 'bg-gradient-to-r from-orange-500 to-orange-600 text-var(--color-bg-light, white)'
+  if (value.includes('mysql') || value.includes('postgresql') || value.includes('mongodb') || value.includes('redis')) {
+    return 'projects-tech-tag--database'
   }
-  // 框架
-  if (techLower.includes('spring') || techLower.includes('fastapi') || techLower.includes('django') || techLower.includes('flask')) {
-    return 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-var(--color-bg-light, white)'
+  if (value.includes('spring') || value.includes('fastapi') || value.includes('django') || value.includes('flask') || value.includes('.net')) {
+    return 'projects-tech-tag--framework'
   }
-  // 小程序
-  if (techLower.includes('小程序') || techLower.includes('wechat') || techLower.includes('miniprogram')) {
-    return 'bg-gradient-to-r from-green-400 to-green-500 text-var(--color-bg-light, white)'
+  if (value.includes('小程序') || value.includes('wechat') || value.includes('miniprogram')) {
+    return 'projects-tech-tag--miniprogram'
   }
-  // AI/ML
-  if (techLower.includes('ai') || techLower.includes('ml') || techLower.includes('langchain') || techLower.includes('openai')) {
-    return 'bg-gradient-to-r from-purple-500 to-purple-600 text-var(--color-bg-light, white)'
+  if (value.includes('ai') || value.includes('ml') || value.includes('langchain') || value.includes('openai')) {
+    return 'projects-tech-tag--ai'
   }
-  // 默认样式
-  return 'bg-gradient-to-r from-gray-500 to-gray-600 text-var(--color-bg-light, white)'
+
+  return 'projects-tech-tag--default'
 }
 
-// 获取技术栈图标
 const getTechIcon = (tech: string) => {
-  const techLower = tech.toLowerCase()
-  
-  if (techLower.includes('vue')) return '⚡'
-  if (techLower.includes('react')) return '⚛️'
-  if (techLower.includes('python')) return '🐍'
-  if (techLower.includes('node')) return '🟢'
-  if (techLower.includes('mysql')) return '🗄️'
-  if (techLower.includes('redis')) return '🔴'
-  if (techLower.includes('小程序')) return '💬'
-  if (techLower.includes('ai') || techLower.includes('langchain')) return '🤖'
-  if (techLower.includes('spring')) return '🍃'
-  if (techLower.includes('docker')) return '🐳'
-  if (techLower.includes('kubernetes')) return '☸️'
-  if (techLower.includes('git')) return '📦'
-  
-  return '💻'
+  const value = tech.toLowerCase()
+
+  if (value.includes('vue')) return 'V'
+  if (value.includes('react')) return 'R'
+  if (value.includes('python')) return 'Py'
+  if (value.includes('node')) return 'N'
+  if (value.includes('mysql')) return 'DB'
+  if (value.includes('redis')) return 'Re'
+  if (value.includes('小程序')) return 'MP'
+  if (value.includes('ai') || value.includes('langchain')) return 'AI'
+  if (value.includes('spring')) return 'Sp'
+  if (value.includes('docker')) return 'Dc'
+  if (value.includes('git')) return 'Gt'
+
+  return '•'
 }
 
-// 获取项目详情
+const getStatusText = (status: string | undefined) => {
+  const value = (status || '').toLowerCase()
+
+  if (!value) return '进行中'
+  if (value.includes('active') || value.includes('running') || value.includes('online') || value.includes('维护')) return '持续维护'
+  if (value.includes('beta') || value.includes('测试')) return '测试阶段'
+  if (value.includes('done') || value.includes('complete') || value.includes('finished')) return '已完成'
+  if (value.includes('plan') || value.includes('draft')) return '规划中'
+
+  return status || '进行中'
+}
+
+const getStatusClass = (status: string | undefined) => {
+  const value = (status || '').toLowerCase()
+
+  if (value.includes('active') || value.includes('running') || value.includes('online') || value.includes('维护')) {
+    return 'projects-card-status--active'
+  }
+  if (value.includes('beta') || value.includes('测试')) {
+    return 'projects-card-status--beta'
+  }
+  if (value.includes('done') || value.includes('complete') || value.includes('finished')) {
+    return 'projects-card-status--done'
+  }
+
+  return 'projects-card-status--default'
+}
+
+const getProjectToneClass = (currentProject: Project) => {
+  const tech = techStackArray.value.join(' ').toLowerCase()
+  const title = (currentProject.title || '').toLowerCase()
+
+  if (tech.includes('ai') || title.includes('ai')) return 'projects-card-cover--ai'
+  if (tech.includes('vue') || tech.includes('react') || tech.includes('nuxt')) return 'projects-card-cover--web'
+  if (tech.includes('.net') || tech.includes('mysql') || tech.includes('redis')) return 'projects-card-cover--data'
+
+  return 'projects-card-cover--default'
+}
+
 const fetchProject = async () => {
   loading.value = true
   try {
     const projectId = route.params.id as string
-    
-    // 记录访问（异步，不阻塞页面加载）
-    api.post(`/Projects/${projectId}/view`).catch(() => {
-      // 静默失败
-    })
 
-    // 获取项目详情
-    const res = await api.get<Project>(`/Projects/${projectId}`)
-    project.value = res
+    api.post(`/Projects/${projectId}/view`).catch(() => {})
 
-    // 解析 Markdown 内容
-    if (res.content) {
+    const response = await api.get<Project>(`/Projects/${projectId}`)
+    project.value = response
+
+    if (response.content) {
       const { parse } = useMarkdown()
-      markdownContent.value = parse(res.content)
+      markdownContent.value = parse(response.content)
+    } else {
+      markdownContent.value = ''
     }
-  } catch (e: unknown) {
+  } catch (error) {
     if (process.env.NODE_ENV === 'development') {
-      console.error('Failed to fetch project:', e)
+      console.error('Failed to fetch project:', error)
     }
     project.value = null
+    markdownContent.value = ''
   } finally {
     loading.value = false
   }
@@ -241,7 +320,6 @@ onMounted(() => {
   fetchProject()
 })
 
-// 设置页面标题
 useHead({
   title: computed(() => `${project.value?.title || '项目详情'} - 项目展示 - 溪午听风`),
   meta: [
@@ -254,15 +332,47 @@ useHead({
 </script>
 
 <style scoped>
-:deep(.prose pre) {
-  @apply bg-slate-900 text-slate-100;
-  border-radius: 12px;
-  padding: 1.5rem;
-  overflow-x: auto;
+.projects-detail-content :deep(h2),
+.projects-detail-content :deep(h3),
+.projects-detail-content :deep(h4) {
+  color: #f8fafc;
+  letter-spacing: -0.02em;
 }
 
-:deep(.prose code) {
-  @apply bg-slate-100 text-slate-800 px-1 py-0.5 rounded text-sm;
+.projects-detail-content :deep(p),
+.projects-detail-content :deep(li) {
+  color: rgba(226, 232, 240, 0.82);
+  line-height: 1.9;
+}
+
+.projects-detail-content :deep(a) {
+  color: #93c5fd;
+}
+
+.projects-detail-content :deep(blockquote) {
+  border-left: 3px solid rgba(96, 165, 250, 0.5);
+  background: rgba(15, 23, 42, 0.46);
+  color: rgba(226, 232, 240, 0.78);
+}
+
+.projects-detail-content :deep(pre) {
+  overflow-x: auto;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 18px;
+  background: rgba(2, 6, 23, 0.88);
+  color: #e2e8f0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.projects-detail-content :deep(code) {
+  border-radius: 8px;
+  background: rgba(30, 41, 59, 0.86);
+  color: #f8fafc;
+  padding: 0.15rem 0.4rem;
+}
+
+.projects-detail-content :deep(pre code) {
+  background: transparent;
+  padding: 0;
 }
 </style>
-

@@ -243,11 +243,12 @@
     <Timeline />
 
     <!-- Bento Grid 内容展示 -->
-    <section id="content" class="py-32 bg-slate-50 relative">
+    <section id="content" class="home-dark-lab-showcase py-32 relative">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
         <div class="text-center mb-20" data-aos="fade-up">
-          <h2 class="text-4xl lg:text-5xl xl:text-6xl font-bold text-slate-900 mb-4">探索我的世界</h2>
-          <p class="text-xl lg:text-2xl text-slate-600">这里有代码、有思考，也有生活</p>
+          <div class="home-dark-lab-showcase-kicker">Creative Index</div>
+          <h2 class="home-dark-lab-showcase-title text-4xl lg:text-5xl xl:text-6xl font-bold mb-4">探索我的世界</h2>
+          <p class="home-dark-lab-showcase-subtitle text-xl lg:text-2xl">这里有代码、有思考，也有生活</p>
         </div>
 
         <div
@@ -257,24 +258,20 @@
           <div class="md:col-span-2 lg:col-span-2 row-span-2" data-aos="fade-up">
             <TiltCard class="h-full">
               <div
-                class="group relative h-full overflow-hidden rounded-3xl shadow-md bg-white p-8 flex flex-col justify-between border border-slate-200 hover:border-blue-200 hover:shadow-xl transition-all duration-300"
+                class="home-dark-lab-card home-dark-lab-card--blue home-dark-lab-card--feature group relative h-full overflow-hidden rounded-3xl p-8 flex flex-col justify-between transition-all duration-300"
               >
-                <div
-                  class="absolute inset-0 bg-gradient-to-br from-blue-50 via-sky-50 to-indigo-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                ></div>
-
                 <div class="relative z-10">
                   <div
-                    class="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs sm:text-sm mb-4 font-medium"
+                    class="home-dark-lab-card-badge inline-flex items-center px-3 py-1 rounded-full text-xs sm:text-sm mb-4 font-medium"
                   >
                     <i class="fas fa-pen-fancy mr-2"></i> 最新博客
                   </div>
                   <h3
-                    class="text-2xl sm:text-3xl font-bold text-slate-900 mb-2 group-hover:text-blue-700 transition-colors"
+                    class="home-dark-lab-card-title text-2xl sm:text-3xl font-bold mb-2 transition-colors"
                   >
                     技术探索与分享
                   </h3>
-                  <p class="text-slate-600 text-sm sm:text-base">
+                  <p class="home-dark-lab-card-description text-sm sm:text-base">
                     记录学习过程中的洞察，与解决问题的完整思路。
                   </p>
                 </div>
@@ -285,25 +282,25 @@
                       v-for="post in latestPosts"
                       :key="post.id"
                       :to="`/blog/${post.slug || post.id}`"
-                      class="block p-4 bg-white rounded-xl shadow-sm border border-slate-100 hover:shadow-md hover:border-blue-200 transition-all group/item mb-2"
+                      class="home-dark-lab-post-item block p-4 rounded-xl transition-all group/item mb-2"
                     >
                       <div class="flex justify-between items-start gap-2">
                         <div
-                          class="font-semibold text-slate-800 text-sm sm:text-base group-hover/item:text-blue-600 transition-colors truncate pr-4"
+                          class="home-dark-lab-post-title font-semibold text-sm sm:text-base transition-colors truncate pr-4"
                         >
                           {{ post.title }}
                         </div>
                         <i
-                          class="fas fa-arrow-right text-slate-300 group-hover/item:text-blue-500 transform group-hover/item:translate-x-1 transition-all"
+                          class="home-dark-lab-post-arrow fas fa-arrow-right transform group-hover/item:translate-x-1 transition-all"
                         ></i>
                       </div>
-                      <div class="text-xs text-slate-500 mt-1">
+                      <div class="home-dark-lab-post-meta text-xs mt-1">
                         {{ formatDate(post.publishTime || post.createdAt) }} ·
                         {{ post.categoryName || '未分类' }}
                       </div>
                     </NuxtLink>
                   </div>
-                  <div v-else class="text-center text-slate-500 py-4 text-sm">
+                  <div v-else class="home-dark-lab-empty text-center py-4 text-sm">
                     暂无最新文章，敬请期待更新。
                   </div>
                 </div>
@@ -315,30 +312,25 @@
           <div class="md:col-span-1 lg:col-span-1 row-span-1" data-aos="fade-up" data-aos-delay="80">
             <TiltCard class="h-full">
               <div
-                class="h-full bg-white rounded-3xl shadow-md p-6 border border-slate-200 group hover:border-blue-200 hover:shadow-xl transition-all duration-300 flex flex-col relative overflow-hidden"
+                class="home-dark-lab-card home-dark-lab-card--blue group h-full rounded-3xl p-6 transition-all duration-300 flex flex-col relative overflow-hidden"
               >
-                <!-- 渐变背景效果 -->
-                <div
-                  class="absolute inset-0 bg-gradient-to-br from-blue-50 via-sky-50 to-indigo-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                ></div>
-
                 <div class="relative z-10 flex flex-col h-full">
                   <div
-                    class="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs sm:text-sm mb-4 font-medium"
+                    class="home-dark-lab-card-badge inline-flex items-center px-3 py-1 rounded-full text-xs sm:text-sm mb-4 font-medium"
                   >
                     <i class="fas fa-tools mr-2"></i> 效率工具
                   </div>
                   <h3
-                    class="text-2xl sm:text-3xl font-bold text-slate-900 mb-2 group-hover:text-blue-700 transition-colors"
+                    class="home-dark-lab-card-title text-2xl sm:text-3xl font-bold mb-2 transition-colors"
                   >
                     效率工具
                   </h3>
-                  <p class="text-slate-600 text-sm sm:text-base mb-4 flex-grow">
+                  <p class="home-dark-lab-card-description text-sm sm:text-base mb-4 flex-grow">
                     Revit 插件与自动化脚本，让日常工作更顺滑高效。
                   </p>
                   <NuxtLink
                     to="/tools"
-                    class="inline-flex items-center text-blue-600 font-medium text-xs sm:text-sm hover:text-blue-700 mt-auto group/link"
+                    class="home-dark-lab-card-link inline-flex items-center font-medium text-xs sm:text-sm mt-auto group/link"
                   >
                     查看工具库
                     <i
@@ -354,30 +346,25 @@
           <div class="md:col-span-1 lg:col-span-1 row-span-1" data-aos="fade-up" data-aos-delay="160">
             <TiltCard class="h-full">
               <div
-                class="h-full bg-white rounded-3xl shadow-md p-6 border border-slate-200 group hover:border-purple-200 hover:shadow-xl transition-all duration-300 flex flex-col relative overflow-hidden"
+                class="home-dark-lab-card home-dark-lab-card--purple group h-full rounded-3xl p-6 transition-all duration-300 flex flex-col relative overflow-hidden"
               >
-                <!-- 渐变背景效果 -->
-                <div
-                  class="absolute inset-0 bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                ></div>
-
                 <div class="relative z-10 flex flex-col h-full">
                   <div
-                    class="inline-flex items-center px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs sm:text-sm mb-4 font-medium"
+                    class="home-dark-lab-card-badge inline-flex items-center px-3 py-1 rounded-full text-xs sm:text-sm mb-4 font-medium"
                   >
                     <i class="fas fa-project-diagram mr-2"></i> 精选项目
                   </div>
                   <h3
-                    class="text-2xl sm:text-3xl font-bold text-slate-900 mb-2 group-hover:text-purple-700 transition-colors"
+                    class="home-dark-lab-card-title text-2xl sm:text-3xl font-bold mb-2 transition-colors"
                   >
                     精选项目
                   </h3>
-                  <p class="text-slate-600 text-sm sm:text-base mb-4 flex-grow">
+                  <p class="home-dark-lab-card-description text-sm sm:text-base mb-4 flex-grow">
                     实战项目与开源尝试，持续拓展技术边界。
                   </p>
                   <NuxtLink
                     to="/projects"
-                    class="inline-flex items-center text-purple-600 font-medium text-xs sm:text-sm hover:text-purple-700 mt-auto group/link"
+                    class="home-dark-lab-card-link inline-flex items-center font-medium text-xs sm:text-sm mt-auto group/link"
                   >
                     浏览作品集
                     <i
@@ -393,30 +380,25 @@
           <div class="md:col-span-1 lg:col-span-1 row-span-1" data-aos="fade-up" data-aos-delay="200">
             <TiltCard class="h-full">
               <div
-                class="h-full bg-white rounded-3xl shadow-md p-6 border border-slate-200 group hover:border-cyan-200 hover:shadow-xl transition-all duration-300 flex flex-col relative overflow-hidden"
+                class="home-dark-lab-card home-dark-lab-card--cyan group h-full rounded-3xl p-6 transition-all duration-300 flex flex-col relative overflow-hidden"
               >
-                <!-- 渐变背景效果 -->
-                <div
-                  class="absolute inset-0 bg-gradient-to-br from-cyan-50 via-blue-50 to-indigo-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                ></div>
-
                 <div class="relative z-10 flex flex-col h-full">
                   <div
-                    class="inline-flex items-center px-3 py-1 bg-cyan-100 text-cyan-700 rounded-full text-xs sm:text-sm mb-4 font-medium"
+                    class="home-dark-lab-card-badge inline-flex items-center px-3 py-1 rounded-full text-xs sm:text-sm mb-4 font-medium"
                   >
                     <i class="fas fa-flask mr-2"></i> AI 实验室
                   </div>
                   <h3
-                    class="text-2xl sm:text-3xl font-bold text-slate-900 mb-2 group-hover:text-cyan-700 transition-colors"
+                    class="home-dark-lab-card-title text-2xl sm:text-3xl font-bold mb-2 transition-colors"
                   >
                     AI 实验室
                   </h3>
-                  <p class="text-slate-600 text-sm sm:text-base mb-4 flex-grow">
+                  <p class="home-dark-lab-card-description text-sm sm:text-base mb-4 flex-grow">
                     3D 场景、AI 小实验与互动体验的集合地。
                   </p>
                   <NuxtLink
                     to="/lab"
-                    class="inline-flex items-center text-cyan-600 font-medium text-xs sm:text-sm hover:text-cyan-700 mt-auto group/link"
+                    class="home-dark-lab-card-link inline-flex items-center font-medium text-xs sm:text-sm mt-auto group/link"
                   >
                     进入实验室
                     <i
@@ -432,30 +414,25 @@
           <div class="md:col-span-2 lg:col-span-2 row-span-1" data-aos="fade-up" data-aos-delay="240">
             <TiltCard class="h-full">
               <div
-                class="h-full bg-white rounded-3xl shadow-md p-6 border border-slate-200 group hover:border-orange-200 hover:shadow-xl transition-all duration-300 flex flex-col md:flex-row items-center gap-6 relative overflow-hidden"
+                class="home-dark-lab-card home-dark-lab-card--orange group h-full rounded-3xl p-6 transition-all duration-300 flex flex-col md:flex-row items-center gap-6 relative overflow-hidden"
               >
-                <!-- 渐变背景效果 -->
-                <div
-                  class="absolute inset-0 bg-gradient-to-br from-orange-50 via-amber-50 to-rose-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                ></div>
-
                 <div class="flex-1 relative z-10">
                   <div
-                    class="inline-flex items-center px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs sm:text-sm mb-4 font-medium"
+                    class="home-dark-lab-card-badge inline-flex items-center px-3 py-1 rounded-full text-xs sm:text-sm mb-4 font-medium"
                   >
                     <i class="fas fa-coffee mr-2"></i> 生活随笔
                   </div>
                   <h3
-                    class="text-2xl sm:text-3xl font-bold text-slate-900 mb-2 group-hover:text-orange-700 transition-colors"
+                    class="home-dark-lab-card-title text-2xl sm:text-3xl font-bold mb-2 transition-colors"
                   >
                     生活随笔
                   </h3>
-                  <p class="text-slate-600 text-sm sm:text-base mb-4">
+                  <p class="home-dark-lab-card-description text-sm sm:text-base mb-4">
                     记录代码之外的风景，用文字和图片保存一些温度。
                   </p>
                   <NuxtLink
                     to="/life"
-                    class="inline-flex items-center text-orange-600 font-medium text-xs sm:text-sm hover:text-orange-700 group/link"
+                    class="home-dark-lab-card-link inline-flex items-center font-medium text-xs sm:text-sm group/link"
                   >
                     进入生活专栏
                     <i
@@ -465,9 +442,9 @@
                 </div>
                 <div class="w-full md:w-1/2 space-y-3">
                   <div
-                    class="p-3 bg-white rounded-xl shadow-sm border border-orange-100/70 flex items-center gap-3 hover:shadow-md transition-shadow cursor-pointer"
+                    class="home-dark-lab-life-preview p-3 rounded-xl flex items-center gap-3 transition-shadow cursor-pointer"
                   >
-                    <div class="w-12 h-12 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden">
+                    <div class="home-dark-lab-life-preview-media w-12 h-12 rounded-lg flex-shrink-0 overflow-hidden">
                       <img
                         src="/images/blog/thermal-circulation.png"
                         class="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
@@ -476,12 +453,12 @@
                     </div>
                     <div>
                       <div
-                        class="text-[10px] text-orange-500 font-bold uppercase tracking-wider mb-0.5"
+                        class="home-dark-lab-life-preview-label text-[10px] font-bold uppercase tracking-wider mb-0.5"
                       >
                         最近更新
                       </div>
                       <div
-                        class="font-medium text-slate-700 text-sm line-clamp-1 group-hover:text-orange-600 transition-colors"
+                        class="home-dark-lab-life-preview-title font-medium text-sm line-clamp-1 transition-colors"
                       >
                         地理科普：一文读懂热力环流
                       </div>
@@ -496,15 +473,11 @@
           <div class="md:col-span-2 lg:col-span-2 row-span-1" data-aos="fade-up" data-aos-delay="320">
             <TiltCard class="h-full">
               <div
-                class="h-full bg-white rounded-3xl shadow-md p-8 border border-slate-200 flex flex-col justify-center items-center text-center gap-4 group hover:border-blue-200 hover:shadow-xl transition-all relative overflow-hidden"
+                class="home-dark-lab-card home-dark-lab-card--neutral group h-full rounded-3xl p-8 flex flex-col justify-center items-center text-center gap-4 transition-all relative overflow-hidden"
               >
-                <div
-                  class="absolute inset-0 bg-slate-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                ></div>
-
                 <div class="relative z-10">
-                  <h3 class="text-2xl font-bold text-slate-800 mb-2">想要进一步了解我？</h3>
-                  <p class="text-slate-600 text-sm sm:text-base max-w-md mx-auto">
+                  <h3 class="home-dark-lab-card-title text-2xl font-bold mb-2">想要进一步了解我？</h3>
+                  <p class="home-dark-lab-card-description text-sm sm:text-base max-w-md mx-auto">
                     欢迎一起聊聊技术、产品、AI 应用落地，或者单纯交个朋友。
                   </p>
                 </div>
@@ -512,19 +485,19 @@
                   <a
                     href="https://github.com"
                     target="_blank"
-                    class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-700 hover:bg-slate-900 hover:text-white transition-all duration-300 hover:-translate-y-1"
+                    class="home-dark-lab-contact-icon w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:-translate-y-1"
                   >
                     <i class="fab fa-github"></i>
                   </a>
                   <a
                     href="mailto:contact@example.com"
-                    class="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-300 hover:-translate-y-1"
+                    class="home-dark-lab-contact-icon home-dark-lab-contact-icon--accent w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:-translate-y-1"
                   >
                     <i class="fas fa-envelope"></i>
                   </a>
                   <NuxtLink
                     to="/about"
-                    class="px-6 py-2 bg-slate-900 text-white rounded-full text-sm font-medium hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20 hover:shadow-slate-900/40 hover:-translate-y-1"
+                    class="home-dark-lab-contact-button px-6 py-2 rounded-full text-sm font-medium transition-all hover:-translate-y-1"
                   >
                     查看详细介绍
                   </NuxtLink>
@@ -537,11 +510,12 @@
     </section>
 
     <!-- 时间胶囊墙展示区域 -->
-    <section class="py-24 bg-gradient-to-b from-slate-50 to-white relative">
+    <section class="home-dark-lab-timecapsule py-24 relative overflow-hidden">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16" data-aos="fade-up">
-          <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 mb-3">时间胶囊墙</h2>
-          <p class="text-lg text-slate-600">访客留下的足迹与祝福</p>
+          <div class="home-dark-lab-timecapsule-kicker">Time Capsule</div>
+          <h2 class="home-dark-lab-timecapsule-title text-3xl lg:text-4xl font-bold mb-3">时间胶囊墙</h2>
+          <p class="home-dark-lab-timecapsule-subtitle text-lg">访客留下的足迹与祝福</p>
         </div>
 
         <TimeCapsuleDisplay />

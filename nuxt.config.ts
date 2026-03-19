@@ -100,6 +100,8 @@ export default defineNuxtConfig({
     '~/assets/css/life.css',
     '~/assets/css/blog.css',
     '~/assets/css/projects.css',
+    '~/assets/css/skills.css',
+    '~/assets/css/english.css',
     '~/assets/css/investment.css',
     '~/assets/css/charts.css',
     '~/assets/css/admin-asset-management.css'
@@ -111,7 +113,7 @@ export default defineNuxtConfig({
       // 自动爬取链接，但排除 admin 页面
       crawlLinks: true,
       // 显式指定 Lighthouse CI 测试的页面，确保 generate 时预渲染
-      routes: ['/', '/about', '/projects', '/blog', '/tools', '/life'],
+      routes: ['/', '/about', '/projects', '/blog', '/tools', '/life', '/skills'],
       // 排除需要认证的 admin 页面
       ignore: [
         '/admin/**'

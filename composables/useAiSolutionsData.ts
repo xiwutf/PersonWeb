@@ -1,9 +1,8 @@
 /**
  * AI 解决方案页面数据配置
- * 将页面数据从组件中分离，便于维护和复用
+ * 将页面展示文案和结构化数据从页面组件中分离，便于维护与复用。
  */
 
-// 能力展示数据类型
 export interface Capability {
   id: string
   title: string
@@ -11,7 +10,6 @@ export interface Capability {
   features: string[]
 }
 
-// 项目案例类型
 export interface FeaturedProject {
   id: string
   title: string
@@ -21,48 +19,32 @@ export interface FeaturedProject {
   path: string | null
 }
 
-// 技术栈分类类型
 export interface TechStackCategory {
   name: string
   icon: string
   items: string[]
 }
 
-// 合作流程步骤类型
 export interface CooperationStep {
   title: string
   description: string
 }
 
-// 页面配置类型
 export interface AiSolutionsPageConfig {
-  // 页面基础信息
   badge: {
     text: string
   }
   title: string
   subtitle: string
   description: string
-  
-  // SEO 信息
   seo: {
     title: string
     description: string
   }
-  
-  // 能力展示
   capabilities: Capability[]
-  
-  // 项目案例
   featuredProjects: FeaturedProject[]
-  
-  // 技术栈
   techStackCategories: TechStackCategory[]
-  
-  // 合作流程
   cooperationSteps: CooperationStep[]
-  
-  // CTA 区域
   cta: {
     text: string
     primaryButton: {
@@ -76,8 +58,6 @@ export interface AiSolutionsPageConfig {
       icon: string
     }
   }
-  
-  // 区块标题
   sectionTitles: {
     capabilities: string
     capabilitiesIcon: string
@@ -92,26 +72,22 @@ export interface AiSolutionsPageConfig {
   }
 }
 
-/**
- * 获取 AI 解决方案页面配置数据
- */
 export const useAiSolutionsData = (): AiSolutionsPageConfig => {
   return {
-    // 页面基础信息
     badge: {
       text: 'AI / 智能体解决方案'
     },
     title: 'AI / 智能体解决方案',
     subtitle: '为个人与中小团队打造可落地的 AI 应用与智能体系统',
-    description: '我专注于将 AI 技术落地为真实可用的工具与系统，覆盖智能体构建、知识库问答、流程自动化与 AI 工具开发，适用于个人创作者、小团队与中小企业的实际业务场景。',
-    
-    // SEO 信息
+    description:
+      '我专注于将 AI 技术落地为真实可用的工具与系统，覆盖智能体构建、知识库问答、流程自动化与 AI 工具开发，适用于个人创作者、小团队与中小企业的实际业务场景。',
+
     seo: {
       title: 'AI / 智能体解决方案 | 溪午听风',
-      description: '为个人与中小团队打造可落地的 AI 应用与智能体系统。智能体构建、知识库问答、流程自动化与 AI 工具开发。'
+      description:
+        '为个人与中小团队打造可落地的 AI 应用与智能体系统，包含智能体构建、知识库问答、流程自动化与 AI 工具开发。'
     },
-    
-    // 能力展示数据
+
     capabilities: [
       {
         id: 'agent-system',
@@ -132,7 +108,7 @@ export const useAiSolutionsData = (): AiSolutionsPageConfig => {
           '智能取名、内容生成',
           '表单 / 数据处理自动化',
           '规则 + AI 混合逻辑',
-          '私有化部署支持'
+          '支持私有化部署'
         ]
       },
       {
@@ -142,7 +118,7 @@ export const useAiSolutionsData = (): AiSolutionsPageConfig => {
         features: [
           '文档 / 网站 / 私有数据接入',
           '向量化与语义检索',
-          '多轮对话与精准引用',
+          '多轮对话与精确引用',
           '适用于企业内部或个人知识管理'
         ]
       },
@@ -158,14 +134,14 @@ export const useAiSolutionsData = (): AiSolutionsPageConfig => {
         ]
       }
     ],
-    
-    // 代表性项目案例
+
     featuredProjects: [
       {
         id: 'name-tool',
         title: '智能取名助手',
         icon: 'fas fa-sparkles',
-        description: '基于规则与大模型的智能取名系统，支持行业、风格、禁用词等多维度控制。',
+        description:
+          '基于规则与大模型的智能取名系统，支持行业、风格、禁用词等多维度控制。',
         highlights: [
           'Prompt 模板化管理',
           '多轮生成与去重逻辑',
@@ -177,7 +153,8 @@ export const useAiSolutionsData = (): AiSolutionsPageConfig => {
         id: 'website-chat',
         title: '网站 AI 聊天助手',
         icon: 'fas fa-comments',
-        description: '为个人网站与产品站点提供定制化 AI 问答能力。',
+        description:
+          '为个人网站与产品站点提供定制化 AI 问答能力。',
         highlights: [
           '系统 Prompt 与用户 Prompt 分离',
           '支持上下文与历史消息',
@@ -189,7 +166,8 @@ export const useAiSolutionsData = (): AiSolutionsPageConfig => {
         id: 'finance-assistant',
         title: '个人理财 / 资产分析智能助手（规划中）',
         icon: 'fas fa-chart-line',
-        description: '用于个人资产统计、分析与长期理财规划的 AI 辅助系统。',
+        description:
+          '用于个人资产统计、分析与长期理财规划的 AI 辅助系统。',
         highlights: [
           '多资产类型建模',
           '数据分析 + AI 解释',
@@ -198,8 +176,7 @@ export const useAiSolutionsData = (): AiSolutionsPageConfig => {
         path: null
       }
     ],
-    
-    // 技术栈分类
+
     techStackCategories: [
       {
         name: 'AI / 模型层',
@@ -230,8 +207,7 @@ export const useAiSolutionsData = (): AiSolutionsPageConfig => {
         ]
       }
     ],
-    
-    // 合作流程步骤
+
     cooperationSteps: [
       {
         title: '需求沟通',
@@ -243,17 +219,17 @@ export const useAiSolutionsData = (): AiSolutionsPageConfig => {
       },
       {
         title: '开发实现',
-        description: '敏捷开发，阶段性可验收'
+        description: '敏捷开发，阶段性交付与验收'
       },
       {
         title: '交付与迭代',
         description: '支持后期优化与功能扩展'
       }
     ],
-    
-    // CTA 区域配置
+
     cta: {
-      text: '如果你正在寻找一个<br>能真正把 AI 做成"工具"和"系统"的开发者<br>欢迎与我交流你的想法。',
+      text:
+        '如果你正在寻找一个<br>能真正把 AI 做成“工具”和“系统”的开发者<br>欢迎与我交流你的想法。',
       primaryButton: {
         text: '联系我',
         path: '/about',
@@ -265,15 +241,15 @@ export const useAiSolutionsData = (): AiSolutionsPageConfig => {
         icon: 'fas fa-arrow-down'
       }
     },
-    
-    // 区块标题配置
+
     sectionTitles: {
       capabilities: '我能为你构建哪些 AI 能力',
       capabilitiesIcon: 'fas fa-lightbulb',
       projects: '部分 AI 项目与实践',
       projectsIcon: 'fas fa-project-diagram',
-      projectsNote: '（可持续新增，不求多，但求真实）',
-      projectsDescription: '部分项目仍在持续迭代中，但核心能力已具备并可复用。',
+      projectsNote: '可持续新增，不求多，但求真实',
+      projectsDescription:
+        '部分项目仍在持续迭代中，但核心能力已经具备并可复用。',
       techStack: '技术栈与架构能力',
       techStackIcon: 'fas fa-code',
       cooperation: '合作流程',
@@ -281,4 +257,3 @@ export const useAiSolutionsData = (): AiSolutionsPageConfig => {
     }
   }
 }
-

@@ -1,19 +1,25 @@
 <template>
   <div class="projects-page">
-    <!-- 3D 旋转空间视图切换（移动端隐藏） -->
+    <div class="projects-background-noise"></div>
+    <div class="projects-background">
+      <div class="projects-background-blob projects-background-blob--blue"></div>
+      <div class="projects-background-blob projects-background-blob--emerald"></div>
+      <div class="projects-background-blob projects-background-blob--violet"></div>
+      <div class="projects-background-grid"></div>
+    </div>
+
     <div class="projects-view-toggle-container">
       <button
         v-if="viewMode === 'grid'"
-        @click.stop.prevent="handleToggle3DView"
         class="projects-view-toggle-button"
-        title="切换到3D视图"
+        title="切换到 3D 视图"
+        @click.stop.prevent="handleToggle3DView"
       >
-        <span class="projects-view-toggle-icon">🌐</span>
-        <span class="projects-view-toggle-text">3D视图</span>
+        <span class="projects-view-toggle-icon">◌</span>
+        <span class="projects-view-toggle-text">3D 视图</span>
       </button>
     </div>
-    
-    <!-- 3D 旋转空间 -->
+
     <template v-if="viewMode === '3d' && !loading && projects.length > 0">
       <ClientOnly>
         <component
@@ -24,119 +30,240 @@
         />
       </ClientOnly>
     </template>
-    
-    <!-- 传统网格视图 -->
-    <div v-else class="projects-container">
-      <div class="projects-header">
-        <h1 class="projects-title">项目展示</h1>
-        <p class="projects-subtitle">探索我的开源项目和技术实验</p>
-      </div>
 
-      <div v-if="loading" class="projects-loading">
-        <div class="projects-loading-spinner"></div>
-      </div>
+    <div v-else class="projects-shell">
+      <section class="projects-hero">
+        <div class="projects-hero-copy">
+          <div class="projects-hero-badge">
+            <span class="projects-hero-badge-dot"></span>
+            项目档案馆
+          </div>
+          <h1 class="projects-title">把产品、工具和实验做成可浏览的作品集</h1>
+          <p class="projects-subtitle">
+            这里收录我持续迭代的项目。它们不是静态截图，而是正在运行、持续维护、不断加深技术边界的数字作品。
+          </p>
 
-      <!-- 错误提示 -->
-      <div v-if="error" class="projects-error">
-        <p class="projects-error-title">加载失败</p>
-        <p class="projects-error-message">{{ error }}</p>
-        <p v-if="debugData" class="projects-error-debug">{{ debugData }}</p>
-      </div>
-      
-      <!-- 无数据提示 -->
-      <div v-if="projects.length === 0 && !loading && !error" class="projects-empty">
-        <div class="projects-empty-icon">📦</div>
-        <h3 class="projects-empty-title">暂无项目</h3>
-        <p class="projects-empty-text">还没有添加任何项目，请先在后台管理中创建项目</p>
-      </div>
+          <div class="projects-hero-actions">
+            <a href="#projects-grid" class="projects-hero-button projects-hero-button--primary">
+              浏览项目
+            </a>
+            <button
+              type="button"
+              class="projects-hero-button projects-hero-button--secondary"
+              @click.stop.prevent="handleToggle3DView"
+            >
+              进入 3D 展厅
+            </button>
+          </div>
+        </div>
 
-      <div v-else class="projects-grid">
-        <NuxtLink 
-          v-for="project in projects" 
-          :key="project.id" 
-          :to="`/projects/${project.id}`" 
-          class="projects-card"
-        >
-          <!-- 封面图 -->
-          <div class="projects-card-cover">
-            <img :src="project.coverUrl || 'https://placehold.co/600x400'" :alt="project.title" />
-            <div class="projects-card-cover-overlay">
-              <div class="projects-card-cover-actions">
-                <a 
-                  v-if="project.demoUrl" 
-                  :href="project.demoUrl" 
-                  target="_blank" 
-                  class="projects-card-cover-button projects-card-cover-button--white"
-                  @click.stop
-                >
-                  Live Demo
-                </a>
-                <a 
-                  v-if="project.githubUrl" 
-                  :href="project.githubUrl" 
-                  target="_blank" 
-                  class="projects-card-cover-button projects-card-cover-button--dark"
-                  @click.stop
-                >
-                  GitHub
-                </a>
-              </div>
-            </div>
+        <div class="projects-hero-panel">
+          <div class="projects-hero-panel-head">
+            <span class="projects-hero-panel-kicker">Snapshot</span>
+            <span class="projects-hero-panel-status">Live</span>
+          </div>
+          <div class="projects-hero-metrics">
+            <article class="projects-metric-card">
+              <span class="projects-metric-value">{{ totalProjects }}</span>
+              <span class="projects-metric-label">项目总数</span>
+            </article>
+            <article class="projects-metric-card">
+              <span class="projects-metric-value">{{ activeProjects }}</span>
+              <span class="projects-metric-label">持续维护</span>
+            </article>
+            <article class="projects-metric-card">
+              <span class="projects-metric-value">{{ githubProjects }}</span>
+              <span class="projects-metric-label">GitHub 仓库</span>
+            </article>
+            <article class="projects-metric-card">
+              <span class="projects-metric-value">{{ techTagCount }}</span>
+              <span class="projects-metric-label">技术标签</span>
+            </article>
           </div>
 
-          <!-- 内容 -->
-          <div class="projects-card-body">
-            <div class="projects-card-header">
-              <h3 class="projects-card-title">{{ project.title }}</h3>
-              <div class="projects-card-meta">
-                <span class="projects-card-badge projects-card-badge--blue">
-                  {{ project.status }}
-                </span>
-                <span class="projects-card-view-count">
+          <div class="projects-hero-highlight" v-if="featuredProjects.length > 0">
+            <p class="projects-hero-highlight-title">本页精选</p>
+            <ul class="projects-hero-highlight-list">
+              <li
+                v-for="project in featuredProjects"
+                :key="project.id"
+                class="projects-hero-highlight-item"
+              >
+                <span class="projects-hero-highlight-name">{{ project.title }}</span>
+                <span class="projects-hero-highlight-meta">{{ getPrimaryTech(project) }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="projects-showcase">
+        <article class="projects-showcase-card">
+          <span class="projects-showcase-label">Build</span>
+          <h2 class="projects-showcase-title">项目列表不是堆卡片，而是一面技术能力墙</h2>
+          <p class="projects-showcase-text">
+            我把产品型项目、工具型项目和实验性项目放在同一张画布里，让用户一眼看到“做过什么”、“做到多深”、“现在还在不在继续做”。
+          </p>
+        </article>
+        <article class="projects-showcase-card">
+          <span class="projects-showcase-label">Depth</span>
+          <h2 class="projects-showcase-title">从视觉到信息层次都更明确</h2>
+          <p class="projects-showcase-text">
+            顶部摘要先讲整体轮廓，列表卡片再讲每个项目的状态、技术栈、访问热度和代码活跃度，浏览路径会更顺。
+          </p>
+        </article>
+      </section>
+
+      <section class="projects-state" v-if="loading">
+        <div class="projects-loading-spinner"></div>
+        <p class="projects-state-title">项目正在加载中</p>
+        <p class="projects-state-text">正在同步作品信息与活跃数据，请稍等片刻。</p>
+      </section>
+
+      <section v-else-if="error" class="projects-state projects-state--error">
+        <p class="projects-state-title">加载失败</p>
+        <p class="projects-state-text">{{ error }}</p>
+        <p v-if="debugData" class="projects-state-debug">{{ debugData }}</p>
+      </section>
+
+      <section v-else-if="projects.length === 0" class="projects-state">
+        <div class="projects-empty-icon">⌁</div>
+        <p class="projects-state-title">暂时还没有项目</p>
+        <p class="projects-state-text">项目列表为空时，会在这里显示第一批作品。</p>
+      </section>
+
+      <section v-else id="projects-grid" class="projects-grid-section">
+        <div class="projects-grid-head">
+          <div>
+            <p class="projects-grid-kicker">Project Index</p>
+            <h2 class="projects-grid-title">正在公开展示的项目</h2>
+          </div>
+          <p class="projects-grid-summary">
+            共 {{ projects.length }} 个项目，优先展示有持续维护迹象和明确技术栈的作品。
+          </p>
+        </div>
+
+        <div class="projects-grid">
+          <NuxtLink
+            v-for="project in projects"
+            :key="project.id"
+            :to="`/projects/${project.id}`"
+            class="projects-card"
+          >
+            <div
+              class="projects-card-cover"
+              :class="getProjectToneClass(project)"
+            >
+              <img
+                v-if="project.coverUrl"
+                :src="project.coverUrl"
+                :alt="project.title"
+                class="projects-card-cover-image"
+              />
+
+              <div class="projects-card-cover-fallback">
+                <span class="projects-card-cover-kicker">{{ getPrimaryTech(project) }}</span>
+                <span class="projects-card-cover-mark">{{ getProjectMark(project) }}</span>
+              </div>
+
+              <div class="projects-card-cover-overlay">
+                <div class="projects-card-status" :class="getStatusClass(project.status)">
+                  {{ getStatusText(project.status) }}
+                </div>
+                <div class="projects-card-cover-actions">
+                  <a
+                    v-if="project.demoUrl"
+                    :href="project.demoUrl"
+                    target="_blank"
+                    rel="noreferrer"
+                    class="projects-card-cover-button projects-card-cover-button--light"
+                    @click.stop
+                  >
+                    演示
+                  </a>
+                  <a
+                    v-if="project.githubUrl"
+                    :href="project.githubUrl"
+                    target="_blank"
+                    rel="noreferrer"
+                    class="projects-card-cover-button projects-card-cover-button--dark"
+                    @click.stop
+                  >
+                    GitHub
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div class="projects-card-body">
+              <div class="projects-card-header">
+                <div>
+                  <h3 class="projects-card-title">{{ project.title }}</h3>
+                  <p class="projects-card-eyebrow">{{ getProjectEyebrow(project) }}</p>
+                </div>
+                <div class="projects-card-views">
                   <i class="fas fa-eye"></i>
                   {{ project.viewCount || 0 }}
+                </div>
+              </div>
+
+              <p class="projects-card-description">
+                {{ project.description || '这个项目正在持续完善中，稍后会补充更完整的介绍。' }}
+              </p>
+
+              <div class="projects-card-tech-section" v-if="project.techStack.length > 0">
+                <div class="projects-card-tech-label">技术栈</div>
+                <div class="projects-card-tech-stack">
+                <span
+                  v-for="tech in project.techStack.slice(0, 4)"
+                  :key="tech"
+                  class="projects-tech-tag"
+                  :class="getTechTagClass(tech)"
+                >
+                  <span class="projects-tech-tag-icon">{{ getTechIcon(tech) }}</span>
+                  {{ tech }}
                 </span>
+                  <span
+                    v-if="project.techStack.length > 4"
+                    class="projects-tech-tag projects-tech-tag--more"
+                  >
+                    +{{ project.techStack.length - 4 }}
+                  </span>
+                </div>
+              </div>
+
+              <div v-if="project.githubUrl && project.chartData" class="projects-card-chart">
+                <div class="projects-card-chart-head">
+                  <span class="projects-card-chart-label">GitHub Activity</span>
+                  <span class="projects-card-chart-value">最近半年</span>
+                </div>
+                <div class="projects-card-chart-container">
+                  <ClientOnly>
+                    <component
+                      :is="barChartComponent"
+                      v-if="barChartComponent"
+                      :data="project.chartData"
+                      :options="chartOptions"
+                    />
+                  </ClientOnly>
+                </div>
+              </div>
+
+              <div class="projects-card-footer">
+                <span class="projects-card-link-text">查看项目详情</span>
+                <span class="projects-card-link-icon">→</span>
               </div>
             </div>
-            
-            <p class="projects-card-description">{{ project.description }}</p>
-
-            <!-- 技术栈 -->
-            <div class="projects-card-tech-stack">
-              <span 
-                v-for="tech in project.techStack" 
-                :key="tech" 
-                class="projects-tech-tag"
-                :class="getTechTagClass(tech)"
-              >
-                <span class="projects-tech-tag-icon">{{ getTechIcon(tech) }}</span>
-                {{ tech }}
-              </span>
-            </div>
-
-            <!-- GitHub Activity Chart -->
-            <div v-if="project.githubUrl && project.chartData" class="projects-card-chart">
-              <p class="projects-card-chart-label">GitHub Activity (Last Year)</p>
-              <div class="projects-card-chart-container">
-                <ClientOnly>
-                  <component
-                    :is="barChartComponent"
-                    v-if="barChartComponent"
-                    :data="project.chartData"
-                    :options="chartOptions"
-                  />
-                </ClientOnly>
-              </div>
-            </div>
-          </div>
-        </NuxtLink>
-      </div>
+          </NuxtLink>
+        </div>
+      </section>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-// 确保使用 default 布局（包含 Header）
+import type { Component } from 'vue'
+
 definePageMeta({
   layout: 'default',
   ssr: false
@@ -144,40 +271,60 @@ definePageMeta({
 
 import type { Project } from '~/types/api'
 
+interface GithubChartDataset {
+  label: string
+  data: number[]
+  backgroundColor: string
+  hoverBackgroundColor: string
+}
 
-// 注册 Chart.js 组件
+interface GithubChartData {
+  labels: string[]
+  datasets: GithubChartDataset[]
+}
+
+interface ProjectCard extends Project {
+  techStack: string[]
+  chartData?: GithubChartData
+}
 
 const api = useApi()
-const projects = ref<Project[]>([])
+usePageStyle('projects')
+
+const projects = ref<ProjectCard[]>([])
 const loading = ref(true)
 const error = ref('')
 const debugData = ref('')
 const viewMode = ref<'grid' | '3d'>('grid')
-const barChartComponent = shallowRef<any>(null)
-const project3DSpaceComponent = shallowRef<any>(null)
+const barChartComponent = shallowRef<Component | null>(null)
+const project3DSpaceComponent = shallowRef<Component | null>(null)
 
-// 切换3D视图处理函数
-const handleToggle3DView = () => {
-  console.log('切换3D视图，当前模式:', viewMode.value)
-  if (!project3DSpaceComponent.value) {
-    import('~/components/three/Project3DSpace.vue').then((module) => {
-      project3DSpaceComponent.value = module.default
-    })
-  }
-  viewMode.value = '3d'
-  console.log('切换后模式:', viewMode.value)
-}
+const totalProjects = computed(() => projects.value.length)
+const activeProjects = computed(() =>
+  projects.value.filter(project => getStatusClass(project.status) === 'projects-card-status--active').length
+)
+const githubProjects = computed(() =>
+  projects.value.filter(project => Boolean(project.githubUrl)).length
+)
+const techTagCount = computed(() => {
+  const tags = new Set(projects.value.flatMap(project => project.techStack))
+  return tags.size
+})
+const featuredProjects = computed(() =>
+  [...projects.value]
+    .sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0))
+    .slice(0, 3)
+)
 
-// 图表配置
 const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
     legend: { display: false },
-    tooltip: { 
+    tooltip: {
       enabled: true,
       intersect: false,
-      mode: 'index'
+      mode: 'index' as const
     }
   },
   scales: {
@@ -186,200 +333,267 @@ const chartOptions = {
   },
   elements: {
     bar: {
-      borderRadius: 2
+      borderRadius: 99
     }
   }
+}
+
+const handleToggle3DView = () => {
+  if (!project3DSpaceComponent.value) {
+    import('~/components/three/Project3DSpace.vue').then(module => {
+      project3DSpaceComponent.value = module.default
+    })
+  }
+
+  viewMode.value = '3d'
+}
+
+const normalizeTechStack = (techStack: unknown): string[] => {
+  if (typeof techStack === 'string') {
+    return techStack
+      .split(',')
+      .map(item => item.trim())
+      .filter(Boolean)
+  }
+
+  if (Array.isArray(techStack)) {
+    return techStack.filter((item): item is string => typeof item === 'string' && Boolean(item.trim()))
+  }
+
+  return []
+}
+
+const normalizeTitleKey = (title: string | undefined) => (title || '').trim().toLowerCase().replace(/\s+/g, '')
+
+const duplicateMap: Record<string, string[]> = {
+  '个人数字资产平台': ['个人网站系统', '个人网站v2'],
+  'ai创作助手': ['ai智能助手'],
+  '访客分析系统（analytics）': ['访客分析系统']
+}
+
+const dedupeProjects = (items: ProjectCard[]) => {
+  const titleMap = new Map<string, ProjectCard>()
+
+  items.forEach(project => {
+    const normalizedTitle = normalizeTitleKey(project.title)
+    if (!normalizedTitle) {
+      return
+    }
+
+    const current = titleMap.get(normalizedTitle)
+    if (!current) {
+      titleMap.set(normalizedTitle, project)
+      return
+    }
+
+    const currentDate = new Date(project.createdAt || 0)
+    const existingDate = new Date(current.createdAt || 0)
+
+    if (currentDate < existingDate) {
+      titleMap.set(normalizedTitle, project)
+    }
+  })
+
+  const uniqueProjects = Array.from(titleMap.values())
+  const finalProjects: ProjectCard[] = []
+  const seenTitles = new Set<string>()
+
+  uniqueProjects.forEach(project => {
+    const normalizedTitle = normalizeTitleKey(project.title)
+
+    let shouldExclude = false
+    for (const [keepTitle, excludeTitles] of Object.entries(duplicateMap)) {
+      const keepNormalized = normalizeTitleKey(keepTitle)
+      const isExcluded = excludeTitles.some(exclude =>
+        normalizedTitle.includes(normalizeTitleKey(exclude))
+      )
+      const isKept = seenTitles.has(keepNormalized) || normalizedTitle.includes(keepNormalized)
+
+      if (isExcluded && isKept) {
+        shouldExclude = true
+        break
+      }
+    }
+
+    if (!shouldExclude) {
+      finalProjects.push(project)
+      seenTitles.add(normalizedTitle)
+    }
+  })
+
+  return finalProjects
 }
 
 const fetchProjects = async () => {
   try {
     loading.value = true
     error.value = ''
-    
-    // 调用后端 API
-    const res = await api.get<Project[]>('/Projects')
-    debugData.value = JSON.stringify(res)
-    
-    // 处理响应数据
-    if (Array.isArray(res)) {
-      // Process projects to match frontend expectations
-      let processedProjects = res.map(p => ({
-        ...p,
-        // Handle TechStack: if string, split by comma; if array, keep it; else empty array
-        techStack: typeof p.techStack === 'string' 
-          ? p.techStack.split(',').map((t: string) => t.trim()).filter((t: string) => t) 
-          : (Array.isArray(p.techStack) ? p.techStack : [])
-      }))
-      
-      // 去重：根据标题去重，保留最早创建的版本
-      const titleMap = new Map<string, any>()
-      processedProjects.forEach(project => {
-        const title = (project.title || project.Title || '').trim()
-        if (!title) return // 跳过无标题的项目
-        
-        // 标准化标题用于比较（去除空格、转换为小写）
-        const normalizedTitle = title.toLowerCase().replace(/\s+/g, '')
-        
-        if (!titleMap.has(normalizedTitle)) {
-          titleMap.set(normalizedTitle, project)
-        } else {
-          // 如果已存在，比较创建时间，保留更早的
-          const existing = titleMap.get(normalizedTitle)!
-          const existingDate = new Date(existing.createdAt || existing.CreatedAt || 0)
-          const currentDate = new Date(project.createdAt || project.CreatedAt || 0)
-          if (currentDate < existingDate) {
-            titleMap.set(normalizedTitle, project)
-          }
-        }
-      })
-      
-      // 转换为数组
-      let uniqueProjects = Array.from(titleMap.values())
-      
-      // 进一步去重相似标题（处理已知的重复项）
-      const finalProjects: any[] = []
-      const seenTitles = new Set<string>()
-      
-      // 定义重复项映射（保留的标题 -> 要排除的标题）
-      const duplicateMap: Record<string, string[]> = {
-        '个人数字资产平台': ['个人网站系统', '个人网站v2'],
-        'ai创作助手': ['ai智能助手'],
-        '访客分析系统（analytics）': ['访客分析系统']
-      }
-      
-      uniqueProjects.forEach(project => {
-        const title = (project.title || project.Title || '').trim()
-        const normalizedTitle = title.toLowerCase().replace(/\s+/g, '')
-        
-        // 检查是否应该被排除
-        let shouldExclude = false
-        for (const [keepTitle, excludeTitles] of Object.entries(duplicateMap)) {
-          const keepNormalized = keepTitle.toLowerCase().replace(/\s+/g, '')
-          const isExcluded = excludeTitles.some(exclude => 
-            normalizedTitle.includes(exclude.toLowerCase().replace(/\s+/g, ''))
-          )
-          const isKept = seenTitles.has(keepNormalized) || normalizedTitle.includes(keepNormalized)
-          
-          if (isExcluded && isKept) {
-            shouldExclude = true
-            break
-          }
-        }
-        
-        // 如果应该排除，跳过
-        if (shouldExclude) return
-        
-        // 添加到最终列表
-        finalProjects.push(project)
-        seenTitles.add(normalizedTitle)
-      })
-      
-      projects.value = finalProjects
-      
-      // 异步加载 GitHub 数据
-      loadGithubStats()
-    } else {
+
+    const response = await api.get<Project[]>('/Projects')
+    debugData.value = JSON.stringify(response)
+
+    if (!Array.isArray(response)) {
       projects.value = []
       error.value = 'API 返回格式错误'
+      return
     }
-  } catch (e: any) {
-    console.error('Failed to fetch projects', e)
-    error.value = e.message || 'Failed to load projects'
+
+    const processedProjects: ProjectCard[] = response.map(project => ({
+      ...project,
+      techStack: normalizeTechStack(project.techStack)
+    }))
+
+    projects.value = dedupeProjects(processedProjects)
+    await loadGithubStats()
+  } catch (fetchError: unknown) {
+    const message = fetchError instanceof Error ? fetchError.message : 'Failed to load projects'
+    error.value = message
     projects.value = []
   } finally {
     loading.value = false
   }
 }
 
-// 获取技术栈标签样式类名
 const getTechTagClass = (tech: string) => {
-  const techLower = tech.toLowerCase()
-  
-  // 前端技术
-  if (techLower.includes('vue') || techLower.includes('react') || techLower.includes('angular') || techLower.includes('nuxt') || techLower.includes('next')) {
+  const value = tech.toLowerCase()
+
+  if (value.includes('vue') || value.includes('react') || value.includes('angular') || value.includes('nuxt') || value.includes('next')) {
     return 'projects-tech-tag--vue'
   }
-  // JavaScript/TypeScript
-  if (techLower.includes('javascript') || techLower.includes('typescript') || techLower.includes('js') || techLower.includes('ts')) {
+  if (value.includes('javascript') || value.includes('typescript') || value.includes(' js') || value.includes(' ts')) {
     return 'projects-tech-tag--js'
   }
-  // Python
-  if (techLower.includes('python')) {
+  if (value.includes('python')) {
     return 'projects-tech-tag--python'
   }
-  // Node.js
-  if (techLower.includes('node') || techLower.includes('express')) {
+  if (value.includes('node') || value.includes('express')) {
     return 'projects-tech-tag--node'
   }
-  // 数据库
-  if (techLower.includes('mysql') || techLower.includes('postgresql') || techLower.includes('mongodb') || techLower.includes('redis')) {
+  if (value.includes('mysql') || value.includes('postgresql') || value.includes('mongodb') || value.includes('redis')) {
     return 'projects-tech-tag--database'
   }
-  // 框架
-  if (techLower.includes('spring') || techLower.includes('fastapi') || techLower.includes('django') || techLower.includes('flask')) {
+  if (value.includes('spring') || value.includes('fastapi') || value.includes('django') || value.includes('flask') || value.includes('.net')) {
     return 'projects-tech-tag--framework'
   }
-  // 小程序
-  if (techLower.includes('小程序') || techLower.includes('wechat') || techLower.includes('miniprogram')) {
+  if (value.includes('小程序') || value.includes('wechat') || value.includes('miniprogram')) {
     return 'projects-tech-tag--miniprogram'
   }
-  // AI/ML
-  if (techLower.includes('ai') || techLower.includes('ml') || techLower.includes('langchain') || techLower.includes('openai')) {
+  if (value.includes('ai') || value.includes('ml') || value.includes('langchain') || value.includes('openai')) {
     return 'projects-tech-tag--ai'
   }
-  // 默认样式
+
   return 'projects-tech-tag--default'
 }
 
-// 获取技术栈图标
 const getTechIcon = (tech: string) => {
-  const techLower = tech.toLowerCase()
-  
-  if (techLower.includes('vue')) return '⚡'
-  if (techLower.includes('react')) return '⚛️'
-  if (techLower.includes('python')) return '🐍'
-  if (techLower.includes('node')) return '🟢'
-  if (techLower.includes('mysql')) return '🗄️'
-  if (techLower.includes('redis')) return '🔴'
-  if (techLower.includes('小程序')) return '💬'
-  if (techLower.includes('ai') || techLower.includes('langchain')) return '🤖'
-  if (techLower.includes('spring')) return '🍃'
-  if (techLower.includes('docker')) return '🐳'
-  if (techLower.includes('kubernetes')) return '☸️'
-  if (techLower.includes('git')) return '📦'
-  
-  return '💻'
+  const value = tech.toLowerCase()
+
+  if (value.includes('vue')) return 'V'
+  if (value.includes('react')) return 'R'
+  if (value.includes('python')) return 'Py'
+  if (value.includes('node')) return 'N'
+  if (value.includes('mysql')) return 'DB'
+  if (value.includes('redis')) return 'Re'
+  if (value.includes('小程序')) return 'MP'
+  if (value.includes('ai') || value.includes('langchain')) return 'AI'
+  if (value.includes('spring')) return 'Sp'
+  if (value.includes('docker')) return 'Dc'
+  if (value.includes('git')) return 'Gt'
+
+  return '•'
+}
+
+const getStatusText = (status: string | undefined) => {
+  const value = (status || '').toLowerCase()
+
+  if (!value) return '进行中'
+  if (value.includes('active') || value.includes('running') || value.includes('online') || value.includes('维护')) return '持续维护'
+  if (value.includes('beta') || value.includes('测试')) return '测试阶段'
+  if (value.includes('done') || value.includes('complete') || value.includes('finished')) return '已完成'
+  if (value.includes('plan') || value.includes('draft')) return '规划中'
+
+  return status || '进行中'
+}
+
+const getStatusClass = (status: string | undefined) => {
+  const value = (status || '').toLowerCase()
+
+  if (value.includes('active') || value.includes('running') || value.includes('online') || value.includes('维护')) {
+    return 'projects-card-status--active'
+  }
+  if (value.includes('beta') || value.includes('测试')) {
+    return 'projects-card-status--beta'
+  }
+  if (value.includes('done') || value.includes('complete') || value.includes('finished')) {
+    return 'projects-card-status--done'
+  }
+
+  return 'projects-card-status--default'
+}
+
+const getPrimaryTech = (project: ProjectCard) => project.techStack[0] || 'Project'
+
+const getProjectToneClass = (project: ProjectCard) => {
+  const tech = project.techStack.join(' ').toLowerCase()
+  const title = (project.title || '').toLowerCase()
+
+  if (tech.includes('ai') || title.includes('ai')) return 'projects-card-cover--ai'
+  if (tech.includes('vue') || tech.includes('react') || tech.includes('nuxt')) return 'projects-card-cover--web'
+  if (tech.includes('.net') || tech.includes('mysql') || tech.includes('redis')) return 'projects-card-cover--data'
+
+  return 'projects-card-cover--default'
+}
+
+const getProjectMark = (project: ProjectCard) => {
+  const title = project.title || 'PR'
+  return title
+    .split('')
+    .filter(char => /[A-Za-z0-9\u4e00-\u9fa5]/.test(char))
+    .slice(0, 2)
+    .join('')
+    .toUpperCase()
+}
+
+const getProjectEyebrow = (project: ProjectCard) => {
+  const parts = [getStatusText(project.status)]
+  if (project.githubUrl) parts.push('开源')
+  if (project.demoUrl) parts.push('可体验')
+  return parts.join(' · ')
 }
 
 const loadGithubStats = async () => {
   for (const project of projects.value) {
-    if (project.githubUrl) {
-      try {
-        // 解析 owner/repo
-        const match = project.githubUrl.match(/github\.com\/([^\/]+\/[^\/]+)/)
-        if (match) {
-          const repo = match[1]
-          const stats = await api.get<any[]>(`/github/stats?repo=${repo}`)
-          
-          if (stats && Array.isArray(stats)) {
-            // stats 是周数据数组: { total: number, week: timestamp, days: [] }
-            // 我们取最近 26 周 (半年)
-            const recentStats = stats.slice(-26)
-            
-            project.chartData = {
-              labels: recentStats.map(w => new Date(w.week * 1000).toLocaleDateString()),
-              datasets: [{
-                label: 'Commits',
-                data: recentStats.map(w => w.total),
-                backgroundColor: '#3b82f6',
-                hoverBackgroundColor: '#2563eb'
-              }]
-            }
-          }
-        }
-      } catch (e) {
-        console.error(`Failed to load stats for ${project.title}`, e)
+    if (!project.githubUrl) {
+      continue
+    }
+
+    try {
+      const match = project.githubUrl.match(/github\.com\/([^/]+\/[^/]+)/)
+      if (!match) {
+        continue
       }
+
+      const repo = match[1]
+      const stats = await api.get<{ total: number; week: number }[]>(`/github/stats?repo=${repo}`)
+
+      if (!Array.isArray(stats)) {
+        continue
+      }
+
+      const recentStats = stats.slice(-26)
+      project.chartData = {
+        labels: recentStats.map(item => new Date(item.week * 1000).toLocaleDateString()),
+        datasets: [
+          {
+            label: 'Commits',
+            data: recentStats.map(item => item.total),
+            backgroundColor: 'rgba(96, 165, 250, 0.88)',
+            hoverBackgroundColor: 'rgba(52, 211, 153, 0.96)'
+          }
+        ]
+      }
+    } catch (statsError) {
+      console.error(`Failed to load stats for ${project.title}`, statsError)
     }
   }
 }
@@ -403,11 +617,10 @@ onMounted(async () => {
   ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
   barChartComponent.value = Bar
 
-  fetchProjects()
+  await fetchProjects()
 })
 </script>
 
 <style scoped>
-/* 页面特有样式已移至 assets/css/projects.css */
-/* 这里只保留组件特有的样式（如果有） */
+/* 页面主要样式已移至 assets/css/projects.css */
 </style>

@@ -31,7 +31,7 @@ public class FrontendStyleController : ControllerBase
     {
         try
         {
-            var style = await _context.Set<FrontendPageStyle>()
+            var style = await _context.FrontendPageStyles
                 .FirstOrDefaultAsync(s => s.PageKey == pageKey && s.Enabled);
 
             if (style == null)
@@ -66,7 +66,7 @@ public class FrontendStyleController : ControllerBase
     {
         try
         {
-            var styles = await _context.Set<FrontendPageStyle>()
+            var styles = await _context.FrontendPageStyles
                 .OrderBy(s => s.PageKey)
                 .Select(s => new
                 {
@@ -99,7 +99,7 @@ public class FrontendStyleController : ControllerBase
     {
         try
         {
-            var style = await _context.Set<FrontendPageStyle>()
+            var style = await _context.FrontendPageStyles
                 .FirstOrDefaultAsync(s => s.PageKey == pageKey);
 
             var styleConfigJson = JsonSerializer.Serialize(dto.StyleConfig);
@@ -114,7 +114,7 @@ public class FrontendStyleController : ControllerBase
                     Enabled = true,
                     Version = 1
                 };
-                _context.Set<FrontendPageStyle>().Add(style);
+                _context.FrontendPageStyles.Add(style);
             }
             else
             {
@@ -143,7 +143,7 @@ public class FrontendStyleController : ControllerBase
     {
         try
         {
-            var variables = await _context.Set<FrontendStyleVariable>()
+            var variables = await _context.FrontendStyleVariables
                 .Where(v => v.PageKey == pageKey)
                 .OrderBy(v => v.VariableKey)
                 .Select(v => new
@@ -178,7 +178,7 @@ public class FrontendStyleController : ControllerBase
     {
         try
         {
-            var variable = await _context.Set<FrontendStyleVariable>()
+            var variable = await _context.FrontendStyleVariables
                 .FirstOrDefaultAsync(v => v.PageKey == pageKey && v.VariableKey == variableKey);
 
             if (variable == null)
@@ -191,7 +191,7 @@ public class FrontendStyleController : ControllerBase
                     VariableType = dto.VariableType ?? "color",
                     Description = dto.Description
                 };
-                _context.Set<FrontendStyleVariable>().Add(variable);
+                _context.FrontendStyleVariables.Add(variable);
             }
             else
             {
@@ -220,7 +220,7 @@ public class FrontendStyleController : ControllerBase
     {
         try
         {
-            var rules = await _context.Set<FrontendStyleRule>()
+            var rules = await _context.FrontendStyleRules
                 .Where(r => r.PageKey == pageKey && r.Enabled)
                 .OrderByDescending(r => r.Priority)
                 .ThenBy(r => r.Selector)
@@ -254,7 +254,7 @@ public class FrontendStyleController : ControllerBase
     {
         try
         {
-            var rule = await _context.Set<FrontendStyleRule>()
+            var rule = await _context.FrontendStyleRules
                 .FirstOrDefaultAsync(r => r.PageKey == pageKey && r.Id == dto.Id);
 
             var cssPropertiesJson = JsonSerializer.Serialize(dto.CssProperties);
@@ -270,7 +270,7 @@ public class FrontendStyleController : ControllerBase
                     Enabled = dto.Enabled ?? true,
                     Description = dto.Description
                 };
-                _context.Set<FrontendStyleRule>().Add(rule);
+                _context.FrontendStyleRules.Add(rule);
             }
             else
             {
@@ -302,13 +302,13 @@ public class FrontendStyleController : ControllerBase
     {
         try
         {
-            var rule = await _context.Set<FrontendStyleRule>().FindAsync(id);
+            var rule = await _context.FrontendStyleRules.FindAsync(id);
             if (rule == null)
             {
                 return NotFound(ApiResponse.Error("样式规则不存在", 404));
             }
 
-            _context.Set<FrontendStyleRule>().Remove(rule);
+            _context.FrontendStyleRules.Remove(rule);
             await _context.SaveChangesAsync();
 
             return Ok(ApiResponse.Success());
@@ -345,42 +345,4 @@ public class UpdateStyleRuleDto
     public string? Description { get; set; }
 }
 
-// 实体类（需要在 Data/AppDbContext.cs 中添加 DbSet）
-public class FrontendPageStyle
-{
-    public long Id { get; set; }
-    public string PageKey { get; set; } = string.Empty;
-    public string PageName { get; set; } = string.Empty;
-    public string StyleConfig { get; set; } = "{}";
-    public bool Enabled { get; set; } = true;
-    public bool IsDefault { get; set; } = false;
-    public int Version { get; set; } = 1;
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
-    public DateTime UpdatedAt { get; set; } = DateTime.Now;
-}
-
-public class FrontendStyleVariable
-{
-    public long Id { get; set; }
-    public string PageKey { get; set; } = string.Empty;
-    public string VariableKey { get; set; } = string.Empty;
-    public string VariableValue { get; set; } = string.Empty;
-    public string VariableType { get; set; } = "color";
-    public string? Description { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
-    public DateTime UpdatedAt { get; set; } = DateTime.Now;
-}
-
-public class FrontendStyleRule
-{
-    public long Id { get; set; }
-    public string PageKey { get; set; } = string.Empty;
-    public string Selector { get; set; } = string.Empty;
-    public string CssProperties { get; set; } = "{}";
-    public int Priority { get; set; } = 0;
-    public bool Enabled { get; set; } = true;
-    public string? Description { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
-    public DateTime UpdatedAt { get; set; } = DateTime.Now;
-}
 

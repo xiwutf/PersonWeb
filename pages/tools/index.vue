@@ -1,9 +1,7 @@
 <template>
   <div class="tools-page">
-    <!-- 全局背景噪点 -->
     <div class="tools-background-noise"></div>
 
-    <!-- 动态背景光斑 -->
     <div class="tools-background-container">
       <div class="tools-background-blob tools-background-blob--orange"></div>
       <div class="tools-background-blob tools-background-blob--red"></div>
@@ -11,117 +9,162 @@
     </div>
 
     <div class="tools-content">
-      <!-- 页面头部 -->
       <header class="tools-header">
         <div class="tools-header-icon">
-          <span>🔧</span>
+          <span>🧰</span>
         </div>
-        <h1 class="tools-title">插件工具</h1>
+        <div class="tools-hero-eyebrow">Tools Collection</div>
+        <h1 class="tools-title">插件工具合集</h1>
         <p class="tools-subtitle">
-          专业的Revit插件和自适应族，用科技提升工作效率，让复杂的设计变得简单
+          把日常高频工作整理成可复用的插件、脚本与工具包，帮助你更快完成设计、开发与自动化流程。
         </p>
+
+        <div class="tools-highlight-list">
+          <span class="tools-highlight-pill">Revit / CAD 效率增强</span>
+          <span class="tools-highlight-pill">前后端开发配套</span>
+          <span class="tools-highlight-pill">支持定制化开发</span>
+        </div>
       </header>
 
-      <!-- 统计信息 -->
       <div class="tools-stats-grid">
-        <div class="tools-stat-card">
-          <div class="tools-stat-value tools-stat-value--orange">
-            {{ tools.length || 0 }}+
+        <div
+          v-for="stat in toolStats"
+          :key="stat.label"
+          class="tools-stat-card"
+        >
+          <div class="tools-stat-value" :class="stat.valueClass">
+            {{ stat.value }}
           </div>
-          <div class="tools-stat-label">专业工具</div>
-        </div>
-        <div class="tools-stat-card">
-          <div class="tools-stat-value tools-stat-value--red">
-            1000+
-          </div>
-          <div class="tools-stat-label">用户选择</div>
-        </div>
-        <div class="tools-stat-card">
-          <div class="tools-stat-value tools-stat-value--green">
-            99%
-          </div>
-          <div class="tools-stat-label">好评率</div>
+          <div class="tools-stat-label">{{ stat.label }}</div>
+          <p class="tools-stat-description">{{ stat.description }}</p>
         </div>
       </div>
 
-      <!-- 工具列表 -->
-      <div v-if="pending" class="tools-loading">
-        <div class="tools-loading-spinner"></div>
-        <p class="tools-loading-text">加载工具箱中...</p>
-      </div>
+      <section class="tools-section">
+        <div class="tools-section-head">
+          <div>
+            <div class="tools-section-kicker">精选清单</div>
+            <h2 class="tools-section-title">当前可用工具</h2>
+          </div>
+          <p class="tools-section-description">
+            优先展示已经整理完说明与购买入口的工具，后续会持续补充更多专题工具包。
+          </p>
+        </div>
 
-      <div v-else-if="error" class="tools-error">
-        <div class="tools-error-icon">😵</div>
-        <h3 class="tools-error-title">加载失败</h3>
-        <p class="tools-error-message">{{ error }}</p>
-      </div>
+        <div v-if="pending" class="tools-loading">
+          <div class="tools-loading-spinner"></div>
+          <p class="tools-loading-text">正在整理工具清单...</p>
+        </div>
 
-      <div v-else class="tools-grid">
-        <TransitionGroup name="tools-list">
-          <div
-            v-for="(tool, index) in tools"
-            :key="tool._path"
-            class="tools-card"
-            :style="{ transitionDelay: `${index * 50}ms` }"
-          >
-            <!-- 卡片头部 -->
-            <div class="tools-card-header">
-              <div class="tools-card-top">
-                <div class="tools-card-icon">
-                  🔧
+        <div v-else-if="error" class="tools-error">
+          <div class="tools-error-icon">:(</div>
+          <h3 class="tools-error-title">工具列表加载失败</h3>
+          <p class="tools-error-message">{{ error }}</p>
+        </div>
+
+        <div v-else-if="tools.length === 0" class="tools-empty">
+          <div class="tools-empty-icon">📦</div>
+          <h3 class="tools-empty-title">暂时还没有可展示的工具</h3>
+          <p class="tools-empty-description">
+            你可以先逛逛工具商城，或者联系我做定制开发。
+          </p>
+        </div>
+
+        <div v-else class="tools-grid">
+          <TransitionGroup name="tools-list">
+            <article
+              v-for="(tool, index) in tools"
+              :key="tool.id"
+              class="tools-card group"
+              :style="{ transitionDelay: `${index * 50}ms` }"
+            >
+              <div class="tools-card-glow"></div>
+
+              <div
+                v-if="index === 0 || tool.isHot"
+                class="tools-card-ribbon"
+              >
+                推荐
+              </div>
+
+              <div class="tools-card-header">
+                <div class="tools-card-top">
+                  <div class="tools-card-icon">
+                    {{ tool.icon }}
+                  </div>
+                  <div class="tools-card-price">
+                    <div class="tools-card-price-current">
+                      {{ formatPrice(tool.price) }}
+                    </div>
+                    <div v-if="tool.price > 0" class="tools-card-price-original">
+                      {{ formatPrice(Math.round(tool.price * 1.5)) }}
+                    </div>
+                    <div v-else class="tools-card-price-original tools-card-price-original--free">
+                      可咨询授权
+                    </div>
+                  </div>
                 </div>
-                <div class="tools-card-price">
-                  <div class="tools-card-price-current">¥{{ tool.price }}</div>
-                  <div class="tools-card-price-original">¥{{ Math.round(tool.price * 1.5) }}</div>
+
+                <div class="tools-card-meta">
+                  <span class="tools-card-category">{{ tool.category }}</span>
+                  <span class="tools-card-dot"></span>
+                  <span class="tools-card-slug">{{ tool.slug }}</span>
+                </div>
+
+                <h3 class="tools-card-title">{{ tool.title }}</h3>
+
+                <p class="tools-card-description">
+                  {{ tool.description }}
+                </p>
+
+                <div class="tools-card-tags">
+                  <span
+                    v-for="tag in tool.tags"
+                    :key="tag"
+                    class="tools-card-tag"
+                  >
+                    {{ tag }}
+                  </span>
                 </div>
               </div>
 
-              <h3 class="tools-card-title">
-                {{ tool.title }}
-              </h3>
-              
-              <p class="tools-card-description">
-                {{ tool.description }}
-              </p>
-              
-              <!-- 标签 -->
-              <div class="tools-card-tags">
-                <span
-                  v-for="tag in tool.tags"
-                  :key="tag"
-                  class="tools-card-tag"
-                >
-                  {{ tag }}
-                </span>
-              </div>
-            </div>
+              <div class="tools-card-footer">
+                <div class="tools-card-actions">
+                  <NuxtLink
+                    :to="tool.detailPath"
+                    class="tools-card-button tools-card-button--secondary"
+                  >
+                    查看详情
+                  </NuxtLink>
 
-            <!-- 底部按钮 -->
-            <div class="tools-card-footer">
-              <div class="tools-card-actions">
-                <NuxtLink
-                  :to="`/tools/detail-${tool.slug || tool._path.split('/').pop()}`"
-                  class="tools-card-button tools-card-button--secondary"
-                >
-                  查看详情
-                </NuxtLink>
-                <a
-                  :href="tool.buy_link"
-                  target="_blank"
-                  class="tools-card-button tools-card-button--primary"
-                >
-                  <span>立即购买</span>
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                  </svg>
-                </a>
+                  <button
+                    type="button"
+                    class="tools-card-button tools-card-button--primary group/buy"
+                    :class="{ 'tools-card-button--consult': !tool.buyLink }"
+                    @click="handleAcquire(tool)"
+                  >
+                    <span>立即获取</span>
+                    <svg
+                      class="tools-card-button-icon"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M13 7h4m0 0v4m0-4L10 14"
+                      ></path>
+                    </svg>
+                  </button>
+                </div>
               </div>
-            </div>
-          </div>
-        </TransitionGroup>
-      </div>
+            </article>
+          </TransitionGroup>
+        </div>
+      </section>
 
-      <!-- 快速导航 -->
       <div class="tools-navigation">
         <NuxtLink
           to="/tools/marketplace"
@@ -139,96 +182,229 @@
           to="/tools/my-tools"
           class="tools-nav-button tools-nav-button--secondary"
         >
-          🎒 我的工具
+          🗂 我的工具
         </NuxtLink>
       </div>
 
-      <!-- 底部CTA -->
-      <div class="tools-cta">
+      <section class="tools-cta">
         <div class="tools-cta-container">
           <div class="tools-cta-overlay"></div>
-          
+
           <div class="tools-cta-content">
-            <h3 class="tools-cta-title">需要定制化开发？</h3>
-            <p class="tools-cta-description">我们提供专业的软件开发服务，包括软件二次开发（Revit、AutoCAD、Office、浏览器插件等）、独立工具开发、自动化脚本、效率工具等，为您量身打造提升工作效率的专属解决方案。</p>
+            <div class="tools-section-kicker">Custom Service</div>
+            <h3 class="tools-cta-title">需要定制开发或专属工具？</h3>
+            <p class="tools-cta-description">
+              可以基于你的业务流程，定制 Revit / AutoCAD / Office / 浏览器插件、自动化脚本与内部效率工具，让重复工作真正交给工具完成。
+            </p>
+
+            <div class="tools-cta-points">
+              <span>插件二开</span>
+              <span>自动化脚本</span>
+              <span>小型业务工具</span>
+            </div>
+
             <button
-              @click="showWeChatQR = true"
+              type="button"
               class="tools-cta-button"
+              @click="showWeChatQR = true"
             >
               <span>💬</span>
               联系定制
             </button>
           </div>
-          
-          <!-- 微信二维码弹窗 -->
-          <div v-if="showWeChatQR" class="wechat-qr-modal" @click="showWeChatQR = false">
+
+          <div
+            v-if="showWeChatQR"
+            class="wechat-qr-modal"
+            @click="showWeChatQR = false"
+          >
             <div class="wechat-qr-content" @click.stop>
               <button class="wechat-qr-close" @click="showWeChatQR = false">
                 <i class="fas fa-times"></i>
               </button>
+
               <div class="wechat-qr-header">
                 <h3 class="wechat-qr-title">联系定制开发</h3>
-                <p class="wechat-qr-subtitle">扫码添加微信，详聊您的需求</p>
+                <p class="wechat-qr-subtitle">扫码添加微信，详聊你的需求</p>
               </div>
+
               <div class="wechat-qr-image-wrapper">
-                <img src="/images/wechat-qr.png" alt="微信二维码" class="wechat-qr-image" />
+                <img
+                  src="/images/wechat-qr.png"
+                  alt="微信二维码"
+                  class="wechat-qr-image"
+                />
               </div>
+
               <div class="wechat-qr-info">
                 <p class="wechat-qr-text">微信号：LinXi-5152</p>
-                <p class="wechat-qr-hint">扫码加好友，请注明来意</p>
+                <p class="wechat-qr-hint">扫码加好友，请备注来源与需求方向</p>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
-// 确保使用 default 布局（包含 Header）
 definePageMeta({
   layout: 'default'
 })
+
+interface RawToolItem {
+  _path?: string
+  title?: string
+  name?: string
+  slug?: string
+  description?: string
+  price?: number | string
+  tags?: string[] | string | null
+  buy_link?: string
+  buyLink?: string
+  isHot?: boolean
+  hot?: boolean
+  icon?: string
+  category?: string
+}
+
+interface ToolItem {
+  id: string
+  title: string
+  slug: string
+  description: string
+  price: number
+  tags: string[]
+  buyLink: string | null
+  detailPath: string
+  isHot: boolean
+  icon: string
+  category: string
+}
+
 const api = useApi()
 usePageStyle('tools')
-const tools = ref<any[]>([])
+
+const tools = ref<ToolItem[]>([])
 const pending = ref(true)
 const error = ref<string | null>(null)
 const showWeChatQR = ref(false)
 
-// 从API获取工具数据
+const normalizeTags = (value: RawToolItem['tags']): string[] => {
+  if (Array.isArray(value)) {
+    return value.filter((tag): tag is string => Boolean(tag && tag.trim()))
+  }
+
+  if (typeof value === 'string' && value.trim()) {
+    return value
+      .split(/[,\u3001|/]/)
+      .map(tag => tag.trim())
+      .filter(Boolean)
+  }
+
+  return []
+}
+
+const normalizeTool = (tool: RawToolItem, index: number): ToolItem => {
+  const slug = tool.slug || tool._path?.split('/').pop() || `tool-${index + 1}`
+  const title = tool.title || tool.name || `工具 ${index + 1}`
+  const tags = normalizeTags(tool.tags)
+  const price = Number(tool.price) || 0
+  const rawBuyLink = (tool.buy_link || tool.buyLink || '').trim()
+  const buyLink = /^https?:\/\//i.test(rawBuyLink) ? rawBuyLink : null
+
+  return {
+    id: tool._path || slug,
+    title,
+    slug,
+    description: tool.description?.trim() || '用于提升工作效率的实用工具，支持快速上手与按需扩展。',
+    price,
+    tags: tags.length > 0 ? tags.slice(0, 5) : ['效率工具', '工作流优化'],
+    buyLink,
+    detailPath: `/tools/detail-${slug}`,
+    isHot: Boolean(tool.isHot || tool.hot),
+    icon: tool.icon || '🔧',
+    category: tool.category || (tags[0] ?? '工具包')
+  }
+}
+
 const fetchTools = async () => {
   try {
     pending.value = true
     error.value = null
-    
-    // 优先从API获取
-    const res = await api.get<any[]>('/MockData/tools')
-    if (res && res.length > 0) {
-      tools.value = res
+
+    const response = await api.get<RawToolItem[]>('/MockData/tools')
+    if (Array.isArray(response) && response.length > 0) {
+      tools.value = response.map(normalizeTool)
       return
     }
-    
-    // 如果API没有数据，尝试从 @nuxt/content 获取
-    const { data: contentTools } = await useAsyncData('tools', () =>
-      queryContent('/tools').sort({ date: -1 }).find()
-    )
-    
-    if (contentTools.value && Array.isArray(contentTools.value) && contentTools.value.length > 0) {
-      tools.value = contentTools.value
-    } else {
-      tools.value = []
+
+    const contentTools = await queryContent('/tools').sort({ date: -1 }).find()
+
+    if (Array.isArray(contentTools) && contentTools.length > 0) {
+      tools.value = contentTools.map((item, index) =>
+        normalizeTool(item as RawToolItem, index)
+      )
+      return
     }
-  } catch (e: any) {
+
+    tools.value = []
+  } catch (e) {
     console.error('Failed to fetch tools:', e)
-    error.value = e.message || '加载失败'
+    error.value = e instanceof Error ? e.message : '工具列表加载失败，请稍后重试。'
     tools.value = []
   } finally {
     pending.value = false
   }
+}
+
+const handleAcquire = (tool: ToolItem) => {
+  if (tool.buyLink) {
+    window.open(tool.buyLink, '_blank', 'noopener,noreferrer')
+    return
+  }
+
+  showWeChatQR.value = true
+}
+
+const uniqueTagCount = computed(() => {
+  const tagSet = new Set<string>()
+  tools.value.forEach(tool => {
+    tool.tags.forEach(tag => tagSet.add(tag))
+  })
+  return tagSet.size
+})
+
+const toolStats = computed(() => [
+  {
+    label: '精选工具',
+    value: `${tools.value.length}+`,
+    description: '已整理好的可展示工具与工具包',
+    valueClass: 'tools-stat-value--orange'
+  },
+  {
+    label: '覆盖标签',
+    value: `${uniqueTagCount.value}+`,
+    description: '涵盖建模、开发、自动化等方向',
+    valueClass: 'tools-stat-value--red'
+  },
+  {
+    label: '支持方式',
+    value: '1v1',
+    description: '支持咨询、购买与定制开发沟通',
+    valueClass: 'tools-stat-value--green'
+  }
+])
+
+const formatPrice = (price: number) => {
+  if (price <= 0) {
+    return '咨询'
+  }
+
+  return `¥${price}`
 }
 
 onMounted(() => {
@@ -238,28 +414,24 @@ onMounted(() => {
 useHead({
   title: '插件工具 - 溪午听风',
   meta: [
-    { name: 'description', content: '专业的Revit插件和自适应族' }
+    {
+      name: 'description',
+      content: '整理我的插件、自动化脚本和效率工具，提供工具展示、购买入口与定制开发沟通方式。'
+    }
   ]
 })
 </script>
 
 <style scoped>
-/* 页面特有样式已移至 assets/css/tools.css */
-/* 这里只保留组件特有的样式（如果有） */
-
-/* 微信二维码弹窗 */
 .wechat-qr-modal {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(4px);
+  inset: 0;
+  z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999;
+  background: rgba(2, 6, 23, 0.72);
+  backdrop-filter: blur(10px);
   animation: fadeIn 0.2s ease-out;
 }
 
@@ -274,24 +446,27 @@ useHead({
 
 .wechat-qr-content {
   position: relative;
-  background: var(--color-bg-card, #1e293b);
-  border-radius: 1rem;
+  width: min(92vw, 420px);
   padding: 2rem;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  animation: slideUp 0.3s ease-out;
-  max-width: 90vw;
-  width: 100%;
-  max-width: 400px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.5rem;
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.96) 0%, rgba(15, 23, 42, 0.9) 100%);
+  box-shadow:
+    0 30px 60px rgba(2, 6, 23, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.03);
+  color: #e2e8f0;
+  animation: slideUp 0.28s ease-out;
 }
 
 @keyframes slideUp {
   from {
-    transform: translateY(20px);
     opacity: 0;
+    transform: translateY(20px);
   }
   to {
-    transform: translateY(0);
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -299,37 +474,45 @@ useHead({
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background: transparent;
-  border: none;
-  color: var(--color-text-muted, #94a3b8);
-  font-size: 1.5rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 0;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(226, 232, 240, 0.78);
   cursor: pointer;
-  padding: 0.5rem;
-  line-height: 1;
-  transition: color 0.2s ease;
-  z-index: 1;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .wechat-qr-close:hover {
-  color: var(--color-text-main, #ffffff);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  transform: rotate(90deg);
+}
+
+.wechat-qr-header,
+.wechat-qr-info {
+  text-align: center;
 }
 
 .wechat-qr-header {
-  text-align: center;
   margin-bottom: 1.5rem;
 }
 
 .wechat-qr-title {
+  margin: 0 0 0.5rem;
   font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--color-text-main, #ffffff);
-  margin: 0 0 0.5rem 0;
+  font-weight: 700;
+  color: #f8fafc;
 }
 
 .wechat-qr-subtitle {
-  font-size: 0.875rem;
-  color: var(--color-text-muted, #94a3b8);
   margin: 0;
+  font-size: 0.92rem;
+  color: rgba(191, 219, 254, 0.72);
 }
 
 .wechat-qr-image-wrapper {
@@ -339,29 +522,22 @@ useHead({
 }
 
 .wechat-qr-image {
-  width: auto;
-  height: auto;
-  max-width: 250px;
-  max-height: 250px;
-  border-radius: 0.5rem;
-  border: 2px solid var(--color-border-subtle, rgba(255, 255, 255, 0.1));
-  object-fit: contain;
-}
-
-.wechat-qr-info {
-  text-align: center;
+  width: min(250px, 100%);
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #fff;
 }
 
 .wechat-qr-text {
+  margin: 0 0 0.5rem;
   font-size: 1rem;
-  color: var(--color-text-main, #ffffff);
-  font-weight: 500;
-  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+  color: #f8fafc;
 }
 
 .wechat-qr-hint {
-  font-size: 0.875rem;
-  color: var(--color-text-muted, #94a3b8);
   margin: 0;
+  font-size: 0.875rem;
+  color: rgba(148, 163, 184, 0.88);
 }
 </style>

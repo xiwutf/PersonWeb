@@ -143,7 +143,7 @@
             class="ai-solutions-cooperation-step"
           >
             <div class="ai-solutions-cooperation-step-number">
-              {{ index + 1 }}??
+              {{ `0${index + 1}`.slice(-2) }}
             </div>
             <div class="ai-solutions-cooperation-step-content">
               <h3 class="ai-solutions-cooperation-step-title">{{ step.title }}</h3>
@@ -994,13 +994,21 @@ const handleProjectClick = (project: FeaturedProject) => {
 }
 
 .ai-solutions-cta-button--secondary {
-  background: var(--primary-soft-bg);
-  border: 1px solid var(--border-color);
-  color: var(--primary);
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.92) 0%, rgba(30, 41, 59, 0.88) 100%);
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  color: rgba(248, 250, 252, 0.96);
+  box-shadow:
+    0 10px 26px rgba(15, 23, 42, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .ai-solutions-cta-button--secondary:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(6, 182, 212, 0.4);
+  transform: translateY(-4px);
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.16) 0%, rgba(30, 41, 59, 0.92) 100%);
+  border-color: rgba(6, 182, 212, 0.45);
+  color: #ffffff;
+  box-shadow:
+    0 14px 30px rgba(6, 182, 212, 0.2),
+    0 0 0 1px rgba(6, 182, 212, 0.1);
 }
 </style>

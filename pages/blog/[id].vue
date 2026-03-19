@@ -1,65 +1,90 @@
 <template>
-  <div class="container mx-auto px-4 py-8">
-    <div v-if="loading" class="text-center py-20">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-    </div>
-
-    <div v-else-if="article" class="flex flex-col lg:flex-row gap-8">
-      <!-- 文章内容 -->
-      <div class="w-full lg:w-3/4">
-        <div class="card p-8">
-          <div class="mb-6">
-            <h1 class="text-3xl font-bold text-gray-800 dark:text-var(--color-bg-light, white) mb-4">{{ article.title }}</h1>
-            <div class="flex items-center text-gray-500 dark:text-gray-400 text-sm">
-              <span class="mr-4">📅 {{ formatDate(article.publishTime || article.createdAt) }}</span>
-              <span v-if="article.category" class="mr-4">📂 {{ article.category.name }}</span>
-              <!-- Tags handling if available -->
-            </div>
-          </div>
-
-          <!-- 移动端 TOC (折叠) -->
-          <div v-if="toc.length > 0" class="lg:hidden mb-6 card p-4">
-            <details>
-              <summary class="font-bold text-gray-700 dark:text-gray-300 cursor-pointer">目录</summary>
-              <ul class="mt-2 ml-4 list-disc text-sm text-gray-600 dark:text-gray-400">
-                <li v-for="item in toc" :key="item.id" :class="`ml-${(item.level - 1) * 4}`">
-                  <a :href="`#${item.id}`" @click.prevent="scrollTo(item.id)">{{ item.text }}</a>
-                </li>
-              </ul>
-            </details>
-          </div>
-
-          <div class="prose dark:prose-invert max-w-none" v-html="renderedContent"></div>
-        </div>
+  <div class="blog-detail-page">
+    <div class="blog-shell">
+      <div v-if="loading" class="blog-detail-loading">
+        <div class="blog-detail-spinner"></div>
       </div>
 
-      <!-- 侧边栏 (桌面端 TOC) -->
-      <div class="hidden lg:block w-1/4">
-        <div class="sticky top-24">
-          <div v-if="toc.length > 0" class="card p-6">
-            <h3 class="font-bold text-gray-800 dark:text-var(--color-bg-light, white) mb-4 text-lg">目录</h3>
-            <nav>
-              <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                <li v-for="item in toc" :key="item.id" :class="`pl-${(item.level - 1) * 2}`">
-                  <a :href="`#${item.id}`" @click.prevent="scrollTo(item.id)" class="btn-link btn-link--blue block truncate" :title="item.text">{{ item.text }}</a>
+      <div v-else-if="article" class="blog-layout">
+        <!-- 文章内容 -->
+        <div class="blog-detail-card">
+          <header class="blog-detail-header">
+            <h1 class="blog-detail-title">{{ article.title }}</h1>
+            <div class="blog-detail-meta">
+              <span class="blog-detail-meta-item">
+                <span class="blog-detail-meta-icon">📅</span>
+                {{ formatDate(article.publishTime || article.createdAt) }}
+              </span>
+              <span v-if="article.category" class="blog-detail-meta-item">
+                <span class="blog-detail-meta-icon">📂</span>
+                {{ article.category.name }}
+              </span>
+            </div>
+          </header>
+
+          <!-- 移动端 TOC -->
+          <div v-if="toc.length > 0" class="lg:hidden blog-detail-toc-card">
+            <header class="blog-detail-toc-header">
+              <span class="blog-detail-toc-icon">📋</span>
+              <h3 class="blog-detail-toc-title">目录</h3>
+            </header>
+            <nav class="blog-detail-toc-nav">
+              <ul class="blog-detail-toc-list">
+                <li v-for="item in toc" :key="item.id" class="blog-detail-toc-item">
+                  <a
+                    :href="`#${item.id}`"
+                    @click.prevent="scrollTo(item.id)"
+                    :class="['blog-detail-toc-link', `blog-detail-toc-link--level-${item.level}`]"
+                  >
+                    {{ item.text }}
+                  </a>
                 </li>
               </ul>
             </nav>
           </div>
-          
-          <div class="mt-6 text-center">
-             <NuxtLink to="/blog" class="btn-link btn-link--blue text-sm">
-              &larr; 返回博客列表
-            </NuxtLink>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <div v-else class="text-center py-10">
-      <h1 class="text-2xl font-bold text-gray-800 dark:text-var(--color-bg-light, white) mb-4">文章未找到</h1>
-      <p class="text-gray-600 dark:text-gray-400 mb-6">抱歉，您访问的文章不存在或已被删除。</p>
-      <NuxtLink to="/blog" class="btn-link btn-link--blue">返回博客列表</NuxtLink>
+          <article class="blog-detail-content prose dark:prose-invert max-w-none" v-html="renderedContent"></article>
+        </div>
+
+        <!-- 侧边栏 (桌面端 TOC) -->
+        <aside class="hidden lg:block w-80">
+          <div class="sticky top-24">
+            <div v-if="toc.length > 0" class="blog-detail-toc-card">
+              <header class="blog-detail-toc-header">
+                <span class="blog-detail-toc-icon">📋</span>
+                <h3 class="blog-detail-toc-title">目录</h3>
+              </header>
+              <nav class="blog-detail-toc-nav">
+                <ul class="blog-detail-toc-list">
+                  <li v-for="item in toc" :key="item.id" class="blog-detail-toc-item">
+                    <a
+                      :href="`#${item.id}`"
+                      @click.prevent="scrollTo(item.id)"
+                      :class="['blog-detail-toc-link', `blog-detail-toc-link--level-${item.level}`]"
+                      :title="item.text"
+                    >
+                      {{ item.text }}
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+
+            <div class="blog-detail-back-card">
+              <NuxtLink to="/blog" class="blog-detail-back-link">
+                ← 返回博客列表
+              </NuxtLink>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div v-else class="blog-detail-empty">
+        <div class="blog-detail-empty-icon">📄</div>
+        <h2 class="blog-detail-empty-title">文章未找到</h2>
+        <p class="blog-detail-empty-text">抱歉，您访问的文章不存在或已被删除。</p>
+        <NuxtLink to="/blog" class="blog-detail-empty-link">返回博客列表</NuxtLink>
+      </div>
     </div>
   </div>
 </template>

@@ -2417,141 +2417,356 @@ html[data-theme="light"] .bento-grid-v3-post-item:hover {
   }
 }
 
-/* ==================== HomeDarkLab 深色主题覆盖 ==================== */
-/* 覆盖 Tailwind 硬编码类，在深色主题下使用浅色卡片背景和深色文字 */
+/* ==================== HomeDarkLab Showcase ==================== */
 
-html[data-theme="dark"] #content.bg-slate-50,
-html.dark #content.bg-slate-50 {
-  background: var(--bg-app) !important;
+.home-dark-lab-showcase {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.16), transparent 28%),
+    radial-gradient(circle at top right, rgba(168, 85, 247, 0.14), transparent 26%),
+    radial-gradient(circle at bottom left, rgba(34, 211, 238, 0.12), transparent 24%),
+    linear-gradient(180deg, rgba(2, 6, 23, 0.92) 0%, rgba(3, 7, 18, 0.98) 100%);
 }
 
-/* 深色首页 Hero 主标题与副标题保持高对比度 */
-html[data-theme="dark"] .home-hybrid-super h1,
-html.dark .home-hybrid-super h1 {
-  color: var(--color-text-main, var(--color-bg-card)) !important;
-  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+.home-dark-lab-showcase::before,
+.home-dark-lab-showcase::after {
+  content: '';
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(80px);
+  opacity: 0.45;
+  pointer-events: none;
 }
 
-html[data-theme="dark"] .home-hybrid-super p,
-html.dark .home-hybrid-super p {
-  color: var(--color-text-sub) !important;
+.home-dark-lab-showcase::before {
+  top: 5rem;
+  left: -6rem;
+  width: 18rem;
+  height: 18rem;
+  background: rgba(56, 189, 248, 0.18);
 }
 
-/* 深色主题下，"探索我的世界"标题使用浅色 */
-html[data-theme="dark"] #content.bg-slate-50 h2.text-slate-900,
-html.dark #content.bg-slate-50 h2.text-slate-900,
-html[data-theme="dark"] section#content.bg-slate-50 h2.text-4xl,
-html.dark section#content.bg-slate-50 h2.text-4xl {
-  color: #F9FAFB !important;
+.home-dark-lab-showcase::after {
+  right: -5rem;
+  bottom: 4rem;
+  width: 16rem;
+  height: 16rem;
+  background: rgba(168, 85, 247, 0.18);
 }
 
-/* 深色主题下，页面背景上的其他文字使用浅色（排除卡片） */
-html[data-theme="dark"] #content.bg-slate-50 .text-slate-900:not(.bg-white .text-slate-900),
-html.dark #content.bg-slate-50 .text-slate-900:not(.bg-white .text-slate-900) {
-  color: #F9FAFB !important;
+.home-dark-lab-showcase-kicker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  padding: 0.4rem 0.95rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: rgba(15, 23, 42, 0.58);
+  color: rgba(191, 219, 254, 0.9);
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 }
 
-/* 深色主题下，卡片内的文字使用深色 */
-html[data-theme="dark"] .bg-white .text-slate-900,
-html.dark .bg-white .text-slate-900,
-html[data-theme="dark"] .bg-white h2.text-slate-900,
-html.dark .bg-white h2.text-slate-900,
-html[data-theme="dark"] .bg-white h3.text-slate-900,
-html.dark .bg-white h3.text-slate-900 {
-  color: #0F172A !important;
+.home-dark-lab-showcase-title {
+  color: #f8fbff;
+  letter-spacing: -0.04em;
+  text-shadow: 0 18px 42px rgba(15, 23, 42, 0.42);
 }
 
-html[data-theme="dark"] .text-slate-800,
-html.dark .text-slate-800 {
-  color: #1E293B !important;
+.home-dark-lab-showcase-subtitle {
+  color: rgba(191, 219, 254, 0.72);
 }
 
-html[data-theme="dark"] .text-slate-700,
-html.dark .text-slate-700 {
-  color: #334155 !important;
+.home-dark-lab-card {
+  --home-card-accent: #60a5fa;
+  --home-card-accent-soft: rgba(96, 165, 250, 0.2);
+  --home-card-glow: rgba(96, 165, 250, 0.14);
+  --home-card-border: rgba(148, 163, 184, 0.16);
+  position: relative;
+  border: 1px solid var(--home-card-border);
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.84) 0%, rgba(8, 15, 32, 0.94) 100%);
+  box-shadow:
+    0 24px 48px rgba(2, 6, 23, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 }
 
-/* 深色主题下，"这里有代码、有思考，也有生活"副标题使用浅色 */
-html[data-theme="dark"] #content.bg-slate-50 p.text-slate-600,
-html.dark #content.bg-slate-50 p.text-slate-600,
-html[data-theme="dark"] section#content.bg-slate-50 p.text-xl,
-html.dark section#content.bg-slate-50 p.text-xl {
-  color: #CBD5F5 !important;
+.home-dark-lab-card::before,
+.home-dark-lab-card::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
 }
 
-/* 深色主题下，页面背景上的其他文字使用浅色（排除卡片） */
-html[data-theme="dark"] #content.bg-slate-50 .text-slate-600:not(.bg-white .text-slate-600),
-html.dark #content.bg-slate-50 .text-slate-600:not(.bg-white .text-slate-600) {
-  color: #CBD5F5 !important;
+.home-dark-lab-card::before {
+  inset: 0;
+  background:
+    linear-gradient(140deg, var(--home-card-glow) 0%, transparent 36%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, transparent 42%);
+  opacity: 0.9;
 }
 
-/* 深色主题下，卡片内的文字使用深色 */
-/* 使用更精确的选择器，确保卡片内的所有文字都是深色 */
-/* 深色主题下，确保卡片背景是浅色 */
-html[data-theme="dark"] .bg-white,
-html.dark .bg-white,
-html[data-theme="dark"] #content .bg-white,
-html.dark #content .bg-white {
-  background: rgba(255, 255, 255, 0.95) !important;
+.home-dark-lab-card::after {
+  top: -3rem;
+  right: -3rem;
+  width: 10rem;
+  height: 10rem;
+  border-radius: 9999px;
+  background: radial-gradient(circle, var(--home-card-glow) 0%, transparent 70%);
+  opacity: 0.9;
 }
 
-/* 深色主题下，卡片内的描述文字使用深色（最高优先级） */
-html[data-theme="dark"] #content .bg-white p.text-slate-600,
-html.dark #content .bg-white p.text-slate-600,
-html[data-theme="dark"] #content .rounded-3xl.bg-white p.text-slate-600,
-html.dark #content .rounded-3xl.bg-white p.text-slate-600,
-html[data-theme="dark"] #content .bg-white .text-slate-600,
-html.dark #content .bg-white .text-slate-600 {
-  color: var(--color-text-sec) !important;
+.home-dark-lab-card:hover {
+  transform: translateY(-8px);
+  border-color: color-mix(in srgb, var(--home-card-accent) 45%, rgba(255, 255, 255, 0.18));
+  box-shadow:
+    0 30px 60px rgba(2, 6, 23, 0.42),
+    0 0 0 1px rgba(255, 255, 255, 0.03),
+    0 0 32px var(--home-card-glow);
 }
 
-html[data-theme="dark"] .bg-white .text-slate-800,
-html.dark .bg-white .text-slate-800,
-html[data-theme="dark"] .rounded-3xl.bg-white .text-slate-800,
-html.dark .rounded-3xl.bg-white .text-slate-800 {
-  color: #1E293B !important;
+.home-dark-lab-card:hover::before,
+.home-dark-lab-card:hover::after {
+  opacity: 1;
+  transform: scale(1.04);
 }
 
-html[data-theme="dark"] .bg-white .text-slate-500,
-html.dark .bg-white .text-slate-500,
-html[data-theme="dark"] .rounded-3xl.bg-white .text-slate-500,
-html.dark .rounded-3xl.bg-white .text-slate-500 {
-  color: #64748B !important;
+.home-dark-lab-card--feature {
+  min-height: 100%;
 }
 
-html[data-theme="dark"] .text-slate-500,
-html.dark .text-slate-500 {
-  color: #64748B !important;
+.home-dark-lab-card--blue {
+  --home-card-accent: #60a5fa;
+  --home-card-accent-soft: rgba(96, 165, 250, 0.18);
+  --home-card-glow: rgba(59, 130, 246, 0.18);
 }
 
-html[data-theme="dark"] .bg-white,
-html.dark .bg-white {
-  background: rgba(255, 255, 255, 0.95) !important;
+.home-dark-lab-card--purple {
+  --home-card-accent: #c084fc;
+  --home-card-accent-soft: rgba(192, 132, 252, 0.18);
+  --home-card-glow: rgba(168, 85, 247, 0.16);
 }
 
-html[data-theme="dark"] .bg-slate-50,
-html.dark .bg-slate-50 {
-  background: var(--bg-app) !important;
+.home-dark-lab-card--cyan {
+  --home-card-accent: #67e8f9;
+  --home-card-accent-soft: rgba(103, 232, 249, 0.16);
+  --home-card-glow: rgba(34, 211, 238, 0.16);
 }
 
-html[data-theme="dark"] .bg-slate-100,
-html.dark .bg-slate-100 {
-  background: rgba(248, 250, 252, 0.9) !important;
+.home-dark-lab-card--orange {
+  --home-card-accent: #fdba74;
+  --home-card-accent-soft: rgba(253, 186, 116, 0.16);
+  --home-card-glow: rgba(251, 146, 60, 0.16);
 }
 
-html[data-theme="dark"] .bg-gray-100,
-html.dark .bg-gray-100 {
-  background: rgba(248, 250, 252, 0.9) !important;
+.home-dark-lab-card--neutral {
+  --home-card-accent: #cbd5f5;
+  --home-card-accent-soft: rgba(203, 213, 245, 0.14);
+  --home-card-glow: rgba(148, 163, 184, 0.12);
 }
 
-html[data-theme="dark"] .border-slate-200,
-html.dark .border-slate-200 {
-  border-color: rgba(0, 0, 0, 0.08) !important;
+.home-dark-lab-card-badge {
+  position: relative;
+  z-index: 1;
+  width: fit-content;
+  border: 1px solid color-mix(in srgb, var(--home-card-accent) 42%, rgba(255, 255, 255, 0.12));
+  background: linear-gradient(135deg, var(--home-card-accent-soft) 0%, rgba(15, 23, 42, 0.24) 100%);
+  color: var(--home-card-accent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
-html[data-theme="dark"] .border-slate-100,
-html.dark .border-slate-100 {
-  border-color: var(--color-border) !important;
+.home-dark-lab-card-title {
+  color: #f8fbff;
+  letter-spacing: -0.03em;
+}
+
+.home-dark-lab-card-description {
+  color: rgba(203, 213, 225, 0.8);
+  line-height: 1.8;
+}
+
+.home-dark-lab-card:hover .home-dark-lab-card-title,
+.home-dark-lab-card:hover .home-dark-lab-card-link,
+.home-dark-lab-card:hover .home-dark-lab-life-preview-title {
+  color: var(--home-card-accent);
+}
+
+.home-dark-lab-card-link {
+  color: rgba(224, 231, 255, 0.92);
+  transition: color 0.25s ease;
+}
+
+.home-dark-lab-post-item {
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.66) 0%, rgba(15, 23, 42, 0.42) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.home-dark-lab-post-item:hover {
+  border-color: color-mix(in srgb, var(--home-card-accent) 46%, rgba(255, 255, 255, 0.14));
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.82) 0%, rgba(15, 23, 42, 0.6) 100%);
+  transform: translateX(6px);
+}
+
+.home-dark-lab-post-title {
+  color: rgba(248, 250, 252, 0.94);
+}
+
+.home-dark-lab-post-item:hover .home-dark-lab-post-title {
+  color: var(--home-card-accent);
+}
+
+.home-dark-lab-post-meta,
+.home-dark-lab-empty {
+  color: rgba(148, 163, 184, 0.82);
+}
+
+.home-dark-lab-post-arrow {
+  color: rgba(148, 163, 184, 0.76);
+}
+
+.home-dark-lab-post-item:hover .home-dark-lab-post-arrow {
+  color: var(--home-card-accent);
+}
+
+.home-dark-lab-life-preview {
+  border: 1px solid rgba(251, 146, 60, 0.18);
+  background:
+    linear-gradient(135deg, rgba(251, 146, 60, 0.12) 0%, rgba(15, 23, 42, 0.54) 55%, rgba(15, 23, 42, 0.8) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.home-dark-lab-life-preview:hover {
+  border-color: rgba(251, 146, 60, 0.32);
+}
+
+.home-dark-lab-life-preview-media {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.home-dark-lab-life-preview-label {
+  color: #fdba74;
+}
+
+.home-dark-lab-life-preview-title {
+  color: rgba(248, 250, 252, 0.92);
+}
+
+.home-dark-lab-contact-icon {
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: rgba(15, 23, 42, 0.68);
+  color: rgba(226, 232, 240, 0.9);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.home-dark-lab-contact-icon:hover {
+  border-color: rgba(96, 165, 250, 0.36);
+  background: rgba(30, 41, 59, 0.92);
+  color: #ffffff;
+}
+
+.home-dark-lab-contact-icon--accent {
+  color: #93c5fd;
+}
+
+.home-dark-lab-contact-button {
+  border: 1px solid rgba(96, 165, 250, 0.18);
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.96) 0%, rgba(15, 23, 42, 0.96) 100%);
+  color: #f8fbff;
+  box-shadow:
+    0 14px 32px rgba(2, 6, 23, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.home-dark-lab-contact-button:hover {
+  border-color: rgba(96, 165, 250, 0.42);
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.92) 0%, rgba(30, 64, 175, 0.92) 100%);
+  box-shadow:
+    0 18px 38px rgba(30, 64, 175, 0.28),
+    0 0 28px rgba(59, 130, 246, 0.18);
+}
+
+.home-dark-lab-timecapsule {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(34, 211, 238, 0.14), transparent 24%),
+    radial-gradient(circle at 86% 30%, rgba(168, 85, 247, 0.18), transparent 26%),
+    radial-gradient(circle at 50% 100%, rgba(59, 130, 246, 0.14), transparent 30%),
+    linear-gradient(180deg, rgba(2, 6, 23, 0.98) 0%, rgba(3, 7, 18, 1) 100%);
+}
+
+.home-dark-lab-timecapsule::before,
+.home-dark-lab-timecapsule::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.home-dark-lab-timecapsule::before {
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.06) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.2));
+  opacity: 0.32;
+}
+
+.home-dark-lab-timecapsule::after {
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0) 0%, rgba(15, 23, 42, 0.44) 100%);
+}
+
+.home-dark-lab-timecapsule-kicker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  padding: 0.42rem 0.95rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(125, 211, 252, 0.18);
+  background: rgba(8, 15, 32, 0.68);
+  color: rgba(186, 230, 253, 0.92);
+  font-size: 0.74rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.home-dark-lab-timecapsule-title {
+  color: #f8fbff;
+  letter-spacing: -0.04em;
+  text-shadow: 0 18px 36px rgba(2, 6, 23, 0.45);
+}
+
+.home-dark-lab-timecapsule-subtitle {
+  color: rgba(191, 219, 254, 0.72);
+}
+
+@media (max-width: 767px) {
+  .home-dark-lab-showcase {
+    background:
+      radial-gradient(circle at top center, rgba(59, 130, 246, 0.16), transparent 34%),
+      linear-gradient(180deg, rgba(2, 6, 23, 0.94) 0%, rgba(3, 7, 18, 0.98) 100%);
+  }
+
+  .home-dark-lab-card {
+    padding: 1.5rem;
+  }
 }
 
 .home-section-subtitle {
