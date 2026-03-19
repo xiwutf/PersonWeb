@@ -4,6 +4,7 @@
       v-model:show="showPopover"
       trigger="click"
       placement="bottom-end"
+      raw
       :style="{ width: '400px', maxHeight: '500px' }"
     >
       <template #trigger>
@@ -21,13 +22,12 @@
       <div class="notification-popover">
         <div class="popover-header">
           <h3>站内提醒</h3>
-          <n-button
-            text
-            size="small"
+          <button
+            class="popover-link"
             @click="handleViewAll"
           >
             查看全部
-          </n-button>
+          </button>
         </div>
 
         <div v-if="loading" class="popover-loading">
@@ -35,7 +35,13 @@
         </div>
 
         <div v-else-if="recentNotifications.length === 0" class="popover-empty">
-          <n-empty size="small" description="暂无未读提醒" />
+          <div class="empty-state">
+            <div class="empty-state-icon">
+              <i class="fas fa-inbox"></i>
+            </div>
+            <div class="empty-state-title">暂无未读提醒</div>
+            <div class="empty-state-text">新的项目提醒和系统消息会显示在这里</div>
+          </div>
         </div>
 
         <div v-else class="popover-list">
@@ -70,7 +76,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { NPopover, NBadge, NButton, NTag, NEmpty, NSpin } from 'naive-ui'
+import { NPopover, NBadge, NTag, NSpin } from 'naive-ui'
 import { useApi } from '~/composables/useApi'
 import type { SideNotification, NotificationSeverity } from '~/types/api'
 
@@ -84,7 +90,6 @@ const recentNotifications = ref<SideNotification[]>([])
 
 let pollTimer: NodeJS.Timeout | null = null
 
-// 获取未读数量
 const fetchUnreadCount = async () => {
   try {
     const res = await api.get<{ count: number }>('/side-notifications/unread-count')
@@ -94,7 +99,6 @@ const fetchUnreadCount = async () => {
   }
 }
 
-// 获取最近10条未读提醒
 const fetchRecentNotifications = async () => {
   loading.value = true
   try {
@@ -114,20 +118,17 @@ const fetchRecentNotifications = async () => {
   }
 }
 
-// 点击铃铛
 const handleBellClick = () => {
   if (showPopover.value) {
     fetchRecentNotifications()
   }
 }
 
-// 查看全部
 const handleViewAll = () => {
   showPopover.value = false
   router.push('/admin/side-projects/notifications')
 }
 
-// 点击提醒项
 const handleNotificationClick = (notification: SideNotification) => {
   showPopover.value = false
   if (notification.entityType === 'SideProject') {
@@ -141,14 +142,13 @@ const handleNotificationClick = (notification: SideNotification) => {
   }
 }
 
-// 工具函数
 const getSeverityTagType = (severity: NotificationSeverity): 'default' | 'success' | 'error' | 'warning' | 'info' => {
   switch (severity) {
-    case 3: // Danger
+    case 3:
       return 'error'
-    case 2: // Warning
+    case 2:
       return 'warning'
-    case 1: // Info
+    case 1:
       return 'info'
     default:
       return 'default'
@@ -177,21 +177,19 @@ const formatTime = (time: string): string => {
   const days = Math.floor(diff / 86400000)
 
   if (minutes < 1) return '刚刚'
-  if (minutes < 60) return `${minutes}分钟前`
-  if (hours < 24) return `${hours}小时前`
-  if (days < 7) return `${days}天前`
+  if (minutes < 60) return `${minutes} 分钟前`
+  if (hours < 24) return `${hours} 小时前`
+  if (days < 7) return `${days} 天前`
   return date.toLocaleDateString('zh-CN')
 }
 
-// 轮询未读数量（每60秒）
 const startPolling = () => {
   fetchUnreadCount()
   pollTimer = setInterval(() => {
     fetchUnreadCount()
-  }, 60000) // 60秒
+  }, 60000)
 }
 
-// 初始化
 onMounted(() => {
   fetchUnreadCount()
   startPolling()
@@ -211,22 +209,22 @@ onUnmounted(() => {
 
 .bell-button {
   position: relative;
-  cursor: pointer;
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--radius-md);
-  transition: background-color 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 .bell-button:hover {
-  background-color: var(--color-bg-hover);
+  background-color: var(--admin-surface-2, var(--color-bg-elevated));
 }
 
 .bell-button i {
-  font-size: var(--text-lg);
   color: var(--color-text-main);
+  font-size: var(--text-lg);
 }
 
 .bell-badge {
@@ -239,6 +237,11 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   max-height: 500px;
+  overflow: hidden;
+  background: var(--admin-surface-1, var(--color-bg-card));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
 }
 
 .popover-header {
@@ -246,13 +249,23 @@ onUnmounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: var(--spacing-md) var(--spacing-lg);
-  border-bottom: 1px solid var(--color-border-subtle);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .popover-header h3 {
   margin: 0;
+  color: var(--color-text-main);
   font-size: var(--text-base);
+  font-weight: 700;
+}
+
+.popover-link {
+  border: none;
+  background: none;
+  color: var(--color-primary-hover);
+  font-size: var(--text-sm);
   font-weight: 600;
+  cursor: pointer;
 }
 
 .popover-loading,
@@ -260,8 +273,8 @@ onUnmounted(() => {
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: 180px;
   padding: var(--spacing-lg);
-  min-height: var(--spacing-xl);
 }
 
 .popover-list {
@@ -272,13 +285,13 @@ onUnmounted(() => {
 
 .popover-item {
   padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border);
   cursor: pointer;
   transition: background-color 0.2s ease;
-  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .popover-item:hover {
-  background-color: var(--color-bg-hover);
+  background-color: var(--admin-surface-2, var(--color-bg-elevated));
 }
 
 .popover-item:last-child {
@@ -293,16 +306,17 @@ onUnmounted(() => {
 }
 
 .popover-item-title {
-  font-weight: 600;
-  font-size: var(--text-sm);
   flex: 1;
+  color: var(--color-text-main);
+  font-size: var(--text-sm);
+  font-weight: 600;
 }
 
 .popover-item-content {
-  font-size: var(--text-xs);
-  color: var(--color-text-secondary);
   margin-top: var(--spacing-xs);
-  line-height: 1.4;
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  line-height: 1.5;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -311,9 +325,42 @@ onUnmounted(() => {
 }
 
 .popover-item-time {
-  font-size: var(--text-xs);
-  color: var(--color-text-muted);
   margin-top: var(--spacing-xs);
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: center;
+}
+
+.empty-state-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--admin-surface-2, var(--color-bg-elevated));
+  color: var(--color-text-muted);
+  font-size: 1.2rem;
+}
+
+.empty-state-title {
+  color: var(--color-text-main);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.empty-state-text {
+  max-width: 240px;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  line-height: 1.6;
 }
 </style>
-

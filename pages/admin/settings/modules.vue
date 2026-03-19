@@ -1,20 +1,53 @@
 <template>
   <div class="modules-management-page">
-    <div class="page-header">
-      <h1 class="page-title">模块管理</h1>
-      <p class="text-gray-400 text-sm">管理功能模块的启用/禁用，实现按需加载</p>
-    </div>
+    <PageHeader
+      title="模块管理"
+      description="管理功能模块的启用状态、分类分布和依赖关系，按需控制后台与前台能力范围。"
+      class="modules-header"
+    >
+      <template #actions>
+        <div class="modules-header-badge">
+          <span class="modules-header-badge__label">当前概览</span>
+          <strong>{{ enabledModulesCount }} / {{ modules.length }} 已启用</strong>
+        </div>
+      </template>
+    </PageHeader>
 
-    <!-- 模块列表 -->
-    <div class="content-section">
+    <section class="modules-overview">
+      <article class="overview-card">
+        <span class="overview-card__label">模块总数</span>
+        <strong class="overview-card__value">{{ modules.length }}</strong>
+        <p class="overview-card__hint">覆盖内容、工具、实验和互动等功能域</p>
+      </article>
+      <article class="overview-card">
+        <span class="overview-card__label">已启用模块</span>
+        <strong class="overview-card__value overview-card__value--success">{{ enabledModulesCount }}</strong>
+        <p class="overview-card__hint">当前正在参与站点渲染与交互</p>
+      </article>
+      <article class="overview-card">
+        <span class="overview-card__label">核心模块</span>
+        <strong class="overview-card__value overview-card__value--warning">{{ coreModulesCount }}</strong>
+        <p class="overview-card__hint">核心模块不可直接停用</p>
+      </article>
+      <article class="overview-card">
+        <span class="overview-card__label">分类数量</span>
+        <strong class="overview-card__value">{{ categories.length }}</strong>
+        <p class="overview-card__hint">支持快速按分类筛选与排查</p>
+      </article>
+    </section>
+
+    <section class="content-section">
       <div class="section-header">
-        <h2 class="section-title">功能模块列表</h2>
+        <div>
+          <h2 class="section-title">功能模块列表</h2>
+          <p class="section-description">点击分类标签快速收窄范围，卡片里可直接启用、禁用或查看详情。</p>
+        </div>
         <div class="filter-tabs">
           <button
             @click="filterCategory = null"
             :class="['filter-tab', { 'filter-tab-active': filterCategory === null }]"
           >
-            全部
+            全部模块
           </button>
           <button
             v-for="cat in categories"
@@ -27,9 +60,10 @@
         </div>
       </div>
 
-      <div v-if="loading" class="table-loading">加载中...</div>
+      <div v-if="loading" class="table-loading">加载模块中...</div>
+      <div v-else-if="filteredModules.length === 0" class="table-empty">当前筛选条件下没有模块</div>
       <div v-else class="modules-grid">
-        <div
+        <article
           v-for="module in filteredModules"
           :key="module.moduleKey"
           class="module-card"
@@ -41,14 +75,17 @@
         >
           <div class="module-card-header">
             <div class="module-card-title">
-              <i v-if="module.icon" :class="[module.icon, 'module-icon']"></i>
+              <span class="module-icon-wrap">
+                <i v-if="module.icon" :class="[module.icon, 'module-icon']"></i>
+                <i v-else class="fas fa-cube module-icon"></i>
+              </span>
               <div>
                 <h3 class="module-name">{{ module.moduleName }}</h3>
                 <span class="module-key">{{ module.moduleKey }}</span>
               </div>
             </div>
             <div class="module-card-badges">
-              <span v-if="module.isCore" class="badge badge-warning">核心</span>
+              <span v-if="module.isCore" class="badge badge-warning">核心模块</span>
               <span v-if="module.isEnabled" class="badge badge-success">已启用</span>
               <span v-else class="badge badge-default">已禁用</span>
             </div>
@@ -59,23 +96,26 @@
               {{ module.description }}
             </p>
 
-            <div class="module-info">
+            <dl class="module-info">
               <div class="info-item">
-                <span class="info-label">版本:</span>
-                <span class="info-value">{{ module.moduleVersion }}</span>
+                <dt class="info-label">版本</dt>
+                <dd class="info-value">{{ module.moduleVersion || '-' }}</dd>
               </div>
               <div v-if="module.author" class="info-item">
-                <span class="info-label">作者:</span>
-                <span class="info-value">{{ module.author }}</span>
+                <dt class="info-label">作者</dt>
+                <dd class="info-value">{{ module.author }}</dd>
               </div>
               <div v-if="module.category" class="info-item">
-                <span class="info-label">分类:</span>
-                <span class="info-value">{{ getCategoryName(module.category) }}</span>
+                <dt class="info-label">分类</dt>
+                <dd class="info-value">{{ getCategoryName(module.category) }}</dd>
               </div>
-            </div>
+            </dl>
 
-            <div v-if="module.dependencies && parseDependencies(module.dependencies).length > 0" class="module-dependencies">
-              <span class="dependencies-label">依赖:</span>
+            <div
+              v-if="module.dependencies && parseDependencies(module.dependencies).length > 0"
+              class="module-dependencies"
+            >
+              <span class="dependencies-label">依赖模块</span>
               <div class="dependencies-list">
                 <span
                   v-for="dep in parseDependencies(module.dependencies)"
@@ -99,7 +139,7 @@
                 ]"
               >
                 <i :class="module.isEnabled ? 'fas fa-ban' : 'fas fa-check'"></i>
-                {{ module.isEnabled ? '禁用' : '启用' }}
+                {{ module.isEnabled ? '禁用模块' : '启用模块' }}
               </button>
               <button
                 @click="viewModuleDetails(module)"
@@ -109,15 +149,17 @@
               </button>
             </div>
           </div>
-        </div>
+        </article>
       </div>
-    </div>
+    </section>
 
-    <!-- 模块详情模态框 -->
     <div v-if="selectedModule" class="modal-overlay" @click="selectedModule = null">
       <div class="modal-content" @click.stop>
         <div class="modal-header">
-          <h2>{{ selectedModule.moduleName }}</h2>
+          <div>
+            <h2>{{ selectedModule.moduleName }}</h2>
+            <p class="modal-subtitle">模块标识：{{ selectedModule.moduleKey }}</p>
+          </div>
           <button @click="selectedModule = null" class="modal-close">×</button>
         </div>
 
@@ -126,19 +168,19 @@
             <h3 class="detail-title">基本信息</h3>
             <div class="detail-grid">
               <div class="detail-item">
-                <span class="detail-label">模块标识:</span>
+                <span class="detail-label">模块标识</span>
                 <span class="detail-value">{{ selectedModule.moduleKey }}</span>
               </div>
               <div class="detail-item">
-                <span class="detail-label">版本:</span>
-                <span class="detail-value">{{ selectedModule.moduleVersion }}</span>
+                <span class="detail-label">版本</span>
+                <span class="detail-value">{{ selectedModule.moduleVersion || '-' }}</span>
               </div>
               <div class="detail-item">
-                <span class="detail-label">分类:</span>
+                <span class="detail-label">分类</span>
                 <span class="detail-value">{{ getCategoryName(selectedModule.category || '') }}</span>
               </div>
               <div class="detail-item">
-                <span class="detail-label">状态:</span>
+                <span class="detail-label">状态</span>
                 <span :class="selectedModule.isEnabled ? 'badge badge-success' : 'badge badge-default'">
                   {{ selectedModule.isEnabled ? '已启用' : '已禁用' }}
                 </span>
@@ -147,7 +189,7 @@
           </div>
 
           <div v-if="selectedModule.description" class="detail-section">
-            <h3 class="detail-title">描述</h3>
+            <h3 class="detail-title">模块说明</h3>
             <p class="detail-text">{{ selectedModule.description }}</p>
           </div>
 
@@ -199,6 +241,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useSafeMessage } from '~/composables/useNaiveUI'
 import { useErrorHandler } from '~/composables/useErrorHandler'
+import PageHeader from '~/components/admin/patterns/PageHeader.vue'
 
 definePageMeta({
   layout: 'admin',
@@ -233,24 +276,27 @@ const selectedModule = ref<Module | null>(null)
 
 const categories = computed(() => {
   const cats = new Set<string>()
-  modules.value.forEach(m => {
-    if (m.category) cats.add(m.category)
+  modules.value.forEach(module => {
+    if (module.category) cats.add(module.category)
   })
   return Array.from(cats).sort()
 })
+
+const enabledModulesCount = computed(() => modules.value.filter(module => module.isEnabled).length)
+const coreModulesCount = computed(() => modules.value.filter(module => module.isCore).length)
 
 const filteredModules = computed(() => {
   if (!filterCategory.value) {
     return modules.value
   }
-  return modules.value.filter(m => m.category === filterCategory.value)
+  return modules.value.filter(module => module.category === filterCategory.value)
 })
 
 const fetchModules = async () => {
   loading.value = true
   try {
     const res = await api.get<Module[]>('/Module')
-    modules.value = Array.isArray(res)  ?res : []
+    modules.value = Array.isArray(res) ? res : []
   } catch (e: unknown) {
     handleError(e, '加载模块列表失败')
   } finally {
@@ -267,14 +313,13 @@ const toggleModule = async (module: Module) => {
       await api.post(`/Module/${module.moduleKey}/enable`)
       message.success('模块已启用')
     }
-    
-    // 触发事件通知其他组件
+
     if (process.client) {
       window.dispatchEvent(new CustomEvent(module.isEnabled ? 'module-disabled' : 'module-enabled', {
         detail: { moduleKey: module.moduleKey }
       }))
     }
-    
+
     await fetchModules()
   } catch (e: unknown) {
     handleError(e, module.isEnabled ? '禁用模块失败' : '启用模块失败')
@@ -291,9 +336,9 @@ const getCategoryName = (category: string): string => {
     content: '内容',
     tool: '工具',
     experiment: '实验',
-    interaction: '交互'
+    interaction: '互动'
   }
-  return names[category] || category
+  return names[category] || category || '未分类'
 }
 
 const parseDependencies = (deps?: string): string[] => {
@@ -309,7 +354,7 @@ const parseRoutes = (routes?: string): string[] => {
   if (!routes) return []
   try {
     const parsed = JSON.parse(routes)
-    return Array.isArray(parsed) ? parsed.map((r: any) => typeof r === 'string' ? r : r.path) : []
+    return Array.isArray(parsed) ? parsed.map((route: any) => typeof route === 'string' ? route : route.path) : []
   } catch {
     return []
   }
@@ -319,7 +364,7 @@ const parseComponents = (components?: string): string[] => {
   if (!components) return []
   try {
     const parsed = JSON.parse(components)
-    return Array.isArray(parsed) ? parsed.map((c: any) => typeof c === 'string' ? c : c.name) : []
+    return Array.isArray(parsed) ? parsed.map((component: any) => typeof component === 'string' ? component : component.name) : []
   } catch {
     return []
   }
@@ -335,366 +380,502 @@ onMounted(() => {
   width: 100%;
 }
 
+.modules-header-badge {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--admin-surface-2, rgba(255, 255, 255, 0.04));
+}
+
+.modules-header-badge__label {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+}
+
+.modules-header-badge strong {
+  color: var(--color-text-main);
+  font-size: 0.95rem;
+}
+
+.modules-overview {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.overview-card {
+  padding: 1.25rem;
+  background: var(--admin-surface-1, rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.overview-card__label {
+  display: block;
+  margin-bottom: 0.6rem;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+}
+
+.overview-card__value {
+  display: block;
+  color: var(--color-text-main);
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.overview-card__value--success {
+  color: var(--color-success);
+}
+
+.overview-card__value--warning {
+  color: var(--color-warning);
+}
+
+.overview-card__hint {
+  margin-top: 0.75rem;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
 .content-section {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--admin-surface-1, rgba(255, 255, 255, 0.05));
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-xl);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--spacing-xl);
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
   flex-wrap: wrap;
-  gap: var(--spacing-md);
 }
 
 .section-title {
-  font-size: var(--text-lg);
-  font-weight: 600;
-  color: var(--color-bg-card);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+}
+
+.section-description {
+  margin-top: 0.4rem;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
 }
 
 .filter-tabs {
   display: flex;
-  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
 .filter-tab {
-  padding: var(--spacing-sm) var(--spacing-md);
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: var(--radius-sm);
-  color: rgba(255, 255, 255, 0.7);
+  padding: 0.6rem 0.95rem;
+  background: var(--admin-surface-2, rgba(255, 255, 255, 0.08));
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  color: var(--color-text-muted);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .filter-tab:hover {
-  background: rgba(255, 255, 255, 0.15);
+  color: var(--color-text-main);
+  border-color: var(--color-primary-soft);
 }
 
 .filter-tab-active {
-  background: var(--theme-primary);
-  border-color: var(--theme-primary);
-  color: var(--color-bg-card);
+  background: color-mix(in srgb, var(--color-primary) 16%, transparent);
+  border-color: color-mix(in srgb, var(--color-primary) 42%, transparent);
+  color: var(--color-primary-hover);
 }
 
 .modules-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: var(--spacing-xl);
+  gap: 1rem;
 }
 
 .module-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-10);
-  transition: all 0.3s ease;
+  position: relative;
+  background: var(--admin-surface-2, rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.35rem;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.module-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+  background: var(--color-border);
 }
 
 .module-card:hover {
-  background: var(--color-border);
-  border-color: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
+  background: var(--admin-surface-3, rgba(255, 255, 255, 0.08));
+  border-color: var(--color-primary-soft);
 }
 
-.module-card-enabled {
-  border-left: 3px solid var(--color-success);
+.module-card-enabled::before {
+  background: var(--color-success);
 }
 
-.module-card-disabled {
-  opacity: 0.7;
-  border-left: 3px solid rgba(255, 255, 255, 0.2);
+.module-card-disabled::before {
+  background: var(--color-border);
+  opacity: 0.75;
 }
 
-.module-card-core {
-  border-left: 3px solid var(--color-warning);
+.module-card-core::before {
+  background: var(--color-warning);
 }
 
 .module-card-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: var(--spacing-md);
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
 .module-card-title {
   display: flex;
   align-items: center;
-  gap: var(--spacing-lg);
-  flex: 1;
+  gap: 0.9rem;
+  min-width: 0;
+}
+
+.module-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  flex-shrink: 0;
+  border-radius: 0.9rem;
+  background: var(--admin-surface-3, rgba(255, 255, 255, 0.08));
+  border: 1px solid var(--color-border);
 }
 
 .module-icon {
-  font-size: var(--text-3xl);
-  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.45rem;
+  color: var(--color-primary-hover);
 }
 
 .module-name {
-  font-size: var(--text-base);
-  font-weight: 600;
-  color: var(--color-bg-card);
-  margin-bottom: var(--spacing-xs);
+  color: var(--color-text-main);
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.2;
 }
 
 .module-key {
-  font-size: var(--text-xs);
-  color: rgba(255, 255, 255, 0.5);
+  display: inline-block;
+  margin-top: 0.25rem;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
   font-family: monospace;
 }
 
 .module-card-badges {
   display: flex;
-  gap: var(--spacing-sm);
+  gap: 0.5rem;
   flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .module-card-body {
-  margin-bottom: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .module-description {
-  font-size: var(--text-sm);
-  color: rgba(255, 255, 255, 0.7);
-  margin-bottom: var(--spacing-md);
-  line-height: 1.5;
+  min-height: 3rem;
+  color: var(--color-text-main);
+  font-size: 0.92rem;
+  line-height: 1.6;
 }
 
 .module-info {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-md);
+  display: grid;
+  gap: 0.7rem;
 }
 
 .info-item {
   display: flex;
-  gap: var(--spacing-sm);
-  font-size: var(--text-sm);
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
 }
 
 .info-label {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
 }
 
 .info-value {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-main);
+  font-size: 0.88rem;
+  text-align: right;
 }
 
 .module-dependencies {
-  margin-top: var(--spacing-md);
-  padding-top: var(--spacing-md);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
 }
 
 .dependencies-label {
-  font-size: var(--text-xs);
-  color: rgba(255, 255, 255, 0.5);
-  margin-bottom: var(--spacing-sm);
-  display: block;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
 }
 
-.dependencies-list {
+.dependencies-list,
+.routes-list,
+.components-list {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-sm);
+  gap: 0.5rem;
 }
 
-.dependency-tag {
-  padding: var(--spacing-xs) var(--spacing-sm);
-  background: rgba(59, 130, 246, 0.2);
-  border: 1px solid rgba(59, 130, 246, 0.4);
-  border-radius: var(--radius-sm);
-  font-size: var(--text-xs);
-  color: var(--color-primary-400);
+.dependency-tag,
+.route-tag,
+.component-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 42%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  color: var(--color-primary-hover);
+  font-size: 0.78rem;
 }
 
 .module-card-footer {
-  padding-top: var(--spacing-md);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 1.1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
 }
 
 .module-actions {
   display: flex;
-  gap: var(--spacing-sm);
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
 .btn-toggle {
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--radius-sm);
-  border: none;
-  cursor: pointer;
-  font-size: var(--text-sm);
-  transition: all 0.2s ease;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: 0.45rem;
+  padding: 0.6rem 0.9rem;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
 }
 
 .btn-toggle-enable {
-  background: rgba(34, 197, 94, 0.3);
-  border: 1px solid rgba(34, 197, 94, 0.5);
-  color: var(--color-purple-300);
+  background: color-mix(in srgb, var(--color-success) 15%, transparent);
+  border-color: color-mix(in srgb, var(--color-success) 45%, transparent);
+  color: var(--color-success);
 }
 
 .btn-toggle-enable:hover {
-  background: rgba(34, 197, 94, 0.4);
+  background: color-mix(in srgb, var(--color-success) 22%, transparent);
 }
 
 .btn-toggle-disable {
-  background: rgba(239, 68, 68, 0.3);
-  border: 1px solid rgba(239, 68, 68, 0.5);
-  color: var(--color-danger-300);
+  background: color-mix(in srgb, var(--color-error) 15%, transparent);
+  border-color: color-mix(in srgb, var(--color-error) 45%, transparent);
+  color: var(--color-error);
 }
 
 .btn-toggle-disable:hover {
-  background: rgba(239, 68, 68, 0.4);
+  background: color-mix(in srgb, var(--color-error) 22%, transparent);
+}
+
+.btn-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.6rem 0.2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.btn-link-blue {
+  color: var(--color-primary-hover);
 }
 
 .badge {
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--radius-sm);
-  font-size: var(--text-xs);
-  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.28rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
 }
 
 .badge-success {
-  background: rgba(34, 197, 94, 0.3);
-  border: 1px solid rgba(34, 197, 94, 0.6);
-  color: var(--color-purple-300);
+  background: color-mix(in srgb, var(--color-success) 15%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-success) 45%, transparent);
+  color: var(--color-success);
 }
 
 .badge-default {
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: rgba(255, 255, 255, 0.9);
+  background: color-mix(in srgb, var(--color-border) 65%, transparent);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-main);
 }
 
 .badge-warning {
-  background: rgba(251, 191, 36, 0.3);
-  border: 1px solid rgba(251, 191, 36, 0.6);
-  color: var(--color-warning-300);
+  background: color-mix(in srgb, var(--color-warning) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-warning) 46%, transparent);
+  color: var(--color-warning);
 }
 
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: var(--overlay-color, rgba(0, 0, 0, 0.7));
+  background: var(--overlay-color, rgba(0, 0, 0, 0.72));
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 1.5rem;
   z-index: 1000;
 }
 
 .modal-content {
-  background: rgba(30, 41, 59, 0.95);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-lg);
-  width: 90%;
-  max-width: 700px;
+  width: min(760px, 100%);
   max-height: 90vh;
   overflow-y: auto;
+  background: var(--admin-surface-1, rgba(15, 23, 42, 0.96));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: var(--spacing-xl);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .modal-header h2 {
-  font-size: var(--text-lg);
-  font-weight: 600;
-  color: var(--color-bg-card);
+  color: var(--color-text-main);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.modal-subtitle {
+  margin-top: 0.35rem;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
 }
 
 .modal-close {
-  background: none;
+  width: 2.25rem;
+  height: 2.25rem;
   border: none;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: var(--text-3xl);
+  border-radius: 999px;
+  background: var(--admin-surface-2, rgba(255, 255, 255, 0.08));
+  color: var(--color-text-main);
+  font-size: 1.2rem;
   cursor: pointer;
-  width: var(--spacing-2xl);
-  height: var(--spacing-2xl);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-sm);
-  transition: all 0.2s ease;
-}
-
-.modal-close:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--color-bg-card);
 }
 
 .modal-body {
-  padding: var(--spacing-xl);
+  padding: 1.5rem;
 }
 
-.detail-section {
-  margin-bottom: var(--spacing-xl);
+.detail-section + .detail-section {
+  margin-top: 1.5rem;
 }
 
 .detail-title {
-  font-size: var(--text-base);
-  font-weight: 600;
-  color: var(--color-bg-card);
-  margin-bottom: var(--spacing-md);
+  margin-bottom: 0.85rem;
+  color: var(--color-text-main);
+  font-size: 1rem;
+  font-weight: 700;
 }
 
 .detail-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--spacing-md);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
 }
 
 .detail-item {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
+  padding: 1rem;
+  background: var(--admin-surface-2, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
 }
 
 .detail-label {
-  font-size: var(--text-xs);
-  color: rgba(255, 255, 255, 0.5);
+  display: block;
+  margin-bottom: 0.4rem;
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
 }
 
 .detail-value {
-  font-size: var(--text-sm);
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-main);
+  font-size: 0.92rem;
 }
 
 .detail-text {
-  font-size: var(--text-sm);
-  color: rgba(255, 255, 255, 0.7);
-  line-height: 1.6;
+  color: var(--color-text-main);
+  line-height: 1.7;
 }
 
-.routes-list,
-.components-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-sm);
+@media (max-width: 1200px) {
+  .modules-overview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
-.route-tag,
-.component-tag {
-  padding: var(--spacing-xs) var(--spacing-sm);
-  background: rgba(139, 92, 246, 0.2);
-  border: 1px solid rgba(139, 92, 246, 0.4);
-  border-radius: var(--radius-sm);
-  font-size: var(--text-xs);
-  color: var(--color-purple-300);
-  font-family: monospace;
+@media (max-width: 768px) {
+  .modules-overview,
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .content-section,
+  .modal-body,
+  .modal-header {
+    padding: 1rem;
+  }
+
+  .module-card-header {
+    flex-direction: column;
+  }
+
+  .module-card-badges,
+  .module-actions {
+    justify-content: flex-start;
+  }
 }
 </style>
-

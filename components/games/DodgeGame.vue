@@ -1,59 +1,60 @@
 <template>
-  <div class="relative w-full h-full bg-gradient-to-b from-slate-900 to-slate-800 overflow-hidden">
-    <!-- 关闭按钮 -->
+  <div class="relative h-full w-full overflow-hidden bg-gradient-to-b from-slate-900 to-slate-800">
     <button
       @click="$emit('close')"
-      class="absolute top-4 right-4 z-20 w-10 h-10 bg-black/50 text-white rounded-lg backdrop-blur-md hover:bg-black/70 transition-colors flex items-center justify-center"
+      class="absolute right-4 top-4 z-20 flex h-10 w-10 items-center justify-center rounded-lg bg-black/50 text-white backdrop-blur-md transition-colors hover:bg-black/70"
       aria-label="关闭游戏"
     >
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 18 6M6 6l12 12" />
       </svg>
     </button>
 
-    <canvas ref="canvasRef" class="w-full h-full" />
-    
-    <!-- 游戏UI -->
-    <div class="absolute top-4 left-4 right-4 flex justify-between items-start z-10">
-      <div class="bg-black/50 text-white px-4 py-2 rounded-lg backdrop-blur-md">
-        <div class="text-sm">分数: <span class="font-bold text-xl">{{ score }}</span></div>
-        <div class="text-xs mt-1">最高分: {{ highScore }}</div>
+    <canvas ref="canvasRef" class="h-full w-full" />
+
+    <div class="absolute left-4 right-4 top-4 z-10 flex items-start justify-between gap-4">
+      <div class="rounded-lg bg-black/50 px-4 py-2 text-white backdrop-blur-md">
+        <div class="text-sm">
+          分数: <span class="text-xl font-bold">{{ score }}</span>
+        </div>
+        <div class="mt-1 text-xs">最高分: {{ highScore }}</div>
       </div>
-      
-      <div v-if="!gameStarted" class="bg-black/50 text-white px-6 py-4 rounded-lg backdrop-blur-md text-center">
-        <h3 class="text-xl font-bold mb-2">躲避方块</h3>
-        <p class="text-sm mb-4">使用方向键或 WASD 移动</p>
+
+      <div v-if="!gameStarted" class="rounded-lg bg-black/50 px-6 py-4 text-center text-white backdrop-blur-md">
+        <h3 class="mb-2 text-xl font-bold">躲避方块</h3>
+        <p class="mb-4 text-sm">使用方向键或 WASD 移动</p>
         <button
           @click="startGame"
-          class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-bold"
+          class="rounded-lg bg-blue-600 px-6 py-2 font-bold text-white transition hover:bg-blue-700"
         >
           开始游戏
         </button>
       </div>
-      
-      <div v-if="gameOver" class="bg-black/50 text-white px-6 py-4 rounded-lg backdrop-blur-md text-center">
-        <h3 class="text-xl font-bold mb-2 text-red-400">游戏结束</h3>
-        <p class="text-sm mb-4">最终分数: {{ score }}</p>
+
+      <div v-if="gameOver" class="rounded-lg bg-black/50 px-6 py-4 text-center text-white backdrop-blur-md">
+        <h3 class="mb-2 text-xl font-bold text-red-400">游戏结束</h3>
+        <p class="mb-4 text-sm">最终分数: {{ score }}</p>
         <button
           @click="restartGame"
-          class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-bold"
+          class="rounded-lg bg-green-600 px-6 py-2 font-bold text-white transition hover:bg-green-700"
         >
           重新开始
         </button>
       </div>
     </div>
-    
-    <!-- 游戏说明 -->
-    <div v-if="gameStarted && !gameOver" class="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-4 py-2 rounded-lg backdrop-blur-md text-sm z-10">
+
+    <div
+      v-if="gameStarted && !gameOver"
+      class="absolute bottom-4 left-1/2 z-10 -translate-x-1/2 rounded-lg bg-black/50 px-4 py-2 text-sm text-white backdrop-blur-md"
+    >
       ← → ↑ ↓ 或 WASD 移动 | 躲避红色方块
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 
-// 定义事件
 defineEmits<{
   close: []
 }>()
@@ -64,36 +65,40 @@ const highScore = ref(0)
 const gameStarted = ref(false)
 const gameOver = ref(false)
 
-// 游戏对象
 let player: { x: number; y: number; size: number; speed: number } | null = null
 let enemies: Array<{ x: number; y: number; size: number; speed: number }> = []
-let keys: { [key: string]: boolean } = {}
+let keys: Record<string, boolean> = {}
 let animationId: number | null = null
+let spawnTimer: number | null = null
 
 const initGame = () => {
   if (!canvasRef.value) return
-  
+
   const canvas = canvasRef.value
   canvas.width = canvas.offsetWidth
   canvas.height = canvas.offsetHeight
-  
-  // 初始化玩家
+
   player = {
     x: canvas.width / 2,
     y: canvas.height / 2,
     size: 20,
     speed: 5
   }
-  
-  // 初始化敌人
+
   enemies = []
-  
-  // 加载最高分
+
   if (process.client) {
     const saved = localStorage.getItem('game_dodge_high_score')
     if (saved) {
       highScore.value = parseInt(saved, 10)
     }
+  }
+}
+
+const clearSpawnTimer = () => {
+  if (spawnTimer) {
+    window.clearInterval(spawnTimer)
+    spawnTimer = null
   }
 }
 
@@ -107,43 +112,45 @@ const startGame = () => {
 }
 
 const restartGame = () => {
+  clearSpawnTimer()
   startGame()
 }
 
 const spawnEnemies = () => {
   if (!canvasRef.value || !gameStarted.value || gameOver.value) return
-  
+
   const canvas = canvasRef.value
-  const spawnInterval = setInterval(() => {
+  clearSpawnTimer()
+
+  spawnTimer = window.setInterval(() => {
     if (!gameStarted.value || gameOver.value) {
-      clearInterval(spawnInterval)
+      clearSpawnTimer()
       return
     }
-    
-    // 随机生成敌人
+
     const side = Math.floor(Math.random() * 4)
     let x = 0
     let y = 0
-    
+
     switch (side) {
-      case 0: // 上
+      case 0:
         x = Math.random() * canvas.width
         y = -20
         break
-      case 1: // 右
+      case 1:
         x = canvas.width + 20
         y = Math.random() * canvas.height
         break
-      case 2: // 下
+      case 2:
         x = Math.random() * canvas.width
         y = canvas.height + 20
         break
-      case 3: // 左
+      default:
         x = -20
         y = Math.random() * canvas.height
         break
     }
-    
+
     enemies.push({
       x,
       y,
@@ -155,63 +162,28 @@ const spawnEnemies = () => {
 
 const updatePlayer = () => {
   if (!player || !canvasRef.value) return
-  
+
   const canvas = canvasRef.value
-  
-  if (keys['ArrowLeft'] || keys['a'] || keys['A']) {
+
+  if (keys.ArrowLeft || keys.a || keys.A) {
     player.x = Math.max(player.size, player.x - player.speed)
   }
-  if (keys['ArrowRight'] || keys['d'] || keys['D']) {
+  if (keys.ArrowRight || keys.d || keys.D) {
     player.x = Math.min(canvas.width - player.size, player.x + player.speed)
   }
-  if (keys['ArrowUp'] || keys['w'] || keys['W']) {
+  if (keys.ArrowUp || keys.w || keys.W) {
     player.y = Math.max(player.size, player.y - player.speed)
   }
-  if (keys['ArrowDown'] || keys['s'] || keys['S']) {
+  if (keys.ArrowDown || keys.s || keys.S) {
     player.y = Math.min(canvas.height - player.size, player.y + player.speed)
   }
-}
-
-const updateEnemies = () => {
-  if (!player || !canvasRef.value) return
-  
-  const canvas = canvasRef.value
-  
-  enemies.forEach((enemy, index) => {
-    // 计算方向（朝向玩家）
-    const dx = player.x - enemy.x
-    const dy = player.y - enemy.y
-    const distance = Math.sqrt(dx * dx + dy * dy)
-    
-    if (distance > 0) {
-      enemy.x += (dx / distance) * enemy.speed
-      enemy.y += (dy / distance) * enemy.speed
-    }
-    
-    // 移除屏幕外的敌人
-    if (
-      enemy.x < -50 || enemy.x > canvas.width + 50 ||
-      enemy.y < -50 || enemy.y > canvas.height + 50
-    ) {
-      enemies.splice(index, 1)
-      score.value++
-    }
-    
-    // 碰撞检测
-    const dist = Math.sqrt(
-      Math.pow(player.x - enemy.x, 2) + Math.pow(player.y - enemy.y, 2)
-    )
-    
-    if (dist < player.size + enemy.size) {
-      endGame()
-    }
-  })
 }
 
 const endGame = () => {
   gameOver.value = true
   gameStarted.value = false
-  
+  clearSpawnTimer()
+
   if (score.value > highScore.value) {
     highScore.value = score.value
     if (process.client) {
@@ -220,53 +192,84 @@ const endGame = () => {
   }
 }
 
+const updateEnemies = () => {
+  if (!player || !canvasRef.value) return
+
+  const canvas = canvasRef.value
+
+  enemies = enemies.filter((enemy) => {
+    const dx = player!.x - enemy.x
+    const dy = player!.y - enemy.y
+    const distance = Math.sqrt(dx * dx + dy * dy) || 1
+
+    enemy.x += (dx / distance) * enemy.speed
+    enemy.y += (dy / distance) * enemy.speed
+
+    const dist = Math.sqrt((player!.x - enemy.x) ** 2 + (player!.y - enemy.y) ** 2)
+    if (dist < player!.size + enemy.size) {
+      endGame()
+      return true
+    }
+
+    const outOfBounds =
+      enemy.x < -50 ||
+      enemy.x > canvas.width + 50 ||
+      enemy.y < -50 ||
+      enemy.y > canvas.height + 50
+
+    if (outOfBounds) {
+      score.value += 1
+      return false
+    }
+
+    return true
+  })
+}
+
 const draw = () => {
   if (!canvasRef.value || !player) return
-  
+
   const canvas = canvasRef.value
   const ctx = canvas.getContext('2d')
   if (!ctx) return
-  
-  // 清空画布
-  ctx.fillStyle = 'var(--color-text-main)'
+
+  ctx.fillStyle = '#0f172a'
   ctx.fillRect(0, 0, canvas.width, canvas.height)
-  
-  // 绘制网格背景
-  ctx.strokeStyle = 'var(--color-border-default)'
+
+  ctx.strokeStyle = 'rgba(148, 163, 184, 0.12)'
   ctx.lineWidth = 1
   const gridSize = 50
+
   for (let x = 0; x < canvas.width; x += gridSize) {
     ctx.beginPath()
     ctx.moveTo(x, 0)
     ctx.lineTo(x, canvas.height)
     ctx.stroke()
   }
+
   for (let y = 0; y < canvas.height; y += gridSize) {
     ctx.beginPath()
     ctx.moveTo(0, y)
     ctx.lineTo(canvas.width, y)
     ctx.stroke()
   }
-  
-  // 绘制玩家
-  ctx.fillStyle = 'var(--color-primary)'
+
+  ctx.fillStyle = '#60a5fa'
   ctx.beginPath()
   ctx.arc(player.x, player.y, player.size, 0, Math.PI * 2)
   ctx.fill()
-  
-  // 绘制玩家边框
-  ctx.strokeStyle = 'var(--color-primary-soft)'
+
+  ctx.strokeStyle = '#bfdbfe'
   ctx.lineWidth = 3
   ctx.stroke()
-  
-  // 绘制敌人
+
   enemies.forEach((enemy) => {
     ctx.fillStyle = '#ef4444'
     ctx.beginPath()
     ctx.arc(enemy.x, enemy.y, enemy.size, 0, Math.PI * 2)
     ctx.fill()
-    
-    ctx.strokeStyle = '#dc2626'
+
+    ctx.strokeStyle = '#fca5a5'
     ctx.lineWidth = 2
     ctx.stroke()
   })
@@ -274,27 +277,23 @@ const draw = () => {
 
 const gameLoop = () => {
   if (!gameStarted.value || gameOver.value) return
-  
+
   updatePlayer()
   updateEnemies()
   draw()
-  
   animationId = requestAnimationFrame(gameLoop)
 }
 
-const handleKeyDown = (e: KeyboardEvent) => {
-  keys[e.key] = true
+const handleKeyDown = (event: KeyboardEvent) => {
+  keys[event.key] = true
 }
 
-const handleKeyUp = (e: KeyboardEvent) => {
-  keys[e.key] = false
+const handleKeyUp = (event: KeyboardEvent) => {
+  keys[event.key] = false
 }
 
 const handleResize = () => {
-  if (canvasRef.value) {
-    canvasRef.value.width = canvasRef.value.offsetWidth
-    canvasRef.value.height = canvasRef.value.offsetHeight
-  }
+  initGame()
 }
 
 onMounted(() => {
@@ -308,6 +307,7 @@ onUnmounted(() => {
   if (animationId) {
     cancelAnimationFrame(animationId)
   }
+  clearSpawnTimer()
   window.removeEventListener('keydown', handleKeyDown)
   window.removeEventListener('keyup', handleKeyUp)
   window.removeEventListener('resize', handleResize)
@@ -319,4 +319,3 @@ canvas {
   display: block;
 }
 </style>
-

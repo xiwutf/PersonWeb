@@ -1,10 +1,8 @@
 <template>
   <ModuleGuard module-key="about">
     <div class="about-page">
-      <!-- 全局背景噪点 -->
       <div class="about-background-noise"></div>
 
-      <!-- 动态背景光斑 -->
       <div class="about-background-container">
         <div class="about-background-blob about-background-blob--blue"></div>
         <div class="about-background-blob about-background-blob--purple"></div>
@@ -12,99 +10,171 @@
       </div>
 
       <div class="about-content">
-        
-        <!-- 个人资料 Hero 区域 -->
-        <div class="about-hero">
-          <div class="about-avatar-container">
-            <!-- 动态光环 -->
-            <div class="about-avatar-glow"></div>
-            <div class="about-avatar">
-              <img src="/images/avatar.jpg" alt="溪午听风" />
+        <section class="about-hero">
+          <div class="about-hero-main">
+            <div class="about-avatar-container">
+              <div class="about-avatar-glow"></div>
+              <div class="about-avatar">
+                <img src="/images/avatar.jpg" alt="溪午听风" />
+              </div>
+              <div class="about-status-indicator" title="Online">
+                <span class="about-status-ping"></span>
+              </div>
             </div>
-            <div class="about-status-indicator" title="Online">
-              <span class="about-status-ping"></span>
-            </div>
-          </div>
-          
-          <h1 class="about-title">溪午听风</h1>
-          <p class="about-subtitle">全栈开发者 & AI 探索者</p>
-          <p class="about-description">
-            热爱技术，痴迷代码。在数字世界中构建未来，在算法海洋里寻找真理。<br>
-            专注于 Web 全栈、AI Agent 开发与 Revit 二次开发。
-          </p>
-          
-          <!-- 社交链接 -->
-          <div class="about-social-links">
-            <a 
-              v-for="social in socialLinks" 
-              :key="social.name" 
-              :href="social.link" 
-              target="_blank" 
-              class="about-social-link"
-            >
-              <i :class="social.icon"></i>
-            </a>
-          </div>
-        </div>
 
-        <!-- 技能矩阵 -->
-        <div class="about-section">
+            <div class="about-hero-copy">
+              <p class="about-hero-kicker">About Me</p>
+              <h1 class="about-title">溪午听风</h1>
+              <p class="about-subtitle">系统型工程师 · AI 实践者 · 技术创业者</p>
+              <p class="about-description">
+                我不只是写代码，而是致力于：用 AI 提升软件系统能力、用工程化方法构建长期可复用的系统、
+                将技术沉淀为可以持续积累的数字资产。相比单纯做功能开发，我更关注系统是否可复用、
+                能否形成长期积累、是否具备产品化与商业化潜力。
+              </p>
+
+              <div class="about-social-links">
+                <a
+                  v-for="social in socialLinks"
+                  :key="social.name"
+                  :href="social.link"
+                  target="_blank"
+                  rel="noreferrer"
+                  class="about-social-link"
+                  :aria-label="social.name"
+                >
+                  <i :class="social.icon"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="about-hero-aside">
+            <div class="about-hero-panel">
+              <p class="about-panel-kicker">Focus</p>
+              <h2 class="about-panel-title">当前关注方向</h2>
+              <div class="about-hero-tags">
+                <span class="about-hero-tag">AI 系统</span>
+                <span class="about-hero-tag">工业软件</span>
+                <span class="about-hero-tag">自动化工作流</span>
+                <span class="about-hero-tag">个人数字系统</span>
+              </div>
+            </div>
+
+            <div class="about-hero-panel">
+              <p class="about-panel-kicker">Snapshot</p>
+              <h2 class="about-panel-title">个人速写</h2>
+              <div class="about-highlight-list">
+                <div class="about-highlight-item">
+                  <span class="about-highlight-label">角色定位</span>
+                  <strong class="about-highlight-value">系统型工程师 + AI 实践者</strong>
+                </div>
+                <div class="about-highlight-item">
+                  <span class="about-highlight-label">工作方式</span>
+                  <strong class="about-highlight-value">模块化、系统化、可复用</strong>
+                </div>
+                <div class="about-highlight-item">
+                  <span class="about-highlight-label">擅长场景</span>
+                  <strong class="about-highlight-value">架构设计、AI 集成、复杂业务建模</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="about-section">
           <h2 class="about-section-title">
-            <span class="about-section-icon about-section-icon--blue">⚡</span> 技能矩阵
+            <span class="about-section-icon about-section-icon--purple">🎯</span>
+            我在做什么
+          </h2>
+          <div class="about-doing-grid">
+            <article class="about-doing-card">
+              <div class="about-doing-icon about-doing-icon--purple">🤖</div>
+              <h3 class="about-doing-title">AI 系统落地</h3>
+              <p class="about-doing-desc">把 AI 从「聊天工具」变成可用的系统能力、可嵌入业务的模块、可复用的基础设施。</p>
+              <ul class="about-doing-list">
+                <li>AI 知识库（RAG）</li>
+                <li>智能客服系统</li>
+                <li>Agent 工具系统</li>
+                <li>AI 工作流集成</li>
+              </ul>
+            </article>
+            <article class="about-doing-card">
+              <div class="about-doing-icon about-doing-icon--blue">🏭</div>
+              <h3 class="about-doing-title">工业软件系统</h3>
+              <p class="about-doing-desc">围绕真实业务场景开发：AGV 调度系统、售后工单系统、设备数据平台、API 集成系统。</p>
+              <ul class="about-doing-list">
+                <li>把复杂业务抽象成系统</li>
+              </ul>
+            </article>
+            <article class="about-doing-card">
+              <div class="about-doing-icon about-doing-icon--emerald">🌐</div>
+              <h3 class="about-doing-title">个人数字系统</h3>
+              <p class="about-doing-desc">正在构建 PersonWeb，把个人能力沉淀为工具、系统、产品、可售卖模块，形成技术 → 产品 → 数字资产。</p>
+              <ul class="about-doing-list">
+                <li>工具 · 系统 · 产品</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <section class="about-section">
+          <h2 class="about-section-title">
+            <span class="about-section-icon about-section-icon--blue">⚡</span>
+            技能矩阵
           </h2>
           <div class="about-skills-grid">
-            <div 
-              v-for="category in skillCategories" 
-              :key="category.name" 
+            <article
+              v-for="category in skillCategories"
+              :key="category.name"
               class="about-skill-card"
             >
               <div class="about-skill-icon" :class="`about-skill-icon--${category.color}`">
                 {{ category.icon }}
               </div>
               <h3 class="about-skill-name">{{ category.name }}</h3>
+              <p class="about-skill-summary">{{ category.summary }}</p>
               <div class="about-skill-tags">
-                <span 
-                  v-for="skill in category.skills" 
-                  :key="skill" 
+                <span
+                  v-for="skill in category.skills"
+                  :key="skill"
                   class="about-skill-tag"
                 >
                   {{ skill }}
                 </span>
               </div>
-            </div>
+            </article>
           </div>
-        </div>
+        </section>
 
-        <!-- 经历与成就 -->
-        <div class="about-timeline-grid">
-          <!-- 左侧：项目成就 -->
+        <section class="about-timeline-grid">
           <div>
             <h2 class="about-timeline-section-title">
-              <span class="about-section-icon about-section-icon--purple">🚀</span> 项目成就
+              <span class="about-section-icon about-section-icon--purple">🚀</span>
+              项目成就
             </h2>
             <div class="about-timeline-list">
-              <div 
-                v-for="(item, index) in achievements" 
-                :key="index" 
+              <div
+                v-for="(item, index) in achievements"
+                :key="index"
                 class="about-timeline-item"
               >
                 <div class="about-timeline-dot"></div>
                 <h3 class="about-timeline-title">{{ item.title }}</h3>
-                <p class="about-timeline-meta">{{ item.type }} | {{ item.year }}</p>
+                <p class="about-timeline-meta">{{ item.type }} · {{ item.year }}</p>
                 <p class="about-timeline-desc">{{ item.desc }}</p>
               </div>
             </div>
           </div>
 
-          <!-- 右侧：技术历程 -->
           <div>
             <h2 class="about-timeline-section-title">
-              <span class="about-section-icon about-section-icon--emerald">💡</span> 技术历程
+              <span class="about-section-icon about-section-icon--emerald">💡</span>
+              技术历程
             </h2>
             <div class="about-timeline-list">
-              <div 
-                v-for="(item, index) in experience" 
-                :key="index" 
+              <div
+                v-for="(item, index) in experience"
+                :key="index"
                 class="about-timeline-item about-timeline-item--emerald"
               >
                 <div class="about-timeline-dot"></div>
@@ -114,80 +184,102 @@
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        <!-- 兴趣爱好 -->
-        <div class="about-section">
+        <section class="about-section about-section--compact">
           <h2 class="about-section-title">
-            <span class="about-section-icon about-section-icon--pink">🎯</span> 兴趣爱好
+            <span class="about-section-icon about-section-icon--pink">🎯</span>
+            兴趣爱好
           </h2>
           <div class="about-hobbies-grid">
-            <div 
-              v-for="hobby in hobbies" 
-              :key="hobby.name" 
+            <div
+              v-for="hobby in hobbies"
+              :key="hobby.name"
               class="about-hobby-card"
             >
               <div class="about-hobby-icon">{{ hobby.icon }}</div>
               <div class="about-hobby-name">{{ hobby.name }}</div>
             </div>
           </div>
-        </div>
+        </section>
 
-        <!-- 认知说明书 -->
-        <div class="about-section">
+        <section class="about-section about-section--compact">
           <h2 class="about-section-title">
-            <span class="about-section-icon about-section-icon--purple">🧠</span> 认知说明书
+            <span class="about-section-icon about-section-icon--purple">🧠</span>
+            认知说明书
           </h2>
           <div class="about-cognition-card">
             <p class="about-cognition-desc">
-
+              这里记录我如何理解学习、构建、协作和长期成长，
+              也是一份帮助别人更快认识我的工作说明。
             </p>
             <NuxtLink to="/cognition" class="about-cognition-link">
-              <i class="fas fa-arrow-right mr-2"></i>
+              <i class="fas fa-arrow-right"></i>
               查看认知说明书
             </NuxtLink>
           </div>
-        </div>
+        </section>
 
-        <!-- 联系方式 -->
-        <div class="about-contact-section">
-          <div class="about-contact-content">
-            <h2 class="about-contact-title">保持联系</h2>
-            <div class="about-contact-grid">
-              <div class="about-contact-card">
-                <div class="about-contact-icon about-contact-icon--green">💬</div>
-                <div class="about-contact-info">
-                  <div class="about-contact-label">WeChat</div>
-                  <div class="about-contact-value about-contact-value--green">LinXi-5152</div>
-                </div>
-              </div>
-              <div class="about-contact-card">
-                <div class="about-contact-icon about-contact-icon--blue">📧</div>
-                <div class="about-contact-info">
-                  <div class="about-contact-label">Email</div>
-                  <div class="about-contact-value about-contact-value--blue">linxiwanting@gmail.com</div>
-                </div>
-              </div>
+        <section class="about-section about-section--compact">
+          <h2 class="about-section-title">
+            <span class="about-section-icon about-section-icon--emerald">✨</span>
+            我的原则
+          </h2>
+          <div class="about-values-grid">
+            <div class="about-value-item">
+              <span class="about-value-icon">→</span>
+              <span>不做重复劳动，优先系统化</span>
             </div>
-            
-            <!-- 二维码 -->
-            <div class="about-contact-qr">
-              <div class="about-contact-qr-image">
-                <img src="/images/wechat-qr.png" alt="微信二维码" />
-              </div>
-              <p class="about-contact-qr-text">扫码加好友，请注明来意</p>
+            <div class="about-value-item">
+              <span class="about-value-icon">→</span>
+              <span>不追求炫技，优先实用</span>
+            </div>
+            <div class="about-value-item">
+              <span class="about-value-icon">→</span>
+              <span>不做一次性开发，优先可复用</span>
+            </div>
+            <div class="about-value-item">
+              <span class="about-value-icon">→</span>
+              <span>不卖时间，构建资产</span>
             </div>
           </div>
-        </div>
+        </section>
 
+        <section class="about-contact-section">
+          <div class="about-contact-content">
+            <h2 class="about-contact-title">保持联系</h2>
+            <div class="about-contact-layout">
+              <div class="about-contact-left">
+                <div class="about-contact-card">
+                  <div class="about-contact-icon about-contact-icon--green">💬</div>
+                  <div class="about-contact-info">
+                    <div class="about-contact-label">WeChat</div>
+                    <div class="about-contact-value about-contact-value--green">LinXi-5152</div>
+                  </div>
+                </div>
+                <div class="about-contact-card">
+                  <div class="about-contact-icon about-contact-icon--blue">📧</div>
+                  <div class="about-contact-info">
+                    <div class="about-contact-label">Email</div>
+                    <div class="about-contact-value about-contact-value--blue">linxiwanting@gmail.com</div>
+                  </div>
+                </div>
+              </div>
+              <div class="about-contact-qr">
+                <div class="about-contact-qr-image">
+                  <img src="/images/wechat-qr.png" alt="微信二维码" />
+                </div>
+                <p class="about-contact-qr-text">扫码加好友，请注明来意。</p>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   </ModuleGuard>
 </template>
 
 <script setup lang="ts">
-// 显式导入 ModuleGuard 组件，避免自动导入问题
-
 definePageMeta({
   layout: 'default'
 })
@@ -200,103 +292,85 @@ const socialLinks = [
 
 const skillCategories = [
   {
-    name: 'Web 全栈',
+    name: '前端',
     icon: '💻',
     color: 'blue',
-    skills: ['Vue.js', 'Nuxt.js', 'Node.js', 'TypeScript', 'Tailwind CSS', 'MongoDB']
+    summary: 'Vue3 / TypeScript / Nuxt3 / Naive UI，关注可维护性与交互体验。',
+    skills: ['Vue 3', 'Nuxt 3', 'TypeScript', 'Naive UI', 'Tailwind CSS']
   },
   {
-    name: 'AI & LLM',
-    icon: '💻',
+    name: '后端',
+    icon: '⚙️',
     color: 'purple',
-    skills: ['LangChain', 'OpenAI API', 'RAG', 'Agent Design', 'Python', 'Prompt Engineering']
+    summary: '.NET WebAPI / Python FastAPI，构建可扩展的服务层。',
+    skills: ['.NET', 'C#', 'FastAPI', 'Python', 'WebAPI']
   },
   {
-    name: 'Revit 开发',
-    icon: '💻',
+    name: 'AI 系统',
+    icon: '🤖',
     color: 'orange',
-    skills: ['Revit API', 'C#', '.NET', 'WPF', 'BIM', 'Dynamo']
+    summary: 'RAG 向量检索、Agent 系统、LLM 集成（DeepSeek / OpenAI）。',
+    skills: ['RAG', 'Agent', 'LangChain', '向量检索', 'LLM 集成']
   },
   {
-    name: '嵌入式 & IoT',
-    icon: '💻',
+    name: '数据与工具',
+    icon: '📊',
     color: 'emerald',
-    skills: ['C/C++', 'STM32', 'Arduino', 'ESP32', '传感器应用', '物联网协议']
+    summary: 'MySQL / SQL Server，长期使用 ChatGPT、Claude、Cursor 做 AI 辅助开发。',
+    skills: ['MySQL', 'SQL Server', 'ChatGPT', 'Claude', 'Cursor']
   }
 ]
 
 const achievements = [
   {
-    title: 'SmartAssistantAgent',
-    type: 'AI 项目',
-    year: '2024',
+    title: 'PersonWeb 个人数字系统',
+    type: '主站项目',
+    year: '2025',
+    desc: '把个人能力沉淀为工具、系统、产品，形成技术 → 产品 → 数字资产的完整闭环。'
   },
   {
-    title: '恋爱魔方小程序',
-    year: '2024',
+    title: 'AI 知识库与智能客服',
+    type: 'AI 系统',
+    year: '2024 - 2025',
+    desc: 'RAG 向量检索、Agent 工具系统、AI 工作流集成，将 AI 能力嵌入真实业务。'
   },
   {
-    title: 'Revit 插件工具集',
-    type: '个人项目',
-    year: '2023-2024',
-    desc: '开发多款 Revit 插件，累计销售 1000+ 份，帮助建筑师自动化繁琐流程，显著提升工作效率。'
+    title: '工业软件系统',
+    type: '业务系统',
+    year: '2023 - 2025',
+    desc: 'AGV 调度系统、售后工单系统、设备数据平台、API 集成系统，把复杂业务抽象成系统。'
   }
 ]
 
 const experience = [
   {
-    title: '恋爱魔方小程序',
-    duration: '3年+ 经验',
+    title: '系统构建能力',
+    duration: '核心能力',
+    desc: '架构设计、AI 系统集成、复杂业务建模、多系统协同，而非单点技术。'
   },
   {
-    title: 'Revit 插件工具集',
-    duration: '2年+ 经验',
+    title: 'AI 辅助开发',
+    duration: '日常实践',
+    desc: '长期使用 ChatGPT、Claude、Cursor 进行 AI 辅助开发与自动化工程。'
   },
   {
-    title: 'AI 应用开发',
-    duration: '1年+ 经验',
-    desc: '紧跟 AI 浪潮，深入研究 LLM 应用落地，在 Agent 开发、知识库构建等方面积累了实战经验。'
+    title: '技术资产化',
+    duration: '核心理念',
+    desc: '模块化、系统化、可复用、可沉淀，形成可反复使用甚至售卖的能力模块。'
   }
 ]
 
 const hobbies = [
   { name: '编程开发', icon: '💻' },
   { name: '技术学习', icon: '📚' },
-  { name: '投资理财', icon: '💰' },
+  { name: '投资理财', icon: '📈' },
+  { name: '产品思考', icon: '🧩' }
 ]
 
 useHead({
   title: '关于我 - 溪午听风',
   meta: [
-    { name: 'description', content: '全栈开发者 & AI 探索者' }
+    { name: 'description', content: '溪午听风：AI 工程师、系统构建者、技术创业者。专注于 AI 系统落地、工业软件与个人数字系统，将技术沉淀为可持续积累的数字资产。' }
   ]
 })
 </script>
-
-<style scoped>
-/* 页面特有样式已移至 assets/css/about.css */
-/* 认知说明书卡片样式 */
-
-/* 认知说明书卡片样式 */
-.about-cognition-card {
-  @apply bg-gray-50/80 dark:bg-gray-800/80 backdrop-blur-sm;
-  @apply rounded-2xl shadow-lg;
-  @apply border border-gray-200 dark:border-gray-700;
-  @apply p-6 md:p-8;
-  @apply transition-all duration-200;
-  @apply hover:shadow-xl;
-}
-
-.about-cognition-desc {
-  @apply text-gray-600 dark:text-gray-300 mb-4 leading-7;
-}
-
-.about-cognition-link {
-  @apply inline-flex items-center px-6 py-3 rounded-lg;
-  @apply bg-gradient-to-r from-purple-500 to-blue-500;
-  @apply text-bg-light font-medium;
-  @apply transition-all duration-200;
-  @apply hover:from-purple-600 hover:to-blue-600;
-  @apply hover:shadow-lg hover:scale-105;
-}
-</style>

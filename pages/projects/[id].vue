@@ -7,10 +7,16 @@
     </div>
 
     <div class="projects-detail-shell">
-      <NuxtLink to="/projects" class="projects-detail-back">
-        <i class="fas fa-arrow-left"></i>
-        返回项目展示
-      </NuxtLink>
+      <div class="projects-detail-topbar">
+        <NuxtLink to="/projects" class="projects-detail-back">
+          <span class="projects-detail-back-icon">
+            <i class="fas fa-arrow-left"></i>
+          </span>
+          <span class="projects-detail-back-text">
+            返回项目展示
+          </span>
+        </NuxtLink>
+      </div>
 
       <section v-if="loading" class="projects-detail-state">
         <div class="projects-loading-spinner"></div>
@@ -177,25 +183,40 @@ const project = ref<Project | null>(null)
 const loading = ref(true)
 const markdownContent = ref('')
 
+const cleanTechTag = (value: string) => value
+  .replace(/^[\[\(\{'"`\s]+/, '')
+  .replace(/[\]\)\}'"`\s]+$/, '')
+  .replace(/^["']+|["']+$/g, '')
+  .replace(/^["']|["']$/g, '')
+  .trim()
+
 const techStackArray = computed(() => {
   const techStack = project.value?.techStack
   if (!techStack) return []
 
   if (Array.isArray(techStack)) {
-    return techStack.filter((item): item is string => typeof item === 'string' && Boolean(item.trim()))
+    return techStack
+      .filter((item): item is string => typeof item === 'string')
+      .map(item => cleanTechTag(item))
+      .filter(Boolean)
   }
 
   if (typeof techStack === 'string') {
-    try {
-      const parsed = JSON.parse(techStack)
-      if (Array.isArray(parsed)) {
-        return parsed.filter((item): item is string => typeof item === 'string' && Boolean(item.trim()))
+    const trimmed = techStack.trim()
+    if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+      try {
+        const parsed = JSON.parse(trimmed) as unknown[]
+        if (Array.isArray(parsed)) {
+          return parsed
+            .filter((item): item is string => typeof item === 'string')
+            .map(item => cleanTechTag(item))
+            .filter(Boolean)
+        }
+      } catch {
+        // 解析失败则按逗号分割
       }
-    } catch {
-      return techStack.split(',').map(item => item.trim()).filter(Boolean)
     }
-
-    return techStack.split(',').map(item => item.trim()).filter(Boolean)
+    return techStack.split(',').map(item => cleanTechTag(item)).filter(Boolean)
   }
 
   return []

@@ -1,97 +1,152 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 font-['Outfit']">
-    <div class="max-w-7xl mx-auto">
-      <div class="text-center mb-12">
-        <h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 mb-2">
-          DIGITAL TWIN DASHBOARD
-        </h1>
-        <p class="text-gray-500 dark:text-gray-400 tracking-widest uppercase text-sm">Quantified Self & Life Metrics</p>
-      </div>
+  <div class="dashboard-page">
+    <div class="dashboard-background" aria-hidden="true">
+      <div class="dashboard-blob dashboard-blob--blue"></div>
+      <div class="dashboard-blob dashboard-blob--violet"></div>
+      <div class="dashboard-grid"></div>
+    </div>
 
-      <!-- 核心指标卡片 -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-        <!-- Life Battery -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 relative overflow-hidden group">
-          <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-            <svg class="w-24 h-24 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"></path></svg>
-          </div>
-          <h3 class="text-gray-500 dark:text-gray-400 text-sm uppercase tracking-wider mb-2">Life Battery</h3>
-          <div class="flex items-end gap-2">
-            <span class="text-4xl font-bold text-gray-900 dark:text-white">{{ latest.energy }}%</span>
-            <span class="text-sm text-green-500 mb-1">Energy</span>
-          </div>
-          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-4">
-            <div class="bg-gradient-to-r from-green-400 to-green-600 h-2 rounded-full transition-all duration-1000" :style="{ width: latest.energy + '%' }"></div>
-          </div>
-          <p class="text-xs text-gray-400 mt-2">Sleep: {{ latest.sleep }}h</p>
-        </div>
+    <div class="dashboard-shell">
+      <section class="dashboard-hero">
+        <div class="dashboard-hero-copy">
+          <p class="dashboard-kicker">Digital Twin Lab</p>
+          <h1 class="dashboard-title">数字分身仪表盘</h1>
+          <p class="dashboard-subtitle">
+            用一页看清近期的精力、行动、体征和资产趋势，把零散记录整理成可回看的生活面板。
+          </p>
 
-        <!-- Activity -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 relative overflow-hidden group">
-          <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-            <svg class="w-24 h-24 text-orange-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path></svg>
-          </div>
-          <h3 class="text-gray-500 dark:text-gray-400 text-sm uppercase tracking-wider mb-2">Daily Activity</h3>
-          <div class="flex items-end gap-2">
-            <span class="text-4xl font-bold text-gray-900 dark:text-white">{{ latest.steps }}</span>
-            <span class="text-sm text-orange-500 mb-1">Steps</span>
-          </div>
-          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-4">
-            <div class="bg-gradient-to-r from-orange-400 to-red-500 h-2 rounded-full transition-all duration-1000" :style="{ width: Math.min((latest.steps / 10000) * 100, 100) + '%' }"></div>
-          </div>
-          <p class="text-xs text-gray-400 mt-2">Goal: 10,000</p>
-        </div>
-
-        <!-- Physique -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 relative overflow-hidden group">
-          <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-            <svg class="w-24 h-24 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
-          </div>
-          <h3 class="text-gray-500 dark:text-gray-400 text-sm uppercase tracking-wider mb-2">Physique</h3>
-          <div class="flex items-end gap-2">
-            <span class="text-4xl font-bold text-gray-900 dark:text-white">{{ latest.weight }}</span>
-            <span class="text-sm text-blue-500 mb-1">kg</span>
-          </div>
-          <div class="mt-4">
-             <span class="text-xs px-2 py-1 rounded bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">BMI: {{ (latest.weight / (1.75 * 1.75)).toFixed(1) }}</span>
+          <div class="dashboard-hero-tags">
+            <span class="dashboard-hero-tag">最近 {{ metrics.length || 0 }} 条记录</span>
+            <span class="dashboard-hero-tag">最后更新 {{ latestDateText }}</span>
+            <span class="dashboard-hero-tag">近 30 天趋势</span>
           </div>
         </div>
 
-        <!-- Net Worth -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 relative overflow-hidden group">
-          <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-            <svg class="w-24 h-24 text-purple-500" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"></path><path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"></path></svg>
+        <div class="dashboard-hero-panel">
+          <div class="dashboard-hero-panel-head">
+            <p class="dashboard-panel-kicker">Overview</p>
+            <h2 class="dashboard-panel-title">本期概览</h2>
           </div>
-          <h3 class="text-gray-500 dark:text-gray-400 text-sm uppercase tracking-wider mb-2">Net Worth</h3>
-          <div class="flex items-end gap-2">
-            <span class="text-4xl font-bold text-gray-900 dark:text-white">¥{{ (latest.netWorth / 10000).toFixed(1) }}</span>
-            <span class="text-sm text-purple-500 mb-1">万</span>
-          </div>
-          <div class="mt-4 flex items-center text-xs text-green-500">
-            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-            <span>Growing</span>
+
+          <div class="dashboard-overview-grid">
+            <div class="dashboard-overview-item">
+              <span class="dashboard-overview-label">健康节奏</span>
+              <strong class="dashboard-overview-value">{{ healthStateLabel }}</strong>
+            </div>
+            <div class="dashboard-overview-item">
+              <span class="dashboard-overview-label">行动完成度</span>
+              <strong class="dashboard-overview-value">{{ stepCompletionText }}</strong>
+            </div>
+            <div class="dashboard-overview-item">
+              <span class="dashboard-overview-label">体征观察</span>
+              <strong class="dashboard-overview-value">BMI {{ bmiText }}</strong>
+            </div>
+            <div class="dashboard-overview-item">
+              <span class="dashboard-overview-label">资产状态</span>
+              <strong class="dashboard-overview-value">{{ wealthText }}</strong>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <!-- 图表区域 -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- 趋势图 -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
-          <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-6">Health Trends</h3>
-          <div class="h-64">
+      <section class="dashboard-metrics-grid">
+        <article class="dashboard-metric-card dashboard-metric-card--energy">
+          <div class="dashboard-metric-icon" aria-hidden="true">
+            <i class="fas fa-bolt"></i>
+          </div>
+          <p class="dashboard-metric-label">精力电量</p>
+          <div class="dashboard-metric-value-row">
+            <strong class="dashboard-metric-value">{{ latest.energy }}%</strong>
+            <span class="dashboard-metric-unit">Energy</span>
+          </div>
+          <div class="dashboard-progress">
+            <div class="dashboard-progress-bar dashboard-progress-bar--energy" :style="{ width: `${energyProgress}%` }"></div>
+          </div>
+          <p class="dashboard-metric-meta">睡眠 {{ latest.sleep }} 小时</p>
+        </article>
+
+        <article class="dashboard-metric-card dashboard-metric-card--activity">
+          <div class="dashboard-metric-icon" aria-hidden="true">
+            <i class="fas fa-person-walking"></i>
+          </div>
+          <p class="dashboard-metric-label">日常行动</p>
+          <div class="dashboard-metric-value-row">
+            <strong class="dashboard-metric-value">{{ latest.steps }}</strong>
+            <span class="dashboard-metric-unit">Steps</span>
+          </div>
+          <div class="dashboard-progress">
+            <div class="dashboard-progress-bar dashboard-progress-bar--activity" :style="{ width: `${stepsProgress}%` }"></div>
+          </div>
+          <p class="dashboard-metric-meta">目标 10,000 步</p>
+        </article>
+
+        <article class="dashboard-metric-card dashboard-metric-card--physique">
+          <div class="dashboard-metric-icon" aria-hidden="true">
+            <i class="fas fa-heart-pulse"></i>
+          </div>
+          <p class="dashboard-metric-label">体征状态</p>
+          <div class="dashboard-metric-value-row">
+            <strong class="dashboard-metric-value">{{ latest.weight }}</strong>
+            <span class="dashboard-metric-unit">kg</span>
+          </div>
+          <div class="dashboard-metric-badge">BMI {{ bmiText }}</div>
+          <p class="dashboard-metric-meta">以 175cm 估算的当前体质指数</p>
+        </article>
+
+        <article class="dashboard-metric-card dashboard-metric-card--wealth">
+          <div class="dashboard-metric-icon" aria-hidden="true">
+            <i class="fas fa-wallet"></i>
+          </div>
+          <p class="dashboard-metric-label">净资产</p>
+          <div class="dashboard-metric-value-row">
+            <strong class="dashboard-metric-value">¥{{ netWorthWanText }}</strong>
+            <span class="dashboard-metric-unit">万</span>
+          </div>
+          <div class="dashboard-metric-badge dashboard-metric-badge--positive">
+            <i class="fas fa-arrow-trend-up"></i>
+            持续记录中
+          </div>
+          <p class="dashboard-metric-meta">更适合作为长期变化观察，而不是即时结论</p>
+        </article>
+      </section>
+
+      <section class="dashboard-chart-grid">
+        <article class="dashboard-chart-card">
+          <div class="dashboard-chart-head">
+            <div>
+              <p class="dashboard-panel-kicker">Health Trends</p>
+              <h2 class="dashboard-panel-title">健康趋势</h2>
+            </div>
+            <span class="dashboard-chart-note">步数 / 体重双轴观察</span>
+          </div>
+
+          <div v-if="metrics.length > 0" class="dashboard-chart-body">
             <Line :data="healthChartData" :options="chartOptions" />
           </div>
-        </div>
+          <div v-else class="dashboard-empty-state">
+            <i class="fas fa-chart-line"></i>
+            <p>暂无健康趋势数据</p>
+          </div>
+        </article>
 
-        <!-- 财富趋势 -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
-          <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-6">Wealth Growth</h3>
-          <div class="h-64">
+        <article class="dashboard-chart-card">
+          <div class="dashboard-chart-head">
+            <div>
+              <p class="dashboard-panel-kicker">Wealth Growth</p>
+              <h2 class="dashboard-panel-title">资产趋势</h2>
+            </div>
+            <span class="dashboard-chart-note">近 30 天净资产变化</span>
+          </div>
+
+          <div v-if="metrics.length > 0" class="dashboard-chart-body">
             <Line :data="wealthChartData" :options="chartOptions" />
           </div>
-        </div>
-      </div>
+          <div v-else class="dashboard-empty-state">
+            <i class="fas fa-coins"></i>
+            <p>暂无资产趋势数据</p>
+          </div>
+        </article>
+      </section>
     </div>
   </div>
 </template>
@@ -116,6 +171,15 @@ definePageMeta({
   ssr: false
 })
 
+usePageStyle('dashboard')
+
+useHead({
+  title: '数字分身仪表盘 - 溪午听风',
+  meta: [
+    { name: 'description', content: '查看近期的精力、行动、体征与资产变化，把个人记录整理成可回看的趋势面板。' }
+  ]
+})
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -127,85 +191,126 @@ ChartJS.register(
   Filler
 )
 
+type MetricRecord = {
+  date: string
+  steps: number
+  sleep: number
+  weight: number
+  netWorth: number
+  energy: number
+}
+
 const api = useApi()
-const metrics = ref<any[]>([])
-const latest = ref({
+const metrics = ref<MetricRecord[]>([])
+const latest = ref<MetricRecord>({
   steps: 0,
   sleep: 0,
   weight: 0,
   netWorth: 0,
-  energy: 0
+  energy: 0,
+  date: ''
 })
+
+const energyProgress = computed(() => Math.min(Math.max(latest.value.energy || 0, 0), 100))
+const stepsProgress = computed(() => Math.min(Math.max((latest.value.steps / 10000) * 100, 0), 100))
+const bmiText = computed(() => (latest.value.weight / (1.75 * 1.75)).toFixed(1))
+const netWorthWanText = computed(() => (latest.value.netWorth / 10000).toFixed(1))
+
+const latestDateText = computed(() => {
+  if (!latest.value.date) return '暂无更新'
+
+  return new Date(latest.value.date).toLocaleDateString('zh-CN', {
+    month: 'numeric',
+    day: 'numeric'
+  })
+})
+
+const healthStateLabel = computed(() => {
+  if (latest.value.energy >= 80) return '状态饱满'
+  if (latest.value.energy >= 60) return '节奏稳定'
+  if (latest.value.energy >= 40) return '需要恢复'
+  return '低电量期'
+})
+
+const stepCompletionText = computed(() => `${Math.round(stepsProgress.value)}%`)
+const wealthText = computed(() => `${netWorthWanText.value} 万`)
 
 const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
+  interaction: {
+    mode: 'index' as const,
+    intersect: false
+  },
   plugins: {
     legend: {
       position: 'top' as const,
-      labels: { color: '#9ca3af' }
+      labels: {
+        color: '#cbd5e1',
+        usePointStyle: true,
+        boxWidth: 10,
+        boxHeight: 10
+      }
     }
   },
   scales: {
     y: {
-      grid: { color: '#374151' },
-      ticks: { color: '#9ca3af' }
+      grid: { color: 'rgba(148, 163, 184, 0.16)' },
+      ticks: { color: '#94a3b8' }
+    },
+    y1: {
+      position: 'right' as const,
+      grid: { drawOnChartArea: false },
+      ticks: { color: '#94a3b8' }
     },
     x: {
       grid: { display: false },
-      ticks: { color: '#9ca3af' }
+      ticks: { color: '#94a3b8' }
     }
-  },
-  interaction: {
-    mode: 'index',
-    intersect: false,
-  },
+  }
 }
 
 const healthChartData = computed(() => {
-  const labels = metrics.value.map(m => m.date.slice(5)).slice(-30) // Last 30 days
-  const steps = metrics.value.map(m => m.steps).slice(-30)
-  const weight = metrics.value.map(m => m.weight).slice(-30)
+  const recent = metrics.value.slice(-30)
 
   return {
-    labels,
+    labels: recent.map(item => item.date.slice(5)),
     datasets: [
       {
-        label: 'Steps',
-        data: steps,
-        borderColor: '#f97316',
-        backgroundColor: 'rgba(249, 115, 22, 0.1)',
+        label: '步数',
+        data: recent.map(item => item.steps),
+        borderColor: '#38bdf8',
+        backgroundColor: 'rgba(56, 189, 248, 0.12)',
         yAxisID: 'y',
         fill: true,
-        tension: 0.4
+        tension: 0.38
       },
       {
-        label: 'Weight (kg)',
-        data: weight,
-        borderColor: '#3b82f6',
-        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        label: '体重',
+        data: recent.map(item => item.weight),
+        borderColor: '#f59e0b',
+        backgroundColor: 'rgba(245, 158, 11, 0.1)',
         yAxisID: 'y1',
         fill: true,
-        tension: 0.4
+        tension: 0.38
       }
     ]
   }
 })
 
 const wealthChartData = computed(() => {
-  const labels = metrics.value.map(m => m.date.slice(5)).slice(-30)
-  const netWorth = metrics.value.map(m => m.netWorth).slice(-30)
+  const recent = metrics.value.slice(-30)
 
   return {
-    labels,
+    labels: recent.map(item => item.date.slice(5)),
     datasets: [
       {
-        label: 'Net Worth',
-        data: netWorth,
-        borderColor: '#a855f7',
-        backgroundColor: 'rgba(168, 85, 247, 0.1)',
+        label: '净资产',
+        data: recent.map(item => item.netWorth),
+        borderColor: '#a78bfa',
+        backgroundColor: 'rgba(167, 139, 250, 0.14)',
         fill: true,
-        tension: 0.4
+        tension: 0.38
       }
     ]
   }
@@ -213,22 +318,20 @@ const wealthChartData = computed(() => {
 
 onMounted(async () => {
   try {
-    const res = await api.get<any[]>('/Metrics')
-    // Sort by date ascending for charts
-    metrics.value = res.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-    
-    // Format dates for display if needed, but charts use slice(5)
-    // Ensure date is string like YYYY-MM-DD for slice to work expectedly or handle ISO
-    metrics.value = metrics.value.map(m => ({
-        ...m,
-        date: m.date.split('T')[0]
-    }))
-    
+    const res = await api.get<MetricRecord[]>('/Metrics')
+
+    metrics.value = [...res]
+      .map(item => ({
+        ...item,
+        date: item.date?.split('T')[0] || ''
+      }))
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+
     if (metrics.value.length > 0) {
       latest.value = metrics.value[metrics.value.length - 1]
     }
-  } catch (e) {
-    console.error(e)
+  } catch (error) {
+    console.error(error)
   }
 })
 </script>

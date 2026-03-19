@@ -61,7 +61,7 @@ definePageMeta({
 })
 
 useHead({
-  title: '溪午听风 - 数字花园',
-  meta: [{ name: 'description', content: '溪午听风的个人网站，分享技术、生活与思考。' }]
+  title: '溪午听风 - 构建 AI 与软件系统的长期主义者',
+  meta: [{ name: 'description', content: '溪午听风：AI 工程师、系统构建者、技术创业者。专注于将技术转化为可持续积累的数字资产，构建 AI 系统、工业软件与个人数字系统。' }]
 })
 </script>

@@ -205,6 +205,16 @@ export const usePageStyle = (pageKey: string) => {
         borderColor: 'rgba(148, 163, 184, 0.16)',
         borderRadius: '1.5rem',
         fontFamily: '"Outfit", sans-serif'
+      },
+      dashboard: {
+        primaryColor: '#60a5fa',
+        secondaryColor: '#a78bfa',
+        backgroundColor: 'var(--color-text-main)',
+        textColor: 'var(--color-text-sub)',
+        cardBackground: 'rgba(15, 23, 42, 0.74)',
+        borderColor: 'rgba(148, 163, 184, 0.16)',
+        borderRadius: '1.5rem',
+        fontFamily: '"Outfit", sans-serif'
       }
     }
 

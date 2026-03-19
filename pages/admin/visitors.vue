@@ -71,7 +71,7 @@
                 <span class="w-6 h-6 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center text-xs font-bold mr-3">
                   {{ index + 1 }}
                 </span>
-                <span class="text-sm text-gray-700 truncate max-w-[150px]" :title="item.path">{{ item.path }}</span>
+                <span class="text-sm text-gray-700 truncate max-w-[150px]" :title="item.path">{{ formatPath(item.path) }}</span>
               </div>
               <span class="text-sm font-bold text-gray-900">{{ item.count }}</span>
             </div>
@@ -90,6 +90,7 @@ definePageMeta({
 
 const api = useApi()
 const data = ref<any>(null)
+const { formatPath } = usePathDisplayName()
 
 const fetchData = async () => {
   try {

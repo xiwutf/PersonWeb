@@ -92,16 +92,130 @@
 
 /* ========== Hero 区域 ========== */
 .about-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+  gap: 1.5rem;
+  margin-bottom: 6rem;
+}
+
+.about-hero-main,
+.about-hero-panel,
+.about-skill-card,
+.about-timeline-item,
+.about-hobby-card,
+.about-cognition-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 28px;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 24px 80px rgba(2, 6, 23, 0.26);
+}
+
+.about-hero-main::before,
+.about-hero-panel::before,
+.about-skill-card::before,
+.about-timeline-item::before,
+.about-hobby-card::before,
+.about-cognition-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent 42%, rgba(59, 130, 246, 0.03));
+}
+
+.about-hero-main {
+  display: grid;
+  grid-template-columns: 164px minmax(0, 1fr);
+  gap: 1.6rem;
+  align-items: center;
+  padding: 2rem;
+}
+
+.about-hero-aside {
   display: flex;
   flex-direction: column;
+  gap: 1rem;
+}
+
+.about-hero-panel {
+  padding: 1.4rem;
+}
+
+.about-hero-copy {
+  text-align: left;
+}
+
+.about-hero-kicker,
+.about-panel-kicker {
+  margin: 0 0 0.8rem;
+  color: rgba(148, 163, 184, 0.86);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.about-panel-title {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.about-hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 1rem;
+}
+
+/* 当前关注方向标签：深色底 + 清晰文字 */
+.about-hero-tag {
+  display: inline-flex;
   align-items: center;
-  text-align: center;
-  margin-bottom: 6rem;
+  min-height: 2.2rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(30, 41, 59, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  color: #e2e8f0;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.about-highlight-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin-top: 1rem;
+}
+
+.about-highlight-item {
+  padding: 0.95rem 1rem;
+  border-radius: 20px;
+  background: rgba(15, 23, 42, 0.46);
+  border: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.about-highlight-label {
+  display: block;
+  margin-bottom: 0.4rem;
+  color: #94a3b8;
+  font-size: 0.78rem;
+}
+
+.about-highlight-value {
+  color: #f8fafc;
+  font-size: 0.98rem;
+  font-weight: 700;
 }
 
 .about-avatar-container {
   position: relative;
-  margin-bottom: 2rem;
+  margin-bottom: 0;
 }
 
 .about-avatar-glow {
@@ -184,6 +298,28 @@
   }
 }
 
+@media (max-width: 1024px) {
+  .about-hero {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .about-hero-main {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .about-hero-copy {
+    text-align: center;
+  }
+
+  .about-social-links,
+  .about-hero-tags {
+    justify-content: center;
+  }
+}
+
 .about-subtitle {
   font-size: 1.25rem;
   color: var(--color-primary-soft);
@@ -202,7 +338,7 @@
 .about-social-links {
   display: flex;
   gap: 1rem;
-  margin-top: 2rem;
+  margin-top: 1.6rem;
 }
 
 .about-social-link {
@@ -265,6 +401,81 @@
   color: #ec4899;
 }
 
+/* ========== 我在做什么 ========== */
+.about-doing-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .about-doing-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.about-doing-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 1.25rem;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(18px);
+  padding: 1.5rem;
+  transition: all 0.3s;
+}
+
+.about-doing-card:hover {
+  background: rgba(15, 23, 42, 0.85);
+  border-color: rgba(96, 165, 250, 0.25);
+  transform: translateY(-2px);
+}
+
+.about-doing-icon {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  margin-bottom: 1rem;
+}
+
+.about-doing-icon--purple {
+  background: rgba(168, 85, 247, 0.2);
+}
+
+.about-doing-icon--blue {
+  background: rgba(59, 130, 246, 0.2);
+}
+
+.about-doing-icon--emerald {
+  background: rgba(16, 185, 129, 0.2);
+}
+
+.about-doing-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 0.5rem;
+}
+
+.about-doing-desc {
+  font-size: 0.9rem;
+  color: rgba(148, 163, 184, 0.9);
+  line-height: 1.6;
+  margin: 0 0 1rem;
+}
+
+.about-doing-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  font-size: 0.85rem;
+  color: #93c5fd;
+  line-height: 1.7;
+}
+
 .about-skills-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -284,17 +495,14 @@
 }
 
 .about-skill-card {
-  background-color: var(--bg-card);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--border-color);
-  border-radius: var(--card-radius, 1rem);
   padding: 1.5rem;
   transition: all 0.5s;
 }
 
 .about-skill-card:hover {
-  background-color: var(--bg-elevated);
+  background-color: rgba(15, 23, 42, 0.82);
   border-color: var(--primary);
+  transform: translateY(-4px);
 }
 
 .about-skill-icon {
@@ -333,7 +541,14 @@
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--text-main);
-  margin-bottom: 1rem;
+  margin-bottom: 0.8rem;
+}
+
+.about-skill-summary {
+  margin: 0 0 1rem;
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.7;
 }
 
 .about-skill-tags {
@@ -342,18 +557,19 @@
   gap: 0.5rem;
 }
 
+/* 技能标签：深色底 + 高对比度文字，避免白底白字 */
 .about-skill-tag {
   padding: 0.25rem 0.5rem;
-  background-color: var(--primary-soft-bg);
-  color: var(--primary);
+  background-color: rgba(30, 41, 59, 0.85);
+  color: #93c5fd;
   font-size: 0.75rem;
   border-radius: 0.25rem;
-  border: 1px solid rgba(37, 99, 235, 0.2);
+  border: 1px solid rgba(96, 165, 250, 0.25);
   transition: border-color 0.3s;
 }
 
 .about-skill-card:hover .about-skill-tag {
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(96, 165, 250, 0.4);
 }
 
 /* ========== 经历与成就 ========== */
@@ -387,6 +603,9 @@
 .about-timeline-item {
   position: relative;
   padding-left: 2rem;
+  padding-top: 0.1rem;
+  padding-bottom: 0.1rem;
+  padding-right: 0.2rem;
   border-left: 2px solid var(--color-text-sec);
   transition: border-color 0.3s;
 }
@@ -464,18 +683,18 @@
 }
 
 .about-hobby-card {
-  background-color: var(--bg-card);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--border-color);
-  border-radius: var(--card-radius, 1rem);
   padding: 1.5rem;
   text-align: center;
   transition: all 0.3s;
 }
 
 .about-hobby-card:hover {
-  background-color: var(--bg-elevated);
+  background-color: rgba(15, 23, 42, 0.82);
   transform: translateY(-0.25rem);
+}
+
+.about-section--compact {
+  margin-bottom: 4.5rem;
 }
 
 .about-hobby-icon {
@@ -488,13 +707,75 @@
   color: var(--text-main);
 }
 
-/* ========== 联系方式 ========== */
+.about-cognition-card {
+  padding: 1.75rem;
+  text-align: center;
+}
+
+.about-cognition-desc {
+  max-width: 42rem;
+  margin: 0 auto;
+  color: var(--text-secondary);
+  line-height: 1.9;
+}
+
+.about-cognition-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 3rem;
+  margin-top: 1.25rem;
+  padding: 0.75rem 1.1rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #60a5fa, #8b5cf6);
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.about-cognition-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(96, 165, 250, 0.24);
+}
+
+/* ========== 我的原则 ========== */
+.about-values-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .about-values-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.about-value-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-radius: 0.75rem;
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  color: rgba(226, 232, 240, 0.95);
+  font-size: 0.95rem;
+}
+
+.about-value-icon {
+  color: #93c5fd;
+  font-weight: 700;
+}
+
+/* ========== 联系方式（紧凑布局） ========== */
 .about-contact-section {
   background: linear-gradient(to right, rgba(30, 58, 138, 0.4), rgba(88, 28, 135, 0.4));
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1.5rem;
-  padding: 2rem;
+  border-radius: 1.25rem;
+  padding: 1.25rem;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -502,7 +783,7 @@
 
 @media (min-width: 768px) {
   .about-contact-section {
-    padding: 3rem;
+    padding: 1.75rem 2rem;
   }
 }
 
@@ -512,31 +793,49 @@
 }
 
 .about-contact-title {
-  font-size: 1.875rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
-.about-contact-grid {
-  display: grid;
-  gap: 2rem;
-  max-width: 42rem;
-  margin: 0 auto;
+.about-contact-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
 }
 
 @media (min-width: 768px) {
-  .about-contact-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .about-contact-layout {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+  }
+}
+
+.about-contact-left {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  max-width: 20rem;
+}
+
+@media (min-width: 768px) {
+  .about-contact-left {
+    flex: 0 0 auto;
+    max-width: 22rem;
   }
 }
 
 .about-contact-card {
   background-color: rgba(15, 23, 42, 0.5);
-  border-radius: 0.75rem;
-  padding: 1.5rem;
+  border-radius: 0.625rem;
+  padding: 1rem;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
   transition: background-color 0.3s;
 }
 
@@ -545,13 +844,13 @@
 }
 
 .about-contact-icon {
-  width: 3rem;
-  height: 3rem;
+  width: 2.5rem;
+  height: 2.5rem;
   border-radius: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
 }
 
 .about-contact-icon--green {
@@ -567,41 +866,38 @@
 }
 
 .about-contact-label {
-  font-size: 0.75rem;
-  color: var(--color-text-muted);
+  font-size: 0.7rem;
+  color: rgba(148, 163, 184, 0.9);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .about-contact-value {
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-family: monospace;
 }
 
 .about-contact-value--green {
-  color: var(--color-green-400);
+  color: #4ade80;
 }
 
 .about-contact-value--blue {
-  color: var(--color-primary-soft);
+  color: #93c5fd;
 }
 
 .about-contact-qr {
-  margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .about-contact-qr-image {
-  width: 12rem;
-  height: 12rem;
+  width: 8.5rem;
+  height: 8.5rem;
   background-color: var(--color-bg-card);
-  padding: 0.5rem;
-  border-radius: 0.75rem;
-  margin-bottom: 1rem;
+  padding: 0.375rem;
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -616,8 +912,8 @@
 }
 
 .about-contact-qr-text {
-  font-size: 0.875rem;
-  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  color: rgba(148, 163, 184, 0.9);
 }
 
 /* ========== 动画 ========== */

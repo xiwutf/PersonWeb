@@ -519,6 +519,11 @@ useHead({
   border: 1px solid var(--n-border-color);
 }
 
+.agent-card :deep(.n-card__action) {
+  background: linear-gradient(180deg, var(--color-bg-card), var(--color-bg-elevated));
+  border-top: 1px solid var(--color-border-subtle);
+}
+
 .agent-card:hover {
   transform: translateY(calc(var(--spacing-0_5) * -1));
   box-shadow: var(--shadow-lg);

@@ -9,19 +9,19 @@
         </div>
 
         <h1 class="text-display mb-8">
-          <span class="block">Digital</span>
+          <span class="block">AI 驱动的</span>
           <span class="block text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
-            Alchemist
+            软件工程师
           </span>
         </h1>
 
         <div class="hero-intro-grid">
           <div class="text-body-large">
             <p class="mb-6">
-              我是溪午听风 (XIFG)，一名游走在代码与艺术边缘的数字炼金术士。
+              我是溪午听风 (XIFG)，专注于构建可复用、可扩展、可积累价值的系统。
             </p>
             <p>
-              这里不仅是博客，更是一个融合了 <span class="text-primary font-bold">AI 智能体</span>、<span class="text-secondary font-bold">全栈开发</span> 与 <span class="text-accent font-bold">创造力工具</span> 的数字实验场。
+              写代码只是手段，<span class="text-primary font-bold">构建系统与资产</span>才是目标。这里融合了 <span class="text-secondary font-bold">AI 系统</span>、<span class="text-accent font-bold">工业软件</span> 与 <span class="text-primary font-bold">个人数字系统</span>。
             </p>
           </div>
           <div class="flex flex-col gap-6 items-start lg:items-end">
@@ -55,10 +55,10 @@
       <div class="marquee-content">
         <!-- 重复两次以实现无缝滚动 -->
         <span class="marquee-item" v-for="i in 4" :key="i">
-          Full Stack Dev <span class="marquee-star">✦</span>
-          AI Agent Design <span class="marquee-star">✦</span>
-          System Architecture <span class="marquee-star">✦</span>
-          UI/UX Design <span class="marquee-star">✦</span>
+          AI 系统 <span class="marquee-star">✦</span>
+          RAG · Agent <span class="marquee-star">✦</span>
+          工业软件 <span class="marquee-star">✦</span>
+          数字资产 <span class="marquee-star">✦</span>
         </span>
       </div>
     </div>

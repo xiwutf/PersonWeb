@@ -349,15 +349,38 @@ const handleToggle3DView = () => {
 }
 
 const normalizeTechStack = (techStack: unknown): string[] => {
+  const cleanTechTag = (value: string) => value
+    .replace(/^[\[\(\{'"`\s]+/, '')
+    .replace(/[\]\)\}'"`\s]+$/, '')
+    .replace(/^["']+|["']+$/g, '')
+    .replace(/^["']|["']$/g, '') // 去除首尾单个引号（如 JSON 解析残留）
+    .trim()
+
   if (typeof techStack === 'string') {
+    // 尝试解析 JSON 数组（如 "[\"TypeScript\", \"Vue 3\"]"）
+    const trimmed = techStack.trim()
+    if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+      try {
+        const parsed = JSON.parse(trimmed) as unknown[]
+        return (Array.isArray(parsed) ? parsed : [])
+          .filter((item): item is string => typeof item === 'string')
+          .map(item => cleanTechTag(item))
+          .filter(Boolean)
+      } catch {
+        // 解析失败则按逗号分割
+      }
+    }
     return techStack
       .split(',')
-      .map(item => item.trim())
+      .map(item => cleanTechTag(item))
       .filter(Boolean)
   }
 
   if (Array.isArray(techStack)) {
-    return techStack.filter((item): item is string => typeof item === 'string' && Boolean(item.trim()))
+    return techStack
+      .filter((item): item is string => typeof item === 'string')
+      .map(item => cleanTechTag(item))
+      .filter(Boolean)
   }
 
   return []

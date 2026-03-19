@@ -30,37 +30,7 @@ const props = withDefaults(defineProps<Props>(), {
   topPaths: () => []
 })
 
-const formatPath = (path: string | null | undefined) => {
-  if (!path || path === '') return '首页'
-  if (path === '/') return '首页'
-
-  const cleanPath = path.replace(/^\//, '')
-  if (!cleanPath) return '首页'
-
-  if (cleanPath.startsWith('blog/')) {
-    const slug = cleanPath.replace('blog/', '')
-    return slug ? `博客: ${slug.substring(0, 20)}` : '博客列表'
-  }
-  if (cleanPath.startsWith('tools/')) {
-    const tool = cleanPath.replace('tools/', '')
-    return tool ? `工具: ${tool.substring(0, 20)}` : '工具列表'
-  }
-  if (cleanPath.startsWith('ai/')) {
-    return 'AI助手'
-  }
-  if (cleanPath.startsWith('projects/')) {
-    const project = cleanPath.replace('projects/', '')
-    return project ? `项目: ${project.substring(0, 20)}` : '项目列表'
-  }
-  if (cleanPath.startsWith('lab')) {
-    return '实验室'
-  }
-  if (cleanPath.startsWith('admin')) {
-    return '管理后台'
-  }
-
-  return cleanPath.substring(0, 30) || '首页'
-}
+const { formatPath } = usePathDisplayName()
 
 const getMaxCount = () => {
   if (props.topPaths.length === 0) return 1

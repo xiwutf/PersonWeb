@@ -22,7 +22,7 @@
         <div v-if="reports.length === 0" class="empty-container">
           <i class="fas fa-file-alt"></i>
           <p>暂无日报数据</p>
-          <n-button type="primary" @click="generateFirstReport">
+          <n-button type="primary" @click="handleGenerateReport">
             生成第一份日报
           </n-button>
         </div>

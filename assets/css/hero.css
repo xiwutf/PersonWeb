@@ -404,11 +404,11 @@ html[data-theme="dark"] .hero-particle-overlay {
   color: var(--primary);
 }
 
-/* 深色主题保持原有样式 */
+/* 深色主题：深色底 + 高对比度文字 */
 html[data-theme="dark"] .hero-tag {
-  background: var(--color-bg-elevated);
-  border: 1px solid var(--color-border-subtle);
-  color: var(--color-text-main);
+  background: rgba(30, 41, 59, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  color: #93c5fd;
 }
 
 /* 按钮区 */
@@ -705,11 +705,11 @@ html[data-theme="light"] .hero-visual-card-bg {
   color: var(--primary);
 }
 
-/* 深色主题保持原有样式 */
+/* 深色主题：深色底 + 高对比度文字 */
 html[data-theme="dark"] .hero-info-card-large-tag {
-  background: var(--color-primary-soft);
-  border: 1px solid var(--color-primary-base);
-  color: var(--color-text-main);
+  background: rgba(30, 41, 59, 0.9);
+  border: 1px solid rgba(96, 165, 250, 0.35);
+  color: #93c5fd;
 }
 
 /* 滚动提示 */

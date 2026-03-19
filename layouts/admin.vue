@@ -413,13 +413,34 @@ const logout = () => {
 </script>
 
 <style scoped>
+.admin-layout {
+  --admin-surface-base: var(--color-bg-card);
+  --admin-surface-strong: var(--color-bg-elevated);
+  --admin-surface-soft: var(--color-bg-elevated);
+  --admin-surface-border: var(--color-border-subtle);
+  --admin-surface-shadow: var(--shadow-lg);
+}
+
+:root[data-theme='dark'] .admin-layout,
+:root[data-theme='lab'] .admin-layout,
+:root[data-theme='forest'] .admin-layout,
+:root[data-theme='hybrid-super-dark'] .admin-layout,
+:root[data-theme='cyberpunk'] .admin-layout,
+:root[data-theme='future'] .admin-layout {
+  --admin-surface-base: rgba(15, 23, 42, 0.82);
+  --admin-surface-strong: rgba(15, 23, 42, 0.94);
+  --admin-surface-soft: rgba(30, 41, 59, 0.72);
+  --admin-surface-border: rgba(148, 163, 184, 0.14);
+  --admin-surface-shadow: 0 18px 40px rgba(2, 6, 23, 0.28);
+}
 /* 侧边栏基础样式 */
 .admin-sidebar {
-  background-color: var(--color-bg-card) !important;
-  border-right: 1px solid var(--color-border-subtle);
+  background:
+    linear-gradient(180deg, var(--admin-surface-strong), var(--admin-surface-base)) !important;
+  border-right: 1px solid var(--admin-surface-border);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--admin-surface-shadow);
   color: var(--color-text-main) !important;
 }
 
@@ -429,8 +450,8 @@ const logout = () => {
 
 .admin-sidebar-header {
   color: var(--color-text-main) !important;
-  border-color: var(--color-border-subtle) !important;
-  background: var(--color-bg-elevated);
+  border-color: var(--admin-surface-border) !important;
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .admin-sidebar-header span {
@@ -469,7 +490,7 @@ const logout = () => {
 }
 
 .admin-sidebar-link:hover {
-  background-color: var(--color-bg-elevated) !important;
+  background-color: var(--admin-surface-soft) !important;
   color: var(--color-text-main) !important;
   transform: translateX(4px);
 }
@@ -549,7 +570,9 @@ const logout = () => {
 /* 主内容区背景 - 根据主题自动适配 */
 .admin-main,
 .admin-main-fallback {
-  background: var(--n-body-color, var(--color-bg-body)) !important;
+  background:
+    linear-gradient(180deg, rgba(2, 6, 23, 0.08), transparent 18%),
+    var(--n-body-color, var(--color-bg-body)) !important;
   color: var(--color-text-main) !important;
   position: relative;
 }
@@ -646,20 +669,21 @@ const logout = () => {
 .admin-main :deep(.card),
 .admin-main :deep(.page-container),
 .admin-main :deep(.app-card) {
-  background: var(--color-bg-elevated, var(--color-bg-card)) !important;
+  background: var(--admin-surface-base) !important;
   backdrop-filter: blur(10px);
-  border: 1px solid var(--color-border-subtle) !important;
+  border: 1px solid var(--admin-surface-border) !important;
   color: var(--color-text-main) !important;
+  box-shadow: var(--admin-surface-shadow);
 }
 
 .admin-main :deep(.card-hover) {
-  background: var(--color-bg-elevated, var(--color-bg-card));
-  border: 1px solid var(--color-border-subtle);
+  background: var(--admin-surface-base);
+  border: 1px solid var(--admin-surface-border);
 }
 
 .admin-main :deep(.card-hover:hover) {
-  background: var(--color-bg-elevated);
-  border-color: var(--color-border-default);
+  background: var(--admin-surface-soft);
+  border-color: var(--admin-surface-border);
 }
 
 /* 确保主题类正常工作 - 使用 CSS 变量，自动适配主题 */
@@ -965,15 +989,16 @@ const logout = () => {
 
 /* Naive UI 组件样式 - 使用 CSS 变量，自动适配主题 */
 .admin-main :deep(.n-card) {
-  background: var(--color-bg-card) !important;
+  background: var(--admin-surface-base) !important;
   backdrop-filter: blur(10px);
-  border: 1px solid var(--color-border-subtle) !important;
+  border: 1px solid var(--admin-surface-border) !important;
   color: var(--color-text-main) !important;
+  box-shadow: var(--admin-surface-shadow);
 }
 
 .admin-main :deep(.n-card .n-card-header) {
   color: var(--color-text-main) !important;
-  border-bottom-color: var(--color-border-subtle) !important;
+  border-bottom-color: var(--admin-surface-border) !important;
 }
 
 .admin-main :deep(.n-card .n-card-body) {
@@ -986,34 +1011,33 @@ const logout = () => {
 }
 
 .admin-main :deep(.n-data-table .n-data-table-thead) {
-  background: var(--color-bg-elevated) !important;
+  background: var(--admin-surface-strong) !important;
 }
 
 .admin-main :deep(.n-data-table .n-data-table-thead th) {
-  background: var(--color-bg-elevated) !important;
+  background: var(--admin-surface-strong) !important;
   color: var(--color-text-main) !important;
-  border-color: var(--color-border-subtle) !important;
+  border-color: var(--admin-surface-border) !important;
 }
 
 .admin-main :deep(.n-data-table .n-data-table-tbody td) {
-  background: transparent !important;
+  background: var(--admin-surface-base) !important;
   color: var(--color-text-main) !important;
-  border-color: var(--color-border-subtle) !important;
+  border-color: var(--admin-surface-border) !important;
 }
 
 .admin-main :deep(.n-data-table .n-data-table-tbody tr:hover td) {
-  background: var(--color-bg-elevated) !important;
+  background: var(--admin-surface-strong) !important;
 }
 
 .admin-main :deep(.n-data-table .n-data-table-tbody tr:nth-child(even) td) {
-  background: var(--color-bg-elevated);
-  opacity: 0.5;
+  background: var(--admin-surface-soft) !important;
 }
 
 /* Naive UI 输入框 - 使用 CSS 变量 */
 .admin-main :deep(.n-input) {
-  background: var(--color-bg-elevated, var(--color-bg-card)) !important;
-  border-color: var(--color-border-default) !important;
+  background: var(--admin-surface-soft) !important;
+  border-color: var(--admin-surface-border) !important;
   color: var(--color-text-main) !important;
 }
 
@@ -1027,22 +1051,22 @@ const logout = () => {
 
 /* Naive UI 按钮 - 使用 CSS 变量 */
 .admin-main :deep(.n-button) {
-  border-color: var(--color-border-default) !important;
+  border-color: var(--admin-surface-border) !important;
 }
 
 .admin-main :deep(.n-button--default-type) {
-  background: var(--color-bg-elevated, var(--color-bg-card)) !important;
+  background: var(--admin-surface-soft) !important;
   color: var(--color-text-main) !important;
 }
 
 .admin-main :deep(.n-button--default-type:hover) {
-  background: var(--color-bg-elevated) !important;
+  background: var(--admin-surface-base) !important;
 }
 
 /* Naive UI 标签 - 使用 CSS 变量 */
 .admin-main :deep(.n-tag) {
-  background: var(--color-bg-elevated) !important;
-  border-color: var(--color-border-default) !important;
+  background: var(--admin-surface-soft) !important;
+  border-color: var(--admin-surface-border) !important;
   color: var(--color-text-main) !important;
 }
 
@@ -1052,8 +1076,8 @@ const logout = () => {
 }
 
 .admin-main :deep(.n-pagination .n-pagination-item) {
-  background: var(--color-bg-elevated) !important;
-  border-color: var(--color-border-default) !important;
+  background: var(--admin-surface-soft) !important;
+  border-color: var(--admin-surface-border) !important;
   color: var(--color-text-main) !important;
 }
 
@@ -1073,9 +1097,9 @@ const logout = () => {
 }
 
 .admin-main :deep(.n-modal .n-card) {
-  background: var(--color-bg-card) !important;
+  background: var(--admin-surface-base) !important;
   backdrop-filter: blur(10px);
-  border: 1px solid var(--color-border-subtle) !important;
+  border: 1px solid var(--admin-surface-border) !important;
 }
 
 /* Naive UI 表单 - 使用 CSS 变量 */
@@ -1296,9 +1320,9 @@ const logout = () => {
 
 /* 筛选栏统一样式 - 使用 CSS 变量 */
 .admin-main :deep(.filter-bar) {
-  background: var(--color-bg-elevated, var(--color-bg-card)) !important;
+  background: var(--admin-surface-base) !important;
   backdrop-filter: blur(10px);
-  border: 1px solid var(--color-border-subtle) !important;
+  border: 1px solid var(--admin-surface-border) !important;
   border-radius: 0.5rem;
   padding: 1rem;
   margin-bottom: 1.5rem;
@@ -1352,7 +1376,7 @@ const logout = () => {
 /* 设置子菜单样式 - 使用 CSS 变量 */
 .admin-sidebar .ml-4 {
   margin-left: 1rem;
-  border-left: 2px solid var(--color-border-subtle);
+  border-left: 2px solid var(--admin-surface-border);
   padding-left: 0.5rem;
 }
 
@@ -1382,7 +1406,7 @@ const logout = () => {
 }
 
 .menu-group-header:hover {
-  background-color: var(--color-bg-elevated) !important;
+  background-color: var(--admin-surface-soft) !important;
 }
 
 .menu-group-header .fa-chevron-right {
@@ -1403,7 +1427,7 @@ const logout = () => {
 }
 
 .menu-group-active {
-  background-color: var(--color-bg-elevated) !important;
+  background-color: var(--admin-surface-soft) !important;
 }
 
 .menu-group-active .fa-chevron-right {
@@ -1415,7 +1439,7 @@ const logout = () => {
   margin-top: 0.25rem;
   margin-left: 0.75rem;
   padding-left: 0.75rem;
-  border-left: 2px solid var(--color-border-subtle);
+  border-left: 2px solid var(--admin-surface-border);
   animation: slideDown 0.2s ease;
   padding-bottom: 0.25rem;
 }

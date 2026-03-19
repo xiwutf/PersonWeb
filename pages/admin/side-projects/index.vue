@@ -15,7 +15,7 @@
     <div class="filters-bar">
       <n-input
         v-model:value="searchKeyword"
-        placeholder="搜索项目名称、客户名�?.."
+        placeholder="搜索项目名称、客户名称..."
         clearable
         style="width: 300px;"
         @keyup.enter="handleSearch"
@@ -52,7 +52,7 @@
     <!-- 数据表格 -->
     <div class="table-container">
       <div v-if="loading" class="table-loading">
-        加载�?..
+        加载中...
       </div>
       <div v-else-if="projects.length === 0" class="table-empty">
         暂无项目数据
@@ -328,7 +328,7 @@
     <template #fallback>
       <div class="side-projects-admin-page">
         <div style="padding: 2rem; text-align: center; color: var(--color-text-muted);">
-          加载中..
+          加载中...
         </div>
       </div>
     </template>
@@ -367,7 +367,8 @@ const router = useRouter()
 const api = useApi()
 const notification = useNotification()
 
-// 数据状�const loading = ref(false)
+// 数据状态
+const loading = ref(false)
 const projects = ref<SideProject[]>([])
 const searchKeyword = ref('')
 const filterStatus = ref<number | null>(null)
@@ -397,7 +398,8 @@ const form = ref<CreateSideProjectDto | UpdateSideProjectDto>({
   clientContact: '',
   source: '',
   category: '',
-  incomeType: 'development', // 默认软件开�  techStack: '',
+  incomeType: 'development', // 默认软件开发
+  techStack: '',
   budgetMin: null,
   budgetMax: null,
   priceFinal: null,
@@ -561,7 +563,7 @@ const handleCreate = () => {
 
 // 行点击，跳转到详情页
 const handleRowClick = (id: number) => {
-  router.push(`/admin/side-projects/projects/${id}from=list`)
+  router.push(`/admin/side-projects/projects/${id}?from=list`)
 }
 
 // 编辑项目
@@ -908,4 +910,3 @@ onMounted(() => {
   font-size: var(--font-size-sm);
 }
 </style>
-

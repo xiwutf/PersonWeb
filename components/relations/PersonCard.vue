@@ -176,6 +176,7 @@ const emit = defineEmits<{
   aiSuggestion: [id: string]
   setReminder: [id: string]
   generateSuggestion: [id: string]
+  delete: [id: string]
   applyAiSuggestion: [id: string, action: any]
   select: [id: string, selected: boolean]
 }>()
@@ -302,6 +303,12 @@ const moreOptions = [
   }
 ]
 
+moreOptions.push({
+  label: '删除对象',
+  key: 'delete',
+  icon: () => h('i', { class: 'fas fa-trash' })
+})
+
 const handleMoreAction = (key: string) => {
   if (key === 'reminder') {
     emit('setReminder', props.person.id)
@@ -309,6 +316,8 @@ const handleMoreAction = (key: string) => {
     emit('generateSuggestion', props.person.id)
   } else if (key === 'view') {
     emit('view', props.person.id)
+  } else if (key === 'delete') {
+    emit('delete', props.person.id)
   }
 }
 

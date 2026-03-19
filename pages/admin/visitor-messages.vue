@@ -288,7 +288,7 @@ onMounted(() => {
 .page-title {
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--color-bg-card);
+  color: var(--color-text-main);
   margin-bottom: 0.5rem;
 }
 
@@ -300,8 +300,8 @@ onMounted(() => {
 }
 
 .stat-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--admin-surface-base, var(--color-bg-elevated, var(--color-bg-card)));
+  border: 1px solid var(--admin-surface-border, var(--color-border-subtle));
   border-radius: 0.5rem;
   padding: 1rem;
   display: flex;
@@ -331,7 +331,7 @@ onMounted(() => {
 
 .stat-icon-rejected {
   background: rgba(239, 68, 68, 0.2);
-  color: var(--color-danger);
+  color: var(--color-error);
 }
 
 .stat-content {
@@ -341,12 +341,12 @@ onMounted(() => {
 .stat-value {
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--color-bg-card);
+  color: var(--color-text-main);
 }
 
 .stat-label {
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--color-text-muted);
 }
 
 .filter-bar {
@@ -357,10 +357,10 @@ onMounted(() => {
 
 .filter-select {
   padding: 0.5rem 1rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--admin-surface-soft, var(--color-bg-elevated));
+  border: 1px solid var(--admin-surface-border, var(--color-border-subtle));
   border-radius: 0.25rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-main);
   font-size: 0.875rem;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -368,13 +368,13 @@ onMounted(() => {
 
 .filter-select:focus {
   outline: none;
-  border-color: var(--theme-primary);
-  background: var(--color-border);
+  border-color: var(--color-primary);
+  background: var(--admin-surface-base, var(--color-bg-card));
 }
 
 .messages-container {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--admin-surface-base, var(--color-bg-elevated, var(--color-bg-card)));
+  border: 1px solid var(--admin-surface-border, var(--color-border-subtle));
   border-radius: 0.5rem;
   padding: 1.5rem;
 }
@@ -386,16 +386,16 @@ onMounted(() => {
 }
 
 .message-card {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--admin-surface-soft, var(--color-bg-elevated));
+  border: 1px solid var(--admin-surface-border, var(--color-border-subtle));
   border-radius: 0.5rem;
   padding: 1rem;
   transition: all 0.2s ease;
 }
 
 .message-card:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: var(--admin-surface-base, var(--color-bg-card));
+  border-color: var(--color-border-default);
 }
 
 .message-card-pending {
@@ -407,8 +407,7 @@ onMounted(() => {
 }
 
 .message-card-rejected {
-  border-left: 3px solid var(--color-danger);
-  opacity: 0.7;
+  border-left: 3px solid var(--color-error);
 }
 
 .message-header {
@@ -430,13 +429,13 @@ onMounted(() => {
 
 .type-message {
   background: rgba(59, 130, 246, 0.2);
-  color: var(--color-primary-soft);
+  color: var(--color-primary-hover);
   border: 1px solid rgba(59, 130, 246, 0.4);
 }
 
 .type-mood {
   background: rgba(236, 72, 153, 0.2);
-  color: var(--color-pink-500);
+  color: #f9a8d4;
   border: 1px solid rgba(236, 72, 153, 0.4);
 }
 
@@ -467,7 +466,7 @@ onMounted(() => {
 
 .status-rejected {
   background: rgba(239, 68, 68, 0.2);
-  color: var(--color-danger);
+  color: var(--color-error);
   border: 1px solid rgba(239, 68, 68, 0.4);
 }
 
@@ -479,7 +478,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-main);
   font-size: 0.875rem;
   line-height: 1.6;
 }
@@ -497,7 +496,7 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   padding-top: 0.75rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--admin-surface-border, var(--color-border-subtle));
 }
 
 .message-info {
@@ -511,7 +510,7 @@ onMounted(() => {
   align-items: center;
   gap: 0.25rem;
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--color-text-muted);
 }
 
 .message-actions {
@@ -534,7 +533,7 @@ onMounted(() => {
 .action-button-approve {
   background: rgba(34, 197, 94, 0.3);
   border: 1px solid rgba(34, 197, 94, 0.5);
-  color: var(--color-purple-300);
+  color: #dcfce7;
 }
 
 .action-button-approve:hover {
@@ -544,7 +543,7 @@ onMounted(() => {
 .action-button-reject {
   background: rgba(239, 68, 68, 0.3);
   border: 1px solid rgba(239, 68, 68, 0.5);
-  color: var(--color-danger-300);
+  color: #fee2e2;
 }
 
 .action-button-reject:hover {
@@ -555,7 +554,6 @@ onMounted(() => {
 .table-empty {
   text-align: center;
   padding: 3rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--color-text-muted);
 }
 </style>
-

@@ -163,6 +163,14 @@
 - 已在 `layouts/default.vue` 中使用 `<AppNaiveConfig>` 包裹内容
 - 所有 Naive UI 组件自动应用统一的主题配置，无需额外设置
 
+#### 后台页面开发补充规则
+
+- 后台页面默认优先使用 `Naive UI` 与现有后台 Pattern 组件完成布局和交互
+- 优先复用 `PageHeader`、`ListPage`、`ConfigPage`、`FormPage`、`DetailPage` 等后台页面模式组件
+- 按钮、卡片、表格、表单、弹窗、标签页等基础交互优先使用 `n-button`、`n-card`、`n-data-table`、`n-form`、`n-modal`、`n-tabs` 等现成组件
+- 只有当现成组件和现有 Pattern 明显无法满足需求时，才允许补充少量自定义 UI 与局部样式
+- 禁止在后台页面里优先重写一整套按钮、表格、弹窗、表单体系，避免主题不统一和维护成本上升
+
 #### 5. 组件级样式（`<style scoped>`）
 
 - **用途**：组件特有的样式

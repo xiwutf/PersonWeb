@@ -96,12 +96,16 @@ export default defineNuxtConfig({
     '~/assets/css/home-creative.css', // 首页创意组件样式
     '~/assets/css/visitor-interaction.css',
     '~/assets/css/about.css',
+    '~/assets/css/cognition.css',
+    '~/assets/css/game.css',
+    '~/assets/css/side-projects.css',
     '~/assets/css/tools.css',
     '~/assets/css/life.css',
     '~/assets/css/blog.css',
     '~/assets/css/projects.css',
     '~/assets/css/skills.css',
     '~/assets/css/english.css',
+    '~/assets/css/dashboard.css',
     '~/assets/css/investment.css',
     '~/assets/css/charts.css',
     '~/assets/css/admin-asset-management.css'
@@ -113,7 +117,7 @@ export default defineNuxtConfig({
       // 自动爬取链接，但排除 admin 页面
       crawlLinks: true,
       // 显式指定 Lighthouse CI 测试的页面，确保 generate 时预渲染
-      routes: ['/', '/about', '/projects', '/blog', '/tools', '/life', '/skills'],
+      routes: ['/', '/about', '/projects', '/blog', '/tools', '/life', '/skills', '/cognition'],
       // 排除需要认证的 admin 页面
       ignore: [
         '/admin/**'

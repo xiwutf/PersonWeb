@@ -155,16 +155,37 @@ function getProjectDetailLink(project: Project): string {
   return `/projects/${id}`
 }
 
+const cleanTechTag = (value: string) => value
+  .replace(/^[\[\(\{'"`\s]+/, '')
+  .replace(/[\]\)\}'"`\s]+$/, '')
+  .replace(/^["']+|["']+$/g, '')
+  .replace(/^["']|["']$/g, '')
+  .trim()
+
 const normalizedTechStack = (project: Project): string[] => {
   const techStack = project.techStack
   if (Array.isArray(techStack)) {
-    return techStack.filter((item): item is string => typeof item === 'string' && Boolean(item.trim()))
+    return techStack
+      .filter((item): item is string => typeof item === 'string')
+      .map(item => cleanTechTag(item))
+      .filter(Boolean)
   }
   if (typeof techStack === 'string') {
-    return techStack
-      .split(',')
-      .map(item => item.trim())
-      .filter(Boolean)
+    const trimmed = techStack.trim()
+    if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+      try {
+        const parsed = JSON.parse(trimmed) as unknown[]
+        if (Array.isArray(parsed)) {
+          return parsed
+            .filter((item): item is string => typeof item === 'string')
+            .map(item => cleanTechTag(item))
+            .filter(Boolean)
+        }
+      } catch {
+        // 解析失败则按逗号分割
+      }
+    }
+    return techStack.split(',').map(item => cleanTechTag(item)).filter(Boolean)
   }
   return []
 }

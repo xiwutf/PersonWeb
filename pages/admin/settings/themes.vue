@@ -2,7 +2,12 @@
   <div class="themes-management-page">
     <div class="page-header">
       <h1 class="page-title">主题风格管理</h1>
-      <p class="text-gray-400 text-sm">管理网站主题风格和动态背景效果</p>
+      <div class="page-header-meta">
+        <p class="page-subtitle">管理网站主题风格和动态背景效果</p>
+        <span class="applied-theme-chip">
+          当前应用：{{ currentAppliedTheme === 'dark' ? '深色主题' : '浅色主题' }}
+        </span>
+      </div>
     </div>
 
     <!-- 标签页 -->
@@ -60,6 +65,7 @@
               <span class="theme-code">{{ theme.code }}</span>
             </div>
             <div class="theme-card-badges">
+              <span v-if="isCurrentTheme(theme)" class="badge badge-primary">当前使用</span>
               <span v-if="theme.isDefault" class="badge badge-success">默认</span>
               <span v-else-if="!theme.isEnabled" class="badge badge-default">禁用</span>
             </div>
@@ -77,8 +83,8 @@
             <div class="theme-actions">
               <button @click="openThemeModal(theme)" class="btn-link btn-link-blue">编辑</button>
               <button
-                v-if="!theme.isDefault"
-                @click="setDefaultTheme(theme.id)"
+                v-if="!isCurrentTheme(theme)"
+                @click="setDefaultTheme(theme)"
                 class="btn-link btn-link-blue"
               >
                 设为默认
@@ -267,6 +273,7 @@
 <script setup lang="ts">
 import { useSafeMessage } from '~/composables/useNaiveUI'
 import { useErrorHandler } from '~/composables/useErrorHandler'
+import { useTheme } from '~/composables/useTheme'
 
 definePageMeta({
   layout: 'admin',
@@ -276,11 +283,12 @@ definePageMeta({
 const api = useApi()
 const { handleError } = useErrorHandler()
 const message = useSafeMessage()
+const { setTheme } = useTheme()
 
 interface Theme {
   id: number
   name: string
-  code: string
+  code: 'light' | 'dark' | string
   displayName: string
   description?: string
   previewImage?: string
@@ -305,6 +313,7 @@ const backgrounds = ref<Background[]>([])
 const loading = ref(false)
 const showThemeModal = ref(false)
 const editingTheme = ref<Theme | null>(null)
+const currentAppliedTheme = ref<'light' | 'dark'>('dark')
 
 const settings = ref({
   allowUserSwitch: true,
@@ -327,6 +336,13 @@ const themeForm = ref({
   styleConfig: ''
 })
 
+const syncThemesWithAppliedTheme = (source: Theme[]) => {
+  return source.map(theme => ({
+    ...theme,
+    isDefault: theme.code === currentAppliedTheme.value
+  }))
+}
+
 const fetchThemes = async () => {
   loading.value = true
   try {
@@ -336,39 +352,50 @@ const fetchThemes = async () => {
     const allThemes = Array.isArray(res) ? res : []
     
     // 只保留 light 和 dark 主题，其他主题过滤掉
-    themes.value = allThemes.filter(theme => 
-      theme.code === 'light' || theme.code === 'dark'
-    )
+      themes.value = syncThemesWithAppliedTheme(allThemes.filter(theme =>
+        theme.code === 'light' || theme.code === 'dark'
+      ))
     
     // 如果数据库中没有 light 和 dark，创建默认数据
-    if (themes.value.length === 0) {
-      themes.value = [
-        {
-          id: 0,
-          name: '浅色主题',
-          code: 'light',
-          displayName: '浅色主题（light）',
-          description: '清爽明亮的浅色主题，适合日间使用',
-          isEnabled: true,
-          isDefault: true,
-          sort: 1
-        },
-        {
-          id: 0,
-          name: '深色主题',
-          code: 'dark',
-          displayName: '深色主题（dark）',
-          description: '深色科技风格主题，适合夜间使用',
-          isEnabled: true,
-          isDefault: false,
-          sort: 2
-        }
-      ]
-    }
+      if (themes.value.length === 0) {
+        themes.value = syncThemesWithAppliedTheme([
+          {
+            id: 0,
+            name: '浅色主题',
+            code: 'light',
+            displayName: '浅色主题（light）',
+            description: '清爽明亮的浅色主题，适合日间使用',
+            isEnabled: true,
+            isDefault: false,
+            sort: 1
+          },
+          {
+            id: 0,
+            name: '深色主题',
+            code: 'dark',
+            displayName: '深色主题（dark）',
+            description: '深色科技风格主题，适合夜间使用',
+            isEnabled: true,
+            isDefault: false,
+            sort: 2
+          }
+        ])
+      }
   } catch (e: unknown) {
     handleError(e, '加载主题失败')
   } finally {
     loading.value = false
+  }
+}
+
+const fetchCurrentAppliedTheme = async () => {
+  try {
+    const res = await api.get<{ theme?: string }>('/Config/theme')
+    const normalizedTheme = res?.theme === 'light' ? 'light' : 'dark'
+    currentAppliedTheme.value = normalizedTheme
+    settings.value.defaultTheme = normalizedTheme
+  } catch (e: unknown) {
+    handleError(e, '加载当前主题失败')
   }
 }
 
@@ -389,13 +416,17 @@ const fetchSettings = async () => {
         allowUserSwitch: res.allow_user_switch === 'true',
         autoSwitchEnabled: res.auto_switch_enabled === 'true',
         autoSwitchInterval: parseInt(res.auto_switch_interval || '30'),
-        defaultTheme: res.default_theme || 'default',
+        defaultTheme: res.default_theme === 'light' ? 'light' : 'dark',
         defaultBackground: res.default_background || 'particles'
       }
     }
   } catch (e: unknown) {
     handleError(e, '加载设置失败')
   }
+}
+
+const isCurrentTheme = (theme: Theme) => {
+  return theme.code === currentAppliedTheme.value
 }
 
 const openThemeModal = (theme?: Theme) => {
@@ -448,11 +479,24 @@ const saveTheme = async () => {
   }
 }
 
-const setDefaultTheme = async (id: number) => {
+const setDefaultTheme = async (theme: Theme) => {
   try {
-    await api.post(`/Theme/admin/themes/${id}/set-default`)
-    message.success('设置成功')
-    fetchThemes()
+    const nextTheme = theme.code === 'light' ? 'light' : 'dark'
+    await api.put('/Config/theme', { theme: nextTheme })
+    setTheme(nextTheme)
+    currentAppliedTheme.value = nextTheme
+    settings.value.defaultTheme = nextTheme
+
+    if (theme.id > 0) {
+      try {
+        await api.post(`/Theme/admin/themes/${theme.id}/set-default`)
+      } catch {
+        // 主题样式表的“默认”标记属于辅助元数据，不阻断全局主题切换
+      }
+    }
+
+    message.success('已设为默认并立即应用')
+    await fetchThemes()
   } catch (e: unknown) {
     handleError(e, '设置失败')
   }
@@ -472,23 +516,57 @@ const deleteTheme = async (id: number) => {
 
 const updateSetting = async (key: string, value: any) => {
   try {
-    // TODO: 实现设置更新API
-    console.log('更新设置', key, value)
+    if (key === 'default_theme') {
+      const nextTheme = value === 'light' ? 'light' : 'dark'
+      await api.put('/Config/theme', { theme: nextTheme })
+      setTheme(nextTheme)
+      currentAppliedTheme.value = nextTheme
+      settings.value.defaultTheme = nextTheme
+      await fetchThemes()
+      message.success('默认主题已更新并立即生效')
+      return
+    }
+
+    message.warning('该设置项暂未接入保存接口')
   } catch (e: unknown) {
     handleError(e, '更新设置失败')
   }
 }
 
-onMounted(() => {
-  fetchThemes()
-  fetchBackgrounds()
-  fetchSettings()
+onMounted(async () => {
+  await fetchSettings()
+  await fetchCurrentAppliedTheme()
+  await Promise.all([fetchThemes(), fetchBackgrounds()])
 })
 </script>
 
 <style scoped>
 .themes-management-page {
   width: 100%;
+}
+
+.page-header-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.page-subtitle {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+.applied-theme-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--admin-surface-2, var(--color-bg-card));
+  color: var(--color-text-main);
+  font-size: 0.75rem;
+  font-weight: 600;
 }
 
 .tabs-container {
@@ -506,25 +584,25 @@ onMounted(() => {
   background: transparent;
   border: none;
   border-bottom: 2px solid transparent;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-muted);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .tab-button:hover {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-main);
 }
 
 .tab-button-active {
-  color: var(--color-bg-card);
+  color: var(--color-text-main);
   border-bottom-color: var(--color-primary);
 }
 
 .content-section {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--admin-surface-1, rgba(255, 255, 255, 0.05));
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
   padding: 1.5rem;
 }
 
@@ -538,7 +616,7 @@ onMounted(() => {
 .section-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--color-bg-card);
+  color: var(--color-text-main);
 }
 
 .themes-grid,
@@ -550,17 +628,17 @@ onMounted(() => {
 
 .theme-card,
 .background-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.5rem;
+  background: var(--admin-surface-2, rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
   padding: 1.25rem;
   transition: all 0.3s ease;
 }
 
 .theme-card:hover,
 .background-card:hover {
-  background: var(--color-border);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: var(--admin-surface-3, var(--color-border));
+  border-color: var(--color-primary-soft);
 }
 
 .theme-card-inactive,
@@ -570,7 +648,7 @@ onMounted(() => {
 
 .theme-card-default {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px var(--theme-primary);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-primary) 40%, transparent);
 }
 
 .theme-card-header,
@@ -584,13 +662,13 @@ onMounted(() => {
 .theme-card-title h3 {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--color-bg-card);
+  color: var(--color-text-main);
   margin-bottom: 0.25rem;
 }
 
 .theme-code {
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--color-text-muted);
   font-family: monospace;
 }
 
@@ -621,7 +699,7 @@ onMounted(() => {
 .theme-description,
 .background-description {
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-muted);
   margin-bottom: 1rem;
 }
 
@@ -629,7 +707,7 @@ onMounted(() => {
   display: flex;
   gap: 0.5rem;
   padding-top: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--color-border);
 }
 
 .badge {
@@ -640,15 +718,21 @@ onMounted(() => {
 }
 
 .badge-success {
-  background: rgba(34, 197, 94, 0.3);
-  border: 1px solid rgba(34, 197, 94, 0.6);
-  color: var(--color-purple-300);
+  background: color-mix(in srgb, var(--color-success) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-success) 45%, transparent);
+  color: var(--color-success);
+}
+
+.badge-primary {
+  background: color-mix(in srgb, var(--color-primary) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 45%, transparent);
+  color: var(--color-primary-hover);
 }
 
 .badge-default {
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: rgba(255, 255, 255, 0.9);
+  background: color-mix(in srgb, var(--color-border) 65%, transparent);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-main);
 }
 
 .settings-form {
@@ -669,7 +753,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-main);
   font-size: 0.875rem;
   font-weight: 500;
   margin-bottom: 0.5rem;
@@ -678,24 +762,24 @@ onMounted(() => {
 .form-input {
   width: 100%;
   padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 0.25rem;
-  color: var(--color-bg-card);
+  background: var(--admin-surface-2, rgba(255, 255, 255, 0.1));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-main);
   font-size: 0.875rem;
 }
 
 .form-input:focus {
   outline: none;
   border-color: var(--color-primary);
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--admin-surface-3, rgba(255, 255, 255, 0.15));
 }
 
 .form-hint {
   display: block;
   margin-top: 0.25rem;
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--color-text-muted);
 }
 
 .modal-overlay {
@@ -709,10 +793,10 @@ onMounted(() => {
 }
 
 .modal-content {
-  background: rgba(30, 41, 59, 0.95);
+  background: var(--admin-surface-1, rgba(30, 41, 59, 0.95));
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
   width: 90%;
   max-width: 600px;
   max-height: 90vh;
@@ -724,19 +808,19 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .modal-header h2 {
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--color-bg-card);
+  color: var(--color-text-main);
 }
 
 .modal-close {
   background: none;
   border: none;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-muted);
   font-size: 1.5rem;
   cursor: pointer;
   width: 2rem;
@@ -749,8 +833,8 @@ onMounted(() => {
 }
 
 .modal-close:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--color-bg-card);
+  background: var(--admin-surface-2, rgba(255, 255, 255, 0.1));
+  color: var(--color-text-main);
 }
 
 .modal-body {
@@ -762,30 +846,30 @@ onMounted(() => {
   justify-content: flex-end;
   gap: 0.75rem;
   padding-top: 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--color-border);
   margin-top: 1.5rem;
 }
 
 .btn-primary {
   padding: 0.5rem 1rem;
-  background: var(--theme-primary);
-  border: 1px solid var(--theme-primary);
-  border-radius: 0.25rem;
-  color: var(--color-bg-card);
+  background: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  color: #fff;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .btn-primary:hover {
-  background: rgba(59, 130, 246, 0.4);
+  background: var(--color-primary-hover);
 }
 
 .btn-secondary {
   padding: 0.5rem 1rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 0.25rem;
-  color: rgba(255, 255, 255, 0.9);
+  background: var(--admin-surface-2, rgba(255, 255, 255, 0.1));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-main);
   cursor: pointer;
 }
 
@@ -797,11 +881,11 @@ onMounted(() => {
 }
 
 .btn-link-blue {
-  color: var(--color-primary-soft);
+  color: var(--color-primary-hover);
 }
 
 .btn-link-red {
-  color: var(--color-danger-400);
+  color: var(--color-error);
 }
 </style>
 

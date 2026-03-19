@@ -36,7 +36,7 @@
           <h1 class="hero-title">
             <span class="hero-title-block">XIFG ·</span>
             <span class="hero-title-gradient">
-              AI 创作空间
+              {{ heroTitle }}
             </span>
           </h1>
 
@@ -116,16 +116,16 @@
               <!-- 信息卡片 -->
               <div class="hero-info-card-large">
                 <h3 class="hero-info-card-large-title">溪午听风</h3>
-                <p class="hero-info-card-large-subtitle">全栈开发 · AI 应用 · Revit 插件</p>
+                <p class="hero-info-card-large-subtitle">AI 工程师 · 系统构建者 · 技术创业者</p>
                 <div class="hero-info-card-large-tags">
                   <span class="hero-info-card-large-tag">
-                    Vue · Nuxt
+                    RAG · Agent
                   </span>
                   <span class="hero-info-card-large-tag">
-                    .NET · Node.js
+                    .NET · Python
                   </span>
                   <span class="hero-info-card-large-tag">
-                    AI 工具链
+                    数字资产
                   </span>
                 </div>
               </div>
@@ -165,16 +165,20 @@ const siteConfig = ref<Record<string, string>>({})
 const loading = ref(false)
 
 // 从配置中获取内容
+const heroTitle = computed(() => {
+  return siteConfig.value.home_hero_title || '构建 AI 与软件系统的长期主义者'
+})
+
 const heroSubtitle = computed(() => {
-  return siteConfig.value.home_hero_intro || '把个人网站升级为集「内容 · 项目 · AI 工具」于一体的创作者平台'
+  return siteConfig.value.home_hero_intro || '专注于将技术转化为可持续积累的数字资产。'
 })
 
 const platformDesc = computed(() => {
-  return siteConfig.value.home_platform_desc || '这里是一套围绕个人 IP 构建的创作操作系统：文章 / 项目 / 工具 / AI 实验室'
+  return siteConfig.value.home_platform_desc || 'AI 系统 · 工业软件 · 个人数字系统 · 可复用模块'
 })
 
 const personalTags = computed(() => {
-  const tagsStr = siteConfig.value.home_tags || '软件开发 · 算法研发 · AI 工具折腾者'
+  const tagsStr = siteConfig.value.home_tags || 'AI 工程师 · 系统构建者 · 技术创业者'
   return tagsStr.split(' · ').filter(t => t.trim())
 })
 

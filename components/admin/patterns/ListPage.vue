@@ -372,8 +372,8 @@ const handleActionClick = (action: any) => {
 }
 
 .stat-card {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--admin-surface-base, var(--color-bg-elevated, var(--color-bg-card)));
+  border: 1px solid var(--admin-surface-border, var(--color-border-subtle));
 }
 
 .stat-content {
@@ -389,7 +389,7 @@ const handleActionClick = (action: any) => {
   width: 48px;
   height: 48px;
   border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--admin-surface-soft, var(--color-bg-elevated));
   font-size: var(--text-xl);
 }
 
@@ -417,15 +417,16 @@ const handleActionClick = (action: any) => {
 
 /* 表格 */
 .table-section {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--admin-surface-base, var(--color-bg-elevated, var(--color-bg-card)));
+  border: 1px solid var(--admin-surface-border, var(--color-border-subtle));
   border-radius: var(--radius-lg);
   overflow: hidden;
+  box-shadow: var(--admin-surface-shadow, var(--shadow-soft));
 }
 
 .table-footer {
   padding: var(--spacing-lg);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--admin-surface-border, var(--color-border-subtle));
 }
 
 .empty-description {

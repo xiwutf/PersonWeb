@@ -1,17 +1,14 @@
 <template>
-  <div class="theme-switcher" style="position: fixed !important; bottom: 4rem !important; right: 0.5rem !important; z-index: 10000 !important; pointer-events: auto !important; display: block !important; visibility: visible !important; opacity: 1 !important; isolation: isolate; transform: translateZ(0);">
-    <!-- 切换按钮 -->
+  <div class="theme-switcher">
     <button
       @click="togglePanel"
       class="theme-switcher-button"
-      :class="{ 'active': isOpen }"
+      :class="{ active: isOpen }"
       title="切换主题风格"
-      style="z-index: 10000 !important; position: relative !important; display: flex !important; visibility: visible !important; opacity: 1 !important; pointer-events: auto !important;"
     >
       <i class="fas fa-palette"></i>
     </button>
 
-    <!-- 切换面板 -->
     <Transition name="slide-up">
       <div v-if="isOpen" class="theme-switcher-panel">
         <div class="panel-header">
@@ -21,7 +18,6 @@
           </button>
         </div>
 
-        <!-- 主题选择 -->
         <div class="panel-section">
           <h4 class="section-title">主题风格</h4>
           <div class="theme-grid">
@@ -30,7 +26,7 @@
               :key="theme.code"
               @click="selectTheme(theme.code)"
               class="theme-card"
-              :class="{ 'active': currentTheme === theme.code }"
+              :class="{ active: currentTheme === theme.code }"
               :data-theme-code="theme.code"
             >
               <div v-if="theme.previewImage" class="theme-preview">
@@ -47,7 +43,6 @@
           </div>
         </div>
 
-        <!-- 背景效果选择 -->
         <div class="panel-section">
           <h4 class="section-title">动态背景</h4>
           <div class="background-grid">
@@ -56,7 +51,7 @@
               :key="bg.code"
               @click="selectBackground(bg.code)"
               class="background-card"
-              :class="{ 'active': currentBackground === bg.code }"
+              :class="{ active: currentBackground === bg.code }"
             >
               <div class="background-preview" :class="`bg-${bg.code}`">
                 <i class="fas fa-image"></i>
@@ -66,7 +61,6 @@
           </div>
         </div>
 
-        <!-- 自动切换设置 -->
         <div class="panel-section">
           <div class="setting-item">
             <label class="setting-label">
@@ -91,7 +85,6 @@
       </div>
     </Transition>
 
-    <!-- 遮罩层 -->
     <Transition name="fade">
       <div v-if="isOpen" @click="closePanel" class="theme-switcher-overlay"></div>
     </Transition>
@@ -100,6 +93,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useTheme } from '~/composables/useTheme'
 
 interface Theme {
   id: number
@@ -116,11 +110,12 @@ interface Background {
 }
 
 const api = useApi()
+const { currentTheme: themeState, setTheme } = useTheme()
 
 const isOpen = ref(false)
 const themes = ref<Theme[]>([])
 const backgrounds = ref<Background[]>([])
-const currentTheme = ref<string>('default')
+const currentTheme = ref<string>('light')
 const currentBackground = ref<string>('particles')
 const autoSwitch = ref(false)
 const switchInterval = ref(30)
@@ -128,26 +123,20 @@ const switchInterval = ref(30)
 let autoSwitchTimer: NodeJS.Timeout | null = null
 
 const fetchThemes = async () => {
-  try {
-    // 重构说明（2024-12-XX）：现在只支持 light 和 dark 两个主题
-    // 不再从后端 API 获取，直接使用固定的两个主题
-    themes.value = [
-      {
-        id: 1,
-        code: 'light',
-        displayName: '浅色主题',
-        isDefault: true
-      },
-      {
-        id: 2,
-        code: 'dark',
-        displayName: '深色主题',
-        isDefault: false
-      }
-    ]
-  } catch (e) {
-    console.error('加载主题失败', e)
-  }
+  themes.value = [
+    {
+      id: 1,
+      code: 'light',
+      displayName: '浅色主题',
+      isDefault: false
+    },
+    {
+      id: 2,
+      code: 'dark',
+      displayName: '深色主题',
+      isDefault: true
+    }
+  ]
 }
 
 const fetchBackgrounds = async () => {
@@ -161,11 +150,8 @@ const fetchBackgrounds = async () => {
 
 const loadUserPreference = async () => {
   try {
-    // 重构说明（2024-12-XX）：使用新的主题系统
-    const { currentTheme: themeFromSystem } = useTheme()
-    currentTheme.value = themeFromSystem.value || 'light'
-    
-    // 背景效果仍然从后端获取（如果支持）
+    currentTheme.value = themeState.value || 'light'
+
     const visitorId = localStorage.getItem('visitor_id') || 'anonymous'
     const res = await api.post('/Theme/preference', { visitorId })
     if (res) {
@@ -179,23 +165,15 @@ const loadUserPreference = async () => {
 }
 
 const selectTheme = async (themeCode: string) => {
-  // 重构说明（2024-12-XX）：只允许选择 light 或 dark
-  if (themeCode !== 'light' && themeCode !== 'dark') {
-    console.warn('不支持的主题:', themeCode, '，已自动映射为 light')
-    themeCode = 'light'
-  }
-  
-  currentTheme.value = themeCode
-  
-  // 使用新的主题系统
-  const { setTheme } = useTheme()
-  setTheme(themeCode as 'light' | 'dark')
-  
+  const normalizedTheme = themeCode === 'dark' ? 'dark' : 'light'
+  currentTheme.value = normalizedTheme
+  setTheme(normalizedTheme)
+
   try {
     const visitorId = localStorage.getItem('visitor_id') || 'anonymous'
     await api.post('/Theme/preference/update', {
       visitorId,
-      themeCode
+      themeCode: normalizedTheme
     })
   } catch (e) {
     console.error('更新主题偏好失败', e)
@@ -205,7 +183,7 @@ const selectTheme = async (themeCode: string) => {
 const selectBackground = async (bgCode: string) => {
   currentBackground.value = bgCode
   applyBackground(bgCode)
-  
+
   try {
     const visitorId = localStorage.getItem('visitor_id') || 'anonymous'
     await api.post('/Theme/preference/update', {
@@ -217,26 +195,15 @@ const selectBackground = async (bgCode: string) => {
   }
 }
 
-const applyTheme = (themeCode: string) => {
-  // 重构说明（2024-12-XX）：不再使用 CSS 类名，改用 data-theme 属性
-  // 这个函数现在主要用于兼容，实际主题切换由 useTheme().setTheme() 处理
-  // 但为了保持兼容性，仍然触发主题切换事件
-  window.dispatchEvent(new CustomEvent('theme-changed', { detail: { theme: themeCode } }))
-}
-
 const applyBackground = (bgCode: string) => {
-  // 移除所有背景类
   document.documentElement.classList.remove(
     'bg-particles',
     'bg-noise',
     'bg-waves',
     'bg-stars'
   )
-  
-  // 添加新背景类
+
   document.documentElement.classList.add(`bg-${bgCode}`)
-  
-  // 触发背景切换事件
   window.dispatchEvent(new CustomEvent('background-changed', { detail: { background: bgCode } }))
 }
 
@@ -248,7 +215,7 @@ const updateAutoSwitch = async () => {
       autoSwitch: autoSwitch.value,
       switchInterval: switchInterval.value
     })
-    
+
     if (autoSwitch.value) {
       startAutoSwitch()
     } else {
@@ -266,7 +233,7 @@ const updateSwitchInterval = async () => {
       visitorId,
       switchInterval: switchInterval.value
     })
-    
+
     if (autoSwitch.value) {
       stopAutoSwitch()
       startAutoSwitch()
@@ -278,11 +245,11 @@ const updateSwitchInterval = async () => {
 
 const startAutoSwitch = () => {
   stopAutoSwitch()
-  
+
   if (themes.value.length <= 1) return
-  
+
   autoSwitchTimer = setInterval(() => {
-    const currentIndex = themes.value.findIndex(t => t.code === currentTheme.value)
+    const currentIndex = themes.value.findIndex(theme => theme.code === currentTheme.value)
     const nextIndex = (currentIndex + 1) % themes.value.length
     selectTheme(themes.value[nextIndex].code)
   }, switchInterval.value * 60 * 1000)
@@ -311,25 +278,13 @@ const handleEscape = (e: KeyboardEvent) => {
 
 onMounted(async () => {
   await Promise.all([fetchThemes(), fetchBackgrounds(), loadUserPreference()])
-  
-  // 应用当前主题和背景
-  // 重构说明（2024-12-XX）：使用新的主题系统
-  const { setTheme } = useTheme()
-  if (currentTheme.value === 'light' || currentTheme.value === 'dark') {
-    setTheme(currentTheme.value as 'light' | 'dark')
-  } else {
-    // 如果当前主题不是 light 或 dark，设置为 light
-    currentTheme.value = 'light'
-    setTheme('light')
-  }
-  
+  currentTheme.value = themeState.value === 'dark' ? 'dark' : 'light'
   applyBackground(currentBackground.value)
-  
-  // 如果启用自动切换，启动定时器
+
   if (autoSwitch.value) {
     startAutoSwitch()
   }
-  
+
   window.addEventListener('keydown', handleEscape)
 })
 
@@ -342,74 +297,56 @@ onUnmounted(() => {
 <style scoped>
 .theme-switcher {
   position: fixed !important;
-  bottom: 4rem !important; /* 在AI助手按钮上方，间距2rem */
-  right: 0.5rem !important; /* 与AI助手按钮右对齐 */
-  z-index: 10000 !important; /* 确保始终在最上层 */
-  visibility: visible !important;
-  opacity: 1 !important;
-  display: block !important;
-  /* 确保按钮始终可见，不被其他元素遮挡 */
+  right: 0.5rem !important;
+  bottom: 4rem !important;
+  z-index: 10000 !important;
   isolation: isolate;
-  transform: translateZ(0); /* 启用硬件加速 */
 }
 
 .theme-switcher-button {
-  width: 2.5rem !important; /* 缩小尺寸 */
-  height: 2.5rem !important;
-  border-radius: 50% !important;
-  background: var(--color-primary, rgba(59, 130, 246, 0.95)) !important;
-  backdrop-filter: blur(10px);
-  border: 2px solid var(--color-border-highlight, rgba(255, 255, 255, 0.6)) !important;
-  color: white !important;
-  font-size: 1rem !important; /* 缩小图标 */
-  cursor: pointer !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
-  transition: all 0.3s ease;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  position: relative !important;
-  z-index: 10000 !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  pointer-events: auto !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.65rem;
+  height: 2.65rem;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 35%, transparent);
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: #fff;
+  box-shadow: var(--shadow-lg);
+  transition: transform 0.2s ease, background 0.2s ease;
 }
 
 .theme-switcher-button:hover {
-  background: var(--color-primary, rgba(59, 130, 246, 1));
-  transform: scale(1.1);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  background: var(--color-primary-hover);
+  transform: scale(1.06);
 }
 
 .theme-switcher-button.active {
-  background: var(--color-purple-500, rgba(139, 92, 246, 0.9));
+  background: var(--color-primary-hover);
 }
 
 .theme-switcher-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(15, 23, 42, 0.36);
   backdrop-filter: blur(2px);
   z-index: 999;
-  /* 确保不会遮挡导航栏（导航栏 z-index: 1000） */
-  pointer-events: auto;
 }
 
 .theme-switcher-panel {
   position: fixed;
-  bottom: 8rem; /* 调整面板位置，适应按钮新位置 */
   right: 2rem;
-  width: 90vw;
-  max-width: 600px;
+  bottom: 8rem;
+  width: min(600px, calc(100vw - 3rem));
   max-height: 80vh;
-  background: var(--color-bg-card, rgba(30, 41, 59, 0.95));
-  backdrop-filter: blur(20px);
-  border: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.2));
-  border-radius: 1rem;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  z-index: 1000;
   overflow-y: auto;
   padding: 1.5rem;
+  background: var(--admin-surface-1, var(--color-bg-card));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  z-index: 1000;
 }
 
 .panel-header {
@@ -418,45 +355,36 @@ onUnmounted(() => {
   align-items: center;
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.1));
+  border-bottom: 1px solid var(--color-border);
 }
 
 .panel-title {
+  color: var(--color-text-main);
   font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--color-text-main, white);
+  font-weight: 700;
 }
 
 .panel-close {
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  color: white;
-  cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--admin-surface-2, var(--color-bg-elevated));
+  color: var(--color-text-main);
 }
 
-.panel-close:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: rotate(90deg);
-}
-
-.panel-section {
-  margin-bottom: 2rem;
+.panel-section + .panel-section {
+  margin-top: 1.75rem;
 }
 
 .section-title {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--color-text-muted, rgba(255, 255, 255, 0.7));
   margin-bottom: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  font-weight: 700;
 }
 
 .theme-grid,
@@ -468,57 +396,45 @@ onUnmounted(() => {
 
 .theme-card,
 .background-card {
-  cursor: pointer;
-  border-radius: 0.75rem;
   overflow: hidden;
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--admin-surface-2, var(--color-bg-elevated));
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .theme-card:hover,
 .background-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+  border-color: var(--color-primary-soft);
 }
 
 .theme-card.active,
 .background-card.active {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--theme-primary);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-primary) 35%, transparent);
 }
 
 .theme-preview,
 .background-preview {
-  width: 100%;
-  aspect-ratio: 16 / 9;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* 浅色主题优化（2025-01）：浅色主题预览使用浅色背景，深色主题预览使用深色背景 */
-  background: var(--bg-elevated, rgba(255, 255, 255, 0.1));
-  color: var(--text-muted, rgba(255, 255, 255, 0.5));
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: var(--admin-surface-3, color-mix(in srgb, var(--color-border) 55%, transparent));
+  color: var(--color-text-muted);
 }
 
-/* 浅色主题预览卡片特殊处理 */
-html[data-theme="light"] .theme-card[data-theme-code="light"] .theme-preview {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-color);
+.theme-card[data-theme-code="light"] .theme-preview {
+  background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+  color: #64748b;
 }
 
-:global([data-theme="light"]) .theme-card[data-theme-code="dark"] .theme-preview {
-  background: var(--color-bg-dark);
-  border: 1px solid var(--color-border-subtle);
-}
-
-/* 深色主题预览卡片特殊处理 */
-:global([data-theme="dark"]) .theme-card[data-theme-code="light"] .theme-preview {
-  background: var(--color-bg-light);
-  border: 1px solid var(--shadow);
-}
-
-:global([data-theme="dark"]) .theme-card[data-theme-code="dark"] .theme-preview {
-  background: var(--color-bg-dark);
-  border: 1px solid var(--color-border-subtle);
+.theme-card[data-theme-code="dark"] .theme-preview {
+  background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+  color: #cbd5e1;
 }
 
 .theme-preview img {
@@ -527,77 +443,63 @@ html[data-theme="light"] .theme-card[data-theme-code="light"] .theme-preview {
   object-fit: cover;
 }
 
-.theme-info {
-  padding: 0.75rem;
+.theme-info,
+.background-name {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* 浅色主题优化（2025-01）：使用主题变量 */
-  background: var(--bg-elevated);
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: var(--admin-surface-2, var(--color-bg-elevated));
+  color: var(--color-text-main);
 }
 
-.theme-name {
-  font-size: 0.875rem;
-  font-weight: 500;
-  /* 浅色主题优化（2025-01）：使用主题文字颜色，确保清晰 */
-  color: var(--text-main);
+.theme-name,
+.background-name {
+  font-size: 0.86rem;
+  font-weight: 600;
 }
 
 .theme-badge {
-  font-size: 0.75rem;
-  padding: 0.25rem 0.5rem;
-  background: var(--theme-primary);
-  border: 1px solid var(--theme-primary);
-  border-radius: 0.25rem;
-  color: var(--color-info, #93c5fd);
-}
-
-.background-name {
-  padding: 0.75rem;
-  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.05));
-  font-size: 0.875rem;
-  color: var(--color-text-main, white);
-  text-align: center;
+  padding: 0.2rem 0.45rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-primary) 16%, transparent);
+  color: var(--color-primary-hover);
+  font-size: 0.72rem;
 }
 
 .setting-item {
   display: flex;
   align-items: center;
   gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .setting-label {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  color: var(--color-text-main, white);
-  cursor: pointer;
-  flex: 1;
+  gap: 0.55rem;
+  color: var(--color-text-main);
 }
 
 .interval-input {
-  width: 80px;
-  padding: 0.5rem;
-  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.1));
-  border: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.2));
-  border-radius: 0.25rem;
-  color: var(--color-text-main, white);
+  width: 88px;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--admin-surface-2, var(--color-bg-elevated));
+  color: var(--color-text-main);
 }
 
-/* 过渡动画 */
 .slide-up-enter-active,
 .slide-up-leave-active {
   transition: all 0.3s ease;
 }
 
-.slide-up-enter-from {
-  opacity: 0;
-  transform: translateY(20px);
-}
-
+.slide-up-enter-from,
 .slide-up-leave-to {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(18px);
 }
 
 .fade-enter-active,
@@ -609,5 +511,13 @@ html[data-theme="light"] .theme-card[data-theme-code="light"] .theme-preview {
 .fade-leave-to {
   opacity: 0;
 }
-</style>
 
+@media (max-width: 768px) {
+  .theme-switcher-panel {
+    right: 1rem;
+    bottom: 7rem;
+    width: calc(100vw - 2rem);
+    padding: 1rem;
+  }
+}
+</style>

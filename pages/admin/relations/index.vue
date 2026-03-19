@@ -157,6 +157,7 @@
         @apply-ai-suggestion="handleApplyAiSuggestion"
         @set-reminder="handleSetReminder"
         @generate-suggestion="handleGenerateSuggestion"
+        @delete="handleDeletePerson"
       />
     </div>
 
@@ -192,6 +193,7 @@
             @apply-ai-suggestion="handleApplyAiSuggestion"
             @set-reminder="handleSetReminder"
             @generate-suggestion="handleGenerateSuggestion"
+            @delete="handleDeletePerson"
             @select="handleSelectPerson"
           />
           <div v-if="getStagePersons(stage.value).length === 0" class="kanban-empty">
@@ -862,6 +864,29 @@ const handleSetReminder = (id: string) => {
   showReminderModal.value = true
 }
 
+const handleDeletePerson = (id: string) => {
+  const person = findPerson(id)
+  const displayName = person?.nickname || '该对象'
+
+  dialog.warning({
+    title: '删除对象',
+    content: `确认删除“${displayName}”吗？此操作不可恢复。`,
+    positiveText: '确认删除',
+    negativeText: '取消',
+    onPositiveClick: async () => {
+      try {
+        await relationsApi.deletePerson(id)
+        selectedPersons.value.delete(id)
+        personCardRefs.value.delete(id)
+        message.success('删除成功')
+        await loadPersons()
+      } catch (error: any) {
+        message.error(error?.message || '删除失败')
+      }
+    }
+  })
+}
+
 const handleSaveReminder = async () => {
   if (!currentReminderPersonId.value || !reminderForm.remindAt) {
     message.warning('请选择提醒时间')
@@ -1168,4 +1193,3 @@ onMounted(async () => {
   border-radius: 8px;
 }
 </style>
-

@@ -1,0 +1,512 @@
+/* ============================================
+   认知说明书页面统一样式
+   与 about 页保持一致的深色玻璃拟态风格
+   ============================================ */
+
+.cognition-page {
+  min-height: 100vh;
+  background-color: var(--bg, #0f172a);
+  color: var(--text-main, #f8fafc);
+  position: relative;
+  overflow: hidden;
+  font-family: inherit;
+}
+
+/* ========== 背景 ========== */
+.cognition-background-noise {
+  position: fixed;
+  inset: 0;
+  opacity: 0.03;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+.cognition-background-container {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cognition-background-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  mix-blend-mode: screen;
+}
+
+.cognition-background-blob--blue {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 600px;
+  background-color: rgba(37, 99, 235, 0.12);
+  animation: cognition-blob 7s ease-in-out infinite;
+}
+
+.cognition-background-blob--purple {
+  bottom: 0;
+  right: 0;
+  width: 500px;
+  height: 500px;
+  background-color: rgba(147, 51, 234, 0.12);
+  animation: cognition-blob 7s ease-in-out infinite 2s;
+}
+
+.cognition-background-blob--emerald {
+  bottom: 0;
+  left: 0;
+  width: 500px;
+  height: 500px;
+  background-color: rgba(16, 185, 129, 0.1);
+  animation: cognition-blob 7s ease-in-out infinite 4s;
+}
+
+@keyframes cognition-blob {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(20px, -30px) scale(1.05); }
+}
+
+/* ========== 内容区 ========== */
+.cognition-content {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+}
+
+@media (min-width: 640px) {
+  .cognition-content {
+    padding: 2.5rem 1.5rem 4rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .cognition-content {
+    max-width: 64rem;
+    padding: 2.5rem 2rem 4rem;
+  }
+}
+
+/* ========== 头部 ========== */
+.cognition-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.cognition-header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cognition-header-icon {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  border-radius: 0.75rem;
+  background: rgba(139, 92, 246, 0.2);
+}
+
+.cognition-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0;
+}
+
+@media (min-width: 640px) {
+  .cognition-title {
+    font-size: 1.75rem;
+  }
+}
+
+.cognition-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  color: #93c5fd;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.cognition-back-link:hover {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: rgba(96, 165, 250, 0.3);
+  color: #bfdbfe;
+}
+
+/* ========== 导航标签（changelog 等） ========== */
+.cognition-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.cognition-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  color: #93c5fd;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.cognition-nav-link:hover {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: rgba(96, 165, 250, 0.3);
+  color: #bfdbfe;
+}
+
+.cognition-nav-link--active {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(96, 165, 250, 0.4);
+  color: #bfdbfe;
+}
+
+/* ========== 列表页 ========== */
+.cognition-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cognition-item {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 1rem;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(18px);
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.cognition-item:hover {
+  background: rgba(15, 23, 42, 0.85);
+  border-color: rgba(96, 165, 250, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(2, 6, 23, 0.3);
+}
+
+.cognition-item-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.cognition-item-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0;
+}
+
+.cognition-item-date {
+  font-size: 0.8125rem;
+  color: rgba(148, 163, 184, 0.9);
+}
+
+.cognition-item-summary {
+  font-size: 0.9375rem;
+  color: rgba(226, 232, 240, 0.85);
+  line-height: 1.65;
+  margin: 0 0 1rem;
+}
+
+.cognition-item-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cognition-item-read-more {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #93c5fd;
+  transition: color 0.2s;
+}
+
+.cognition-item:hover .cognition-item-read-more {
+  color: #bfdbfe;
+}
+
+/* ========== 详情页 ========== */
+.cognition-back-nav {
+  margin-bottom: 1.5rem;
+}
+
+.cognition-article {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 1.25rem;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(18px);
+  padding: 1.5rem;
+  box-shadow: 0 24px 80px rgba(2, 6, 23, 0.26);
+}
+
+@media (min-width: 640px) {
+  .cognition-article {
+    padding: 2rem 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .cognition-article {
+    padding: 2.5rem 3.5rem;
+  }
+}
+
+.cognition-article-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.cognition-article-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0 0 0.75rem;
+  line-height: 1.3;
+}
+
+@media (min-width: 640px) {
+  .cognition-article-title {
+    font-size: 2rem;
+  }
+}
+
+.cognition-article-summary {
+  font-size: 1rem;
+  color: rgba(226, 232, 240, 0.9);
+  line-height: 1.7;
+  margin: 0 0 1rem;
+}
+
+.cognition-article-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.875rem;
+  color: rgba(148, 163, 184, 0.9);
+}
+
+.cognition-article-date {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+/* ========== 正文样式 ========== */
+.cognition-prose {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: rgba(226, 232, 240, 0.9);
+}
+
+.cognition-prose > *:first-child {
+  margin-top: 0;
+}
+
+.cognition-prose h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 2rem 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.cognition-prose h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin: 1.75rem 0 0.75rem;
+}
+
+.cognition-prose h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.cognition-prose h4,
+.cognition-prose h5,
+.cognition-prose h6 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin: 1.25rem 0 0.5rem;
+}
+
+.cognition-prose hr {
+  margin: 1.5rem 0;
+  border: none;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.cognition-prose p {
+  margin: 0 0 1rem;
+  color: rgba(226, 232, 240, 0.9);
+}
+
+.cognition-prose ul,
+.cognition-prose ol {
+  margin: 0 0 1rem;
+  padding-left: 1.5rem;
+}
+
+.cognition-prose li {
+  margin-bottom: 0.35rem;
+}
+
+.cognition-prose blockquote {
+  margin: 1rem 0;
+  padding: 1rem 1.25rem;
+  border-left: 4px solid rgba(96, 165, 250, 0.5);
+  background: rgba(30, 41, 59, 0.5);
+  border-radius: 0 0.5rem 0.5rem 0;
+  color: rgba(226, 232, 240, 0.9);
+}
+
+.cognition-prose code {
+  padding: 0.2em 0.4em;
+  font-size: 0.9em;
+  background: rgba(30, 41, 59, 0.8);
+  border-radius: 0.25rem;
+  color: #93c5fd;
+}
+
+.cognition-prose pre {
+  margin: 1rem 0;
+  padding: 1.25rem;
+  background: rgba(15, 23, 42, 0.9);
+  border-radius: 0.5rem;
+  overflow-x: auto;
+}
+
+.cognition-prose pre code {
+  padding: 0;
+  background: transparent;
+  color: #e2e8f0;
+}
+
+.cognition-prose a {
+  color: #93c5fd;
+  text-decoration: none;
+}
+
+.cognition-prose a:hover {
+  text-decoration: underline;
+}
+
+.cognition-prose strong {
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+.cognition-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+
+.cognition-prose th,
+.cognition-prose td {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  text-align: left;
+}
+
+.cognition-prose th {
+  background: rgba(30, 41, 59, 0.6);
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+/* ========== 加载与空状态 ========== */
+.cognition-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 0;
+}
+
+.cognition-loading-spinner {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 3px solid rgba(148, 163, 184, 0.2);
+  border-top-color: #93c5fd;
+  border-radius: 50%;
+  animation: cognition-spin 0.8s linear infinite;
+}
+
+.cognition-loading-text {
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  color: rgba(148, 163, 184, 0.9);
+}
+
+@keyframes cognition-spin {
+  to { transform: rotate(360deg); }
+}
+
+.cognition-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 0;
+  text-align: center;
+}
+
+.cognition-empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.7;
+}
+
+.cognition-empty-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin: 0 0 0.5rem;
+}
+
+.cognition-empty-text {
+  font-size: 0.9375rem;
+  color: rgba(148, 163, 184, 0.9);
+  margin: 0;
+}

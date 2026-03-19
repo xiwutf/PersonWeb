@@ -40,7 +40,7 @@
   right: 25%;
   width: 500px;
   height: 500px;
-  background-color: rgba(217, 119, 6, 0.1);
+  background-color: rgba(180, 83, 9, 0.08);
   animation: blob 7s infinite;
 }
 
@@ -49,7 +49,7 @@
   left: 25%;
   width: 500px;
   height: 500px;
-  background-color: rgba(251, 146, 60, 0.1);
+  background-color: rgba(234, 88, 12, 0.08);
   animation: blob 7s infinite;
   animation-delay: 2s;
 }
@@ -89,9 +89,9 @@
   width: 4rem;
   height: 4rem;
   border-radius: 50%;
-  background-color: rgba(245, 158, 11, 0.1);
+  background-color: rgba(180, 83, 9, 0.12);
   backdrop-filter: blur(24px);
-  border: 1px solid rgba(245, 158, 11, 0.2);
+  border: 1px solid rgba(245, 158, 11, 0.14);
   margin-bottom: 1.5rem;
   animation: float 6s ease-in-out infinite;
 }
@@ -107,7 +107,7 @@
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  background-image: linear-gradient(to right, #fde68a, var(--color-bg-card), var(--color-orange-100));
+  background-image: linear-gradient(90deg, #f4e1b5 0%, #f8fafc 42%, #cbd5e1 100%);
   letter-spacing: -0.025em;
   font-family: serif;
 }

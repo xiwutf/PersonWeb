@@ -58,23 +58,26 @@ const html = computed(() => md.render(localValue.value || ''))
 </script>
 
 <style scoped>
+/* 单层外框，避免与父级 section 重复嵌套 */
 .md-wrap {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
   width: 100%;
   min-height: 400px;
-}
-
-.pane {
   border: 1px solid var(--color-border-default, var(--color-border));
   border-radius: var(--radius-lg);
   overflow: hidden;
   background: var(--color-bg-elevated, var(--color-bg-card, #fff));
 }
 
+.pane {
+  overflow: hidden;
+  background: transparent;
+}
+
 .editor {
-  padding: 10px;
+  padding: 10px 12px;
+  border-right: 1px solid var(--color-border-default, var(--color-border));
 }
 
 .editor-textarea :deep(textarea) {
@@ -82,10 +85,13 @@ const html = computed(() => md.render(localValue.value || ''))
   font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
   font-size: 14px;
   line-height: 1.6;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 .preview {
-  padding: 10px;
+  padding: 10px 12px;
   overflow: auto;
 }
 
@@ -136,11 +142,18 @@ const html = computed(() => md.render(localValue.value || ''))
 }
 
 /* 深色主题 */
-[data-theme='dark'] .pane,
-[data-theme='tech-blue'] .pane,
-[data-theme='forest'] .pane,
-[data-theme='hybrid-super-dark'] .pane {
+[data-theme='dark'] .md-wrap,
+[data-theme='tech-blue'] .md-wrap,
+[data-theme='forest'] .md-wrap,
+[data-theme='hybrid-super-dark'] .md-wrap {
   border-color: rgba(255, 255, 255, 0.25);
-  background: var(--color-border);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+[data-theme='dark'] .editor,
+[data-theme='tech-blue'] .editor,
+[data-theme='forest'] .editor,
+[data-theme='hybrid-super-dark'] .editor {
+  border-right-color: rgba(255, 255, 255, 0.2);
 }
 </style>

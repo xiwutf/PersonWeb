@@ -1,22 +1,21 @@
 <template>
   <div>
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold skill-tree-title">ćč˝ć çŽĄç</h1>
+      <h1 class="text-2xl font-bold skill-tree-title">技能树管理</h1>
       <div class="flex gap-2">
         <n-button type="primary" @click="showAddCategoryDialog = true">
-          ćˇťĺ ĺçąť
+          添加分类
         </n-button>
         <n-button type="success" @click="showAddSkillDialog = true">
-          ćˇťĺ ćč?        </n-button>
+          添加技能
+        </n-button>
       </div>
     </div>
 
-    <!-- ĺ č˝˝çść?-->
     <div v-if="loading" class="text-center py-12">
       <n-spin size="large" />
     </div>
 
-    <!-- ćč˝ć ĺąç¤ş -->
     <div v-else class="space-y-6">
       <div
         v-for="category in skillTree"
@@ -28,7 +27,7 @@
             <span class="text-2xl">{{ category.icon }}</span>
             <div>
               <h2 class="text-xl font-semibold category-name">{{ category.name }}</h2>
-              <p class="text-sm category-count">{{ category.skills?.length || 0 }} ä¸Şćč</p>
+              <p class="text-sm category-count">{{ category.skills?.length || 0 }} 个技能</p>
             </div>
           </div>
           <div
@@ -37,7 +36,6 @@
           ></div>
         </div>
 
-        <!-- ćč˝ĺčĄ?-->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
           <div
             v-for="skill in category.skills"
@@ -53,29 +51,31 @@
                 <button
                   @click="openRatingDialog(skill)"
                   class="skill-action-btn skill-action-btn-primary"
-                  title="čŽ°ĺ˝čŻçş§"
+                  title="记录评级"
                 >
-                  â­?                </button>
+                  ★
+                </button>
                 <button
                   @click="openLearningLogDialog(skill)"
                   class="skill-action-btn skill-action-btn-success"
-                  title="ćˇťĺ ĺ­Śäš ćĽĺż"
+                  title="添加学习日志"
                 >
-                  đ
+                  📚
                 </button>
                 <button
                   @click="viewSkillDetail(skill.id)"
                   class="skill-action-btn skill-action-btn-default"
-                  title="ćĽçčŻŚć"
+                  title="查看详情"
                 >
-                  đď¸?                </button>
+                  👁
+                </button>
               </div>
             </div>
             <p v-if="skill.description" class="text-sm skill-description mb-2 line-clamp-2">
               {{ skill.description }}
             </p>
             <div class="flex items-center gap-2">
-              <span class="text-xs skill-label">ĺ˝ĺčŻçş§ďź</span>
+              <span class="text-xs skill-label">当前评级：</span>
               <div class="flex items-center gap-1">
                 <span class="text-lg font-bold" :class="getRatingColor(skill.currentRating)">
                   {{ skill.currentRating || 0 }}
@@ -89,34 +89,32 @@
                 <div
                   class="h-full rounded-full transition-all"
                   :class="getRatingBarColor(skill.currentRating)"
-                  :style="{ width: (skill.currentRating / 10) * 100 + '%' }"
+                  :style="{ width: `${(skill.currentRating / 10) * 100}%` }"
                 ></div>
               </div>
             </div>
             <p v-if="skill.lastRatingDate" class="text-xs skill-last-update mt-1">
-              ćĺć´ć°ďź{{ formatDate(skill.lastRatingDate) }}
+              最后更新：{{ formatDate(skill.lastRatingDate) }}
             </p>
           </div>
         </div>
       </div>
 
-      <!-- çŠşçść?-->
       <div v-if="skillTree.length === 0" class="text-center py-12 empty-state">
-        <p class="empty-state-text">ćć ćč˝ć°ćŽďźčŻˇĺćˇťĺ ĺçąťĺćč</p>
+        <p class="empty-state-text">暂无技能数据，请先添加分类和技能。</p>
       </div>
     </div>
 
-    <!-- ćˇťĺ ĺçąťĺŻščŻćĄ?-->
     <div
       v-if="showAddCategoryDialog"
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
       @click.self="showAddCategoryDialog = false"
     >
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
-        <h2 class="text-xl font-bold text-gray-900 dark:text-var(--color-bg-light, white) mb-4">ćˇťĺ ćč˝ĺçą</h2>
+        <h2 class="text-xl font-bold text-gray-900 dark:text-var(--color-bg-light, white) mb-4">添加技能分类</h2>
         <form @submit.prevent="addCategory" class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ĺçąťĺç§°</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">分类名称</label>
             <input
               v-model="categoryForm.name"
               type="text"
@@ -155,30 +153,29 @@
               @click="showAddCategoryDialog = false"
               class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition"
             >
-              ĺćś
+              取消
             </button>
             <button
               type="submit"
               class="px-4 py-2 bg-blue-600 text-var(--color-bg-light, white) rounded hover:bg-blue-700 transition"
             >
-              ćˇťĺ 
+              添加
             </button>
           </div>
         </form>
       </div>
     </div>
 
-    <!-- ćˇťĺ ćč˝ĺŻščŻćĄ -->
     <div
       v-if="showAddSkillDialog"
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
       @click.self="showAddSkillDialog = false"
     >
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
-        <h2 class="text-xl font-bold text-gray-900 dark:text-var(--color-bg-light, white) mb-4">ćˇťĺ ćč</h2>
+        <h2 class="text-xl font-bold text-gray-900 dark:text-var(--color-bg-light, white) mb-4">添加技能</h2>
         <form @submit.prevent="addSkill" class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ćč˝ĺç§</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">技能名称</label>
             <input
               v-model="skillForm.name"
               type="text"
@@ -187,20 +184,20 @@
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ćĺąĺçą</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">所属分类</label>
             <select
               v-model.number="skillForm.categoryId"
               required
               class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
             >
-              <option value="">čŻˇéćŠĺçąť</option>
+              <option value="">请选择分类</option>
               <option v-for="cat in categories" :key="cat.id" :value="cat.id">
                 {{ cat.icon }} {{ cat.name }}
               </option>
             </select>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ćč˝ćčż</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">技能描述</label>
             <textarea
               v-model="skillForm.description"
               rows="3"
@@ -208,7 +205,7 @@
             ></textarea>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"></label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">图标</label>
             <input
               v-model="skillForm.icon"
               type="text"
@@ -222,20 +219,19 @@
               @click="showAddSkillDialog = false"
               class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition"
             >
-              ĺćś
+              取消
             </button>
             <button
               type="submit"
               class="px-4 py-2 bg-green-600 text-var(--color-bg-light, white) rounded hover:bg-green-700 transition"
             >
-              ćˇťĺ 
+              添加
             </button>
           </div>
         </form>
       </div>
     </div>
 
-    <!-- čŻçş§ĺŻščŻćĄ?-->
     <div
       v-if="showRatingDialog"
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
@@ -243,12 +239,12 @@
     >
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
         <h2 class="text-xl font-bold text-gray-900 dark:text-var(--color-bg-light, white) mb-4">
-          čŽ°ĺ˝ćč˝čŻçş?- {{ selectedSkill?.name }}
+          记录技能评级 - {{ selectedSkill?.name }}
         </h2>
         <form @submit.prevent="submitRating" class="space-y-4">
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              čŻçş§ (1-10ĺ?
+              评级（1-10分）
             </label>
             <input
               v-model.number="ratingForm.rating"
@@ -261,7 +257,7 @@
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ĺ¤ćł¨</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">备注</label>
             <textarea
               v-model="ratingForm.notes"
               rows="3"
@@ -269,7 +265,7 @@
             ></textarea>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">čŽ°ĺ˝ćśé´</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">记录时间</label>
             <input
               v-model="ratingForm.recordedAt"
               type="datetime-local"
@@ -282,20 +278,19 @@
               @click="showRatingDialog = false"
               class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition"
             >
-              ĺćś
+              取消
             </button>
             <button
               type="submit"
               class="px-4 py-2 bg-blue-600 text-var(--color-bg-light, white) rounded hover:bg-blue-700 transition"
             >
-              äżĺ­
+              保存
             </button>
           </div>
         </form>
       </div>
     </div>
 
-    <!-- ĺ­Śäš ćĽĺżĺŻščŻćĄ?-->
     <div
       v-if="showLearningLogDialog"
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
@@ -303,11 +298,11 @@
     >
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
         <h2 class="text-xl font-bold text-gray-900 dark:text-var(--color-bg-light, white) mb-4">
-          ćˇťĺ ĺ­Śäš ćĽĺż - {{ selectedSkill?.name }}
+          添加学习日志 - {{ selectedSkill?.name }}
         </h2>
         <form @submit.prevent="submitLearningLog" class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ĺ­Śäš ĺĺŽšć é˘</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">学习内容标题</label>
             <input
               v-model="learningLogForm.title"
               type="text"
@@ -316,7 +311,7 @@
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ĺ­Śäš ĺĺŽščŻŚć</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">学习内容详情</label>
             <textarea
               v-model="learningLogForm.content"
               rows="4"
@@ -325,7 +320,7 @@
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ĺ­Śäš ćśéżďźĺéďź</label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">学习时长（分钟）</label>
               <input
                 v-model.number="learningLogForm.duration"
                 type="number"
@@ -333,21 +328,21 @@
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">čľćşçąťĺ</label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">资源类型</label>
               <select
                 v-model="learningLogForm.resourceType"
                 class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200"
               >
-                <option value="">čŻˇéćŠ</option>
-                <option value="č§é˘">č§é˘</option>
-                <option value="ććĄŁ">ććĄŁ</option>
-                <option value="ĺŽčˇľ">ĺŽčˇľ</option>
-                <option value="čŻžç¨">čŻžç¨</option>
+                <option value="">请选择</option>
+                <option value="视频">视频</option>
+                <option value="文档">文档</option>
+                <option value="实践">实践</option>
+                <option value="课程">课程</option>
               </select>
             </div>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">čľćşéžćĽ</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">资源链接</label>
             <input
               v-model="learningLogForm.resourceUrl"
               type="url"
@@ -355,7 +350,7 @@
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ĺ­Śäš ćśé´</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">学习时间</label>
             <input
               v-model="learningLogForm.learnedAt"
               type="datetime-local"
@@ -368,13 +363,13 @@
               @click="showLearningLogDialog = false"
               class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition"
             >
-              ĺćś
+              取消
             </button>
             <button
               type="submit"
               class="px-4 py-2 bg-green-600 text-var(--color-bg-light, white) rounded hover:bg-green-700 transition"
             >
-              äżĺ­
+              保存
             </button>
           </div>
         </form>
@@ -396,7 +391,6 @@ const api = useApi()
 const { success } = useNotification()
 const { handleError } = useErrorHandler()
 
-// 获取默认颜色（从 CSS 变量）
 const getDefaultCategoryColor = () => {
   if (process.client) {
     return getComputedStyle(document.documentElement).getPropertyValue('--color-text-muted').trim() || 'var(--color-text-sec)'
@@ -476,7 +470,7 @@ const fetchSkillTree = async () => {
     const res = await api.get<any>('/SkillTree')
     skillTree.value = res || []
   } catch (e: unknown) {
-    handleError(e, '添加技能失败')
+    handleError(e, '获取技能树失败')
   } finally {
     loading.value = false
   }
@@ -487,7 +481,7 @@ const fetchCategories = async () => {
     const res = await api.get<any[]>('/SkillTree/categories')
     categories.value = res || []
   } catch (e: unknown) {
-    handleError(e, 'čˇĺĺçąťĺ¤ąč´Ľ')
+    handleError(e, '获取分类失败')
   }
 }
 
@@ -500,7 +494,7 @@ const addCategory = async () => {
     await fetchCategories()
     await fetchSkillTree()
   } catch (e: unknown) {
-    handleError(e, 'ćˇťĺ ĺçąťĺ¤ąč´Ľ')
+    handleError(e, '添加分类失败')
   }
 }
 
@@ -535,11 +529,11 @@ const submitRating = async () => {
       notes: ratingForm.value.notes,
       recordedAt: ratingForm.value.recordedAt
     })
-    success('添加成功')
+    success('保存成功')
     showRatingDialog.value = false
     await fetchSkillTree()
   } catch (e: unknown) {
-    handleError(e, 'čŽ°ĺ˝čŻçş§ĺ¤ąč´Ľ')
+    handleError(e, '记录评级失败')
   }
 }
 
@@ -568,10 +562,10 @@ const submitLearningLog = async () => {
       resourceUrl: learningLogForm.value.resourceUrl,
       learnedAt: learningLogForm.value.learnedAt
     })
-    success('添加成功')
+    success('保存成功')
     showLearningLogDialog.value = false
   } catch (e: unknown) {
-    handleError(e, 'ćˇťĺ ĺ­Śäš ćĽĺżĺ¤ąč´Ľ')
+    handleError(e, '添加学习日志失败')
   }
 }
 
@@ -586,12 +580,10 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* ć é˘ć ˇĺź - ä˝żç¨ CSS ĺé */
 .skill-tree-title {
   color: var(--color-text-main, var(--color-text-main));
 }
 
-/* ĺçąťĺĄçć ˇĺź - ä˝żç¨ CSS ĺé */
 .skill-category-card {
   background: var(--color-bg-card, var(--color-bg-card));
   border: 1px solid var(--color-border-subtle, var(--color-border));
@@ -608,7 +600,6 @@ onMounted(() => {
   color: var(--color-text-muted, var(--color-text-sec));
 }
 
-/* ćč˝éĄšĺĄçć ˇĺź - ä˝żç¨ CSS ĺé */
 .skill-item-card {
   border: 1px solid var(--color-border-subtle, var(--color-border));
   border-radius: 0.5rem;
@@ -636,7 +627,6 @@ onMounted(() => {
   background: var(--color-bg-elevated, var(--color-gray-100));
 }
 
-/* ćč˝ćä˝ćéŽć ˇĺź?- ä˝żç¨ CSS ĺé */
 .skill-action-btn {
   background: none;
   border: none;
@@ -669,7 +659,6 @@ onMounted(() => {
   color: var(--color-text-main, var(--color-text-main));
 }
 
-/* çŠşçśćć ˇĺź?- ä˝żç¨ CSS ĺé */
 .empty-state {
   background: var(--color-bg-card, var(--color-bg-card));
   border-radius: 0.5rem;
@@ -679,7 +668,6 @@ onMounted(() => {
   color: var(--color-text-muted, var(--color-text-sec));
 }
 
-/* ćˇąč˛ä¸ťé˘éé */
 html[data-theme="dark"] .skill-tree-title,
 html.dark .skill-tree-title {
   color: var(--color-text-main, var(--color-bg-card));
@@ -730,7 +718,6 @@ html.dark .empty-state {
   color: var(--color-text-muted, var(--color-gray-400));
 }
 
-/* čŻçş§é˘č˛ć ˇĺź - ä˝żç¨ CSS ĺé */
 .rating-color-excellent {
   color: var(--color-success, var(--color-success));
 }
@@ -747,7 +734,6 @@ html.dark .empty-state {
   color: var(--color-error, var(--color-danger));
 }
 
-/* čŻçş§čżĺşŚćĄé˘č˛ć ˇĺź?- ä˝żç¨ CSS ĺé */
 .rating-bar-excellent {
   background: var(--color-success, var(--color-success));
 }
@@ -764,4 +750,3 @@ html.dark .empty-state {
   background: var(--color-error, var(--color-danger));
 }
 </style>
-

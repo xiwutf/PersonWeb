@@ -296,14 +296,12 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* 正文编辑区：独立区块，便于一眼找到「写内容」的位置 */
+/* 正文编辑区：独立区块，便于一眼找到「写内容」的位置（无边框，避免与编辑器重复嵌套） */
 .article-content-section {
   margin-top: 1.5rem;
   padding: 1rem 1.25rem;
   background: var(--color-bg-elevated, var(--color-bg-card));
-  border: 1px solid var(--color-border-default);
   border-radius: var(--radius-lg, 0.75rem);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .article-content-section-header {
@@ -335,7 +333,6 @@ onMounted(async () => {
 [data-theme='tech-blue'] .article-content-section,
 [data-theme='forest'] .article-content-section,
 [data-theme='hybrid-super-dark'] .article-content-section {
-  border-color: rgba(255, 255, 255, 0.28);
   background: rgba(255, 255, 255, 0.06);
 }
 </style>
