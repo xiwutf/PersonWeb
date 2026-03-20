@@ -1,6 +1,5 @@
 <template>
   <div class="analytics-page">
-    <!-- 顶部筛选条 -->
     <n-card class="filter-card mb-4">
       <div class="filter-row">
         <n-select
@@ -39,112 +38,60 @@
       </div>
     </n-card>
 
-    <!-- KPI 卡片 -->
     <div class="kpi-cards mb-4">
-      <n-card class="kpi-card">
+      <n-card v-for="item in kpiItems" :key="item.label" class="kpi-card">
         <div class="kpi-content">
-          <div class="kpi-label">项目总数</div>
-          <div class="kpi-value">{{ summary.kpis?.totals || 0 }}</div>
-        </div>
-      </n-card>
-      <n-card class="kpi-card">
-        <div class="kpi-content">
-          <div class="kpi-label">进行中项目</div>
-          <div class="kpi-value">{{ summary.kpis?.inProgressCount || 0 }}</div>
-        </div>
-      </n-card>
-      <n-card class="kpi-card">
-        <div class="kpi-content">
-          <div class="kpi-label">逾期项目</div>
-          <div class="kpi-value error">{{ summary.kpis?.overdueCount || 0 }}</div>
-        </div>
-      </n-card>
-      <n-card class="kpi-card">
-        <div class="kpi-content">
-          <div class="kpi-label">卡住项目</div>
-          <div class="kpi-value warning">{{ summary.kpis?.blockedCount || 0 }}</div>
-        </div>
-      </n-card>
-      <n-card class="kpi-card">
-        <div class="kpi-content">
-          <div class="kpi-label">本期已收金额</div>
-          <div class="kpi-value success">¥{{ formatAmount(summary.kpis?.receivedSum || 0) }}</div>
-        </div>
-      </n-card>
-      <n-card class="kpi-card">
-        <div class="kpi-content">
-          <div class="kpi-label">本期待收金额</div>
-          <div class="kpi-value">¥{{ formatAmount(summary.kpis?.receivableSum || 0) }}</div>
+          <div class="kpi-label">{{ item.label }}</div>
+          <div :class="['kpi-value', item.tone]">{{ item.value }}</div>
         </div>
       </n-card>
     </div>
 
-    <!-- 图表区 -->
     <div v-if="loading" class="loading-container">
       <n-spin size="large" />
     </div>
 
     <div v-else class="charts-grid">
-      <!-- 项目状态分布 -->
       <n-card class="chart-card">
-        <template #header>
-          <h3>项目状态分布</h3>
-        </template>
-        <div v-if="!summary.statusAgg || summary.statusAgg.length === 0" class="chart-empty">
-          暂无数据
-        </div>
+        <template #header><h3>项目状态分布</h3></template>
+        <div v-if="!summary.statusAgg.length" class="chart-empty">暂无数据</div>
         <div v-else class="chart-container">
-          <v-chart :option="statusChartOption" autoresize />
+          <component :is="chartComponent" v-if="chartsReady && chartComponent" :option="statusChartOption" autoresize />
+          <div v-else class="chart-skeleton">图表加载中...</div>
         </div>
       </n-card>
 
-      <!-- 月度收入趋势 -->
       <n-card class="chart-card">
-        <template #header>
-          <h3>月度收入趋势</h3>
-        </template>
-        <div v-if="!summary.monthlyRevenue || summary.monthlyRevenue.length === 0" class="chart-empty">
-          暂无数据
-        </div>
+        <template #header><h3>月度收入趋势</h3></template>
+        <div v-if="!summary.monthlyRevenue.length" class="chart-empty">暂无数据</div>
         <div v-else class="chart-container">
-          <v-chart :option="revenueChartOption" autoresize />
+          <component :is="chartComponent" v-if="chartsReady && chartComponent" :option="revenueChartOption" autoresize />
+          <div v-else class="chart-skeleton">图表加载中...</div>
         </div>
       </n-card>
 
-      <!-- 交付周期统计 -->
       <n-card class="chart-card">
-        <template #header>
-          <h3>交付周期统计</h3>
-        </template>
-        <div v-if="!summary.deliveryCycle || summary.deliveryCycle.length === 0" class="chart-empty">
-          暂无数据
-        </div>
+        <template #header><h3>交付周期统计</h3></template>
+        <div v-if="!summary.deliveryCycle.length" class="chart-empty">暂无数据</div>
         <div v-else class="chart-container">
-          <v-chart :option="deliveryChartOption" autoresize />
+          <component :is="chartComponent" v-if="chartsReady && chartComponent" :option="deliveryChartOption" autoresize />
+          <div v-else class="chart-skeleton">图表加载中...</div>
         </div>
       </n-card>
 
-      <!-- 客户贡献 Top10 -->
       <n-card class="chart-card">
-        <template #header>
-          <h3>客户贡献 Top10</h3>
-        </template>
-        <div v-if="!summary.customerTop || summary.customerTop.length === 0" class="chart-empty">
-          暂无数据
-        </div>
+        <template #header><h3>客户贡献 Top 10</h3></template>
+        <div v-if="!summary.customerTop.length" class="chart-empty">暂无数据</div>
         <div v-else class="chart-container">
-          <v-chart :option="customerChartOption" autoresize />
+          <component :is="chartComponent" v-if="chartsReady && chartComponent" :option="customerChartOption" autoresize />
+          <div v-else class="chart-skeleton">图表加载中...</div>
         </div>
       </n-card>
     </div>
 
-    <!-- 风险列表 -->
     <div class="risk-lists mt-4">
-      <!-- 即将到期项目 -->
       <n-card class="risk-card mb-4">
-        <template #header>
-          <h3>即将到期项目（≤7天）</h3>
-        </template>
+        <template #header><h3>即将到期项目（7 天）</h3></template>
         <n-data-table
           :columns="dueSoonColumns"
           :data="summary.riskDueSoon || []"
@@ -154,11 +101,8 @@
         />
       </n-card>
 
-      <!-- 逾期项目 -->
       <n-card class="risk-card">
-        <template #header>
-          <h3>逾期项目</h3>
-        </template>
+        <template #header><h3>逾期项目</h3></template>
         <n-data-table
           :columns="overdueColumns"
           :data="summary.riskOverdue || []"
@@ -172,24 +116,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { computed, onMounted, ref, shallowRef } from 'vue'
+import type { Component } from 'vue'
 import { useRouter } from 'vue-router'
-import { NCard, NSelect, NDatePicker, NButton, NDataTable, NSpin } from 'naive-ui'
-import { useNotification } from '~/composables/useToast'
-import { use } from 'echarts/core'
-import { CanvasRenderer } from 'echarts/renderers'
-import { BarChart, LineChart, PieChart } from 'echarts/charts'
-import {
-  TitleComponent,
-  TooltipComponent,
-  LegendComponent,
-  GridComponent
-} from 'echarts/components'
-import VChart from 'vue-echarts'
-import { useEChartsTheme } from '~/composables/useEChartsTheme'
-import { useApi } from '~/composables/useApi'
-import type { SideProjectAnalyticsSummary, ProjectBrief } from '~/types/api'
+import { NButton, NCard, NDataTable, NDatePicker, NSelect, NSpin } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
+import { useNotification } from '~/composables/useToast'
+import { useApi } from '~/composables/useApi'
+import { useEChartsTheme } from '~/composables/useEChartsTheme'
+import type { ProjectBrief, SideProjectAnalyticsSummary } from '~/types/api'
 
 definePageMeta({
   layout: 'admin',
@@ -197,25 +132,17 @@ definePageMeta({
   ssr: false
 })
 
-// 注册 ECharts 组件
-use([
-  CanvasRenderer,
-  BarChart,
-  LineChart,
-  PieChart,
-  TitleComponent,
-  TooltipComponent,
-  LegendComponent,
-  GridComponent
-])
+type EChartOption = Record<string, any>
 
 const router = useRouter()
 const api = useApi()
 const notification = useNotification()
-const { isDark, getCssVar } = useEChartsTheme()
+const { isDark } = useEChartsTheme()
 
-// 数据
+const chartComponent = shallowRef<Component | null>(null)
+const chartsReady = ref(false)
 const loading = ref(false)
+
 const summary = ref<SideProjectAnalyticsSummary>({
   kpis: {
     totals: 0,
@@ -233,19 +160,17 @@ const summary = ref<SideProjectAnalyticsSummary>({
   riskOverdue: []
 })
 
-// 筛选条件
 const filters = ref({
   timeRange: '30d',
   projectType: undefined as string | undefined,
-  isPublic: undefined as string | undefined // 使用字符串：'true'/'false'/undefined
+  isPublic: undefined as string | undefined
 })
 
 const customDateRange = ref<[number, number] | null>(null)
 
-// 选项
 const timeRangeOptions = [
-  { label: '30天', value: '30d' },
-  { label: '90天', value: '90d' },
+  { label: '30 天', value: '30d' },
+  { label: '90 天', value: '90d' },
   { label: '本年', value: 'year' },
   { label: '自定义', value: 'custom' }
 ]
@@ -265,8 +190,50 @@ const isPublicOptions = [
   { label: '不公开', value: 'false' }
 ]
 
-// 计算日期范围
-const getDateRange = (): { start: Date | null; end: Date | null } => {
+const kpiItems = computed(() => [
+  { label: '项目总数', value: summary.value.kpis?.totals || 0, tone: '' },
+  { label: '进行中项目', value: summary.value.kpis?.inProgressCount || 0, tone: '' },
+  { label: '逾期项目', value: summary.value.kpis?.overdueCount || 0, tone: 'error' },
+  { label: '卡住项目', value: summary.value.kpis?.blockedCount || 0, tone: 'warning' },
+  { label: '本期已收金额', value: `¥${formatAmount(summary.value.kpis?.receivedSum || 0)}`, tone: 'success' },
+  { label: '本期待收金额', value: `¥${formatAmount(summary.value.kpis?.receivableSum || 0)}`, tone: '' }
+])
+
+const chartTextColor = computed(() => (isDark.value ? 'var(--color-bg-light, white)' : 'var(--color-gray-700)'))
+
+const ensureChartsReady = async () => {
+  if (!process.client || chartsReady.value) return
+
+  const [
+    echartsCore,
+    echartsRenderers,
+    echartsCharts,
+    echartsComponents,
+    vueEchartsModule
+  ] = await Promise.all([
+    import('echarts/core'),
+    import('echarts/renderers'),
+    import('echarts/charts'),
+    import('echarts/components'),
+    import('vue-echarts')
+  ])
+
+  echartsCore.use([
+    echartsRenderers.CanvasRenderer,
+    echartsCharts.BarChart,
+    echartsCharts.LineChart,
+    echartsCharts.PieChart,
+    echartsComponents.TitleComponent,
+    echartsComponents.TooltipComponent,
+    echartsComponents.LegendComponent,
+    echartsComponents.GridComponent
+  ])
+
+  chartComponent.value = vueEchartsModule.default
+  chartsReady.value = true
+}
+
+const getDateRange = () => {
   if (filters.value.timeRange === 'custom' && customDateRange.value) {
     return {
       start: new Date(customDateRange.value[0]),
@@ -292,12 +259,12 @@ const getDateRange = (): { start: Date | null; end: Date | null } => {
   return { start, end: now }
 }
 
-// 获取数据
 const fetchData = async () => {
   loading.value = true
   try {
     const { start, end } = getDateRange()
-    const params: any = {}
+    const params: Record<string, any> = {}
+
     if (start) params.start = start.toISOString().split('T')[0]
     if (end) params.end = end.toISOString().split('T')[0]
     if (filters.value.projectType) params.type = filters.value.projectType
@@ -305,26 +272,197 @@ const fetchData = async () => {
       params.isPublic = filters.value.isPublic === 'true'
     }
 
-    const res = await api.get<SideProjectAnalyticsSummary>('/side-projects/analytics/summary', { params })
-    summary.value = res
-  } catch (e: any) {
-    console.error('获取数据分析失败:', e)
-    notification.error('获取数据分析失败: ' + (e.message || '未知错误'))
+    summary.value = await api.get<SideProjectAnalyticsSummary>('/side-projects/analytics/summary', { params })
+  } catch (error: any) {
+    console.error('获取项目分析失败:', error)
+    notification.error(`获取项目分析失败: ${error?.message || '未知错误'}`)
   } finally {
     loading.value = false
   }
 }
 
-// 筛选变化处理
+const buildCommonAxis = (): EChartOption => ({
+  axisLabel: { color: chartTextColor.value }
+})
+
+const statusChartOption = computed<EChartOption>(() => ({
+  backgroundColor: 'transparent',
+  tooltip: {
+    trigger: 'item',
+    formatter: '{b}: <br/>{c} ({d}%) <br>金额: ¥{@amountSum}'
+  },
+  legend: {
+    orient: 'vertical',
+    left: 'left',
+    textStyle: { color: chartTextColor.value }
+  },
+  series: [
+    {
+      type: 'pie',
+      radius: '60%',
+      data: summary.value.statusAgg.map(item => ({
+        value: item.count,
+        name: item.statusName,
+        amountSum: item.amountSum
+      }))
+    }
+  ]
+}))
+
+const revenueChartOption = computed<EChartOption>(() => ({
+  backgroundColor: 'transparent',
+  tooltip: {
+    trigger: 'axis',
+    formatter: (params: any[]) => {
+      const param = params[0]
+      return `${param.name}<br/>收入: ¥${formatAmount(param.value)}`
+    }
+  },
+  xAxis: {
+    ...buildCommonAxis(),
+    type: 'category',
+    data: summary.value.monthlyRevenue.map(item => item.month)
+  },
+  yAxis: {
+    ...buildCommonAxis(),
+    type: 'value',
+    axisLabel: {
+      color: chartTextColor.value,
+      formatter: (value: number) => `¥${(value / 1000).toFixed(0)}k`
+    }
+  },
+  series: [
+    {
+      type: 'line',
+      smooth: true,
+      areaStyle: { opacity: 0.28 },
+      data: summary.value.monthlyRevenue.map(item => item.receivedSum)
+    }
+  ]
+}))
+
+const deliveryChartOption = computed<EChartOption>(() => ({
+  backgroundColor: 'transparent',
+  tooltip: {
+    trigger: 'axis',
+    formatter: (params: any[]) => {
+      const param = params[0]
+      return `${param.name}<br/>平均天数: ${param.value.toFixed(1)} 天<br/>项目数: ${param.data.count}`
+    }
+  },
+  xAxis: {
+    ...buildCommonAxis(),
+    type: 'category',
+    data: summary.value.deliveryCycle.map(item => item.groupName),
+    axisLabel: {
+      color: chartTextColor.value,
+      rotate: 45
+    }
+  },
+  yAxis: {
+    ...buildCommonAxis(),
+    type: 'value',
+    name: '天数'
+  },
+  series: [
+    {
+      type: 'bar',
+      data: summary.value.deliveryCycle.map(item => ({
+        value: item.avgDays,
+        count: item.count
+      }))
+    }
+  ]
+}))
+
+const customerChartOption = computed<EChartOption>(() => ({
+  backgroundColor: 'transparent',
+  tooltip: {
+    trigger: 'axis',
+    formatter: (params: any[]) => {
+      const param = params[0]
+      return `${param.name}<br/>金额: ¥${formatAmount(param.value)}<br/>项目数: ${param.data.count}`
+    }
+  },
+  xAxis: {
+    ...buildCommonAxis(),
+    type: 'value',
+    axisLabel: {
+      color: chartTextColor.value,
+      formatter: (value: number) => `¥${(value / 1000).toFixed(0)}k`
+    }
+  },
+  yAxis: {
+    ...buildCommonAxis(),
+    type: 'category',
+    data: summary.value.customerTop.map(item => item.customerName)
+  },
+  series: [
+    {
+      type: 'bar',
+      label: {
+        show: true,
+        position: 'right',
+        formatter: (params: any) => `¥${formatAmount(params.value)}`
+      },
+      data: summary.value.customerTop.map(item => ({
+        value: item.receivedSum,
+        count: item.projectCount
+      }))
+    }
+  ]
+}))
+
+const dueSoonColumns: DataTableColumns<ProjectBrief> = [
+  { title: '项目名称', key: 'title', width: 200 },
+  { title: '客户', key: 'clientName', width: 150 },
+  {
+    title: '截止日期',
+    key: 'deadlineAt',
+    width: 120,
+    render: row => (row.deadlineAt ? new Date(row.deadlineAt).toLocaleDateString('zh-CN') : '-')
+  },
+  {
+    title: '剩余天数',
+    key: 'daysRemaining',
+    width: 100,
+    render: row => (row.daysRemaining !== undefined ? `${row.daysRemaining} 天` : '-')
+  },
+  { title: '下一步行动', key: 'nextAction', width: 200 },
+  {
+    title: '金额',
+    key: 'totalAmount',
+    width: 120,
+    render: row => (row.totalAmount ? `¥${formatAmount(row.totalAmount)}` : '-')
+  }
+]
+
+const overdueColumns: DataTableColumns<ProjectBrief> = [
+  { title: '项目名称', key: 'title', width: 200 },
+  {
+    title: '逾期天数',
+    key: 'overdueDays',
+    width: 100,
+    render: row => (row.overdueDays !== undefined ? `${row.overdueDays} 天` : '-')
+  },
+  { title: '阻塞原因', key: 'blockReason', width: 300 },
+  {
+    title: '金额',
+    key: 'totalAmount',
+    width: 120,
+    render: row => (row.totalAmount ? `¥${formatAmount(row.totalAmount)}` : '-')
+  }
+]
+
 const handleTimeRangeChange = () => {
   if (filters.value.timeRange !== 'custom') {
     customDateRange.value = null
   }
-  handleFilterChange()
+  fetchData()
 }
 
 const handleCustomDateChange = () => {
-  handleFilterChange()
+  fetchData()
 }
 
 const handleFilterChange = () => {
@@ -335,219 +473,16 @@ const handleRefresh = () => {
   fetchData()
 }
 
-// 图表配置
-const statusChartOption = computed(() => {
-  if (!summary.value.statusAgg || summary.value.statusAgg.length === 0) {
-    return {}
-  }
-
-  return {
-    backgroundColor: 'transparent',
-    tooltip: {
-      trigger: 'item',
-      formatter: '{b}: <br/>{c} ({d}%) <br>金额: ¥{@amountSum}'
-    },
-    legend: {
-      orient: 'vertical',
-      left: 'left',
-      textStyle: { color: isDark.value ? 'var(--color-bg-light, white)' : 'var(--color-gray-700)' }
-    },
-    series: [
-      {
-        type: 'pie',
-        radius: '60%',
-        data: summary.value.statusAgg.map(s => ({
-          value: s.count,
-          name: s.statusName,
-          amountSum: s.amountSum
-        })),
-        emphasis: {
-          itemStyle: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: 'var(--overlay-color, rgba(0, 0, 0, 0.5))'
-          }
-        }
-      }
-    ]
-  }
-})
-
-const revenueChartOption = computed(() => {
-  if (!summary.value.monthlyRevenue || summary.value.monthlyRevenue.length === 0) {
-    return {}
-  }
-
-  return {
-    backgroundColor: 'transparent',
-    tooltip: {
-      trigger: 'axis',
-      formatter: (params: any) => {
-        const param = params[0]
-        return `${param.name}<br/>收入: ¥${formatAmount(param.value)}`
-      }
-    },
-    xAxis: {
-      type: 'category',
-      data: summary.value.monthlyRevenue.map(m => m.month),
-      axisLabel: { color: isDark.value ? 'var(--color-bg-light, white)' : 'var(--color-gray-700)' }
-    },
-    yAxis: {
-      type: 'value',
-      axisLabel: {
-        color: isDark.value ? 'var(--color-bg-light, white)' : 'var(--color-gray-700)',
-        formatter: (value: number) => `¥${(value / 1000).toFixed(0)}k`
-      }
-    },
-    series: [
-      {
-        type: 'line',
-        data: summary.value.monthlyRevenue.map(m => m.receivedSum),
-        smooth: true,
-        areaStyle: {
-          opacity: 0.3
-        }
-      }
-    ]
-  }
-})
-
-const deliveryChartOption = computed(() => {
-  if (!summary.value.deliveryCycle || summary.value.deliveryCycle.length === 0) {
-    return {}
-  }
-
-  return {
-    backgroundColor: 'transparent',
-    tooltip: {
-      trigger: 'axis',
-      formatter: (params: any) => {
-        const param = params[0]
-        return `${param.name}<br/>平均天数: ${param.value.toFixed(1)}天<br/>项目数: ${param.data.count}`
-      }
-    },
-    xAxis: {
-      type: 'category',
-      data: summary.value.deliveryCycle.map(d => d.groupName),
-      axisLabel: {
-        color: isDark.value ? 'var(--color-bg-light, white)' : 'var(--color-gray-700)',
-        rotate: 45
-      }
-    },
-    yAxis: {
-      type: 'value',
-      name: '天数',
-      axisLabel: { color: isDark.value ? 'var(--color-bg-light, white)' : 'var(--color-gray-700)' }
-    },
-    series: [
-      {
-        type: 'bar',
-        data: summary.value.deliveryCycle.map(d => ({
-          value: d.avgDays,
-          count: d.count
-        }))
-      }
-    ]
-  }
-})
-
-const customerChartOption = computed(() => {
-  if (!summary.value.customerTop || summary.value.customerTop.length === 0) {
-    return {}
-  }
-
-  return {
-    backgroundColor: 'transparent',
-    tooltip: {
-      trigger: 'axis',
-      formatter: (params: any) => {
-        const param = params[0]
-        return `${param.name}<br/>金额: ¥${formatAmount(param.value)}<br/>项目 ${param.data.count}`
-      }
-    },
-    xAxis: {
-      type: 'value',
-      axisLabel: {
-        color: isDark.value ? 'var(--color-bg-light, white)' : 'var(--color-gray-700)',
-        formatter: (value: number) => `¥${(value / 1000).toFixed(0)}k`
-      }
-    },
-    yAxis: {
-      type: 'category',
-      data: summary.value.customerTop.map(c => c.customerName),
-      axisLabel: { color: isDark.value ? 'var(--color-bg-light, white)' : 'var(--color-gray-700)' }
-    },
-    series: [
-      {
-        type: 'bar',
-        data: summary.value.customerTop.map(c => ({
-          value: c.receivedSum,
-          count: c.projectCount
-        })),
-        label: {
-          show: true,
-          position: 'right',
-          formatter: (params: any) => `¥${formatAmount(params.value)}`
-        }
-      }
-    ]
-  }
-})
-
-// 表格列定义
-const dueSoonColumns: DataTableColumns<ProjectBrief> = [
-  { title: '项目名称', key: 'title', width: 200 },
-  { title: '客户', key: 'clientName', width: 150 },
-  {
-    title: '截止日期',
-    key: 'deadlineAt',
-    width: 120,
-    render: (row) => row.deadlineAt ? new Date(row.deadlineAt).toLocaleDateString('zh-CN') : '-'
-  },
-  {
-    title: '剩余天数',
-    key: 'daysRemaining',
-    width: 100,
-    render: (row) => row.daysRemaining !== undefined ? `${row.daysRemaining}天` : '-'
-  },
-  { title: '下一步行动', key: 'nextAction', width: 200 },
-  {
-    title: '金额',
-    key: 'totalAmount',
-    width: 120,
-    render: (row) => row.totalAmount ? `¥${formatAmount(row.totalAmount)}` : '-'
-  }
-]
-
-const overdueColumns: DataTableColumns<ProjectBrief> = [
-  { title: '项目名称', key: 'title', width: 200 },
-  {
-    title: '逾期天数',
-    key: 'overdueDays',
-    width: 100,
-    render: (row) => row.overdueDays !== undefined ? `${row.overdueDays}天` : '-'
-  },
-  { title: '阻塞原因', key: 'blockReason', width: 300 },
-  {
-    title: '金额',
-    key: 'totalAmount',
-    width: 120,
-    render: (row) => row.totalAmount ? `¥${formatAmount(row.totalAmount)}` : '-'
-  }
-]
-
-// 行点击
 const handleRowClick = (row: ProjectBrief) => {
   router.push(`/admin/side-projects/projects/${row.id}`)
 }
 
-// 工具函数
-const formatAmount = (amount: number): string => {
+function formatAmount(amount: number) {
   return amount.toFixed(2)
 }
 
-// 初始化
 onMounted(() => {
+  ensureChartsReady()
   fetchData()
 })
 </script>
@@ -557,8 +492,12 @@ onMounted(() => {
   padding: var(--spacing-lg);
 }
 
-.filter-card {
+.filter-card,
+.kpi-card,
+.chart-card,
+.risk-card {
   background: var(--color-bg-card);
+  border: 1px solid var(--color-border-subtle);
 }
 
 .filter-row {
@@ -572,11 +511,6 @@ onMounted(() => {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: var(--spacing-md);
-}
-
-.kpi-card {
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border-subtle);
 }
 
 .kpi-content {
@@ -610,43 +544,28 @@ onMounted(() => {
 
 .charts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
   gap: var(--spacing-lg);
 }
 
-.chart-card {
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border-subtle);
-}
-
-.chart-container {
+.chart-container,
+.chart-empty,
+.chart-skeleton {
   height: 400px;
   width: 100%;
 }
 
-.chart-empty {
+.chart-empty,
+.chart-skeleton,
+.loading-container {
   display: flex;
-  justify-content: center;
   align-items: center;
-  height: 400px;
+  justify-content: center;
   color: var(--color-text-muted);
 }
 
 .loading-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   min-height: 400px;
-}
-
-.risk-lists {
-  display: flex;
-  flex-direction: column;
-}
-
-.risk-card {
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border-subtle);
 }
 
 .risk-card :deep(.n-data-table) {
@@ -656,5 +575,20 @@ onMounted(() => {
 .risk-card :deep(.n-data-table tr:hover) {
   background-color: var(--color-bg-hover);
 }
-</style>
 
+@media (max-width: 768px) {
+  .analytics-page {
+    padding: var(--spacing-md);
+  }
+
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-container,
+  .chart-empty,
+  .chart-skeleton {
+    height: 320px;
+  }
+}
+</style>

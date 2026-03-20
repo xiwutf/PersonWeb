@@ -89,6 +89,10 @@ const chatInput = ref('')
 
 let animationId: number | null = null
 let blinkTimer: NodeJS.Timeout | null = null
+let introTimer: number | null = null
+let visibilityHandler: (() => void) | null = null
+let isPaused = false
+let lastFrameTime = 0
 let eyeState = { left: { open: true }, right: { open: true } }
 let mouthState = { open: false, frame: 0 }
 let speechIndex = 0
@@ -138,15 +142,24 @@ const initCanvas = () => {
       eyeState.left.open = true
       eyeState.right.open = true
     }, 150)
-  }, 3000)
+  }, 4500)
 }
 
-const draw = () => {
+const draw = (timestamp = 0) => {
   if (!canvasRef.value) return
+  if (isPaused) {
+    animationId = requestAnimationFrame(draw)
+    return
+  }
   
   const canvas = canvasRef.value
   const ctx = canvas.getContext('2d')
   if (!ctx) return
+  if (timestamp - lastFrameTime < 33) {
+    animationId = requestAnimationFrame(draw)
+    return
+  }
+  lastFrameTime = timestamp
   
   // 清空画布
   ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -459,12 +472,16 @@ const handleResize = () => {
 onMounted(() => {
   // 延迟初始化，确保 DOM 已完全渲染
   nextTick(() => {
-    setTimeout(() => {
+    introTimer = window.setTimeout(() => {
       initCanvas()
     }, 100)
   })
   
   // 监听窗口大小变化
+  visibilityHandler = () => {
+    isPaused = document.hidden
+  }
+  document.addEventListener('visibilitychange', visibilityHandler)
   window.addEventListener('resize', handleResize)
 })
 
@@ -474,6 +491,12 @@ onUnmounted(() => {
   }
   if (blinkTimer) {
     clearInterval(blinkTimer)
+  }
+  if (introTimer) {
+    clearTimeout(introTimer)
+  }
+  if (visibilityHandler) {
+    document.removeEventListener('visibilitychange', visibilityHandler)
   }
   window.removeEventListener('resize', handleResize)
 })

@@ -613,22 +613,49 @@ watch(onlineOnly, () => {
 })
 
 const autoRefreshInterval = ref<NodeJS.Timeout | null>(null)
+let visibilityHandler: (() => void) | null = null
+
+const startAutoRefresh = () => {
+  if (!process.client || autoRefreshInterval.value) return
+
+  autoRefreshInterval.value = setInterval(() => {
+    if (document.hidden) return
+    fetchOverview()
+    fetchVisitors()
+  }, 60000)
+}
+
+const stopAutoRefresh = () => {
+  if (autoRefreshInterval.value) {
+    clearInterval(autoRefreshInterval.value)
+    autoRefreshInterval.value = null
+  }
+}
 
 onMounted(() => {
   loadChartJS()
   refreshAll()
   if (process.client) {
-    autoRefreshInterval.value = setInterval(() => {
+    visibilityHandler = () => {
+      if (document.hidden) {
+        stopAutoRefresh()
+        return
+      }
+
       fetchOverview()
       fetchVisitors()
-    }, 60000)
+      startAutoRefresh()
+    }
+
+    document.addEventListener('visibilitychange', visibilityHandler)
+    startAutoRefresh()
   }
 })
 
 onUnmounted(() => {
-  if (autoRefreshInterval.value) {
-    clearInterval(autoRefreshInterval.value)
-    autoRefreshInterval.value = null
+  stopAutoRefresh()
+  if (visibilityHandler && process.client) {
+    document.removeEventListener('visibilitychange', visibilityHandler)
   }
 })
 </script>

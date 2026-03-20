@@ -92,7 +92,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { onUnmounted, ref, watch } from 'vue'
 import { useTheme } from '~/composables/useTheme'
 
 interface Theme {
@@ -119,8 +119,10 @@ const currentTheme = ref<string>('light')
 const currentBackground = ref<string>('particles')
 const autoSwitch = ref(false)
 const switchInterval = ref(30)
+const hasLoadedInitialData = ref(false)
 
 let autoSwitchTimer: NodeJS.Timeout | null = null
+let hasEscapeListener = false
 
 const fetchThemes = async () => {
   themes.value = [
@@ -151,6 +153,9 @@ const fetchBackgrounds = async () => {
 const loadUserPreference = async () => {
   try {
     currentTheme.value = themeState.value || 'light'
+    if (process.client) {
+      currentBackground.value = localStorage.getItem('theme_background_effect') || 'particles'
+    }
 
     const visitorId = localStorage.getItem('visitor_id') || 'anonymous'
     const res = await api.post('/Theme/preference', { visitorId })
@@ -158,6 +163,9 @@ const loadUserPreference = async () => {
       currentBackground.value = res.backgroundEffectCode || 'particles'
       autoSwitch.value = res.autoSwitch || false
       switchInterval.value = res.switchInterval || 30
+      if (process.client) {
+        localStorage.setItem('theme_background_effect', currentBackground.value)
+      }
     }
   } catch (e) {
     console.error('加载用户偏好失败', e)
@@ -183,6 +191,9 @@ const selectTheme = async (themeCode: string) => {
 const selectBackground = async (bgCode: string) => {
   currentBackground.value = bgCode
   applyBackground(bgCode)
+  if (process.client) {
+    localStorage.setItem('theme_background_effect', bgCode)
+  }
 
   try {
     const visitorId = localStorage.getItem('visitor_id') || 'anonymous'
@@ -276,7 +287,9 @@ const handleEscape = (e: KeyboardEvent) => {
   }
 }
 
-onMounted(async () => {
+const ensureLoaded = async () => {
+  if (hasLoadedInitialData.value) return
+
   await Promise.all([fetchThemes(), fetchBackgrounds(), loadUserPreference()])
   currentTheme.value = themeState.value === 'dark' ? 'dark' : 'light'
   applyBackground(currentBackground.value)
@@ -285,12 +298,37 @@ onMounted(async () => {
     startAutoSwitch()
   }
 
-  window.addEventListener('keydown', handleEscape)
+  hasLoadedInitialData.value = true
+}
+
+if (process.client) {
+  currentTheme.value = themeState.value === 'dark' ? 'dark' : 'light'
+  currentBackground.value = localStorage.getItem('theme_background_effect') || 'particles'
+  applyBackground(currentBackground.value)
+}
+
+watch(isOpen, async (open) => {
+  if (open) {
+    await ensureLoaded()
+
+    if (!hasEscapeListener && process.client) {
+      window.addEventListener('keydown', handleEscape)
+      hasEscapeListener = true
+    }
+    return
+  }
+
+  if (hasEscapeListener && process.client) {
+    window.removeEventListener('keydown', handleEscape)
+    hasEscapeListener = false
+  }
 })
 
 onUnmounted(() => {
   stopAutoSwitch()
-  window.removeEventListener('keydown', handleEscape)
+  if (hasEscapeListener && process.client) {
+    window.removeEventListener('keydown', handleEscape)
+  }
 })
 </script>
 

@@ -165,13 +165,18 @@
                   <!-- 粒子背景 - 降低可见度作为背景 -->
                   <div class="w-full h-full opacity-20 hover:opacity-30 transition-opacity duration-300 absolute inset-0">
                     <ParticleAvatar
+                      v-if="showParticleAvatar"
                       :image-url="'/images/avatar.jpg'"
                       :text="'溪午听风'"
                       :subtitle="'Full-stack & AI Developer'"
-                      :particle-count="1200"
-                      :interactive="true"
+                      :particle-count="680"
+                      :interactive="false"
                       class="w-full h-full"
                     />
+                    <div
+                      v-else
+                      class="w-full h-full rounded-[2rem] bg-[radial-gradient(circle_at_30%_30%,rgba(96,165,250,0.22),transparent_42%),radial-gradient(circle_at_70%_65%,rgba(168,85,247,0.18),transparent_38%),linear-gradient(135deg,rgba(15,23,42,0.72),rgba(30,41,59,0.34))]"
+                    ></div>
                   </div>
 
                   <!-- 底部信息条 - 重新设计为更融合的样式 -->
@@ -526,13 +531,19 @@
 
 <script setup lang="ts">
 // 逻辑部分保持原有结构，只是补充了类型声明
-import { ref, onMounted, onUnmounted } from 'vue'
+import { computed, defineAsyncComponent, ref, onMounted, onUnmounted } from 'vue'
+
+const ParticleAvatar = defineAsyncComponent(() => import('~/components/effects/ParticleAvatar.vue'))
 
 // 使用模块主题 composable
 const { moduleTheme } = useModuleTheme('home_hero')
 
 const api = useApi()
 const latestPosts = ref<any[]>([])
+const shouldMountParticleAvatar = ref(false)
+const isPerformanceConstrained = ref(false)
+const showParticleAvatar = computed(() => shouldMountParticleAvatar.value && !isPerformanceConstrained.value)
+let particleAvatarTimer: number | null = null
 
 // 获取最新文章
 const fetchLatestPosts = async () => {
@@ -615,6 +626,36 @@ const startRoleRotation = () => {
   }, 3000) // 每 3 秒切换一次
 }
 
+const detectPerformanceConstraints = () => {
+  const coarsePointer = window.matchMedia('(pointer: coarse)').matches
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const narrowScreen = window.innerWidth < 1280
+  const saveData = navigator.connection?.saveData === true
+  const lowMemory = typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 4
+
+  isPerformanceConstrained.value = Boolean(coarsePointer || reducedMotion || narrowScreen || saveData || lowMemory)
+}
+
+const scheduleParticleAvatar = () => {
+  if (isPerformanceConstrained.value) {
+    shouldMountParticleAvatar.value = false
+    return
+  }
+
+  const mountAvatar = () => {
+    shouldMountParticleAvatar.value = true
+  }
+
+  if ('requestIdleCallback' in window) {
+    ;(window as Window & {
+      requestIdleCallback: (callback: IdleRequestCallback, options?: IdleRequestOptions) => number
+    }).requestIdleCallback(() => mountAvatar(), { timeout: 1800 })
+    return
+  }
+
+  particleAvatarTimer = window.setTimeout(mountAvatar, 1200)
+}
+
 // 滚动到内容区域
 const scrollToContent = () => {
   const contentSection = document.getElementById('content')
@@ -629,6 +670,8 @@ let observer: IntersectionObserver | null = null
 onMounted(() => {
   fetchLatestPosts()
   startRoleRotation()
+  detectPerformanceConstraints()
+  scheduleParticleAvatar()
 
   observer = new IntersectionObserver(
     entries => {
@@ -649,6 +692,9 @@ onMounted(() => {
 onUnmounted(() => {
   if (roleInterval) {
     clearInterval(roleInterval)
+  }
+  if (particleAvatarTimer) {
+    clearTimeout(particleAvatarTimer)
   }
   if (observer) {
     observer.disconnect()

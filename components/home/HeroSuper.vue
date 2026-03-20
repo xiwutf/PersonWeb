@@ -153,8 +153,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from 'vue'
-import { animate, stagger } from '@motionone/dom'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 
 const api = useApi()
 const leftContentRef = ref<HTMLElement | null>(null)
@@ -202,11 +201,7 @@ const roles = ['全栈开发者', 'AI 应用探索者', 'Revit 插件实践者',
 const currentRoleIndex = ref(0)
 let roleInterval: NodeJS.Timeout | null = null
 
-const startRoleCarousel = () => {
-  roleInterval = setInterval(() => {
-    currentRoleIndex.value = (currentRoleIndex.value + 1) % roles.length
-  }, 3000)
-}
+const startRoleCarousel = () => {}
 
 // 滚动到内容区
 const scrollToContent = () => {
@@ -216,12 +211,28 @@ const scrollToContent = () => {
   }
 }
 
+const shouldSkipIntroAnimation = () => {
+  if (!process.client) return false
+
+  const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+  const coarsePointer = window.matchMedia?.('(pointer: coarse)').matches
+  const narrowScreen = window.innerWidth < 1024
+  const saveData = navigator.connection?.saveData === true
+  const lowMemory = typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 4
+
+  return Boolean(reducedMotion || coarsePointer || narrowScreen || saveData || lowMemory)
+}
+
 // 初始化动画
 onMounted(async () => {
   // 先获取配置
   await fetchSiteConfig()
   
-  startRoleCarousel()
+  if (shouldSkipIntroAnimation()) {
+    return
+  }
+
+  const { animate, stagger } = await import('@motionone/dom')
   
   // 使用 Motion One 添加进入动画
   if (leftContentRef.value) {

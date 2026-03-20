@@ -1,25 +1,22 @@
 <template>
   <ClientOnly>
     <div class="support-chat-container">
-      <!-- 悬浮按钮 -->
       <div
         v-if="!showChat"
         class="support-chat-button"
+        role="button"
+        tabindex="0"
+        aria-label="打开智能客服"
         @click="openChat"
         @mousedown.stop
         @touchstart.stop
-        role="button"
-        tabindex="0"
         @keydown.enter="openChat"
-        aria-label="打开智能客服"
       >
         <i class="fas fa-comments"></i>
         <span class="button-text">智能客服</span>
       </div>
 
-      <!-- 聊天窗口 -->
       <n-drawer
-        ref="drawerRef"
         v-model:show="showChat"
         :width="400"
         placement="right"
@@ -31,13 +28,9 @@
           <div class="chat-header">
             <div class="header-info">
               <h3 class="header-title">智能客服</h3>
-              <p class="header-subtitle">可以向我咨询服务内容、项目开发、工具使用等问题</p>
+              <p class="header-subtitle">可以咨询服务内容、项目开发、工具使用等问题</p>
             </div>
-            <n-button
-              text
-              size="small"
-              @click="closeChat"
-            >
+            <n-button text size="small" @click="closeChat">
               <template #icon>
                 <i class="fas fa-times"></i>
               </template>
@@ -46,85 +39,79 @@
         </template>
 
         <div class="chat-content">
-        <!-- 消息列表 -->
-        <div class="messages-list" ref="messagesContainer">
-          <div
-            v-for="(message, index) in messages"
-            :key="index"
-            class="message-item"
-            :class="{ 'message-user': message.role === 'user', 'message-assistant': message.role === 'assistant' }"
-          >
-            <div class="message-avatar">
-              <i
-                v-if="message.role === 'user'"
-                class="fas fa-user"
-              ></i>
-              <i
-                v-else
-                class="fas fa-robot"
-              ></i>
-            </div>
-            <div class="message-content">
-              <div class="message-text" v-html="formatMessage(message.content)"></div>
-              <div v-if="message.relatedLinks && message.relatedLinks.length > 0" class="message-links">
-                <div
-                  v-for="(link, linkIndex) in message.relatedLinks"
-                  :key="linkIndex"
-                  class="link-item"
-                >
-                  <NuxtLink :to="parseLink(link)" class="link-text">
-                    <i class="fas fa-link"></i>
-                    {{ getLinkText(link) }}
-                  </NuxtLink>
+          <div ref="messagesContainer" class="messages-list">
+            <div
+              v-for="(message, index) in messages"
+              :key="index"
+              class="message-item"
+              :class="{ 'message-user': message.role === 'user', 'message-assistant': message.role === 'assistant' }"
+            >
+              <div class="message-avatar">
+                <i v-if="message.role === 'user'" class="fas fa-user"></i>
+                <i v-else class="fas fa-robot"></i>
+              </div>
+              <div class="message-content">
+                <div class="message-text" v-html="formatMessage(message.content)"></div>
+                <div v-if="message.relatedLinks?.length" class="message-links">
+                  <div
+                    v-for="(link, linkIndex) in message.relatedLinks"
+                    :key="linkIndex"
+                    class="link-item"
+                  >
+                    <NuxtLink :to="parseLink(link)" class="link-text">
+                      <i class="fas fa-link"></i>
+                      {{ getLinkText(link) }}
+                    </NuxtLink>
+                  </div>
+                </div>
+                <div v-if="message.needHuman" class="message-human-tip">
+                  <i class="fas fa-exclamation-circle"></i>
+                  建议人工跟进
                 </div>
               </div>
-              <div v-if="message.needHuman" class="message-human-tip">
-                <i class="fas fa-exclamation-circle"></i>
-                建议人工跟进
-              </div>
             </div>
-          </div>
-          <div v-if="loading" class="message-item message-assistant">
-            <div class="message-avatar">
-              <i class="fas fa-robot"></i>
-            </div>
-            <div class="message-content">
-              <div class="message-text">
-                <n-spin size="small" />
-                <span class="ml-2">正在思考...</span>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <!-- 输入区域 -->
-        <div class="chat-input-area">
-          <n-input
-            v-model:value="inputMessage"
-            type="textarea"
-            :rows="2"
-            placeholder="输入您的问题..."
-            @keydown.enter.ctrl="sendMessage"
-            @keydown.enter.exact.prevent="sendMessage"
-          />
-          <div class="input-actions">
-            <span class="input-hint">按 Enter 发送，Ctrl+Enter 换行</span>
-            <n-button
-              type="primary"
-              :loading="loading"
-              :disabled="!inputMessage.trim()"
-              @click="sendMessage"
-            >
-              <template #icon>
-                <i class="fas fa-paper-plane"></i>
-              </template>
-              发送
-            </n-button>
+            <div v-if="loading" class="message-item message-assistant">
+              <div class="message-avatar">
+                <i class="fas fa-robot"></i>
+              </div>
+              <div class="message-content">
+                <div class="message-text">
+                  <n-spin size="small" />
+                  <span class="ml-2">正在思考...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-input-area">
+            <n-input
+              v-model:value="inputMessage"
+              type="textarea"
+              :rows="2"
+              placeholder="输入您的问题..."
+              @keydown.enter.ctrl="sendMessage"
+              @keydown.enter.exact.prevent="sendMessage"
+            />
+            <div class="input-actions">
+              <span class="input-hint">按 Enter 发送，Ctrl+Enter 换行</span>
+              <n-button
+                type="primary"
+                :loading="loading"
+                :disabled="!inputMessage.trim()"
+                @click="sendMessage"
+              >
+                <template #icon>
+                  <i class="fas fa-paper-plane"></i>
+                </template>
+                发送
+              </n-button>
+            </div>
           </div>
         </div>
-      </div>
       </n-drawer>
     </div>
+
     <template #fallback>
       <div class="support-chat-container">
         <div class="support-chat-button" style="opacity: 0.5;">
@@ -137,121 +124,67 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick, watch } from 'vue'
-import { NDrawer, NInput, NButton, NSpin } from 'naive-ui'
+import { nextTick, ref, watch } from 'vue'
+import { NButton, NDrawer, NInput, NSpin } from 'naive-ui'
 import { useMarkdown } from '~/composables/useMarkdown'
 
+type ChatMessage = {
+  role: 'user' | 'assistant'
+  content: string
+  relatedLinks?: string[]
+  needHuman?: boolean
+}
+
 const api = useApi()
+const route = useRoute()
 const message = useSafeMessage()
 const { parse: markdownToHtml } = useMarkdown()
 
 const showChat = ref(false)
 const inputMessage = ref('')
 const loading = ref(false)
-const messages = ref<Array<{
-  role: 'user' | 'assistant'
-  content: string
-  relatedLinks?: string[]
-  needHuman?: boolean
-}>>([])
+const messages = ref<ChatMessage[]>([])
 const messagesContainer = ref<HTMLElement | null>(null)
-const drawerRef = ref<any>(null)
 
-// 打开聊天窗口
-const openChat = async (e?: Event) => {
-  try {
-    if (e) {
-      e.preventDefault()
-      e.stopPropagation()
-    }
-    console.log('智能客服：点击打开聊天窗口', { showChat: showChat.value })
-    
-    // 直接设置 showChat，drawer 会自动处理显示
-    showChat.value = true
-    addWelcomeMessage()
-    
-    // 确保 drawer 正确显示
-    await nextTick()
-    await nextTick() // 多等一个 tick 确保渲染完成
-    console.log('智能客服：drawer 状态', showChat.value, 'drawerRef:', drawerRef.value)
-    
-    // 调试：检查 DOM 中是否有正确的 drawer 元素
-    if (typeof window !== 'undefined') {
-      setTimeout(() => {
-        try {
-          // 查找 body 下的 drawer（Naive UI drawer 会挂载到 body）
-          const bodyDrawers = document.body.querySelectorAll('.n-drawer-container, .n-drawer')
-          console.log('智能客服：body 中的 drawer 数量', bodyDrawers.length)
-          
-          // 查找所有 drawer
-          const allDrawers = document.querySelectorAll('.n-drawer-container, .n-drawer, [class*="n-drawer"]')
-          console.log('智能客服：页面中所有 drawer 元素数量', allDrawers.length)
-          
-          if (allDrawers.length > 0) {
-            allDrawers.forEach((el, index) => {
-              const htmlEl = el as HTMLElement
-              const styles = window.getComputedStyle(htmlEl)
-              console.log(`智能客服：drawer ${index}`, {
-                element: htmlEl,
-                classes: htmlEl.className,
-                display: styles.display,
-                visibility: styles.visibility,
-                opacity: styles.opacity,
-                zIndex: styles.zIndex,
-                transform: styles.transform,
-                position: styles.position,
-                width: styles.width,
-                height: styles.height
-              })
-            })
-          } else {
-            console.error('智能客服：未找到任何 drawer 元素！drawer 可能未渲染')
-          }
-        } catch (err) {
-          console.error('智能客服：检查 drawer 时出错', err)
-        }
-      }, 300)
-    }
-  } catch (error) {
-    console.error('智能客服：打开聊天窗口时出错', error)
-    message.error('打开聊天窗口失败，请刷新页面重试')
+const openChat = async (event?: Event) => {
+  if (event) {
+    event.preventDefault()
+    event.stopPropagation()
   }
+
+  showChat.value = true
+  addWelcomeMessage()
+  await nextTick()
+  scrollToBottom()
 }
 
-// 添加欢迎消息
 const addWelcomeMessage = () => {
-  if (messages.value.length === 0) {
-    messages.value.push({
-      role: 'assistant',
-      content: '你好！我是智能客服，可以帮你解答关于服务内容、项目开发、工具使用等问题。有什么可以帮你的吗？'
-    })
-  }
+  if (messages.value.length > 0) return
+
+  messages.value.push({
+    role: 'assistant',
+    content: '你好！我是智能客服，可以帮你解答服务内容、项目开发和工具使用等问题。'
+  })
 }
 
-// 关闭聊天窗口
 const closeChat = () => {
   showChat.value = false
 }
 
-// 发送消息
 const sendMessage = async () => {
   if (!inputMessage.value.trim() || loading.value) return
 
   const userMessage = inputMessage.value.trim()
   inputMessage.value = ''
 
-  // 添加用户消息
   messages.value.push({
     role: 'user',
     content: userMessage
   })
 
-  // 滚动到底部
-  nextTick(() => {
-    scrollToBottom()
-  })
+  await nextTick()
+  scrollToBottom()
 
-  // 调用 API
   loading.value = true
   try {
     const res = await api.post('/ai/support/answer', {
@@ -261,113 +194,86 @@ const sendMessage = async () => {
       userMeta: getUserMeta()
     })
 
-    // 处理响应数据（兼容不同的响应格式）
-    if (res) {
-      // 兼容 success/answer 格式和直接返回 answer 的格式
-      const answer = res.answer || res.Answer || res.content || ''
-      const success = res.success !== undefined ? res.success : res.Success !== undefined ? res.Success : true
-      
-      if (success && answer) {
-        messages.value.push({
-          role: 'assistant',
-          content: answer,
-          relatedLinks: res.relatedLinks || res.RelatedLinks || [],
-          needHuman: res.needHuman || res.NeedHuman || false
-        })
-      } else {
-        message.error(res.message || res.Message || '获取回答失败，请稍后重试')
-        messages.value.push({
-          role: 'assistant',
-          content: '抱歉，我暂时无法回答这个问题，请稍后重试或联系人工客服。'
-        })
-      }
-    } else {
-      message.error('获取回答失败，请稍后重试')
+    const answer = res?.answer || res?.Answer || res?.content || ''
+    const success = res?.success !== undefined ? res.success : res?.Success !== undefined ? res.Success : true
+
+    if (success && answer) {
       messages.value.push({
         role: 'assistant',
-        content: '抱歉，我暂时无法回答这个问题，请稍后重试或联系人工客服。'
+        content: answer,
+        relatedLinks: res?.relatedLinks || res?.RelatedLinks || [],
+        needHuman: res?.needHuman || res?.NeedHuman || false
+      })
+    } else {
+      message.error(res?.message || res?.Message || '获取回答失败，请稍后重试')
+      messages.value.push({
+        role: 'assistant',
+        content: '抱歉，我暂时无法回答这个问题，请稍后再试或联系人工客服。'
       })
     }
-  } catch (e: any) {
-    console.error('发送消息失败:', e)
+  } catch (error) {
+    if (process.dev) {
+      console.error('Support chat send failed', error)
+    }
+
     message.error('发送消息失败，请稍后重试')
     messages.value.push({
       role: 'assistant',
-      content: '抱歉，服务暂时不可用，请稍后重试。'
+      content: '抱歉，服务暂时不可用，请稍后再试。'
     })
   } finally {
     loading.value = false
-    nextTick(() => {
-      scrollToBottom()
-    })
+    await nextTick()
+    scrollToBottom()
   }
 }
 
-// 获取页面上下文
 const getPageContext = (): string => {
-  if (typeof window === 'undefined') return ''
-  try {
-    const route = useRoute()
-    const path = route.path
-    
-    if (path.startsWith('/projects')) return '项目展示页'
-    if (path.startsWith('/tools')) return '工具详情页'
-    if (path.startsWith('/blog')) return '博客文章页'
-    return '首页'
-  } catch {
-    return ''
-  }
+  const path = route.path
+  if (path.startsWith('/projects')) return '项目展示页'
+  if (path.startsWith('/tools')) return '工具详情页'
+  if (path.startsWith('/blog')) return '博客文章页'
+  return '首页'
 }
 
-// 获取用户元信息
 const getUserMeta = (): string => {
-  if (typeof window === 'undefined') return '未登录访客'
-  const token = localStorage.getItem('admin_token')
-  return token ? '已登录用户' : '未登录访客'
+  if (!process.client) return '未登录访客'
+  return localStorage.getItem('admin_token') ? '已登录用户' : '未登录访客'
 }
 
-// 格式化消息（Markdown 转 HTML）
-const formatMessage = (content: string): string => {
-  return markdownToHtml(content)
-}
+const formatMessage = (content: string): string => markdownToHtml(content)
 
-// 解析链接（格式：链接文本|链接地址）
 const parseLink = (link: string): string => {
   const parts = link.split('|')
   return parts.length > 1 ? parts[1] : link
 }
 
-// 获取链接文本
 const getLinkText = (link: string): string => {
   const parts = link.split('|')
   return parts.length > 1 ? parts[0] : link
 }
 
-// 滚动到底部
 const scrollToBottom = () => {
-  if (messagesContainer.value) {
-    messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight
-  }
+  if (!messagesContainer.value) return
+  messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight
 }
 
-// 监听消息变化，自动滚动
-watch(messages, () => {
-  nextTick(() => {
-    scrollToBottom()
-  })
-}, { deep: true })
+watch(() => messages.value.length, async () => {
+  await nextTick()
+  scrollToBottom()
+})
 </script>
 
 <style scoped>
 .support-chat-container {
   position: fixed;
-  bottom: 80px; /* 调整位置，避免与小智按钮重叠 */
+  bottom: 80px; /* 璋冩暣浣嶇疆锛岄伩鍏嶄笌灏忔櫤鎸夐挳閲嶅彔 */
   right: 24px;
-  z-index: 10001 !important; /* 确保在 AI 小智按钮之上 */
+  z-index: 10001 !important; /* 纭繚鍦?AI 灏忔櫤鎸夐挳涔嬩笂 */
   pointer-events: auto !important;
 }
 
-/* 确保 drawer 正确显示 */
+/* 纭繚 drawer 姝ｇ‘鏄剧ず */
 .support-chat-drawer,
 .support-chat-container :deep(.n-drawer),
 .support-chat-container :deep(.n-drawer-container) {
@@ -464,6 +370,7 @@ watch(messages, () => {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -594,4 +501,3 @@ watch(messages, () => {
   }
 }
 </style>
-

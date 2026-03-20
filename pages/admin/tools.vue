@@ -2,16 +2,16 @@
   <div class="space-y-6">
     <div class="page-header">
       <h1 class="page-title">工具管理</h1>
-      <button @click="openModal()" class="btn-primary">
-        <i class="fas fa-plus mr-2"></i>新增工具
+      <button class="btn-primary" @click="openModal()">
+        <i class="fas fa-plus mr-2"></i>
+        新增工具
       </button>
     </div>
 
-    <!-- 统计卡片 -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+    <div class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-4">
       <div class="card p-4">
         <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">工具总数</div>
-        <div class="text-2xl font-bold text-gray-800 dark:text-var(--color-bg-light, white)">{{ stats.total }}</div>
+        <div class="text-2xl font-bold text-gray-800 dark:text-white">{{ stats.total }}</div>
       </div>
       <div class="card p-4">
         <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">已发布</div>
@@ -27,127 +27,207 @@
       </div>
     </div>
 
-    <!-- 图表分析 -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-      <!-- 状态分布图 -->
+    <div class="grid grid-cols-1 gap-6 mb-6 md:grid-cols-2">
       <div class="card p-6">
-        <h3 class="text-lg font-bold text-gray-800 dark:text-var(--color-bg-light, white) mb-4">状态分布</h3>
+        <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">状态分布</h3>
         <ClientOnly>
-          <div v-if="statusChartOption" class="h-64">
-            <v-chart :option="statusChartOption" autoresize class="w-full h-full" />
+          <div
+            v-if="statusChartOption && chartsReady && chartComponent"
+            class="h-64"
+          >
+            <component
+              :is="chartComponent"
+              :option="statusChartOption"
+              autoresize
+              class="w-full h-full"
+            />
           </div>
-          <div v-else class="h-64 flex items-center justify-center text-gray-500 dark:text-gray-400">
-            正在加载...
+          <div
+            v-else
+            class="h-64 flex items-center justify-center text-gray-500 dark:text-gray-400"
+          >
+            图表加载中...
           </div>
         </ClientOnly>
       </div>
 
-      <!-- 价格分布 -->
       <div class="card p-6">
-        <h3 class="text-lg font-bold text-gray-800 dark:text-var(--color-bg-light, white) mb-4">价格分布</h3>
+        <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">价格分布</h3>
         <ClientOnly>
-          <div v-if="priceChartOption" class="h-64">
-            <v-chart :option="priceChartOption" autoresize class="w-full h-full" />
+          <div
+            v-if="priceChartOption && chartsReady && chartComponent"
+            class="h-64"
+          >
+            <component
+              :is="chartComponent"
+              :option="priceChartOption"
+              autoresize
+              class="w-full h-full"
+            />
           </div>
-          <div v-else class="h-64 flex items-center justify-center text-gray-500 dark:text-gray-400">
-            正在加载...
+          <div
+            v-else
+            class="h-64 flex items-center justify-center text-gray-500 dark:text-gray-400"
+          >
+            图表加载中...
           </div>
         </ClientOnly>
       </div>
     </div>
 
-    <!-- 工具列表 -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div v-for="tool in tools" :key="tool.id" class="card p-6 flex flex-col">
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div
+        v-for="tool in tools"
+        :key="tool.id"
+        class="card p-6 flex flex-col"
+      >
         <div class="flex items-start justify-between mb-4">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-2xl">
               {{ tool.icon || '🛠️' }}
             </div>
             <div>
-              <h3 class="font-bold text-gray-800 dark:text-var(--color-bg-light, white)">{{ tool.name }}</h3>
+              <h3 class="font-bold text-gray-800 dark:text-white">{{ tool.name }}</h3>
               <div class="flex items-center gap-2 mt-1">
-                <span class="text-xs px-2 py-1 rounded" :class="{
-                  'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300': tool.status === 'published',
-                  'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300': tool.status === 'draft',
-                  'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300': tool.status === 'archived'
-                }">
-                  {{ tool.status === 'published' ? '已发布' : tool.status === 'draft' ? '草稿' : '已归档' }}
+                <span class="text-xs px-2 py-1 rounded" :class="statusTagClass(tool.status)">
+                  {{ statusLabelMap[tool.status] || tool.status }}
                 </span>
-                <span v-if="tool.category" class="text-xs text-gray-500 dark:text-gray-400">
+                <span
+                  v-if="tool.category"
+                  class="text-xs text-gray-500 dark:text-gray-400"
+                >
                   {{ tool.category.name }}
                 </span>
               </div>
             </div>
           </div>
+
           <div class="flex gap-2">
-            <button @click="openModal(tool)" class="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+            <button
+              class="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+              @click="openModal(tool)"
+            >
               <span class="sr-only">编辑</span>
               <i class="fas fa-edit"></i>
             </button>
-            <button @click="handleDelete(tool)" class="text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors">
+            <button
+              class="text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+              @click="handleDelete(tool)"
+            >
               <span class="sr-only">删除</span>
               <i class="fas fa-trash"></i>
             </button>
           </div>
         </div>
-        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 flex-1">{{ tool.description || '暂无工具描述' }}</p>
+
+        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 flex-1">
+          {{ tool.description || '暂无工具描述' }}
+        </p>
+
         <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-500">
-          <span>价格: {{ tool.isFree ? '免费' : `￥${tool.price}` }}</span>
-          <span v-if="tool.demoUrl">
-            <a :href="tool.demoUrl" target="_blank" class="btn-link btn-link--blue">演示</a>
-          </span>
+          <span>价格: {{ tool.isFree ? '免费' : `¥${Number(tool.price || 0).toFixed(2)}` }}</span>
+          <a
+            v-if="tool.demoUrl"
+            :href="tool.demoUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-link btn-link--blue"
+          >
+            演示
+          </a>
         </div>
       </div>
-      
-      <!-- 空状态 -->
-      <div v-if="tools.length === 0" class="col-span-full text-center py-12 empty-state card border-dashed">
+
+      <div
+        v-if="!loading && tools.length === 0"
+        class="col-span-full text-center py-12 empty-state card border-dashed"
+      >
         暂无工具数据
       </div>
     </div>
 
-    <!-- 新建/编辑弹窗 -->
     <div v-if="showModal" class="modal-overlay">
       <div class="modal-content max-w-lg max-h-[90vh] overflow-y-auto">
         <div class="modal-header">
-          <h3 class="modal-title">
-            {{ isEdit ? '编辑工具' : '新增工具' }}
-          </h3>
+          <h3 class="modal-title">{{ isEdit ? '编辑工具' : '新增工具' }}</h3>
         </div>
-        
+
         <div class="modal-body space-y-4">
           <div class="form-group">
             <label class="form-label">工具名称 *</label>
-            <input v-model="form.name" type="text" class="form-input" placeholder="例如：JSON 格式化工具" required>
+            <input
+              v-model="form.name"
+              type="text"
+              class="form-input"
+              placeholder="例如：JSON 格式化工具"
+              required
+            >
           </div>
+
           <div class="grid grid-cols-2 gap-4">
             <div class="form-group">
               <label class="form-label">工具标识 (Slug) *</label>
-              <input v-model="form.slug" type="text" class="form-input" placeholder="json-formatter" required>
+              <input
+                v-model="form.slug"
+                type="text"
+                class="form-input"
+                placeholder="json-formatter"
+                required
+              >
             </div>
             <div class="form-group">
               <label class="form-label">图标 (Emoji)</label>
-              <input v-model="form.icon" type="text" class="form-input" placeholder="🔧">
+              <input
+                v-model="form.icon"
+                type="text"
+                class="form-input"
+                placeholder="🛠️"
+              >
             </div>
           </div>
+
           <div class="form-group">
             <label class="form-label">描述</label>
-            <textarea v-model="form.description" class="form-textarea h-24" placeholder="请输入工具简介、适用场景与核心功能..."></textarea>
+            <textarea
+              v-model="form.description"
+              class="form-textarea h-24"
+              placeholder="输入工具简介、适用场景和核心能力..."
+            ></textarea>
           </div>
+
           <div class="form-group">
             <label class="form-label">演示链接</label>
-            <input v-model="form.demoUrl" type="text" class="form-input" placeholder="https://...">
+            <input
+              v-model="form.demoUrl"
+              type="text"
+              class="form-input"
+              placeholder="https://..."
+            >
           </div>
+
           <div class="grid grid-cols-2 gap-4">
             <div class="form-group">
               <label class="form-label">售价</label>
-              <input v-model.number="form.price" type="number" step="0.01" class="form-input" placeholder="0.00">
+              <input
+                v-model.number="form.price"
+                type="number"
+                step="0.01"
+                class="form-input"
+                placeholder="0.00"
+              >
             </div>
             <div class="form-group">
               <label class="form-label">原价</label>
-              <input v-model.number="form.originalPrice" type="number" step="0.01" class="form-input" placeholder="0.00">
+              <input
+                v-model.number="form.originalPrice"
+                type="number"
+                step="0.01"
+                class="form-input"
+                placeholder="0.00"
+              >
             </div>
           </div>
+
           <div class="grid grid-cols-2 gap-4">
             <div class="form-group">
               <label class="form-label">状态</label>
@@ -157,6 +237,7 @@
                 <option value="archived">已归档</option>
               </select>
             </div>
+
             <div class="form-group">
               <label class="flex items-center gap-2">
                 <input v-model="form.isFree" type="checkbox" class="form-checkbox">
@@ -171,8 +252,8 @@
         </div>
 
         <div class="modal-footer">
-          <button @click="showModal = false" class="btn-secondary">取消</button>
-          <button @click="handleSave" class="btn-primary">保存</button>
+          <button class="btn-secondary" @click="showModal = false">取消</button>
+          <button class="btn-primary" @click="handleSave">保存</button>
         </div>
       </div>
     </div>
@@ -180,13 +261,17 @@
 </template>
 
 <script setup lang="ts">
+import { computed, onMounted, ref, shallowRef } from 'vue'
+import type { Component } from 'vue'
+import { useErrorHandler } from '~/composables/useErrorHandler'
+import { useNotification } from '~/composables/useToast'
+
 interface Tool {
   id: number
   name: string
   slug: string
   icon?: string
   description?: string
-  coverImage?: string
   demoUrl?: string
   price: number
   originalPrice?: number
@@ -200,40 +285,27 @@ interface Tool {
   }
 }
 
-import { useNotification } from '~/composables/useToast'
-import { useErrorHandler } from '~/composables/useErrorHandler'
-import { use } from 'echarts/core'
-import { CanvasRenderer } from 'echarts/renderers'
-import { PieChart, BarChart } from 'echarts/charts'
-import {
-  TitleComponent,
-  TooltipComponent,
-  LegendComponent,
-  GridComponent
-} from 'echarts/components'
-import VChart from 'vue-echarts'
+type EChartOption = Record<string, any>
 
-// 注册 ECharts 组件
-use([
-  CanvasRenderer,
-  PieChart,
-  BarChart,
-  TitleComponent,
-  TooltipComponent,
-  LegendComponent,
-  GridComponent
-])
+const statusLabelMap: Record<string, string> = {
+  published: '已发布',
+  draft: '草稿',
+  archived: '已归档'
+}
 
 definePageMeta({
   layout: 'admin',
   middleware: 'admin-auth',
-  ssr: false // 关闭 SSR，避免 ECharts 服务端渲染报错
+  ssr: false
 })
 
 const api = useApi()
+const chartComponent = shallowRef<Component | null>(null)
+const chartsReady = ref(false)
 const showModal = ref(false)
 const isEdit = ref(false)
 const editingToolId = ref<number | null>(null)
+
 const form = ref({
   name: '',
   slug: '',
@@ -247,74 +319,81 @@ const form = ref({
   status: 'draft'
 })
 
-// 使用 useAsyncData 避免 SSR/客户端 hydration 不一致
 const { data: toolsData, pending: toolsPending, refresh: refreshTools } = useAsyncData(
   'admin-tools-list',
   async () => {
     try {
-      // 使用 silent 降低构建期后端不可达时的日志噪音
-      const res = await api.get('/Toolbox/admin/list?pageSize=1000', {
-        silent: true
-      })
-      if (res && res.tools) {
-        return res.tools as Tool[]
-      } else if (res && res.data && res.data.tools) {
-        // 兼容 ApiResponse 格式
-        return res.data.tools as Tool[]
-      } else if (Array.isArray(res)) {
-        // 兼容直接返回数组
-        return res as Tool[]
-      } else {
-        return [] as Tool[]
-      }
-    } catch (e: unknown) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('Failed to fetch tools:', e)
+      const res = await api.get('/Toolbox/admin/list?pageSize=1000', { silent: true })
+      if (res?.tools) return res.tools as Tool[]
+      if (res?.data?.tools) return res.data.tools as Tool[]
+      if (Array.isArray(res)) return res as Tool[]
+      return [] as Tool[]
+    } catch (error) {
+      if (process.dev) {
+        console.error('Failed to fetch tools:', error)
       }
       return [] as Tool[]
     }
   },
   {
-    server: false,  // 管理页构建时不需要服务端预取
-    default: () => [] as Tool[]  // 默认空数组
+    server: false,
+    default: () => [] as Tool[]
   }
 )
 
-// 将 useAsyncData 返回值映射为视图层数据
 const tools = computed(() => toolsData.value || [])
 const loading = computed(() => toolsPending.value)
 
-// 统计信息
 const stats = computed(() => {
   const total = tools.value.length
-  const published = tools.value.filter(t => t.status === 'published').length
-  const draft = tools.value.filter(t => t.status === 'draft').length
-  const archived = tools.value.filter(t => t.status === 'archived').length
-  
-  return {
-    total,
-    published,
-    draft,
-    archived
-  }
+  const published = tools.value.filter(tool => tool.status === 'published').length
+  const draft = tools.value.filter(tool => tool.status === 'draft').length
+  const archived = tools.value.filter(tool => tool.status === 'archived').length
+  return { total, published, draft, archived }
 })
 
-// 读取 CSS 变量，保证图表颜色跟随主题
 const getCssVar = (varName: string): string => {
-  if (process.client) {
-    const root = document.documentElement
-    return getComputedStyle(root).getPropertyValue(varName).trim()
-  }
-  return ''
+  if (!process.client) return ''
+  return getComputedStyle(document.documentElement).getPropertyValue(varName).trim()
 }
 
-// 状态分布图配置
-const statusChartOption = computed(() => {
-  if (stats.value.total === 0) return null
-  
-  const textColor = getCssVar('--color-text-main') || getCssVar('--n-text-color')
-  const bgColor = getCssVar('--color-bg-card') || getCssVar('--n-card-color')
-  
+const ensureChartsReady = async () => {
+  if (!process.client || chartsReady.value) return
+
+  const [
+    echartsCore,
+    echartsRenderers,
+    echartsCharts,
+    echartsComponents,
+    vueEchartsModule
+  ] = await Promise.all([
+    import('echarts/core'),
+    import('echarts/renderers'),
+    import('echarts/charts'),
+    import('echarts/components'),
+    import('vue-echarts')
+  ])
+
+  echartsCore.use([
+    echartsRenderers.CanvasRenderer,
+    echartsCharts.PieChart,
+    echartsCharts.BarChart,
+    echartsComponents.TitleComponent,
+    echartsComponents.TooltipComponent,
+    echartsComponents.LegendComponent,
+    echartsComponents.GridComponent
+  ])
+
+  chartComponent.value = vueEchartsModule.default
+  chartsReady.value = true
+}
+
+const statusChartOption = computed<EChartOption | null>(() => {
+  if (!stats.value.total) return null
+
+  const textColor = getCssVar('--color-text-main') || getCssVar('--n-text-color') || '#e5e7eb'
+  const bgColor = getCssVar('--color-bg-card') || getCssVar('--n-card-color') || '#111827'
+
   return {
     tooltip: {
       trigger: 'item',
@@ -323,67 +402,46 @@ const statusChartOption = computed(() => {
     legend: {
       orient: 'vertical',
       left: 'left',
-      textStyle: {
-        color: textColor
-      }
+      textStyle: { color: textColor }
     },
     series: [
       {
-        name: '工具状态',
         type: 'pie',
         radius: ['40%', '70%'],
-        avoidLabelOverlap: false,
         itemStyle: {
           borderRadius: 8,
           borderColor: bgColor,
           borderWidth: 2
         },
-        label: {
-          show: true,
-          formatter: '{b}\n{d}%',
-          color: textColor
-        },
-        emphasis: {
-          label: {
-            show: true,
-            fontSize: 14,
-            fontWeight: 'bold'
-          }
-        },
         data: [
-          { value: stats.value.published, name: '已发布', itemStyle: { color: getCssVar('--color-success') || 'var(--color-success)' } },
-          { value: stats.value.draft, name: '草稿', itemStyle: { color: getCssVar('--color-warning') || 'var(--color-warning)' } },
-          { value: stats.value.archived, name: '已归档', itemStyle: { color: getCssVar('--color-text-muted') || 'var(--color-text-sec)' } }
+          { value: stats.value.published, name: '已发布', itemStyle: { color: getCssVar('--color-success') || '#22c55e' } },
+          { value: stats.value.draft, name: '草稿', itemStyle: { color: getCssVar('--color-warning') || '#f59e0b' } },
+          { value: stats.value.archived, name: '已归档', itemStyle: { color: getCssVar('--color-text-muted') || '#94a3b8' } }
         ]
       }
     ]
   }
 })
 
-// 价格分布图配置
-const priceChartOption = computed(() => {
-  if (tools.value.length === 0) return null
-  
-  const textColor = getCssVar('--color-text-main') || getCssVar('--n-text-color')
-  const gridColor = getCssVar('--color-border-subtle') || getCssVar('--n-border-color')
-  
-  // 统计价格区间
-  const freeCount = tools.value.filter(t => t.isFree).length
-  const paidTools = tools.value.filter(t => !t.isFree && t.price > 0)
+const priceChartOption = computed<EChartOption | null>(() => {
+  if (!tools.value.length) return null
+
+  const textColor = getCssVar('--color-text-main') || getCssVar('--n-text-color') || '#e5e7eb'
+  const gridColor = getCssVar('--color-border-subtle') || getCssVar('--n-border-color') || '#334155'
+  const freeCount = tools.value.filter(tool => tool.isFree).length
+  const paidTools = tools.value.filter(tool => !tool.isFree && Number(tool.price) > 0)
   const priceRanges = [
     { name: '免费', count: freeCount },
-    { name: '0-50元', count: paidTools.filter(t => t.price <= 50).length },
-    { name: '50-100元', count: paidTools.filter(t => t.price > 50 && t.price <= 100).length },
-    { name: '100-200元', count: paidTools.filter(t => t.price > 100 && t.price <= 200).length },
-    { name: '200元以上', count: paidTools.filter(t => t.price > 200).length }
-  ].filter(r => r.count > 0)
-  
+    { name: '0-50元', count: paidTools.filter(tool => Number(tool.price) <= 50).length },
+    { name: '50-100元', count: paidTools.filter(tool => Number(tool.price) > 50 && Number(tool.price) <= 100).length },
+    { name: '100-200元', count: paidTools.filter(tool => Number(tool.price) > 100 && Number(tool.price) <= 200).length },
+    { name: '200元以上', count: paidTools.filter(tool => Number(tool.price) > 200).length }
+  ].filter(item => item.count > 0)
+
   return {
     tooltip: {
       trigger: 'axis',
-      axisPointer: {
-        type: 'shadow'
-      }
+      axisPointer: { type: 'shadow' }
     },
     grid: {
       left: '3%',
@@ -393,37 +451,20 @@ const priceChartOption = computed(() => {
     },
     xAxis: {
       type: 'category',
-      data: priceRanges.map(r => r.name),
-      axisLabel: {
-        color: textColor
-      },
-      axisLine: {
-        lineStyle: {
-          color: gridColor
-        }
-      }
+      data: priceRanges.map(item => item.name),
+      axisLabel: { color: textColor },
+      axisLine: { lineStyle: { color: gridColor } }
     },
     yAxis: {
       type: 'value',
-      axisLabel: {
-        color: textColor
-      },
-      axisLine: {
-        lineStyle: {
-          color: gridColor
-        }
-      },
-      splitLine: {
-        lineStyle: {
-          color: gridColor
-        }
-      }
+      axisLabel: { color: textColor },
+      axisLine: { lineStyle: { color: gridColor } },
+      splitLine: { lineStyle: { color: gridColor } }
     },
     series: [
       {
-        name: '工具数量',
         type: 'bar',
-        data: priceRanges.map(r => r.count),
+        data: priceRanges.map(item => item.count),
         itemStyle: {
           color: {
             type: 'linear',
@@ -432,8 +473,8 @@ const priceChartOption = computed(() => {
             x2: 0,
             y2: 1,
             colorStops: [
-              { offset: 0, color: getCssVar('--color-primary') || 'var(--color-primary)' },
-              { offset: 1, color: getCssVar('--color-secondary') || getCssVar('--color-primary-hover') || 'var(--color-purple-500)' }
+              { offset: 0, color: getCssVar('--color-primary') || '#3b82f6' },
+              { offset: 1, color: getCssVar('--color-purple-500') || '#8b5cf6' }
             ]
           },
           borderRadius: [4, 4, 0, 0]
@@ -443,9 +484,23 @@ const priceChartOption = computed(() => {
   }
 })
 
-// 刷新工具列表
 const fetchTools = async () => {
   await refreshTools()
+}
+
+const resetForm = () => {
+  form.value = {
+    name: '',
+    slug: '',
+    icon: '',
+    description: '',
+    demoUrl: '',
+    price: 0,
+    originalPrice: null,
+    isFree: false,
+    isPremium: false,
+    status: 'draft'
+  }
 }
 
 const openModal = (item?: Tool) => {
@@ -458,7 +513,7 @@ const openModal = (item?: Tool) => {
       icon: item.icon || '',
       description: item.description || '',
       demoUrl: item.demoUrl || '',
-      price: item.price,
+      price: Number(item.price) || 0,
       originalPrice: item.originalPrice || null,
       isFree: item.isFree,
       isPremium: item.isPremium,
@@ -467,62 +522,59 @@ const openModal = (item?: Tool) => {
   } else {
     isEdit.value = false
     editingToolId.value = null
-    form.value = {
-      name: '',
-      slug: '',
-      icon: '',
-      description: '',
-      demoUrl: '',
-      price: 0,
-      originalPrice: null,
-      isFree: false,
-      isPremium: false,
-      status: 'draft'
-    }
+    resetForm()
   }
+
   showModal.value = true
 }
+
+const statusTagClass = (status: string) => ({
+  'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300': status === 'published',
+  'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300': status === 'draft',
+  'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300': status === 'archived'
+})
 
 const handleSave = async () => {
   const { warning, success } = useNotification()
   const { handleError } = useErrorHandler()
-  
-  if (!form.value.name) {
+
+  if (!form.value.name.trim()) {
     warning('请输入工具名称')
     return
   }
-  
+
   try {
-    // 使用后端 API，去掉 /api/ 前缀，让 useApi 正确拼接后端 baseURL
     if (isEdit.value && editingToolId.value) {
       await api.put(`/Toolbox/${editingToolId.value}`, form.value)
     } else {
       await api.post('/Toolbox', form.value)
     }
+
     success('保存成功')
     showModal.value = false
     editingToolId.value = null
-    fetchTools()
-  } catch (e: unknown) {
-    handleError(e, '保存工具失败')
+    await fetchTools()
+  } catch (error) {
+    handleError(error, '保存工具失败')
   }
 }
 
 const handleDelete = async (item: Tool) => {
-  if (!confirm(`确定要删除工具 "${item.name}" 吗？`)) return
-  
+  if (!confirm(`确定要删除工具“${item.name}”吗？`)) return
+
   const { success } = useNotification()
   const { handleError } = useErrorHandler()
-  
+
   try {
-    // 使用后端 API，去掉 /api/ 前缀，让 useApi 正确拼接后端 baseURL
     await api.del(`/Toolbox/${item.id}`)
     success('删除成功')
-    fetchTools()
-  } catch (e: unknown) {
-    handleError(e, '删除工具失败')
+    await fetchTools()
+  } catch (error) {
+    handleError(error, '删除工具失败')
   }
 }
 
-// 使用 useAsyncData，不再额外 onMounted 拉取数据
+onMounted(() => {
+  ensureChartsReady()
+})
 </script>

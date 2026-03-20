@@ -24,7 +24,7 @@
           </h1>
           <p class="mb-4 text-sm leading-relaxed text-text-muted sm:text-base">
             这页的价值不是单独提供一个工具，而是把站内几个“可探索入口”集中到一个实验空间里。
-            现在它主要承担导览与展示作用，后续可以继续接入 AI 智能体、交互式小工具和更完整的实验功能。
+            现在它主要承担导览与展示作用，后续可以继续接入 AI 智能体、互动式小工具和更完整的实验功能。
           </p>
           <div class="flex flex-wrap gap-3">
             <NuxtLink
@@ -70,7 +70,7 @@
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <AppCard class="p-6 backdrop-blur-xl">
             <h3 class="mb-3 flex items-center justify-between text-base font-semibold text-text-main">
-              <span>🌍 博客星球</span>
+              <span>📚 博客星球</span>
               <NuxtLink to="/blog" class="text-xs text-primary transition-colors hover:text-primary-hover">
                 进入博客
               </NuxtLink>
@@ -78,7 +78,13 @@
             <p class="mb-4 text-xs leading-relaxed text-text-muted">
               围绕技术、思考与实践的内容记录。这里适合承接知识文章和阶段性总结。
             </p>
-            <Scene3D type="earth" :show-hint="false" height="260px" />
+            <ClientOnly>
+              <Scene3D v-if="enableScenePreview" type="earth" :show-hint="false" height="260px" />
+              <div v-else class="lab-scene-fallback">
+                <span class="lab-scene-fallback__icon">🌍</span>
+                <span class="lab-scene-fallback__text">轻量预览模式</span>
+              </div>
+            </ClientOnly>
           </AppCard>
 
           <AppCard class="p-6 backdrop-blur-xl">
@@ -91,12 +97,18 @@
             <p class="mb-4 text-xs leading-relaxed text-text-muted">
               展示实战项目与开源尝试。这里更适合承接作品集、实验成果和技术实现。
             </p>
-            <Scene3D type="spaceship" :show-hint="false" height="260px" />
+            <ClientOnly>
+              <Scene3D v-if="enableScenePreview" type="spaceship" :show-hint="false" height="260px" />
+              <div v-else class="lab-scene-fallback">
+                <span class="lab-scene-fallback__icon">🚀</span>
+                <span class="lab-scene-fallback__text">轻量预览模式</span>
+              </div>
+            </ClientOnly>
           </AppCard>
 
           <AppCard class="p-6 backdrop-blur-xl">
             <h3 class="mb-3 flex items-center justify-between text-base font-semibold text-text-main">
-              <span>📊 数据星球</span>
+              <span>🪐 数据星球</span>
               <NuxtLink to="/dashboard" class="text-xs text-primary transition-colors hover:text-primary-hover">
                 打开仪表盘
               </NuxtLink>
@@ -104,7 +116,13 @@
             <p class="mb-4 text-xs leading-relaxed text-text-muted">
               用来承接数据面板和趋势观察。后续也可以在这里接入更多可视化与实验型分析组件。
             </p>
-            <Scene3D type="datasphere" :show-hint="false" height="260px" />
+            <ClientOnly>
+              <Scene3D v-if="enableScenePreview" type="datasphere" :show-hint="false" height="260px" />
+              <div v-else class="lab-scene-fallback">
+                <span class="lab-scene-fallback__icon">🪐</span>
+                <span class="lab-scene-fallback__text">轻量预览模式</span>
+              </div>
+            </ClientOnly>
           </AppCard>
         </div>
       </div>
@@ -113,17 +131,83 @@
 </template>
 
 <script setup lang="ts">
-import Scene3D from '~/components/three/Scene3D.vue'
+import { defineAsyncComponent, onMounted, ref } from 'vue'
 import AppCard from '~/components/ui/AppCard.vue'
 
+const Scene3D = defineAsyncComponent(() => import('~/components/three/Scene3D.vue'))
+
 const { moduleTheme } = useModuleTheme('ai_lab')
+const enableScenePreview = ref(false)
+
+const detectLowPowerMode = () => {
+  const coarsePointer = window.matchMedia('(pointer: coarse)').matches
+  const narrowScreen = window.innerWidth < 1024
+  const saveData = 'connection' in navigator && (navigator as Navigator & {
+    connection?: { saveData?: boolean }
+  }).connection?.saveData === true
+  const lowMemoryValue = 'deviceMemory' in navigator
+    ? Number((navigator as Navigator & { deviceMemory?: number }).deviceMemory || 0)
+    : 0
+  const lowMemory = lowMemoryValue > 0 && lowMemoryValue <= 4
+
+  return coarsePointer || narrowScreen || saveData || lowMemory
+}
+
+const scheduleScenePreview = () => {
+  if (detectLowPowerMode()) {
+    enableScenePreview.value = false
+    return
+  }
+
+  const mountScenePreview = () => {
+    enableScenePreview.value = true
+  }
+
+  if ('requestIdleCallback' in window) {
+    ;(window as Window & {
+      requestIdleCallback: (callback: IdleRequestCallback, options?: IdleRequestOptions) => number
+    }).requestIdleCallback(() => mountScenePreview(), { timeout: 1800 })
+    return
+  }
+
+  window.setTimeout(mountScenePreview, 900)
+}
+
+onMounted(() => {
+  scheduleScenePreview()
+})
 
 definePageMeta({
   layout: 'default'
 })
 
 useHead({
-  title: 'AI 实验室 - 溪午听风',
-  meta: [{ name: 'description', content: '3D 场景与 AI 小实验的集合入口。' }]
+  title: 'AI 实验室 - 溪风听风',
+  meta: [{ name: 'description', content: '3D 场景下的 AI 小实验入口。' }]
 })
 </script>
+
+<style scoped>
+.lab-scene-fallback {
+  display: flex;
+  height: 260px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  border: 1px dashed var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  background:
+    radial-gradient(circle at top, color-mix(in srgb, var(--color-primary) 18%, transparent), transparent 55%),
+    var(--color-bg-elevated);
+  color: var(--color-text-muted);
+}
+
+.lab-scene-fallback__icon {
+  font-size: 2rem;
+}
+
+.lab-scene-fallback__text {
+  font-size: 0.875rem;
+}
+</style>
