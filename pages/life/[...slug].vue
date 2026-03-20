@@ -1,7 +1,6 @@
 <template>
   <div class="min-h-screen bg-[var(--color-amber-50)] py-8">
     <div class="container mx-auto px-4 max-w-3xl">
-      <!-- 顶部导航 -->
       <nav class="flex items-center justify-between mb-12 text-sm text-gray-500">
         <NuxtLink to="/life" class="hover:text-orange-600 transition-colors flex items-center">
           <i class="fas fa-arrow-left mr-2"></i>
@@ -10,13 +9,11 @@
         <NuxtLink to="/" class="hover:text-orange-600 transition-colors">首页</NuxtLink>
       </nav>
 
-      <!-- 文章内容 -->
       <article v-if="post" class="bg-white shadow-sm border border-gray-100 rounded-none p-8 md:p-12 mb-12">
-        <!-- 文章头部 -->
         <header class="text-center mb-12">
           <div class="flex items-center justify-center gap-3 text-sm text-gray-400 mb-4 font-serif">
             <span>{{ formatDate(post.date) }}</span>
-            <span>•</span>
+            <span>·</span>
             <span>{{ post.category || '随笔' }}</span>
           </div>
           <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-6 font-serif tracking-wide">{{ post.title }}</h1>
@@ -25,16 +22,12 @@
           </div>
         </header>
 
-        <!-- 文章正文 -->
-        <div class="prose prose-lg prose-stone mx-auto font-serif">
-          <ContentRenderer :value="post" />
-        </div>
-        
-        <!-- 底部标签 -->
+        <div class="prose prose-lg prose-stone mx-auto font-serif" v-html="renderedContent"></div>
+
         <div class="mt-12 pt-8 border-t border-gray-100 flex justify-center">
           <div class="flex gap-2">
-            <span 
-              v-for="tag in post.tags" 
+            <span
+              v-for="tag in post.tags"
               :key="tag"
               class="text-sm text-gray-400 italic"
             >
@@ -42,11 +35,10 @@
             </span>
           </div>
         </div>
-        <!-- 评论区 -->
+
         <GiscusComments :identifier="post.path" :title="post.title" />
       </article>
 
-      <!-- 加载状态 -->
       <div v-else class="text-center py-20">
         <div class="animate-pulse text-gray-400">加载中...</div>
       </div>
@@ -57,23 +49,21 @@
 <script setup lang="ts">
 const route = useRoute()
 const slug = route.params.slug
+const { parse } = useMarkdown()
 
-// 处理slug
 const slugString = Array.isArray(slug) ? slug[0] : slug
-const articlePath = `/life/${slugString}`
 
-// 获取文章数据（Content v3: queryCollection）
 const { data: post } = await useAsyncData(`life-${slugString}`, () =>
-  queryCollection('content').path(articlePath).first()
+  $fetch(`/api/content/life/${slugString}`)
 )
 
-// 404处理
+const renderedContent = computed(() => parse(post.value?.content || ''))
+
 if (!post.value) {
   throw createError({ statusCode: 404, statusMessage: '文章不存在' })
 }
 
-// 格式化日期
-const formatDate = (dateString) => {
+const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('zh-CN', {
     year: 'numeric',
     month: 'long',
@@ -81,7 +71,6 @@ const formatDate = (dateString) => {
   })
 }
 
-// SEO
 useHead({
   title: `${post.value.title} - 生活随笔`,
   meta: [
@@ -91,9 +80,7 @@ useHead({
 </script>
 
 <style scoped>
-/* 衬线字体优化阅读体验 */
 .font-serif {
   font-family: "Merriweather", "Georgia", serif;
 }
 </style>
-

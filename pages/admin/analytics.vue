@@ -76,10 +76,7 @@
             <n-spin size="large" />
           </div>
           <div v-else-if="hasTrendData && trendChartData.labels.length > 0" class="analytics-line-chart">
-            <component :is="Line" v-if="Line && chartLoaded" :data="trendChartData" :options="trendChartOptions" />
-            <div v-else class="analytics-chart-loading">
-              <n-spin size="small" />
-            </div>
+            <AppEChart :option="trendEChartOption" loading-text="图表加载中..." />
           </div>
           <n-empty v-else class="analytics-empty-block" description="暂无趋势数据" />
         </n-card>
@@ -160,8 +157,7 @@
 
           <div v-if="panel.loading" class="analytics-chart-loading"><n-spin size="small" /></div>
           <div v-else-if="panel.hasData" class="analytics-pie-chart">
-            <component :is="Pie" v-if="Pie && chartLoaded" :data="panel.data" :options="chartOptions" />
-            <div v-else class="analytics-chart-loading"><n-spin size="small" /></div>
+            <AppEChart :option="panel.option" loading-text="图表加载中..." />
           </div>
           <n-empty v-else class="analytics-empty-block" :description="`暂无${panel.title}`" />
         </n-card>
@@ -253,7 +249,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, h, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue'
+import { computed, h, onMounted, onUnmounted, ref, watch } from 'vue'
 import type { DataTableColumns } from 'naive-ui'
 import { NAlert, NButton, NButtonGroup, NCard, NDataTable, NEmpty, NGi, NGrid, NSelect, NSpace, NSpin, NSwitch, NTabPane, NTabs, NTag } from 'naive-ui'
 import PageHeader from '~/components/admin/patterns/PageHeader.vue'
@@ -263,23 +259,6 @@ definePageMeta({
   middleware: 'admin-auth',
   ssr: false
 })
-
-let ChartJS: any = null
-const Pie = shallowRef<any>(null)
-const Line = shallowRef<any>(null)
-const chartLoaded = ref(false)
-
-const loadChartJS = async () => {
-  if (chartLoaded.value) return
-  const chartModule = await import(/* webpackChunkName: "chartjs" */ 'chart.js')
-  const vueChartModule = await import(/* webpackChunkName: "vue-chartjs" */ 'vue-chartjs')
-  ChartJS = chartModule.Chart
-  const { ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement } = chartModule
-  ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement)
-  Pie.value = vueChartModule.Pie
-  Line.value = vueChartModule.Line
-  chartLoaded.value = true
-}
 
 const { moduleTheme } = useModuleTheme('analytics_dashboard')
 const api = useApi()
@@ -407,6 +386,70 @@ const trendChartData = computed(() => {
   }
 })
 
+const trendEChartOption = computed(() => ({
+  tooltip: { trigger: 'axis' },
+  legend: {
+    top: 0,
+    textStyle: {
+      color: getThemeColor('--color-text-muted', '#94a3b8')
+    }
+  },
+  grid: { left: 12, right: 12, top: 44, bottom: 16, containLabel: true },
+  xAxis: {
+    type: 'category',
+    boundaryGap: false,
+    data: trendChartData.value.labels,
+    axisLine: { show: false },
+    axisTick: { show: false },
+    splitLine: { show: false },
+    axisLabel: { color: getThemeColor('--color-text-muted', '#94a3b8') }
+  },
+  yAxis: {
+    type: 'value',
+    min: 0,
+    splitLine: { lineStyle: { color: 'rgba(148, 163, 184, 0.18)' } },
+    axisLabel: { color: getThemeColor('--color-text-muted', '#94a3b8') }
+  },
+  series: trendChartData.value.datasets.map((dataset: any) => ({
+    name: dataset.label,
+    type: 'line',
+    smooth: true,
+    symbol: 'circle',
+    symbolSize: 6,
+    lineStyle: { color: dataset.borderColor, width: dataset.borderWidth || 3 },
+    areaStyle: { color: dataset.backgroundColor },
+    data: dataset.data || []
+  }))
+}))
+
+const buildPieOption = (chartData: { labels: string[]; datasets: Array<{ data: number[]; backgroundColor?: string[] }> }) => ({
+  tooltip: { trigger: 'item' },
+  legend: {
+    bottom: 0,
+    textStyle: {
+      color: getThemeColor('--color-text-muted', '#94a3b8')
+    }
+  },
+  series: [
+    {
+      type: 'pie',
+      radius: ['42%', '72%'],
+      center: ['50%', '42%'],
+      itemStyle: {
+        borderColor: getThemeColor('--color-bg-card', '#0f172a'),
+        borderWidth: 2
+      },
+      data: chartData.labels.map((label, index) => ({
+        name: label,
+        value: chartData.datasets[0]?.data?.[index] || 0,
+        itemStyle: {
+          color: chartData.datasets[0]?.backgroundColor?.[index]
+        }
+      }))
+    }
+  ]
+})
+
 const hasTrendData = computed(() => (trendData.value?.points || trendData.value?.Points || []).length > 0)
 const hasRegionData = computed(() => (regions.value.items?.length || 0) > 0)
 const hasDeviceData = computed(() => (clientDistribution.value.devices?.length || 0) > 0)
@@ -415,10 +458,10 @@ const hasOsData = computed(() => (clientDistribution.value.os?.length || 0) > 0)
 const hasClientDistributionData = computed(() => hasDeviceData.value || hasBrowserData.value || hasOsData.value)
 
 const audiencePanels = computed(() => [
-  { key: 'region', kicker: '地理分布', title: '访问区域', data: regionChartData.value, hasData: hasRegionData.value, loading: regionsLoading.value },
-  { key: 'device', kicker: '终端结构', title: '设备类型', data: deviceChartData.value, hasData: hasDeviceData.value, loading: clientDistributionLoading.value },
-  { key: 'browser', kicker: '终端结构', title: '浏览器分布', data: browserChartData.value, hasData: hasBrowserData.value, loading: clientDistributionLoading.value },
-  { key: 'os', kicker: '终端结构', title: '操作系统分布', data: osChartData.value, hasData: hasOsData.value, loading: clientDistributionLoading.value }
+  { key: 'region', kicker: '地理分布', title: '访问区域', data: regionChartData.value, option: buildPieOption(regionChartData.value), hasData: hasRegionData.value, loading: regionsLoading.value },
+  { key: 'device', kicker: '终端结构', title: '设备类型', data: deviceChartData.value, option: buildPieOption(deviceChartData.value), hasData: hasDeviceData.value, loading: clientDistributionLoading.value },
+  { key: 'browser', kicker: '终端结构', title: '浏览器分布', data: browserChartData.value, option: buildPieOption(browserChartData.value), hasData: hasBrowserData.value, loading: clientDistributionLoading.value },
+  { key: 'os', kicker: '终端结构', title: '操作系统分布', data: osChartData.value, option: buildPieOption(osChartData.value), hasData: hasOsData.value, loading: clientDistributionLoading.value }
 ])
 
 const totalRegionCount = computed(() => (regions.value.items || []).reduce((sum: number, item: any) => sum + (item.count || 0), 0) || 1)
@@ -633,7 +676,6 @@ const stopAutoRefresh = () => {
 }
 
 onMounted(() => {
-  loadChartJS()
   refreshAll()
   if (process.client) {
     visibilityHandler = () => {

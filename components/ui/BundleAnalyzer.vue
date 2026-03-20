@@ -188,7 +188,7 @@ const chunks = ref<ChunkInfo[]>([
   { name: 'app-[hash].js', size: 180000, type: 'js', percentage: 45 },
   { name: 'naive-ui-[hash].js', size: 150000, type: 'js', percentage: 37.5 },
   { name: 'echarts-[hash].js', size: 120000, type: 'js', percentage: 30 },
-  { name: 'chartjs-[hash].js', size: 80000, type: 'js', percentage: 20 },
+  { name: 'admin-charts-[hash].js', size: 80000, type: 'js', percentage: 20 },
   { name: 'index-[hash].css', size: 60000, type: 'css', percentage: 15 },
   { name: 'three-[hash].js', size: 50000, type: 'js', percentage: 12.5 },
   { name: 'other-[hash].js', size: 40000, type: 'js', percentage: 10 },
@@ -236,7 +236,7 @@ const groupedChunks = computed(() => {
 const topDependencies = ref<DependencyInfo[]>([
   { name: 'naive-ui', size: 150000, count: 1 },
   { name: 'echarts', size: 120000, count: 1 },
-  { name: 'chart.js', size: 80000, count: 1 },
+  { name: 'vue-echarts', size: 80000, count: 1 },
   { name: 'three.js', size: 50000, count: 1 },
   { name: 'vue', size: 45000, count: 3 }
 ])

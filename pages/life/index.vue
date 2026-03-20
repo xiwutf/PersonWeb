@@ -9,16 +9,16 @@
     <div class="life-content">
       <header class="life-header">
         <div class="life-header-icon">
-          <span>☕</span>
+          <span>☼</span>
         </div>
         <h1 class="life-title">生活随笔</h1>
         <p class="life-subtitle">
-          记录生活点滴，分享思考感悟，在代码之外寻找诗与远方。
+          记录生活点滴，分享思考感悟，在代码之外寻找诗意与远方。
         </p>
       </header>
 
       <section v-if="!posts || posts.length === 0" class="life-empty">
-        <div class="life-empty-icon">🍃</div>
+        <div class="life-empty-icon">📌</div>
         <h2 class="life-empty-title">暂无随笔</h2>
         <p class="life-empty-text">博主正在酝酿第一篇生活感悟...</p>
       </section>
@@ -92,7 +92,7 @@
 import '~/assets/css/life.css'
 
 const { data: posts } = await useAsyncData('life-posts', () =>
-  queryContent('/life').sort({ date: -1 }).find()
+  $fetch('/api/content/life')
 )
 
 const formatDate = (dateString) => {
@@ -106,9 +106,9 @@ const formatDate = (dateString) => {
 }
 
 useHead({
-  title: '生活随笔 - 溪午听风',
+  title: '生活随笔 - 凌午听风',
   meta: [
-    { name: 'description', content: '记录生活点滴，分享思考感悟，在代码之外寻找诗与远方。' }
+    { name: 'description', content: '记录生活点滴，分享思考感悟，在代码之外寻找诗意与远方。' }
   ]
 })
 </script>

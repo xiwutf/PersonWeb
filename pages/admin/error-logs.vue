@@ -2,7 +2,7 @@
   <div class="error-logs-page">
     <PageHeader
       title="错误日志"
-      description="集中查看前后端异常、趋势变化和处理状态，方便快速定位高频问题。"
+      description="集中查看异常、趋势变化和处理状态，便于快速定位高频问题。"
       class="error-logs-header"
     >
       <template #actions>
@@ -35,8 +35,7 @@
       <article class="panel-card">
         <h2 class="panel-card__title">错误类型分布</h2>
         <div v-if="stats.ByType && stats.ByType.length > 0" class="chart-shell">
-          <component :is="doughnutChart" v-if="doughnutChart && chartsLoaded" :data="typeChartData" :options="typeChartOptions" />
-          <div v-else class="empty-state">图表加载中...</div>
+          <AppEChart :option="typeEChartOption" loading-text="图表加载中..." />
         </div>
         <div v-else class="empty-state">暂无数据</div>
       </article>
@@ -44,8 +43,7 @@
       <article class="panel-card">
         <h2 class="panel-card__title">最近 7 天错误趋势</h2>
         <div v-if="stats.RecentErrors && stats.RecentErrors.length > 0" class="chart-shell">
-          <component :is="lineChart" v-if="lineChart && chartsLoaded" :data="trendChartData" :options="trendChartOptions" />
-          <div v-else class="empty-state">图表加载中...</div>
+          <AppEChart :option="trendEChartOption" loading-text="图表加载中..." />
         </div>
         <div v-else class="empty-state">暂无数据</div>
       </article>
@@ -93,7 +91,7 @@
                   'status-badge--muted': log.status === 2
                 }"
               >
-                {{ log.status === 0 ? '未处理' : log.status === 1 ? '已处理' : '已忽略' }}
+                {{ statusLabel(log.status) }}
               </span>
               <span class="type-badge">{{ log.errorType }}</span>
             </div>
@@ -211,7 +209,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, shallowRef } from 'vue'
+import { computed } from 'vue'
 import { useNotification } from '~/composables/useToast'
 import { useErrorHandler } from '~/composables/useErrorHandler'
 import { useTheme } from '~/composables/useTheme'
@@ -223,56 +221,37 @@ definePageMeta({
   ssr: false
 })
 
+type ErrorLogItem = {
+  id: number
+  status: number
+  errorType: string
+  errorMessage: string
+  errorUrl: string
+  userIp?: string
+  createdAt: string
+}
+
+type ErrorLogDetail = ErrorLogItem & {
+  errorStack?: string
+  visitorId?: string
+  userAgent?: string
+  metadata?: string
+}
+
 const api = useApi()
 const { success } = useNotification()
 const { handleError } = useErrorHandler()
 const { currentTheme } = useTheme()
-const lineChart = shallowRef<any>(null)
-const doughnutChart = shallowRef<any>(null)
-const chartsLoaded = ref(false)
 
-const loadCharts = async () => {
-  if (chartsLoaded.value) return
-
-  const chartModule = await import('chart.js')
-  const vueChartModule = await import('vue-chartjs')
-  const {
-    Chart,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    ArcElement,
-    Title,
-    Tooltip,
-    Legend
-  } = chartModule
-
-  Chart.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    ArcElement,
-    Title,
-    Tooltip,
-    Legend
-  )
-
-  lineChart.value = vueChartModule.Line
-  doughnutChart.value = vueChartModule.Doughnut
-  chartsLoaded.value = true
-}
-
-const errorLogs = ref<any[]>([])
+const errorLogs = ref<ErrorLogItem[]>([])
 const loading = ref(true)
-const stats = ref<any>({})
+const stats = ref<Record<string, any>>({})
 const page = ref(1)
 const pageSize = ref(20)
 const total = ref(0)
 const showDetail = ref(false)
 const detailLoading = ref(false)
-const errorDetail = ref<any>(null)
+const errorDetail = ref<ErrorLogDetail | null>(null)
 
 const filters = ref({
   errorType: '',
@@ -288,7 +267,92 @@ const chartPalette = computed(() => ({
   text: getCssColor('--color-text-main', currentTheme.value === 'dark' ? '#f8fafc' : '#0f172a'),
   muted: getCssColor('--color-text-muted', currentTheme.value === 'dark' ? '#94a3b8' : '#64748b'),
   border: getCssColor('--color-border', currentTheme.value === 'dark' ? 'rgba(148,163,184,0.18)' : 'rgba(148,163,184,0.28)'),
-  primary: getCssColor('--color-primary', '#2563eb')
+  error: getCssColor('--color-error', '#ef4444')
+}))
+
+const typeChartSeries = computed(() => {
+  const items = stats.value.ByType || []
+  const colors = [
+    'rgba(239, 68, 68, 0.82)',
+    'rgba(59, 130, 246, 0.82)',
+    'rgba(16, 185, 129, 0.82)',
+    'rgba(245, 158, 11, 0.82)',
+    'rgba(139, 92, 246, 0.82)',
+    'rgba(236, 72, 153, 0.82)'
+  ]
+
+  return items.map((item: any, index: number) => ({
+    name: item.Type || item.type,
+    value: item.Count || item.count || 0,
+    itemStyle: {
+      color: colors[index % colors.length]
+    }
+  }))
+})
+
+const trendChartData = computed(() => {
+  const items = stats.value.RecentErrors || []
+  return {
+    labels: items.map((item: any) => {
+      const date = new Date(item.Date || item.date)
+      return date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })
+    }),
+    values: items.map((item: any) => item.Count || item.count || 0)
+  }
+})
+
+const typeEChartOption = computed(() => ({
+  tooltip: { trigger: 'item' },
+  legend: {
+    bottom: 0,
+    textStyle: {
+      color: chartPalette.value.text
+    }
+  },
+  series: [
+    {
+      type: 'pie',
+      radius: ['44%', '72%'],
+      center: ['50%', '42%'],
+      itemStyle: {
+        borderColor: currentTheme.value === 'dark' ? '#0f172a' : '#ffffff',
+        borderWidth: 2
+      },
+      data: typeChartSeries.value
+    }
+  ]
+}))
+
+const trendEChartOption = computed(() => ({
+  tooltip: { trigger: 'axis' },
+  grid: { left: 12, right: 12, top: 20, bottom: 16, containLabel: true },
+  xAxis: {
+    type: 'category',
+    boundaryGap: false,
+    data: trendChartData.value.labels,
+    axisLabel: { color: chartPalette.value.muted },
+    splitLine: { show: false },
+    axisLine: { show: false },
+    axisTick: { show: false }
+  },
+  yAxis: {
+    type: 'value',
+    min: 0,
+    minInterval: 1,
+    axisLabel: { color: chartPalette.value.muted },
+    splitLine: { lineStyle: { color: chartPalette.value.border } }
+  },
+  series: [
+    {
+      name: '错误数量',
+      type: 'line',
+      smooth: true,
+      symbol: 'none',
+      lineStyle: { color: chartPalette.value.error, width: 3 },
+      areaStyle: { color: 'rgba(239, 68, 68, 0.1)' },
+      data: trendChartData.value.values
+    }
+  ]
 }))
 
 const formatDate = (dateString: string) => {
@@ -301,124 +365,16 @@ const formatDate = (dateString: string) => {
   })
 }
 
-const typeChartData = computed(() => {
-  if (!stats.value.ByType || stats.value.ByType.length === 0) {
-    return {
-      labels: [],
-      datasets: []
-    }
-  }
-
-  const colors = [
-    'rgba(239, 68, 68, 0.82)',
-    'rgba(59, 130, 246, 0.82)',
-    'rgba(16, 185, 129, 0.82)',
-    'rgba(245, 158, 11, 0.82)',
-    'rgba(139, 92, 246, 0.82)',
-    'rgba(236, 72, 153, 0.82)'
-  ]
-
-  return {
-    labels: stats.value.ByType.map((item: any) => item.Type || item.type),
-    datasets: [{
-      label: '错误数量',
-      data: stats.value.ByType.map((item: any) => item.Count || item.count),
-      backgroundColor: colors.slice(0, stats.value.ByType.length),
-      borderColor: colors.slice(0, stats.value.ByType.length).map(color => color.replace('0.82', '1')),
-      borderWidth: 2
-    }]
-  }
-})
-
-const typeChartOptions = computed(() => ({
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: {
-      position: 'bottom' as const,
-      labels: {
-        color: chartPalette.value.text
-      }
-    },
-    tooltip: {
-      callbacks: {
-        label: (context: any) => {
-          const totalValue = context.dataset.data.reduce((a: number, b: number) => a + b, 0)
-          const value = context.parsed
-          const percentage = ((value / totalValue) * 100).toFixed(1)
-          return `${context.label}: ${value} (${percentage}%)`
-        }
-      }
-    }
-  }
-}))
-
-const trendChartData = computed(() => {
-  if (!stats.value.RecentErrors || stats.value.RecentErrors.length === 0) {
-    return {
-      labels: [],
-      datasets: []
-    }
-  }
-
-  return {
-    labels: stats.value.RecentErrors.map((item: any) => {
-      const date = new Date(item.Date || item.date)
-      return date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })
-    }),
-    datasets: [{
-      label: '错误数量',
-      data: stats.value.RecentErrors.map((item: any) => item.Count || item.count),
-      borderColor: 'rgb(239, 68, 68)',
-      backgroundColor: 'rgba(239, 68, 68, 0.1)',
-      tension: 0.4,
-      fill: true
-    }]
-  }
-})
-
-const trendChartOptions = computed(() => ({
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: {
-      display: true,
-      position: 'top' as const,
-      labels: {
-        color: chartPalette.value.text
-      }
-    },
-    tooltip: {
-      mode: 'index' as const,
-      intersect: false
-    }
-  },
-  scales: {
-    x: {
-      ticks: {
-        color: chartPalette.value.muted
-      },
-      grid: {
-        color: chartPalette.value.border
-      }
-    },
-    y: {
-      beginAtZero: true,
-      ticks: {
-        stepSize: 1,
-        color: chartPalette.value.muted
-      },
-      grid: {
-        color: chartPalette.value.border
-      }
-    }
-  }
-}))
+const statusLabel = (status: number) => {
+  if (status === 1) return '已处理'
+  if (status === 2) return '已忽略'
+  return '未处理'
+}
 
 const fetchErrorLogs = async () => {
   loading.value = true
   try {
-    const params: any = { page: page.value, pageSize: pageSize.value }
+    const params: Record<string, any> = { page: page.value, pageSize: pageSize.value }
     if (filters.value.errorType) params.errorType = filters.value.errorType
     if (filters.value.status !== null) params.status = filters.value.status
 
@@ -471,7 +427,6 @@ const updateStatus = async (id: number, status: number) => {
 }
 
 onMounted(() => {
-  loadCharts()
   fetchErrorLogs()
   fetchStats()
 })

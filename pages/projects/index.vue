@@ -123,7 +123,6 @@
       <section v-else-if="error" class="projects-state projects-state--error">
         <p class="projects-state-title">加载失败</p>
         <p class="projects-state-text">{{ error }}</p>
-        <p v-if="debugData" class="projects-state-debug">{{ debugData }}</p>
       </section>
 
       <section v-else-if="projects.length === 0" class="projects-state">
@@ -239,11 +238,9 @@
                 </div>
                 <div class="projects-card-chart-container">
                   <ClientOnly>
-                    <component
-                      :is="barChartComponent"
-                      v-if="barChartComponent"
-                      :data="project.chartData"
-                      :options="chartOptions"
+                    <AppEChart
+                      :option="buildGithubChartOption(project.chartData)"
+                      loading-text="图表加载中..."
                     />
                   </ClientOnly>
                 </div>
@@ -266,8 +263,7 @@ import type { Component } from 'vue'
 import '~/assets/css/projects.css'
 
 definePageMeta({
-  layout: 'default',
-  ssr: false
+  layout: 'default'
 })
 
 import type { Project } from '~/types/api'
@@ -293,11 +289,9 @@ const api = useApi()
 usePageStyle('projects')
 
 const projects = ref<ProjectCard[]>([])
-const loading = ref(true)
+const loading = ref(false)
 const error = ref('')
-const debugData = ref('')
 const viewMode = ref<'grid' | '3d'>('grid')
-const barChartComponent = shallowRef<Component | null>(null)
 const project3DSpaceComponent = shallowRef<Component | null>(null)
 
 const totalProjects = computed(() => projects.value.length)
@@ -317,27 +311,36 @@ const featuredProjects = computed(() =>
     .slice(0, 3)
 )
 
-const chartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: { display: false },
-    tooltip: {
-      enabled: true,
-      intersect: false,
-      mode: 'index' as const
-    }
+const buildGithubChartOption = (chartData?: GithubChartData) => ({
+  animation: false,
+  tooltip: { trigger: 'axis' },
+  grid: { left: 0, right: 0, top: 8, bottom: 0, containLabel: false },
+  xAxis: {
+    type: 'category',
+    data: chartData?.labels || [],
+    show: false
   },
-  scales: {
-    x: { display: false },
-    y: { display: false }
+  yAxis: {
+    type: 'value',
+    show: false
   },
-  elements: {
-    bar: {
-      borderRadius: 99
+  series: [
+    {
+      type: 'bar',
+      barWidth: '48%',
+      itemStyle: {
+        color: chartData?.datasets?.[0]?.backgroundColor || 'rgba(96, 165, 250, 0.88)',
+        borderRadius: [99, 99, 99, 99]
+      },
+      emphasis: {
+        itemStyle: {
+          color: chartData?.datasets?.[0]?.hoverBackgroundColor || 'rgba(52, 211, 153, 0.96)'
+        }
+      },
+      data: chartData?.datasets?.[0]?.data || []
     }
-  }
-}
+  ]
+})
 
 const handleToggle3DView = () => {
   if (!project3DSpaceComponent.value) {
@@ -454,7 +457,6 @@ const fetchProjects = async () => {
     error.value = ''
 
     const response = await api.get<Project[]>('/Projects')
-    debugData.value = JSON.stringify(response)
 
     if (!Array.isArray(response)) {
       projects.value = []
@@ -468,7 +470,6 @@ const fetchProjects = async () => {
     }))
 
     projects.value = dedupeProjects(processedProjects)
-    await loadGithubStats()
   } catch (fetchError: unknown) {
     const message = fetchError instanceof Error ? fetchError.message : 'Failed to load projects'
     error.value = message
@@ -586,62 +587,42 @@ const getProjectEyebrow = (project: ProjectCard) => {
 }
 
 const loadGithubStats = async () => {
-  for (const project of projects.value) {
+  await Promise.allSettled(projects.value.map(async (project) => {
     if (!project.githubUrl) {
-      continue
+      return
     }
 
-    try {
-      const match = project.githubUrl.match(/github\.com\/([^/]+\/[^/]+)/)
-      if (!match) {
-        continue
-      }
-
-      const repo = match[1]
-      const stats = await api.get<{ total: number; week: number }[]>(`/github/stats?repo=${repo}`)
-
-      if (!Array.isArray(stats)) {
-        continue
-      }
-
-      const recentStats = stats.slice(-26)
-      project.chartData = {
-        labels: recentStats.map(item => new Date(item.week * 1000).toLocaleDateString()),
-        datasets: [
-          {
-            label: 'Commits',
-            data: recentStats.map(item => item.total),
-            backgroundColor: 'rgba(96, 165, 250, 0.88)',
-            hoverBackgroundColor: 'rgba(52, 211, 153, 0.96)'
-          }
-        ]
-      }
-    } catch (statsError) {
-      console.error(`Failed to load stats for ${project.title}`, statsError)
+    const match = project.githubUrl.match(/github\.com\/([^/]+\/[^/]+)/)
+    if (!match) {
+      return
     }
-  }
+
+    const repo = match[1]
+    const stats = await api.get<{ total: number; week: number }[]>(`/github/stats?repo=${repo}`)
+
+    if (!Array.isArray(stats)) {
+      return
+    }
+
+    const recentStats = stats.slice(-26)
+    project.chartData = {
+      labels: recentStats.map(item => new Date(item.week * 1000).toLocaleDateString()),
+      datasets: [
+        {
+          label: 'Commits',
+          data: recentStats.map(item => item.total),
+          backgroundColor: 'rgba(96, 165, 250, 0.88)',
+          hoverBackgroundColor: 'rgba(52, 211, 153, 0.96)'
+        }
+      ]
+    }
+  }))
 }
 
+await fetchProjects()
+
 onMounted(async () => {
-  const [{ Bar }, chartJsPkg] = await Promise.all([
-    import('vue-chartjs'),
-    import('chart.js')
-  ])
-
-  const {
-    Chart: ChartJS,
-    Title,
-    Tooltip,
-    Legend,
-    BarElement,
-    CategoryScale,
-    LinearScale
-  } = chartJsPkg
-
-  ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
-  barChartComponent.value = Bar
-
-  await fetchProjects()
+  void loadGithubStats()
 })
 </script>
 

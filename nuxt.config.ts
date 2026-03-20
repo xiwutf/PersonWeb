@@ -73,7 +73,6 @@ export default defineNuxtConfig({
       ],
       link: [
         { rel: 'icon', type: 'image/png', href: '/favicon.png' },
-        { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css' },
         // iOS 主屏幕图标
         { rel: 'apple-touch-icon', href: '/favicon.png' },
         { rel: 'apple-touch-icon', sizes: '180x180', href: '/favicon.png' },
@@ -93,7 +92,6 @@ export default defineNuxtConfig({
     '~/assets/css/footer.css', // Footer 组件统一样式
     '~/assets/css/hero.css', // Hero 组件统一样式
     '~/assets/css/home.css', // 首页组件统一样式
-    '~/assets/css/home-creative.css', // 首页创意组件样式
     '~/assets/css/visitor-interaction.css',
     '~/assets/css/charts.css'
   ],
@@ -127,14 +125,7 @@ export default defineNuxtConfig({
         'echarts/charts',
         'echarts/components',
         'vue-echarts',
-        'chart.js',
-        'vue-chartjs',
         'markdown-it',
-        '@bytemd/vue-next',
-        '@bytemd/plugin-gfm',
-        '@bytemd/plugin-highlight',
-        '@bytemd/plugin-math',
-        '@bytemd/plugin-medium-zoom'
       ]
     },
     resolve: {
@@ -181,8 +172,7 @@ export default defineNuxtConfig({
         output: {
           manualChunks: {
             'naive-ui': ['naive-ui'],
-            'echarts': ['echarts', 'vue-echarts'],
-            'chartjs': ['chart.js', 'vue-chartjs']
+            'echarts': ['echarts', 'vue-echarts']
           }
         }
       },

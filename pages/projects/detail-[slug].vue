@@ -101,9 +101,7 @@
         <!-- 详细内容 -->
         <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden">
           <div class="p-8">
-            <div class="prose prose-lg max-w-none">
-              <ContentRenderer :value="project" />
-            </div>
+            <div class="prose prose-lg max-w-none" v-html="renderedProjectContent"></div>
           </div>
         </div>
         
@@ -153,26 +151,25 @@
 const route = useRoute()
 const slug = route.params.slug
 const slugStr = Array.isArray(slug) ? slug[0] : slug
+const { parse } = useMarkdown()
 
 // 获取具体项目数据（Content v3: queryCollection）
 const { data: project, error } = await useAsyncData(`project-${slugStr}`, () =>
-  queryCollection('content')
-    .where('path', '=', `/projects/${slugStr}`)
-    .orWhere(q => q.where('slug', '=', slugStr))
-    .first()
+  $fetch(`/api/content/projects/${slugStr}`)
 )
 
 // 获取相关项目（同类别的其他项目）
 const { data: relatedProjects } = await useAsyncData(`related-projects-${slugStr}`, () =>
   project.value
-    ? queryCollection('content')
-        .where('path', 'LIKE', '/projects%')
-        .where('category', '=', project.value?.category ?? '')
-        .where('path', '<>', project.value?.path ?? '')
-        .limit(4)
-        .all()
+    ? $fetch('/api/content/projects').then(items =>
+        items
+          .filter((item: any) => item.category === project.value?.category && item.path !== project.value?.path)
+          .slice(0, 4)
+      )
     : Promise.resolve([])
 )
+
+const renderedProjectContent = computed(() => parse(project.value?.content || ''))
 
 // 格式化日期
 const formatDate = (dateString) => {

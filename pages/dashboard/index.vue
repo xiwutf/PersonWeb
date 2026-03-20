@@ -121,8 +121,8 @@
           </div>
 
           <div v-if="metrics.length > 0" class="dashboard-chart-body">
-            <component :is="lineChart" v-if="lineChart && chartsLoaded" :data="healthChartData" :options="chartOptions" />
-            <div v-else class="dashboard-empty-state">
+            <AppEChart :option="healthChartOption" loading-text="图表加载中..." />
+            <div v-if="false" class="dashboard-empty-state">
               <p>图表加载中...</p>
             </div>
           </div>
@@ -142,8 +142,8 @@
           </div>
 
           <div v-if="metrics.length > 0" class="dashboard-chart-body">
-            <component :is="lineChart" v-if="lineChart && chartsLoaded" :data="wealthChartData" :options="chartOptions" />
-            <div v-else class="dashboard-empty-state">
+            <AppEChart :option="wealthChartOption" loading-text="图表加载中..." />
+            <div v-if="false" class="dashboard-empty-state">
               <p>图表加载中...</p>
             </div>
           </div>
@@ -158,7 +158,6 @@
 </template>
 
 <script setup lang="ts">
-import { shallowRef } from 'vue'
 import '~/assets/css/dashboard.css'
 
 definePageMeta({
@@ -173,41 +172,6 @@ useHead({
     { name: 'description', content: '查看近期的精力、行动、体征与资产变化，把个人记录整理成可回看的趋势面板。' }
   ]
 })
-
-const lineChart = shallowRef<any>(null)
-const chartsLoaded = ref(false)
-
-const loadCharts = async () => {
-  if (chartsLoaded.value) return
-
-  const chartModule = await import('chart.js')
-  const vueChartModule = await import('vue-chartjs')
-  const {
-    Chart,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
-    Filler
-  } = chartModule
-
-  Chart.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
-    Filler
-  )
-
-  lineChart.value = vueChartModule.Line
-  chartsLoaded.value = true
-}
 
 type MetricRecord = {
   date: string
@@ -334,9 +298,91 @@ const wealthChartData = computed(() => {
   }
 })
 
+const healthChartOption = computed(() => ({
+  textStyle: { color: '#cbd5e1' },
+  tooltip: { trigger: 'axis' },
+  legend: { top: 0, textStyle: { color: '#cbd5e1' } },
+  grid: { left: 12, right: 12, top: 48, bottom: 16, containLabel: true },
+  xAxis: {
+    type: 'category',
+    boundaryGap: false,
+    data: healthChartData.value.labels,
+    axisLine: { show: false },
+    axisTick: { show: false },
+    splitLine: { show: false },
+    axisLabel: { color: '#94a3b8' }
+  },
+  yAxis: [
+    {
+      type: 'value',
+      splitLine: { lineStyle: { color: 'rgba(148, 163, 184, 0.16)' } },
+      axisLabel: { color: '#94a3b8' }
+    },
+    {
+      type: 'value',
+      position: 'right',
+      splitLine: { show: false },
+      axisLabel: { color: '#94a3b8' }
+    }
+  ],
+  series: [
+    {
+      name: '姝ユ暟',
+      type: 'line',
+      smooth: true,
+      symbol: 'none',
+      yAxisIndex: 0,
+      lineStyle: { color: '#38bdf8', width: 3 },
+      areaStyle: { color: 'rgba(56, 189, 248, 0.12)' },
+      data: healthChartData.value.datasets[0]?.data || []
+    },
+    {
+      name: '浣撻噸',
+      type: 'line',
+      smooth: true,
+      symbol: 'none',
+      yAxisIndex: 1,
+      lineStyle: { color: '#f59e0b', width: 3 },
+      areaStyle: { color: 'rgba(245, 158, 11, 0.1)' },
+      data: healthChartData.value.datasets[1]?.data || []
+    }
+  ]
+}))
+
+const wealthChartOption = computed(() => ({
+  textStyle: { color: '#cbd5e1' },
+  tooltip: { trigger: 'axis' },
+  legend: { top: 0, textStyle: { color: '#cbd5e1' } },
+  grid: { left: 12, right: 12, top: 48, bottom: 16, containLabel: true },
+  xAxis: {
+    type: 'category',
+    boundaryGap: false,
+    data: wealthChartData.value.labels,
+    axisLine: { show: false },
+    axisTick: { show: false },
+    splitLine: { show: false },
+    axisLabel: { color: '#94a3b8' }
+  },
+  yAxis: {
+    type: 'value',
+    splitLine: { lineStyle: { color: 'rgba(148, 163, 184, 0.16)' } },
+    axisLabel: { color: '#94a3b8' }
+  },
+  series: [
+    {
+      name: '鍑€璧勪骇',
+      type: 'line',
+      smooth: true,
+      symbol: 'none',
+      lineStyle: { color: '#a78bfa', width: 3 },
+      areaStyle: { color: 'rgba(167, 139, 250, 0.14)' },
+      data: wealthChartData.value.datasets[0]?.data || []
+    }
+  ]
+}))
+
 onMounted(async () => {
   try {
-    await loadCharts()
     const res = await api.get<MetricRecord[]>('/Metrics')
 
     metrics.value = [...res]

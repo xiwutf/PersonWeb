@@ -249,7 +249,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import '~/assets/css/tools.css'
 
 definePageMeta({
@@ -343,7 +343,7 @@ const fetchTools = async () => {
       return
     }
 
-    const contentTools = await queryContent('/tools').sort({ date: -1 }).find()
+    const contentTools = await $fetch<RawToolItem[]>('/api/content/tools')
 
     if (Array.isArray(contentTools) && contentTools.length > 0) {
       tools.value = contentTools.map((item, index) =>

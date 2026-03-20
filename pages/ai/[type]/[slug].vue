@@ -40,9 +40,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <!-- 左侧：文档内容 -->
           <div class="lg:col-span-2 space-y-8">
-            <div class="rounded-2xl p-8 prose max-w-none" style="background-color: var(--bg-card); border: 1px solid var(--border-color);">
-              <ContentRenderer :value="item" />
-            </div>
+            <div class="rounded-2xl p-8 prose max-w-none" style="background-color: var(--bg-card); border: 1px solid var(--border-color);" v-html="renderedContent"></div>
           </div>
 
           <!-- 右侧：交互/模拟区 -->
@@ -111,11 +109,14 @@
 const route = useRoute()
 const type = route.params.type // 'agents' or 'workflows'
 const slug = route.params.slug
+const { parse } = useMarkdown()
 
 // 简单的元数据设置（Content v3: queryCollection）
 const { data: item } = await useAsyncData(`ai-${type}-${slug}`, () =>
-  queryCollection('content').path(`/ai/${type}/${slug}`).first()
+  $fetch(`/api/content/ai/${type}/${slug}`)
 )
+
+const renderedContent = computed(() => parse(item.value?.content || ''))
 
 definePageMeta({
   layout: 'ai'

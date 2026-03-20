@@ -1,6 +1,14 @@
 <template>
   <div class="markdown-editor-wrapper">
-    <Editor
+    <div v-if="loadError" class="markdown-editor-status markdown-editor-status--error">
+      Markdown editor failed to load. Please refresh and try again.
+    </div>
+    <div v-else-if="!editorComponent" class="markdown-editor-status">
+      Loading markdown editor...
+    </div>
+    <component
+      :is="editorComponent"
+      v-else
       v-model="content"
       :plugins="plugins"
       :upload-images="handleImageUpload"
@@ -12,13 +20,11 @@
 </template>
 
 <script setup lang="ts">
-import { Editor } from '@bytemd/vue-next'
-import gfm from '@bytemd/plugin-gfm'
-import highlight from '@bytemd/plugin-highlight'
-import math from '@bytemd/plugin-math'
-import mediumZoom from '@bytemd/plugin-medium-zoom'
-import 'bytemd/dist/index.css'
-import 'highlight.js/styles/github-dark.css'
+import type { Component } from 'vue'
+
+interface ByteMdPlugin {
+  [key: string]: unknown
+}
 
 const props = withDefaults(defineProps<{
   modelValue: string
@@ -26,7 +32,7 @@ const props = withDefaults(defineProps<{
   height?: string
 }>(), {
   modelValue: '',
-  placeholder: '开始编写你的 Markdown 内容...',
+  placeholder: 'Start writing your Markdown content...',
   height: '600px'
 })
 
@@ -39,45 +45,68 @@ const content = computed({
   set: (value) => emit('update:modelValue', value)
 })
 
-// 配置插件
-const plugins = [
-  gfm(), // GitHub Flavored Markdown
-  highlight(), // 代码高亮
-  math(), // 数学公式
-  mediumZoom() // 图片缩放
-]
-
+const editorComponent = shallowRef<Component | null>(null)
+const plugins = shallowRef<ByteMdPlugin[]>([])
+const loadError = ref('')
 const api = useApi()
 
-// 处理图片上传
+// Load ByteMD and its plugins only when the editor itself is rendered.
+onMounted(async () => {
+  try {
+    const [
+      editorModule,
+      gfmModule,
+      highlightModule,
+      mathModule,
+      mediumZoomModule
+    ] = await Promise.all([
+      import('@bytemd/vue-next'),
+      import('@bytemd/plugin-gfm'),
+      import('@bytemd/plugin-highlight'),
+      import('@bytemd/plugin-math'),
+      import('@bytemd/plugin-medium-zoom'),
+      import('bytemd/dist/index.css'),
+      import('highlight.js/styles/github-dark.css')
+    ])
+
+    editorComponent.value = editorModule.Editor
+    plugins.value = [
+      gfmModule.default(),
+      highlightModule.default(),
+      mathModule.default(),
+      mediumZoomModule.default()
+    ]
+  } catch (error) {
+    console.error('Failed to load markdown editor:', error)
+    loadError.value = 'Failed to load markdown editor.'
+  }
+})
+
 const handleImageUpload = async (files: File[]): Promise<string[]> => {
   const uploadedUrls: string[] = []
-  
+
   for (const file of files) {
     try {
-      // 验证文件类型
       if (!file.type.startsWith('image/')) {
-        throw new Error('请选择图片文件')
+        throw new Error('Please select an image file.')
       }
 
-      // 验证文件大小（限制 5MB）
       if (file.size > 5 * 1024 * 1024) {
-        throw new Error('图片大小不能超过 5MB')
+        throw new Error('Image size cannot exceed 5MB.')
       }
 
       const formData = new FormData()
       formData.append('file', file)
 
-      // 上传到 OSS
-      const res = await api.post<any>('/Media/upload', formData)
-      if (res && res.url) {
+      const res = await api.post<{ url?: string }>('/Media/upload', formData)
+      if (res?.url) {
         uploadedUrls.push(res.url)
       } else {
-        throw new Error('上传失败：未返回有效 URL')
+        throw new Error('Upload failed: invalid response URL.')
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Image upload error:', error)
-      alert(error.message || '图片上传失败')
+      alert(error instanceof Error ? error.message : 'Image upload failed.')
     }
   }
 
@@ -95,18 +124,29 @@ const handleChange = (value: string) => {
   min-height: 400px;
 }
 
+.markdown-editor-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: var(--spacing-6, 1.5rem);
+  border: 1px solid var(--color-border-default, rgb(209 213 219));
+  border-radius: var(--radius-md, 0.5rem);
+  background: var(--color-bg-elevated, var(--color-bg-card));
+  color: var(--color-text-muted, rgb(107 114 128));
+}
+
+.markdown-editor-status--error {
+  color: var(--color-error, #dc2626);
+}
+
 .markdown-editor {
   height: v-bind(height);
   min-height: 400px;
 }
 
-/* 确保 bytemd 根节点有高度，避免编辑区被压成一条线 */
 :deep(.bytemd) {
   min-height: 400px;
-}
-
-/* 使用主题变量，增强边框与背景对比，便于分辨可填写区域 */
-:deep(.bytemd) {
   border: 2px solid var(--color-border-default, rgb(209 213 219));
   border-radius: var(--radius-md, 0.5rem);
   background: var(--color-bg-elevated, var(--color-bg-card));
@@ -123,7 +163,6 @@ const handleChange = (value: string) => {
   background: var(--color-bg-elevated, rgb(249 250 251));
 }
 
-/* 左侧编辑区：与周围明显区分，一眼看出「这里可以输入」 */
 :deep(.bytemd-editor) {
   font-size: 14px;
   line-height: 1.6;
@@ -149,7 +188,6 @@ const handleChange = (value: string) => {
   background: var(--color-bg-elevated, var(--color-bg-card));
 }
 
-/* 深色主题：整体编辑框用明显亮边，避免和背景融在一起 */
 [data-theme='dark'] :deep(.bytemd),
 [data-theme='tech-blue'] :deep(.bytemd),
 [data-theme='forest'] :deep(.bytemd),
@@ -167,7 +205,6 @@ const handleChange = (value: string) => {
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* 深色下左侧编辑区：明显更亮的「可输入」区域，桌面上一眼能看见 */
 [data-theme='dark'] :deep(.bytemd-editor),
 [data-theme='tech-blue'] :deep(.bytemd-editor),
 [data-theme='forest'] :deep(.bytemd-editor),
@@ -199,4 +236,3 @@ const handleChange = (value: string) => {
   color: var(--color-text-main);
 }
 </style>
-

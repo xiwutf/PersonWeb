@@ -36,9 +36,7 @@
 
         <!-- ä¸»è¦åå®¹ -->
         <article v-if="doc" class="cognition-article">
-          <div class="cognition-prose">
-            <ContentRenderer :value="doc" />
-          </div>
+          <div class="cognition-prose" v-html="renderedContent"></div>
         </article>
 
         <!-- å è½½ç¶æ?-->
@@ -57,9 +55,13 @@ definePageMeta({
 })
 
 // 获取更新日志内容
+const { parse } = useMarkdown()
+
 const { data: doc } = await useAsyncData('cognition-changelog', () =>
-  queryCollection('content').path('/cognition/changelog').first()
+  $fetch('/api/content/cognition/changelog')
 )
+
+const renderedContent = computed(() => parse(doc.value?.content || ''))
 
 // 404 处理
 if (!doc.value) {
