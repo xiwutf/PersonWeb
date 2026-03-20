@@ -4,16 +4,15 @@
       @click="handleChallengeClick"
       :disabled="participating"
       class="challenge-button"
-      :class="{ 'participating': participating, 'completed': challenge?.completed }"
+      :class="{ participating, completed: challenge?.completed }"
     >
-      <span class="button-icon">🎯</span>
+      <span class="button-icon">🏆</span>
       <span class="button-text">{{ challenge?.challengeName || '参与挑战' }}</span>
       <span v-if="challenge" class="button-progress">
         {{ challenge.currentCount }} / {{ challenge.targetCount }}
       </span>
     </button>
 
-    <!-- 挑战完成提示 -->
     <Transition name="fade">
       <div v-if="showCompletion" class="completion-overlay">
         <div class="completion-content">
@@ -44,12 +43,14 @@ const challenge = ref<Challenge | null>(null)
 const participating = ref(false)
 const showCompletion = ref(false)
 
-// 获取挑战信息
+let refreshTimer: NodeJS.Timeout | null = null
+let hideCompletionTimer: NodeJS.Timeout | null = null
+let visibilityHandler: (() => void) | null = null
+
 const fetchChallenge = async () => {
   try {
     const res = await api.get('/VisitorGamification/challenges')
     if (Array.isArray(res) && res.length > 0) {
-      // 获取第一个活跃挑战
       challenge.value = res[0] as Challenge
     }
   } catch (e) {
@@ -57,12 +58,12 @@ const fetchChallenge = async () => {
   }
 }
 
-// 参与挑战
 const handleChallengeClick = async () => {
   const visitorId = localStorage.getItem('visitor_id')
   if (!visitorId || !challenge.value || participating.value) return
 
   participating.value = true
+
   try {
     const res = await api.post('/VisitorGamification/challenge/participate', {
       visitorId,
@@ -74,12 +75,15 @@ const handleChallengeClick = async () => {
     if (res?.challenge) {
       challenge.value = res.challenge as Challenge
 
-      // 如果完成，显示完成提示并触发烟花效果
       if (res.challenge.completed) {
         showCompletion.value = true
         triggerFireworks()
-        
-        setTimeout(() => {
+
+        if (hideCompletionTimer) {
+          clearTimeout(hideCompletionTimer)
+        }
+
+        hideCompletionTimer = setTimeout(() => {
           showCompletion.value = false
         }, 5000)
       }
@@ -91,30 +95,61 @@ const handleChallengeClick = async () => {
   }
 }
 
-// 触发全屏烟花效果
 const triggerFireworks = () => {
   if (process.client) {
     window.dispatchEvent(new CustomEvent('trigger-fireworks'))
   }
 }
 
+const startRefresh = () => {
+  if (refreshTimer) return
+
+  refreshTimer = setInterval(() => {
+    if (document.hidden) return
+    fetchChallenge()
+  }, 15000)
+}
+
+const stopRefresh = () => {
+  if (refreshTimer) {
+    clearInterval(refreshTimer)
+    refreshTimer = null
+  }
+}
+
 onMounted(() => {
   fetchChallenge()
-  
-  // 定期刷新挑战进度
-  const interval = setInterval(() => {
-    fetchChallenge()
-  }, 10000) // 每10秒刷新一次
+  startRefresh()
 
-  onUnmounted(() => {
-    clearInterval(interval)
-  })
+  visibilityHandler = () => {
+    if (document.hidden) {
+      stopRefresh()
+      return
+    }
+
+    fetchChallenge()
+    startRefresh()
+  }
+
+  document.addEventListener('visibilitychange', visibilityHandler)
+})
+
+onUnmounted(() => {
+  stopRefresh()
+
+  if (hideCompletionTimer) {
+    clearTimeout(hideCompletionTimer)
+  }
+
+  if (visibilityHandler) {
+    document.removeEventListener('visibilitychange', visibilityHandler)
+  }
 })
 </script>
 
 <style scoped>
 .challenge-button-container {
-  position: relative; /* 改为相对定位，由父容器控制位置 */
+  position: relative;
   width: 100%;
 }
 
@@ -225,4 +260,3 @@ onMounted(() => {
   opacity: 0;
 }
 </style>
-

@@ -89,6 +89,7 @@ const unreadCount = ref(0)
 const recentNotifications = ref<SideNotification[]>([])
 
 let pollTimer: NodeJS.Timeout | null = null
+let visibilityHandler: (() => void) | null = null
 
 const fetchUnreadCount = async () => {
   try {
@@ -184,20 +185,42 @@ const formatTime = (time: string): string => {
 }
 
 const startPolling = () => {
+  if (pollTimer) return
+
   fetchUnreadCount()
   pollTimer = setInterval(() => {
+    if (document.hidden) return
     fetchUnreadCount()
   }, 60000)
 }
 
+const stopPolling = () => {
+  if (pollTimer) {
+    clearInterval(pollTimer)
+    pollTimer = null
+  }
+}
+
 onMounted(() => {
-  fetchUnreadCount()
   startPolling()
+
+  visibilityHandler = () => {
+    if (document.hidden) {
+      stopPolling()
+      return
+    }
+
+    fetchUnreadCount()
+    startPolling()
+  }
+
+  document.addEventListener('visibilitychange', visibilityHandler)
 })
 
 onUnmounted(() => {
-  if (pollTimer) {
-    clearInterval(pollTimer)
+  stopPolling()
+  if (visibilityHandler) {
+    document.removeEventListener('visibilitychange', visibilityHandler)
   }
 })
 </script>

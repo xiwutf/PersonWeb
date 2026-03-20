@@ -656,18 +656,64 @@ const handleResize = () => {
   }, 200)
 }
 
+let clockTimer: NodeJS.Timeout | null = null
+let statsRefreshTimer: NodeJS.Timeout | null = null
+let visibilityHandler: (() => void) | null = null
+
+const startDashboardRefresh = () => {
+  if (!clockTimer) {
+    clockTimer = setInterval(() => {
+      updateTime()
+    }, 1000)
+  }
+
+  if (!statsRefreshTimer) {
+    statsRefreshTimer = setInterval(() => {
+      if (document.hidden) return
+      fetchStats()
+    }, 30000)
+  }
+}
+
+const stopDashboardRefresh = () => {
+  if (clockTimer) {
+    clearInterval(clockTimer)
+    clockTimer = null
+  }
+
+  if (statsRefreshTimer) {
+    clearInterval(statsRefreshTimer)
+    statsRefreshTimer = null
+  }
+}
+
 onMounted(() => {
   fetchStats()
   updateTime()
-  setInterval(updateTime, 1000)
+  startDashboardRefresh()
   // 每30秒刷新一次数据
-  setInterval(fetchStats, 30000)
+  visibilityHandler = () => {
+    if (document.hidden) {
+      stopDashboardRefresh()
+      return
+    }
+
+    updateTime()
+    fetchStats()
+    startDashboardRefresh()
+  }
+
+  document.addEventListener('visibilitychange', visibilityHandler)
   // 监听窗口大小改变
   window.addEventListener('resize', handleResize)
 })
 
 onUnmounted(() => {
+  stopDashboardRefresh()
   window.removeEventListener('resize', handleResize)
+  if (visibilityHandler) {
+    document.removeEventListener('visibilitychange', visibilityHandler)
+  }
   if (resizeTimer) clearTimeout(resizeTimer)
 })
 </script>

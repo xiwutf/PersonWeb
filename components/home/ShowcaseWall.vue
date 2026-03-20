@@ -8,21 +8,26 @@
         </p>
       </div>
 
-      <div class="showcase-wall-content" ref="wallRef">
-        <div class="showcase-wall-track" v-for="track in tracks" :key="track" :style="getTrackStyle(track)">
+      <div ref="wallRef" class="showcase-wall-content">
+        <div
+          v-for="track in tracks"
+          :key="track"
+          class="showcase-wall-track"
+          :style="getTrackStyle(track)"
+        >
           <div
             v-for="(item, index) in getItemsForTrack(track)"
             :key="`${item.type}-${item.id || index}`"
             class="showcase-wall-item"
             :class="`showcase-wall-item--${item.type}`"
-            :style="getItemStyle(item, track, index)"
+            :style="getItemStyle(item, index)"
           >
             <div class="showcase-wall-item-inner" :class="`showcase-wall-item-inner--${item.type}`">
               <div class="showcase-wall-item-icon" :class="`showcase-wall-item-icon--${item.type}`">
                 <i :class="getItemIcon(item.type)"></i>
               </div>
               <div class="showcase-wall-item-content">
-                <span class="showcase-wall-item-visitor" v-if="item.visitorName || item.visitorId">
+                <span v-if="item.visitorName || item.visitorId" class="showcase-wall-item-visitor">
                   @{{ item.visitorName || item.visitorId || '访客' }}
                 </span>
                 <span class="showcase-wall-item-label" :class="`showcase-wall-item-label--${item.type}`">
@@ -35,7 +40,6 @@
         </div>
       </div>
 
-      <!-- 空状态 -->
       <div v-if="allItems.length === 0" class="showcase-wall-empty">
         <i class="fas fa-inbox showcase-wall-empty-icon"></i>
         <p class="showcase-wall-empty-text">暂无内容</p>
@@ -45,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import type { TimeCapsule, TimeCapsuleListResponse } from '~/types/api'
 
 const api = useApi()
@@ -65,9 +69,11 @@ interface ShowcaseItem {
 const capsules = ref<TimeCapsule[]>([])
 const messages = ref<any[]>([])
 const allItems = ref<ShowcaseItem[]>([])
-const tracks = ref([1, 2, 3, 4, 5, 6]) // 6条轨道
+const tracks = ref([1, 2, 3, 4, 5, 6])
 
-// 获取时间胶囊数据
+let refreshTimer: NodeJS.Timeout | null = null
+let visibilityHandler: (() => void) | null = null
+
 const fetchCapsules = async () => {
   try {
     const res = await api.get<TimeCapsuleListResponse>('/TimeCapsule', {
@@ -76,40 +82,37 @@ const fetchCapsules = async () => {
         pageSize: 50
       }
     })
-    
-    if (res) {
-      let list: TimeCapsule[] = []
-      
-      // 处理不同的响应格式
-      if (res.List) {
-        list = res.List
-      } else if ((res as any).list) {
-        list = (res as any).list
-      } else if (Array.isArray(res)) {
-        list = res
-      } else if ((res as any).data) {
-        // 如果响应被包装在 data 中
-        const data = (res as any).data
-        if (data.List) {
-          list = data.List
-        } else if (data.list) {
-          list = data.list
-        } else if (Array.isArray(data)) {
-          list = data
-        }
-      }
-      
-      // /TimeCapsule 端点已经只返回 status == 1 的数据，不需要再过滤
-      capsules.value = list
-    } else {
+
+    if (!res) {
       capsules.value = []
+      return
     }
-  } catch (e) {
+
+    let list: TimeCapsule[] = []
+
+    if (res.List) {
+      list = res.List
+    } else if ((res as any).list) {
+      list = (res as any).list
+    } else if (Array.isArray(res)) {
+      list = res
+    } else if ((res as any).data) {
+      const data = (res as any).data
+      if (data.List) {
+        list = data.List
+      } else if (data.list) {
+        list = data.list
+      } else if (Array.isArray(data)) {
+        list = data
+      }
+    }
+
+    capsules.value = list
+  } catch {
     capsules.value = []
   }
 }
 
-// 获取留言板数据
 const fetchMessages = async () => {
   try {
     const res = await api.get<any>('/VisitorInteraction/messages/approved', {
@@ -117,18 +120,18 @@ const fetchMessages = async () => {
         limit: 50
       }
     })
-    
-    if (res) {
-      if (res.data) {
-        messages.value = Array.isArray(res.data) ? res.data : []
-      } else if (Array.isArray(res)) {
-        messages.value = res
-      } else {
-        messages.value = []
-      }
-    } else {
+
+    if (!res) {
       messages.value = []
+      return
     }
+
+    if (res.data) {
+      messages.value = Array.isArray(res.data) ? res.data : []
+      return
+    }
+
+    messages.value = Array.isArray(res) ? res : []
   } catch (e) {
     if (import.meta.env.DEV) {
       console.error('Failed to fetch messages:', e)
@@ -137,50 +140,44 @@ const fetchMessages = async () => {
   }
 }
 
-// 合并数据
 const mergeItems = () => {
   const items: ShowcaseItem[] = []
-  
-  // 添加时间胶囊
+
   capsules.value.forEach(capsule => {
-    if (capsule && capsule.content) {
-      items.push({
-        id: `capsule-${capsule.id}`,
-        type: 'capsule',
-        content: capsule.content,
-        visitorId: capsule.visitorId,
-        visitorName: capsule.visitorName,
-        createdAt: capsule.createdAt
-      })
-    }
+    if (!capsule?.content) return
+
+    items.push({
+      id: `capsule-${capsule.id}`,
+      type: 'capsule',
+      content: capsule.content,
+      visitorId: capsule.visitorId,
+      visitorName: capsule.visitorName,
+      createdAt: capsule.createdAt
+    })
   })
-  
-  // 添加留言
+
   messages.value.forEach(message => {
-    if (message && message.content) {
-      items.push({
-        id: `message-${message.id}`,
-        type: 'message',
-        content: message.content,
-        visitorId: message.visitorId,
-        visitorName: message.visitorId, // 留言可能没有visitorName
-        createdAt: message.createdAt,
-        emoji: message.emoji,
-        color: message.color
-      })
-    }
+    if (!message?.content) return
+
+    items.push({
+      id: `message-${message.id}`,
+      type: 'message',
+      content: message.content,
+      visitorId: message.visitorId,
+      visitorName: message.visitorName || message.visitorId,
+      createdAt: message.createdAt,
+      emoji: message.emoji,
+      color: message.color
+    })
   })
-  
-  // 随机打乱顺序
+
   allItems.value = items.sort(() => Math.random() - 0.5)
 }
 
-// 获取类型图标
 const getItemIcon = (type: string) => {
   return type === 'capsule' ? 'fas fa-clock' : 'fas fa-comment'
 }
 
-// 获取轨道样式
 const getTrackStyle = (track: number) => {
   const height = 100 / tracks.value.length
   return {
@@ -189,45 +186,68 @@ const getTrackStyle = (track: number) => {
   }
 }
 
-// 获取该轨道上的项目
 const getItemsForTrack = (track: number) => {
   const itemsPerTrack = Math.ceil(allItems.value.length / tracks.value.length)
   const startIndex = (track - 1) * itemsPerTrack
-  const endIndex = startIndex + itemsPerTrack
-  return allItems.value.slice(startIndex, endIndex)
+  return allItems.value.slice(startIndex, startIndex + itemsPerTrack)
 }
 
-// 获取项目样式
-const getItemStyle = (item: ShowcaseItem, track: number, index: number) => {
-  const baseDelay = index * 2 // 每个项目间隔2秒
-  const duration = 20 + Math.random() * 10 // 20-30秒滚动时间
-  const delay = baseDelay + Math.random() * 2 // 添加随机延迟
-  
+const getItemStyle = (item: ShowcaseItem, index: number) => {
+  const baseDelay = index * 2
+  const duration = 20 + Math.random() * 10
+  const delay = baseDelay + Math.random() * 2
+
   return {
     '--animation-duration': `${duration}s`,
     '--animation-delay': `${delay}s`,
-    right: `${-300 - Math.random() * 200}px`, // 从右侧外部开始
+    right: `${-300 - Math.random() * 200}px`,
     color: item.color || undefined
-  } as any
+  } as Record<string, string | undefined>
 }
 
-// 加载数据
 const loadData = async () => {
   await Promise.all([fetchCapsules(), fetchMessages()])
   mergeItems()
 }
 
+const startRefresh = () => {
+  if (refreshTimer) return
+
+  refreshTimer = setInterval(() => {
+    if (document.hidden) return
+    loadData()
+  }, 60000)
+}
+
+const stopRefresh = () => {
+  if (refreshTimer) {
+    clearInterval(refreshTimer)
+    refreshTimer = null
+  }
+}
+
 onMounted(() => {
   loadData()
-  
-  // 定期刷新数据
-  const interval = setInterval(() => {
+  startRefresh()
+
+  visibilityHandler = () => {
+    if (document.hidden) {
+      stopRefresh()
+      return
+    }
+
     loadData()
-  }, 60000) // 每分钟刷新一次
-  
-  onUnmounted(() => {
-    clearInterval(interval)
-  })
+    startRefresh()
+  }
+
+  document.addEventListener('visibilitychange', visibilityHandler)
+})
+
+onUnmounted(() => {
+  stopRefresh()
+  if (visibilityHandler) {
+    document.removeEventListener('visibilitychange', visibilityHandler)
+  }
 })
 </script>
 

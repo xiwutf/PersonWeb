@@ -323,18 +323,45 @@ const fetchData = async () => {
 }
 
 let refreshTimer: ReturnType<typeof setInterval> | null = null
+let visibilityHandler: (() => void) | null = null
 
-onMounted(() => {
-  fetchData()
+const startRefresh = () => {
+  if (refreshTimer) return
+
   refreshTimer = setInterval(() => {
+    if (document.hidden) return
     fetchData()
   }, 60000)
-})
+}
 
-onBeforeUnmount(() => {
+const stopRefresh = () => {
   if (refreshTimer) {
     clearInterval(refreshTimer)
     refreshTimer = null
+  }
+}
+
+onMounted(() => {
+  fetchData()
+  startRefresh()
+
+  visibilityHandler = () => {
+    if (document.hidden) {
+      stopRefresh()
+      return
+    }
+
+    fetchData()
+    startRefresh()
+  }
+
+  document.addEventListener('visibilitychange', visibilityHandler)
+})
+
+onBeforeUnmount(() => {
+  stopRefresh()
+  if (visibilityHandler) {
+    document.removeEventListener('visibilitychange', visibilityHandler)
   }
 })
 </script>

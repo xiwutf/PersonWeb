@@ -54,12 +54,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { animate, inView } from '@motionone/dom'
+import { onMounted, onUnmounted, ref } from 'vue'
 
 const containerRef = ref<HTMLElement | null>(null)
 const loading = ref(false)
 const aiResponse = ref<string>('')
+let typingTimer: number | null = null
+let inViewCleanup: (() => void) | null = null
 
 // Prompt 选项
 const prompts = [
@@ -105,7 +106,7 @@ const handlePromptClick = async (prompt: { type: string }) => {
   aiResponse.value = ''
 
   // 模拟 API 调用延迟
-  await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000))
+  await new Promise(resolve => setTimeout(resolve, 700 + Math.random() * 500))
 
   // 随机选择一个回复
   const responses = mockResponses[prompt.type] || []
@@ -118,15 +119,22 @@ const handlePromptClick = async (prompt: { type: string }) => {
 
 // 打字效果
 const typeText = (text: string) => {
+  if (typingTimer) {
+    clearInterval(typingTimer)
+  }
+
   let index = 0
-  const timer = setInterval(() => {
+  typingTimer = window.setInterval(() => {
     if (index < text.length) {
       aiResponse.value = text.slice(0, index + 1)
       index++
     } else {
-      clearInterval(timer)
+      if (typingTimer) {
+        clearInterval(typingTimer)
+        typingTimer = null
+      }
     }
-  }, 50)
+  }, 34)
 }
 
 // 预留的 AI API 调用方法
@@ -140,13 +148,24 @@ const callAiApi = async (prompt: string): Promise<string> => {
 
 onMounted(() => {
   if (containerRef.value) {
-    inView(containerRef.value, () => {
-      animate(
-        containerRef.value!,
-        { opacity: [0, 1], y: [50, 0] },
-        { duration: 0.8, easing: 'ease-out' }
-      )
-    })
+    import('@motionone/dom').then(({ animate, inView }) => {
+      inViewCleanup = inView(containerRef.value!, () => {
+        animate(
+          containerRef.value!,
+          { opacity: [0, 1], y: [50, 0] },
+          { duration: 0.8, easing: 'ease-out' }
+        )
+      })
+    }).catch(() => {})
+  }
+})
+
+onUnmounted(() => {
+  if (typingTimer) {
+    clearInterval(typingTimer)
+  }
+  if (inViewCleanup) {
+    inViewCleanup()
   }
 })
 </script>
