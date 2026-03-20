@@ -405,7 +405,9 @@ public class AiServiceClient
     {
         try
         {
-            var response = await _httpClient.GetAsync("/health", cancellationToken);
+            var baseAddress = _httpClient.BaseAddress?.ToString().TrimEnd('/') ?? _options.BaseUrl.TrimEnd('/');
+            var requestUri = $"{baseAddress}/health";
+            var response = await _httpClient.GetAsync(requestUri, cancellationToken);
             return response.IsSuccessStatusCode;
         }
         catch (Exception ex)

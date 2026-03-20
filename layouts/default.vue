@@ -14,7 +14,7 @@
     <!-- <BackgroundEffects :effect="currentBackground" :config="backgroundConfig" /> -->
     
     <!-- 鼠标轨迹特效 -->
-    <MouseTrail />
+    <MouseTrail v-if="showDesktopEnhancements" />
     
     <!-- 风格切换面板 -->
     <ThemeSwitcher />
@@ -30,10 +30,10 @@
     <Footer />
     
     <!-- AI 智能助手（独立，不放入抽屉） -->
-    <AIAssistant />
+    <AIAssistant v-if="showDeferredWidgets" />
     
     <!-- 智能客服（前台访客使用） -->
-    <SupportChat />
+    <SupportChat v-if="showDeferredWidgets" />
     
     <!-- 访客互动功能 -->
     <!-- 🔴 已禁用：z-index 过高，可能遮挡导航栏 -->
@@ -42,12 +42,12 @@
     <!-- VisitorBubble: z-index: 200 (比导航栏高) -->
     <!-- <VisitorBubble /> -->
     <!-- VisitorInteractionPanel: 留言、互动功能（右下角） -->
-    <VisitorInteractionPanel />
+    <VisitorInteractionPanel v-if="showDeferredWidgets" />
     
     <!-- 访客互动式玩法（包含在抽屉中） -->
-    <VisitorBehaviorListener />
+    <VisitorBehaviorListener v-if="showDesktopEnhancements" />
     <!-- 访客侧边栏抽屉（包含留言、互动等功能） -->
-    <VisitorSidebarDrawer />
+    <VisitorSidebarDrawer v-if="showDesktopEnhancements" />
     <!-- 🔴 已禁用：可能导致滚动条闪烁（fixed 定位 + 动画） -->
     <!-- <VisitorTriggerEffects /> -->
     <!-- 🔴 已禁用：可能导致滚动条闪烁（requestAnimationFrame 持续动画） -->
@@ -60,64 +60,81 @@
 </template>
 
 <script setup lang="ts">
+import { computed, defineAsyncComponent, onMounted, onUnmounted, ref } from 'vue'
+
 // 显式导入组件，确保 Nuxt 3 自动导入正常工作
 import AppNaiveConfig from '~/components/layout/AppNaiveConfig.vue'
-import MouseTrail from '~/components/effects/MouseTrail.vue'
 import ThemeSwitcher from '~/components/layout/ThemeSwitcher.vue'
 import Footer from '~/components/layout/Footer.vue'
-import AIAssistant from '~/components/ai/AIAssistant.vue'
-import SupportChat from '~/components/ai/SupportChat.vue'
-import VisitorInteractionPanel from '~/components/VisitorInteractionPanel.vue'
-import VisitorBehaviorListener from '~/components/VisitorBehaviorListener.vue'
-import VisitorSidebarDrawer from '~/components/VisitorSidebarDrawer.vue'
 import SecretAdminAccess from '~/components/admin/SecretAdminAccess.vue'
 
-// 使用主题组合式函数
-const { currentTheme } = useTheme()
-const route = useRoute()
-const api = useApi()
+const MouseTrail = defineAsyncComponent(() => import('~/components/effects/MouseTrail.vue'))
+const AIAssistant = defineAsyncComponent(() => import('~/components/ai/AIAssistant.vue'))
+const SupportChat = defineAsyncComponent(() => import('~/components/ai/SupportChat.vue'))
+const VisitorInteractionPanel = defineAsyncComponent(() => import('~/components/VisitorInteractionPanel.vue'))
+const VisitorBehaviorListener = defineAsyncComponent(() => import('~/components/VisitorBehaviorListener.vue'))
+const VisitorSidebarDrawer = defineAsyncComponent(() => import('~/components/VisitorSidebarDrawer.vue'))
 
-// 当前背景效果
-const currentBackground = ref<string>('particles')
-const backgroundConfig = ref<Record<string, any>>({})
+const shouldMountDeferredUi = ref(false)
+const isLowPowerMode = ref(false)
 
-// 监听主题和背景切换事件
-onMounted(async () => {
-  try {
-    // 主题初始化由 useTheme composable 自动处理，无需手动调用
+const showDeferredWidgets = computed(() => shouldMountDeferredUi.value && !isLowPowerMode.value)
+const showDesktopEnhancements = computed(() => showDeferredWidgets.value)
 
-    // 获取或生成 Visitor ID
-    // 注意：访问追踪由 plugins/analytics.client.ts 统一处理，这里不再重复调用
-    // 该插件会调用 /api/Analytics/track 接口，同时写入 VisitLogs 和 VisitorAnalytics 表
-    let visitorId = localStorage.getItem('visitor_id')
-    if (!visitorId) {
-      visitorId = `visitor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-      localStorage.setItem('visitor_id', visitorId)
-      
-      // 触发新访客事件（用于显示气泡）
-      if (process.client) {
-        window.dispatchEvent(new CustomEvent('new-visitor', {
-          detail: { visitorId, location: null }
-        }))
-      }
-    }
+let deferredMountTimer: number | null = null
 
-    // 加载用户主题偏好
-    try {
-      const preference = await api.post('/Theme/preference', { visitorId: visitorId || 'anonymous' })
-      if (preference) {
-        currentBackground.value = preference.backgroundEffectCode || 'particles'
-      }
-    } catch (e) {
-      console.warn('加载主题偏好失败', e)
-    }
-  } catch (e) {
-    console.error('Failed to update stats', e)
+const detectLowPowerMode = () => {
+  const coarsePointer = window.matchMedia('(pointer: coarse)').matches
+  const narrowScreen = window.innerWidth < 1024
+  const saveData = 'connection' in navigator && (navigator as Navigator & {
+    connection?: { saveData?: boolean }
+  }).connection?.saveData === true
+  const lowMemoryValue = 'deviceMemory' in navigator
+    ? Number((navigator as Navigator & { deviceMemory?: number }).deviceMemory || 0)
+    : 0
+  const lowMemory = lowMemoryValue > 0 && lowMemoryValue <= 4
+
+  isLowPowerMode.value = coarsePointer || narrowScreen || saveData || lowMemory
+}
+
+const scheduleDeferredWidgets = () => {
+  if (isLowPowerMode.value) {
+    shouldMountDeferredUi.value = false
+    return
   }
 
-  // 监听背景切换事件
-  window.addEventListener('background-changed', ((e: CustomEvent) => {
-    currentBackground.value = e.detail.background
-  }) as EventListener)
+  const mountWidgets = () => {
+    shouldMountDeferredUi.value = true
+  }
+
+  if ('requestIdleCallback' in window) {
+    ;(window as Window & {
+      requestIdleCallback: (callback: IdleRequestCallback, options?: IdleRequestOptions) => number
+    }).requestIdleCallback(() => mountWidgets(), { timeout: 2000 })
+    return
+  }
+
+  deferredMountTimer = window.setTimeout(mountWidgets, 1200)
+}
+
+onMounted(() => {
+  if (!process.client) {
+    return
+  }
+
+  let visitorId = localStorage.getItem('visitor_id')
+  if (!visitorId) {
+    visitorId = `visitor_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`
+    localStorage.setItem('visitor_id', visitorId)
+  }
+
+  detectLowPowerMode()
+  scheduleDeferredWidgets()
+})
+
+onUnmounted(() => {
+  if (deferredMountTimer) {
+    window.clearTimeout(deferredMountTimer)
+  }
 })
 </script>

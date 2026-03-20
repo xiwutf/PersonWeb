@@ -164,6 +164,38 @@
     height: var(--app-height, 100vh) !important;
   }
 
+  html:not(.app-shell-ready) .hero-background-grid,
+  html:not(.app-shell-ready) .hero-background-grid-pattern,
+  html:not(.app-shell-ready) .footer-grid-bg,
+  html:not(.app-shell-ready) .game-grid,
+  html:not(.app-shell-ready) .side-projects-grid,
+  html:not(.app-shell-ready) .dashboard-grid {
+    opacity: 0 !important;
+    animation: none !important;
+  }
+
+  html:not(.app-shell-ready) .admin-layout::before,
+  html:not(.app-shell-ready) .admin-main::before,
+  html:not(.app-shell-ready) .home-dark-lab-timecapsule::before {
+    opacity: 0 !important;
+    animation: none !important;
+  }
+
+  html.is-touch-device .hero-background-grid,
+  html.is-touch-device .hero-background-grid-pattern,
+  html.is-touch-device .footer-grid-bg,
+  html.is-touch-device .game-grid,
+  html.is-touch-device .side-projects-grid,
+  html.is-touch-device .dashboard-grid {
+    display: none !important;
+  }
+
+  html.is-touch-device .admin-layout::before,
+  html.is-touch-device .admin-main::before,
+  html.is-touch-device .home-dark-lab-timecapsule::before {
+    content: none !important;
+  }
+
   h1,
   h2,
   h3,
