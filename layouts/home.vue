@@ -8,10 +8,10 @@
   <!-- 首页布局：使用主题背景色和文字颜色 -->
   <div class="min-h-screen flex flex-col relative" style="background-color: var(--color-bg-body); color: var(--color-text-main);">
     <!-- 动态粒子背景 -->
-    <ParticleBackground />
+    <ParticleBackground v-if="showDesktopEnhancements" />
     
     <!-- 鼠标轨迹特效 -->
-    <MouseTrail />
+    <MouseTrail v-if="showDesktopEnhancements" />
     
     <!-- 注意：Header 已移至 app.vue 全局挂载，此处不再需要 -->
     
@@ -27,15 +27,15 @@
     <ThemeSwitcher />
     
     <!-- AI 智能助手 -->
-    <AIAssistant />
+    <AIAssistant v-if="showDeferredWidgets" />
     
     <!-- 访客互动功能 -->
-    <VisitorInteractionPanel />
+    <VisitorInteractionPanel v-if="showDeferredWidgets" />
     
     <!-- 访客互动式玩法（包含在抽屉中） -->
-    <VisitorBehaviorListener />
+    <VisitorBehaviorListener v-if="showDesktopEnhancements" />
     <!-- 访客侧边栏抽屉（包含留言、互动等功能） -->
-    <VisitorSidebarDrawer />
+    <VisitorSidebarDrawer v-if="showDesktopEnhancements" />
     
     <!-- 隐秘的后台入口 -->
     <SecretAdminAccess />
@@ -43,23 +43,72 @@
 </template>
 
 <script setup lang="ts">
+import { computed, defineAsyncComponent, onMounted, onUnmounted, ref } from 'vue'
+
 // 显式导入组件（确保 Nuxt 3 自动导入正常工作）
 // 注意：Header 已移至 app.vue 全局挂载，此处不再需要导入
-import ParticleBackground from '~/components/effects/ParticleBackground.vue'
-import MouseTrail from '~/components/effects/MouseTrail.vue'
 import Footer from '~/components/layout/Footer.vue'
 import ThemeSwitcher from '~/components/layout/ThemeSwitcher.vue'
-import AIAssistant from '~/components/ai/AIAssistant.vue'
-import VisitorInteractionPanel from '~/components/VisitorInteractionPanel.vue'
-import VisitorBehaviorListener from '~/components/VisitorBehaviorListener.vue'
-import VisitorSidebarDrawer from '~/components/VisitorSidebarDrawer.vue'
 import SecretAdminAccess from '~/components/admin/SecretAdminAccess.vue'
 
-const route = useRoute()
-const api = useApi()
+const ParticleBackground = defineAsyncComponent(() => import('~/components/effects/ParticleBackground.vue'))
+const MouseTrail = defineAsyncComponent(() => import('~/components/effects/MouseTrail.vue'))
+const AIAssistant = defineAsyncComponent(() => import('~/components/ai/AIAssistant.vue'))
+const VisitorInteractionPanel = defineAsyncComponent(() => import('~/components/VisitorInteractionPanel.vue'))
+const VisitorBehaviorListener = defineAsyncComponent(() => import('~/components/VisitorBehaviorListener.vue'))
+const VisitorSidebarDrawer = defineAsyncComponent(() => import('~/components/VisitorSidebarDrawer.vue'))
 
-// 注意：访问追踪由 plugins/analytics.client.ts 统一处理
-// 该插件会调用 /api/Analytics/track 接口，同时写入 VisitLogs 和 VisitorAnalytics 表
-// 这里不再需要单独调用统计 API
+const shouldMountDeferredUi = ref(false)
+const isLowPowerMode = ref(false)
+
+const showDeferredWidgets = computed(() => shouldMountDeferredUi.value && !isLowPowerMode.value)
+const showDesktopEnhancements = computed(() => showDeferredWidgets.value)
+
+let deferredMountTimer: number | null = null
+
+const detectLowPowerMode = () => {
+  const coarsePointer = window.matchMedia('(pointer: coarse)').matches
+  const narrowScreen = window.innerWidth < 1024
+  const saveData = 'connection' in navigator && (navigator as Navigator & {
+    connection?: { saveData?: boolean }
+  }).connection?.saveData === true
+  const lowMemoryValue = 'deviceMemory' in navigator
+    ? Number((navigator as Navigator & { deviceMemory?: number }).deviceMemory || 0)
+    : 0
+  const lowMemory = lowMemoryValue > 0 && lowMemoryValue <= 4
+
+  isLowPowerMode.value = coarsePointer || narrowScreen || saveData || lowMemory
+}
+
+const scheduleDeferredWidgets = () => {
+  if (isLowPowerMode.value) {
+    shouldMountDeferredUi.value = false
+    return
+  }
+
+  const mountWidgets = () => {
+    shouldMountDeferredUi.value = true
+  }
+
+  if ('requestIdleCallback' in window) {
+    ;(window as Window & {
+      requestIdleCallback: (callback: IdleRequestCallback, options?: IdleRequestOptions) => number
+    }).requestIdleCallback(() => mountWidgets(), { timeout: 2000 })
+    return
+  }
+
+  deferredMountTimer = window.setTimeout(mountWidgets, 1200)
+}
+
+onMounted(() => {
+  detectLowPowerMode()
+  scheduleDeferredWidgets()
+})
+
+onUnmounted(() => {
+  if (deferredMountTimer) {
+    window.clearTimeout(deferredMountTimer)
+  }
+})
 </script>
 

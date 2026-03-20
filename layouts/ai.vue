@@ -20,61 +20,93 @@
     <Footer />
     
     <!-- 鼠标轨迹特效 -->
-    <MouseTrail />
+    <MouseTrail v-if="showDesktopEnhancements" />
     
     <!-- 风格切换面板 -->
     <ThemeSwitcher />
     
     <!-- AI 智能助手 -->
-    <AIAssistant />
+    <AIAssistant v-if="showDeferredWidgets" />
     
     <!-- 访客互动功能 -->
-    <VisitorInteractionPanel />
+    <VisitorInteractionPanel v-if="showDeferredWidgets" />
     
     <!-- 访客互动式玩法（包含在抽屉中） -->
-    <VisitorBehaviorListener />
+    <VisitorBehaviorListener v-if="showDesktopEnhancements" />
     <!-- 访客侧边栏抽屉（包含留言、互动等功能） -->
-    <VisitorSidebarDrawer />
+    <VisitorSidebarDrawer v-if="showDesktopEnhancements" />
     
     <!-- 智能客服（前台访客使用） -->
-    <SupportChat />
+    <SupportChat v-if="showDeferredWidgets" />
     </div>
   </AppNaiveConfig>
 </template>
 
 <script setup lang="ts">
+import { computed, defineAsyncComponent, onMounted, onUnmounted, ref } from 'vue'
+
 // 显式导入组件，确保 Nuxt 3 自动导入正常工作
 import AppNaiveConfig from '~/components/layout/AppNaiveConfig.vue'
-import MouseTrail from '~/components/effects/MouseTrail.vue'
 import ThemeSwitcher from '~/components/layout/ThemeSwitcher.vue'
 import Footer from '~/components/layout/Footer.vue'
-import AIAssistant from '~/components/ai/AIAssistant.vue'
-import VisitorInteractionPanel from '~/components/VisitorInteractionPanel.vue'
-import VisitorBehaviorListener from '~/components/VisitorBehaviorListener.vue'
-import VisitorSidebarDrawer from '~/components/VisitorSidebarDrawer.vue'
-import SupportChat from '~/components/ai/SupportChat.vue'
 
-const route = useRoute()
-const api = useApi()
+const MouseTrail = defineAsyncComponent(() => import('~/components/effects/MouseTrail.vue'))
+const AIAssistant = defineAsyncComponent(() => import('~/components/ai/AIAssistant.vue'))
+const VisitorInteractionPanel = defineAsyncComponent(() => import('~/components/VisitorInteractionPanel.vue'))
+const VisitorBehaviorListener = defineAsyncComponent(() => import('~/components/VisitorBehaviorListener.vue'))
+const VisitorSidebarDrawer = defineAsyncComponent(() => import('~/components/VisitorSidebarDrawer.vue'))
+const SupportChat = defineAsyncComponent(() => import('~/components/ai/SupportChat.vue'))
 
-// 记录访问量
-onMounted(async () => {
-  try {
-    // 获取或生成 Visitor ID
-    let visitorId = localStorage.getItem('visitor_id')
-    
-    // 调用统计 API
-    const res = await api.post('/tracking/visit', { 
-      visitorId,
-      path: route.path 
-    })
+const shouldMountDeferredUi = ref(false)
+const isLowPowerMode = ref(false)
 
-    // 保存 Visitor ID (如果是新生成的)
-    if (res && res.visitorId && res.visitorId !== visitorId) {
-      localStorage.setItem('visitor_id', res.visitorId)
-    }
-  } catch (e) {
-    console.error('Failed to update stats', e)
+const showDeferredWidgets = computed(() => shouldMountDeferredUi.value && !isLowPowerMode.value)
+const showDesktopEnhancements = computed(() => showDeferredWidgets.value)
+
+let deferredMountTimer: number | null = null
+
+const detectLowPowerMode = () => {
+  const coarsePointer = window.matchMedia('(pointer: coarse)').matches
+  const narrowScreen = window.innerWidth < 1024
+  const saveData = 'connection' in navigator && (navigator as Navigator & {
+    connection?: { saveData?: boolean }
+  }).connection?.saveData === true
+  const lowMemoryValue = 'deviceMemory' in navigator
+    ? Number((navigator as Navigator & { deviceMemory?: number }).deviceMemory || 0)
+    : 0
+  const lowMemory = lowMemoryValue > 0 && lowMemoryValue <= 4
+
+  isLowPowerMode.value = coarsePointer || narrowScreen || saveData || lowMemory
+}
+
+const scheduleDeferredWidgets = () => {
+  if (isLowPowerMode.value) {
+    shouldMountDeferredUi.value = false
+    return
+  }
+
+  const mountWidgets = () => {
+    shouldMountDeferredUi.value = true
+  }
+
+  if ('requestIdleCallback' in window) {
+    ;(window as Window & {
+      requestIdleCallback: (callback: IdleRequestCallback, options?: IdleRequestOptions) => number
+    }).requestIdleCallback(() => mountWidgets(), { timeout: 2000 })
+    return
+  }
+
+  deferredMountTimer = window.setTimeout(mountWidgets, 1200)
+}
+
+onMounted(() => {
+  detectLowPowerMode()
+  scheduleDeferredWidgets()
+})
+
+onUnmounted(() => {
+  if (deferredMountTimer) {
+    window.clearTimeout(deferredMountTimer)
   }
 })
 </script>
