@@ -60,7 +60,22 @@ copy .env.example .env
 
 ### 生产环境
 
-#### 1. .NET 后端
+#### 方式 A：GitHub Secrets 自动注入（推荐）
+
+在 GitHub 仓库 **Settings → Secrets and variables → Actions** 中添加：
+
+| Secret 名称 | 说明 |
+|-------------|------|
+| `DEEPSEEK_API_KEY` | DeepSeek API 密钥，部署时自动写入 ai-service 的 `.env` |
+| `AI_INTERNAL_TOKEN` | 内部调用 Token，需与 .NET 后端 `appsettings.Production.json` 的 `InternalToken` 一致 |
+
+每次部署 ai-service 时，workflow 会自动将上述 Secret 注入到 ECS 服务器的 `/srv/ai-service/.env`。
+
+#### 方式 B：服务器手动配置
+
+若未使用 GitHub Secrets，需在服务器上手动配置：
+
+**1. .NET 后端**
 
 在服务器部署目录创建 `appsettings.Production.json`（参考 [BACKEND_PRODUCTION_CONFIG](../../archive/legacy/deployment/BACKEND_PRODUCTION_CONFIG.md)）：
 
@@ -78,7 +93,7 @@ copy .env.example .env
 
 **重要**：`InternalToken` 必须与 ai-service 的 `AI_INTERNAL_TOKEN` 完全一致。
 
-#### 2. Python ai-service
+**2. Python ai-service**
 
 在服务器上配置 `ai-service/.env` 或 systemd 环境变量：
 
@@ -87,7 +102,7 @@ AI_INTERNAL_TOKEN=与后端InternalToken相同的强随机Token
 DEEPSEEK_API_KEY=生产环境DeepSeek密钥
 ```
 
-#### 3. 生成强随机 Token
+**3. 生成强随机 Token**
 
 ```bash
 openssl rand -hex 32
