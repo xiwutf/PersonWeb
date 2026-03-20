@@ -8,8 +8,7 @@ User=www-data
 Group=www-data
 WorkingDirectory=/srv/ai-service
 Environment="PATH=/usr/local/bin:/usr/bin:/bin"
-Environment="AI_INTERNAL_TOKEN=your-internal-token-here"
-Environment="OPENAI_API_KEY=your-openai-api-key"
+# AI_INTERNAL_TOKEN 从 .env 读取（由部署时 GitHub Secrets 注入），不在此硬编码
 Environment="DEFAULT_MODEL_NAME=gpt-3.5-turbo"
 Environment="LOG_LEVEL=INFO"
 Environment="LOG_FILE=/srv/ai-service/logs/ai-service.log"
