@@ -47,6 +47,9 @@ jobs:
 
       - name: Inject secrets to .env
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          AI_INTERNAL_TOKEN: ${{ secrets.AI_INTERNAL_TOKEN }}
         with:
           host: ${{ secrets.REMOTE_HOST }}
           username: ${{ secrets.REMOTE_USER }}
@@ -54,31 +57,25 @@ jobs:
           timeout: 30s
           command_timeout: 30s
           envs: DEEPSEEK_API_KEY,AI_INTERNAL_TOKEN
-        env:
-          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
-          AI_INTERNAL_TOKEN: ${{ secrets.AI_INTERNAL_TOKEN }}
-        script: |
-          ENV_FILE="/srv/ai-service/.env"
-          touch "$ENV_FILE"
-          # 移除旧的 DEEPSEEK_API_KEY 和 AI_INTERNAL_TOKEN 行
-          grep -v "^DEEPSEEK_API_KEY=" "$ENV_FILE" 2>/dev/null | grep -v "^AI_INTERNAL_TOKEN=" > /tmp/env_tmp || true
-          mv /tmp/env_tmp "$ENV_FILE"
-          # 注入 DEEPSEEK_API_KEY
-          if [ -n "$DEEPSEEK_API_KEY" ]; then
-            printf 'DEEPSEEK_API_KEY=%s\n' "$DEEPSEEK_API_KEY" >> "$ENV_FILE"
-            echo "✅ DEEPSEEK_API_KEY 已注入"
-          else
-            echo "⚠️ DEEPSEEK_API_KEY 未配置，可在 GitHub Secrets 中添加"
-          fi
-          # 注入 AI_INTERNAL_TOKEN（需与后端 InternalToken 一致）
-          if [ -n "$AI_INTERNAL_TOKEN" ]; then
-            printf 'AI_INTERNAL_TOKEN=%s\n' "$AI_INTERNAL_TOKEN" >> "$ENV_FILE"
-            echo "✅ AI_INTERNAL_TOKEN 已注入"
-          else
-            echo "⚠️ AI_INTERNAL_TOKEN 未配置，需与 appsettings.Production.json 的 InternalToken 一致"
-          fi
-          sudo chown www-data:www-data "$ENV_FILE"
-          sudo chmod 600 "$ENV_FILE"
+          script: |
+            ENV_FILE="/srv/ai-service/.env"
+            touch "$ENV_FILE"
+            grep -v "^DEEPSEEK_API_KEY=" "$ENV_FILE" 2>/dev/null | grep -v "^AI_INTERNAL_TOKEN=" > /tmp/env_tmp || true
+            mv /tmp/env_tmp "$ENV_FILE"
+            if [ -n "$DEEPSEEK_API_KEY" ]; then
+              printf 'DEEPSEEK_API_KEY=%s\n' "$DEEPSEEK_API_KEY" >> "$ENV_FILE"
+              echo "✅ DEEPSEEK_API_KEY 已注入"
+            else
+              echo "⚠️ DEEPSEEK_API_KEY 未配置，可在 GitHub Secrets 中添加"
+            fi
+            if [ -n "$AI_INTERNAL_TOKEN" ]; then
+              printf 'AI_INTERNAL_TOKEN=%s\n' "$AI_INTERNAL_TOKEN" >> "$ENV_FILE"
+              echo "✅ AI_INTERNAL_TOKEN 已注入"
+            else
+              echo "⚠️ AI_INTERNAL_TOKEN 未配置，需与 appsettings.Production.json 的 InternalToken 一致"
+            fi
+            sudo chown www-data:www-data "$ENV_FILE"
+            sudo chmod 600 "$ENV_FILE"
 
       - name: Setup Python on Server
         uses: appleboy/ssh-action@v1.0.3
