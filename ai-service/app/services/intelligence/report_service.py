@@ -151,12 +151,11 @@ def generate_daily_report(report_date: str = None) -> Optional[str]:
                 content_summary.append(f"   摘要: {content['summary'][:100]}")
 
         summary_text = "\n".join(content_summary)
-        user_message = f"""今日收集到的情报摘要如下：
-
-{summary_text}
-
-请根据以上内容生成一份每日情报简报，日期为：{report_date}
-"""
+        user_message = (
+            "今日收集到的情报摘要如下：\n\n"
+            + summary_text
+            + f"\n\n请根据以上内容生成一份每日情报简报，日期为：{report_date}"
+        )
 
         # 调用 LLM
         llm_client = LLMClient()
