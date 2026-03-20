@@ -6,5 +6,10 @@
     "Key": "生产环境JWT密钥至少32字符",
     "Issuer": "PersonalSite.Api",
     "Audience": "PersonalSite.Web"
+  },
+  "AiService": {
+    "BaseUrl": "http://localhost:8001/api/ai",
+    "InternalToken": "生产环境请使用强随机Token，需与ai-service的AI_INTERNAL_TOKEN一致",
+    "TimeoutSeconds": 300
   }
 }
