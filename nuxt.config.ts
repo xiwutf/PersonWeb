@@ -162,8 +162,25 @@ export default defineNuxtConfig({
       }
     },
     build: {
-      // 代码分割优化
-      rollupOptions: {},
+      // 代码分割优化 - 减少文件数量以符合性能预算
+      rollupOptions: {
+        output: {
+          // 手动配置 chunk 分组，减少文件数量
+          manualChunks(id) {
+            // node_modules 中的依赖合并到 vendor chunk
+            if (id.includes('node_modules')) {
+              // 大型独立库单独分组
+              if (id.includes('echarts')) return 'vendor-echarts'
+              if (id.includes('naive-ui')) return 'vendor-naive'
+              if (id.includes('@vueuse')) return 'vendor-vueuse'
+              // 其他依赖合并到 vendor
+              return 'vendor'
+            }
+          },
+          // 设置最小 chunk 大小，减少碎片文件
+          minChunkSize: 30000
+        }
+      },
       // 减少 chunk 大小警告阈值（naive-ui、echarts、@nuxt/content sqlite 等依赖较大）
       chunkSizeWarningLimit: 2000
     }
