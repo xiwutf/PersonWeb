@@ -140,26 +140,22 @@ export const useTheme = () => {
     // 标记已初始化，避免重复初始化
     globalThemeState.initialized = true
 
-    // 延迟初始化，确保插件有机会先执行
-    // 使用 nextTick 让插件先执行，然后再读取 localStorage
-    nextTick(() => {
-      // 检查 DOM 是否已经有主题被设置（插件可能已经设置了）
-      const domTheme = document.documentElement.dataset.theme
-
-      if (domTheme) {
-        // 如果 DOM 已经有主题（说明插件已经执行），使用 DOM 中的主题（自动映射）
-        const normalizedTheme = normalizeTheme(domTheme) as ThemeName
-        currentTheme.value = normalizedTheme
-      } else {
-        // 如果 DOM 没有主题，从 localStorage 读取（自动映射）
-        const savedTheme = loadThemeFromStorage()
-        currentTheme.value = savedTheme
-        applyTheme(savedTheme)
-      }
-    })
+    // 先同步读取主题，确保初始值正确（不延迟到 nextTick）
+    // 这样 watchEffect 第一次执行时就有正确的值
+    const domTheme = document.documentElement.dataset.theme
+    if (domTheme) {
+      // DOM 已经有主题（init-theme 插件已执行），使用 DOM 中的主题
+      const normalizedTheme = normalizeTheme(domTheme) as ThemeName
+      currentTheme.value = normalizedTheme
+    } else {
+      // DOM 没有主题，从 localStorage 读取
+      const savedTheme = loadThemeFromStorage()
+      currentTheme.value = savedTheme
+      applyTheme(savedTheme)
+    }
 
     // 监听 currentTheme 的变化，自动应用新主题
-    // 这样当通过 setTheme 或 toggleDark 改变主题时，会自动更新 DOM
+    // 此时 currentTheme 已有正确初始值，不会用默认值覆写
     watchEffect(() => {
       applyTheme(currentTheme.value)
       saveThemeToStorage(currentTheme.value)
