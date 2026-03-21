@@ -56,7 +56,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { animate, inView } from '@motionone/dom'
+import { loadMotionOneDom } from '~/composables/useMotionOneDom'
 
 const cardRefs = ref<(HTMLElement | null)[]>([])
 
@@ -108,7 +108,8 @@ const entries = [
   }
 ]
 
-onMounted(() => {
+onMounted(async () => {
+  const { animate, inView } = await loadMotionOneDom()
   cardRefs.value.forEach((card, index) => {
     if (card) {
       inView(card, () => {

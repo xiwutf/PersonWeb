@@ -120,11 +120,6 @@ export default defineNuxtConfig({
         'vueuc',
         '@css-render/vue3-ssr',
         '@vicons/ionicons5',
-        'echarts/core',
-        'echarts/renderers',
-        'echarts/charts',
-        'echarts/components',
-        'vue-echarts',
         'markdown-it',
       ]
     },
@@ -168,14 +163,7 @@ export default defineNuxtConfig({
     },
     build: {
       // 代码分割优化
-      rollupOptions: {
-        output: {
-          manualChunks: {
-            'naive-ui': ['naive-ui'],
-            'echarts': ['echarts', 'vue-echarts']
-          }
-        }
-      },
+      rollupOptions: {},
       // 减少 chunk 大小警告阈值（naive-ui、echarts、@nuxt/content sqlite 等依赖较大）
       chunkSizeWarningLimit: 2000
     }

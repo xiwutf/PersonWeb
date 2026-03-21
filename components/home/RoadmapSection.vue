@@ -62,7 +62,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed, nextTick } from 'vue'
-import { animate, inView, stagger } from '@motionone/dom'
+import { loadMotionOneDom } from '~/composables/useMotionOneDom'
 
 const api = useApi()
 const sectionTitleRef = ref<HTMLElement | null>(null)
@@ -166,6 +166,7 @@ onMounted(async () => {
   loading.value = true
   await Promise.all([fetchChangelogs(), fetchRoadmaps()])
   loading.value = false
+  const { animate, inView, stagger } = await loadMotionOneDom()
   
   // 等待数据加载后再初始化动画
   await nextTick()

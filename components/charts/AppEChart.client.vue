@@ -23,35 +23,14 @@ const props = withDefaults(defineProps<{
 })
 
 const chartComponent = shallowRef<Component | null>(null)
+let chartLoaderPromise: Promise<Component> | null = null
 
 onMounted(async () => {
-  const [
-    echartsCoreModule,
-    echartsRenderers,
-    echartsCharts,
-    echartsComponents,
-    vueEcharts
-  ] = await Promise.all([
-    import('echarts/core'),
-    import('echarts/renderers'),
-    import('echarts/charts'),
-    import('echarts/components'),
-    import('vue-echarts')
-  ])
+  if (!chartLoaderPromise) {
+    chartLoaderPromise = import('./echarts-runtime').then(module => module.getEChartComponent())
+  }
 
-  echartsCoreModule.use([
-    echartsRenderers.CanvasRenderer,
-    echartsCharts.LineChart,
-    echartsCharts.BarChart,
-    echartsCharts.PieChart,
-    echartsComponents.TitleComponent,
-    echartsComponents.TooltipComponent,
-    echartsComponents.LegendComponent,
-    echartsComponents.GridComponent,
-    echartsComponents.DatasetComponent
-  ])
-
-  chartComponent.value = vueEcharts.default
+  chartComponent.value = await chartLoaderPromise
 })
 
 const option = computed(() => props.option)

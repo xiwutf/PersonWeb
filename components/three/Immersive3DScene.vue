@@ -5,7 +5,13 @@
     
     <!-- 移动端简化背景 -->
     <div v-else class="absolute inset-0 bg-gradient-to-br from-gray-950 via-slate-950 to-zinc-950">
-      <div class="absolute inset-0 bg-[url('/images/grid.svg')] bg-center opacity-8"></div>
+      <div
+        class="absolute inset-0 bg-center opacity-8"
+        :style="{
+          backgroundImage: 'linear-gradient(rgba(148, 163, 184, 0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(148, 163, 184, 0.12) 1px, transparent 1px)',
+          backgroundSize: '40px 40px'
+        }"
+      ></div>
     </div>
     
     <!-- 交互提示（仅桌面端显示） -->

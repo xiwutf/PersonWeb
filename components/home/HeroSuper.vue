@@ -154,6 +154,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { loadMotionOneDom } from '~/composables/useMotionOneDom'
 
 const api = useApi()
 const leftContentRef = ref<HTMLElement | null>(null)
@@ -232,7 +233,7 @@ onMounted(async () => {
     return
   }
 
-  const { animate, stagger } = await import('@motionone/dom')
+  const { animate, stagger } = await loadMotionOneDom()
   
   // 使用 Motion One 添加进入动画
   if (leftContentRef.value) {

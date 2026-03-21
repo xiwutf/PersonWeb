@@ -55,6 +55,7 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
+import { loadMotionOneDom } from '~/composables/useMotionOneDom'
 
 const containerRef = ref<HTMLElement | null>(null)
 const loading = ref(false)
@@ -148,7 +149,7 @@ const callAiApi = async (prompt: string): Promise<string> => {
 
 onMounted(() => {
   if (containerRef.value) {
-    import('@motionone/dom').then(({ animate, inView }) => {
+    loadMotionOneDom().then(({ animate, inView }) => {
       inViewCleanup = inView(containerRef.value!, () => {
         animate(
           containerRef.value!,

@@ -106,13 +106,14 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { animate, stagger } from '@motionone/dom'
+import { loadMotionOneDom } from '~/composables/useMotionOneDom'
 
 const blogCardRef = ref<HTMLElement | null>(null)
 const projectCardRef = ref<HTMLElement | null>(null)
 const dataCardRef = ref<HTMLElement | null>(null)
 
-onMounted(() => {
+onMounted(async () => {
+  const { animate, stagger } = await loadMotionOneDom()
   const cards = [blogCardRef.value, projectCardRef.value, dataCardRef.value].filter(Boolean) as HTMLElement[]
   
   if (cards.length > 0) {

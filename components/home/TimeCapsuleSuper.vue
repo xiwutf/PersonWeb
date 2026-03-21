@@ -59,7 +59,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { animate, inView } from '@motionone/dom'
+import { loadMotionOneDom } from '~/composables/useMotionOneDom'
 import type { TimeCapsule, TimeCapsuleListResponse } from '~/types/api'
 
 const api = useApi()
@@ -142,7 +142,8 @@ const scrollToWall = () => {
   }, 100)
 }
 
-onMounted(() => {
+onMounted(async () => {
+  const { animate, inView } = await loadMotionOneDom()
   fetchCapsules()
   
   if (containerRef.value) {

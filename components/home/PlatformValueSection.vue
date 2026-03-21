@@ -35,7 +35,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { animate, inView } from '@motionone/dom'
+import { loadMotionOneDom } from '~/composables/useMotionOneDom'
 
 const cardRefs = ref<(HTMLElement | null)[]>([])
 
@@ -60,7 +60,8 @@ const values = [
   }
 ]
 
-onMounted(() => {
+onMounted(async () => {
+  const { animate, inView } = await loadMotionOneDom()
   // 使用 inView 实现滚动进入时的动画
   cardRefs.value.forEach((card, index) => {
     if (card) {

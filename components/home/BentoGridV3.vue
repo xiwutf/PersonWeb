@@ -145,7 +145,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { animate, stagger, inView } from '@motionone/dom'
+import { loadMotionOneDom } from '~/composables/useMotionOneDom'
 
 const api = useApi()
 const latestPosts = ref<any[]>([])
@@ -179,7 +179,8 @@ const formatDate = (dateStr: string) => {
   return date.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' })
 }
 
-onMounted(() => {
+onMounted(async () => {
+  const { animate, stagger, inView } = await loadMotionOneDom()
   fetchLatestPosts()
   
   if (sectionTitleRef.value) {

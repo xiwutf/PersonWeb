@@ -157,3 +157,7 @@ scripts/sensitive-replacements.txt
 # Local machine/runtime caches
 .dotnet/
 .claude/settings.local.json
+
+# Performance test reports (temporary)
+baseline/
+performance-report.json

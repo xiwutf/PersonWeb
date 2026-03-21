@@ -7,7 +7,13 @@
       <div class="absolute inset-0 pointer-events-none">
         <div class="absolute -top-32 -left-32 h-80 w-80 rounded-full bg-blue-600/30 blur-3xl"></div>
         <div class="absolute right-0 -bottom-40 h-96 w-96 rounded-full bg-purple-600/30 blur-3xl"></div>
-        <div class="absolute inset-0 bg-[url('/images/grid.svg')] opacity-10"></div>
+        <div
+          class="absolute inset-0 opacity-10"
+          :style="{
+            backgroundImage: 'linear-gradient(rgba(148, 163, 184, 0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(148, 163, 184, 0.12) 1px, transparent 1px)',
+            backgroundSize: '40px 40px'
+          }"
+        ></div>
       </div>
 
       <div class="relative mx-auto grid max-w-7xl items-center gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">

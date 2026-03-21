@@ -53,8 +53,8 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { animate, inView, stagger } from '@motionone/dom'
 import BentoCardSection from './BentoCardSection.vue'
+import { loadMotionOneDom } from '~/composables/useMotionOneDom'
 
 const sectionTitleRef = ref<HTMLElement | null>(null)
 const sectionRefs = ref<(HTMLElement | null)[]>([])
@@ -80,7 +80,9 @@ const projectItems = [
   { id: 2, title: '项目 2', type: 'Project', link: '/projects', tags: ['Product'] }
 ]
 
-onMounted(() => {
+onMounted(async () => {
+  const { animate, inView, stagger } = await loadMotionOneDom()
+
   if (sectionTitleRef.value) {
     inView(sectionTitleRef.value, () => {
       animate(

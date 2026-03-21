@@ -60,7 +60,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { animate, inView, stagger } from '@motionone/dom'
+import { loadMotionOneDom } from '~/composables/useMotionOneDom'
 
 const api = useApi()
 const events = ref<any[]>([])
@@ -88,7 +88,8 @@ const fetchEvents = async () => {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
+  const { animate, inView, stagger } = await loadMotionOneDom()
   fetchEvents()
   
   if (titleRef.value) {

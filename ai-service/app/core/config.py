@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     VERSION: str = "0.1.0"
 
     # 内部鉴权 Token
-    AI_INTERNAL_TOKEN: str = "default-internal-token-change-in-production"
+    AI_INTERNAL_TOKEN: str = "   "
 
     # 大模型配置
     OPENAI_API_KEY: str = ""
