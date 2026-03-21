@@ -188,8 +188,8 @@ export default defineNuxtConfig({
               return 'vendor'
             }
           },
-          // 设置最小 chunk 大小，减少碎片文件
-          minChunkSize: 30000
+          // Vite 7 / Rollup：使用 experimental 前缀（minChunkSize 已弃用并报 WARN）
+          experimentalMinChunkSize: 30000
         }
       },
       // 减少 chunk 大小警告阈值（naive-ui、echarts、@nuxt/content sqlite 等依赖较大）

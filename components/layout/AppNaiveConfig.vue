@@ -479,7 +479,7 @@ onMounted(async () => {
   }
 
   try {
-    const naive = await import('~/lib/naive-admin-providers.client')
+    const naive = await import('naive-ui')
     const wrapper = createAppNaiveWrapper({
       NConfigProvider: naive.NConfigProvider,
       NMessageProvider: naive.NMessageProvider,

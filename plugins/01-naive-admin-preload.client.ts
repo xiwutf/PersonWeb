@@ -1,8 +1,17 @@
 /**
- * 在直接打开 /admin（非登录页）时，于应用挂载前预加载 Naive UI 各 Provider 分包。
- * 配合 AppNaiveConfig：首屏即可同步创建 Provider，避免 v-if 切换根节点导致整页插槽被销毁重建
- * （表现为后台首页「闪一下后空白」）。
+ * 在直接打开 /admin（非登录页）时，于应用挂载前注入 Naive UI Provider 引用到 useState。
+ * 使用本插件顶层的静态 import（非 lib 下的 .client 再导出文件），避免 Nitro prerender / SSR
+ * 分析链加载该模块时出现「Unexpected token 'default'」等解析错误。
  */
+import { markRaw } from 'vue'
+import {
+  NConfigProvider,
+  NMessageProvider,
+  NDialogProvider,
+  NNotificationProvider,
+  darkTheme
+} from 'naive-ui'
+
 export default defineNuxtPlugin({
   name: 'naive-admin-preload',
   enforce: 'pre',
@@ -13,20 +22,18 @@ export default defineNuxtPlugin({
     if (!path.startsWith('/admin') || path === '/admin/login') return
 
     try {
-      const naive = await import('~/lib/naive-admin-providers.client')
-
       useState<{
-        NConfigProvider: (typeof naive)['NConfigProvider']
-        NMessageProvider: (typeof naive)['NMessageProvider']
-        NDialogProvider: (typeof naive)['NDialogProvider']
-        NNotificationProvider: (typeof naive)['NNotificationProvider']
-        darkTheme: (typeof naive)['darkTheme']
+        NConfigProvider: typeof NConfigProvider
+        NMessageProvider: typeof NMessageProvider
+        NDialogProvider: typeof NDialogProvider
+        NNotificationProvider: typeof NNotificationProvider
+        darkTheme: typeof darkTheme
       } | null>('naive-admin-provider-bundles', () => null).value = {
-        NConfigProvider: markRaw(naive.NConfigProvider),
-        NMessageProvider: markRaw(naive.NMessageProvider),
-        NDialogProvider: markRaw(naive.NDialogProvider),
-        NNotificationProvider: markRaw(naive.NNotificationProvider),
-        darkTheme: markRaw(naive.darkTheme)
+        NConfigProvider: markRaw(NConfigProvider),
+        NMessageProvider: markRaw(NMessageProvider),
+        NDialogProvider: markRaw(NDialogProvider),
+        NNotificationProvider: markRaw(NNotificationProvider),
+        darkTheme: markRaw(darkTheme)
       }
     } catch (e) {
       console.warn('[naive-admin-preload] 预加载失败，将回退到 AppNaiveConfig 内动态导入', e)
