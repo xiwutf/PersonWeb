@@ -13,33 +13,21 @@ export default defineNuxtPlugin({
     if (!path.startsWith('/admin') || path === '/admin/login') return
 
     try {
-      const [
-        configProviderModule,
-        messageModule,
-        dialogModule,
-        notificationModule,
-        themeModule
-      ] = await Promise.all([
-        import('naive-ui/es/config-provider'),
-        import('naive-ui/es/message'),
-        import('naive-ui/es/dialog'),
-        import('naive-ui/es/notification'),
-        import('naive-ui/es/themes')
-      ])
+      // 使用包入口单次动态导入，避免线上环境对 es/xxx 深路径分包 404 / 缓存不一致
+      const naive = await import('naive-ui')
 
-      // naive-ui/es/message、es/notification 为命名导出，无 default（用 .default 会得到 undefined → 空白页）
       useState<{
-        NConfigProvider: typeof configProviderModule.NConfigProvider
-        NMessageProvider: typeof messageModule.NMessageProvider
-        NDialogProvider: typeof dialogModule.NDialogProvider
-        NNotificationProvider: typeof notificationModule.NNotificationProvider
-        darkTheme: (typeof themeModule)['darkTheme']
+        NConfigProvider: (typeof naive)['NConfigProvider']
+        NMessageProvider: (typeof naive)['NMessageProvider']
+        NDialogProvider: (typeof naive)['NDialogProvider']
+        NNotificationProvider: (typeof naive)['NNotificationProvider']
+        darkTheme: (typeof naive)['darkTheme']
       } | null>('naive-admin-provider-bundles', () => null).value = {
-        NConfigProvider: markRaw(configProviderModule.NConfigProvider),
-        NMessageProvider: markRaw(messageModule.NMessageProvider),
-        NDialogProvider: markRaw(dialogModule.NDialogProvider),
-        NNotificationProvider: markRaw(notificationModule.NNotificationProvider),
-        darkTheme: markRaw(themeModule.darkTheme)
+        NConfigProvider: markRaw(naive.NConfigProvider),
+        NMessageProvider: markRaw(naive.NMessageProvider),
+        NDialogProvider: markRaw(naive.NDialogProvider),
+        NNotificationProvider: markRaw(naive.NNotificationProvider),
+        darkTheme: markRaw(naive.darkTheme)
       }
     } catch (e) {
       console.warn('[naive-admin-preload] 预加载失败，将回退到 AppNaiveConfig 内动态导入', e)

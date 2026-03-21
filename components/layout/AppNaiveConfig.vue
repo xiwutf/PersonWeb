@@ -71,6 +71,18 @@ function createAppNaiveWrapper(bundle: NaiveAdminBundle) {
   const NNotificationProvider = naiveComponent(bundle.NNotificationProvider)
   const darkTheme = toRaw(bundle.darkTheme) ?? bundle.darkTheme
 
+  if (!NConfigProvider || !NMessageProvider || !NDialogProvider || !NNotificationProvider) {
+    if (import.meta.dev) {
+      console.error('[AppNaiveConfig] Naive Provider 不完整，跳过包装组件', {
+        NConfigProvider: !!NConfigProvider,
+        NMessageProvider: !!NMessageProvider,
+        NDialogProvider: !!NDialogProvider,
+        NNotificationProvider: !!NNotificationProvider
+      })
+    }
+    return null
+  }
+
   return markRaw(
     defineComponent({
       name: 'AppNaiveConfigWrapper',
@@ -130,7 +142,10 @@ function createAppNaiveWrapper(bundle: NaiveAdminBundle) {
 }
 
 if (import.meta.client && props.mode === 'full' && adminProviderBundles.value) {
-  ProvidersComponent.value = createAppNaiveWrapper(adminProviderBundles.value)
+  const wrapper = createAppNaiveWrapper(adminProviderBundles.value)
+  if (wrapper) {
+    ProvidersComponent.value = wrapper
+  }
 }
 
 /**
@@ -466,27 +481,17 @@ onMounted(async () => {
   }
 
   try {
-    const [
-      configProviderModule,
-      messageModule,
-      dialogModule,
-      notificationModule,
-      themeModule
-    ] = await Promise.all([
-      import('naive-ui/es/config-provider'),
-      import('naive-ui/es/message'),
-      import('naive-ui/es/dialog'),
-      import('naive-ui/es/notification'),
-      import('naive-ui/es/themes')
-    ])
-
-    ProvidersComponent.value = createAppNaiveWrapper({
-      NConfigProvider: configProviderModule.NConfigProvider,
-      NMessageProvider: messageModule.NMessageProvider,
-      NDialogProvider: dialogModule.NDialogProvider,
-      NNotificationProvider: notificationModule.NNotificationProvider,
-      darkTheme: themeModule.darkTheme
+    const naive = await import('naive-ui')
+    const wrapper = createAppNaiveWrapper({
+      NConfigProvider: naive.NConfigProvider,
+      NMessageProvider: naive.NMessageProvider,
+      NDialogProvider: naive.NDialogProvider,
+      NNotificationProvider: naive.NNotificationProvider,
+      darkTheme: naive.darkTheme
     })
+    if (wrapper) {
+      ProvidersComponent.value = wrapper
+    }
   } catch (error) {
     console.error('Naive UI 组件加载失败:', error)
   }
