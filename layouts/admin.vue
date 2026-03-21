@@ -82,37 +82,29 @@
       :style="mainContentStyle"
     >
       <!-- 使用统一的 AppNaiveConfig，确保前台和后台共用同一套主题配置 -->
-      <!-- 使用 ClientOnly 避免 SSR 时的闪烁 -->
+      <!-- 主内容区：AppNaiveConfig 内部处理加载状态，无需 ClientOnly -->
       <!-- 注意：NotificationBell 必须在 AppNaiveConfig 内部，因为它使用了 Naive UI 组件 -->
       <div class="flex-1 overflow-auto">
-        <ClientOnly>
-          <!-- mode="full": 后台全量模式，包含完整 Providers (Message/Dialog/Notification) -->
-          <AppNaiveConfig mode="full">
-            <!-- 顶部栏（包含移动端菜单按钮和铃铛入口） -->
-            <div class="admin-topbar border-b border-border-subtle bg-bg-elevated px-4 md:px-6 py-4 flex items-center justify-between md:justify-end gap-4">
-              <!-- 移动端菜单按钮 -->
-              <button
-                v-if="!isEmbedded"
-                @click="isMobileMenuOpen = !isMobileMenuOpen"
-                class="md:hidden p-2 rounded-md hover:bg-bg-elevated transition-colors"
-                aria-label="切换菜单"
-              >
-                <i class="fas fa-bars text-lg" :class="isMobileMenuOpen ? 'fa-times' : 'fa-bars'"></i>
-              </button>
-              <div class="flex items-center gap-4 ml-auto md:ml-0">
-                <NotificationBell />
-              </div>
+        <!-- mode="full": 后台全量模式，包含完整 Providers (Message/Dialog/Notification) -->
+        <AppNaiveConfig mode="full">
+          <!-- 顶部栏（包含移动端菜单按钮和铃铛入口） -->
+          <div class="admin-topbar border-b border-border-subtle bg-bg-elevated px-4 md:px-6 py-4 flex items-center justify-between md:justify-end gap-4">
+            <!-- 移动端菜单按钮 -->
+            <button
+              v-if="!isEmbedded"
+              @click="isMobileMenuOpen = !isMobileMenuOpen"
+              class="md:hidden p-2 rounded-md hover:bg-bg-elevated transition-colors"
+              aria-label="切换菜单"
+            >
+              <i class="fas fa-bars text-lg" :class="isMobileMenuOpen ? 'fa-times' : 'fa-bars'"></i>
+            </button>
+            <div class="flex items-center gap-4 ml-auto md:ml-0">
+              <NotificationBell />
             </div>
-            <!-- 页面内容 -->
-            <slot />
-          </AppNaiveConfig>
-          <template #fallback>
-            <!-- SSR 时的占位内容，使用与主题一致的背景色 -->
-            <div class="admin-main-fallback">
-              <slot />
-            </div>
-          </template>
-        </ClientOnly>
+          </div>
+          <!-- 页面内容 -->
+          <slot />
+        </AppNaiveConfig>
       </div>
     </main>
 
