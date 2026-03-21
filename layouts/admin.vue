@@ -103,7 +103,33 @@
             </div>
           </div>
           <!-- 页面内容 -->
-          <slot />
+          <ClientOnly>
+            <!-- 提供一个 fallback，如果页面一直卡在这里说明是 Suspense 挂起或 Hydration 挂起 -->
+            <template #fallback>
+              <div class="p-12 text-center text-gray-400 flex flex-col items-center justify-center min-h-[50vh]">
+                <i class="fas fa-spinner fa-spin text-3xl mb-4 text-primary"></i>
+                <p>正在加载页面内容，请稍候...</p>
+              </div>
+            </template>
+            
+            <NuxtErrorBoundary>
+              <slot />
+              <template #error="{ error }">
+                <div class="p-8 text-center text-red-500 bg-red-500/10 rounded-lg m-4 border border-red-500/20">
+                  <h2 class="text-xl font-bold mb-4">页面渲染失败 (Render Error)</h2>
+                  <div class="text-left bg-black/50 p-4 rounded overflow-auto max-h-[400px]">
+                    <code>{{ error }}</code>
+                  </div>
+                  <button 
+                    class="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                    @click="error.value = null"
+                  >
+                    尝试清除错误
+                  </button>
+                </div>
+              </template>
+            </NuxtErrorBoundary>
+          </ClientOnly>
         </AppNaiveConfig>
       </div>
     </main>

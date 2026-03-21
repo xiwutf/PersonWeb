@@ -3,18 +3,15 @@
     :theme="naiveTheme"
     :theme-overrides="naiveThemeOverrides"
   >
-    <template v-if="mode === 'full'">
-      <NMessageProvider>
-        <NDialogProvider>
-          <NNotificationProvider>
+    <NMessageProvider>
+      <NDialogProvider>
+        <NNotificationProvider>
+          <div class="h-full flex flex-col flex-1">
             <slot />
-          </NNotificationProvider>
-        </NDialogProvider>
-      </NMessageProvider>
-    </template>
-    <template v-else>
-      <slot />
-    </template>
+          </div>
+        </NNotificationProvider>
+      </NDialogProvider>
+    </NMessageProvider>
   </NConfigProvider>
 </template>
 
@@ -30,6 +27,7 @@
  */
 import { computed, watch } from 'vue'
 import { NConfigProvider, NMessageProvider, NDialogProvider, NNotificationProvider, darkTheme, type GlobalTheme, type GlobalThemeOverrides } from 'naive-ui'
+import { useTheme } from '~/composables/useTheme'
 
 interface Props {
   /** 模式：theme=仅主题配置 | full=完整Providers */
@@ -350,7 +348,6 @@ const naiveThemeOverrides = computed<GlobalThemeOverrides>(() => {
 
 // 确保 data-theme 和 Naive UI 主题同步
 watch(currentTheme, (newTheme) => {
-  // @ts-expect-error - Nuxt 的 process.client 不在 TypeScript 类型中
   if (process.client && typeof document !== 'undefined' && document.documentElement) {
     document.documentElement.setAttribute('data-theme', newTheme)
   }
