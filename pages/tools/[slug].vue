@@ -278,13 +278,13 @@ import {
   NBreadcrumb,
   NBreadcrumbItem,
   NButton,
-  NResult,
-  useMessage
+  NResult
 } from 'naive-ui';
+import { useNotification } from '~/composables/useToast';
 
 const route = useRoute();
 const api = useApi();
-const message = useMessage();
+const { success, warning, error: showError } = useNotification();
 
 interface ToolCategory {
   name: string
@@ -412,7 +412,7 @@ const handlePurchase = async () => {
 
   const visitorId = localStorage.getItem('visitor_id');
   if (!visitorId) {
-    message.warning('请先登录后再获取工具');
+    warning('请先登录后再获取工具');
     return;
   }
 
@@ -426,11 +426,11 @@ const handlePurchase = async () => {
 
     if (res) {
       hasPurchased.value = true;
-      message.success(tool.value.isFree ? '工具已加入我的工具' : '购买成功，请完成后续支付或授权流程');
+      success(tool.value.isFree ? '工具已加入我的工具' : '购买成功，请完成后续支付或授权流程');
     }
   } catch (err) {
     console.error('购买失败', err);
-    message.error('购买失败，请稍后重试');
+    showError('购买失败，请稍后重试');
   } finally {
     purchasing.value = false;
   }

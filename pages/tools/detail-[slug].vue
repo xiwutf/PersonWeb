@@ -219,15 +219,15 @@ import {
   NBreadcrumb,
   NBreadcrumbItem,
   NButton,
-  NResult,
-  useMessage
+  NResult
 } from 'naive-ui';
+import { useNotification } from '~/composables/useToast';
 import '~/assets/css/tools.css'
 
 const router = useRouter();
 const route = useRoute();
 const api = useApi();
-const message = useMessage();
+const { success } = useNotification();
 const slug = route.params.slug as string;
 
 const tool = ref<any>(null);
@@ -332,7 +332,7 @@ const renderMarkdown = (markdown: string) => {
 };
 
 const handleConsultationSuccess = () => {
-  message.success('咨询请求已发送，我们会尽快与您联系！');
+  success('咨询请求已发送，我们会尽快与您联系！');
 };
 
 onMounted(() => {

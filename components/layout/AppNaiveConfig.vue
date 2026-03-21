@@ -1,11 +1,15 @@
 <template>
   <!-- 统一的 Naive UI 配置容器 -->
+  <!-- mode: theme | full -->
+  <!-- - theme: 仅提供 NConfigProvider（前台轻量模式） -->
+  <!-- - full: 提供完整 Providers（后台全量模式，包含 Message/Dialog/Notification） -->
   <ClientOnly>
     <component
       :is="ProvidersComponent"
       v-if="ProvidersComponent"
       :theme="naiveTheme"
       :theme-overrides="naiveThemeOverrides"
+      :mode="mode"
     >
       <slot />
     </component>
@@ -26,9 +30,12 @@
  * - 统一管理 Naive UI 的主题配置（前台 + 后台共用）
  * - 基于 useTheme().currentTheme 计算 Naive 主题
  * - 确保 data-theme 和 Naive UI 主题同步
- * - 提供 NConfigProvider、NDialogProvider、NMessageProvider、NNotificationProvider
+ * - 根据模式提供不同层级的 Providers
  *
- * 重构说明（2026-03-16）：
+ * 重构说明（2026-03-21）：
+ * - 支持 mode="theme" | mode="full" 两种模式
+ * - theme: 仅提供 NConfigProvider（前台轻量模式，不含 Message/Dialog/Notification）
+ * - full: 提供完整 Providers（后台全量模式，包含 Message/Dialog/Notification）
  * - 支持 light、dark、hybrid-super-dark 三个主题
  * - light: 使用 Naive 默认主题（null）
  * - dark: 使用 darkTheme
@@ -37,11 +44,20 @@
  * - themeOverrides 优先使用具体颜色值，减少对 CSS 变量的依赖
  *
  * 使用方式：
- * - 在 layouts/default.vue 和 layouts/admin.vue 中使用 <AppNaiveConfig> 包裹内容
- * - 所有 Naive UI 组件会自动应用统一的主题配置
+ * - 前台布局 (default.vue, ai.vue): <AppNaiveConfig mode="theme">
+ * - 后台布局 (admin.vue): <AppNaiveConfig mode="full">
  */
-import { ref, computed, onMounted, watch, defineComponent, h, markRaw } from 'vue'
+import { ref, computed, onMounted, watch, defineComponent, h, markRaw, type PropType } from 'vue'
 import type { GlobalTheme, GlobalThemeOverrides } from 'naive-ui'
+
+interface Props {
+  /** 模式：theme=仅主题配置 | full=完整Providers */
+  mode?: 'theme' | 'full'
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  mode: 'theme'
+})
 
 const ProvidersComponent = ref<any>(null)
 
@@ -400,15 +416,35 @@ onMounted(async () => {
   try {
     // 动态导入 Naive UI，避免 SSR 时执行
     // 使用动态 import 代码分割，减少初始包大小
-    const naiveUI = await import(/* webpackChunkName: "naive-ui" */ 'naive-ui')
-    const { NMessageProvider, NDialogProvider, NNotificationProvider, NConfigProvider, darkTheme } = naiveUI
+    const [
+      configProviderModule,
+      messageModule,
+      dialogModule,
+      notificationModule,
+      themeModule
+    ] = await Promise.all([
+      import('naive-ui/es/config-provider'),
+      import('naive-ui/es/message'),
+      import('naive-ui/es/dialog'),
+      import('naive-ui/es/notification'),
+      import('naive-ui/es/themes')
+    ])
+    const NConfigProvider = configProviderModule.NConfigProvider
+    const NMessageProvider = messageModule.default
+    const NDialogProvider = dialogModule.NDialogProvider
+    const NNotificationProvider = notificationModule.default
+    const { darkTheme } = themeModule
 
-    // 创建包装组件
+    // 创建包装组件 - 根据 mode 决定是否包含完整 Providers
     ProvidersComponent.value = markRaw(defineComponent({
       name: 'AppNaiveConfigWrapper',
       props: {
         theme: Object,
-        themeOverrides: Object
+        themeOverrides: Object,
+        mode: {
+          type: String as PropType<'theme' | 'full'>,
+          default: 'theme'
+        }
       },
       setup(componentProps, { slots }) {
         // 计算实际的主题
@@ -427,18 +463,31 @@ onMounted(async () => {
           return null
         })
 
-        return () => h(NConfigProvider, {
-          theme: actualTheme.value,
-          themeOverrides: componentProps.themeOverrides
-        }, {
-          default: () => h(NMessageProvider, {}, {
-            default: () => h(NDialogProvider, {}, {
-              default: () => h(NNotificationProvider, {}, {
-                default: () => slots.default?.()
+        // 根据模式渲染不同的 Provider 层级
+        return () => {
+          const configProvider = h(NConfigProvider, {
+            theme: actualTheme.value,
+            themeOverrides: componentProps.themeOverrides
+          }, {
+            default: () => {
+              // theme 模式：只提供主题配置，不包含 Message/Dialog/Notification
+              if (componentProps.mode === 'theme') {
+                return slots.default?.()
+              }
+
+              // full 模式：提供完整 Providers
+              return h(NMessageProvider, {}, {
+                default: () => h(NDialogProvider, {}, {
+                  default: () => h(NNotificationProvider, {}, {
+                    default: () => slots.default?.()
+                  })
+                })
               })
-            })
+            }
           })
-        })
+
+          return configProvider
+        }
       }
     }))
   } catch (error) {

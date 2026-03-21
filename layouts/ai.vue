@@ -6,7 +6,8 @@
     特点：主内容区域使用 pt-24（顶部内边距）
   -->
   <!-- 使用 AppNaiveConfig 统一管理 Naive UI 主题配置 -->
-  <AppNaiveConfig>
+  <!-- mode="theme": 前台轻量模式，仅提供主题配置，不含 Message/Dialog/Notification -->
+  <AppNaiveConfig mode="theme">
     <!-- AI 布局：使用主题背景色和文字颜色，替换写死的深色背景 -->
     <div class="min-h-screen flex flex-col bg-bg-body text-text-main">
     <!-- 注意：Header 已移至 app.vue 全局挂载，此处不再需要 -->

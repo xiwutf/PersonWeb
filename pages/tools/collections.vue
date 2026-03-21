@@ -189,9 +189,9 @@
 <script setup lang="ts">
 import {
   NBreadcrumb,
-  NBreadcrumbItem,
-  useMessage
+  NBreadcrumbItem
 } from 'naive-ui';
+import { useNotification } from '~/composables/useToast';
 import '~/assets/css/tools.css'
 
 definePageMeta({
@@ -212,7 +212,7 @@ interface Collection {
 }
 
 const api = useApi();
-const message = useMessage();
+const { success, error, warning, info } = useNotification();
 usePageStyle('tools');
 
 const loading = ref(false);
@@ -317,7 +317,7 @@ const fetchCollections = async () => {
 };
 
 const handlePurchaseCollection = (collection: Collection) => {
-  message.info(`“${collection.name}” 当前以咨询获取为主，我先为你保留这个入口。`);
+  info(`”${collection.name}” 当前以咨询获取为主，我先为你保留这个入口。`);
 };
 
 onMounted(() => {

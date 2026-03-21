@@ -6,7 +6,8 @@
     注意：如果页面没有使用 definePageMeta 指定布局，Nuxt 3 会自动使用此布局
   -->
   <!-- 使用 AppNaiveConfig 统一管理 Naive UI 主题配置 -->
-  <AppNaiveConfig>
+  <!-- mode="theme": 前台轻量模式，仅提供主题配置，不含 Message/Dialog/Notification -->
+  <AppNaiveConfig mode="theme">
     <!-- 最外层容器：使用主题背景色和文字颜色 -->
     <div class="min-h-screen flex flex-col relative bg-bg-body text-text-main">
     <!-- 动态背景效果（根据主题切换） -->

@@ -103,7 +103,8 @@
       <!-- 使用 ClientOnly 避免 SSR 时的闪烁 -->
       <div class="flex-1 overflow-auto">
         <ClientOnly>
-          <AppNaiveConfig>
+          <!-- mode="full": 后台全量模式，包含完整 Providers (Message/Dialog/Notification) -->
+          <AppNaiveConfig mode="full">
             <slot />
           </AppNaiveConfig>
           <template #fallback>
