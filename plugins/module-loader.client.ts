@@ -1,15 +1,22 @@
 /**
  * 模块加载插件（客户端）
  * 在应用启动时加载所有启用的模块
+ * 
+ * 重要修复：改为非阻塞模式，避免阻塞 NuxtPage 挂载
  */
 
-export default defineNuxtPlugin(async () => {
-  const { loadEnabledModules } = useModuleSystem()
+export default defineNuxtPlugin(() => {
+  // 非阻塞: 不使用 async 插件，避免阻塞页面渲染
+  ;(async () => {
+    const { loadEnabledModules } = useModuleSystem()
 
-  // 加载所有启用的模块
-  await loadEnabledModules()
+    // 加载所有启用的模块
+    await loadEnabledModules()
+  })().catch((e) => {
+    console.warn('[module-loader] 加载模块失败:', e)
+  })
 
-  // 监听模块启用/禁用事件
+  // 监听模块启用/禁用事件（同步注册，不阻塞）
   if (process.client) {
     window.addEventListener('module-enabled', async (e: any) => {
       const { loadModule } = useModuleSystem()
@@ -26,4 +33,3 @@ export default defineNuxtPlugin(async () => {
     })
   }
 })
-
