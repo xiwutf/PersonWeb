@@ -76,7 +76,7 @@
         <template v-if="selectedProjectId && trendPoints.length > 0">
           <ClientOnly>
             <div class="h-64">
-              <AppEChart :option="chartOption" loading-text="图表加载中..." />
+              <ChartsAppEChart :option="chartOption" loading-text="图表加载中..." />
             </div>
             <template #fallback>
               <div class="h-64" />

@@ -76,7 +76,7 @@
             <n-spin size="large" />
           </div>
           <div v-else-if="hasTrendData && trendChartData.labels.length > 0" class="analytics-line-chart">
-            <AppEChart :option="trendEChartOption" loading-text="图表加载中..." />
+            <ChartsAppEChart :option="trendEChartOption" loading-text="图表加载中..." />
           </div>
           <n-empty v-else class="analytics-empty-block" description="暂无趋势数据" />
         </n-card>
@@ -157,7 +157,7 @@
 
           <div v-if="panel.loading" class="analytics-chart-loading"><n-spin size="small" /></div>
           <div v-else-if="panel.hasData" class="analytics-pie-chart">
-            <AppEChart :option="panel.option" loading-text="图表加载中..." />
+            <ChartsAppEChart :option="panel.option" loading-text="图表加载中..." />
           </div>
           <n-empty v-else class="analytics-empty-block" :description="`暂无${panel.title}`" />
         </n-card>

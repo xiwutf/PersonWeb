@@ -1,5 +1,5 @@
 <template>
-  <ModuleGuard module-key="cognition">
+  <AdminModuleGuard module-key="cognition">
     <div class="cognition-page">
       <!-- 全局背景噪点 -->
       <div class="cognition-background-noise"></div>
@@ -59,7 +59,7 @@
         </article>
       </div>
     </div>
-  </ModuleGuard>
+  </AdminModuleGuard>
 </template>
 
 <script setup lang="ts">

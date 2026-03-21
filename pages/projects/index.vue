@@ -238,7 +238,7 @@
                 </div>
                 <div class="projects-card-chart-container">
                   <ClientOnly>
-                    <AppEChart
+                    <ChartsAppEChart
                       :option="buildGithubChartOption(project.chartData)"
                       loading-text="图表加载中..."
                     />

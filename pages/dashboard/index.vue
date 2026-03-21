@@ -121,7 +121,7 @@
           </div>
 
           <div v-if="metrics.length > 0" class="dashboard-chart-body">
-            <AppEChart :option="healthChartOption" loading-text="图表加载中..." />
+            <ChartsAppEChart :option="healthChartOption" loading-text="图表加载中..." />
             <div v-if="false" class="dashboard-empty-state">
               <p>图表加载中...</p>
             </div>
@@ -142,7 +142,7 @@
           </div>
 
           <div v-if="metrics.length > 0" class="dashboard-chart-body">
-            <AppEChart :option="wealthChartOption" loading-text="图表加载中..." />
+            <ChartsAppEChart :option="wealthChartOption" loading-text="图表加载中..." />
             <div v-if="false" class="dashboard-empty-state">
               <p>图表加载中...</p>
             </div>

@@ -1,5 +1,5 @@
 <template>
-  <ModuleGuard module-key="cognition" :show-fallback="true">
+  <AdminModuleGuard module-key="cognition" :show-fallback="true">
     <div class="cognition-page">
       <!-- 全局背景噪点 -->
       <div class="cognition-background-noise"></div>
@@ -61,7 +61,7 @@
         </div>
       </div>
     </div>
-  </ModuleGuard>
+  </AdminModuleGuard>
 </template>
 
 <script setup lang="ts">

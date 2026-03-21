@@ -1,5 +1,5 @@
 <template>
-  <ModuleGuard module-key="cognition">
+  <AdminModuleGuard module-key="cognition">
     <div class="cognition-page">
       
       <div class="cognition-background-noise"></div>
@@ -46,7 +46,7 @@
         </div>
       </div>
     </div>
-  </ModuleGuard>
+  </AdminModuleGuard>
 </template>
 
 <script setup lang="ts">

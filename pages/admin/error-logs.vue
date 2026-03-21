@@ -35,7 +35,7 @@
       <article class="panel-card">
         <h2 class="panel-card__title">错误类型分布</h2>
         <div v-if="stats.ByType && stats.ByType.length > 0" class="chart-shell">
-          <AppEChart :option="typeEChartOption" loading-text="图表加载中..." />
+          <ChartsAppEChart :option="typeEChartOption" loading-text="图表加载中..." />
         </div>
         <div v-else class="empty-state">暂无数据</div>
       </article>
@@ -43,7 +43,7 @@
       <article class="panel-card">
         <h2 class="panel-card__title">最近 7 天错误趋势</h2>
         <div v-if="stats.RecentErrors && stats.RecentErrors.length > 0" class="chart-shell">
-          <AppEChart :option="trendEChartOption" loading-text="图表加载中..." />
+          <ChartsAppEChart :option="trendEChartOption" loading-text="图表加载中..." />
         </div>
         <div v-else class="empty-state">暂无数据</div>
       </article>

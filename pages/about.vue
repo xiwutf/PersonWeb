@@ -1,5 +1,5 @@
 <template>
-  <ModuleGuard module-key="about">
+  <AdminModuleGuard module-key="about">
     <div class="about-page">
       <div class="about-background-noise"></div>
 
@@ -276,7 +276,7 @@
         </section>
       </div>
     </div>
-  </ModuleGuard>
+  </AdminModuleGuard>
 </template>
 
 <script setup lang="ts">
