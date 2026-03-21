@@ -72,14 +72,12 @@ function createAppNaiveWrapper(bundle: NaiveAdminBundle) {
   const darkTheme = toRaw(bundle.darkTheme) ?? bundle.darkTheme
 
   if (!NConfigProvider || !NMessageProvider || !NDialogProvider || !NNotificationProvider) {
-    if (import.meta.dev) {
-      console.error('[AppNaiveConfig] Naive Provider 不完整，跳过包装组件', {
-        NConfigProvider: !!NConfigProvider,
-        NMessageProvider: !!NMessageProvider,
-        NDialogProvider: !!NDialogProvider,
-        NNotificationProvider: !!NNotificationProvider
-      })
-    }
+    console.error('[AppNaiveConfig] Naive Provider 不完整，跳过包装组件（常见原因：生产构建 tree-shake 掉了动态 import 的导出）', {
+      NConfigProvider: !!NConfigProvider,
+      NMessageProvider: !!NMessageProvider,
+      NDialogProvider: !!NDialogProvider,
+      NNotificationProvider: !!NNotificationProvider
+    })
     return null
   }
 
@@ -481,7 +479,7 @@ onMounted(async () => {
   }
 
   try {
-    const naive = await import('naive-ui')
+    const naive = await import('~/lib/naive-admin-providers.client')
     const wrapper = createAppNaiveWrapper({
       NConfigProvider: naive.NConfigProvider,
       NMessageProvider: naive.NMessageProvider,

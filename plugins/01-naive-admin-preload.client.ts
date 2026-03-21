@@ -13,8 +13,7 @@ export default defineNuxtPlugin({
     if (!path.startsWith('/admin') || path === '/admin/login') return
 
     try {
-      // 使用包入口单次动态导入，避免线上环境对 es/xxx 深路径分包 404 / 缓存不一致
-      const naive = await import('naive-ui')
+      const naive = await import('~/lib/naive-admin-providers.client')
 
       useState<{
         NConfigProvider: (typeof naive)['NConfigProvider']
