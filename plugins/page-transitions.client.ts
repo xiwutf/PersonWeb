@@ -92,22 +92,6 @@ export default defineNuxtPlugin(() => {
         }
       }
 
-      /* 路由视图过渡 */
-      .page-enter-active,
-      .page-leave-active {
-        transition: all 0.3s ease;
-      }
-
-      html:not(.admin-route) .page-enter-from {
-        opacity: 0;
-        transform: translateX(20px);
-      }
-
-      html:not(.admin-route) .page-leave-to {
-        opacity: 0;
-        transform: translateX(-20px);
-      }
-
       /* 内容淡入 */
       .content-enter-active {
         transition: all 0.6s ease-out;
