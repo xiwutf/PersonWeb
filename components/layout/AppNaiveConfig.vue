@@ -3,23 +3,19 @@
   <!-- mode: theme | full -->
   <!-- - theme: 仅提供 NConfigProvider（前台轻量模式） -->
   <!-- - full: 提供完整 Providers（后台全量模式，包含 Message/Dialog/Notification） -->
-  <ClientOnly>
-    <component
-      :is="ProvidersComponent"
-      v-if="ProvidersComponent"
-      :theme="naiveTheme"
-      :theme-overrides="naiveThemeOverrides"
-      :mode="mode"
-    >
-      <slot />
-    </component>
-    <template #fallback>
-      <!-- 服务端渲染时的 fallback，使用与主题一致的背景色 -->
-      <div class="app-naive-config-fallback">
-        <slot />
-      </div>
-    </template>
-  </ClientOnly>
+  <component
+    :is="ProvidersComponent"
+    v-if="ProvidersComponent"
+    :theme="naiveTheme"
+    :theme-overrides="naiveThemeOverrides"
+    :mode="mode"
+  >
+    <slot />
+  </component>
+  <!-- 加载中显示 fallback -->
+  <div v-else class="app-naive-config-loading">
+    <slot />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -31,21 +27,6 @@
  * - 基于 useTheme().currentTheme 计算 Naive 主题
  * - 确保 data-theme 和 Naive UI 主题同步
  * - 根据模式提供不同层级的 Providers
- *
- * 重构说明（2026-03-21）：
- * - 支持 mode="theme" | mode="full" 两种模式
- * - theme: 仅提供 NConfigProvider（前台轻量模式，不含 Message/Dialog/Notification）
- * - full: 提供完整 Providers（后台全量模式，包含 Message/Dialog/Notification）
- * - 支持 light、dark、hybrid-super-dark 三个主题
- * - light: 使用 Naive 默认主题（null）
- * - dark: 使用 darkTheme
- * - hybrid-super-dark: 使用 hybridSuperDarkTheme（新增）
- * - 主题切换时自动同步 data-theme 属性
- * - themeOverrides 优先使用具体颜色值，减少对 CSS 变量的依赖
- *
- * 使用方式：
- * - 前台布局 (default.vue, ai.vue): <AppNaiveConfig mode="theme">
- * - 后台布局 (admin.vue): <AppNaiveConfig mode="full">
  */
 import { ref, computed, onMounted, watch, defineComponent, h, markRaw, type PropType } from 'vue'
 import type { GlobalTheme, GlobalThemeOverrides } from 'naive-ui'
@@ -66,23 +47,12 @@ const { currentTheme } = useTheme()
 
 /**
  * 将项目主题 key 映射到 Naive UI 的 theme
- *
- * 重构说明（2026-03-16）：
- * - 支持 light、dark、hybrid-super-dark 三个主题
- * - light: 使用 Naive 默认主题（null）
- * - dark: 使用 darkTheme
- * - hybrid-super-dark: 使用 hybridSuperDarkTheme（新增）
- * - 注意：这里需要动态导入主题，避免 SSR 错误
  */
 const naiveTheme = computed<GlobalTheme | null>(() => {
-  // @ts-expect-error - Nuxt's process.client is not in TypeScript types
-  if (!process.client) return null
-
   // 如果当前主题是 light，使用 Naive 默认主题
   if (currentTheme.value === 'light') {
     return null
   }
-
   // dark 和 hybrid-super-dark 主题使用深色主题
   // 注意：这里需要动态导入主题，避免 SSR 错误
   return null // 将在 onMounted 中设置
@@ -90,9 +60,6 @@ const naiveTheme = computed<GlobalTheme | null>(() => {
 
 /**
  * Naive UI 主题覆盖配置
- *
- * Aurora Design System (V3)
- * 光设计系统主题覆盖
  */
 const naiveThemeOverrides = computed<GlobalThemeOverrides>(() => {
   const isDark = currentTheme.value === 'dark' || currentTheme.value === 'hybrid-super-dark'
@@ -103,10 +70,10 @@ const naiveThemeOverrides = computed<GlobalThemeOverrides>(() => {
     primaryHover: '#60A5FA',
     primaryPressed: '#1E40AF',
     primarySuppl: 'rgba(41, 151, 255, 0.15)',
-    bgBody: '#050510',      // Deep Space
-    bgCard: 'rgba(20, 25, 40, 0.6)', // Glass Base
-    bgElevated: 'rgba(40, 50, 70, 0.6)', // Elevated
-    bgDark: '#0A0A1A',      // Darker
+    bgBody: '#050510',
+    bgCard: 'rgba(20, 25, 40, 0.6)',
+    bgElevated: 'rgba(40, 50, 70, 0.6)',
+    bgDark: '#0A0A1A',
     textMain: '#FFFFFF',
     textSec: 'rgba(255, 255, 255, 0.7)',
     border: 'rgba(255, 255, 255, 0.1)',
@@ -129,7 +96,6 @@ const naiveThemeOverrides = computed<GlobalThemeOverrides>(() => {
     borderHover: 'rgba(0, 0, 0, 0.2)',
   }
 
-  // 根据主题选择颜色
   const colors = isDark ? v3Colors : zenColors
 
   return {
@@ -393,20 +359,16 @@ const naiveThemeOverrides = computed<GlobalThemeOverrides>(() => {
 
 // 确保 data-theme 和 Naive UI 主题同步
 watch(currentTheme, (newTheme) => {
-  // @ts-expect-error - Nuxt's process.client is not in TypeScript types
+  // @ts-expect-error - Nuxt 的 process.client 不在 TypeScript 类型中
   if (process.client && typeof document !== 'undefined' && document.documentElement) {
-    // 确保 data-theme 属性与当前主题同步
     document.documentElement.setAttribute('data-theme', newTheme)
   }
 }, { immediate: true })
 
-// 动态导入 Naive UI 组件，避免 SSR 错误
+// 动态导入 Naive UI 组件
 onMounted(async () => {
-  // 双重检查，确保在客户端
+  // 确保在客户端
   if (typeof window === 'undefined' || typeof document === 'undefined') return
-
-  // @ts-expect-error - Nuxt's process.client is not in TypeScript types
-  if (!process.client) return
 
   // 确保 data-theme 属性已设置
   if (document && document.documentElement) {
@@ -415,7 +377,6 @@ onMounted(async () => {
 
   try {
     // 动态导入 Naive UI，避免 SSR 时执行
-    // 使用动态 import 代码分割，减少初始包大小
     const [
       configProviderModule,
       messageModule,
@@ -452,12 +413,10 @@ onMounted(async () => {
           if (currentTheme.value === 'light') {
             return null
           }
-          // dark 和 hybrid-super-dark 主题
           if (currentTheme.value === 'dark') {
             return darkTheme
           }
           if (currentTheme.value === 'hybrid-super-dark') {
-            // hybrid-super-dark 深色主题使用深色主题作为基础，叠加玻璃态
             return darkTheme
           }
           return null
@@ -470,7 +429,7 @@ onMounted(async () => {
             themeOverrides: componentProps.themeOverrides
           }, {
             default: () => {
-              // theme 模式：只提供主题配置，不包含 Message/Dialog/Notification
+              // theme 模式：只提供主题配置
               if (componentProps.mode === 'theme') {
                 return slots.default?.()
               }
@@ -491,21 +450,16 @@ onMounted(async () => {
       }
     }))
   } catch (error) {
-    console.error('Failed to load Naive UI components:', error)
+    console.error('Naive UI 组件加载失败:', error)
   }
 })
 </script>
 
 <style scoped>
-/* SSR fallback 样式，确保在客户端挂载前有正确的背景色 */
-.app-naive-config-fallback {
+/* 加载中的样式 */
+.app-naive-config-loading {
   width: 100%;
-  height: 100%;
-  /* 使用与主题一致的背景色，避免蓝屏 */
-  background: var(--color-bg-body, #020617);
-  color: var(--color-text-main, var(--color-text-sub));
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  min-height: 100%;
+  background: transparent;
 }
 </style>
