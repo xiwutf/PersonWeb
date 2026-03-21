@@ -1,21 +1,21 @@
 <template>
-  <!-- 统一的 Naive UI 配置容器 -->
-  <!-- mode: theme | full -->
-  <!-- - theme: 仅提供 NConfigProvider（前台轻量模式） -->
-  <!-- - full: 提供完整 Providers（后台全量模式，包含 Message/Dialog/Notification） -->
-  <component
-    :is="ProvidersComponent"
-    v-if="ProvidersComponent"
+  <NConfigProvider
     :theme="naiveTheme"
     :theme-overrides="naiveThemeOverrides"
-    :mode="mode"
   >
-    <slot />
-  </component>
-  <!-- 加载中显示 fallback -->
-  <div v-else class="app-naive-config-loading">
-    <slot />
-  </div>
+    <template v-if="mode === 'full'">
+      <NMessageProvider>
+        <NDialogProvider>
+          <NNotificationProvider>
+            <slot />
+          </NNotificationProvider>
+        </NDialogProvider>
+      </NMessageProvider>
+    </template>
+    <template v-else>
+      <slot />
+    </template>
+  </NConfigProvider>
 </template>
 
 <script setup lang="ts">
@@ -28,8 +28,8 @@
  * - 确保 data-theme 和 Naive UI 主题同步
  * - 根据模式提供不同层级的 Providers
  */
-import { shallowRef, computed, onMounted, watch, defineComponent, h, markRaw, toRaw, type PropType } from 'vue'
-import type { GlobalTheme, GlobalThemeOverrides } from 'naive-ui'
+import { computed, watch } from 'vue'
+import { NConfigProvider, NMessageProvider, NDialogProvider, NNotificationProvider, darkTheme, type GlobalTheme, type GlobalThemeOverrides } from 'naive-ui'
 
 interface Props {
   /** 模式：theme=仅主题配置 | full=完整Providers */
@@ -40,123 +40,13 @@ const props = withDefaults(defineProps<Props>(), {
   mode: 'theme'
 })
 
-const ProvidersComponent = shallowRef<any>(null)
-
 // 使用全局主题管理 composable
 const { currentTheme } = useTheme()
-
-/** 由 plugins/01-naive-admin-preload.client.ts 在首屏注入，避免后台 Provider 异步切换时销毁页面插槽 */
-type NaiveAdminBundle = {
-  NConfigProvider: any
-  NMessageProvider: any
-  NDialogProvider: any
-  NNotificationProvider: any
-  darkTheme: any
-}
-
-const adminProviderBundles = useState<NaiveAdminBundle | null>(
-  'naive-admin-provider-bundles',
-  () => null
-)
-
-/** useState 等响应式容器可能把组件做成代理，h() 会触发 Vue 性能告警 */
-function naiveComponent(C: any) {
-  return markRaw(toRaw(C) ?? C)
-}
-
-function createAppNaiveWrapper(bundle: NaiveAdminBundle) {
-  const NConfigProvider = naiveComponent(bundle.NConfigProvider)
-  const NMessageProvider = naiveComponent(bundle.NMessageProvider)
-  const NDialogProvider = naiveComponent(bundle.NDialogProvider)
-  const NNotificationProvider = naiveComponent(bundle.NNotificationProvider)
-  const darkTheme = toRaw(bundle.darkTheme) ?? bundle.darkTheme
-
-  if (!NConfigProvider || !NMessageProvider || !NDialogProvider || !NNotificationProvider) {
-    console.error('[AppNaiveConfig] Naive Provider 不完整，跳过包装组件（常见原因：生产构建 tree-shake 掉了动态 import 的导出）', {
-      NConfigProvider: !!NConfigProvider,
-      NMessageProvider: !!NMessageProvider,
-      NDialogProvider: !!NDialogProvider,
-      NNotificationProvider: !!NNotificationProvider
-    })
-    return null
-  }
-
-  return markRaw(
-    defineComponent({
-      name: 'AppNaiveConfigWrapper',
-      props: {
-        theme: Object,
-        themeOverrides: Object,
-        mode: {
-          type: String as PropType<'theme' | 'full'>,
-          default: 'theme'
-        }
-      },
-      setup(componentProps, { slots }) {
-        const actualTheme = computed(() => {
-          if (currentTheme.value === 'light') {
-            return null
-          }
-          if (currentTheme.value === 'dark') {
-            return darkTheme
-          }
-          if (currentTheme.value === 'hybrid-super-dark') {
-            return darkTheme
-          }
-          return null
-        })
-
-        return () => {
-          const configProvider = h(
-            NConfigProvider,
-            {
-              theme: actualTheme.value,
-              themeOverrides: componentProps.themeOverrides
-            },
-            {
-              default: () => {
-                if (componentProps.mode === 'theme') {
-                  return slots.default?.()
-                }
-
-                return h(NMessageProvider, {}, {
-                  default: () =>
-                    h(NDialogProvider, {}, {
-                      default: () =>
-                        h(NNotificationProvider, {}, {
-                          default: () => slots.default?.()
-                        })
-                    })
-                })
-              }
-            }
-          )
-
-          return configProvider
-        }
-      }
-    })
-  )
-}
-
-if (import.meta.client && props.mode === 'full' && adminProviderBundles.value) {
-  const wrapper = createAppNaiveWrapper(adminProviderBundles.value)
-  if (wrapper) {
-    ProvidersComponent.value = wrapper
-  }
-}
-
-/**
- * 将项目主题 key 映射到 Naive UI 的 theme
- */
 const naiveTheme = computed<GlobalTheme | null>(() => {
-  // 如果当前主题是 light，使用 Naive 默认主题
-  if (currentTheme.value === 'light') {
-    return null
+  if (currentTheme.value === 'dark' || currentTheme.value === 'hybrid-super-dark') {
+    return darkTheme
   }
-  // dark 和 hybrid-super-dark 主题使用深色主题
-  // 注意：这里需要动态导入主题，避免 SSR 错误
-  return null // 将在 onMounted 中设置
+  return null
 })
 
 /**
@@ -466,34 +356,6 @@ watch(currentTheme, (newTheme) => {
   }
 }, { immediate: true })
 
-// 动态导入 Naive UI 组件（前台或未命中后台预加载时）
-onMounted(async () => {
-  if (typeof window === 'undefined' || typeof document === 'undefined') return
-
-  if (document.documentElement) {
-    document.documentElement.setAttribute('data-theme', currentTheme.value)
-  }
-
-  if (ProvidersComponent.value) {
-    return
-  }
-
-  try {
-    const naive = await import('naive-ui')
-    const wrapper = createAppNaiveWrapper({
-      NConfigProvider: naive.NConfigProvider,
-      NMessageProvider: naive.NMessageProvider,
-      NDialogProvider: naive.NDialogProvider,
-      NNotificationProvider: naive.NNotificationProvider,
-      darkTheme: naive.darkTheme
-    })
-    if (wrapper) {
-      ProvidersComponent.value = wrapper
-    }
-  } catch (error) {
-    console.error('Naive UI 组件加载失败:', error)
-  }
-})
 </script>
 
 <style scoped>
