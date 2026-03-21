@@ -28,7 +28,7 @@
  * - 确保 data-theme 和 Naive UI 主题同步
  * - 根据模式提供不同层级的 Providers
  */
-import { ref, computed, onMounted, watch, defineComponent, h, markRaw, type PropType } from 'vue'
+import { shallowRef, computed, onMounted, watch, defineComponent, h, markRaw, toRaw, type PropType } from 'vue'
 import type { GlobalTheme, GlobalThemeOverrides } from 'naive-ui'
 
 interface Props {
@@ -40,10 +40,98 @@ const props = withDefaults(defineProps<Props>(), {
   mode: 'theme'
 })
 
-const ProvidersComponent = ref<any>(null)
+const ProvidersComponent = shallowRef<any>(null)
 
 // 使用全局主题管理 composable
 const { currentTheme } = useTheme()
+
+/** 由 plugins/01-naive-admin-preload.client.ts 在首屏注入，避免后台 Provider 异步切换时销毁页面插槽 */
+type NaiveAdminBundle = {
+  NConfigProvider: any
+  NMessageProvider: any
+  NDialogProvider: any
+  NNotificationProvider: any
+  darkTheme: any
+}
+
+const adminProviderBundles = useState<NaiveAdminBundle | null>(
+  'naive-admin-provider-bundles',
+  () => null
+)
+
+/** useState 等响应式容器可能把组件做成代理，h() 会触发 Vue 性能告警 */
+function naiveComponent(C: any) {
+  return markRaw(toRaw(C) ?? C)
+}
+
+function createAppNaiveWrapper(bundle: NaiveAdminBundle) {
+  const NConfigProvider = naiveComponent(bundle.NConfigProvider)
+  const NMessageProvider = naiveComponent(bundle.NMessageProvider)
+  const NDialogProvider = naiveComponent(bundle.NDialogProvider)
+  const NNotificationProvider = naiveComponent(bundle.NNotificationProvider)
+  const darkTheme = toRaw(bundle.darkTheme) ?? bundle.darkTheme
+
+  return markRaw(
+    defineComponent({
+      name: 'AppNaiveConfigWrapper',
+      props: {
+        theme: Object,
+        themeOverrides: Object,
+        mode: {
+          type: String as PropType<'theme' | 'full'>,
+          default: 'theme'
+        }
+      },
+      setup(componentProps, { slots }) {
+        const actualTheme = computed(() => {
+          if (currentTheme.value === 'light') {
+            return null
+          }
+          if (currentTheme.value === 'dark') {
+            return darkTheme
+          }
+          if (currentTheme.value === 'hybrid-super-dark') {
+            return darkTheme
+          }
+          return null
+        })
+
+        return () => {
+          const configProvider = h(
+            NConfigProvider,
+            {
+              theme: actualTheme.value,
+              themeOverrides: componentProps.themeOverrides
+            },
+            {
+              default: () => {
+                if (componentProps.mode === 'theme') {
+                  return slots.default?.()
+                }
+
+                return h(NMessageProvider, {}, {
+                  default: () =>
+                    h(NDialogProvider, {}, {
+                      default: () =>
+                        h(NNotificationProvider, {}, {
+                          default: () => slots.default?.()
+                        })
+                    })
+                })
+              }
+            }
+          )
+
+          return configProvider
+        }
+      }
+    })
+  )
+}
+
+if (import.meta.client && props.mode === 'full' && adminProviderBundles.value) {
+  ProvidersComponent.value = createAppNaiveWrapper(adminProviderBundles.value)
+}
 
 /**
  * 将项目主题 key 映射到 Naive UI 的 theme
@@ -365,18 +453,19 @@ watch(currentTheme, (newTheme) => {
   }
 }, { immediate: true })
 
-// 动态导入 Naive UI 组件
+// 动态导入 Naive UI 组件（前台或未命中后台预加载时）
 onMounted(async () => {
-  // 确保在客户端
   if (typeof window === 'undefined' || typeof document === 'undefined') return
 
-  // 确保 data-theme 属性已设置
-  if (document && document.documentElement) {
+  if (document.documentElement) {
     document.documentElement.setAttribute('data-theme', currentTheme.value)
   }
 
+  if (ProvidersComponent.value) {
+    return
+  }
+
   try {
-    // 动态导入 Naive UI，避免 SSR 时执行
     const [
       configProviderModule,
       messageModule,
@@ -390,65 +479,14 @@ onMounted(async () => {
       import('naive-ui/es/notification'),
       import('naive-ui/es/themes')
     ])
-    const NConfigProvider = configProviderModule.NConfigProvider
-    const NMessageProvider = messageModule.default
-    const NDialogProvider = dialogModule.NDialogProvider
-    const NNotificationProvider = notificationModule.default
-    const { darkTheme } = themeModule
 
-    // 创建包装组件 - 根据 mode 决定是否包含完整 Providers
-    ProvidersComponent.value = markRaw(defineComponent({
-      name: 'AppNaiveConfigWrapper',
-      props: {
-        theme: Object,
-        themeOverrides: Object,
-        mode: {
-          type: String as PropType<'theme' | 'full'>,
-          default: 'theme'
-        }
-      },
-      setup(componentProps, { slots }) {
-        // 计算实际的主题
-        const actualTheme = computed(() => {
-          if (currentTheme.value === 'light') {
-            return null
-          }
-          if (currentTheme.value === 'dark') {
-            return darkTheme
-          }
-          if (currentTheme.value === 'hybrid-super-dark') {
-            return darkTheme
-          }
-          return null
-        })
-
-        // 根据模式渲染不同的 Provider 层级
-        return () => {
-          const configProvider = h(NConfigProvider, {
-            theme: actualTheme.value,
-            themeOverrides: componentProps.themeOverrides
-          }, {
-            default: () => {
-              // theme 模式：只提供主题配置
-              if (componentProps.mode === 'theme') {
-                return slots.default?.()
-              }
-
-              // full 模式：提供完整 Providers
-              return h(NMessageProvider, {}, {
-                default: () => h(NDialogProvider, {}, {
-                  default: () => h(NNotificationProvider, {}, {
-                    default: () => slots.default?.()
-                  })
-                })
-              })
-            }
-          })
-
-          return configProvider
-        }
-      }
-    }))
+    ProvidersComponent.value = createAppNaiveWrapper({
+      NConfigProvider: configProviderModule.NConfigProvider,
+      NMessageProvider: messageModule.NMessageProvider,
+      NDialogProvider: dialogModule.NDialogProvider,
+      NNotificationProvider: notificationModule.NNotificationProvider,
+      darkTheme: themeModule.darkTheme
+    })
   } catch (error) {
     console.error('Naive UI 组件加载失败:', error)
   }

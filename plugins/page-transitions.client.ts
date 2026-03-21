@@ -8,6 +8,11 @@ export default defineNuxtPlugin(() => {
   const router = useRouter()
   let isTransitioning = false
 
+  const stripTransitionClass = () => {
+    document.querySelector('#__nuxt')?.classList.remove('page-transitioning')
+    isTransitioning = false
+  }
+
   // 页面进入动画
   router.beforeEach((to, from, next) => {
     if (isTransitioning) {
@@ -15,9 +20,20 @@ export default defineNuxtPlugin(() => {
       return
     }
 
+    // 后台整页与 SPA 切换均不使用根节点透明度动画，避免主内容区异常空白
+    if (to.path.startsWith('/admin') || from.path.startsWith('/admin')) {
+      next()
+      return
+    }
+
+    // 首次进入或整页刷新：from.matched 为空
+    if (from.matched.length === 0) {
+      next()
+      return
+    }
+
     isTransitioning = true
 
-    // 添加过渡类
     const app = document.querySelector('#__nuxt')
     if (app) {
       app.classList.add('page-transitioning')
@@ -40,13 +56,8 @@ export default defineNuxtPlugin(() => {
       }, 500)
     }
 
-    // 页面加载完成后移除过渡类
     setTimeout(() => {
-      const app = document.querySelector('#__nuxt')
-      if (app) {
-        app.classList.remove('page-transitioning')
-      }
-      isTransitioning = false
+      stripTransitionClass()
     }, 300)
   })
 
@@ -65,11 +76,9 @@ export default defineNuxtPlugin(() => {
 
       @keyframes pageFadeIn {
         from {
-          opacity: 0;
           transform: translateY(10px);
         }
         to {
-          opacity: 1;
           transform: translateY(0);
         }
       }

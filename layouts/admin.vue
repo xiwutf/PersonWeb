@@ -77,14 +77,14 @@
 
     <!-- 主内容区：使用主题背景色和文字颜色 -->
     <main 
-      class="flex-1 admin-main flex flex-col" 
+      class="flex-1 admin-main flex flex-col min-h-0" 
       :class="{ 'md:ml-64': !isEmbedded }"
       :style="mainContentStyle"
     >
       <!-- 使用统一的 AppNaiveConfig，确保前台和后台共用同一套主题配置 -->
       <!-- 主内容区：AppNaiveConfig 内部处理加载状态，无需 ClientOnly -->
       <!-- 注意：NotificationBell 必须在 AppNaiveConfig 内部，因为它使用了 Naive UI 组件 -->
-      <div class="flex-1 overflow-auto">
+      <div class="flex-1 overflow-auto min-h-0">
         <!-- mode="full": 后台全量模式，包含完整 Providers (Message/Dialog/Notification) -->
         <AppNaiveConfig mode="full">
           <!-- 顶部栏（包含移动端菜单按钮和铃铛入口） -->
