@@ -1,4 +1,4 @@
-name: Deploy Frontend to Aliyun OSS
+name: Deploy Frontend to Server
 
 on:
   push:
@@ -22,26 +22,38 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Generate static site
+      - name: Build for Node Server
         env:
           NODE_ENV: production
           NUXT_PUBLIC_API_BASE: https://api.xifg.com.cn/api
-        run: npm run generate
+        run: npm run build
 
-      - name: Install ossutil
-        run: |
-          wget https://gosspublic.alicdn.com/ossutil/1.7.16/ossutil64
-          chmod 755 ossutil64
-          mv ossutil64 /usr/local/bin/ossutil
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
+          script_stop: true
+          script: |
+            # 停止旧进程
+            pm2 stop nuxt-app || true
+            pm2 delete nuxt-app || true
 
-      - name: Configure ossutil
-        env:
-          OSS_ENDPOINT: ${{ secrets.OSS_ENDPOINT }}
-          OSS_ACCESS_KEY_ID: ${{ secrets.OSS_AK }}
-          OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_SK }}
-        run: |
-          ossutil config -e $OSS_ENDPOINT -i $OSS_ACCESS_KEY_ID -k $OSS_ACCESS_KEY_SECRET -L CH
+            # 备份旧版本
+            mv ~/PersonWeb ~/PersonWeb.backup.$(date +%Y%m%d%H%M%S) || true
 
-      - name: Upload to OSS
-        run: |
-          ossutil cp -r .output/public/ oss://xifg-site-frontend/ -f
+            # 创建目录
+            mkdir -p ~/PersonWeb
+
+            # 上传新版本
+            scp -r .output/* ~/PersonWeb/
+
+            # 启动新服务
+            cd ~/PersonWeb
+            pm2 start server/index.mjs --name nuxt-app
+            pm2 save
+
+            # 清理旧备份（保留最近3个）
+            ls -dt ~/PersonWeb.backup.* | tail -n +4 | xargs rm -rf || true
