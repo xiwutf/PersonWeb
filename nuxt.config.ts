@@ -29,7 +29,8 @@ export default defineNuxtConfig({
       // - xifg.com.cn: 自动使用 https://api.xifg.com.cn/api
       // - xing.com.cn: 自动使用 https://api.xing.com.cn/api
       // 环境变量仅作为服务端渲染时的默认值
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:5234/api'
+      // 默认使用同源 /api，避免线上未配置时错误回退到 localhost
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || '/api'
     }
   },
 

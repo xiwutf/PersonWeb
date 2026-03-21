@@ -33,6 +33,12 @@ export const useApi = () => {
             if (hostname.includes('xing.com.cn')) {
                 return 'https://api.xing.com.cn/api'
             }
+
+            // 其他域名（自建服务器/临时域名/IP）默认走同源 /api，避免误回退到 localhost
+            // 若需跨域后端，可通过 NUXT_PUBLIC_API_BASE 显式覆盖
+            if (!config.public.apiBase || config.public.apiBase.includes('localhost:5234')) {
+                return `${window.location.origin}/api`
+            }
         }
 
         // 服务端渲染或未匹配域名，使用环境变量配置

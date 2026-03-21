@@ -7,6 +7,11 @@ export default defineNuxtPlugin(() => {
 
   const router = useRouter()
   let isTransitioning = false
+  const setAdminRouteFlag = (path: string) => {
+    const isAdminRoute = path === '/admin' || path.startsWith('/admin/')
+    document.documentElement.classList.toggle('admin-route', isAdminRoute)
+  }
+  setAdminRouteFlag(router.currentRoute.value.path)
 
   const stripTransitionClass = () => {
     document.querySelector('#__nuxt')?.classList.remove('page-transitioning')
@@ -15,6 +20,8 @@ export default defineNuxtPlugin(() => {
 
   // 页面进入动画
   router.beforeEach((to, from, next) => {
+    setAdminRouteFlag(to.path)
+
     if (isTransitioning) {
       next()
       return
@@ -43,6 +50,8 @@ export default defineNuxtPlugin(() => {
   })
 
   router.afterEach((to, from) => {
+    setAdminRouteFlag(to.path)
+
     // 创建光速线效果
     if (from.path !== to.path) {
       const lightLine = document.createElement('div')
@@ -89,12 +98,12 @@ export default defineNuxtPlugin(() => {
         transition: all 0.3s ease;
       }
 
-      .page-enter-from {
+      html:not(.admin-route) .page-enter-from {
         opacity: 0;
         transform: translateX(20px);
       }
 
-      .page-leave-to {
+      html:not(.admin-route) .page-leave-to {
         opacity: 0;
         transform: translateX(-20px);
       }
