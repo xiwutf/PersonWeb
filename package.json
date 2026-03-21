@@ -33,6 +33,8 @@
     "optimize:images": "node scripts/optimize-images.js",
     "optimize:all": "node scripts/optimize-all.js",
     "clean:modules": "node scripts/clean-node-modules.js",
+    "clean:nuxt": "node node_modules/nuxt/bin/nuxt.mjs cleanup",
+    "dev:fresh": "node node_modules/nuxt/bin/nuxt.mjs cleanup && node node_modules/nuxt/bin/nuxt.mjs prepare && npm run dev",
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",

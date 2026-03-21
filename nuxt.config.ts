@@ -180,11 +180,9 @@ export default defineNuxtConfig({
           manualChunks(id) {
             // node_modules 中的依赖合并到 vendor chunk
             if (id.includes('node_modules')) {
-              // 大型独立库单独分组
+              // 大型独立库单独分组（naive-ui 不与 vendor 拆包：与 vue/vueuc 等互引用会产生 Circular chunk: vendor-naive <-> vendor）
               if (id.includes('echarts')) return 'vendor-echarts'
-              if (id.includes('naive-ui')) return 'vendor-naive'
               if (id.includes('@vueuse')) return 'vendor-vueuse'
-              // 其他依赖合并到 vendor
               return 'vendor'
             }
           },
