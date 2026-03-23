@@ -161,6 +161,7 @@
 </template>
 
 <script setup lang="ts">
+console.log('[Admin Layout] Script 开始执行')
 import { onMounted, computed, watch, ref } from 'vue'
 import { useAdminGlobalStyle } from '~/composables/useAdminStyle'
 import AppNaiveConfig from '~/components/layout/AppNaiveConfig.vue'
@@ -168,8 +169,12 @@ import MouseTrail from '~/components/effects/MouseTrail.vue'
 import ThemeSwitcher from '~/components/layout/ThemeSwitcher.vue'
 import { adminMenu, type AdminMenuItem } from '~/constants/admin/menu'
 
+console.log('[Admin Layout] 导入完成')
+
 const router = useRouter()
 const route = useRoute()
+
+console.log('[Admin Layout] 当前路由:', route.path)
 
 // 检测是否在 iframe 中嵌入（通过 URL 参数或 window 检测）
 const isEmbedded = ref(false)
