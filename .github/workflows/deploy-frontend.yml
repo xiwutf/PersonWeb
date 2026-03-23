@@ -36,28 +36,24 @@ jobs:
           chmod 755 ossutil64
           mv ossutil64 /usr/local/bin/ossutil
 
-      - name: Configure ossutil
+      - name: Upload to OSS
         env:
           OSS_ENDPOINT: ${{ secrets.OSS_ENDPOINT }}
           OSS_ACCESS_KEY_ID: ${{ secrets.OSS_AK }}
           OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_SK }}
           OSS_BUCKET: ${{ secrets.OSS_BUCKET }}
         run: |
-          ossutil config -e $OSS_ENDPOINT -i $OSS_ACCESS_KEY_ID -k $OSS_ACCESS_KEY_SECRET -L CH
-          ossutil config -c bucket $OSS_BUCKET
-
-      - name: Upload to OSS
-        env:
-          OSS_BUCKET: ${{ secrets.OSS_BUCKET }}
-        run: |
           echo "Uploading to OSS bucket: $OSS_BUCKET"
-          echo "OSS_ENDPOINT: ${{ secrets.OSS_ENDPOINT }}"
 
-          # 检查 bucket 是否已配置
           if [ -z "$OSS_BUCKET" ]; then
             echo "Error: OSS_BUCKET secret is not set!"
             exit 1
           fi
+
+          # 使用环境变量方式认证
+          export OSSUTIL_ACCESS_KEY_ID="$OSS_ACCESS_KEY_ID"
+          export OSSUTIL_ACCESS_KEY_SECRET="$OSS_ACCESS_KEY_SECRET"
+          export OSSUTIL_ENDPOINT="$OSS_ENDPOINT"
 
           # 上传文件
           ossutil cp -r .output/public/ oss://$OSS_BUCKET/ -f || {
