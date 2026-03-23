@@ -83,43 +83,8 @@
     >
       <!-- 暂时移除 ClientOnly 测试 -->
       <div class="flex-1 overflow-auto min-h-0">
-        <!-- mode="full": 后台全量模式，包含完整 Providers (Message/Dialog/Notification) -->
-        <AppNaiveConfig mode="full">
-          <!-- 顶部栏（包含移动端菜单按钮和铃铛入口） -->
-          <div class="admin-topbar border-b border-border-subtle bg-bg-elevated px-4 md:px-6 py-4 flex items-center justify-between md:justify-end gap-4">
-            <!-- 移动端菜单按钮 -->
-            <button
-              v-if="!isEmbedded"
-              @click="isMobileMenuOpen = !isMobileMenuOpen"
-              class="md:hidden p-2 rounded-md hover:bg-bg-elevated transition-colors"
-              aria-label="切换菜单"
-            >
-              <i class="fas fa-bars text-lg" :class="isMobileMenuOpen ? 'fa-times' : 'fa-bars'"></i>
-            </button>
-            <div class="flex items-center gap-4 ml-auto md:ml-0">
-              <!-- 临时禁用 NotificationBell，可能有导入问题 -->
-              <!-- <NotificationBell /> -->
-            </div>
-          </div>
-          <!-- 页面内容 -->
-          <NuxtErrorBoundary @error="(e) => console.error('[Admin Layout] NuxtErrorBoundary 捕获错误:', e)">
-            <slot />
-            <template #error="{ error }">
-              <div class="p-8 text-center text-red-500 bg-red-500/10 rounded-lg m-4 border border-red-500/20">
-                <h2 class="text-xl font-bold mb-4">页面渲染失败 (Render Error)</h2>
-                <div class="text-left bg-black/50 p-4 rounded overflow-auto max-h-[400px]">
-                  <code>{{ error }}</code>
-                </div>
-                <button
-                  class="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-                  @click="error.value = null"
-                >
-                  尝试清除错误
-                </button>
-              </div>
-            </template>
-          </NuxtErrorBoundary>
-        </AppNaiveConfig>
+        <!-- 测试：直接放 slot，不经过任何包装组件 -->
+        <slot />
       </div>
     </main>
 
