@@ -26,6 +26,8 @@ jobs:
         env:
           NODE_ENV: production
           NUXT_PUBLIC_API_BASE: ${{ secrets.NUXT_PUBLIC_API_BASE }}
+          # 增加 Node.js 堆内存限制，避免内存溢出（GitHub Actions 默认 7GB 内存）
+          NODE_OPTIONS: --max-old-space-size=6144
         run: npm run generate
 
       - name: Install ossutil
