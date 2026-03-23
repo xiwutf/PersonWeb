@@ -22,6 +22,15 @@ public class TrackingController : ControllerBase
     [HttpPost("visit")]
     public async Task<ActionResult<ApiResponse<object>>> RecordVisit([FromBody] VisitRequest request)
     {
+        var path = request.Path ?? "unknown";
+
+        // 过滤后台管理路径，不记录访问统计
+        if (path.StartsWith("/admin", StringComparison.OrdinalIgnoreCase))
+        {
+            // 返回成功但不记录
+            return Ok(ApiResponse.Success(new { TotalVisits = 0, TodayVisits = 0, VisitorId = request.VisitorId ?? Guid.NewGuid().ToString() }));
+        }
+
         var visitorId = request.VisitorId;
         if (string.IsNullOrEmpty(visitorId))
         {
@@ -36,7 +45,7 @@ public class TrackingController : ControllerBase
             VisitorId = visitorId,
             Ip = ip,
             UserAgent = userAgent,
-            Path = request.Path ?? "unknown",
+            Path = path,
             Timestamp = DateTime.Now
         };
 
