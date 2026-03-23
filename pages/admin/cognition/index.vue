@@ -335,8 +335,7 @@ const fetchList = async () => {
       }
     })
 
-    console.log('API 响应数据:', res) // 调试?
-    // 兼容 PascalCasecamelCase
+    // 兼容 PascalCase/camelCase
     const list = res?.List || res?.list || []
     const total = res?.Total || res?.total || 0
 

@@ -91,7 +91,6 @@ const fetchDocs = async () => {
       }
     })
 
-    console.log('前台获取数据响应:', res) // 调试用
     // 兼容 PascalCase 和 camelCase
     const list = res?.List || res?.list || []
     
@@ -105,7 +104,6 @@ const fetchDocs = async () => {
       updatedAt: item.UpdatedAt || item.updatedAt
     }))
 
-    console.log('前台处理后的数据:', docs.value) // 调试用
   } catch (e) {
     console.error('Failed to fetch cognition docs:', e)
     docs.value = []
