@@ -76,53 +76,61 @@
     </aside>
 
     <!-- 主内容区：使用主题背景色和文字颜色 -->
-    <main 
-      class="flex-1 admin-main flex flex-col min-h-0" 
+    <main
+      class="flex-1 admin-main flex flex-col min-h-0"
       :class="{ 'md:ml-64': !isEmbedded }"
       :style="mainContentStyle"
     >
-      <!-- 使用统一的 AppNaiveConfig，确保前台和后台共用同一套主题配置 -->
-      <!-- 主内容区：AppNaiveConfig 内部处理加载状态，无需 ClientOnly -->
-      <!-- 注意：NotificationBell 必须在 AppNaiveConfig 内部，因为它使用了 Naive UI 组件 -->
-      <div class="flex-1 overflow-auto min-h-0">
-        <!-- mode="full": 后台全量模式，包含完整 Providers (Message/Dialog/Notification) -->
-        <AppNaiveConfig mode="full">
-          <!-- 顶部栏（包含移动端菜单按钮和铃铛入口） -->
-          <div class="admin-topbar border-b border-border-subtle bg-bg-elevated px-4 md:px-6 py-4 flex items-center justify-between md:justify-end gap-4">
-            <!-- 移动端菜单按钮 -->
-            <button
-              v-if="!isEmbedded"
-              @click="isMobileMenuOpen = !isMobileMenuOpen"
-              class="md:hidden p-2 rounded-md hover:bg-bg-elevated transition-colors"
-              aria-label="切换菜单"
-            >
-              <i class="fas fa-bars text-lg" :class="isMobileMenuOpen ? 'fa-times' : 'fa-bars'"></i>
-            </button>
-            <div class="flex items-center gap-4 ml-auto md:ml-0">
-              <NotificationBell />
+      <!-- 整个主内容区使用 ClientOnly，避免 SSR/hydration 问题 -->
+      <ClientOnly>
+        <template #fallback>
+          <div class="flex-1 flex items-center justify-center">
+            <div class="text-center text-gray-400">
+              <i class="fas fa-spinner fa-spin text-3xl mb-4"></i>
+              <p>正在加载后台管理...</p>
             </div>
           </div>
-          <!-- 页面内容 -->
-          <!-- 移除 ClientOnly：admin 页面已设置 ssr: false，不需要 ClientOnly 包裹 -->
-          <NuxtErrorBoundary @error="(e) => console.error('[Admin Layout] NuxtErrorBoundary 捕获错误:', e)">
-            <slot />
-            <template #error="{ error }">
-              <div class="p-8 text-center text-red-500 bg-red-500/10 rounded-lg m-4 border border-red-500/20">
-                <h2 class="text-xl font-bold mb-4">页面渲染失败 (Render Error)</h2>
-                <div class="text-left bg-black/50 p-4 rounded overflow-auto max-h-[400px]">
-                  <code>{{ error }}</code>
-                </div>
-                <button
-                  class="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-                  @click="error.value = null"
-                >
-                  尝试清除错误
-                </button>
+        </template>
+
+        <div class="flex-1 overflow-auto min-h-0">
+          <!-- mode="full": 后台全量模式，包含完整 Providers (Message/Dialog/Notification) -->
+          <AppNaiveConfig mode="full">
+            <!-- 顶部栏（包含移动端菜单按钮和铃铛入口） -->
+            <div class="admin-topbar border-b border-border-subtle bg-bg-elevated px-4 md:px-6 py-4 flex items-center justify-between md:justify-end gap-4">
+              <!-- 移动端菜单按钮 -->
+              <button
+                v-if="!isEmbedded"
+                @click="isMobileMenuOpen = !isMobileMenuOpen"
+                class="md:hidden p-2 rounded-md hover:bg-bg-elevated transition-colors"
+                aria-label="切换菜单"
+              >
+                <i class="fas fa-bars text-lg" :class="isMobileMenuOpen ? 'fa-times' : 'fa-bars'"></i>
+              </button>
+              <div class="flex items-center gap-4 ml-auto md:ml-0">
+                <NotificationBell />
               </div>
-            </template>
-          </NuxtErrorBoundary>
-        </AppNaiveConfig>
-      </div>
+            </div>
+            <!-- 页面内容 -->
+            <NuxtErrorBoundary @error="(e) => console.error('[Admin Layout] NuxtErrorBoundary 捕获错误:', e)">
+              <slot />
+              <template #error="{ error }">
+                <div class="p-8 text-center text-red-500 bg-red-500/10 rounded-lg m-4 border border-red-500/20">
+                  <h2 class="text-xl font-bold mb-4">页面渲染失败 (Render Error)</h2>
+                  <div class="text-left bg-black/50 p-4 rounded overflow-auto max-h-[400px]">
+                    <code>{{ error }}</code>
+                  </div>
+                  <button
+                    class="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                    @click="error.value = null"
+                  >
+                    尝试清除错误
+                  </button>
+                </div>
+              </template>
+            </NuxtErrorBoundary>
+          </AppNaiveConfig>
+        </div>
+      </ClientOnly>
     </main>
 
     <!-- 鼠标轨迹特效 -->
