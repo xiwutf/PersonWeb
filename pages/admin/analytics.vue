@@ -619,13 +619,10 @@ const loadSecondaryData = async () => {
 }
 
 const refreshAll = async () => {
-  try {
-    await loadPrimaryData()
-    initialLoadComplete.value = true
-  } catch {
-    initialLoadComplete.value = true
-  }
-  void loadSecondaryData()
+  // 立即标记为加载完成，让页面先显示出来
+  initialLoadComplete.value = true
+  // 并行加载所有数据
+  await Promise.allSettled([loadPrimaryData(), loadSecondaryData()])
 }
 
 const refreshStats = () => {
