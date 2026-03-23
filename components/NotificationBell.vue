@@ -75,11 +75,11 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
 import { NPopover, NBadge, NTag, NSpin } from 'naive-ui'
 import { useApi } from '~/composables/useApi'
 import type { SideNotification, NotificationSeverity } from '~/types/api'
 
+// Nuxt 3 中使用 useRouter，不需要从 vue-router 导入
 const router = useRouter()
 const api = useApi()
 

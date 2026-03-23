@@ -107,7 +107,8 @@
                 <i class="fas fa-bars text-lg" :class="isMobileMenuOpen ? 'fa-times' : 'fa-bars'"></i>
               </button>
               <div class="flex items-center gap-4 ml-auto md:ml-0">
-                <NotificationBell />
+                <!-- 临时禁用 NotificationBell，可能有导入问题 -->
+                <!-- <NotificationBell /> -->
               </div>
             </div>
             <!-- 页面内容 -->
