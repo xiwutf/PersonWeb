@@ -102,12 +102,28 @@ export default defineNuxtConfig({
     prerender: {
       // 关闭自动爬取链接，避免内存溢出
       crawlLinks: false,
-      // 预渲染核心路由（包括 admin 入口）
-      routes: ['/', '/admin', '/200.html', '/404.html'],
-      // 排除动态页面
+      // 预渲染核心路由和 admin 主要页面
+      routes: [
+        '/',
+        '/admin',
+        '/admin/analytics',
+        '/admin/articles',
+        '/admin/projects',
+        '/admin/side-projects',
+        '/admin/visitor-messages',
+        '/admin/consultations',
+        '/admin/orders',
+        '/admin/time-capsules',
+        '/admin/cognition',
+        '/200.html',
+        '/404.html'
+      ],
+      // 排除动态内容页面
       ignore: [
         '/blog/**',
-        '/projects/**'
+        '/projects/**',
+        '/admin/articles/edit/**',
+        '/admin/side-projects/projects/**'
       ],
       // 忽略预渲染错误
       failOnError: false
