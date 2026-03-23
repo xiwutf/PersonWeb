@@ -26,7 +26,6 @@ jobs:
         env:
           NODE_ENV: production
           NUXT_PUBLIC_API_BASE: ${{ secrets.NUXT_PUBLIC_API_BASE }}
-          # 增加 Node.js 堆内存限制，避免内存溢出（GitHub Actions 默认 7GB 内存）
           NODE_OPTIONS: --max-old-space-size=6144
         run: npm run generate
 
@@ -50,10 +49,13 @@ jobs:
             exit 1
           fi
 
-          # 使用环境变量方式认证
-          export OSSUTIL_ACCESS_KEY_ID="$OSS_ACCESS_KEY_ID"
-          export OSSUTIL_ACCESS_KEY_SECRET="$OSS_ACCESS_KEY_SECRET"
-          export OSSUTIL_ENDPOINT="$OSS_ENDPOINT"
+          # 创建 ossutil 配置文件
+          mkdir -p ~/.ossutil
+          echo "[Credentials]" > ~/.ossutilconfig
+          echo "language=CH" >> ~/.ossutilconfig
+          echo "endpoint=$OSS_ENDPOINT" >> ~/.ossutilconfig
+          echo "accessKeyID=$OSS_ACCESS_KEY_ID" >> ~/.ossutilconfig
+          echo "accessKeySecret=$OSS_ACCESS_KEY_SECRET" >> ~/.ossutilconfig
 
           # 上传文件
           ossutil cp -r .output/public/ oss://$OSS_BUCKET/ -f || {
