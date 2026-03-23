@@ -34,17 +34,6 @@ export default defineNuxtConfig({
     }
   },
 
-  // 路由规则 - 禁用后台页面的 SSR
-  // 后台管理系统使用 Naive UI，需要在客户端渲染
-  routeRules: {
-    '/admin/**': {
-      // 禁用 SSR，后台页面只在客户端渲染
-      ssr: false,
-      // 禁用预渲染
-      prerender: false
-    }
-  },
-
   // Content 模块配置（v3：build.markdown）
   content: {
     build: {
