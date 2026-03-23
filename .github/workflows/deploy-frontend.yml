@@ -1,4 +1,4 @@
-name: Deploy Frontend to Server
+name: Deploy Frontend to Aliyun OSS
 
 on:
   push:
@@ -22,36 +22,45 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build for Node Server
+      - name: Generate static site
         env:
           NODE_ENV: production
-          NUXT_PUBLIC_API_BASE: https://api.xifg.com.cn/api
-        run: npm run build
+          NUXT_PUBLIC_API_BASE: ${{ secrets.NUXT_PUBLIC_API_BASE }}
+        run: npm run generate
 
-      - name: Deploy to server
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.REMOTE_HOST }}
-          username: ${{ secrets.REMOTE_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            # 停止旧进程
-            pm2 stop nuxt-app || true
-            pm2 delete nuxt-app || true
+      - name: Install ossutil
+        run: |
+          wget https://gosspublic.alicdn.com/ossutil/1.7.16/ossutil64
+          chmod 755 ossutil64
+          mv ossutil64 /usr/local/bin/ossutil
 
-            # 备份旧版本
-            mv ~/PersonWeb ~/PersonWeb.backup.$(date +%Y%m%d%H%M%S) || true
+      - name: Configure ossutil
+        env:
+          OSS_ENDPOINT: ${{ secrets.OSS_ENDPOINT }}
+          OSS_ACCESS_KEY_ID: ${{ secrets.OSS_AK }}
+          OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_SK }}
+          OSS_BUCKET: ${{ secrets.OSS_BUCKET }}
+        run: |
+          ossutil config -e $OSS_ENDPOINT -i $OSS_ACCESS_KEY_ID -k $OSS_ACCESS_KEY_SECRET -L CH
+          ossutil config -c bucket $OSS_BUCKET
 
-            # 创建目录
-            mkdir -p ~/PersonWeb
+      - name: Upload to OSS
+        env:
+          OSS_BUCKET: ${{ secrets.OSS_BUCKET }}
+        run: |
+          echo "Uploading to OSS bucket: $OSS_BUCKET"
+          echo "OSS_ENDPOINT: ${{ secrets.OSS_ENDPOINT }}"
 
-            # 上传新版本
-            scp -r .output/* ~/PersonWeb/
+          # 检查 bucket 是否已配置
+          if [ -z "$OSS_BUCKET" ]; then
+            echo "Error: OSS_BUCKET secret is not set!"
+            exit 1
+          fi
 
-            # 启动新服务
-            cd ~/PersonWeb
-            pm2 start server/index.mjs --name nuxt-app
-            pm2 save
+          # 上传文件
+          ossutil cp -r .output/public/ oss://$OSS_BUCKET/ -f || {
+            echo "Error: Upload failed!"
+            exit 1
+          }
 
-            # 清理旧备份（保留最近3个）
-            ls -dt ~/PersonWeb.backup.* | tail -n +4 | xargs rm -rf || true
+          echo "Upload completed successfully!"
