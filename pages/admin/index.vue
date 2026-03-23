@@ -364,9 +364,11 @@ const trendChart = ref<HTMLCanvasElement | null>(null)
 
 const fetchStats = async () => {
   try {
+    console.log('[Admin Dashboard] 开始获取统计数据')
     // 后端 Stats API 返回格式: { code: 0, data: { TotalVisits, TodayVisits, ArticleCount, ProjectCount, ... } }
     // 注意：Stats API 需要 [Authorize]，确保已登录
     const res = await api.get<any>('/Stats')
+    console.log('[Admin Dashboard] API 响应:', res)
     // useApi 已经处理了响应格式，直接返回 data
     if (res) {
       stats.value.todayVisits = res.TodayVisits ?? res.todayVisits ?? 0
@@ -688,6 +690,7 @@ const stopDashboardRefresh = () => {
 }
 
 onMounted(() => {
+  console.log('[Admin Dashboard] 组件已挂载')
   fetchStats()
   updateTime()
   startDashboardRefresh()
