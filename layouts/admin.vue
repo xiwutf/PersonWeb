@@ -103,35 +103,24 @@
             </div>
           </div>
           <!-- 页面内容 -->
-          <ClientOnly>
-            <!-- 提供一个 fallback，如果页面一直卡在这里说明是 Suspense 挂起或 Hydration 挂起 -->
-            <template #fallback>
-              <div class="p-12 text-center text-gray-400 flex flex-col items-center justify-center min-h-[50vh]">
-                <i class="fas fa-spinner fa-spin text-3xl mb-4 text-primary"></i>
-                <p>正在加载页面内容，请稍候...</p>
-                <p class="text-sm text-yellow-500 mt-2">[调试] ClientOnly fallback 显示中 - 页面正在客户端渲染</p>
+          <!-- 移除 ClientOnly：admin 页面已设置 ssr: false，不需要 ClientOnly 包裹 -->
+          <NuxtErrorBoundary @error="(e) => console.error('[Admin Layout] NuxtErrorBoundary 捕获错误:', e)">
+            <slot />
+            <template #error="{ error }">
+              <div class="p-8 text-center text-red-500 bg-red-500/10 rounded-lg m-4 border border-red-500/20">
+                <h2 class="text-xl font-bold mb-4">页面渲染失败 (Render Error)</h2>
+                <div class="text-left bg-black/50 p-4 rounded overflow-auto max-h-[400px]">
+                  <code>{{ error }}</code>
+                </div>
+                <button
+                  class="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                  @click="error.value = null"
+                >
+                  尝试清除错误
+                </button>
               </div>
             </template>
-
-            <NuxtErrorBoundary @error="(e) => console.error('[Admin Layout] NuxtErrorBoundary 捕获错误:', e)">
-              <div v-if="true" style="display: none;">[Admin Layout] slot 即将渲染</div>
-              <slot />
-              <template #error="{ error }">
-                <div class="p-8 text-center text-red-500 bg-red-500/10 rounded-lg m-4 border border-red-500/20">
-                  <h2 class="text-xl font-bold mb-4">页面渲染失败 (Render Error)</h2>
-                  <div class="text-left bg-black/50 p-4 rounded overflow-auto max-h-[400px]">
-                    <code>{{ error }}</code>
-                  </div>
-                  <button 
-                    class="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-                    @click="error.value = null"
-                  >
-                    尝试清除错误
-                  </button>
-                </div>
-              </template>
-            </NuxtErrorBoundary>
-          </ClientOnly>
+          </NuxtErrorBoundary>
         </AppNaiveConfig>
       </div>
     </main>
@@ -161,7 +150,6 @@
 </template>
 
 <script setup lang="ts">
-console.log('[Admin Layout] Script 开始执行')
 import { onMounted, computed, watch, ref } from 'vue'
 import { useAdminGlobalStyle } from '~/composables/useAdminStyle'
 import AppNaiveConfig from '~/components/layout/AppNaiveConfig.vue'
@@ -169,12 +157,8 @@ import MouseTrail from '~/components/effects/MouseTrail.vue'
 import ThemeSwitcher from '~/components/layout/ThemeSwitcher.vue'
 import { adminMenu, type AdminMenuItem } from '~/constants/admin/menu'
 
-console.log('[Admin Layout] 导入完成')
-
 const router = useRouter()
 const route = useRoute()
-
-console.log('[Admin Layout] 当前路由:', route.path)
 
 // 检测是否在 iframe 中嵌入（通过 URL 参数或 window 检测）
 const isEmbedded = ref(false)

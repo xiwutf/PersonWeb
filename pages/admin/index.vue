@@ -1,10 +1,5 @@
 <template>
   <div class="admin-dashboard">
-    <!-- 调试信息 -->
-    <div style="position: fixed; top: 10px; right: 10px; background: red; color: white; padding: 10px; z-index: 9999;">
-      调试: 页面已渲染 | 时间: {{ currentTime || '加载中...' }}
-    </div>
-
     <!-- 背景装饰 -->
     <div class="dashboard-bg-decoration">
       <div class="bg-decoration-item bg-decoration-blue"></div>
@@ -337,18 +332,12 @@
 </template>
 
 <script setup lang="ts">
-console.log('[Admin Index] Script 开始执行')
-
 definePageMeta({
   layout: 'admin',
   middleware: 'admin-auth'
 })
 
-console.log('[Admin Index] definePageMeta 完成')
-
 const api = useApi()
-console.log('[Admin Index] useApi 完成, baseUrl:', api.baseUrl)
-
 const stats = ref({
   articleCount: 0,
   toolCount: 0,
@@ -360,7 +349,6 @@ const stats = ref({
   pendingMessages: 0,
   pendingTasks: 0
 })
-console.log('[Admin Index] stats ref 初始化完成')
 
 // 待审核内容数量
 const pendingCounts = ref({
@@ -374,16 +362,11 @@ const recentVisits = ref<any[]>([])
 const visitTrend = ref<any[]>([])
 const trendChart = ref<HTMLCanvasElement | null>(null)
 
-console.log('[Admin Index] 所有 ref 初始化完成')
-
 const fetchStats = async () => {
-  console.log('[Admin Dashboard] fetchStats 函数开始执行')
   try {
-    console.log('[Admin Dashboard] 开始获取统计数据')
     // 后端 Stats API 返回格式: { code: 0, data: { TotalVisits, TodayVisits, ArticleCount, ProjectCount, ... } }
     // 注意：Stats API 需要 [Authorize]，确保已登录
     const res = await api.get<any>('/Stats')
-    console.log('[Admin Dashboard] API 响应:', res)
     // useApi 已经处理了响应格式，直接返回 data
     if (res) {
       stats.value.todayVisits = res.TodayVisits ?? res.todayVisits ?? 0
@@ -441,7 +424,7 @@ const fetchStats = async () => {
       stats.value.toolCount = 0
     }
   } catch (e: any) {
-    console.error('[Admin Dashboard] fetchStats 出错:', e)
+    console.error('Failed to fetch stats:', e)
     // 如果 API 返回错误（如 500），使用默认值，不阻塞页面显示
     stats.value.todayVisits = 0
     stats.value.articleCount = 0
@@ -705,7 +688,6 @@ const stopDashboardRefresh = () => {
 }
 
 onMounted(() => {
-  console.log('[Admin Dashboard] 组件已挂载')
   fetchStats()
   updateTime()
   startDashboardRefresh()
