@@ -102,11 +102,10 @@ export default defineNuxtConfig({
     prerender: {
       // 关闭自动爬取链接，避免内存溢出
       crawlLinks: false,
-      // 最小化预渲染路由（仅首页），避免内存溢出
-      routes: ['/'],
-      // 排除需要认证的 admin 页面和其他动态页面
+      // 预渲染核心路由（包括 admin 入口）
+      routes: ['/', '/admin', '/200.html', '/404.html'],
+      // 排除动态页面
       ignore: [
-        '/admin/**',
         '/blog/**',
         '/projects/**'
       ],
