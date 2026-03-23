@@ -109,10 +109,12 @@
               <div class="p-12 text-center text-gray-400 flex flex-col items-center justify-center min-h-[50vh]">
                 <i class="fas fa-spinner fa-spin text-3xl mb-4 text-primary"></i>
                 <p>正在加载页面内容，请稍候...</p>
+                <p class="text-sm text-yellow-500 mt-2">[调试] ClientOnly fallback 显示中 - 页面正在客户端渲染</p>
               </div>
             </template>
-            
-            <NuxtErrorBoundary>
+
+            <NuxtErrorBoundary @error="(e) => console.error('[Admin Layout] NuxtErrorBoundary 捕获错误:', e)">
+              <div v-if="true" style="display: none;">[Admin Layout] slot 即将渲染</div>
               <slot />
               <template #error="{ error }">
                 <div class="p-8 text-center text-red-500 bg-red-500/10 rounded-lg m-4 border border-red-500/20">
