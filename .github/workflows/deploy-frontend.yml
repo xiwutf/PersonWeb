@@ -35,7 +35,6 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SERVER_PORT }}
-          script_stop: true
           script: |
             # 停止旧进程
             pm2 stop nuxt-app || true
