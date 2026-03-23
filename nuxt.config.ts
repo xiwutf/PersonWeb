@@ -100,10 +100,10 @@ export default defineNuxtConfig({
   // Nitro 配置（用于静态生成优化）
   nitro: {
     prerender: {
-      // 自动爬取链接，但排除 admin 页面
-      crawlLinks: true,
-      // 显式指定 Lighthouse CI 测试的页面，确保 generate 时预渲染
-      routes: ['/', '/about', '/projects', '/blog', '/tools', '/life', '/skills', '/cognition'],
+      // 关闭自动爬取链接，避免内存溢出
+      crawlLinks: false,
+      // 只预渲染核心页面
+      routes: ['/', '/about', '/projects', '/blog'],
       // 排除需要认证的 admin 页面
       ignore: [
         '/admin/**'
