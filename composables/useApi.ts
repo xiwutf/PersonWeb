@@ -29,11 +29,6 @@ export const useApi = () => {
                 return 'https://api.xifg.com.cn/api'
             }
 
-            // 生产环境（fg.com.cn 域名 - 后台管理）
-            if (hostname.includes('fg.com.cn')) {
-                return 'https://api.xifg.com.cn/api'
-            }
-
             // 生产环境（xing.com.cn 域名）
             if (hostname.includes('xing.com.cn')) {
                 return 'https://api.xing.com.cn/api'
