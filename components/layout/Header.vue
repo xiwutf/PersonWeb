@@ -30,7 +30,7 @@
             @click="handleNavClick(item.path, $event)"
           >
             <span class="header-nav-link-icon">{{ item.icon }}</span>
-            <span>{{ item.title }}</span>
+            <span class="header-nav-link-label">{{ item.title }}</span>
           </NuxtLink>
           
           <!-- 更多菜单 -->
@@ -624,5 +624,289 @@ onMounted(() => {
 .slide-down-leave-to {
   opacity: 0;
   transform: translateY(-10px);
+}
+
+.header-content-wrapper {
+  position: relative;
+}
+
+.floating-nav {
+  background:
+    linear-gradient(135deg, rgba(10, 15, 29, 0.84), rgba(19, 28, 48, 0.72)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow:
+    0 28px 60px rgba(7, 12, 24, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+.floating-nav::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at left top, rgba(120, 119, 198, 0.18), transparent 34%),
+    radial-gradient(circle at right top, rgba(56, 189, 248, 0.12), transparent 30%);
+  pointer-events: none;
+}
+
+.floating-nav::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: calc(1rem - 1px);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  pointer-events: none;
+}
+
+.header-main {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  min-height: 4.75rem;
+  padding: 0.75rem 1.1rem;
+}
+
+.header-logo-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9rem;
+  min-width: 0;
+}
+
+.header-logo-avatar {
+  position: relative;
+  overflow: hidden;
+  width: 2.9rem;
+  height: 2.9rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 18px 32px rgba(15, 23, 42, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.header-logo-avatar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.14), transparent 58%);
+  pointer-events: none;
+}
+
+.header-logo-text {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 1.02rem;
+  letter-spacing: 0.08em;
+}
+
+.header-logo-text::after {
+  content: 'SYSTEMS · AI · TOOLS';
+  font-size: 0.56rem;
+  letter-spacing: 0.28em;
+  color: rgba(226, 232, 240, 0.62);
+  font-weight: 600;
+}
+
+.header-nav-desktop {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.45rem;
+  border-radius: 999px;
+  background: rgba(9, 14, 26, 0.38);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.header-nav-link,
+.header-more-menu-button,
+.header-search-button {
+  position: relative;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    box-shadow 0.25s ease,
+    color 0.25s ease;
+}
+
+.header-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 3rem;
+  padding: 0.72rem 0.9rem;
+}
+
+.header-nav-link-inactive,
+.header-more-menu-button-inactive,
+.header-search-button {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.header-nav-link-inactive:hover,
+.header-more-menu-button-inactive:hover,
+.header-search-button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(148, 163, 184, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 14px 24px rgba(8, 15, 29, 0.18);
+}
+
+.header-nav-link-active,
+.header-more-menu-button-active,
+.header-search-button-active {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.18), rgba(129, 140, 248, 0.2));
+  border-color: rgba(125, 211, 252, 0.3);
+  box-shadow:
+    0 16px 28px rgba(8, 15, 29, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.header-nav-link-icon {
+  flex: 0 0 auto;
+  opacity: 0.84;
+}
+
+.header-nav-link-label,
+.header-more-menu-button > span {
+  display: inline-block;
+  white-space: nowrap;
+  word-break: keep-all;
+  line-height: 1;
+  font-size: 0.92rem;
+  letter-spacing: 0.01em;
+}
+
+.header-search-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: auto;
+  min-width: 2.9rem;
+  padding-inline: 0.85rem;
+}
+
+.header-search-button::after {
+  content: '/';
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+  color: rgba(226, 232, 240, 0.58);
+}
+
+.header-search-button:hover::after,
+.header-search-button-active::after {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.header-theme-toggle-container {
+  margin-left: 0.15rem;
+  padding-left: 0.3rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.header-more-menu-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  min-height: 3rem;
+  padding: 0.72rem 0.95rem;
+  white-space: nowrap;
+}
+
+.header-dropdown-menu {
+  padding-top: 0.8rem;
+}
+
+.header-dropdown-menu-content,
+.header-mobile-menu {
+  background: rgba(10, 15, 29, 0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 48px rgba(7, 12, 24, 0.28);
+}
+
+.header-mobile-menu {
+  position: relative;
+  z-index: 1;
+  margin: 0 1rem 0.5rem;
+  border-radius: 1.1rem;
+  overflow: hidden;
+}
+
+.header-mobile-menu-content {
+  padding: 0.75rem;
+}
+
+.header-mobile-menu-item {
+  border-radius: 0.9rem;
+}
+
+.header-logo-text::after {
+  content: 'SYSTEMS / AI / TOOLS';
+}
+
+@media (max-width: 960px) {
+  .header-main {
+    min-height: 4.25rem;
+    padding: 0.65rem 0.85rem;
+  }
+
+  .header-logo-text::after {
+    display: none;
+  }
+}
+
+@media (min-width: 961px) and (max-width: 1360px) {
+  .header-main {
+    gap: 1rem;
+  }
+
+  .header-logo-link {
+    gap: 0.75rem;
+  }
+
+  .header-logo-text {
+    font-size: 0.95rem;
+  }
+
+  .header-logo-text::after {
+    font-size: 0.5rem;
+    letter-spacing: 0.22em;
+  }
+
+  .header-nav-desktop {
+    gap: 0.45rem;
+    padding: 0.35rem;
+  }
+
+  .header-nav-link,
+  .header-more-menu-button {
+    min-height: 2.85rem;
+    padding: 0.68rem 0.78rem;
+  }
+
+  .header-nav-link-label,
+  .header-more-menu-button > span {
+    font-size: 0.86rem;
+  }
+
+  .header-search-button {
+    min-width: 2.7rem;
+    padding-inline: 0.72rem;
+  }
 }
 </style>

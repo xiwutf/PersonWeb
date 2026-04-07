@@ -12,6 +12,7 @@
       <div class="footer-main-grid">
         <!-- 品牌区域 (占5列) -->
         <div class="footer-brand-section">
+          <div class="footer-brand-eyebrow">Independent Builder · Digital Craft</div>
           <div class="footer-brand-logo-container">
             <div class="footer-brand-logo-icon">
               <span class="footer-brand-logo-icon-text">XF</span>
@@ -21,8 +22,17 @@
             </span>
           </div>
           <p class="footer-brand-description">
-            用代码构建未来，用技术解决难题。专注于全栈开发与AI应用探索，致力于创造优雅的数字体验。
+            这里不是简单的个人主页，而是一套围绕产品、工程、内容与工具持续生长的数字作品集。希望每一个页面都能同时传达审美、判断力和落地能力。
           </p>
+          <div class="footer-brand-highlights">
+            <span
+              v-for="highlight in brandHighlights"
+              :key="highlight"
+              class="footer-brand-highlight"
+            >
+              {{ highlight }}
+            </span>
+          </div>
           <div class="footer-social-links">
             <a 
               v-for="social in socialLinks" 
@@ -84,17 +94,38 @@
 
         <!-- 链接区域 (占7列) -->
         <div class="footer-links-section">
-          <!-- 快速导航 -->
-          <div class="footer-link-group">
-            <h3 class="footer-link-group-title">探索</h3>
+          <div
+            v-for="group in footerLinkGroups"
+            :key="group.title"
+            class="footer-link-group"
+          >
+            <h3 class="footer-link-group-title">{{ group.title }}</h3>
             <ul class="footer-link-list">
-              <li v-for="item in quickLinks" :key="item.path">
+              <li v-for="item in group.items" :key="item.path">
                 <NuxtLink :to="item.path" class="footer-link-item">
                   <i class="fas fa-chevron-right footer-link-icon"></i>
                   {{ item.title }}
                 </NuxtLink>
               </li>
             </ul>
+          </div>
+
+          <div class="footer-cta-panel">
+            <div>
+              <div class="footer-cta-label">Site Direction</div>
+              <h3 class="footer-cta-title">从展示站升级为有结构、有判断力的数字名片</h3>
+              <p class="footer-cta-description">
+                项目、博客、工具、生活内容都在同一套叙事里协同出现，既能看见审美，也能看见方法与执行。
+              </p>
+            </div>
+            <div class="footer-cta-actions">
+              <NuxtLink to="/projects" class="footer-cta-button footer-cta-button-primary">
+                查看项目
+              </NuxtLink>
+              <NuxtLink to="/about" class="footer-cta-button footer-cta-button-secondary">
+                了解我
+              </NuxtLink>
+            </div>
           </div>
         </div>
       </div>
@@ -132,13 +163,29 @@ import { ref } from 'vue'
 
 const currentYear = new Date().getFullYear()
 
-const quickLinks = [
+const primaryLinks = [
   { title: '插件工具', path: '/tools' },
   { title: '项目展示', path: '/projects' },
   { title: '技术博客', path: '/blog' },
+  { title: '关于我', path: '/about' }
+]
+
+const contentLinks = [
   { title: '生活随笔', path: '/life' },
   { title: '订单查询', path: '/order/query' },
-  { title: '关于我', path: '/about' }
+  { title: '全站搜索', path: '/search' },
+  { title: '联系入口', path: '/contact' }
+]
+
+const footerLinkGroups = [
+  { title: 'Explore', items: primaryLinks },
+  { title: 'Content', items: contentLinks }
+]
+
+const brandHighlights = [
+  'AI 工作流',
+  '全栈产品实现',
+  '系统化内容呈现'
 ]
 
 const showWeChatQR = ref(false)
@@ -178,21 +225,6 @@ const copyEmail = async () => {
     alert('邮箱地址已复制到剪贴板')
   }
 }
-
-const contactInfo = [
-  {
-    type: 'email',
-    icon: '📧',
-    label: 'Email Me',
-    link: 'mailto:linxiwanting@gmail.com'
-  },
-  {
-    type: 'github',
-    icon: '🐙',
-    label: 'GitHub',
-    link: 'https://github.com/Lijing327'
-  }
-]
 
 // 获取统计数据（从后端API获取实时数据）
 const stats = ref<{ todayVisits: number; totalVisits: number } | null>(null)

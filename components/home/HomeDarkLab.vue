@@ -103,15 +103,19 @@
 
             <!-- 简介文案 -->
             <p :class="styles.description">
-              专注构建高效、优雅的数字体验。
-              无论是企业级业务系统、AI 驱动应用，还是有趣的小工具，我都致力于把复杂问题做得简单好用。
+              我把 AI、业务系统与自动化工具整合成可持续演进的产品能力。
+              从架构设计、全栈开发到体验落地，目标始终是让复杂问题拥有清晰、稳定、可复用的解法。
             </p>
 
             <!-- 个人标签 -->
             <div :class="styles.tagsContainer">
-              <span :class="styles.tag">前后端一体化</span>
-              <span :class="styles.tag">AI 应用落地</span>
-              <span :class="styles.tag">自动化效率提升</span>
+              <span
+                v-for="item in heroPills"
+                :key="item"
+                :class="styles.tag"
+              >
+                {{ item }}
+              </span>
             </div>
 
             <!-- 按钮区 -->
@@ -131,6 +135,26 @@
               <NuxtLink to="/about" :class="styles.secondaryButton">
                 关于我
               </NuxtLink>
+            </div>
+
+            <div :class="styles.metricsGrid">
+              <div
+                v-for="item in heroStats"
+                :key="item.label"
+                :class="styles.metricCard"
+              >
+                <div :class="styles.metricValue">{{ item.value }}</div>
+                <div :class="styles.metricLabel">{{ item.label }}</div>
+                <p :class="styles.metricDescription">{{ item.description }}</p>
+              </div>
+            </div>
+
+            <div :class="styles.strategyPanel">
+              <div :class="styles.strategyEyebrow">Work Focus</div>
+              <p :class="styles.strategyText">
+                当前重心放在 <strong>AI 应用工程化</strong>、<strong>效率工具产品化</strong> 与
+                <strong>个人数字系统建设</strong>，持续沉淀长期可复用的能力资产。
+              </p>
             </div>
           </div>
 
@@ -181,6 +205,10 @@
 
                   <!-- 底部信息条 - 重新设计为更融合的样式 -->
                   <div :class="styles.cardInfo">
+                    <div :class="styles.identityBadge">
+                      <span class="inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_18px_rgba(74,222,128,0.75)]"></span>
+                      Available for product building
+                    </div>
                     <div class="flex items-center justify-between gap-3 mb-3">
                       <div class="flex-1">
                         <h3 class="font-bold text-white text-lg mb-1 drop-shadow-lg">溪午听风</h3>
@@ -211,6 +239,16 @@
                         >
                           AI 工具链
                         </span>
+                      </div>
+                    </div>
+                    <div :class="styles.capabilityGrid">
+                      <div
+                        v-for="item in capabilitySignals"
+                        :key="item.title"
+                        :class="styles.capabilityCard"
+                      >
+                        <div :class="styles.capabilityTitle">{{ item.title }}</div>
+                        <div :class="styles.capabilityText">{{ item.description }}</div>
                       </div>
                     </div>
                   </div>
@@ -532,33 +570,81 @@
 <script setup lang="ts">
 // 逻辑部分保持原有结构，只是补充了类型声明
 import { computed, defineAsyncComponent, ref, onMounted, onUnmounted } from 'vue'
+import AddToHomeScreen from '~/components/tools/AddToHomeScreen.vue'
+import Timeline from '~/components/time/Timeline.vue'
 
 const ParticleAvatar = defineAsyncComponent(() => import('~/components/effects/ParticleAvatar.vue'))
 
 // 使用模块主题 composable
 const { moduleTheme } = useModuleTheme('home_hero')
 
+interface HomePost {
+  id: number | string
+  slug?: string
+  title: string
+  publishTime?: string
+  createdAt?: string
+  categoryName?: string
+}
+
 const api = useApi()
-const latestPosts = ref<any[]>([])
 const shouldMountParticleAvatar = ref(false)
 const isPerformanceConstrained = ref(false)
 const showParticleAvatar = computed(() => shouldMountParticleAvatar.value && !isPerformanceConstrained.value)
 let particleAvatarTimer: number | null = null
 
-// 获取最新文章
-const fetchLatestPosts = async () => {
-  try {
-    const res = await api.get<any>('/Articles', {
-      params: {
-        page: 1,
-        pageSize: 2
-      }
-    })
-    latestPosts.value = res.list
-  } catch (e) {
-    console.error('Failed to fetch latest posts', e)
+const heroPills = ['AI 应用工程化', '全栈产品交付', '自动化效率提升', '长期主义构建']
+
+const heroStats = [
+  {
+    value: 'AI + Software',
+    label: '核心方向',
+    description: '把模型能力接入真实业务，而不是停留在 Demo。'
+  },
+  {
+    value: 'Full-stack',
+    label: '交付方式',
+    description: '从前端体验到后端架构，统一推进完整闭环。'
+  },
+  {
+    value: 'System First',
+    label: '方法论',
+    description: '先建立系统，再放大效率与复用价值。'
   }
-}
+]
+
+const capabilitySignals = [
+  {
+    title: 'Build',
+    description: '面向产品与业务目标设计可扩展的系统方案'
+  },
+  {
+    title: 'Ship',
+    description: '把想法变成真正上线、可维护、可持续演进的能力'
+  }
+]
+
+const { data: latestPostsData } = await useAsyncData(
+  'home-dark-lab-latest-posts',
+  async () => {
+    try {
+      const res = await api.get<{ list?: HomePost[] }>('/Articles', {
+        params: {
+          page: 1,
+          pageSize: 2
+        }
+      })
+      return res.list || []
+    } catch {
+      return []
+    }
+  },
+  {
+    default: () => []
+  }
+)
+
+const latestPosts = computed(() => latestPostsData.value || [])
 
 // 日期格式化
 const formatDate = (dateStr: string) => {
@@ -588,6 +674,14 @@ const styles = {
   buttonsContainer: 'flex flex-wrap justify-center lg:justify-start gap-4 sm:gap-5',
   primaryButton: 'relative inline-flex items-center justify-center px-8 sm:px-10 md:px-12 py-4 sm:py-4.5 md:py-5 text-base sm:text-lg md:text-xl font-bold text-white transition-all duration-200 bg-slate-950/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900/80 min-h-[48px]',
   secondaryButton: 'inline-flex items-center justify-center px-8 sm:px-10 md:px-12 py-4 sm:py-4.5 md:py-5 text-base sm:text-lg md:text-xl font-bold text-slate-200 transition-all duration-200 bg-white/5 border-2 border-slate-600/70 rounded-xl hover:bg-white/10 hover:border-slate-400/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900/80 min-h-[48px] touch-target',
+  metricsGrid: 'grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4',
+  metricCard: 'rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl px-4 py-4 text-left shadow-[0_12px_40px_rgba(15,23,42,0.18)]',
+  metricValue: 'text-sm sm:text-base font-semibold text-white tracking-[0.04em] uppercase',
+  metricLabel: 'mt-2 text-xs text-blue-200/80 tracking-[0.24em] uppercase',
+  metricDescription: 'mt-3 text-sm leading-6 text-slate-300/90',
+  strategyPanel: 'rounded-3xl border border-white/10 bg-gradient-to-r from-white/8 via-white/5 to-transparent px-5 py-5 backdrop-blur-xl text-left shadow-[0_20px_48px_rgba(2,6,23,0.22)]',
+  strategyEyebrow: 'text-[11px] uppercase tracking-[0.32em] text-cyan-200/80 mb-3',
+  strategyText: 'text-sm sm:text-base text-slate-200/90 leading-7',
   
   // 右侧视觉区
   rightContent: 'relative hidden lg:block z-0 overflow-visible',
@@ -595,6 +689,11 @@ const styles = {
   cardBg: 'absolute inset-0 bg-gradient-to-tr from-slate-700/20 via-blue-900/20 to-slate-600/20 rounded-[2.1rem] rotate-6 opacity-40 blur-3xl',
   mainCard: 'w-full h-full rounded-[2rem] overflow-hidden border border-white/20 backdrop-blur-2xl bg-gradient-to-br from-white/10 via-white/5 to-transparent shadow-2xl shadow-indigo-500/20',
   cardInfo: 'absolute bottom-5 left-5 right-5 p-5 backdrop-blur-2xl rounded-2xl border border-white/20 bg-gradient-to-br from-white/15 via-white/10 to-white/5 shadow-2xl',
+  identityBadge: 'inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-emerald-100 mb-4',
+  capabilityGrid: 'mt-4 grid grid-cols-2 gap-2.5',
+  capabilityCard: 'rounded-2xl border border-white/10 bg-slate-950/30 px-3 py-3 backdrop-blur-lg',
+  capabilityTitle: 'text-[11px] uppercase tracking-[0.24em] text-cyan-200/80',
+  capabilityText: 'mt-2 text-xs leading-5 text-slate-200/90',
   
   // 背景样式
   backgroundGrid: 'absolute inset-0 overflow-hidden pointer-events-none z-0',
@@ -668,7 +767,6 @@ const scrollToContent = () => {
 let observer: IntersectionObserver | null = null
 
 onMounted(() => {
-  fetchLatestPosts()
   startRoleRotation()
   detectPerformanceConstraints()
   scheduleParticleAvatar()

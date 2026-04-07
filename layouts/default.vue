@@ -9,7 +9,13 @@
   <!-- mode="theme": 前台轻量模式，仅提供主题配置，不含 Message/Dialog/Notification -->
   <AppNaiveConfig mode="theme">
     <!-- 最外层容器：使用主题背景色和文字颜色 -->
-    <div class="min-h-screen flex flex-col relative bg-bg-body text-text-main">
+    <div class="default-layout-shell min-h-screen flex flex-col relative bg-bg-body text-text-main">
+    <div class="default-layout-backdrop">
+      <div class="default-layout-backdrop-orb default-layout-backdrop-orb--primary"></div>
+      <div class="default-layout-backdrop-orb default-layout-backdrop-orb--secondary"></div>
+      <div class="default-layout-backdrop-grid"></div>
+      <div class="default-layout-backdrop-noise"></div>
+    </div>
     <!-- 动态背景效果（根据主题切换） -->
     <!-- 🔴 已禁用：可能导致滚动条闪烁（requestAnimationFrame 持续动画） -->
     <!-- <BackgroundEffects :effect="currentBackground" :config="backgroundConfig" /> -->
@@ -23,7 +29,7 @@
     <!-- 注意：Header 已移至 app.vue 全局挂载，此处不再需要 -->
     
     <!-- 主要内容区域 -->
-    <main class="flex-1 pt-20 relative z-10">
+    <main class="default-layout-main flex-1 pt-20 relative z-10">
       <slot />
     </main>
     
@@ -31,10 +37,10 @@
     <Footer />
     
     <!-- AI 智能助手（独立，不放入抽屉） -->
-    <AIAssistant v-if="showDeferredWidgets" />
+    <AIAssistant v-if="showFloatingAssistants" />
     
     <!-- 智能客服（前台访客使用） -->
-    <SupportChat v-if="showDeferredWidgets" />
+    <SupportChat v-if="showFloatingAssistants" />
     
     <!-- 访客互动功能 -->
     <!-- 🔴 已禁用：z-index 过高，可能遮挡导航栏 -->
@@ -43,7 +49,7 @@
     <!-- VisitorBubble: z-index: 200 (比导航栏高) -->
     <!-- <VisitorBubble /> -->
     <!-- VisitorInteractionPanel: 留言、互动功能（右下角） -->
-    <VisitorInteractionPanel v-if="showDeferredWidgets" />
+    <VisitorInteractionPanel v-if="showFloatingAssistants" />
     
     <!-- 访客互动式玩法（包含在抽屉中） -->
     <VisitorBehaviorListener v-if="showDesktopEnhancements" />
@@ -75,14 +81,17 @@ const SupportChat = defineAsyncComponent(() => import('~/components/ai/SupportCh
 const VisitorInteractionPanel = defineAsyncComponent(() => import('~/components/VisitorInteractionPanel.vue'))
 const VisitorBehaviorListener = defineAsyncComponent(() => import('~/components/VisitorBehaviorListener.vue'))
 const VisitorSidebarDrawer = defineAsyncComponent(() => import('~/components/VisitorSidebarDrawer.vue'))
+const route = useRoute()
 
 const shouldMountDeferredUi = ref(false)
 const shouldMountUtilityUi = ref(false)
 const isLowPowerMode = ref(false)
 
 const showDeferredWidgets = computed(() => shouldMountDeferredUi.value && !isLowPowerMode.value)
-const showDesktopEnhancements = computed(() => showDeferredWidgets.value)
-const showUtilityWidgets = computed(() => shouldMountUtilityUi.value)
+const isFocusRoute = computed(() => route.path.startsWith('/search'))
+const showDesktopEnhancements = computed(() => showDeferredWidgets.value && !isFocusRoute.value)
+const showUtilityWidgets = computed(() => shouldMountUtilityUi.value && !isFocusRoute.value)
+const showFloatingAssistants = computed(() => showDeferredWidgets.value && !isFocusRoute.value)
 
 let deferredMountTimer: number | null = null
 let utilityMountTimer: number | null = null
@@ -157,3 +166,107 @@ onUnmounted(() => {
   }
 })
 </script>
+
+<style scoped>
+.default-layout-shell {
+  isolation: isolate;
+}
+
+.default-layout-backdrop {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.default-layout-backdrop-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(100px);
+  opacity: 0.3;
+  transform: translateZ(0);
+}
+
+.default-layout-backdrop-orb--primary {
+  top: 6rem;
+  left: -8rem;
+  width: 28rem;
+  height: 28rem;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.22) 0%, rgba(59, 130, 246, 0) 72%);
+}
+
+.default-layout-backdrop-orb--secondary {
+  top: 30rem;
+  right: -10rem;
+  width: 30rem;
+  height: 30rem;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0) 72%);
+}
+
+.default-layout-backdrop-grid,
+.default-layout-backdrop-noise {
+  position: absolute;
+  inset: 0;
+}
+
+.default-layout-backdrop-grid {
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(circle at top, rgba(0, 0, 0, 0.7), transparent 78%);
+  opacity: 0.22;
+}
+
+.default-layout-backdrop-noise {
+  opacity: 0.05;
+  mix-blend-mode: soft-light;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.55) 0.7px, transparent 0.7px);
+  background-size: 14px 14px;
+}
+
+.default-layout-main {
+  position: relative;
+}
+
+.default-layout-main::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.08) 0%, rgba(15, 23, 42, 0) 12rem);
+  opacity: 0.6;
+}
+
+html[data-theme='dark'] .default-layout-backdrop-grid,
+html[data-theme='hybrid-super-dark'] .default-layout-backdrop-grid,
+html.dark .default-layout-backdrop-grid {
+  opacity: 0.14;
+}
+
+html[data-theme='dark'] .default-layout-backdrop-noise,
+html[data-theme='hybrid-super-dark'] .default-layout-backdrop-noise,
+html.dark .default-layout-backdrop-noise {
+  opacity: 0.04;
+}
+
+@media (max-width: 767px) {
+  .default-layout-backdrop-orb--primary {
+    width: 18rem;
+    height: 18rem;
+    left: -6rem;
+  }
+
+  .default-layout-backdrop-orb--secondary {
+    width: 20rem;
+    height: 20rem;
+    right: -7rem;
+    top: 24rem;
+  }
+
+  .default-layout-backdrop-grid {
+    background-size: 40px 40px;
+  }
+}
+</style>
