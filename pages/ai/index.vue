@@ -207,10 +207,11 @@ useHead({
 })
 
 const router = useRouter()
+const isSafeInternalPath = (path?: string | null) => Boolean(path && path.startsWith('/') && !path.startsWith('/api/'))
 
 // 处理项目点击
 const handleProjectClick = (project: FeaturedProject) => {
-  if (project.path) {
+  if (isSafeInternalPath(project.path)) {
     router.push(project.path)
   }
 }

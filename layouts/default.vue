@@ -37,10 +37,10 @@
     <Footer />
     
     <!-- AI 智能助手（独立，不放入抽屉） -->
-    <AIAssistant v-if="showFloatingAssistants" />
+    <AIAssistant v-if="showPrimaryFloatingAssistant" />
     
     <!-- 智能客服（前台访客使用） -->
-    <SupportChat v-if="showFloatingAssistants" />
+    <SupportChat v-if="showSecondaryFloatingTools" />
     
     <!-- 访客互动功能 -->
     <!-- 🔴 已禁用：z-index 过高，可能遮挡导航栏 -->
@@ -49,7 +49,7 @@
     <!-- VisitorBubble: z-index: 200 (比导航栏高) -->
     <!-- <VisitorBubble /> -->
     <!-- VisitorInteractionPanel: 留言、互动功能（右下角） -->
-    <VisitorInteractionPanel v-if="showFloatingAssistants" />
+    <VisitorInteractionPanel v-if="showSecondaryFloatingTools" />
     
     <!-- 访客互动式玩法（包含在抽屉中） -->
     <VisitorBehaviorListener v-if="showDesktopEnhancements" />
@@ -86,12 +86,15 @@ const route = useRoute()
 const shouldMountDeferredUi = ref(false)
 const shouldMountUtilityUi = ref(false)
 const isLowPowerMode = ref(false)
+const isCompactFloatingMode = ref(false)
 
 const showDeferredWidgets = computed(() => shouldMountDeferredUi.value && !isLowPowerMode.value)
 const isFocusRoute = computed(() => route.path.startsWith('/search'))
 const showDesktopEnhancements = computed(() => showDeferredWidgets.value && !isFocusRoute.value)
 const showUtilityWidgets = computed(() => shouldMountUtilityUi.value && !isFocusRoute.value)
 const showFloatingAssistants = computed(() => showDeferredWidgets.value && !isFocusRoute.value)
+const showPrimaryFloatingAssistant = computed(() => showFloatingAssistants.value)
+const showSecondaryFloatingTools = computed(() => showFloatingAssistants.value && !isCompactFloatingMode.value)
 
 let deferredMountTimer: number | null = null
 let utilityMountTimer: number | null = null
@@ -99,6 +102,7 @@ let utilityMountTimer: number | null = null
 const detectLowPowerMode = () => {
   const coarsePointer = window.matchMedia('(pointer: coarse)').matches
   const narrowScreen = window.innerWidth < 1024
+  const compactViewport = window.innerWidth < 1480 || window.innerHeight < 920
   const saveData = 'connection' in navigator && (navigator as Navigator & {
     connection?: { saveData?: boolean }
   }).connection?.saveData === true
@@ -108,6 +112,7 @@ const detectLowPowerMode = () => {
   const lowMemory = lowMemoryValue > 0 && lowMemoryValue <= 4
 
   isLowPowerMode.value = coarsePointer || narrowScreen || saveData || lowMemory
+  isCompactFloatingMode.value = compactViewport
 }
 
 const scheduleDeferredWidgets = () => {
@@ -170,6 +175,10 @@ onUnmounted(() => {
 <style scoped>
 .default-layout-shell {
   isolation: isolate;
+  --floating-dock-right: max(18px, env(safe-area-inset-right));
+  --floating-dock-bottom: max(18px, calc(env(safe-area-inset-bottom) + 14px));
+  --floating-dock-gap: 14px;
+  --floating-dock-button-size: 52px;
 }
 
 .default-layout-backdrop {
@@ -252,6 +261,13 @@ html.dark .default-layout-backdrop-noise {
 }
 
 @media (max-width: 767px) {
+  .default-layout-shell {
+    --floating-dock-right: max(12px, env(safe-area-inset-right));
+    --floating-dock-bottom: max(12px, calc(env(safe-area-inset-bottom) + 10px));
+    --floating-dock-gap: 10px;
+    --floating-dock-button-size: 44px;
+  }
+
   .default-layout-backdrop-orb--primary {
     width: 18rem;
     height: 18rem;

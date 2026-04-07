@@ -181,9 +181,10 @@ const getStatusClass = (status: string) => {
 
 // 处理项目点击
 const router = useRouter()
+const isSafeInternalPath = (path?: string) => Boolean(path && path.startsWith('/') && !path.startsWith('/api/'))
 const handleProjectClick = (project: AiProject) => {
   // 如果有 path，跳转到对应页面；否则显示详情
-  if (project.path) {
+  if (isSafeInternalPath(project.path)) {
     router.push(project.path)
   } else {
     // 可以跳转到项目详情页或打开弹窗

@@ -53,55 +53,11 @@ CREATE TABLE IF NOT EXISTS `frontend_style_rule` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='前端样式规则表';
 
 -- 插入默认样式配置示例（tools 页面）
+-- 注意：style_config 为 JSON 类型；不要在 SQL 字符串里用 \" 包字体名，MySQL 会把 \" 解析成单个 "，导致非法 JSON（如云库报错 position ~257）。
 INSERT IGNORE INTO `frontend_page_style` (`page_key`, `page_name`, `style_config`, `enabled`, `is_default`) VALUES
-('tools', '工具页面', '{
-  "primaryColor": "#f97316",
-  "secondaryColor": "#dc2626",
-  "backgroundColor": "#0f172a",
-  "textColor": "#e2e8f0",
-  "cardBackground": "rgba(30, 41, 59, 0.3)",
-  "borderColor": "rgba(255, 255, 255, 0.05)",
-  "borderRadius": "1.5rem",
-  "fontFamily": "\"Outfit\", sans-serif"
-}', 1, 1),
-('blog', '博客页面', '{
-  "primaryColor": "#3b82f6",
-  "secondaryColor": "#10b981",
-  "backgroundColor": "#0f172a",
-  "textColor": "#e2e8f0",
-  "cardBackground": "rgba(30, 41, 59, 0.3)",
-  "borderColor": "rgba(255, 255, 255, 0.05)",
-  "borderRadius": "1rem",
-  "fontFamily": "\"Outfit\", sans-serif"
-}', 1, 1),
-('life', '生活随笔页面', '{
-  "primaryColor": "#f59e0b",
-  "secondaryColor": "#f97316",
-  "backgroundColor": "#0f172a",
-  "textColor": "#e2e8f0",
-  "cardBackground": "rgba(30, 41, 59, 0.4)",
-  "borderColor": "rgba(255, 255, 255, 0.05)",
-  "borderRadius": "1rem",
-  "fontFamily": "\"Outfit\", sans-serif"
-}', 1, 1),
-('projects', '项目页面', '{
-  "primaryColor": "#3b82f6",
-  "secondaryColor": "#10b981",
-  "backgroundColor": "#ffffff",
-  "textColor": "#111827",
-  "cardBackground": "#ffffff",
-  "borderColor": "#e5e7eb",
-  "borderRadius": "0.5rem",
-  "fontFamily": "system-ui, sans-serif"
-}', 1, 1),
-('about', '关于页面', '{
-  "primaryColor": "#8b5cf6",
-  "secondaryColor": "#ec4899",
-  "backgroundColor": "#0f172a",
-  "textColor": "#e2e8f0",
-  "cardBackground": "rgba(30, 41, 59, 0.3)",
-  "borderColor": "rgba(255, 255, 255, 0.05)",
-  "borderRadius": "1.5rem",
-  "fontFamily": "\"Outfit\", sans-serif"
-}', 1, 1);
+('tools', '工具页面', '{"primaryColor":"#f97316","secondaryColor":"#dc2626","backgroundColor":"#0f172a","textColor":"#e2e8f0","cardBackground":"rgba(30, 41, 59, 0.3)","borderColor":"rgba(255, 255, 255, 0.05)","borderRadius":"1.5rem","fontFamily":"Outfit, sans-serif"}', 1, 1),
+('blog', '博客页面', '{"primaryColor":"#3b82f6","secondaryColor":"#10b981","backgroundColor":"#0f172a","textColor":"#e2e8f0","cardBackground":"rgba(30, 41, 59, 0.3)","borderColor":"rgba(255, 255, 255, 0.05)","borderRadius":"1rem","fontFamily":"Outfit, sans-serif"}', 1, 1),
+('life', '生活随笔页面', '{"primaryColor":"#f59e0b","secondaryColor":"#f97316","backgroundColor":"#0f172a","textColor":"#e2e8f0","cardBackground":"rgba(30, 41, 59, 0.4)","borderColor":"rgba(255, 255, 255, 0.05)","borderRadius":"1rem","fontFamily":"Outfit, sans-serif"}', 1, 1),
+('projects', '项目页面', '{"primaryColor":"#3b82f6","secondaryColor":"#10b981","backgroundColor":"#ffffff","textColor":"#111827","cardBackground":"#ffffff","borderColor":"#e5e7eb","borderRadius":"0.5rem","fontFamily":"system-ui, sans-serif"}', 1, 1),
+('about', '关于页面', '{"primaryColor":"#8b5cf6","secondaryColor":"#ec4899","backgroundColor":"#0f172a","textColor":"#e2e8f0","cardBackground":"rgba(30, 41, 59, 0.3)","borderColor":"rgba(255, 255, 255, 0.05)","borderRadius":"1.5rem","fontFamily":"Outfit, sans-serif"}', 1, 1);
 

@@ -271,21 +271,26 @@ onUnmounted(() => {
 <style scoped>
 .ai-assistant-button {
   position: fixed;
-  right: max(14px, env(safe-area-inset-right));
-  bottom: max(18px, calc(env(safe-area-inset-bottom) + 14px));
+  right: var(--floating-dock-right, max(14px, env(safe-area-inset-right)));
+  bottom: var(--floating-dock-bottom, max(18px, calc(env(safe-area-inset-bottom) + 14px)));
   z-index: 9990;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: var(--floating-dock-button-size, 48px);
+  height: var(--floating-dock-button-size, 48px);
   border: 0;
   border-radius: 9999px;
   color: white;
   cursor: pointer;
-  background: linear-gradient(to bottom right, var(--color-primary), var(--color-purple));
-  box-shadow: var(--shadow-lg, 0 8px 24px rgba(0, 0, 0, 0.24));
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0) 42%),
+    linear-gradient(135deg, color-mix(in srgb, var(--color-primary) 84%, white) 0%, color-mix(in srgb, var(--color-purple) 82%, #111827) 100%);
+  box-shadow:
+    0 16px 32px rgba(37, 99, 235, 0.28),
+    0 0 0 1px rgba(255, 255, 255, 0.18) inset;
   transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  backdrop-filter: blur(16px);
 }
 
 .ai-assistant-button:hover {
@@ -320,8 +325,8 @@ onUnmounted(() => {
 
 .ai-assistant-dialog {
   position: fixed;
-  right: max(14px, env(safe-area-inset-right));
-  bottom: max(18px, calc(env(safe-area-inset-bottom) + 14px));
+  right: var(--floating-dock-right, max(14px, env(safe-area-inset-right)));
+  bottom: calc(var(--floating-dock-bottom, max(18px, calc(env(safe-area-inset-bottom) + 14px))) + 2px);
   z-index: 9990;
   width: min(336px, calc(100vw - 28px));
   height: min(520px, calc(100vh - 110px));
@@ -564,17 +569,15 @@ onUnmounted(() => {
 
 @media (max-width: 768px) {
   .ai-assistant-button {
-    right: max(12px, env(safe-area-inset-right));
-    bottom: max(12px, calc(env(safe-area-inset-bottom) + 10px));
-    width: 40px;
-    height: 40px;
+    right: var(--floating-dock-right, max(12px, env(safe-area-inset-right)));
+    bottom: var(--floating-dock-bottom, max(12px, calc(env(safe-area-inset-bottom) + 10px)));
   }
 
   .ai-assistant-dialog {
     left: 12px;
     right: 12px;
     width: auto;
-    bottom: max(12px, calc(env(safe-area-inset-bottom) + 10px));
+    bottom: var(--floating-dock-bottom, max(12px, calc(env(safe-area-inset-bottom) + 10px)));
     height: min(66vh, 460px);
     border-radius: var(--radius-lg);
   }

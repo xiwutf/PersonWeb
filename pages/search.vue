@@ -189,22 +189,24 @@
                       </span>
                       <span class="search-result-date">{{ formatDate(article.createdAt) }}</span>
                     </div>
-                    <NuxtLink
-                      :to="article.url"
+                    <component
+                      :is="getResultLinkComponent(article.url)"
+                      v-bind="getResultLinkProps(article.url)"
                       class="search-result-title-link"
                       v-html="highlightText(article.title, searchQuery)"
-                    ></NuxtLink>
+                    ></component>
                     <p 
                       class="search-result-summary search-result-summary-2"
                       v-html="highlightText(article.summary || article.content.substring(0, 200), searchQuery)"
                     ></p>
                     <div class="search-result-footer">
-                      <NuxtLink
-                        :to="article.url"
+                      <component
+                        :is="getResultLinkComponent(article.url)"
+                        v-bind="getResultLinkProps(article.url)"
                         class="search-result-link search-result-link-article"
                       >
                         阅读全文 →
-                      </NuxtLink>
+                      </component>
                     </div>
                   </div>
                 </div>
@@ -239,12 +241,13 @@
                     v-html="highlightText(project.summary || project.content.substring(0, 200), searchQuery)"
                   ></p>
                   <div class="search-result-footer">
-                    <NuxtLink
-                      :to="project.url"
+                    <component
+                      :is="getResultLinkComponent(project.url)"
+                      v-bind="getResultLinkProps(project.url)"
                       class="search-result-link search-result-link-project"
                     >
                       查看详情 →
-                    </NuxtLink>
+                    </component>
                   </div>
                 </div>
               </article>
@@ -274,22 +277,24 @@
                       </span>
                       <span class="search-result-date">{{ formatDate(knowledge.createdAt) }}</span>
                     </div>
-                    <NuxtLink
-                      :to="knowledge.url"
+                    <component
+                      :is="getResultLinkComponent(knowledge.url)"
+                      v-bind="getResultLinkProps(knowledge.url)"
                       class="search-result-title-link search-result-title-link-knowledge"
                       v-html="highlightText(knowledge.title, searchQuery)"
-                    ></NuxtLink>
+                    ></component>
                     <p 
                       class="search-result-summary search-result-summary-2"
                       v-html="highlightText(knowledge.content.substring(0, 200), searchQuery)"
                     ></p>
                     <div class="search-result-footer">
-                      <NuxtLink
-                        :to="knowledge.url"
+                      <component
+                        :is="getResultLinkComponent(knowledge.url)"
+                        v-bind="getResultLinkProps(knowledge.url)"
                         class="search-result-link search-result-link-knowledge"
                       >
                         查看详情 →
-                      </NuxtLink>
+                      </component>
                     </div>
                   </div>
                 </div>
@@ -328,12 +333,13 @@
                     v-html="highlightText(tool.summary || tool.content.substring(0, 200), searchQuery)"
                   ></p>
                   <div class="search-result-footer">
-                    <NuxtLink
-                      :to="tool.url"
+                    <component
+                      :is="getResultLinkComponent(tool.url)"
+                      v-bind="getResultLinkProps(tool.url)"
                       class="search-result-link search-result-link-tool"
                     >
                       查看详情 →
-                    </NuxtLink>
+                    </component>
                   </div>
                 </div>
               </article>
@@ -371,12 +377,13 @@
                     v-html="highlightText(theme.summary || theme.content.substring(0, 200), searchQuery)"
                   ></p>
                   <div class="search-result-footer">
-                    <NuxtLink
-                      :to="theme.url"
+                    <component
+                      :is="getResultLinkComponent(theme.url)"
+                      v-bind="getResultLinkProps(theme.url)"
                       class="search-result-link search-result-link-theme"
                     >
                       查看详情 →
-                    </NuxtLink>
+                    </component>
                   </div>
                 </div>
               </article>
@@ -472,6 +479,41 @@ const popularSearchTags = [
 const api = useApi()
 const notification = useNotification()
 const errorHandler = useErrorHandler()
+
+const isExternalLikeLink = (url?: string | null) => {
+  if (!url) return false
+  return /^(https?:)?\/\//i.test(url) || /^(mailto:|tel:)/i.test(url) || url.startsWith('/api/')
+}
+
+const isInternalResultRoute = (url?: string | null) => {
+  if (!url) return false
+  if (isExternalLikeLink(url)) return false
+  return url.startsWith('/')
+}
+
+const getResultLinkComponent = (url?: string | null) => {
+  return isInternalResultRoute(url) ? 'NuxtLink' : 'a'
+}
+
+const getResultLinkProps = (url?: string | null) => {
+  if (isInternalResultRoute(url)) {
+    return { to: url }
+  }
+
+  if (isExternalLikeLink(url)) {
+    return {
+      href: url,
+      target: '_blank',
+      rel: 'noopener noreferrer'
+    }
+  }
+
+  return {
+    href: '#',
+    tabindex: '-1',
+    'aria-disabled': 'true'
+  }
+}
 
 // 执行搜索
 const performSearch = async () => {

@@ -27,10 +27,10 @@
     <ThemeSwitcher v-if="showUtilityWidgets" />
     
     <!-- AI 智能助手 -->
-    <AIAssistant v-if="showDeferredWidgets" />
+    <AIAssistant v-if="showPrimaryFloatingAssistant" />
     
     <!-- 访客互动功能 -->
-    <VisitorInteractionPanel v-if="showDeferredWidgets" />
+    <VisitorInteractionPanel v-if="showSecondaryFloatingTools" />
     
     <!-- 访客互动式玩法（包含在抽屉中） -->
     <VisitorBehaviorListener v-if="showDesktopEnhancements" />
@@ -61,10 +61,13 @@ const VisitorSidebarDrawer = defineAsyncComponent(() => import('~/components/Vis
 const shouldMountDeferredUi = ref(false)
 const shouldMountUtilityUi = ref(false)
 const isLowPowerMode = ref(false)
+const isCompactFloatingMode = ref(false)
 
 const showDeferredWidgets = computed(() => shouldMountDeferredUi.value && !isLowPowerMode.value)
 const showDesktopEnhancements = computed(() => showDeferredWidgets.value)
 const showUtilityWidgets = computed(() => shouldMountUtilityUi.value)
+const showPrimaryFloatingAssistant = computed(() => showDeferredWidgets.value)
+const showSecondaryFloatingTools = computed(() => showDeferredWidgets.value && !isCompactFloatingMode.value)
 
 let deferredMountTimer: number | null = null
 let utilityMountTimer: number | null = null
@@ -72,6 +75,7 @@ let utilityMountTimer: number | null = null
 const detectLowPowerMode = () => {
   const coarsePointer = window.matchMedia('(pointer: coarse)').matches
   const narrowScreen = window.innerWidth < 1024
+  const compactViewport = window.innerWidth < 1480 || window.innerHeight < 920
   const saveData = 'connection' in navigator && (navigator as Navigator & {
     connection?: { saveData?: boolean }
   }).connection?.saveData === true
@@ -81,6 +85,7 @@ const detectLowPowerMode = () => {
   const lowMemory = lowMemoryValue > 0 && lowMemoryValue <= 4
 
   isLowPowerMode.value = coarsePointer || narrowScreen || saveData || lowMemory
+  isCompactFloatingMode.value = compactViewport
 }
 
 const scheduleDeferredWidgets = () => {
