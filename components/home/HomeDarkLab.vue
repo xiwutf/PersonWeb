@@ -1,582 +1,229 @@
-﻿<template>
-    <div :class="styles.container">
-    <!-- 添加到主屏幕提示 -->
+<template>
+  <div class="home-v4">
     <AddToHomeScreen />
 
-    <!-- 全局微纹理（极低透明度，仅增加质感） -->
-    <div
-      class="fixed inset-0 pointer-events-none opacity-[0.01] z-50 mix-blend-overlay"
-      style="background-image: url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E&quot;);"
-    ></div>
-
-    <!-- 
-      Hero Banner 区域
-      moduleId: home_hero
-      
-      如何在后台配置中控制这个模块的主题：
-      1. 登录后台，进入主题管理页面
-      2. 找到"首页头部 Hero 区域"配置项
-      3. 选择"跟随全局"或指定独立主题（如 "tech-blue"）
-      4. 保存后，刷新页面即可看到效果
-    -->
-    <section 
-      :class="styles.heroSection"
-      :data-module-theme="moduleTheme || undefined"
-    >
-      <!-- 专业网格背景 -->
-      <div :class="styles.backgroundGrid">
-        <!-- 清晰的网格线 -->
-        <div :class="styles.gridPattern">
-          <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="1"/>
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid)" />
-          </svg>
+    <section class="panel hero-panel" id="hero">
+      <div class="shell hero-shell">
+        <div class="hero-copy">
+          <p class="hero-pill">欢迎来到我的数字花园</p>
+          <h1 class="hero-title">
+            <span class="hero-title-prefix">你好，我是</span>
+            <span class="hero-name">溪午听风</span>
+          </h1>
+          <p class="hero-role">我是一个全栈开发者 · AI 应用探索者</p>
+          <p class="hero-subtitle">
+            我把 AI、业务系统与自动化工具整合成可持续演进的产品能力。
+            从架构设计、全栈开发到体验落地，目标始终是让复杂问题拥有清晰、稳定、可复用的解法。
+          </p>
+          <div class="hero-tags">
+            <span>AI 应用工程化</span>
+            <span>全栈产品交付</span>
+            <span>自动化效率提升</span>
+            <span>长期主义构建</span>
+          </div>
+          <div class="hero-actions">
+            <NuxtLink to="/projects" class="btn btn-primary">浏览项目</NuxtLink>
+            <NuxtLink to="/contact" class="btn btn-ghost">联系合作</NuxtLink>
+          </div>
         </div>
-        
-        <!-- 极微妙的角落光晕（几乎不可见，仅增加深度感） -->
-        <div :class="styles.cornerGlow('top-right')"></div>
-        <div :class="styles.cornerGlow('bottom-left')"></div>
-      </div>
 
-      <!-- 主内容 -->
-      <div :class="styles.mainContent">
-        <div :class="styles.gridContainer">
-          <!-- 左侧文案区 -->
-          <div :class="styles.leftContent" data-aos="fade-right">
-            <!-- 顶部小标签 -->
-            <div :class="styles.welcomeTag">
-              <span class="flex h-2 w-2 relative mr-3">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
-              <span class="text-blue-100 font-medium text-xs sm:text-sm">欢迎来到我的数字花园</span>
-            </div>
+        <aside class="hero-card">
+          <div class="hero-card-shell">
+            <div class="hero-dot-grid" aria-hidden="true"></div>
+            <p class="hero-card-kicker">AVAILABLE FOR PRODUCT BUILDING</p>
+            <span class="hero-code-badge">&lt;/&gt;</span>
 
-            <!-- 主标题 -->
-            <h1 :class="styles.mainTitle">
-              你好，我是
-              <span :class="styles.titleGradient">
-                溪午听风
-              </span>
-            </h1>
-
-            <!-- 角色轮播 -->
-            <div :class="styles.roleCarousel">
-              <span :class="styles.roleText">我是一名</span>
-              <div class="relative h-full w-64 sm:w-72 text-left">
-                <transition-group name="slide-up" tag="div" class="absolute top-0 left-0 w-full">
-                  <span
-                    v-if="currentRoleIndex === 0"
-                    key="0"
-                    :class="styles.roleItem(roleColors[0])"
-                  >
-                    全栈开发者
-                  </span>
-                  <span
-                    v-if="currentRoleIndex === 1"
-                    key="1"
-                    :class="styles.roleItem(roleColors[1])"
-                  >
-                    AI 应用探索者
-                  </span>
-                  <span
-                    v-if="currentRoleIndex === 2"
-                    key="2"
-                    :class="styles.roleItem(roleColors[2])"
-                  >
-                    Revit 插件实践者
-                  </span>
-                  <span
-                    v-if="currentRoleIndex === 3"
-                    key="3"
-                    :class="styles.roleItem(roleColors[3])"
-                  >
-                    终身学习者
-                  </span>
-                </transition-group>
+            <div class="hero-avatar-wrap">
+              <span class="hero-avatar-glow" aria-hidden="true"></span>
+              <div class="hero-avatar-frame">
+                <img src="/images/avatar.jpg" alt="溪午听风头像" class="hero-avatar-image" />
               </div>
             </div>
 
-            <!-- 简介文案 -->
-            <p :class="styles.description">
-              我把 AI、业务系统与自动化工具整合成可持续演进的产品能力。
-              从架构设计、全栈开发到体验落地，目标始终是让复杂问题拥有清晰、稳定、可复用的解法。
-            </p>
+            <h3>溪午听风</h3>
+            <p>全栈开发 · AI 应用落地</p>
 
-            <!-- 个人标签 -->
-            <div :class="styles.tagsContainer">
-              <span
-                v-for="item in heroPills"
-                :key="item"
-                :class="styles.tag"
-              >
-                {{ item }}
-              </span>
+            <div class="hero-card-meta">
+              <span>Vue · Nuxt</span>
+              <span>.NET · Node.js</span>
+              <span>AI 工具链</span>
             </div>
 
-            <!-- 按钮区 -->
-            <div :class="styles.buttonsContainer">
-              <NuxtLink to="/projects" class="relative inline-flex group touch-target">
-                <div
-                  class="absolute transition-all duration-700 opacity-70 -inset-px bg-gradient-to-r from-[var(--primary)] via-[var(--primary-hover)] to-[var(--primary)] rounded-xl blur-lg group-hover:opacity-100 group-hover:-inset-1 group-hover:duration-200 animate-tilt"
-                ></div>
-                <button :class="styles.primaryButton">
-                  浏览项目
-                  <i
-                    class="fas fa-arrow-right ml-3 group-hover:translate-x-1 transition-transform"
-                  ></i>
-                </button>
-              </NuxtLink>
-
-              <NuxtLink to="/about" :class="styles.secondaryButton">
-                关于我
-              </NuxtLink>
-            </div>
-
-            <div :class="styles.metricsGrid">
-              <div
-                v-for="item in heroStats"
-                :key="item.label"
-                :class="styles.metricCard"
-              >
-                <div :class="styles.metricValue">{{ item.value }}</div>
-                <div :class="styles.metricLabel">{{ item.label }}</div>
-                <p :class="styles.metricDescription">{{ item.description }}</p>
-              </div>
-            </div>
-
-            <div :class="styles.strategyPanel">
-              <div :class="styles.strategyEyebrow">Work Focus</div>
-              <p :class="styles.strategyText">
-                当前重心放在 <strong>AI 应用工程化</strong>、<strong>效率工具产品化</strong> 与
-                <strong>个人数字系统建设</strong>，持续沉淀长期可复用的能力资产。
-              </p>
+            <div class="hero-cap-grid">
+              <article class="hero-cap-item">
+                <p class="hero-cap-kicker">BUILD</p>
+                <p class="hero-cap-text">面向产品与业务目标设计可扩展系统方案</p>
+              </article>
+              <article class="hero-cap-item">
+                <p class="hero-cap-kicker">SHIP</p>
+                <p class="hero-cap-text">把想法落地为真正上线、可维护、可持续演进的能力</p>
+              </article>
             </div>
           </div>
+        </aside>
+      </div>
+    </section>
 
-          <!-- 右侧视觉区 -->
-          <div :class="styles.rightContent" data-aos="fade-left">
-            <div :class="styles.rightCard">
-              <!-- 柔和渐变背景块 - 使用更中性的颜色 -->
-              <div :class="styles.cardBg"></div>
+    <section class="panel matrix-panel" id="matrix">
+      <div class="shell">
+        <header class="section-head">
+          <p class="section-kicker">The Matrix</p>
+          <h2>能力与现状矩阵</h2>
+        </header>
+        <div class="bento-grid">
+          <article class="bento-card bento-large">
+            <p class="card-kicker">当前研究方向</p>
+            <h3>AI Agent + 交付系统化</h3>
+            <p class="card-desc">围绕咨询、任务拆解、执行与复盘，构建可复用的 AI 工作流底座。</p>
+            <ul class="progress-list">
+              <li v-for="item in researchTracks" :key="item.title">
+                <div class="progress-meta">
+                  <span>{{ item.title }}</span>
+                  <span>{{ item.progress }}%</span>
+                </div>
+                <div class="progress-bar"><span :style="{ width: `${item.progress}%` }"></span></div>
+              </li>
+            </ul>
+          </article>
 
-              <!-- 主卡片 - 使用更现代的毛玻璃效果 -->
-              <div :class="styles.mainCard">
-                <div class="w-full h-full relative">
-                  <!-- 上方头像 - 红框位置，默认小尺寸，悬停放大 -->
-                  <div class="absolute top-0 left-0 right-0 flex items-start justify-center pt-6 sm:pt-8 z-10">
-                    <div class="relative group cursor-pointer">
-                      <!-- 渐变边框光晕效果 - 悬停时增强 -->
-                      <div class="absolute -inset-2 group-hover:-inset-3 bg-gradient-to-r from-purple-500 via-blue-500 to-teal-500 rounded-2xl opacity-40 group-hover:opacity-80 blur-lg group-hover:blur-xl transition-all duration-500"></div>
-                      <!-- 头像容器 - 默认小尺寸，悬停时放大 -->
-                      <div class="relative w-24 h-32 sm:w-28 sm:h-36 group-hover:w-40 group-hover:h-52 sm:group-hover:w-48 sm:group-hover:h-64 rounded-xl group-hover:rounded-2xl overflow-hidden border-2 border-white/40 group-hover:border-white/60 shadow-lg group-hover:shadow-2xl backdrop-blur-sm bg-white/10 transition-all duration-500 ease-out">
-                        <img 
-                          src="/images/avatar.jpg" 
-                          alt="溪午听风" 
-                          class="w-full h-full object-cover object-top transform group-hover:scale-110 transition-transform duration-500"
-                          @error="(e) => { (e.target as HTMLImageElement).style.display = 'none' }"
-                        />
-                        <!-- 底部渐变遮罩 -->
-                        <div class="absolute bottom-0 left-0 right-0 h-12 group-hover:h-16 bg-gradient-to-t from-black/60 group-hover:from-black/70 to-transparent transition-all duration-500"></div>
-                      </div>
+          <article class="bento-card bento-wide">
+            <p class="card-kicker">技术栈雷达</p>
+            <h3>Vue · Nuxt · .NET · Node</h3>
+            <div class="stack-radar">
+              <span v-for="item in stackRadar" :key="item.name" class="stack-chip">
+                <span class="stack-icon">{{ item.icon }}</span>{{ item.name }}
+              </span>
+            </div>
+          </article>
+
+          <article class="bento-card">
+            <p class="card-kicker">地理位置</p>
+            <h3>中国 · 保定</h3>
+            <div class="micro-map"><div class="map-pin"></div><div class="map-lines"></div></div>
+          </article>
+
+          <article class="bento-card">
+            <p class="card-kicker">阅读 / 理财</p>
+            <h3>《纳瓦尔宝典》</h3>
+            <p class="card-desc">长期主义、杠杆思维、可复利的系统建设。</p>
+            <div class="book-cover">READING NOW</div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel delivery-panel" id="delivery">
+      <div class="shell">
+        <header class="section-head">
+          <p class="section-kicker">Delivery Showcase</p>
+          <h2>精选交付</h2>
+        </header>
+        <div class="delivery-list">
+          <article v-for="(item, index) in deliveries" :key="item.title" class="delivery-card">
+            <div class="demo-box">
+              <div class="demo-window">
+                <div class="demo-head">
+                  <div class="demo-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                  <span class="demo-label">Case 0{{ index + 1 }}</span>
+                </div>
+                <div class="demo-content">
+                  <div class="demo-main">
+                    <div class="demo-main-top"></div>
+                    <div class="demo-chart">
+                      <span class="bar bar-1"></span>
+                      <span class="bar bar-2"></span>
+                      <span class="bar bar-3"></span>
+                      <span class="bar bar-4"></span>
                     </div>
                   </div>
-
-                  <!-- 粒子背景 - 降低可见度作为背景 -->
-                  <div class="w-full h-full opacity-20 hover:opacity-30 transition-opacity duration-300 absolute inset-0">
-                    <ParticleAvatar
-                      v-if="showParticleAvatar"
-                      :image-url="'/images/avatar.jpg'"
-                      :text="'溪午听风'"
-                      :subtitle="'Full-stack & AI Developer'"
-                      :particle-count="680"
-                      :interactive="false"
-                      class="w-full h-full"
-                    />
-                    <div
-                      v-else
-                      class="w-full h-full rounded-[2rem] bg-[radial-gradient(circle_at_30%_30%,rgba(96,165,250,0.22),transparent_42%),radial-gradient(circle_at_70%_65%,rgba(168,85,247,0.18),transparent_38%),linear-gradient(135deg,rgba(15,23,42,0.72),rgba(30,41,59,0.34))]"
-                    ></div>
-                  </div>
-
-                  <!-- 底部信息条 - 重新设计为更融合的样式 -->
-                  <div :class="styles.cardInfo">
-                    <div :class="styles.identityBadge">
-                      <span class="inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_18px_rgba(74,222,128,0.75)]"></span>
-                      Available for product building
+                  <div class="demo-side">
+                    <div class="demo-side-card">
+                      <p>效率提升</p>
+                      <strong>+{{ 24 + index * 9 }}%</strong>
                     </div>
-                    <div class="flex items-center justify-between gap-3 mb-3">
-                      <div class="flex-1">
-                        <h3 class="font-bold text-white text-lg mb-1 drop-shadow-lg">溪午听风</h3>
-                        <p class="text-xs text-slate-200/90 font-medium">
-                          全栈开发 · AI 应用 · Revit 插件
-                        </p>
-                      </div>
-                      <div
-                        class="w-12 h-12 bg-gradient-to-br from-slate-600/60 to-blue-800/60 rounded-xl flex items-center justify-center text-white text-lg border border-white/30 shadow-lg backdrop-blur-sm"
-                      >
-                        <i class="fas fa-code"></i>
-                      </div>
-                    </div>
-                    <div class="mt-4 pt-3 border-t border-white/20">
-                      <div class="flex flex-wrap gap-2 text-xs">
-                        <span
-                          class="px-3 py-1.5 rounded-lg bg-blue-600/30 backdrop-blur-sm border border-blue-400/40 text-blue-100 font-medium shadow-lg"
-                        >
-                          Vue · Nuxt
-                        </span>
-                        <span
-                          class="px-3 py-1.5 rounded-lg bg-slate-600/30 backdrop-blur-sm border border-slate-400/40 text-slate-100 font-medium shadow-lg"
-                        >
-                          .NET · Node.js
-                        </span>
-                        <span
-                          class="px-3 py-1.5 rounded-lg bg-cyan-600/30 backdrop-blur-sm border border-cyan-400/40 text-cyan-100 font-medium shadow-lg"
-                        >
-                          AI 工具链
-                        </span>
-                      </div>
-                    </div>
-                    <div :class="styles.capabilityGrid">
-                      <div
-                        v-for="item in capabilitySignals"
-                        :key="item.title"
-                        :class="styles.capabilityCard"
-                      >
-                        <div :class="styles.capabilityTitle">{{ item.title }}</div>
-                        <div :class="styles.capabilityText">{{ item.description }}</div>
-                      </div>
+                    <div class="demo-side-card">
+                      <p>稳定性</p>
+                      <strong>{{ 96 + index }}%</strong>
                     </div>
                   </div>
                 </div>
               </div>
-
             </div>
-          </div>
+            <div class="delivery-copy">
+              <h3>{{ item.title }}</h3>
+              <p class="delivery-tag">{{ item.tag }}</p>
+              <p>{{ item.problem }}</p>
+              <p class="delivery-metric">{{ item.metric }}</p>
+            </div>
+          </article>
         </div>
+      </div>
+    </section>
 
-        <!-- 滚动提示 -->
-        <div
-          class="absolute bottom-10 left-1/2 -translate-x-1/2 cursor-pointer group"
-          @click="scrollToContent"
-        >
-          <div class="flex flex-col items-center gap-2">
-            <span
-              class="text-[10px] tracking-[0.2em] text-slate-500 uppercase group-hover:text-blue-400 transition-colors"
+    <section class="panel thought-panel" id="thoughts">
+      <div class="shell">
+        <header class="section-head">
+          <p class="section-kicker">Thought Stream</p>
+          <h2>思维流</h2>
+        </header>
+        <div class="thought-tracks">
+          <article v-for="track in thoughtTracks" :key="track.key" class="thought-card">
+            <h3>{{ track.label }}</h3>
+            <p>{{ track.description }}</p>
+            <NuxtLink
+              v-for="post in track.posts"
+              :key="post.id"
+              :to="`/blog/${post.slug || post.id}`"
+              class="thought-link"
             >
-              Scroll
-            </span>
-            <div
-              class="w-5 h-8 border-2 border-slate-600 rounded-full flex justify-center p-1 group-hover:border-blue-400 transition-colors"
-            >
-              <div
-                class="w-1 h-2 bg-slate-400 rounded-full animate-scroll-down group-hover:bg-blue-400"
-              ></div>
-            </div>
-          </div>
+              <span>{{ post.title }}</span>
+              <span>{{ formatDate(post.publishTime || post.createdAt) }}</span>
+            </NuxtLink>
+            <NuxtLink to="/blog" class="thought-more">查看更多</NuxtLink>
+          </article>
         </div>
       </div>
     </section>
 
-    <!-- 成长轨迹时间线 -->
-    <Timeline />
-
-    <!-- Bento Grid 内容展示 -->
-    <section id="content" class="home-dark-lab-showcase py-32 relative">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
-        <div class="text-center mb-20" data-aos="fade-up">
-          <div class="home-dark-lab-showcase-kicker">Creative Index</div>
-          <h2 class="home-dark-lab-showcase-title text-4xl lg:text-5xl xl:text-6xl font-bold mb-4">探索我的世界</h2>
-          <p class="home-dark-lab-showcase-subtitle text-xl lg:text-2xl">这里有代码、有思考，也有生活</p>
+    <section class="panel cta-panel" id="contact">
+      <div class="shell cta-shell">
+        <div>
+          <p class="section-kicker">Digital Twin</p>
+          <h2>把问题直接交给“我的数字分身”</h2>
+          <p>你可以直接问我的技术栈、项目经验或技术判断，我会给出可执行建议。</p>
         </div>
-
-        <div
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 auto-rows-[minmax(200px,auto)]"
-        >
-          <!-- 最新博客 -->
-          <div class="md:col-span-2 lg:col-span-2 row-span-2" data-aos="fade-up">
-            <TiltCard class="h-full">
-              <div
-                class="home-dark-lab-card home-dark-lab-card--blue home-dark-lab-card--feature group relative h-full overflow-hidden rounded-3xl p-8 flex flex-col justify-between transition-all duration-300"
-              >
-                <div class="relative z-10">
-                  <div
-                    class="home-dark-lab-card-badge inline-flex items-center px-3 py-1 rounded-full text-xs sm:text-sm mb-4 font-medium"
-                  >
-                    <i class="fas fa-pen-fancy mr-2"></i> 最新博客
-                  </div>
-                  <h3
-                    class="home-dark-lab-card-title text-2xl sm:text-3xl font-bold mb-2 transition-colors"
-                  >
-                    技术探索与分享
-                  </h3>
-                  <p class="home-dark-lab-card-description text-sm sm:text-base">
-                    记录学习过程中的洞察，与解决问题的完整思路。
-                  </p>
-                </div>
-
-                <div class="mt-8 space-y-3 relative z-10">
-                  <div v-if="latestPosts && latestPosts.length > 0">
-                    <NuxtLink
-                      v-for="post in latestPosts"
-                      :key="post.id"
-                      :to="`/blog/${post.slug || post.id}`"
-                      class="home-dark-lab-post-item block p-4 rounded-xl transition-all group/item mb-2"
-                    >
-                      <div class="flex justify-between items-start gap-2">
-                        <div
-                          class="home-dark-lab-post-title font-semibold text-sm sm:text-base transition-colors truncate pr-4"
-                        >
-                          {{ post.title }}
-                        </div>
-                        <i
-                          class="home-dark-lab-post-arrow fas fa-arrow-right transform group-hover/item:translate-x-1 transition-all"
-                        ></i>
-                      </div>
-                      <div class="home-dark-lab-post-meta text-xs mt-1">
-                        {{ formatDate(post.publishTime || post.createdAt) }} ·
-                        {{ post.categoryName || '未分类' }}
-                      </div>
-                    </NuxtLink>
-                  </div>
-                  <div v-else class="home-dark-lab-empty text-center py-4 text-sm">
-                    暂无最新文章，敬请期待更新。
-                  </div>
-                </div>
-              </div>
-            </TiltCard>
+        <form class="quick-form" @submit.prevent="submitQuickConsultation">
+          <h3>快速咨询</h3>
+          <div class="quick-grid">
+            <input v-model.trim="quickForm.customerName" type="text" placeholder="称呼" />
+            <select v-model="quickForm.contactType">
+              <option value="wechat">微信</option>
+              <option value="phone">电话</option>
+              <option value="email">邮箱</option>
+            </select>
+            <input v-model.trim="quickForm.contactValue" type="text" :placeholder="contactPlaceholder" />
+            <input v-model.trim="quickForm.budgetRange" type="text" placeholder="预算范围（可选）" />
           </div>
-
-          <!-- 工具箱 -->
-          <div class="md:col-span-1 lg:col-span-1 row-span-1" data-aos="fade-up" data-aos-delay="80">
-            <TiltCard class="h-full">
-              <div
-                class="home-dark-lab-card home-dark-lab-card--blue group h-full rounded-3xl p-6 transition-all duration-300 flex flex-col relative overflow-hidden"
-              >
-                <div class="relative z-10 flex flex-col h-full">
-                  <div
-                    class="home-dark-lab-card-badge inline-flex items-center px-3 py-1 rounded-full text-xs sm:text-sm mb-4 font-medium"
-                  >
-                    <i class="fas fa-tools mr-2"></i> 效率工具
-                  </div>
-                  <h3
-                    class="home-dark-lab-card-title text-2xl sm:text-3xl font-bold mb-2 transition-colors"
-                  >
-                    效率工具
-                  </h3>
-                  <p class="home-dark-lab-card-description text-sm sm:text-base mb-4 flex-grow">
-                    Revit 插件与自动化脚本，让日常工作更顺滑高效。
-                  </p>
-                  <NuxtLink
-                    to="/tools"
-                    class="home-dark-lab-card-link inline-flex items-center font-medium text-xs sm:text-sm mt-auto group/link"
-                  >
-                    查看工具库
-                    <i
-                      class="fas fa-arrow-right ml-2 text-xs group-hover/link:translate-x-1 transition-transform"
-                    ></i>
-                  </NuxtLink>
-                </div>
-              </div>
-            </TiltCard>
-          </div>
-
-          <!-- 项目展示 -->
-          <div class="md:col-span-1 lg:col-span-1 row-span-1" data-aos="fade-up" data-aos-delay="160">
-            <TiltCard class="h-full">
-              <div
-                class="home-dark-lab-card home-dark-lab-card--purple group h-full rounded-3xl p-6 transition-all duration-300 flex flex-col relative overflow-hidden"
-              >
-                <div class="relative z-10 flex flex-col h-full">
-                  <div
-                    class="home-dark-lab-card-badge inline-flex items-center px-3 py-1 rounded-full text-xs sm:text-sm mb-4 font-medium"
-                  >
-                    <i class="fas fa-project-diagram mr-2"></i> 精选项目
-                  </div>
-                  <h3
-                    class="home-dark-lab-card-title text-2xl sm:text-3xl font-bold mb-2 transition-colors"
-                  >
-                    精选项目
-                  </h3>
-                  <p class="home-dark-lab-card-description text-sm sm:text-base mb-4 flex-grow">
-                    实战项目与开源尝试，持续拓展技术边界。
-                  </p>
-                  <NuxtLink
-                    to="/projects"
-                    class="home-dark-lab-card-link inline-flex items-center font-medium text-xs sm:text-sm mt-auto group/link"
-                  >
-                    浏览作品集
-                    <i
-                      class="fas fa-arrow-right ml-2 text-xs group-hover/link:translate-x-1 transition-transform"
-                    ></i>
-                  </NuxtLink>
-                </div>
-              </div>
-            </TiltCard>
-          </div>
-
-          <!-- AI 实验室 -->
-          <div class="md:col-span-1 lg:col-span-1 row-span-1" data-aos="fade-up" data-aos-delay="200">
-            <TiltCard class="h-full">
-              <div
-                class="home-dark-lab-card home-dark-lab-card--cyan group h-full rounded-3xl p-6 transition-all duration-300 flex flex-col relative overflow-hidden"
-              >
-                <div class="relative z-10 flex flex-col h-full">
-                  <div
-                    class="home-dark-lab-card-badge inline-flex items-center px-3 py-1 rounded-full text-xs sm:text-sm mb-4 font-medium"
-                  >
-                    <i class="fas fa-flask mr-2"></i> AI 实验室
-                  </div>
-                  <h3
-                    class="home-dark-lab-card-title text-2xl sm:text-3xl font-bold mb-2 transition-colors"
-                  >
-                    AI 实验室
-                  </h3>
-                  <p class="home-dark-lab-card-description text-sm sm:text-base mb-4 flex-grow">
-                    3D 场景、AI 小实验与互动体验的集合地。
-                  </p>
-                  <NuxtLink
-                    to="/lab"
-                    class="home-dark-lab-card-link inline-flex items-center font-medium text-xs sm:text-sm mt-auto group/link"
-                  >
-                    进入实验室
-                    <i
-                      class="fas fa-arrow-right ml-2 text-xs group-hover/link:translate-x-1 transition-transform"
-                    ></i>
-                  </NuxtLink>
-                </div>
-              </div>
-            </TiltCard>
-          </div>
-
-          <!-- 生活随笔 -->
-          <div class="md:col-span-2 lg:col-span-2 row-span-1" data-aos="fade-up" data-aos-delay="240">
-            <TiltCard class="h-full">
-              <div
-                class="home-dark-lab-card home-dark-lab-card--orange group h-full rounded-3xl p-6 transition-all duration-300 flex flex-col md:flex-row items-center gap-6 relative overflow-hidden"
-              >
-                <div class="flex-1 relative z-10">
-                  <div
-                    class="home-dark-lab-card-badge inline-flex items-center px-3 py-1 rounded-full text-xs sm:text-sm mb-4 font-medium"
-                  >
-                    <i class="fas fa-coffee mr-2"></i> 生活随笔
-                  </div>
-                  <h3
-                    class="home-dark-lab-card-title text-2xl sm:text-3xl font-bold mb-2 transition-colors"
-                  >
-                    生活随笔
-                  </h3>
-                  <p class="home-dark-lab-card-description text-sm sm:text-base mb-4">
-                    记录代码之外的风景，用文字和图片保存一些温度。
-                  </p>
-                  <NuxtLink
-                    to="/life"
-                    class="home-dark-lab-card-link inline-flex items-center font-medium text-xs sm:text-sm group/link"
-                  >
-                    进入生活专栏
-                    <i
-                      class="fas fa-arrow-right ml-2 text-xs group-hover/link:translate-x-1 transition-transform"
-                    ></i>
-                  </NuxtLink>
-                </div>
-                <div class="w-full md:w-1/2 space-y-3">
-                  <div
-                    class="home-dark-lab-life-preview p-3 rounded-xl flex items-center gap-3 transition-shadow cursor-pointer"
-                  >
-                    <div class="home-dark-lab-life-preview-media w-12 h-12 rounded-lg flex-shrink-0 overflow-hidden">
-                      <img
-                        src="/images/blog/thermal-circulation.png"
-                        class="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
-                        alt="cover"
-                      />
-                    </div>
-                    <div>
-                      <div
-                        class="home-dark-lab-life-preview-label text-[10px] font-bold uppercase tracking-wider mb-0.5"
-                      >
-                        最近更新
-                      </div>
-                      <div
-                        class="home-dark-lab-life-preview-title font-medium text-sm line-clamp-1 transition-colors"
-                      >
-                        地理科普：一文读懂热力环流
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </TiltCard>
-          </div>
-
-          <!-- 关于我 / 联系方式 -->
-          <div class="md:col-span-2 lg:col-span-2 row-span-1" data-aos="fade-up" data-aos-delay="320">
-            <TiltCard class="h-full">
-              <div
-                class="home-dark-lab-card home-dark-lab-card--neutral group h-full rounded-3xl p-8 flex flex-col justify-center items-center text-center gap-4 transition-all relative overflow-hidden"
-              >
-                <div class="relative z-10">
-                  <h3 class="home-dark-lab-card-title text-2xl font-bold mb-2">想要进一步了解我？</h3>
-                  <p class="home-dark-lab-card-description text-sm sm:text-base max-w-md mx-auto">
-                    欢迎一起聊聊技术、产品、AI 应用落地，或者单纯交个朋友。
-                  </p>
-                </div>
-                <div class="flex gap-4 mt-2 relative z-10">
-                  <a
-                    href="https://github.com"
-                    target="_blank"
-                    class="home-dark-lab-contact-icon w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:-translate-y-1"
-                  >
-                    <i class="fab fa-github"></i>
-                  </a>
-                  <a
-                    href="mailto:contact@example.com"
-                    class="home-dark-lab-contact-icon home-dark-lab-contact-icon--accent w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:-translate-y-1"
-                  >
-                    <i class="fas fa-envelope"></i>
-                  </a>
-                  <NuxtLink
-                    to="/about"
-                    class="home-dark-lab-contact-button px-6 py-2 rounded-full text-sm font-medium transition-all hover:-translate-y-1"
-                  >
-                    查看详细介绍
-                  </NuxtLink>
-                </div>
-              </div>
-            </TiltCard>
-          </div>
-        </div>
+          <textarea v-model.trim="quickForm.requirementDescription" rows="3" placeholder="需求描述" />
+          <p v-if="quickError" class="quick-msg quick-error">{{ quickError }}</p>
+          <p v-if="quickSuccess" class="quick-msg quick-success">提交成功，我们会尽快联系你。</p>
+          <button type="submit" class="btn btn-primary" :disabled="quickSubmitting">
+            {{ quickSubmitting ? '提交中...' : '提交咨询' }}
+          </button>
+        </form>
       </div>
     </section>
 
-    <!-- 时间胶囊墙展示区域 -->
-    <section class="home-dark-lab-timecapsule py-24 relative overflow-hidden">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16" data-aos="fade-up">
-          <div class="home-dark-lab-timecapsule-kicker">Time Capsule</div>
-          <h2 class="home-dark-lab-timecapsule-title text-3xl lg:text-4xl font-bold mb-3">时间胶囊墙</h2>
-          <p class="home-dark-lab-timecapsule-subtitle text-lg">访客留下的足迹与祝福</p>
-        </div>
-
-        <TimeCapsuleDisplay />
-      </div>
-    </section>
   </div>
 </template>
 
 <script setup lang="ts">
-// 逻辑部分保持原有结构，只是补充了类型声明
-import { computed, defineAsyncComponent, ref, onMounted, onUnmounted } from 'vue'
+import { computed, ref } from 'vue'
 import AddToHomeScreen from '~/components/tools/AddToHomeScreen.vue'
-import Timeline from '~/components/time/Timeline.vue'
-
-const ParticleAvatar = defineAsyncComponent(() => import('~/components/effects/ParticleAvatar.vue'))
-
-// 使用模块主题 composable
-const { moduleTheme } = useModuleTheme('home_hero')
 
 interface HomePost {
   id: number | string
@@ -584,337 +231,1034 @@ interface HomePost {
   title: string
   publishTime?: string
   createdAt?: string
-  categoryName?: string
 }
 
+type ContactType = 'wechat' | 'phone' | 'email'
+
 const api = useApi()
-const shouldMountParticleAvatar = ref(false)
-const isPerformanceConstrained = ref(false)
-const showParticleAvatar = computed(() => shouldMountParticleAvatar.value && !isPerformanceConstrained.value)
-let particleAvatarTimer: number | null = null
+const route = useRoute()
 
-const heroPills = ['AI 应用工程化', '全栈产品交付', '自动化效率提升', '长期主义构建']
-
-const heroStats = [
-  {
-    value: 'AI + Software',
-    label: '核心方向',
-    description: '把模型能力接入真实业务，而不是停留在 Demo。'
-  },
-  {
-    value: 'Full-stack',
-    label: '交付方式',
-    description: '从前端体验到后端架构，统一推进完整闭环。'
-  },
-  {
-    value: 'System First',
-    label: '方法论',
-    description: '先建立系统，再放大效率与复用价值。'
-  }
+const researchTracks = [
+  { title: '多 Agent 协作编排', progress: 78 },
+  { title: '咨询到交付自动化', progress: 66 },
+  { title: '个人知识系统检索', progress: 83 }
 ]
 
-const capabilitySignals = [
+const stackRadar = [
+  { name: 'Vue', icon: '△' },
+  { name: 'Nuxt', icon: '◉' },
+  { name: '.NET', icon: '◆' },
+  { name: 'Node', icon: '⬢' }
+]
+
+const deliveries = [
   {
-    title: 'Build',
-    description: '面向产品与业务目标设计可扩展的系统方案'
+    title: '个人工作室交付中台',
+    tag: 'AI 工作流 / 自动化',
+    problem: '解决内容、工具、咨询入口分散，难以形成稳定转化与复用的问题。',
+    metric: 'Metric: 咨询到执行路径缩短 40%'
   },
   {
-    title: 'Ship',
-    description: '把想法变成真正上线、可维护、可持续演进的能力'
+    title: 'AI 文档处理系统',
+    tag: '文档解析 / 知识抽取',
+    problem: '解决信息分散、阅读负担高、决策前置成本高的问题。',
+    metric: 'Metric: 文档处理效率提升 3.2x'
+  },
+  {
+    title: '业务自动化执行台',
+    tag: '自动化 / 运维提效',
+    problem: '解决重复流程人工执行，无法稳定回溯的问题。',
+    metric: 'Metric: 人工重复操作减少 55%'
   }
 ]
 
 const { data: latestPostsData } = await useAsyncData(
-  'home-dark-lab-latest-posts',
+  'home-thought-latest-posts-v4',
   async () => {
     try {
-      const res = await api.get<{ list?: HomePost[] }>('/Articles', {
-        params: {
-          page: 1,
-          pageSize: 2
-        }
-      })
+      const res = await api.get<{ list?: HomePost[] }>('/Articles', { params: { page: 1, pageSize: 9 } })
       return res.list || []
     } catch {
       return []
     }
   },
-  {
-    default: () => []
-  }
+  { default: () => [] }
 )
 
 const latestPosts = computed(() => latestPostsData.value || [])
 
-// 日期格式化
-const formatDate = (dateStr: string) => {
-  if (!dateStr) return ''
-  return new Date(dateStr).toLocaleDateString('zh-CN')
-}
-
-// 样式类管理
-const styles = {
-  // 容器样式
-  container: 'min-h-screen bg-slate-50 overflow-x-hidden selection:bg-blue-500/30',
-  heroSection: 'relative min-h-[100vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-gray-950 via-slate-950 to-zinc-950 py-16 sm:py-20 md:py-24',
-  mainContent: 'relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 w-full z-10',
-  gridContainer: 'grid lg:grid-cols-2 gap-16 lg:gap-20 xl:gap-24 items-center',
-  
-  // 左侧文案区
-  leftContent: 'text-center lg:text-left space-y-8 relative z-30',
-  welcomeTag: 'inline-flex items-center px-4 py-2 bg-white/5 backdrop-blur-md rounded-full border border-white/10 mb-2 animate-float hover:bg-white/10 transition-colors cursor-default',
-  mainTitle: 'text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white tracking-tight leading-[1.1] mb-6',
-  titleGradient: 'block mt-3 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-300 animate-gradient-x',
-  roleCarousel: 'h-10 sm:h-12 md:h-14 text-xl sm:text-2xl lg:text-3xl text-slate-300 font-semibold flex items-center justify-center lg:justify-start overflow-hidden mb-6',
-  roleText: 'mr-3 sm:mr-4 text-slate-400',
-  roleItem: (color: string) => `block font-bold ${color}`,
-  description: 'text-base sm:text-lg md:text-xl text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed mb-8',
-  tagsContainer: 'flex flex-wrap justify-center lg:justify-start gap-3 mb-8 text-sm sm:text-base text-slate-300',
-  tag: 'px-4 py-2 rounded-full bg-white/5 border border-white/10 font-medium',
-  buttonsContainer: 'flex flex-wrap justify-center lg:justify-start gap-4 sm:gap-5',
-  primaryButton: 'relative inline-flex items-center justify-center px-8 sm:px-10 md:px-12 py-4 sm:py-4.5 md:py-5 text-base sm:text-lg md:text-xl font-bold text-white transition-all duration-200 bg-slate-950/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900/80 min-h-[48px]',
-  secondaryButton: 'inline-flex items-center justify-center px-8 sm:px-10 md:px-12 py-4 sm:py-4.5 md:py-5 text-base sm:text-lg md:text-xl font-bold text-slate-200 transition-all duration-200 bg-white/5 border-2 border-slate-600/70 rounded-xl hover:bg-white/10 hover:border-slate-400/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900/80 min-h-[48px] touch-target',
-  metricsGrid: 'grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4',
-  metricCard: 'rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl px-4 py-4 text-left shadow-[0_12px_40px_rgba(15,23,42,0.18)]',
-  metricValue: 'text-sm sm:text-base font-semibold text-white tracking-[0.04em] uppercase',
-  metricLabel: 'mt-2 text-xs text-blue-200/80 tracking-[0.24em] uppercase',
-  metricDescription: 'mt-3 text-sm leading-6 text-slate-300/90',
-  strategyPanel: 'rounded-3xl border border-white/10 bg-gradient-to-r from-white/8 via-white/5 to-transparent px-5 py-5 backdrop-blur-xl text-left shadow-[0_20px_48px_rgba(2,6,23,0.22)]',
-  strategyEyebrow: 'text-[11px] uppercase tracking-[0.32em] text-cyan-200/80 mb-3',
-  strategyText: 'text-sm sm:text-base text-slate-200/90 leading-7',
-  
-  // 右侧视觉区
-  rightContent: 'relative hidden lg:block z-0 overflow-visible',
-  rightCard: 'relative w-full max-w-sm mx-auto aspect-square overflow-visible',
-  cardBg: 'absolute inset-0 bg-gradient-to-tr from-slate-700/20 via-blue-900/20 to-slate-600/20 rounded-[2.1rem] rotate-6 opacity-40 blur-3xl',
-  mainCard: 'w-full h-full rounded-[2rem] overflow-hidden border border-white/20 backdrop-blur-2xl bg-gradient-to-br from-white/10 via-white/5 to-transparent shadow-2xl shadow-indigo-500/20',
-  cardInfo: 'absolute bottom-5 left-5 right-5 p-5 backdrop-blur-2xl rounded-2xl border border-white/20 bg-gradient-to-br from-white/15 via-white/10 to-white/5 shadow-2xl',
-  identityBadge: 'inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-emerald-100 mb-4',
-  capabilityGrid: 'mt-4 grid grid-cols-2 gap-2.5',
-  capabilityCard: 'rounded-2xl border border-white/10 bg-slate-950/30 px-3 py-3 backdrop-blur-lg',
-  capabilityTitle: 'text-[11px] uppercase tracking-[0.24em] text-cyan-200/80',
-  capabilityText: 'mt-2 text-xs leading-5 text-slate-200/90',
-  
-  // 背景样式
-  backgroundGrid: 'absolute inset-0 overflow-hidden pointer-events-none z-0',
-  gridPattern: 'absolute inset-0 opacity-[0.03]',
-  cornerGlow: (position: 'top-right' | 'bottom-left') => {
-    const positions = {
-      'top-right': 'absolute top-0 right-0 w-[600px] h-[600px] bg-blue-500/2 rounded-full blur-[120px]',
-      'bottom-left': 'absolute bottom-0 left-0 w-[600px] h-[600px] bg-slate-500/2 rounded-full blur-[120px]'
-    }
-    return positions[position]
-  }
-}
-
-// 角色颜色映射
-const roleColors = {
-  0: 'text-blue-300',
-  1: 'text-purple-300',
-  2: 'text-cyan-300',
-  3: 'text-orange-200'
-}
-
-// 轮播文字逻辑
-const currentRoleIndex = ref(0)
-let roleInterval: number | null = null
-
-const startRoleRotation = () => {
-  roleInterval = window.setInterval(() => {
-    currentRoleIndex.value = (currentRoleIndex.value + 1) % 4
-  }, 3000) // 每 3 秒切换一次
-}
-
-const detectPerformanceConstraints = () => {
-  const coarsePointer = window.matchMedia('(pointer: coarse)').matches
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  const narrowScreen = window.innerWidth < 1280
-  const saveData = navigator.connection?.saveData === true
-  const lowMemory = typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 4
-
-  isPerformanceConstrained.value = Boolean(coarsePointer || reducedMotion || narrowScreen || saveData || lowMemory)
-}
-
-const scheduleParticleAvatar = () => {
-  if (isPerformanceConstrained.value) {
-    shouldMountParticleAvatar.value = false
-    return
-  }
-
-  const mountAvatar = () => {
-    shouldMountParticleAvatar.value = true
-  }
-
-  if ('requestIdleCallback' in window) {
-    ;(window as Window & {
-      requestIdleCallback: (callback: IdleRequestCallback, options?: IdleRequestOptions) => number
-    }).requestIdleCallback(() => mountAvatar(), { timeout: 1800 })
-    return
-  }
-
-  particleAvatarTimer = window.setTimeout(mountAvatar, 1200)
-}
-
-// 滚动到内容区域
-const scrollToContent = () => {
-  const contentSection = document.getElementById('content')
-  if (contentSection) {
-    contentSection.scrollIntoView({ behavior: 'smooth' })
-  }
-}
-
-// 简单滚动动画观察器（模拟 AOS）
-let observer: IntersectionObserver | null = null
-
-onMounted(() => {
-  startRoleRotation()
-  detectPerformanceConstraints()
-  scheduleParticleAvatar()
-
-  observer = new IntersectionObserver(
-    entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('aos-animate')
-        }
-      })
+const thoughtTracks = computed(() => {
+  const posts = latestPosts.value
+  return [
+    {
+      key: 'ai',
+      label: '[AI 工程化]',
+      description: '从模型能力到业务价值，关注可上线、可维护、可复盘。',
+      posts: posts.slice(0, 2)
     },
-    { threshold: 0.1 }
-  )
-
-  document.querySelectorAll<HTMLElement>('[data-aos]').forEach(el => {
-    observer?.observe(el)
-  })
+    {
+      key: 'system',
+      label: '[个人系统 / 理财]',
+      description: '构建长期主义的个人系统，关注复利与节奏管理。',
+      posts: posts.slice(2, 4)
+    },
+    {
+      key: 'depth',
+      label: '[技术深度]',
+      description: '记录架构抉择与工程细节，沉淀可复用的方法论。',
+      posts: posts.slice(4, 6)
+    }
+  ]
 })
 
-onUnmounted(() => {
-  if (roleInterval) {
-    clearInterval(roleInterval)
-  }
-  if (particleAvatarTimer) {
-    clearTimeout(particleAvatarTimer)
-  }
-  if (observer) {
-    observer.disconnect()
-  }
+const quickForm = ref({
+  customerName: '',
+  contactType: 'wechat' as ContactType,
+  contactValue: '',
+  budgetRange: '',
+  requirementDescription: ''
 })
 
-// 这是一个风格组件，不需要 definePageMeta 和 useHead
+const quickSubmitting = ref(false)
+const quickError = ref('')
+const quickSuccess = ref(false)
+
+const contactPlaceholder = computed(() => {
+  if (quickForm.value.contactType === 'phone') return '请输入手机号'
+  if (quickForm.value.contactType === 'email') return '请输入邮箱'
+  return '请输入微信号'
+})
+
+const getOrCreateVisitorId = () => {
+  if (!process.client) return ''
+  let visitorId = localStorage.getItem('visitor_id')
+  if (!visitorId) {
+    visitorId = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `visitor_${Date.now()}`
+    localStorage.setItem('visitor_id', visitorId)
+  }
+  return visitorId
+}
+
+const trackHomeEvent = async (behaviorType: string, triggeredEvent: string, behaviorData?: Record<string, unknown>) => {
+  const visitorId = getOrCreateVisitorId()
+  if (!visitorId) return
+  try {
+    await api.post('/VisitorGamification/behavior', {
+      visitorId,
+      behaviorType,
+      triggeredEvent,
+      behaviorData: behaviorData || {},
+      path: route.path
+    })
+  } catch {}
+}
+
+const formatDate = (dateStr?: string) => (dateStr ? new Date(dateStr).toLocaleDateString('zh-CN') : '')
+
+const submitQuickConsultation = async () => {
+  quickError.value = ''
+  quickSuccess.value = false
+
+  if (!quickForm.value.customerName) return (quickError.value = '请填写称呼')
+  if (!quickForm.value.contactValue) return (quickError.value = '请填写联系方式')
+  if (!quickForm.value.requirementDescription) return (quickError.value = '请填写需求描述')
+
+  const payload: {
+    productId: number
+    customerName: string
+    customerPhone?: string
+    customerWeChat?: string
+    customerEmail?: string
+    budgetRange?: string
+    requirementDescription: string
+  } = {
+    productId: 0,
+    customerName: quickForm.value.customerName,
+    budgetRange: quickForm.value.budgetRange || undefined,
+    requirementDescription: `[来源: 首页快速咨询]\n${quickForm.value.requirementDescription}`
+  }
+
+  if (quickForm.value.contactType === 'phone') payload.customerPhone = quickForm.value.contactValue
+  if (quickForm.value.contactType === 'wechat') payload.customerWeChat = quickForm.value.contactValue
+  if (quickForm.value.contactType === 'email') payload.customerEmail = quickForm.value.contactValue
+
+  quickSubmitting.value = true
+  try {
+    await api.post('/Consultations', payload)
+    await trackHomeEvent('home_quick_consult_submit', 'home_quick_consult_success', {
+      contactType: quickForm.value.contactType
+    })
+    quickSuccess.value = true
+    quickForm.value = { customerName: '', contactType: 'wechat', contactValue: '', budgetRange: '', requirementDescription: '' }
+  } catch (e: any) {
+    quickError.value = e?.response?.data?.message || e?.message || '提交失败，请稍后再试'
+  } finally {
+    quickSubmitting.value = false
+  }
+}
 </script>
 
 <style scoped>
-/* 动画关键帧 */
+.home-v4 {
+  --bg-main: #07173b;
+  --bg-card: #142a56;
+  --line: rgb(148 163 184 / 28%);
+  --line-strong: rgb(96 165 250 / 56%);
+  --text-main: #f8fbff;
+  --text-muted: #9db0d3;
+  --header-offset: clamp(84px, 9vh, 102px);
+  min-height: 100svh;
+  background:
+    radial-gradient(circle at 8% -6%, rgb(59 130 246 / 20%), transparent 42%),
+    radial-gradient(circle at 92% 108%, rgb(96 165 250 / 15%), transparent 46%),
+    #07173b;
+  color: var(--text-main);
+}
 
-@keyframes float {
+.shell {
+  width: min(1220px, calc(100% - 3rem));
+  margin: 0 auto;
+}
+
+.panel {
+  min-height: clamp(520px, 78svh, 820px);
+  padding: 3.5rem 0 1.5rem;
+}
+
+.hero-panel {
+  min-height: calc(100svh - var(--header-offset));
+  padding: calc(var(--header-offset) + 0.8rem) 0 1.6rem;
+  display: flex;
+  align-items: center;
+}
+
+.hero-shell {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.hero-pill {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  padding: 0.35rem 0.8rem;
+  font-size: 0.86rem;
+  color: #bfe2ff;
+}
+
+h1 {
+  margin: 1rem 0 0;
+  font-size: clamp(3.2rem, 7vw, 6rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+}
+
+.hero-title {
+  display: grid;
+  gap: 0.1em;
+}
+
+.hero-title-prefix {
+  display: block;
+}
+
+.hero-name {
+  position: relative;
+  display: inline-block;
+  width: fit-content;
+  letter-spacing: 0.02em;
+  background: linear-gradient(92deg, #7dc4ff 0%, #8ea2ff 45%, #c7b4ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 26px rgb(125 196 255 / 34%);
+  animation: namePulse 3.2s ease-in-out infinite;
+}
+
+.hero-name::after {
+  content: '';
+  position: absolute;
+  left: -8%;
+  top: 54%;
+  width: 116%;
+  height: 0.12em;
+  background: linear-gradient(90deg, transparent, rgb(147 197 253 / 90%), transparent);
+  transform: translateX(-120%);
+  filter: blur(0.6px);
+  opacity: 0.76;
+  animation: nameScan 3.8s ease-in-out infinite;
+}
+
+.hero-role {
+  margin: 1rem 0 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #7fb1ff;
+}
+
+.hero-subtitle {
+  margin: 1rem 0 0;
+  max-width: 62ch;
+  color: #d2ddf2;
+  line-height: 1.75;
+}
+
+.hero-tags {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.hero-tags span {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.36rem 0.72rem;
+  color: #dbeafe;
+  font-size: 0.85rem;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.15rem;
+}
+
+.btn {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.7rem;
+  padding: 0.65rem 1.05rem;
+  border-radius: 0.82rem;
+  text-decoration: none;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-120%);
+  background: linear-gradient(110deg, transparent 25%, rgb(255 255 255 / 18%) 50%, transparent 75%);
+  transition: transform 0.5s ease;
+}
+
+.btn:hover::after {
+  transform: translateX(120%);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #2563eb, #60a5fa);
+  color: #f8fbff;
+}
+
+.btn-ghost {
+  border-color: var(--line);
+  color: #e5e7eb;
+  background: rgb(30 41 59 / 42%);
+}
+
+.hero-card {
+  border-radius: 1.9rem;
+  padding: 1px;
+  background: linear-gradient(145deg, rgb(148 163 184 / 42%), rgb(59 130 246 / 18%));
+  box-shadow: 0 18px 56px rgb(2 6 23 / 58%);
+}
+
+.hero-card-shell {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.85rem;
+  background: linear-gradient(165deg, rgb(20 33 63 / 96%), rgb(20 33 63 / 72%));
+  border: 1px solid rgb(148 163 184 / 22%);
+  padding: 1.4rem 1.2rem 1rem;
+}
+
+.hero-dot-grid {
+  position: absolute;
+  right: 1rem;
+  bottom: 0.7rem;
+  width: 140px;
+  height: 108px;
+  background-image: radial-gradient(circle, rgb(148 163 184 / 42%) 1.2px, transparent 1.2px);
+  background-size: 12px 12px;
+  opacity: 0.45;
+}
+
+.hero-card-kicker {
+  margin: 0 0 0.8rem;
+  margin-right: 4.8rem;
+  height: 2.3rem;
+  display: flex;
+  align-items: center;
+  padding: 0 0.92rem;
+  border-radius: 999px;
+  border: 1px solid rgb(45 212 191 / 38%);
+  color: #d1fff4;
+  letter-spacing: 0.14em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: rgb(16 185 129 / 8%);
+}
+
+.hero-card-kicker::before {
+  content: '';
+  width: 0.52rem;
+  height: 0.52rem;
+  border-radius: 50%;
+  margin-right: 0.55rem;
+  background: #34d399;
+  box-shadow: 0 0 12px rgb(52 211 153 / 76%);
+}
+
+.hero-code-badge {
+  position: absolute;
+  right: 1.1rem;
+  top: 4.72rem;
+  width: 3.1rem;
+  height: 3.1rem;
+  border-radius: 0.9rem;
+  display: grid;
+  place-items: center;
+  color: #dbeafe;
+  font-weight: 800;
+  border: 1px solid rgb(148 163 184 / 42%);
+  background: linear-gradient(145deg, rgb(59 130 246 / 38%), rgb(30 41 59 / 62%));
+}
+
+.hero-avatar-wrap {
+  position: absolute;
+  left: 50%;
+  top: 0.56rem;
+  transform: translateX(-50%);
+  z-index: 5;
+}
+
+.hero-avatar-glow {
+  position: absolute;
+  inset: -11px;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, rgb(129 140 248 / 68%), rgb(34 211 238 / 58%));
+  filter: blur(18px);
+  opacity: 0.75;
+  transition: opacity 0.38s ease, inset 0.38s ease;
+}
+
+.hero-avatar-frame {
+  position: relative;
+  width: 104px;
+  height: 142px;
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 2px solid rgb(226 232 240 / 86%);
+  box-shadow: 0 14px 32px rgb(15 23 42 / 58%);
+  transition: width 0.38s ease, height 0.38s ease, transform 0.38s ease;
+}
+
+.hero-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  transition: transform 0.38s ease;
+}
+
+.hero-card:hover .hero-avatar-frame {
+  width: 182px;
+  height: 246px;
+  transform: translateY(30px);
+}
+
+.hero-card:hover .hero-avatar-image {
+  transform: scale(1.03);
+}
+
+.hero-card:hover .hero-avatar-glow {
+  inset: -16px;
+  opacity: 0.95;
+}
+
+.hero-card h3 {
+  margin: 0.82rem 0 0;
+  font-size: 2rem;
+}
+
+.hero-card p {
+  margin: 0.38rem 0 0;
+  color: #d2ddf2;
+}
+
+.hero-card-meta {
+  margin-top: 0.65rem;
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.hero-card-meta span {
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+  padding: 0.32rem 0.66rem;
+  font-size: 0.84rem;
+  background: rgb(59 130 246 / 14%);
+}
+
+.hero-cap-grid {
+  margin-top: 0.65rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.56rem;
+}
+
+.hero-cap-item {
+  border: 1px solid var(--line);
+  border-radius: 0.82rem;
+  background: rgb(15 23 42 / 34%);
+  padding: 0.66rem;
+}
+
+.hero-cap-kicker {
+  margin: 0;
+  color: #93c5fd;
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.hero-cap-text {
+  margin: 0.34rem 0 0;
+  color: #dbeafe;
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.section-head {
+  margin-bottom: 0.85rem;
+}
+
+.section-kicker {
+  margin: 0;
+  color: #9bc9ff;
+  font-size: 0.76rem;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+}
+
+h2 {
+  margin: 0.45rem 0 0;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+}
+
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-rows: minmax(168px, auto);
+  gap: 0.85rem;
+}
+
+.bento-card {
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  padding: 0.9rem;
+  background: linear-gradient(165deg, rgb(20 33 63 / 94%), rgb(20 33 63 / 62%));
+}
+
+.bento-large {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.bento-wide {
+  grid-column: span 2;
+}
+
+.card-kicker {
+  margin: 0;
+  color: #a8d1ff;
+  font-size: 0.74rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.bento-card h3 {
+  margin: 0.45rem 0 0;
+  font-size: 1.1rem;
+}
+
+.card-desc {
+  margin-top: 0.45rem;
+  color: var(--text-muted);
+  line-height: 1.58;
+}
+
+.progress-list {
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.52rem;
+}
+
+.progress-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.84rem;
+}
+
+.progress-bar {
+  height: 0.5rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 9%);
+  overflow: hidden;
+}
+
+.progress-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+}
+
+.stack-radar {
+  margin-top: 0.72rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.52rem;
+}
+
+.stack-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  padding: 0.32rem 0.68rem;
+  color: #dbeafe;
+}
+
+.stack-icon {
+  color: #93c5fd;
+}
+
+.micro-map {
+  margin-top: 0.68rem;
+  height: 84px;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.map-lines {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgb(255 255 255 / 6%) 1px, transparent 1px);
+  background-size: 100% 13px;
+}
+
+.map-pin {
+  position: absolute;
+  left: 52%;
+  top: 44%;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: #60a5fa;
+  box-shadow: 0 0 0 6px rgb(96 165 250 / 22%);
+}
+
+.book-cover {
+  margin-top: 0.68rem;
+  height: 84px;
+  border-radius: 0.75rem;
+  border: 1px solid var(--line-strong);
+  display: grid;
+  place-items: center;
+  color: #dbeafe;
+  letter-spacing: 0.12em;
+  font-size: 0.76rem;
+  background: linear-gradient(145deg, rgb(96 165 250 / 16%), rgb(255 255 255 / 3%));
+}
+
+.delivery-list {
+  display: grid;
+  gap: 0.76rem;
+}
+
+.delivery-card {
+  display: grid;
+  grid-template-columns: 1.02fr 1.2fr;
+  gap: 0.78rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  padding: 0.86rem;
+  background: linear-gradient(165deg, rgb(20 33 63 / 94%), rgb(20 33 63 / 62%));
+}
+
+.demo-box {
+  border: 1px solid var(--line);
+  border-radius: 0.82rem;
+  padding: 0.62rem;
+  background:
+    radial-gradient(circle at 88% 10%, rgb(56 189 248 / 14%), transparent 40%),
+    linear-gradient(160deg, rgb(96 165 250 / 12%), rgb(255 255 255 / 2%));
+}
+
+.demo-window {
+  border-radius: 0.72rem;
+  border: 1px solid rgb(148 163 184 / 24%);
+  background: linear-gradient(165deg, rgb(24 39 78 / 76%), rgb(15 23 42 / 52%));
+  padding: 0.55rem;
+}
+
+.demo-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.45rem;
+}
+
+.demo-dots {
+  display: inline-flex;
+  gap: 0.3rem;
+}
+
+.demo-dots span {
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 50%;
+  background: rgb(148 163 184 / 58%);
+}
+
+.demo-dots span:first-child {
+  background: #60a5fa;
+}
+
+.demo-label {
+  border: 1px solid rgb(148 163 184 / 28%);
+  border-radius: 999px;
+  padding: 0.16rem 0.5rem;
+  font-size: 0.7rem;
+  color: #bfdbfe;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.demo-content {
+  margin-top: 0.55rem;
+  display: grid;
+  grid-template-columns: 1.2fr 0.82fr;
+  gap: 0.45rem;
+}
+
+.demo-main {
+  border: 1px solid rgb(148 163 184 / 22%);
+  border-radius: 0.66rem;
+  background: rgb(15 23 42 / 36%);
+  padding: 0.45rem;
+}
+
+.demo-main-top {
+  height: 0.46rem;
+  width: 68%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgb(96 165 250 / 72%), rgb(255 255 255 / 20%));
+}
+
+.demo-chart {
+  margin-top: 0.5rem;
+  height: 46px;
+  border: 1px solid rgb(148 163 184 / 16%);
+  border-radius: 0.5rem;
+  padding: 0.36rem;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: end;
+  gap: 0.3rem;
+  background: linear-gradient(180deg, rgb(59 130 246 / 12%), rgb(15 23 42 / 20%));
+}
+
+.bar {
+  display: block;
+  border-radius: 0.25rem 0.25rem 0.1rem 0.1rem;
+  background: linear-gradient(180deg, #93c5fd, #3b82f6);
+}
+
+.bar-1 {
+  height: 48%;
+}
+
+.bar-2 {
+  height: 72%;
+}
+
+.bar-3 {
+  height: 62%;
+}
+
+.bar-4 {
+  height: 88%;
+}
+
+.demo-side {
+  display: grid;
+  gap: 0.42rem;
+}
+
+.demo-side-card {
+  border: 1px solid rgb(148 163 184 / 22%);
+  border-radius: 0.66rem;
+  background: rgb(15 23 42 / 30%);
+  padding: 0.45rem 0.5rem;
+}
+
+.demo-side-card p {
+  margin: 0;
+  font-size: 0.72rem;
+  color: #93c5fd;
+}
+
+.demo-side-card strong {
+  margin-top: 0.22rem;
+  display: block;
+  font-size: 0.96rem;
+  color: #eaf2ff;
+}
+
+.delivery-copy h3 {
+  margin: 0;
+  font-size: 1.18rem;
+}
+
+.delivery-tag {
+  margin: 0.34rem 0 0;
+  color: #a9cbff;
+  font-size: 0.84rem;
+}
+
+.delivery-copy p {
+  margin: 0.42rem 0 0;
+  color: #d4ddf2;
+  line-height: 1.58;
+}
+
+.delivery-metric {
+  color: #93c5fd;
+  font-weight: 700;
+}
+
+.thought-tracks {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.thought-card {
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  padding: 0.9rem;
+  background: linear-gradient(165deg, rgb(20 33 63 / 94%), rgb(20 33 63 / 62%));
+}
+
+.thought-card h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.thought-card p {
+  margin: 0.48rem 0 0;
+  color: var(--text-muted);
+  line-height: 1.56;
+}
+
+.thought-link {
+  margin-top: 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 0.72rem;
+  padding: 0.5rem 0.62rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.55rem;
+  text-decoration: none;
+  color: #e5e7eb;
+}
+
+.thought-link:hover {
+  border-color: var(--line-strong);
+}
+
+.thought-more {
+  margin-top: 0.55rem;
+  display: inline-flex;
+  color: #93c5fd;
+  text-decoration: none;
+}
+
+.cta-shell {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 0.9rem;
+  align-items: start;
+}
+
+.cta-shell h2 {
+  margin-top: 0.4rem;
+}
+
+.cta-shell p {
+  color: #d1ddf2;
+  line-height: 1.65;
+}
+
+.quick-form {
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  padding: 0.9rem;
+  background: linear-gradient(165deg, rgb(20 33 63 / 94%), rgb(20 33 63 / 62%));
+}
+
+.quick-form h3 {
+  margin: 0;
+  font-size: 1.02rem;
+}
+
+.quick-grid {
+  margin-top: 0.62rem;
+  display: grid;
+  gap: 0.55rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.quick-form input,
+.quick-form select,
+.quick-form textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 0.66rem;
+  background: rgb(255 255 255 / 3%);
+  color: #eef2ff;
+  padding: 0.56rem 0.65rem;
+}
+
+.quick-form textarea {
+  margin-top: 0.56rem;
+}
+
+.quick-msg {
+  margin: 0.52rem 0 0;
+}
+
+.quick-error {
+  color: #fecaca;
+}
+
+.quick-success {
+  color: #86efac;
+}
+
+@keyframes namePulse {
   0%,
   100% {
-    transform: translateY(0);
+    text-shadow: 0 0 16px rgb(125 196 255 / 26%);
   }
+
   50% {
-    transform: translateY(-10px);
+    text-shadow: 0 0 30px rgb(167 139 250 / 46%);
   }
 }
 
-@keyframes scroll-down {
-  0% {
-    transform: translateY(0);
-    opacity: 1;
+@keyframes nameScan {
+  0%,
+  12% {
+    transform: translateX(-120%);
+    opacity: 0;
   }
+
+  22%,
+  58% {
+    transform: translateX(0);
+    opacity: 0.82;
+  }
+
+  70%,
   100% {
-    transform: translateY(6px);
+    transform: translateX(120%);
     opacity: 0;
   }
 }
 
-@keyframes gradient-x {
-  0% {
-    background-position: 0% 50%;
+@media (max-width: 1100px) {
+  .panel {
+    min-height: auto;
+    padding: 3.8rem 0 1.5rem;
   }
-  50% {
-    background-position: 100% 50%;
+
+  .hero-shell,
+  .cta-shell {
+    grid-template-columns: 1fr;
   }
-  100% {
-    background-position: 0% 50%;
+
+  .bento-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-}
 
-@keyframes tilt {
-  0%,
-  50%,
-  100% {
-    transform: rotate(0deg);
+  .bento-large,
+  .bento-wide {
+    grid-column: span 2;
+    grid-row: auto;
   }
-  25% {
-    transform: rotate(0.5deg);
+
+  .thought-tracks {
+    grid-template-columns: 1fr 1fr;
   }
-  75% {
-    transform: rotate(-0.5deg);
+
+}
+
+@media (max-width: 760px) {
+  .shell {
+    width: min(1220px, calc(100% - 1.6rem));
   }
-}
 
-/* 工具类动画 */
+  h1 {
+    font-size: clamp(2.1rem, 10vw, 3.2rem);
+  }
 
-.animate-float {
-  animation: float 3s ease-in-out infinite;
-}
+  .hero-role {
+    font-size: 1.45rem;
+  }
 
-.animate-float-delayed {
-  animation: float 3s ease-in-out 1.5s infinite;
-}
+  .bento-grid,
+  .thought-tracks,
+  .quick-grid {
+    grid-template-columns: 1fr;
+  }
 
-.animate-scroll-down {
-  animation: scroll-down 1.5s infinite;
-}
+  .bento-large,
+  .bento-wide {
+    grid-column: span 1;
+  }
 
-.animate-gradient-x {
-  background-size: 200% 200%;
-  animation: gradient-x 4s ease infinite;
-}
+  .delivery-card {
+    grid-template-columns: 1fr;
+  }
 
-.animate-tilt {
-  animation: tilt 10s infinite linear;
-}
+  .demo-content {
+    grid-template-columns: 1fr;
+  }
 
-/* 文字轮播动画 */
-.slide-up-enter-active,
-.slide-up-leave-active {
-  transition: all 0.5s ease;
-}
+  .demo-side {
+    grid-template-columns: 1fr 1fr;
+  }
 
-.slide-up-enter-from {
-  opacity: 0;
-  transform: translateY(20px);
-}
-
-.slide-up-leave-to {
-  opacity: 0;
-  transform: translateY(-20px);
-}
-
-/* AOS 初始状态 */
-[data-aos] {
-  opacity: 0;
-  transform: translateY(20px);
-  transition:
-    opacity 0.6s ease-out,
-    transform 0.6s ease-out;
-}
-
-[data-aos].aos-animate {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-[data-aos='fade-right'] {
-  transform: translateX(-20px);
-}
-
-[data-aos='fade-left'] {
-  transform: translateX(20px);
-}
-
-[data-aos].aos-animate[data-aos='fade-right'],
-[data-aos].aos-animate[data-aos='fade-left'] {
-  transform: translateX(0);
 }
 </style>
