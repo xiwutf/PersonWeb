@@ -159,9 +159,6 @@ builder.Services.AddScoped<PersonalSite.Api.Services.SideProjectService>();
 // 注册通知服务
 builder.Services.AddScoped<PersonalSite.Api.Services.NotificationService>();
 
-// 注册通知生成后台服务（定时任务）
-builder.Services.AddHostedService<PersonalSite.Api.Services.NotificationBackgroundService>();
-
 // 注册数据分析服务
 builder.Services.AddScoped<PersonalSite.Api.Services.SideProjectAnalyticsService>();
 

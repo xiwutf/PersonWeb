@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PersonalSite.Api.Data;
 using PersonalSite.Api.Models;
 
@@ -31,13 +30,11 @@ public class ConsultationsController : ControllerBase
     {
         try
         {
-            // 校验：需求描述必填
             if (string.IsNullOrWhiteSpace(request.RequirementDescription))
             {
                 return BadRequest(ApiResponse<CreateConsultationResponse>.Error("需求描述不能为空", 400));
             }
 
-            // 校验：至少有一种联系方式非空
             if (string.IsNullOrWhiteSpace(request.CustomerPhone) &&
                 string.IsNullOrWhiteSpace(request.CustomerWeChat) &&
                 string.IsNullOrWhiteSpace(request.CustomerEmail))
@@ -45,31 +42,38 @@ public class ConsultationsController : ControllerBase
                 return BadRequest(ApiResponse<CreateConsultationResponse>.Error("至少需要填写一种联系方式（手机号、微信号或邮箱）", 400));
             }
 
-            // 校验：客户姓名必填
             if (string.IsNullOrWhiteSpace(request.CustomerName))
             {
                 return BadRequest(ApiResponse<CreateConsultationResponse>.Error("客户姓名不能为空", 400));
             }
 
-            // 查询商品信息
-            var product = await _context.Tools.FindAsync(request.ProductId);
-            if (product == null)
+            Tool? product = null;
+            var productId = request.ProductId > 0 ? request.ProductId : 0;
+            var productNameSnapshot = "官网咨询";
+
+            // productId > 0 保持原有商品咨询逻辑；productId <= 0 允许首页快速咨询等场景
+            if (productId > 0)
             {
-                return NotFound(ApiResponse<CreateConsultationResponse>.Error("商品不存在", 404));
+                product = await _context.Tools.FindAsync(productId);
+                if (product == null)
+                {
+                    return NotFound(ApiResponse<CreateConsultationResponse>.Error("商品不存在", 404));
+                }
+
+                productNameSnapshot = product.Name;
             }
 
-            // 创建咨询记录
             var consultation = new PreSaleConsultation
             {
-                ProductId = request.ProductId,
-                ProductNameSnapshot = product.Name,
-                CustomerName = request.CustomerName,
-                CustomerPhone = request.CustomerPhone,
-                CustomerWeChat = request.CustomerWeChat,
-                CustomerEmail = request.CustomerEmail,
-                BudgetRange = request.BudgetRange,
-                ExpectedDeadline = request.ExpectedDeadline,
-                RequirementDescription = request.RequirementDescription,
+                ProductId = productId,
+                ProductNameSnapshot = productNameSnapshot,
+                CustomerName = request.CustomerName.Trim(),
+                CustomerPhone = request.CustomerPhone?.Trim(),
+                CustomerWeChat = request.CustomerWeChat?.Trim(),
+                CustomerEmail = request.CustomerEmail?.Trim(),
+                BudgetRange = request.BudgetRange?.Trim(),
+                ExpectedDeadline = request.ExpectedDeadline?.Trim(),
+                RequirementDescription = request.RequirementDescription.Trim(),
                 Status = (int)ConsultationStatus.New,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now
@@ -97,7 +101,7 @@ public class ConsultationsController : ControllerBase
 public class CreateConsultationRequest
 {
     /// <summary>
-    /// 商品ID
+    /// 商品ID，首页快速咨询可传 0
     /// </summary>
     public long ProductId { get; set; }
 
@@ -147,4 +151,3 @@ public class CreateConsultationResponse
     /// </summary>
     public long ConsultationId { get; set; }
 }
-

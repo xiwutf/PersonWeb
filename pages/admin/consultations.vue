@@ -25,8 +25,30 @@
         style="width: 150px;"
         :options="statusOptions"
       />
+      <n-select
+        v-model:value="filterSource"
+        placeholder="来源筛选"
+        clearable
+        style="width: 170px;"
+        :options="sourceOptions"
+      />
       <n-button type="primary" @click="handleSearch">搜索</n-button>
       <n-button quaternary @click="handleReset">重置</n-button>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stats-card">
+        <div class="stats-label">当前总线索</div>
+        <div class="stats-value">{{ sourceStats.total }}</div>
+      </div>
+      <div class="stats-card">
+        <div class="stats-label">首页快速咨询</div>
+        <div class="stats-value stats-home">{{ sourceStats.home }}</div>
+      </div>
+      <div class="stats-card">
+        <div class="stats-label">商品咨询</div>
+        <div class="stats-value stats-product">{{ sourceStats.product }}</div>
+      </div>
     </div>
 
     <!-- 数据表格 -->
@@ -37,6 +59,7 @@
         <thead class="table-header">
           <tr>
             <th>ID</th>
+            <th>来源</th>
             <th>商品名称</th>
             <th>客户姓名</th>
             <th>联系方式</th>
@@ -52,6 +75,11 @@
         <tbody class="table-body">
           <tr v-for="consultation in consultations" :key="consultation.id" class="table-row">
             <td class="table-cell">#{{ consultation.id }}</td>
+            <td class="table-cell">
+              <span :class="getSourceTagClass(consultation.sourceType)" class="tag">
+                {{ consultation.sourceLabel || '-' }}
+              </span>
+            </td>
             <td class="table-cell">{{ consultation.productNameSnapshot }}</td>
             <td class="table-cell">{{ consultation.customerName }}</td>
             <td class="table-cell">
@@ -144,6 +172,11 @@
       <div v-if="currentConsultation" class="consultation-detail">
         <n-descriptions :column="2" bordered>
           <n-descriptions-item label="咨询ID">#{{ currentConsultation.id }}</n-descriptions-item>
+          <n-descriptions-item label="来源">
+            <span :class="getSourceTagClass(currentConsultation.sourceType)" class="tag">
+              {{ currentConsultation.sourceLabel || '-' }}
+            </span>
+          </n-descriptions-item>
           <n-descriptions-item label="商品名称">{{ currentConsultation.productNameSnapshot }}</n-descriptions-item>
           <n-descriptions-item label="客户姓名">{{ currentConsultation.customerName }}</n-descriptions-item>
           <n-descriptions-item label="手机号">{{ currentConsultation.customerPhone || '-' }}</n-descriptions-item>
@@ -261,6 +294,12 @@ const loading = ref(false)
 const consultations = ref<any[]>([])
 const searchKeyword = ref('')
 const filterStatus = ref<number | null>(null)
+const filterSource = ref<string | null>(null)
+const sourceStats = ref({
+  total: 0,
+  home: 0,
+  product: 0
+})
 
 const pagination = ref({
   page: 1,
@@ -274,6 +313,11 @@ const statusOptions = [
   { label: '已联系', value: 1 },
   { label: '已转为订单', value: 2 },
   { label: '已关闭', value: 3 }
+]
+
+const sourceOptions = [
+  { label: '首页快速咨询', value: 'home' },
+  { label: '商品咨询', value: 'product' }
 ]
 
 const showDetailModal = ref(false)
@@ -293,6 +337,7 @@ const fetchConsultations = async () => {
     const res = await api.get<any>('/admin/consultations', {
       params: {
         status: filterStatus.value,
+        source: filterSource.value,
         keyword: searchKeyword.value,
         page: pagination.value.page,
         pageSize: pagination.value.pageSize
@@ -310,21 +355,33 @@ const fetchConsultations = async () => {
         consultations.value = res.List
         pagination.value.itemCount = res.Total ?? res.total ?? 0
         pagination.value.totalPages = res.TotalPages ?? res.totalPages ?? 0
+        sourceStats.value.total = res.Total ?? res.total ?? 0
+        sourceStats.value.home = res.HomeCount ?? res.homeCount ?? 0
+        sourceStats.value.product = res.ProductCount ?? res.productCount ?? 0
       } else if (res.list && Array.isArray(res.list)) {
         // 兼容小写格式
         consultations.value = res.list
         pagination.value.itemCount = res.Total ?? res.total ?? 0
         pagination.value.totalPages = res.TotalPages ?? res.totalPages ?? 0
+        sourceStats.value.total = res.Total ?? res.total ?? 0
+        sourceStats.value.home = res.HomeCount ?? res.homeCount ?? 0
+        sourceStats.value.product = res.ProductCount ?? res.productCount ?? 0
       } else if (Array.isArray(res)) {
         // 如果直接返回数组
         consultations.value = res
         pagination.value.itemCount = res.length
         pagination.value.totalPages = 1
+        sourceStats.value.total = res.length
+        sourceStats.value.home = 0
+        sourceStats.value.product = 0
       } else {
         // 其他格式，尝试从 data 字段获取
         consultations.value = res.data?.List || res.data?.list || res.List || res.list || []
         pagination.value.itemCount = res.data?.Total || res.data?.total || res.Total || res.total || 0
         pagination.value.totalPages = res.data?.TotalPages || res.data?.totalPages || res.TotalPages || res.totalPages || 0
+        sourceStats.value.total = res.data?.Total || res.data?.total || res.Total || res.total || 0
+        sourceStats.value.home = res.data?.HomeCount || res.data?.homeCount || res.HomeCount || res.homeCount || 0
+        sourceStats.value.product = res.data?.ProductCount || res.data?.productCount || res.ProductCount || res.productCount || 0
       }
       
       console.log('解析后的咨询列表:', {
@@ -336,6 +393,9 @@ const fetchConsultations = async () => {
       consultations.value = []
       pagination.value.itemCount = 0
       pagination.value.totalPages = 0
+      sourceStats.value.total = 0
+      sourceStats.value.home = 0
+      sourceStats.value.product = 0
     }
   } catch (e: any) {
     console.error('获取咨询列表失败:', e)
@@ -355,6 +415,7 @@ const handleSearch = () => {
 const handleReset = () => {
   searchKeyword.value = ''
   filterStatus.value = null
+  filterSource.value = null
   pagination.value.page = 1
   fetchConsultations()
 }
@@ -545,6 +606,12 @@ const getStatusTagClass = (status: number): string => {
   return classMap[status] || 'tag tag-default'
 }
 
+const getSourceTagClass = (sourceType?: string): string => {
+  if (sourceType === 'home') return 'tag tag-source-home'
+  if (sourceType === 'product') return 'tag tag-source-product'
+  return 'tag tag-default'
+}
+
 // 格式化日期
 const formatDate = (dateString: string) => {
   if (!dateString) return '-'
@@ -587,6 +654,41 @@ useHead({
   gap: 12px;
   margin-bottom: 24px;
   flex-wrap: wrap;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stats-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-default);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.stats-label {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+}
+
+.stats-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-main);
+  line-height: 1;
+}
+
+.stats-home {
+  color: var(--color-primary);
+}
+
+.stats-product {
+  color: var(--color-success);
 }
 
 .table-container {
@@ -812,6 +914,17 @@ useHead({
   color: var(--color-text-main);
 }
 
+.tag-source-home {
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
+.tag-source-product {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-default);
+  color: var(--color-success);
+}
+
 .table-pagination {
   display: flex;
   justify-content: space-between;
@@ -857,6 +970,12 @@ useHead({
 
 .consultation-detail {
   padding: 16px 0;
+}
+
+@media (max-width: 900px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
 

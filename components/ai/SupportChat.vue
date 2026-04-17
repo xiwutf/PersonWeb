@@ -278,7 +278,7 @@ watch(() => messages.value.length, async () => {
 .support-chat-container {
   position: fixed;
   bottom: calc(
-    var(--floating-dock-bottom, max(18px, calc(env(safe-area-inset-bottom) + 14px)))
+    var(--floating-dock-bottom, 18px)
     + var(--floating-dock-button-size, 52px)
     + var(--floating-dock-gap, 14px)
   );
@@ -539,7 +539,7 @@ watch(() => messages.value.length, async () => {
 @media (max-width: 768px) {
   .support-chat-container {
     bottom: calc(
-      var(--floating-dock-bottom, max(12px, calc(env(safe-area-inset-bottom) + 10px)))
+      var(--floating-dock-bottom, 12px)
       + var(--floating-dock-button-size, 44px)
       + var(--floating-dock-gap, 10px)
     );

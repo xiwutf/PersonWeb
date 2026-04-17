@@ -153,7 +153,7 @@ const sendMessage = async () => {
 .interaction-panel {
   position: fixed;
   bottom: calc(
-    var(--floating-dock-bottom, max(18px, calc(env(safe-area-inset-bottom) + 14px)))
+    var(--floating-dock-bottom, 18px)
     + (var(--floating-dock-button-size, 52px) + var(--floating-dock-gap, 14px)) * 2
   );
   right: var(--floating-dock-right, 2rem);
@@ -186,7 +186,7 @@ const sendMessage = async () => {
 @media (max-width: 768px) {
   .interaction-panel {
     bottom: calc(
-      var(--floating-dock-bottom, max(12px, calc(env(safe-area-inset-bottom) + 10px)))
+      var(--floating-dock-bottom, 12px)
       + (var(--floating-dock-button-size, 44px) + var(--floating-dock-gap, 10px)) * 2
     );
     right: var(--floating-dock-right, 12px);

@@ -31,21 +31,18 @@ const { data: homeStyle } = await useAsyncData(
 )
 
 const style = computed(() => homeStyle.value || DEFAULT_HOME_STYLE)
-
-const currentComponent = computed(() => {
-  return componentMap[style.value] || componentMap[DEFAULT_HOME_STYLE]
-})
+const currentComponent = computed(() => componentMap[style.value] || componentMap[DEFAULT_HOME_STYLE])
 
 definePageMeta({
   layout: 'home'
 })
 
 useHead({
-  title: '溪午听风 - AI 与软件系统构建者',
+  title: '溪午听风 - AI 与软件系统工作室',
   meta: [
     {
       name: 'description',
-      content: 'AI 工程、软件系统、自动化工具与长期主义实践的个人展示站。'
+      content: '专注 AI 应用、自动化工具与网站系统开发，帮助个人与小团队把想法落地成可上线、可使用、可迭代的产品。'
     }
   ]
 })

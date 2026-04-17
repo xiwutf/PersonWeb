@@ -272,7 +272,7 @@ onUnmounted(() => {
 .ai-assistant-button {
   position: fixed;
   right: var(--floating-dock-right, max(14px, env(safe-area-inset-right)));
-  bottom: var(--floating-dock-bottom, max(18px, calc(env(safe-area-inset-bottom) + 14px)));
+  bottom: var(--floating-dock-bottom, 18px);
   z-index: 9990;
   display: flex;
   align-items: center;
@@ -326,7 +326,7 @@ onUnmounted(() => {
 .ai-assistant-dialog {
   position: fixed;
   right: var(--floating-dock-right, max(14px, env(safe-area-inset-right)));
-  bottom: calc(var(--floating-dock-bottom, max(18px, calc(env(safe-area-inset-bottom) + 14px))) + 2px);
+  bottom: calc(var(--floating-dock-bottom, 18px) + 2px);
   z-index: 9990;
   width: min(336px, calc(100vw - 28px));
   height: min(520px, calc(100vh - 110px));
@@ -570,14 +570,14 @@ onUnmounted(() => {
 @media (max-width: 768px) {
   .ai-assistant-button {
     right: var(--floating-dock-right, max(12px, env(safe-area-inset-right)));
-    bottom: var(--floating-dock-bottom, max(12px, calc(env(safe-area-inset-bottom) + 10px)));
+    bottom: var(--floating-dock-bottom, 12px);
   }
 
   .ai-assistant-dialog {
     left: 12px;
     right: 12px;
     width: auto;
-    bottom: var(--floating-dock-bottom, max(12px, calc(env(safe-area-inset-bottom) + 10px)));
+    bottom: var(--floating-dock-bottom, 12px);
     height: min(66vh, 460px);
     border-radius: var(--radius-lg);
   }

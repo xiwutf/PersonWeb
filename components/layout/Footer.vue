@@ -12,7 +12,7 @@
       <div class="footer-main-grid">
         <!-- 品牌区域 (占5列) -->
         <div class="footer-brand-section">
-          <div class="footer-brand-eyebrow">Independent Builder · Digital Craft</div>
+          <div class="footer-brand-eyebrow">AI Product Studio · System Delivery</div>
           <div class="footer-brand-logo-container">
             <div class="footer-brand-logo-icon">
               <span class="footer-brand-logo-icon-text">XF</span>
@@ -22,7 +22,7 @@
             </span>
           </div>
           <p class="footer-brand-description">
-            这里不是简单的个人主页，而是一套围绕产品、工程、内容与工具持续生长的数字作品集。希望每一个页面都能同时传达审美、判断力和落地能力。
+            这里是一个以 AI 应用、工具产品和系统交付为主线的个人工作室网站。每个页面都服务于同一件事：把想法变成可上线、可使用、可迭代的成果。
           </p>
           <div class="footer-brand-highlights">
             <span
@@ -112,18 +112,18 @@
 
           <div class="footer-cta-panel">
             <div>
-              <div class="footer-cta-label">Site Direction</div>
-              <h3 class="footer-cta-title">从展示站升级为有结构、有判断力的数字名片</h3>
+              <div class="footer-cta-label">Work With Me</div>
+              <h3 class="footer-cta-title">如果你也想把一件事做成产品，我们可以聊聊</h3>
               <p class="footer-cta-description">
-                项目、博客、工具、生活内容都在同一套叙事里协同出现，既能看见审美，也能看见方法与执行。
+                无论是官网升级、AI 能力接入还是内部流程工具化，我都可以从方案到交付陪你走完整个过程。
               </p>
             </div>
             <div class="footer-cta-actions">
-              <NuxtLink to="/projects" class="footer-cta-button footer-cta-button-primary">
-                查看项目
+              <NuxtLink to="/contact" class="footer-cta-button footer-cta-button-primary">
+                联系合作
               </NuxtLink>
-              <NuxtLink to="/about" class="footer-cta-button footer-cta-button-secondary">
-                了解我
+              <NuxtLink to="/projects" class="footer-cta-button footer-cta-button-secondary">
+                查看案例
               </NuxtLink>
             </div>
           </div>
@@ -164,17 +164,17 @@ import { ref } from 'vue'
 const currentYear = new Date().getFullYear()
 
 const primaryLinks = [
-  { title: '插件工具', path: '/tools' },
-  { title: '项目展示', path: '/projects' },
-  { title: '技术博客', path: '/blog' },
+  { title: '项目案例', path: '/projects' },
+  { title: '工具产品', path: '/tools' },
+  { title: '内容文章', path: '/blog' },
   { title: '关于我', path: '/about' }
 ]
 
 const contentLinks = [
-  { title: '生活随笔', path: '/life' },
-  { title: '订单查询', path: '/order/query' },
+  { title: 'AI / 智能体', path: '/ai' },
+  { title: '联系合作', path: '/contact' },
   { title: '全站搜索', path: '/search' },
-  { title: '联系入口', path: '/contact' }
+  { title: '副业项目', path: '/side-projects' }
 ]
 
 const footerLinkGroups = [
@@ -183,9 +183,9 @@ const footerLinkGroups = [
 ]
 
 const brandHighlights = [
-  'AI 工作流',
-  '全栈产品实现',
-  '系统化内容呈现'
+  'AI 应用落地',
+  '全栈系统开发',
+  '工具产品化'
 ]
 
 const showWeChatQR = ref(false)
