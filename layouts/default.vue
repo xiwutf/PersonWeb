@@ -9,7 +9,8 @@
   <!-- mode="theme": 前台轻量模式，仅提供主题配置，不含 Message/Dialog/Notification -->
   <AppNaiveConfig mode="theme">
     <!-- 最外层容器：使用主题背景色和文字颜色 -->
-    <div class="default-layout-shell min-h-screen flex flex-col relative bg-bg-body text-text-main">
+    <div class="default-layout-shell min-h-screen flex flex-col relative"
+      style="background-color: var(--color-bg); color: var(--color-text);">
     <div class="default-layout-backdrop">
       <div class="default-layout-backdrop-orb default-layout-backdrop-orb--primary"></div>
       <div class="default-layout-backdrop-orb default-layout-backdrop-orb--secondary"></div>
