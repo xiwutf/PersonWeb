@@ -1,502 +1,212 @@
-/* Footer 组件统一样式 */
+/* Footer — Ming Studio minimal brand */
 
-/* Footer 主容器 - 使用 CSS 变量 */
 .footer-container {
-  position: relative;
-  background:
-    radial-gradient(circle at top center, rgba(56, 189, 248, 0.08), transparent 28%),
-    linear-gradient(180deg, rgba(9, 14, 26, 0.92), rgba(5, 9, 18, 0.98));
-  color: var(--color-text-main, white);
-  overflow: hidden;
+  background: var(--color-bg-soft);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-muted);
 }
 
-/* 动态背景装饰容器 */
-.footer-background-decorations {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
+.footer-inner {
+  max-width: var(--space-container);
+  margin: 0 auto;
+  padding: 64px clamp(16px, 4vw, 48px) 32px;
 }
 
-/* 背景装饰元素 */
-.footer-bg-decoration {
-  position: absolute;
-  width: 24rem; /* w-96 */
-  height: 24rem; /* h-96 */
-  border-radius: 50%;
-  filter: blur(3rem); /* blur-3xl */
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  mix-blend-mode: screen;
-}
-
-.footer-bg-decoration-purple {
-  top: -6rem; /* -top-24 */
-  right: -6rem; /* -right-24 */
-  background-color: var(--color-purple-soft, rgba(168, 85, 247, 0.2));
-}
-
-.footer-bg-decoration-blue {
-  bottom: -6rem; /* -bottom-24 */
-  left: -6rem; /* -left-24 */
-  background-color: var(--color-primary-soft, rgba(59, 130, 246, 0.2));
-  animation-delay: 2s;
-}
-
-/* 网格背景 */
-.footer-grid-bg {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%;
-  height: 100%;
-  background-image:
-    linear-gradient(rgba(148, 163, 184, 0.12) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(148, 163, 184, 0.12) 1px, transparent 1px);
-  background-size: 40px 40px;
-  background-position: center;
-  opacity: 0.1;
-  mask-image: radial-gradient(ellipse at center, black 40%, transparent 70%);
-}
-
-/* 顶部渐变线 - 使用 CSS 变量 */
-.footer-top-gradient-line {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 1px; /* h-px */
-  background: linear-gradient(to right, transparent, var(--color-primary, var(--theme-primary)), transparent);
-}
-
-/* Footer 内容容器 */
-.footer-content-wrapper {
-  max-width: 80rem; /* max-w-7xl */
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1rem; /* px-4 */
-  padding-right: 1rem;
-  padding-top: 4rem; /* py-16 */
-  padding-bottom: 4rem;
-  position: relative;
-  z-index: 10;
-}
-
-.footer-content-wrapper::before {
-  content: '';
-  position: absolute;
-  inset: 1.5rem 0 auto;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.18), transparent);
-  pointer-events: none;
-}
-
-@media (min-width: 640px) {
-  .footer-content-wrapper {
-    padding-left: 1.5rem; /* sm:px-6 */
-    padding-right: 1.5rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .footer-content-wrapper {
-    padding-left: 2rem; /* lg:px-8 */
-    padding-right: 2rem;
-  }
-}
-
-/* Footer 主网格 */
-.footer-main-grid {
+/* ── Main Grid ── */
+.footer-grid {
   display: grid;
-  grid-template-columns: 1fr; /* grid-cols-1 */
-  gap: 3rem; /* gap-12 */
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 48px;
 }
 
-@media (min-width: 768px) {
-  .footer-main-grid {
-    grid-template-columns: repeat(12, minmax(0, 1fr)); /* md:grid-cols-12 */
+@media (max-width: 960px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
   }
 }
 
-/* 品牌区域 */
-.footer-brand-section {
-  grid-column: span 5; /* md:col-span-5 */
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem; /* space-y-6 */
+@media (max-width: 600px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
 }
 
-.footer-brand-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  width: fit-content;
-  padding: 0.45rem 0.85rem;
-  border-radius: 999px;
-  border: 1px solid rgba(148, 163, 184, 0.16);
-  background: rgba(15, 23, 42, 0.45);
-  color: rgba(226, 232, 240, 0.82);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-
-/* 品牌 Logo 容器 */
-.footer-brand-logo-container {
+/* ── Brand Column ── */
+.footer-brand-logo {
   display: flex;
   align-items: center;
-  gap: 0.75rem; /* space-x-3 */
+  gap: 10px;
+  margin-bottom: 16px;
 }
 
-/* 品牌 Logo 图标 - 使用 CSS 变量 */
 .footer-brand-logo-icon {
-  width: 2.5rem; /* w-10 */
-  height: 2.5rem; /* h-10 */
-  background: linear-gradient(to bottom right, var(--color-primary-hover, var(--color-primary-hover)), var(--color-primary, var(--color-primary-soft)));
-  border-radius: 0.5rem; /* rounded-lg */
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--gradient-primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: var(--shadow-primary, 0 10px 15px -3px rgba(59, 130, 246, 0.2), 0 4px 6px -2px rgba(59, 130, 246, 0.1));
+  font-size: 14px;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
 }
 
-.footer-brand-logo-icon-text {
-  color: var(--color-text-main, white);
-  font-weight: 700; /* font-bold */
-  font-family: inherit;
-}
-
-/* 品牌名称 - 使用 CSS 变量 */
 .footer-brand-name {
-  font-size: 1.5rem; /* text-2xl */
-  font-weight: 700; /* font-bold */
-  font-family: inherit;
-  letter-spacing: -0.025em; /* tracking-tight */
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  background-image: linear-gradient(to right, var(--color-text-main, white), var(--color-text-muted, var(--color-text-muted)));
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: -0.01em;
 }
 
-/* 品牌描述 - 使用 CSS 变量 */
-.footer-brand-description {
-  color: var(--color-text-muted, var(--color-text-muted));
-  line-height: 1.75; /* leading-relaxed */
-  max-width: 30rem;
-  font-size: 0.98rem;
+.footer-brand-tagline {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-primary);
+  margin-bottom: 12px;
+  letter-spacing: 0.02em;
 }
 
-.footer-brand-highlights {
+.footer-brand-desc {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--color-text-muted);
+  max-width: 280px;
+}
+
+/* ── Nav Columns ── */
+.footer-nav-title {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+  margin-bottom: 16px;
+}
+
+.footer-nav-list {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+  flex-direction: column;
+  gap: 10px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-.footer-brand-highlight {
-  display: inline-flex;
-  align-items: center;
-  min-height: 2.2rem;
-  padding: 0.45rem 0.9rem;
-  border-radius: 999px;
-  border: 1px solid rgba(148, 163, 184, 0.16);
-  background: rgba(15, 23, 42, 0.4);
-  color: rgba(226, 232, 240, 0.88);
-  font-size: 0.82rem;
-  letter-spacing: 0.04em;
+.footer-nav-link {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: color 180ms ease;
 }
 
-/* 社交媒体链接容器 */
+.footer-nav-link:hover {
+  color: var(--color-text);
+}
+
+/* ── Social Links ── */
 .footer-social-links {
   display: flex;
-  gap: 0.75rem; /* space-x-3 */
-  padding-top: 0.5rem; /* pt-2 */
+  gap: 8px;
+  margin-top: 20px;
 }
 
-/* 社交媒体链接 - 使用 CSS 变量 */
-.footer-social-link {
-  width: 2.5rem; /* w-10 */
-  height: 2.5rem; /* h-10 */
-  border-radius: 50%; /* rounded-full */
-  background-color: var(--color-bg-elevated, rgba(30, 41, 59, 0.5));
-  border: 1px solid var(--color-border-default, var(--color-text-sec));
+.footer-social-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-text-muted, var(--color-text-muted));
-  transition: all 0.3s; /* transition-all duration-300 */
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
   text-decoration: none;
+  transition: border-color 180ms ease, color 180ms ease;
+  font-size: 14px;
+  background: transparent;
+  cursor: pointer;
 }
 
-.footer-social-link:hover {
-  background-color: var(--color-primary-hover, var(--color-primary-hover));
-  color: var(--color-text-main, white);
-  border-color: var(--color-primary, var(--color-primary));
-  transform: translateY(-0.25rem); /* hover:-translate-y-1 */
+.footer-social-btn:hover {
+  border-color: var(--color-border-strong);
+  color: var(--color-text);
 }
 
-/* 链接区域 */
-.footer-links-section {
-  grid-column: span 7; /* md:col-span-7 */
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr)); /* grid-cols-2 */
-  gap: 2rem; /* gap-8 */
-  align-content: start;
-}
-
-@media (min-width: 640px) {
-  .footer-links-section {
-    grid-template-columns: repeat(3, minmax(0, 1fr)); /* sm:grid-cols-3 */
-  }
-}
-
-/* 链接组 */
-.footer-link-group {
-  /* 无特殊样式，仅作为容器 */
-}
-
-/* 链接组标题 - 使用 CSS 变量 */
-.footer-link-group-title {
-  font-size: 0.875rem; /* text-sm */
-  font-weight: 600; /* font-semibold */
-  color: var(--color-text-sub, var(--color-text-sub));
-  text-transform: uppercase;
-  letter-spacing: 0.05em; /* tracking-wider */
-  margin-bottom: 1.5rem; /* mb-6 */
-}
-
-/* 链接列表 */
-.footer-link-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem; /* space-y-3 */
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-/* 链接项 - 使用 CSS 变量 */
-.footer-link-item {
-  color: var(--color-text-muted, var(--color-text-muted));
-  transition: color 0.2s; /* transition-colors */
-  display: flex;
-  align-items: center;
-  font-size: 0.875rem; /* text-sm */
-  text-decoration: none;
-}
-
-.footer-link-item:hover {
-  color: var(--color-primary, var(--color-primary-soft));
-}
-
-.footer-link-group {
-  padding: 1.25rem;
-  border-radius: 1.5rem;
-  border: 1px solid rgba(148, 163, 184, 0.12);
-  background: rgba(15, 23, 42, 0.36);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-}
-
-.footer-cta-panel {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: minmax(0, 1.4fr) auto;
-  gap: 1.5rem;
-  align-items: center;
-  padding: 1.6rem;
-  border-radius: 1.75rem;
-  border: 1px solid rgba(125, 211, 252, 0.14);
-  background:
-    linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(15, 23, 42, 0.72)),
-    radial-gradient(circle at right top, rgba(56, 189, 248, 0.16), transparent 34%);
-  box-shadow:
-    0 18px 40px rgba(2, 6, 23, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-}
-
-.footer-cta-label {
-  margin-bottom: 0.8rem;
-  color: rgba(125, 211, 252, 0.9);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-
-.footer-cta-title {
-  margin: 0;
-  color: rgba(248, 250, 252, 0.98);
-  font-size: 1.35rem;
-  line-height: 1.35;
-}
-
-.footer-cta-description {
-  margin: 0.9rem 0 0;
-  max-width: 40rem;
-  color: rgba(203, 213, 225, 0.78);
-  line-height: 1.7;
-}
-
-.footer-cta-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.85rem;
-  justify-content: flex-end;
-}
-
-.footer-cta-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 7.5rem;
-  min-height: 2.85rem;
-  padding: 0.75rem 1.2rem;
-  border-radius: 999px;
-  border: 1px solid transparent;
-  font-size: 0.92rem;
-  font-weight: 700;
-  text-decoration: none;
-  transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease,
-    border-color 0.25s ease,
-    background-color 0.25s ease;
-}
-
-.footer-cta-button:hover {
-  transform: translateY(-2px);
-}
-
-.footer-cta-button-primary {
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.18), rgba(129, 140, 248, 0.24));
-  color: rgba(248, 250, 252, 0.98);
-  border-color: rgba(125, 211, 252, 0.22);
-  box-shadow: 0 14px 28px rgba(8, 15, 29, 0.18);
-}
-
-.footer-cta-button-secondary {
-  background: rgba(255, 255, 255, 0.03);
-  color: rgba(226, 232, 240, 0.92);
-  border-color: rgba(148, 163, 184, 0.18);
-}
-
-/* 链接图标 */
-.footer-link-icon {
-  font-size: 0.625rem; /* text-[10px] */
-  margin-right: 0.5rem; /* mr-2 */
-  opacity: 0;
-  margin-left: -1rem; /* -ml-4 */
-  transition: all 0.3s; /* transition-all duration-300 */
-}
-
-.footer-link-item:hover .footer-link-icon {
-  opacity: 1;
-  margin-left: 0; /* group-hover:ml-0 */
-}
-
-/* 底部版权区域 - 使用 CSS 变量 */
+/* ── Bottom Bar ── */
 .footer-bottom {
-  border-top: 1px solid var(--color-border-default, var(--color-border-default));
-  margin-top: 4rem; /* mt-16 */
-  padding-top: 2rem; /* pt-8 */
+  border-top: 1px solid var(--color-border);
+  padding-top: 24px;
   display: flex;
-  flex-direction: column; /* flex-col */
-  gap: 1rem; /* gap-4 */
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
-@media (min-width: 768px) {
-  .footer-bottom {
-    flex-direction: row; /* md:flex-row */
-    justify-content: space-between;
-    align-items: center;
-  }
-}
-
-/* 版权文字 - 使用 CSS 变量 */
 .footer-copyright {
-  color: var(--color-text-muted, var(--color-text-sec));
-  font-size: 0.875rem; /* text-sm */
+  font-size: 13px;
+  color: var(--color-text-subtle);
 }
 
-/* 底部右侧区域 */
-.footer-bottom-right {
+.footer-icp {
+  font-size: 13px;
+  color: var(--color-text-subtle);
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+
+.footer-icp:hover {
+  color: var(--color-text-muted);
+}
+
+/* ── Modals (WeChat / Email) ── */
+.wechat-qr-modal,
+.email-modal {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal, 80);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
-  gap: 1.5rem; /* gap-6 */
-  font-size: 0.875rem; /* text-sm */
+  justify-content: center;
 }
 
-/* 统计信息容器 - 使用 CSS 变量 */
-.footer-stats-container {
+.wechat-qr-content,
+.email-modal-content {
+  background: var(--color-surface-strong);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: 32px;
+  max-width: 320px;
+  width: 90%;
+  position: relative;
+}
+
+.wechat-qr-close,
+.email-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 1rem; /* gap-4 */
-  padding: 0.375rem 1rem; /* px-4 py-1.5 */
-  background-color: var(--color-bg-elevated, rgba(30, 41, 59, 0.5));
-  border-radius: 9999px; /* rounded-full */
-  border: 1px solid var(--color-border-default, rgba(51, 65, 85, 0.5));
+  justify-content: center;
+  font-size: 12px;
+  transition: background 180ms ease;
 }
 
-/* 统计项 - 使用 CSS 变量 */
-.footer-stat-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem; /* gap-2 */
-  color: var(--color-text-muted, var(--color-text-muted));
+.wechat-qr-close:hover,
+.email-modal-close:hover {
+  background: var(--color-surface);
 }
-
-/* 统计指示点 - 使用 CSS 变量 */
-.footer-stat-indicator {
-  width: 0.5rem; /* w-2 */
-  height: 0.5rem; /* h-2 */
-  border-radius: 50%; /* rounded-full */
-  background-color: var(--color-success, var(--color-success));
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-/* 统计数字 - 使用 CSS 变量 */
-.footer-stat-number {
-  color: var(--color-text-sub, var(--color-text-sub));
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; /* font-mono */
-}
-
-/* 统计分隔线 - 使用 CSS 变量 */
-.footer-stat-divider {
-  width: 1px; /* w-px */
-  height: 0.75rem; /* h-3 */
-  background-color: var(--color-border-default, var(--color-text-sec));
-}
-
-/* Made with 区域 - 使用 CSS 变量 */
-.footer-made-with {
-  color: var(--color-text-muted, var(--color-text-sec));
-  display: flex;
-  align-items: center;
-  gap: 0.25rem; /* gap-1 */
-}
-
-/* 爱心图标 - 使用 CSS 变量 */
-.footer-heart-icon {
-  color: var(--color-error, var(--color-red-500));
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@media (max-width: 768px) {
-  .footer-brand-section,
-  .footer-links-section {
-    grid-column: auto;
-  }
-
-  .footer-links-section {
-    grid-template-columns: 1fr;
-  }
-
-  .footer-cta-panel {
-    grid-template-columns: 1fr;
-    padding: 1.25rem;
-  }
-
-  .footer-cta-actions {
-    justify-content: flex-start;
-  }
-}
-
