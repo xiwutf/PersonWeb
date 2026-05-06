@@ -1,0 +1,202 @@
+/* ============================================================
+   Ming Studio — Public Site Component Utilities
+   Namespace: .studio-* and .site-*
+   DO NOT use generic names like .card / .section / .container
+   DO NOT import this file into admin layouts
+   ============================================================ */
+
+/* ── Page Background ── */
+.site-bg {
+  background:
+    radial-gradient(circle at 20% 10%, rgba(59,130,246,.18), transparent 30%),
+    radial-gradient(circle at 80% 20%, rgba(34,211,238,.12), transparent 28%),
+    var(--color-bg);
+  min-height: 100vh;
+}
+
+/* ── Section Spacing ── */
+.site-section {
+  padding-top: var(--space-section);
+  padding-bottom: var(--space-section);
+  padding-left: clamp(16px, 4vw, 48px);
+  padding-right: clamp(16px, 4vw, 48px);
+}
+
+.site-section-sm {
+  padding-top: var(--space-section-sm);
+  padding-bottom: var(--space-section-sm);
+  padding-left: clamp(16px, 4vw, 48px);
+  padding-right: clamp(16px, 4vw, 48px);
+}
+
+@media (max-width: 768px) {
+  .site-section    { padding-top: 64px; padding-bottom: 64px; }
+  .site-section-sm { padding-top: 48px; padding-bottom: 48px; }
+}
+
+/* ── Container ── */
+.site-container {
+  max-width: var(--space-container);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: clamp(16px, 4vw, 48px);
+  padding-right: clamp(16px, 4vw, 48px);
+  width: 100%;
+}
+
+/* ── Card ── */
+.studio-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  padding: var(--space-card);
+  transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.studio-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-glow);
+}
+
+/* ── Panel (Hero / CTA / AI showcase) ── */
+.studio-panel {
+  background: var(--color-surface-strong);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  padding: var(--space-card);
+}
+
+/* ── Grid ── */
+.studio-grid {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+@media (max-width: 640px) {
+  .studio-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+/* ── Tag / Badge ── */
+.studio-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+}
+
+/* ── Buttons ── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--gradient-primary);
+  color: var(--color-text-on-primary);
+  border-radius: var(--radius-pill);
+  height: 46px;
+  padding: 0 22px;
+  font-weight: 600;
+  font-size: 15px;
+  border: none;
+  cursor: pointer;
+  transition: opacity 200ms ease, transform 200ms ease;
+  white-space: nowrap;
+}
+
+.btn-primary:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: transparent;
+  border: 1px solid var(--color-border-strong);
+  color: var(--color-text);
+  border-radius: var(--radius-pill);
+  height: 46px;
+  padding: 0 22px;
+  font-weight: 500;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 200ms ease, border-color 200ms ease;
+  white-space: nowrap;
+}
+
+.btn-secondary:hover {
+  background: var(--color-surface);
+  border-color: var(--color-border-strong);
+}
+
+.btn-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-primary);
+  background: none;
+  border: none;
+  font-weight: 500;
+  font-size: 15px;
+  cursor: pointer;
+  transition: gap 200ms ease;
+  padding: 0;
+}
+
+.btn-text:hover {
+  gap: 8px;
+}
+
+/* ── Typography Utilities ── */
+.text-hero {
+  font-size: clamp(48px, 6vw, 88px);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  color: var(--color-text);
+}
+
+.text-section {
+  font-size: clamp(28px, 3vw, 40px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+.text-card-title {
+  font-size: clamp(17px, 1.4vw, 22px);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.text-body {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--color-text-muted);
+}
+
+.text-label {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--color-text-subtle);
+  text-transform: uppercase;
+}
