@@ -34,7 +34,7 @@
 .hero-background-bg {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 0%, var(--bg-surface-2), var(--bg-app));
+  background: var(--gradient-hero);
 }
 
 .hero-background-grid {
@@ -201,11 +201,11 @@ html[data-theme="dark"] .hero-particle-overlay {
   display: inline-flex;
   align-items: center;
   padding: 0.5rem 1rem;
-  background: var(--bg-surface-2);
+  background: var(--color-surface-strong);
   backdrop-filter: blur(12px);
   border-radius: 9999px;
   border: 1px solid transparent;
-  background-image: linear-gradient(var(--bg-surface-2), var(--bg-surface-2)), linear-gradient(to right, var(--primary), var(--secondary));
+  background-image: linear-gradient(var(--color-surface-strong), var(--color-surface-strong)), linear-gradient(to right, var(--primary), var(--secondary));
   background-origin: border-box;
   background-clip: padding-box, border-box;
   margin-bottom: 0.5rem;
@@ -241,7 +241,7 @@ html[data-theme="dark"] .hero-particle-overlay {
 }
 
 .hero-welcome-text {
-  color: var(--color-text-main);
+  color: var(--color-text);
   font-weight: 500;
   font-size: 0.75rem;
 }
@@ -265,7 +265,7 @@ html[data-theme="dark"] .hero-particle-overlay {
   font-weight: 700;
   line-height: 1.1;
   text-shadow: none; /* 移除荧光效果 */
-  color: var(--color-text-main); /* 使用主题文字颜色 */
+  color: var(--color-text); /* 使用主题文字颜色 */
 }
 
 @media (min-width: 640px) {
@@ -294,14 +294,14 @@ html[data-theme="dark"] .hero-particle-overlay {
 
 .hero-title-block {
   display: block;
-  color: var(--color-text-main); /* 使用主题文字颜色 */
+  color: var(--color-text); /* 使用主题文字颜色 */
 }
 
 .hero-title-gradient {
   display: block;
   margin-top: 0.75rem;
-  /* color: var(--color-text-main); 使用主题文字颜色，更柔和 */
-  background: linear-gradient(135deg, var(--color-text-main) 30%, var(--primary) 100%);
+  /* color: var(--color-text); 使用主题文字颜色，更柔和 */
+  background: linear-gradient(135deg, var(--color-text) 30%, var(--primary) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -318,7 +318,7 @@ html[data-theme="dark"] .hero-particle-overlay {
 /* 副标题 */
 .hero-subtitle {
   font-size: 1.125rem;
-  color: var(--color-text-main);
+  color: var(--color-text);
   max-width: 42rem;
   margin-left: auto;
   margin-right: auto;
@@ -362,7 +362,7 @@ html[data-theme="dark"] .hero-particle-overlay {
   background: var(--color-bg-card);
   backdrop-filter: blur(12px);
   border-radius: 0.75rem;
-  border: 1px solid var(--color-border-subtle);
+  border: 1px solid var(--color-border);
   padding: 1.5rem;
 }
 
@@ -381,7 +381,7 @@ html[data-theme="dark"] .hero-particle-overlay {
 
 .hero-info-card-text {
   font-size: 0.875rem;
-  color: var(--color-text-main);
+  color: var(--color-text);
   line-height: 1.75;
 }
 
@@ -492,7 +492,7 @@ html[data-theme="dark"] .hero-tag {
 
 /* 深色主题保持原有样式 */
 html[data-theme="dark"] .hero-button-primary {
-  color: var(--color-text-main);
+  color: var(--color-text);
   background: var(--color-primary-soft);
   border: 1px solid var(--color-primary);
 }
@@ -550,9 +550,9 @@ html[data-theme="dark"] .hero-button-primary:hover {
 
 /* 深色主题保持原有样式 */
 html[data-theme="dark"] .hero-button-secondary {
-  color: var(--color-text-main);
+  color: var(--color-text);
   background: var(--color-bg-card);
-  border: 1px solid var(--color-border-subtle);
+  border: 1px solid var(--color-border);
 }
 
 html[data-theme="dark"] .hero-button-secondary:hover {
@@ -672,12 +672,12 @@ html[data-theme="light"] .hero-visual-card-bg {
   backdrop-filter: blur(12px);
   border-radius: 1rem;
   padding: 1.5rem;
-  border: 1px solid var(--color-border-subtle);
+  border: 1px solid var(--color-border);
 }
 
 .hero-info-card-large-title {
   font-weight: 700;
-  color: var(--color-text-main);
+  color: var(--color-text);
   font-size: 1.25rem;
   margin-bottom: 0.5rem;
 }
@@ -743,7 +743,7 @@ html[data-theme="dark"] .hero-info-card-large-tag {
 .hero-scroll-hint-indicator {
   width: 1.25rem;
   height: 2rem;
-  border: 2px solid var(--color-border-subtle);
+  border: 2px solid var(--color-border);
   border-radius: 9999px;
   display: flex;
   justify-content: center;
@@ -833,7 +833,7 @@ html[data-theme="dark"] .hero-info-card-large-tag {
 .roadmap-title {
   font-size: 2.25rem;
   font-weight: 700;
-  color: var(--color-text-main);
+  color: var(--color-text);
   margin-bottom: 1rem;
   text-shadow: none; /* 移除荧光效果 */
 }
@@ -862,7 +862,7 @@ html[data-theme="dark"] .hero-info-card-large-tag {
 .milestone-group-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--color-text-main);
+  color: var(--color-text);
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
@@ -884,7 +884,7 @@ html[data-theme="dark"] .hero-info-card-large-tag {
   gap: 1rem;
   background: var(--color-bg-card);
   backdrop-filter: blur(12px);
-  border: 1px solid var(--color-border-subtle);
+  border: 1px solid var(--color-border);
   border-radius: 0.75rem;
   padding: 1.5rem;
   transition: all 0.3s ease;
@@ -920,7 +920,7 @@ html[data-theme="dark"] .hero-info-card-large-tag {
 }
 
 .milestone-item-title {
-  color: var(--color-text-main);
+  color: var(--color-text);
   font-weight: 500;
   margin-bottom: 0.25rem;
 }
