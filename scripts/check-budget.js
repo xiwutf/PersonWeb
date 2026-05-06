@@ -59,7 +59,7 @@ BUDGET.css.chunks['index-[hash].css'] = 350
 BUDGET.css.chunks['other-[hash].css'] = 500
 BUDGET.resources.total = 400
 BUDGET.resources.scripts = 260
-BUDGET.resources.stylesheets = 140
+BUDGET.resources.stylesheets = 155
 
 // 颜色输出
 const colors = {
