@@ -7,16 +7,13 @@
    page-level sheets loaded after this file in nuxt.config.ts.
    ============================================================ */
 
-/* Legacy system — kept for admin compat, will be removed
-   after all public pages are migrated */
-@import './theme-variables.css';
+/* component-styles.css — kept for .btn class used by public payment/license pages */
 @import './component-styles.css';
 
 /* Core resets */
 @import './base.css';
 @import './ui-patch-naive.css';
 @import './glassmorphism.css';
-@import './theme.css';
 
 /* NEW Ming Studio Design System
    These imports MUST remain last so new tokens override
