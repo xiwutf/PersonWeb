@@ -17,24 +17,13 @@
         </nav>
 
         <div class="home-header-actions">
-          <a
-            href="https://github.com/Lijing327"
-            target="_blank"
-            rel="noreferrer"
-            class="home-icon-button"
-            aria-label="GitHub"
-          >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 2C6.48 2 2 6.58 2 12.26c0 4.52 2.87 8.36 6.84 9.72.5.1.68-.22.68-.5v-1.75c-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.9 1.57 2.35 1.12 2.92.86.09-.67.35-1.12.63-1.38-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.7 0 0 .84-.28 2.75 1.05A9.3 9.3 0 0 1 12 6.99c.85 0 1.7.12 2.5.35 1.9-1.33 2.74-1.05 2.74-1.05.55 1.4.2 2.44.1 2.7.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.57 5.05.36.32.68.94.68 1.9v2.8c0 .28.18.6.69.5A10.14 10.14 0 0 0 22 12.26C22 6.58 17.52 2 12 2Z" />
-            </svg>
-          </a>
-          <button type="button" class="home-icon-button" aria-label="切换深色主题" @click="toggleDark">
+          <button type="button" class="home-icon-button" aria-label="切换主题" @click="toggleDark">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm0-2.25a1 1 0 0 0 1-1V2a1 1 0 1 0-2 0v1.75a1 1 0 0 0 1 1ZM12 22a1 1 0 0 0 1-1v-1.75a1 1 0 1 0-2 0V21a1 1 0 0 0 1 1ZM21 11h-1.75a1 1 0 1 0 0 2H21a1 1 0 1 0 0-2ZM4.75 12a1 1 0 0 0-1-1H2a1 1 0 1 0 0 2h1.75a1 1 0 0 0 1-1Zm13.55-5.9 1.23-1.23a1 1 0 0 0-1.42-1.42L16.9 4.7a1 1 0 0 0 1.41 1.41ZM5.7 17.9l-1.23 1.23a1 1 0 0 0 1.42 1.42l1.22-1.24A1 1 0 0 0 5.7 17.9Z" />
             </svg>
           </button>
-          <NuxtLink to="/contact" class="home-contact-button">
-            联系我
+          <NuxtLink to="/lab" class="home-platform-button">
+            进入平台
             <span aria-hidden="true">→</span>
           </NuxtLink>
         </div>
@@ -85,12 +74,11 @@ definePageMeta({
 const { toggleDark } = useTheme()
 
 const navItems = [
-  { label: '首页', href: '#home' },
-  { label: '产品', href: '#products' },
-  { label: 'AI能力', href: '#capabilities' },
-  { label: '项目', href: '/projects' },
+  { label: '产品', href: '/products' },
+  { label: '案例', href: '/projects' },
+  { label: 'AI实验室', href: '/lab' },
   { label: '文章', href: '/blog' },
-  { label: '关于我', href: '#about' }
+  { label: '关于', href: '/about' }
 ]
 
 useHead({
@@ -231,7 +219,7 @@ useHead({
 }
 
 .home-icon-button,
-.home-contact-button,
+.home-platform-button,
 :deep(.home-button) {
   min-height: 2.7rem;
   display: inline-flex;
@@ -256,14 +244,14 @@ useHead({
   fill: currentColor;
 }
 
-.home-contact-button,
+.home-platform-button,
 :deep(.home-button) {
   padding: 0 1.15rem;
   font-size: 0.9rem;
   font-weight: 690;
 }
 
-.home-contact-button,
+.home-platform-button,
 :deep(.home-button-primary) {
   border-color: rgba(112, 157, 255, 0.44);
   background: linear-gradient(135deg, rgba(39, 105, 255, 0.95), rgba(92, 80, 225, 0.92));
@@ -275,7 +263,7 @@ useHead({
 }
 
 .home-icon-button:hover,
-.home-contact-button:hover,
+.home-platform-button:hover,
 :deep(.home-button:hover) {
   transform: translateY(-0.14rem);
   border-color: var(--home-border-strong);

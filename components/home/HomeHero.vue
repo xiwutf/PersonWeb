@@ -2,32 +2,34 @@
   <section id="home" class="home-hero home-section">
     <div class="home-shell home-hero-grid">
       <div class="home-hero-copy reveal-up">
-        <p class="home-eyebrow">
-          <span class="home-eyebrow-dot"></span>
-          构建有价值的数字资产
-        </p>
+        <div class="home-hero-directions" aria-label="方向标签">
+          <span>AI 应用开发</span>
+          <span class="home-hero-dir-sep">·</span>
+          <span>企业软件定制</span>
+          <span class="home-hero-dir-sep">·</span>
+          <span>数字产品矩阵</span>
+        </div>
 
         <h1 class="home-hero-title">
           用 <span>AI</span> 构建产品
-          <br />
-          创造长期价值
+          <br />创造长期价值
         </h1>
 
         <p class="home-hero-description">
-          专注 AI 应用开发、企业数字化与个人产品构建，持续打造真正有价值的数字资产。
+          专注将 AI 能力落地为真实可用的产品与系统——面向知识工程、工作流自动化与企业数字化场景，持续迭代，长期维护。
         </p>
 
-        <div class="home-hero-actions" aria-label="首页主要操作">
-          <NuxtLink to="/products" class="home-button home-button-primary">
-            探索我的产品
+        <div class="home-hero-actions" aria-label="主要操作">
+          <NuxtLink to="/lab" class="home-button home-button-primary">
+            进入平台
             <span aria-hidden="true">→</span>
           </NuxtLink>
-          <NuxtLink to="/about" class="home-button home-button-secondary">
-            关于我
+          <NuxtLink to="/products" class="home-button home-button-secondary">
+            查看产品
           </NuxtLink>
         </div>
 
-        <dl class="home-hero-stats" aria-label="个人网站关键数据">
+        <dl class="home-hero-stats" aria-label="关键数据">
           <div v-for="stat in stats" :key="stat.label" class="home-stat">
             <dt>{{ stat.value }}</dt>
             <dd>{{ stat.label }}</dd>
@@ -56,16 +58,11 @@
 </template>
 
 <script setup lang="ts">
-interface HeroStat {
-  value: string
-  label: string
-}
-
-const stats: HeroStat[] = [
-  { value: '12+', label: '产品项目' },
-  { value: '50K+', label: 'GitHub 提交' },
-  { value: '5年+', label: '开发年限' },
-  { value: '1000+', label: '用户访问' }
+const stats = [
+  { value: '5年+', label: '开发经验' },
+  { value: '10+', label: '落地产品' },
+  { value: '3+', label: 'AI 项目' },
+  { value: '持续', label: '迭代维护' }
 ]
 </script>
 
@@ -88,8 +85,23 @@ const stats: HeroStat[] = [
   max-width: 42rem;
 }
 
+.home-hero-directions {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--home-text-soft);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  margin-bottom: 1.4rem;
+}
+
+.home-hero-dir-sep {
+  color: var(--home-border-strong);
+}
+
 .home-hero-title {
-  margin: 1.5rem 0 0;
+  margin: 0;
   color: var(--home-text-main);
   font-size: clamp(3.5rem, 7vw, 6.8rem);
   font-weight: 780;
@@ -107,7 +119,7 @@ const stats: HeroStat[] = [
   max-width: 34rem;
   margin: 1.75rem 0 0;
   color: var(--home-text-muted);
-  font-size: 1.12rem;
+  font-size: 1.05rem;
   line-height: 1.9;
 }
 
@@ -124,6 +136,8 @@ const stats: HeroStat[] = [
   gap: 1.25rem;
   max-width: 38rem;
   margin: 3.2rem 0 0;
+  padding-top: 2.4rem;
+  border-top: 1px solid var(--home-border);
 }
 
 .home-stat {
@@ -140,9 +154,10 @@ const stats: HeroStat[] = [
 .home-stat dd {
   margin: 0.55rem 0 0;
   color: var(--home-text-soft);
-  font-size: 0.84rem;
+  font-size: 0.82rem;
 }
 
+/* ── Visual ── */
 .home-hero-visual {
   position: relative;
   min-height: 36rem;
@@ -253,16 +268,8 @@ const stats: HeroStat[] = [
   box-shadow: 0 0 22px rgba(80, 125, 255, 0.92);
 }
 
-.particle-one {
-  top: 20%;
-  right: 12%;
-}
-
-.particle-two {
-  left: 12%;
-  bottom: 26%;
-}
-
+.particle-one { top: 20%; right: 12%; }
+.particle-two { left: 12%; bottom: 26%; }
 .particle-three {
   top: 34%;
   left: 22%;
@@ -270,18 +277,12 @@ const stats: HeroStat[] = [
 }
 
 @media (max-width: 1024px) {
-  .home-hero {
-    padding-top: 7rem;
-  }
-
+  .home-hero { padding-top: 7rem; }
   .home-hero-grid {
     grid-template-columns: 1fr;
     gap: 4rem;
   }
-
-  .home-hero-visual {
-    min-height: 28rem;
-  }
+  .home-hero-visual { min-height: 28rem; }
 }
 
 @media (max-width: 640px) {
@@ -289,39 +290,16 @@ const stats: HeroStat[] = [
     min-height: auto;
     padding-top: 6.6rem;
   }
-
-  .home-hero-title {
-    font-size: clamp(3rem, 16vw, 4.2rem);
-  }
-
-  .home-hero-description {
-    font-size: 1rem;
-  }
-
-  .home-hero-actions {
-    flex-direction: column;
-  }
-
+  .home-hero-title { font-size: clamp(3rem, 16vw, 4.2rem); }
+  .home-hero-description { font-size: 1rem; }
+  .home-hero-actions { flex-direction: column; }
   .home-hero-stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     margin-top: 2.4rem;
   }
-
-  .home-hero-visual {
-    min-height: 22rem;
-  }
-
-  .ai-glass-core {
-    width: 11rem;
-    border-radius: 1.5rem;
-  }
-
-  .ai-core-face {
-    width: 7.8rem;
-  }
-
-  .ai-core-face span {
-    font-size: 3.6rem;
-  }
+  .home-hero-visual { min-height: 22rem; }
+  .ai-glass-core { width: 11rem; border-radius: 1.5rem; }
+  .ai-core-face { width: 7.8rem; }
+  .ai-core-face span { font-size: 3.6rem; }
 }
 </style>
