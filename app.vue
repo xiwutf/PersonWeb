@@ -25,6 +25,10 @@ const route = useRoute()
 // 不显示导航栏的页面：登录页、所有后台管理页面等特殊页面
 const shouldShowHeader = computed(() => {
   const path = route.path
+  // 首页使用独立的品牌官网 Header，避免全站导航与首屏视觉重复
+  if (path === '/') {
+    return false
+  }
   // 登录页不显示导航栏
   if (path === '/admin/login') {
     return false
