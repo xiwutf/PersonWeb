@@ -1,6 +1,10 @@
 /* ============================================================
    Style System Entry Point
-   Import order matters: tokens.css last = highest priority.
+   Import order: tokens.css / components.css are last within
+   this file so Studio tokens override legacy variables.
+   CSS custom properties (--tokens) are not order-sensitive;
+   class rules in components.css may still be overridden by
+   page-level sheets loaded after this file in nuxt.config.ts.
    ============================================================ */
 
 /* Legacy system — kept for admin compat, will be removed
