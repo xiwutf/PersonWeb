@@ -42,9 +42,9 @@
           <ThemeToggle />
         </div>
 
-        <!-- Contact -->
-        <NuxtLink to="/contact" class="header-contact-btn">
-          联系
+        <!-- Platform CTA -->
+        <NuxtLink to="/lab" class="header-platform-btn">
+          进入平台
         </NuxtLink>
 
         <!-- Mobile menu -->
@@ -76,6 +76,13 @@
             >
               {{ item.title }}
             </NuxtLink>
+            <NuxtLink
+              to="/lab"
+              @click="closeMobileMenu"
+              class="header-mobile-platform-btn"
+            >
+              进入平台
+            </NuxtLink>
           </nav>
         </div>
       </Transition>
@@ -84,7 +91,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import ThemeToggle from '~/components/layout/ThemeToggle.vue'
 
 // @ts-ignore - Nuxt 3 auto-imports
@@ -146,30 +153,14 @@ onMounted(() => {
   })
 })
 
-const navigationItems = computed(() => {
-  // @ts-ignore - Nuxt 3 auto-imports
-  const { isModuleEnabled } = useModuleSystem()
-  const isSSR = process.server
-
-  const items: Array<{ title: string; path: string }> = [
-    { title: '首页', path: '/' },
-    { title: '产品', path: '/products' },
-  ]
-
-  if (isSSR || isModuleEnabled('projects')) {
-    items.push({ title: '案例', path: '/projects' })
-  }
-
-  items.push({ title: 'AI实验室', path: '/lab' })
-
-  if (isSSR || isModuleEnabled('blog')) {
-    items.push({ title: '文章', path: '/blog' })
-  }
-
-  items.push({ title: '关于', path: '/about' })
-
-  return items
-})
+const navigationItems: Array<{ title: string; path: string }> = [
+  { title: '首页',    path: '/' },
+  { title: '产品',    path: '/products' },
+  { title: '案例',    path: '/projects' },
+  { title: 'AI实验室', path: '/lab' },
+  { title: '文章',    path: '/blog' },
+  { title: '关于',    path: '/about' },
+]
 
 const isActiveRoute = (path: string) => {
   if (!route || !route.path) return false
