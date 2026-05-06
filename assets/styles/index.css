@@ -1,62 +1,21 @@
-/**
- * 样式系统统一入口文件
- * 统一管理所有样式变量和组件样式
- */
+/* ============================================================
+   Style System Entry Point
+   Import order matters: tokens.css last = highest priority.
+   ============================================================ */
 
-/* ==================== 核心主题变量 ==================== */
-/*
-  注意：以下文件定义了三层变量体系：
-  1. 基础变量层（Token）- color-{base}-{hue}-{level}
-  2. 语义变量层（Semantic）- color-{purpose}
-  3. 组件变量层（Component）- {component}-{state}-{prop}
-*/
-
-/* 极光设计系统 Design Token (V3) - 基础变量层 */
+/* Legacy system — kept for admin compat, will be removed
+   after all public pages are migrated */
 @import './theme-variables.css';
-
-/* 组件变量定义 - 组件层 */
 @import './component-styles.css';
 
-/* ==================== 基础样式层 ==================== */
-
-/* 基础样式和 Reset */
+/* Core resets */
 @import './base.css';
-
-/* Naive UI 组件补丁 */
 @import './ui-patch-naive.css';
-
-/* 玻璃拟态风格 */
 @import './glassmorphism.css';
-
-/* ==================== 兼容性文件 ==================== */
-
-/* 保留旧的主题文件用于兼容性 */
-/* 注意：这个文件会被主题变量文件覆盖，主要用于向后兼容 */
 @import './theme.css';
 
-/* ==================== 全局样式注入 ==================== */
-
-/*
-  在这里可以添加需要全局注入的样式
-  但是不应该在这里定义具体的样式值
-  而应该使用定义好的变量
-*/
-
-/* 确保主题变量在整个应用中可用 */
-:root {
-  /* 默认主题设置 */
-  --current-theme: 'default';
-}
-
-/* 支持暗黑模式 */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --current-theme: 'dark';
-  }
-}
-
-/* 自定义主题属性 */
-[data-theme] {
-  /* 主题切换通过 JavaScript 或 CSS 类完成 */
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
+/* NEW Ming Studio Design System
+   These imports MUST remain last so new tokens override
+   conflicting legacy values above. */
+@import './tokens.css';
+@import './components.css';

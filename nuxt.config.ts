@@ -86,13 +86,12 @@ export default defineNuxtConfig({
 
   // CSS 配置
   css: [
-    '~/assets/styles/index.css', // 样式系统统一入口（包含所有主题变量和组件样式）
-    '~/assets/css/main.css', // 主要组件样式（已导入 components.css）
-    '~/assets/css/themes.css', // 主题切换样式
-    '~/assets/css/header.css', // Header 组件统一样式
-    '~/assets/css/footer.css', // Footer 组件统一样式
-    '~/assets/css/hero.css', // Hero 组件统一样式
-    '~/assets/css/home.css', // 首页组件统一样式
+    '~/assets/css/main.css',
+    '~/assets/styles/index.css',
+    '~/assets/css/header.css',
+    '~/assets/css/footer.css',
+    '~/assets/css/hero.css',
+    '~/assets/css/home.css',
     '~/assets/css/visitor-interaction.css',
     '~/assets/css/charts.css'
   ],
