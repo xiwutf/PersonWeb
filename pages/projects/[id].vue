@@ -357,7 +357,7 @@ useHead({
 .projects-detail-content :deep(h2),
 .projects-detail-content :deep(h3),
 .projects-detail-content :deep(h4) {
-  color: #f8fafc;
+  color: var(--color-text);
   letter-spacing: -0.02em;
 }
 
@@ -379,17 +379,17 @@ useHead({
 
 .projects-detail-content :deep(pre) {
   overflow-x: auto;
-  border: 1px solid rgba(148, 163, 184, 0.14);
+  border: 1px solid var(--color-border);
   border-radius: 18px;
   background: rgba(2, 6, 23, 0.88);
-  color: #e2e8f0;
+  color: var(--color-text-muted);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .projects-detail-content :deep(code) {
   border-radius: 8px;
   background: rgba(30, 41, 59, 0.86);
-  color: #f8fafc;
+  color: var(--color-text);
   padding: 0.15rem 0.4rem;
 }
 

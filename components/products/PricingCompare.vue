@@ -226,7 +226,7 @@ const pricing = DESKTOP_PET.pricing
 
 .pricing-compare-btn-free {
   background: var(--color-primary);
-  color: #fff;
+  color: var(--color-text-on-primary);
 }
 
 .pricing-compare-btn-free:hover {

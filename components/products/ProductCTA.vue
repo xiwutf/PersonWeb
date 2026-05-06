@@ -84,7 +84,7 @@ const slogan = DESKTOP_PET.slogan
 
 .product-cta-btn-primary {
   background: var(--color-primary);
-  color: #fff;
+  color: var(--color-text-on-primary);
 }
 
 .product-cta-btn-primary:hover {
