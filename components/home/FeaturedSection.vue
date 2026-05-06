@@ -49,12 +49,20 @@ const cardRefs = ref<(HTMLElement | null)[]>([])
 // 暂时使用静态 mock 数据，后续可接入后端 API
 const featuredItems = [
   {
+    type: '当前主打产品',
+    title: 'AI 桌面陪伴助手',
+    description: '一款面向打工人的桌面陪伴 + 专注 + AI 工具产品。让冰冷的桌面变成有温度的工作搭子。',
+    path: '/products/desktop-pet',
+    gradientBg: 'bg-gradient-to-br from-blue-500/10 to-indigo-500/10',
+    badgeBg: 'bg-blue-500/20 text-blue-400 border-blue-400/40'
+  },
+  {
     type: 'Featured Tool',
     title: '在线工具示例',
     description: '一个实用的在线小工具，帮助提升工作效率。',
     path: '/tools',
-    gradientBg: 'bg-gradient-to-br from-blue-500/10 to-cyan-500/10',
-    badgeBg: 'bg-blue-500/20 text-blue-400 border-blue-400/40'
+    gradientBg: 'bg-gradient-to-br from-cyan-500/10 to-teal-500/10',
+    badgeBg: 'bg-cyan-500/20 text-cyan-400 border-cyan-400/40'
   },
   {
     type: 'Featured Project',
