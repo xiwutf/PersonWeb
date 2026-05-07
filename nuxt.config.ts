@@ -21,6 +21,8 @@ export default defineNuxtConfig({
 
   // 运行时配置
   runtimeConfig: {
+    // 服务端私有配置：.NET 后端地址，用于 Nitro 服务端路由调用
+    backendApiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:5234/api',
     public: {
       // API 基础路径，通过环境变量配置
       // 注意：客户端会根据当前域名自动判断使用哪个 API
@@ -90,10 +92,6 @@ export default defineNuxtConfig({
     '~/assets/styles/index.css',
     '~/assets/css/header.css',
     '~/assets/css/footer.css',
-    '~/assets/css/hero.css',
-    '~/assets/css/home.css',
-    '~/assets/css/visitor-interaction.css',
-    '~/assets/css/charts.css'
   ],
 
   // Nitro 配置（用于静态生成优化）
@@ -189,6 +187,9 @@ export default defineNuxtConfig({
               // 大型独立库单独分组（naive-ui 不与 vendor 拆包：与 vue/vueuc 等互引用会产生 Circular chunk: vendor-naive <-> vendor）
               if (id.includes('echarts')) return 'vendor-echarts'
               if (id.includes('@vueuse')) return 'vendor-vueuse'
+              if (id.includes('/three/') || id.includes('\\three\\')) return 'vendor-three'
+              if (id.includes('@bytemd') || id.includes('/bytemd/')) return 'vendor-bytemd'
+              if (id.includes('highlight.js') || id.includes('/highlightjs/')) return 'vendor-hljs'
               return 'vendor'
             }
           },
