@@ -3,27 +3,36 @@
     <header class="home-header">
       <div class="home-header-inner">
         <NuxtLink to="/" class="home-brand" aria-label="溪午听风首页">
-          <span class="home-brand-mark">X</span>
+          <span class="home-brand-mark" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
           <span class="home-brand-text">
             <strong>溪午听风</strong>
-            <small>AI 开发者 · 数字资产实践者</small>
+            <small>个人数字资产 | AI 产品实验室</small>
           </span>
         </NuxtLink>
 
         <nav class="home-nav" aria-label="首页导航">
-          <NuxtLink v-for="item in navItems" :key="item.href" :to="item.href">
+          <NuxtLink v-for="item in navItems" :key="item.href" :to="item.href" :class="{ 'is-active': activeNav === item.key }">
             {{ item.label }}
           </NuxtLink>
         </nav>
 
         <div class="home-header-actions">
+          <button type="button" class="home-icon-button" aria-label="搜索">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M10.8 4.2a6.6 6.6 0 1 0 4.12 11.76l3.55 3.55a1 1 0 0 0 1.42-1.42l-3.55-3.55A6.6 6.6 0 0 0 10.8 4.2Zm0 2a4.6 4.6 0 1 1 0 9.2 4.6 4.6 0 0 1 0-9.2Z" />
+            </svg>
+          </button>
           <button type="button" class="home-icon-button" aria-label="切换主题" @click="toggleDark">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm0-2.25a1 1 0 0 0 1-1V2a1 1 0 1 0-2 0v1.75a1 1 0 0 0 1 1ZM12 22a1 1 0 0 0 1-1v-1.75a1 1 0 1 0-2 0V21a1 1 0 0 0 1 1ZM21 11h-1.75a1 1 0 1 0 0 2H21a1 1 0 1 0 0-2ZM4.75 12a1 1 0 0 0-1-1H2a1 1 0 1 0 0 2h1.75a1 1 0 0 0 1-1Zm13.55-5.9 1.23-1.23a1 1 0 0 0-1.42-1.42L16.9 4.7a1 1 0 0 0 1.41 1.41ZM5.7 17.9l-1.23 1.23a1 1 0 0 0 1.42 1.42l1.22-1.24A1 1 0 0 0 5.7 17.9Z" />
             </svg>
           </button>
           <NuxtLink to="/lab" class="home-platform-button">
-            进入平台
+            联系合作
             <span aria-hidden="true">→</span>
           </NuxtLink>
         </div>
@@ -31,18 +40,38 @@
     </header>
 
     <main>
-      <HomeHero />
-      <HomeProducts />
-      <HomeCapabilities />
-      <HomeTimeline />
-      <HomeAbout />
-      <HomeCTA />
+      <HomeHero
+        :stats="overview.stats"
+        :loading="loading"
+      />
+      <LazyHomeProducts
+        :projects="overview.featuredProjects"
+        :loading="loading"
+      />
+      <LazyHomeTimeline
+        :featured-article="overview.featuredArticle"
+        :articles="overview.latestArticles"
+        :loading="loading"
+      />
+      <LazyHomeAbout
+        :journey="overview.journey"
+        :loading="loading"
+      />
+      <LazyHomeCTA />
+      <LazyHomeBuilding
+        :projects="overview.nowBuilding"
+        :loading="loading"
+      />
     </main>
 
     <footer class="home-footer">
       <div class="home-shell home-footer-inner">
         <div class="home-footer-brand">
-          <span class="home-brand-mark">X</span>
+          <span class="home-brand-mark" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
           <div>
             <strong>溪午听风</strong>
             <p>专注 AI 应用、个人产品与数字资产构建。</p>
@@ -60,26 +89,60 @@
 </template>
 
 <script setup lang="ts">
-import HomeAbout from '~/components/home/HomeAbout.vue'
-import HomeCapabilities from '~/components/home/HomeCapabilities.vue'
-import HomeCTA from '~/components/home/HomeCTA.vue'
-import HomeHero from '~/components/home/HomeHero.vue'
-import HomeProducts from '~/components/home/HomeProducts.vue'
-import HomeTimeline from '~/components/home/HomeTimeline.vue'
+import '~/assets/css/home.css'
 
 definePageMeta({
   layout: false
 })
 
+const { overview, loading } = useHomeOverview()
 const { toggleDark } = useTheme()
 
+const activeNav = ref('home')
+
 const navItems = [
-  { label: '产品', href: '/products' },
-  { label: '案例', href: '/projects' },
-  { label: 'AI实验室', href: '/lab' },
-  { label: '文章', href: '/blog' },
-  { label: '关于', href: '/about' }
+  { label: '首页', href: '/', key: 'home' },
+  { label: '产品', href: '/products', key: 'products' },
+  { label: '案例', href: '/projects', key: 'projects' },
+  { label: 'AI实验室', href: '/lab', key: 'lab' },
+  { label: '文章', href: '/blog', key: 'blog' },
+  { label: '关于', href: '/about', key: 'about' }
 ]
+
+onMounted(() => {
+  const sections = [
+    { id: 'products', key: 'products' },
+    { id: 'writing', key: 'blog' },
+    { id: 'about', key: 'about' },
+    { id: 'contact', key: 'about' },
+    { id: 'building', key: 'about' }
+  ]
+
+  const updateActiveNav = () => {
+    const viewportLine = window.scrollY + window.innerHeight * 0.42
+    let current: (typeof sections)[number] | undefined
+
+    for (let index = sections.length - 1; index >= 0; index -= 1) {
+      const section = sections[index]
+      const element = document.getElementById(section.id)
+      if (element && element.offsetTop <= viewportLine) {
+        current = section
+        break
+      }
+    }
+
+    activeNav.value = current?.key ?? 'home'
+  }
+
+  updateActiveNav()
+  window.addEventListener('scroll', updateActiveNav, { passive: true })
+  window.addEventListener('resize', updateActiveNav)
+
+  onBeforeUnmount(() => {
+    window.removeEventListener('scroll', updateActiveNav)
+    window.removeEventListener('resize', updateActiveNav)
+  })
+})
 
 useHead({
   title: '溪午听风 - 用 AI 构建产品，创造长期价值',
@@ -95,19 +158,19 @@ useHead({
 
 <style scoped>
 .home-page {
-  --home-bg: #020617;
+  --home-bg: var(--color-bg);
   --home-card: rgba(255, 255, 255, 0.052);
   --home-card-hover: rgba(255, 255, 255, 0.075);
-  --home-border: rgba(255, 255, 255, 0.1);
-  --home-border-strong: rgba(146, 176, 255, 0.32);
-  --home-text-main: #f8fbff;
+  --home-border: rgba(157, 185, 255, 0.14);
+  --home-border-strong: rgba(150, 178, 255, 0.36);
+  --home-text-main: var(--color-text);
   --home-text-muted: rgba(221, 230, 255, 0.72);
   --home-text-soft: rgba(221, 230, 255, 0.52);
-  --home-accent: #6ea0ff;
-  --home-radius: 1.35rem;
-  --home-radius-lg: 1.5rem;
-  --home-shadow-soft: 0 28px 80px rgba(0, 0, 0, 0.22);
-  --home-shadow-glow: 0 28px 90px rgba(50, 95, 255, 0.16);
+  --home-accent: #7f99ff;
+  --home-radius: var(--radius-lg);
+  --home-radius-lg: var(--radius-xl);
+  --home-shadow-soft: var(--shadow-card);
+  --home-shadow-glow: var(--shadow-glow);
   min-height: 100vh;
   color: var(--home-text-main);
   background:
@@ -128,30 +191,39 @@ useHead({
 
 .home-header {
   position: fixed;
-  top: 1rem;
+  top: 1.7rem;
   left: 0;
   right: 0;
   z-index: 1000;
-  height: 72px;
+  height: 96px;
   pointer-events: none;
 }
 
 .home-header-inner {
-  width: min(100% - 2rem, 1180px);
-  height: 72px;
+  width: min(100% - 4.8rem, 1840px);
+  height: 96px;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 2rem;
   margin-inline: auto;
-  padding: 0 1rem;
+  padding: 0 2.45rem 0 3.15rem;
   border: 1px solid var(--home-border);
-  border-radius: 999px;
-  background: rgba(2, 8, 23, 0.72);
+  border-radius: 1.85rem 1.85rem 0 0;
+  background: rgba(3, 10, 28, 0.64);
   backdrop-filter: blur(22px);
   -webkit-backdrop-filter: blur(22px);
-  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.24);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
   pointer-events: auto;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-header-inner {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(3, 10, 28, 0.92);
+  }
 }
 
 .home-brand,
@@ -163,17 +235,48 @@ useHead({
 }
 
 .home-brand-mark {
-  width: 2.35rem;
-  height: 2.35rem;
-  display: grid;
-  place-items: center;
+  position: relative;
+  width: 2.45rem;
+  height: 2.45rem;
+  display: block;
   flex: 0 0 auto;
-  border: 1px solid rgba(130, 170, 255, 0.36);
-  border-radius: 0.82rem;
-  color: var(--home-text-main);
-  font-weight: 820;
-  background: linear-gradient(135deg, rgba(36, 104, 255, 0.95), rgba(105, 78, 220, 0.82));
-  box-shadow: 0 0 24px rgba(62, 105, 255, 0.35);
+  filter: drop-shadow(0 0 18px rgba(91, 111, 255, 0.46));
+}
+
+.home-brand-mark::before,
+.home-brand-mark span {
+  content: '';
+  position: absolute;
+  background: linear-gradient(90deg, #6d7dff 0%, #5f8cff 54%, #9b75ff 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.34);
+}
+
+.home-brand-mark::before {
+  right: 0;
+  top: 0;
+  width: 0.35rem;
+  height: 2.28rem;
+}
+
+.home-brand-mark span:nth-child(1) {
+  left: 0.08rem;
+  top: 0.2rem;
+  width: 1.78rem;
+  height: 0.34rem;
+}
+
+.home-brand-mark span:nth-child(2) {
+  left: 0.08rem;
+  top: 0.98rem;
+  width: 1.28rem;
+  height: 0.34rem;
+}
+
+.home-brand-mark span:nth-child(3) {
+  left: 0.08rem;
+  top: 1.75rem;
+  width: 0.86rem;
+  height: 0.34rem;
 }
 
 .home-brand-text {
@@ -184,14 +287,14 @@ useHead({
 .home-brand-text strong,
 .home-footer-brand strong {
   color: var(--home-text-main);
-  font-size: 1rem;
+  font-size: 1.14rem;
   font-weight: 780;
   line-height: 1;
 }
 
 .home-brand-text small {
   color: var(--home-text-soft);
-  font-size: 0.72rem;
+  font-size: 0.76rem;
   white-space: nowrap;
 }
 
@@ -199,17 +302,38 @@ useHead({
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(0.8rem, 2vw, 1.55rem);
+  gap: clamp(1.45rem, 3.6vw, 3.8rem);
 }
 
 .home-nav a {
+  position: relative;
+  min-width: 4.6rem;
+  padding: 1rem 0;
   color: var(--home-text-muted);
-  font-size: 0.92rem;
-  transition: color 0.22s ease;
+  text-align: center;
+  font-size: 0.96rem;
+  transition: color 0.22s ease, background 0.22s ease;
 }
 
-.home-nav a:hover {
+.home-nav a:hover,
+.home-nav a.is-active {
   color: var(--home-text-main);
+}
+
+.home-nav a.is-active {
+  border-radius: 0.7rem;
+  background: linear-gradient(180deg, rgba(67, 103, 255, 0.12), rgba(67, 103, 255, 0.02));
+}
+
+.home-nav a.is-active::after {
+  content: '';
+  position: absolute;
+  left: 1.55rem;
+  right: 1.55rem;
+  bottom: 0.72rem;
+  height: 2px;
+  background: #8ea0ff;
+  box-shadow: 0 0 16px rgba(126, 148, 255, 0.86);
 }
 
 .home-header-actions {
@@ -221,7 +345,7 @@ useHead({
 .home-icon-button,
 .home-platform-button,
 :deep(.home-button) {
-  min-height: 2.7rem;
+  min-height: 3rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -234,7 +358,7 @@ useHead({
 }
 
 .home-icon-button {
-  width: 2.7rem;
+  width: 3rem;
   padding: 0;
 }
 
@@ -246,7 +370,7 @@ useHead({
 
 .home-platform-button,
 :deep(.home-button) {
-  padding: 0 1.15rem;
+  padding: 0 1.55rem;
   font-size: 0.9rem;
   font-weight: 690;
 }
@@ -326,6 +450,7 @@ useHead({
 }
 
 :deep(.reveal-up) {
+  will-change: transform, opacity;
   animation: homeRevealUp 0.8s ease both;
 }
 
@@ -401,12 +526,15 @@ useHead({
 @media (max-width: 680px) {
   .home-header {
     top: 0.65rem;
+    height: 72px;
   }
 
   .home-header-inner {
     width: min(100% - 1rem, 1180px);
+    height: 72px;
     gap: 0.75rem;
     padding: 0 0.75rem;
+    border-radius: 1.25rem;
   }
 
   .home-brand-text small {
