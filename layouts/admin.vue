@@ -141,6 +141,8 @@
 </template>
 
 <script setup lang="ts">
+import '~/assets/css/visitor-interaction.css'
+import '~/assets/css/charts.css'
 import { onMounted, computed, watch, ref } from 'vue'
 import { useAdminGlobalStyle } from '~/composables/useAdminStyle'
 import AppNaiveConfig from '~/components/layout/AppNaiveConfig.vue'

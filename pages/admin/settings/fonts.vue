@@ -533,10 +533,12 @@ const previewFontSettings = () => {
   }
 }
 
-// 监听字体设置变化，实时预览
+// 监听字体设置变化，实时预览（debounce 300ms 避免每次按键都触发 DOM 操作）
+let _fontDebounce: ReturnType<typeof setTimeout> | null = null
 watch(() => fontSettings.value, () => {
   if (process.client) {
-    applyFontSettings()
+    if (_fontDebounce) clearTimeout(_fontDebounce)
+    _fontDebounce = setTimeout(() => applyFontSettings(), 300)
   }
 }, { deep: true })
 

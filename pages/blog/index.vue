@@ -132,7 +132,11 @@
             </p>
           </div>
 
-          <div v-if="filteredPosts.length === 0" class="blog-empty">
+          <div v-if="blogLoading" class="blog-loading-state">
+            <div v-for="n in 5" :key="n" class="blog-skeleton-card"></div>
+          </div>
+
+          <div v-else-if="filteredPosts.length === 0" class="blog-empty">
             <div class="blog-empty-icon">⌁</div>
             <h3 class="blog-empty-title">没有找到匹配的文章</h3>
             <p class="blog-empty-text">换个关键词，或者切回“全部文章”看看。</p>
@@ -300,7 +304,7 @@ definePageMeta({
 const api = useApi()
 usePageStyle('blog')
 
-const { data: allPosts } = await useAsyncData('blog-posts', async () => {
+const { data: allPosts, pending: blogLoading } = useLazyAsyncData('blog-posts', async () => {
   const res = await api.get<any>('/Articles', {
     params: {
       page: 1,

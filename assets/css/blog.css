@@ -1,4 +1,4 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    Blog Page
    ========================================================================== */
 
@@ -889,7 +889,7 @@
   color: #e2e8f0;
 }
 
-/* 文章主卡片 */
+/* 鏂囩珷涓诲崱鐗?*/
 .blog-detail-card {
   position: relative;
   border: 1px solid rgba(148, 163, 184, 0.15);
@@ -947,12 +947,12 @@
   opacity: 0.82;
 }
 
-/* 文章内容区域 */
+/* 鏂囩珷鍐呭鍖哄煙 */
 .blog-detail-content {
   padding: 2.5rem 2.8rem;
 }
 
-/* 目录 (桌面端) */
+/* 鐩綍 (妗岄潰绔? */
 .blog-detail-toc-card {
   position: sticky;
   top: 6rem;
@@ -1046,7 +1046,7 @@
   color: #bfdbfe;
 }
 
-/* 返回按钮卡片 */
+/* 杩斿洖鎸夐挳鍗＄墖 */
 .blog-detail-back-card {
   margin-top: 1.5rem;
   padding: 1.25rem;
@@ -1073,7 +1073,7 @@
   transform: translateX(-4px);
 }
 
-/* 空状态 */
+/* 绌虹姸鎬?*/
 .blog-detail-empty {
   padding: 4rem 2rem;
   text-align: center;
@@ -1115,7 +1115,7 @@
   transform: translateY(-2px);
 }
 
-/* 加载状态 */
+/* 鍔犺浇鐘舵€?*/
 .blog-detail-loading {
   display: flex;
   align-items: center;
@@ -1138,7 +1138,7 @@
   }
 }
 
-/* 文章内容排版增强 */
+/* 鏂囩珷鍐呭鎺掔増澧炲己 */
 .blog-detail-content {
   line-height: 1.85;
   color: rgba(226, 232, 240, 0.9);
@@ -1268,7 +1268,7 @@
   background: rgba(37, 99, 235, 0.06);
 }
 
-/* 响应式设计 */
+/* 鍝嶅簲寮忚璁?*/
 @media (max-width: 1024px) {
   .blog-detail-header,
   .blog-detail-content {
@@ -1330,4 +1330,28 @@
   .blog-pagination {
     flex-wrap: wrap;
   }
+}
+
+/* Loading skeleton */
+.blog-loading-state {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.blog-skeleton-card {
+  height: 7.5rem;
+  border-radius: var(--radius-lg, 1.5rem);
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.04) 25%,
+    rgba(255,255,255,0.08) 50%,
+    rgba(255,255,255,0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: blogSkeletonShimmer 1.4s infinite;
+}
+
+@keyframes blogSkeletonShimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
 }

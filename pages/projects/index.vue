@@ -586,24 +586,36 @@ const getProjectEyebrow = (project: ProjectCard) => {
   return parts.join(' · ')
 }
 
+const githubStatsCache = useState<Record<string, { total: number; week: number }[]>>(
+  'github-stats-cache',
+  () => ({})
+)
+
 const loadGithubStats = async () => {
-  await Promise.allSettled(projects.value.map(async (project) => {
-    if (!project.githubUrl) {
-      return
-    }
+  // 提取每个项目对应的 repo slug，过滤无效项
+  const repoMap = projects.value.reduce<{ project: typeof projects.value[0]; repo: string }[]>((acc, project) => {
+    if (!project.githubUrl) return acc
+    const match = project.githubUrl.match(/github\.com\/([^/]+\/[^/?#]+)/)
+    if (match) acc.push({ project, repo: match[1] })
+    return acc
+  }, [])
 
-    const match = project.githubUrl.match(/github\.com\/([^/]+\/[^/]+)/)
-    if (!match) {
-      return
-    }
+  // 只请求未缓存的 repo（去重 + 跳过已有数据）
+  const uncachedRepos = [...new Set(repoMap.map(r => r.repo))].filter(repo => !githubStatsCache.value[repo])
 
-    const repo = match[1]
-    const stats = await api.get<{ total: number; week: number }[]>(`/github/stats?repo=${repo}`)
+  await Promise.allSettled(
+    uncachedRepos.map(async (repo) => {
+      const stats = await api.get<{ total: number; week: number }[]>(`/github/stats?repo=${repo}`)
+      if (Array.isArray(stats)) {
+        githubStatsCache.value[repo] = stats
+      }
+    })
+  )
 
-    if (!Array.isArray(stats)) {
-      return
-    }
-
+  // 从缓存写入 chartData
+  for (const { project, repo } of repoMap) {
+    const stats = githubStatsCache.value[repo]
+    if (!stats) continue
     const recentStats = stats.slice(-26)
     project.chartData = {
       labels: recentStats.map(item => new Date(item.week * 1000).toLocaleDateString()),
@@ -616,7 +628,7 @@ const loadGithubStats = async () => {
         }
       ]
     }
-  }))
+  }
 }
 
 await fetchProjects()

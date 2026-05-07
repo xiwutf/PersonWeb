@@ -12,6 +12,7 @@ interface SearchResult {
 }
 
 export default defineEventHandler((event) => {
+  setHeader(event, 'Cache-Control', 'public, max-age=60, s-maxage=60')
   const query = getQuery(event)
   const keyword = (query.q as string || '').toLowerCase().trim()
 

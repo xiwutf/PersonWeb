@@ -285,10 +285,11 @@ const scrollToBottom = () => {
   })
 }
 
-// 监听消息变化，自动滚动
-watch(messages, () => {
-  scrollToBottom()
-}, { deep: true })
+// 监听消息数量或最后一条消息内容变化（兼容 streaming），避免 deep 遍历整个数组
+watch(
+  () => [messages.value.length, messages.value[messages.value.length - 1]?.content],
+  () => { scrollToBottom() }
+)
 
 onMounted(() => {
   loadSessions()

@@ -7,7 +7,9 @@ interface ApiResponse<T> {
 
 export const useApi = () => {
     const config = useRuntimeConfig()
-    
+    // 跨请求缓存 admin token，避免每次请求都读 localStorage
+    const _adminToken = useState<string | null>('admin-token', () => null)
+
     /**
      * 根据当前环境自动获取 API 基础路径
      * - 本地开发（localhost/127.0.0.1）: 使用本地 API
@@ -52,13 +54,15 @@ export const useApi = () => {
     const request = async <T>(url: string, options: any = {}) => {
         const { silent, ...fetchOptions } = options
         try {
-            // 自动携带 Token
+            // 自动携带 Token（lazy 读 localStorage，后续从 useState 缓存取）
             if (typeof window !== 'undefined') {
-                const token = localStorage.getItem('admin_token')
-                if (token) {
+                if (_adminToken.value === null) {
+                    _adminToken.value = localStorage.getItem('admin_token')
+                }
+                if (_adminToken.value) {
                     fetchOptions.headers = {
                         ...fetchOptions.headers,
-                        Authorization: `Bearer ${token}`
+                        Authorization: `Bearer ${_adminToken.value}`
                     }
                 }
             }
@@ -128,6 +132,7 @@ export const useApi = () => {
             if (error.response?.status === 401 && typeof window !== 'undefined') {
                 localStorage.removeItem('admin_token')
                 localStorage.removeItem('admin_user')
+                _adminToken.value = null
                 navigateTo('/admin/login')
             }
             throw error

@@ -2,6 +2,7 @@ import { ModuleStats } from '~/types/module'
 
 // 模拟统计数据
 export default defineEventHandler(async (event) => {
+  setHeader(event, 'Cache-Control', 'public, max-age=300, s-maxage=300')
   try {
     // 模拟从数据库获取的统计数据
     const stats: ModuleStats = {

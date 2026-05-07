@@ -128,3 +128,47 @@ AI 在本项目里必须“先读最少必要文档，再执行任务”。
 - 为局部需求引入重量级新依赖，且未先排查项目现有能力
 - 文档随手新增到新目录，破坏现有三层结构
 - 改动后不做任何验证就直接交付
+
+
+<claude-mem-context>
+# Memory Context
+
+# [PersonWeb] recent context, 2026-05-07 11:43am GMT+8
+
+Legend: 🎯session 🔴bugfix 🟣feature 🔄refactor ✅change 🔵discovery ⚖️decision 🚨security_alert 🔐security_note
+Format: ID TIME TYPE TITLE
+Fetch details: get_observations([IDs]) | Search: mem-search skill
+
+Stats: 23 obs (10,217t read) | 444,330t work | 98% savings
+
+### May 7, 2026
+1 9:18a 🔵 Located Claude hooks configuration files for SessionStart error investigation
+2 9:24a 🔵 No SessionStart/startup hooks found in examined settings files
+S2 Locate and diagnose the configuration source causing "ToolUseContext is required for prompt hooks" error in Claude Code's SessionStart/startup hook. Provide positioning and fix recommendations without modifying code. (May 7, 9:27 AM)
+S1 一比一复刻（1:1 exact replication）of admin dashboard page with full layout, data display, and styling (May 7, 9:27 AM)
+S3 Locate and diagnose "ToolUseContext is required for prompt hooks" error in claude-mem SessionStart configuration, then apply fixes to restore hook functionality. (May 7, 9:27 AM)
+3 9:29a 🟣 Admin Dashboard Page Complete Implementation with Data Visualizations
+4 " 🔵 Build Verification: Dashboard Component Successfully Compiles to Production
+5 9:32a 🔴 Added missing matcher field to UserPromptSubmit hook in cache-layer hooks.json
+6 " 🔴 Added missing matcher field to UserPromptSubmit hook in marketplace-layer hooks.json
+7 " 🔴 Added missing matcher field to Stop hook in both cache and marketplace hooks.json files
+8 " 🔵 Validated JSON syntax of both modified hooks.json files
+9 9:34a 🔵 Backend Statistics API Fully Integrated and Ready for Dashboard Data
+10 " ✅ Repository Layer Enhanced with Time-Range and Pagination Queries for Dashboard Analytics
+11 9:36a 🔵 Hookify and ralph-loop plugins missing matcher field in Stop/UserPromptSubmit hooks
+12 " 🔵 Superpowers plugin properly configured with matcher; claude-mem 12.5.1 installed
+13 9:37a 🔵 planning-with-files plugin UserPromptSubmit and Stop hooks missing matcher field in Claude Code format
+14 9:38a 🔵 claude-obsidian plugin properly configured with matcher fields on all hooks
+15 9:39a ✅ Standardized empty matcher to wildcard in claude-obsidian PostCompact hook
+17 " 🟣 Admin Dashboard Statistics Service Refactored with Real-Time Data Aggregation
+18 " 🟣 Admin Dashboard Frontend Migrated from Mock Data to Live API Statistics
+16 " 🔵 claude-obsidian plugin has duplicate hooks.json in marketplace registry directory
+19 " 🟣 Admin Dashboard Real-Time Statistics Feature Completed and Built
+20 9:44a ✅ Rebranded user feedback feature to user experience surveys (问卷)
+21 9:47a 🔵 Claude-obsidian hooks.json files now have valid matcher fields
+S4 Complete diagnostic and fix for "ToolUseContext is required for prompt hooks" error after restart, identifying root cause and all affected configurations (May 7, 9:47 AM)
+22 9:49a 🔵 Current enabled plugins identified in settings.json
+23 10:09a 🟣 Admin Backend Left Sidebar Navigation Reorganization with Collapsible Groups
+
+Access 444k tokens of past work via get_observations([IDs]) or mem-search skill.
+</claude-mem-context>

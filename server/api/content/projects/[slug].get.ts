@@ -8,5 +8,6 @@ export default defineEventHandler((event) => {
     throw createError({ statusCode: 404, statusMessage: 'Project not found' })
   }
 
+  setHeader(event, 'Cache-Control', 'public, max-age=300, s-maxage=300')
   return item
 })
