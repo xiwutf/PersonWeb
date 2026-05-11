@@ -18,20 +18,24 @@
           <NuxtLink v-for="item in navItems" :key="item.href" :to="item.href" :class="{ 'is-active': activeNav === item.key }">
             {{ item.label }}
           </NuxtLink>
+          <NavMoreMenu variant="home" />
         </nav>
 
         <div class="home-header-actions">
-          <button type="button" class="home-icon-button" aria-label="搜索">
+          <div class="home-nav-compact">
+            <NavMoreMenu variant="home" label="菜单" :primary-items="homePrimaryForMenu" />
+          </div>
+          <NuxtLink to="/search" class="home-icon-button" aria-label="搜索">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M10.8 4.2a6.6 6.6 0 1 0 4.12 11.76l3.55 3.55a1 1 0 0 0 1.42-1.42l-3.55-3.55A6.6 6.6 0 0 0 10.8 4.2Zm0 2a4.6 4.6 0 1 1 0 9.2 4.6 4.6 0 0 1 0-9.2Z" />
             </svg>
-          </button>
+          </NuxtLink>
           <button type="button" class="home-icon-button" aria-label="切换主题" @click="toggleDark">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm0-2.25a1 1 0 0 0 1-1V2a1 1 0 1 0-2 0v1.75a1 1 0 0 0 1 1ZM12 22a1 1 0 0 0 1-1v-1.75a1 1 0 1 0-2 0V21a1 1 0 0 0 1 1ZM21 11h-1.75a1 1 0 1 0 0 2H21a1 1 0 1 0 0-2ZM4.75 12a1 1 0 0 0-1-1H2a1 1 0 1 0 0 2h1.75a1 1 0 0 0 1-1Zm13.55-5.9 1.23-1.23a1 1 0 0 0-1.42-1.42L16.9 4.7a1 1 0 0 0 1.41 1.41ZM5.7 17.9l-1.23 1.23a1 1 0 0 0 1.42 1.42l1.22-1.24A1 1 0 0 0 5.7 17.9Z" />
             </svg>
           </button>
-          <NuxtLink to="/lab" class="home-platform-button">
+          <NuxtLink to="/contact" class="home-platform-button">
             联系合作
             <span aria-hidden="true">→</span>
           </NuxtLink>
@@ -90,6 +94,7 @@
 
 <script setup lang="ts">
 import '~/assets/css/home.css'
+import NavMoreMenu from '~/components/layout/NavMoreMenu.vue'
 
 definePageMeta({
   layout: false
@@ -106,8 +111,12 @@ const navItems = [
   { label: '案例', href: '/projects', key: 'projects' },
   { label: 'AI实验室', href: '/lab', key: 'lab' },
   { label: '文章', href: '/blog', key: 'blog' },
-  { label: '关于', href: '/about', key: 'about' }
+  { label: '关于', href: '/about', key: 'about' },
 ]
+
+const homePrimaryForMenu = computed(() =>
+  navItems.map((item) => ({ label: item.label, href: item.href })),
+)
 
 onMounted(() => {
   const sections = [
@@ -151,7 +160,7 @@ useHead({
       name: 'description',
       content: '溪午听风的个人品牌官网，专注 AI 应用开发、企业数字化与个人产品构建，持续打造真正有价值的数字资产。'
     },
-    { name: 'theme-color', content: '#020617' }
+    { name: 'theme-color', content: '#081631' }
   ]
 })
 </script>
@@ -159,14 +168,20 @@ useHead({
 <style scoped>
 .home-page {
   --home-bg: var(--color-bg);
-  --home-card: rgba(255, 255, 255, 0.052);
-  --home-card-hover: rgba(255, 255, 255, 0.075);
-  --home-border: rgba(157, 185, 255, 0.14);
-  --home-border-strong: rgba(150, 178, 255, 0.36);
+  --home-page-bg-top: #081631;
+  --home-page-bg-mid: #0d2148;
+  --home-page-bg-bottom: #071326;
+  --home-hero-bg: #07152f;
+  --home-hero-frame-top: rgba(12, 31, 72, 0.94);
+  --home-hero-frame-bottom: rgba(7, 18, 45, 0.96);
+  --home-card: rgba(93, 126, 215, 0.12);
+  --home-card-hover: rgba(111, 145, 235, 0.17);
+  --home-border: rgba(174, 199, 255, 0.2);
+  --home-border-strong: rgba(180, 203, 255, 0.44);
   --home-text-main: var(--color-text);
-  --home-text-muted: rgba(221, 230, 255, 0.72);
-  --home-text-soft: rgba(221, 230, 255, 0.52);
-  --home-accent: #7f99ff;
+  --home-text-muted: rgba(227, 235, 255, 0.76);
+  --home-text-soft: rgba(227, 235, 255, 0.58);
+  --home-accent: #91aaff;
   --home-radius: var(--radius-lg);
   --home-radius-lg: var(--radius-xl);
   --home-shadow-soft: var(--shadow-card);
@@ -174,8 +189,9 @@ useHead({
   min-height: 100vh;
   color: var(--home-text-main);
   background:
-    radial-gradient(circle at 50% -10%, rgba(48, 86, 170, 0.22), transparent 38rem),
-    linear-gradient(180deg, #020617 0%, #04101f 48%, #020617 100%);
+    radial-gradient(circle at 50% -8%, rgba(99, 139, 255, 0.27), transparent 40rem),
+    radial-gradient(circle at 12% 24%, rgba(34, 211, 238, 0.09), transparent 28rem),
+    linear-gradient(180deg, var(--home-page-bg-top) 0%, var(--home-page-bg-mid) 48%, var(--home-page-bg-bottom) 100%);
   overflow: hidden;
 }
 
@@ -210,7 +226,7 @@ useHead({
   padding: 0 2.45rem 0 3.15rem;
   border: 1px solid var(--home-border);
   border-radius: 1.85rem 1.85rem 0 0;
-  background: rgba(3, 10, 28, 0.64);
+  background: rgba(8, 21, 49, 0.68);
   backdrop-filter: blur(22px);
   -webkit-backdrop-filter: blur(22px);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
@@ -222,7 +238,7 @@ useHead({
   .home-header-inner {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
-    background: rgba(3, 10, 28, 0.92);
+    background: rgba(8, 21, 49, 0.94);
   }
 }
 
@@ -340,6 +356,10 @@ useHead({
   display: flex;
   align-items: center;
   gap: 0.55rem;
+}
+
+.home-nav-compact {
+  display: none;
 }
 
 .home-icon-button,
@@ -472,7 +492,7 @@ useHead({
 
 .home-footer {
   border-top: 1px solid var(--home-border);
-  background: rgba(1, 6, 18, 0.58);
+  background: rgba(7, 19, 44, 0.66);
 }
 
 .home-footer-inner {
@@ -520,6 +540,10 @@ useHead({
 
   .home-nav {
     display: none;
+  }
+
+  .home-nav-compact {
+    display: block;
   }
 }
 

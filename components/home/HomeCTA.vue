@@ -19,7 +19,17 @@
                 <strong>{{ method.title }}</strong>
                 <p>{{ method.value }}</p>
                 <small>{{ method.note }}</small>
-                <NuxtLink :to="method.href">
+                <a
+                  v-if="isNonRouterHref(method.href)"
+                  :href="method.href"
+                  class="contact-card-cta"
+                  :target="method.href.startsWith('http') ? '_blank' : undefined"
+                  :rel="method.href.startsWith('http') ? 'noreferrer noopener' : undefined"
+                >
+                  {{ method.action }}
+                  <span aria-hidden="true">→</span>
+                </a>
+                <NuxtLink v-else :to="method.href" class="contact-card-cta">
                   {{ method.action }}
                   <span aria-hidden="true">→</span>
                 </NuxtLink>
@@ -39,7 +49,7 @@
             <h3>合作方向</h3>
             <p>期待与你在以下方向合作</p>
             <div class="collab-list">
-              <NuxtLink v-for="item in COLLAB_DIRECTIONS" :key="item.title" to="/contact" class="collab-item">
+              <NuxtLink v-for="item in COLLAB_DIRECTIONS" :key="item.title" :to="item.href" class="collab-item">
                 <span :class="item.icon" aria-hidden="true"></span>
                 <span>
                   <strong>{{ item.title }}</strong>
@@ -88,6 +98,9 @@
 
 <script setup lang="ts">
 import { CONTACT_METHODS, COLLAB_DIRECTIONS } from '~/constants/homeContact'
+
+/** mailto / tel / 绝对 URL 必须用原生 a，避免 NuxtLink 当作站内路由解析 */
+const isNonRouterHref = (href: string) => /^(https?:|mailto:|tel:)/i.test(href)
 
 const partners = [
   { name: 'OpenAI', icon: 'partner-openai' },
@@ -289,7 +302,8 @@ const partners = [
   font-size: 0.86rem;
 }
 
-.contact-card a {
+.contact-card a.contact-card-cta,
+.contact-card a.contact-card-cta:visited {
   min-width: 11.5rem;
   min-height: 3rem;
   display: inline-flex;
@@ -302,6 +316,7 @@ const partners = [
   color: #aab8ff;
   background: rgba(255, 255, 255, 0.028);
   font-weight: 720;
+  text-decoration: none;
 }
 
 .contact-right {

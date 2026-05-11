@@ -25,6 +25,7 @@
         >
           {{ item.title }}
         </NuxtLink>
+        <NavMoreMenu />
       </nav>
 
       <!-- Right Actions -->
@@ -42,8 +43,10 @@
           <ThemeToggle />
         </div>
 
-        <!-- Platform CTA -->
-        <NuxtLink to="/lab" class="header-platform-btn">
+        <NuxtLink to="/contact" class="header-contact-outline-btn">
+          联系
+        </NuxtLink>
+        <NuxtLink to="/ai" class="header-platform-btn">
           进入平台
         </NuxtLink>
 
@@ -76,8 +79,21 @@
             >
               {{ item.title }}
             </NuxtLink>
+            <div class="header-mobile-menu-label">更多</div>
             <NuxtLink
-              to="/lab"
+              v-for="item in moreNavItems"
+              :key="item.path"
+              :to="item.path"
+              @click="closeMobileMenu"
+              class="header-mobile-menu-item"
+              :class="isActiveRoute(item.path)
+                ? 'header-mobile-menu-item-active'
+                : 'header-mobile-menu-item-inactive'"
+            >
+              {{ item.title }}
+            </NuxtLink>
+            <NuxtLink
+              to="/ai"
               @click="closeMobileMenu"
               class="header-mobile-platform-btn"
             >
@@ -93,6 +109,8 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import ThemeToggle from '~/components/layout/ThemeToggle.vue'
+import NavMoreMenu from '~/components/layout/NavMoreMenu.vue'
+import { moreNavItems, moreNavPaths } from '~/constants/site-more-nav'
 
 // @ts-ignore - Nuxt 3 auto-imports
 const router = useRouter()
@@ -176,6 +194,7 @@ const isActiveRoute = (path: string) => {
     '/lab',
     '/about',
     '/contact',
+    ...moreNavPaths,
   ]
   if (prefixMatchPaths.includes(path)) {
     return route.path === path || route.path.startsWith(`${path}/`)

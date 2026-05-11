@@ -52,6 +52,17 @@
         </div>
 
         <aside class="home-hero-quote reveal-up reveal-delay-2" aria-label="个人理念">
+          <figure class="home-hero-portrait" aria-label="溪午听风个人照片">
+            <img
+              src="/images/avatar.jpg"
+              alt="溪午听风个人照片"
+              width="180"
+              height="225"
+              loading="eager"
+              decoding="async"
+              fetchpriority="high"
+            >
+          </figure>
           <span class="home-quote-mark">“</span>
           <p>用技术创造价值<br>用产品改变世界<br>用内容记录思考</p>
           <span class="home-signature">Xiuu</span>
@@ -158,8 +169,9 @@ const featureCards = [
   height: 100svh;
   padding: 1.7rem 2.4rem 2.1rem;
   background:
-    radial-gradient(circle at 50% 40%, rgba(52, 73, 160, 0.18), transparent 43rem),
-    #020713;
+    radial-gradient(circle at 50% 38%, rgba(103, 137, 235, 0.24), transparent 43rem),
+    radial-gradient(circle at 14% 18%, rgba(34, 211, 238, 0.08), transparent 28rem),
+    var(--home-hero-bg, #07152f);
 }
 
 .home-hero-frame {
@@ -169,10 +181,11 @@ const featureCards = [
   border: 1px solid var(--home-border);
   border-radius: 1.85rem;
   background:
-    radial-gradient(circle at 74% 22%, rgba(71, 101, 210, 0.18), transparent 35rem),
-    linear-gradient(180deg, rgba(4, 13, 35, 0.96) 0%, rgba(2, 8, 25, 0.98) 100%);
+    radial-gradient(circle at 74% 22%, rgba(116, 151, 255, 0.24), transparent 35rem),
+    radial-gradient(circle at 15% 12%, rgba(34, 211, 238, 0.08), transparent 32rem),
+    linear-gradient(180deg, var(--home-hero-frame-top, rgba(12, 31, 72, 0.94)) 0%, var(--home-hero-frame-bottom, rgba(7, 18, 45, 0.96)) 100%);
   box-shadow:
-    0 28px 100px rgba(0, 0, 0, 0.34),
+    0 28px 100px rgba(3, 12, 30, 0.28),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
   isolation: isolate;
 }
@@ -203,15 +216,15 @@ const featureCards = [
 .home-space-scene::before {
   content: '';
   background:
-    radial-gradient(ellipse at 52% 92%, rgba(25, 42, 85, 0.94) 0 14%, rgba(12, 23, 51, 0.72) 28%, transparent 56%),
-    linear-gradient(180deg, transparent 55%, rgba(3, 9, 25, 0.74) 82%, rgba(2, 7, 19, 0.98) 100%);
+    radial-gradient(ellipse at 52% 92%, rgba(34, 60, 120, 0.78) 0 14%, rgba(18, 38, 82, 0.58) 28%, transparent 56%),
+    linear-gradient(180deg, transparent 55%, rgba(8, 20, 48, 0.58) 82%, rgba(7, 18, 43, 0.82) 100%);
 }
 
 .home-space-scene::after {
   content: '';
   background:
-    radial-gradient(ellipse at 82% 88%, rgba(3, 8, 20, 0.95) 0 11%, transparent 35%),
-    radial-gradient(ellipse at 17% 82%, rgba(3, 8, 20, 0.9) 0 15%, transparent 38%);
+    radial-gradient(ellipse at 82% 88%, rgba(7, 18, 43, 0.72) 0 11%, transparent 35%),
+    radial-gradient(ellipse at 17% 82%, rgba(7, 18, 43, 0.66) 0 15%, transparent 38%);
 }
 
 .home-planet {
@@ -226,11 +239,11 @@ const featureCards = [
     radial-gradient(circle at 56% 68%, rgba(136, 161, 255, 0.34), transparent 0.22rem),
     radial-gradient(circle at 70% 37%, rgba(255, 255, 255, 0.28), transparent 0.18rem),
     radial-gradient(circle at 75% 70%, rgba(136, 108, 255, 0.38), transparent 0.3rem),
-    radial-gradient(circle at 78% 45%, rgba(208, 225, 255, 0.9) 0 2%, rgba(130, 168, 255, 0.88) 8%, rgba(55, 82, 170, 0.72) 24%, rgba(10, 19, 45, 0.94) 55%, rgba(2, 7, 18, 0.98) 76%);
+    radial-gradient(circle at 78% 45%, rgba(218, 231, 255, 0.92) 0 2%, rgba(143, 178, 255, 0.9) 8%, rgba(67, 97, 185, 0.76) 24%, rgba(16, 31, 68, 0.9) 55%, rgba(7, 17, 40, 0.94) 76%);
   box-shadow:
     -22px 28px 86px rgba(108, 149, 255, 0.42),
     inset -20px 10px 64px rgba(222, 235, 255, 0.26),
-    inset 70px -70px 110px rgba(4, 10, 26, 0.84);
+    inset 70px -70px 110px rgba(7, 17, 42, 0.76);
   opacity: 0.95;
 }
 
@@ -455,12 +468,53 @@ const featureCards = [
 }
 
 .home-hero-quote {
+  position: relative;
   align-self: center;
   justify-self: end;
   width: min(100%, 18rem);
   margin-top: 3rem;
   color: rgba(221, 231, 255, 0.82);
   text-shadow: 0 0 24px rgba(4, 10, 28, 0.55);
+}
+
+.home-hero-portrait {
+  position: absolute;
+  top: -6.15rem;
+  right: 0.35rem;
+  width: 8.1rem;
+  aspect-ratio: 4 / 5;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(210, 224, 255, 0.62);
+  border-radius: 1rem;
+  background: rgba(248, 250, 252, 0.96);
+  box-shadow:
+    0 22px 58px rgba(8, 18, 45, 0.34),
+    0 0 0 0.45rem rgba(97, 132, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  transform: rotate(1.5deg);
+}
+
+.home-hero-portrait::before {
+  content: '';
+  position: absolute;
+  inset: -32% -38% auto auto;
+  width: 6rem;
+  height: 6rem;
+  border-radius: 50%;
+  background: rgba(127, 147, 255, 0.24);
+  filter: blur(18px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.home-hero-portrait img {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .home-quote-mark {
@@ -499,11 +553,11 @@ const featureCards = [
   border: 1px solid rgba(151, 179, 255, 0.22);
   border-radius: 1rem;
   background:
-    linear-gradient(180deg, rgba(32, 51, 102, 0.78), rgba(8, 18, 45, 0.68)),
-    rgba(12, 24, 57, 0.6);
+    linear-gradient(180deg, rgba(48, 76, 145, 0.74), rgba(14, 31, 70, 0.62)),
+    var(--home-card);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.09),
-    0 20px 44px rgba(0, 0, 0, 0.24);
+    0 20px 44px rgba(4, 13, 34, 0.2);
   transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
 }
 
@@ -511,8 +565,8 @@ const featureCards = [
   transform: translateY(-0.35rem);
   border-color: rgba(153, 178, 255, 0.42);
   background:
-    linear-gradient(180deg, rgba(43, 66, 128, 0.86), rgba(9, 20, 51, 0.76)),
-    rgba(12, 24, 57, 0.72);
+    linear-gradient(180deg, rgba(60, 90, 166, 0.82), rgba(18, 38, 84, 0.72)),
+    var(--home-card-hover);
 }
 
 .home-feature-icon {
@@ -692,10 +746,10 @@ const featureCards = [
   padding: 1.1rem 1.7rem;
   border: 1px solid rgba(151, 179, 255, 0.14);
   border-radius: 999px;
-  background: rgba(4, 14, 38, 0.68);
+  background: rgba(11, 27, 62, 0.68);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    0 20px 50px rgba(0, 0, 0, 0.22);
+    0 20px 50px rgba(4, 13, 34, 0.2);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
