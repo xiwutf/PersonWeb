@@ -2,17 +2,25 @@
   <header class="header-container">
     <div class="header-nav-pill">
       <!-- Logo -->
-      <NuxtLink to="/" class="header-logo-link">
+      <div class="header-brand-row">
         <div
+          class="header-brand-mark"
+          aria-hidden="true"
+          title="点击标识可进入管理后台"
           @click.stop="handleLogoClick"
           @mouseenter="handleAvatarHover"
-          class="header-logo-avatar"
-          title="点击头像可进入管理后台"
         >
-          <img src="/images/avatar.jpg" alt="Ming Studio" />
+          <span></span>
+          <span></span>
+          <span></span>
         </div>
-        <span class="header-logo-text">Ming Studio</span>
-      </NuxtLink>
+        <NuxtLink to="/" class="header-brand-text-link" aria-label="溪午听风首页">
+          <span class="header-brand-text">
+            <strong>溪午听风</strong>
+            <small>个人数字资产 | AI 产品实验室</small>
+          </span>
+        </NuxtLink>
+      </div>
 
       <!-- Desktop Nav -->
       <nav class="header-nav-desktop">
@@ -25,7 +33,7 @@
         >
           {{ item.title }}
         </NuxtLink>
-        <NavMoreMenu />
+        <NavMoreMenu variant="home" />
       </nav>
 
       <!-- Right Actions -->
@@ -43,15 +51,16 @@
           <ThemeToggle />
         </div>
 
-        <NuxtLink to="/contact" class="header-contact-outline-btn">
-          联系
-        </NuxtLink>
-        <NuxtLink to="/ai" class="header-platform-btn">
+        <NuxtLink to="/ai" class="header-secondary-cta">
           进入平台
         </NuxtLink>
+        <NuxtLink to="/contact" class="header-primary-cta">
+          联系合作
+          <span aria-hidden="true">→</span>
+        </NuxtLink>
 
-        <!-- Mobile menu -->
         <button
+          type="button"
           @click="toggleMobileMenu"
           class="header-mobile-menu-button"
           aria-label="菜单"
@@ -62,47 +71,53 @@
           </svg>
         </button>
       </div>
-
-      <!-- Mobile dropdown -->
-      <Transition name="slide-down">
-        <div v-if="isMobileMenuOpen" class="header-mobile-menu">
-          <nav class="header-mobile-menu-content">
-            <NuxtLink
-              v-for="item in navigationItems"
-              :key="item.path"
-              :to="item.path"
-              @click="closeMobileMenu"
-              class="header-mobile-menu-item"
-              :class="isActiveRoute(item.path)
-                ? 'header-mobile-menu-item-active'
-                : 'header-mobile-menu-item-inactive'"
-            >
-              {{ item.title }}
-            </NuxtLink>
-            <div class="header-mobile-menu-label">更多</div>
-            <NuxtLink
-              v-for="item in moreNavItems"
-              :key="item.path"
-              :to="item.path"
-              @click="closeMobileMenu"
-              class="header-mobile-menu-item"
-              :class="isActiveRoute(item.path)
-                ? 'header-mobile-menu-item-active'
-                : 'header-mobile-menu-item-inactive'"
-            >
-              {{ item.title }}
-            </NuxtLink>
-            <NuxtLink
-              to="/ai"
-              @click="closeMobileMenu"
-              class="header-mobile-platform-btn"
-            >
-              进入平台
-            </NuxtLink>
-          </nav>
-        </div>
-      </Transition>
     </div>
+
+    <Transition name="slide-down">
+      <div v-if="isMobileMenuOpen" class="header-mobile-menu">
+        <nav class="header-mobile-menu-content">
+          <NuxtLink
+            v-for="item in navigationItems"
+            :key="item.path"
+            :to="item.path"
+            @click="closeMobileMenu"
+            class="header-mobile-menu-item"
+            :class="isActiveRoute(item.path)
+              ? 'header-mobile-menu-item-active'
+              : 'header-mobile-menu-item-inactive'"
+          >
+            {{ item.title }}
+          </NuxtLink>
+          <div class="header-mobile-menu-label">更多</div>
+          <NuxtLink
+            v-for="item in moreNavItems"
+            :key="item.path"
+            :to="item.path"
+            @click="closeMobileMenu"
+            class="header-mobile-menu-item"
+            :class="isActiveRoute(item.path)
+              ? 'header-mobile-menu-item-active'
+              : 'header-mobile-menu-item-inactive'"
+          >
+            {{ item.title }}
+          </NuxtLink>
+          <NuxtLink
+            to="/contact"
+            @click="closeMobileMenu"
+            class="header-mobile-secondary-btn"
+          >
+            联系合作
+          </NuxtLink>
+          <NuxtLink
+            to="/ai"
+            @click="closeMobileMenu"
+            class="header-mobile-platform-btn"
+          >
+            进入平台
+          </NuxtLink>
+        </nav>
+      </div>
+    </Transition>
   </header>
 </template>
 

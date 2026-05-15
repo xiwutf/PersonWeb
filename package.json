@@ -20,6 +20,9 @@
     "developer",
     "blog"
   ],
+  "imports": {
+    "#internal/nuxt/paths": "./node_modules/@nuxt/nitro-server/dist/runtime/utils/paths.mjs"
+  },
   "scripts": {
     "dev": "node node_modules/cross-env/dist/bin/cross-env.js SASS_SILENCE_DEPRECATIONS=legacy-js-api node node_modules/nuxt/bin/nuxt.mjs dev",
     "dev:mobile": "node node_modules/cross-env/dist/bin/cross-env.js SASS_SILENCE_DEPRECATIONS=legacy-js-api node node_modules/nuxt/bin/nuxt.mjs dev --host 0.0.0.0",

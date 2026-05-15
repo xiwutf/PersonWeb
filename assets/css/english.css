@@ -6,10 +6,8 @@
   position: relative;
   min-height: 100vh;
   overflow: hidden;
-  background:
-    radial-gradient(circle at top left, rgba(59, 130, 246, 0.18), transparent 34%),
-    radial-gradient(circle at 85% 16%, rgba(245, 158, 11, 0.14), transparent 26%),
-    linear-gradient(180deg, rgba(15, 23, 42, 0.98) 0%, rgba(2, 6, 23, 1) 100%);
+  background: transparent;
+  color: var(--color-text);
 }
 
 .english-page-noise {
@@ -69,7 +67,7 @@
 .english-shell {
   position: relative;
   z-index: 1;
-  width: min(1180px, calc(100% - 32px));
+  width: min(var(--space-container), calc(100% - 32px));
   margin: 0 auto;
   padding: 6rem 1rem 5rem;
 }
@@ -762,7 +760,7 @@
 
 @media (max-width: 640px) {
   .english-shell {
-    width: min(100% - 20px, 1180px);
+    width: min(100% - 20px, var(--space-container));
     padding: 5.5rem 0.5rem 4rem;
   }
 

@@ -6,11 +6,8 @@
   position: relative;
   min-height: 100vh;
   overflow-x: hidden;
-  background:
-    radial-gradient(circle at top left, rgba(249, 115, 22, 0.16), transparent 28%),
-    radial-gradient(circle at top right, rgba(239, 68, 68, 0.12), transparent 24%),
-    linear-gradient(180deg, #020617 0%, #0f172a 100%);
-  color: #f8fafc;
+  background: transparent;
+  color: var(--color-text);
 }
 
 .tools-page::before {
@@ -90,14 +87,14 @@
   position: relative;
   z-index: 10;
   width: 100%;
-  max-width: 80rem;
+  max-width: var(--space-container);
   margin: 0 auto;
   padding: 5rem 1rem 6rem;
 }
 
 /* 详情页：更宽内容区、更紧凑布局，减少留白 */
 .tools-page--detail .tools-content {
-  max-width: min(96rem, calc(100vw - 2rem));
+  max-width: min(var(--space-container), calc(100vw - 2rem));
   padding: 3rem 1.5rem 4rem;
 }
 

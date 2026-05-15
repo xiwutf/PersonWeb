@@ -141,19 +141,19 @@ export const useModuleInstaller = () => {
     manifest: ModuleManifest
   }> => {
     try {
-      const params = version ? { version } : {}
-      const response = await api.post(`/ModuleStore/${moduleKey}/download`, {
-        params
-      })
+      const query = version ? { version } : {}
+      const response = await api.get<{ success?: boolean; data?: { downloadUrl: string; manifest: ModuleManifest } }>(
+        `/api/modules/${moduleKey}/manifest`,
+        { params: query },
+      )
 
-      if (response.success) {
+      if (response?.success && response.data?.manifest) {
         return {
-          downloadUrl: response.data.downloadUrl,
-          manifest: response.data.manifest
+          downloadUrl: response.data.downloadUrl || '',
+          manifest: response.data.manifest,
         }
-      } else {
-        throw new Error(response.message || 'Download failed')
       }
+      throw new Error('无法加载模块清单')
     } catch (e) {
       console.error('Download failed:', e)
       throw e

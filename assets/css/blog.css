@@ -6,11 +6,8 @@
   position: relative;
   min-height: 100vh;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 14% 10%, rgba(59, 130, 246, 0.16), transparent 28%),
-    radial-gradient(circle at 88% 18%, rgba(245, 158, 11, 0.1), transparent 24%),
-    linear-gradient(180deg, rgba(2, 6, 23, 0.98) 0%, rgba(15, 23, 42, 1) 100%);
-  color: #e2e8f0;
+  background: transparent;
+  color: var(--color-text);
 }
 
 .blog-background-noise {
@@ -78,7 +75,7 @@
 .blog-shell {
   position: relative;
   z-index: 1;
-  width: min(1180px, calc(100% - 32px));
+  width: min(var(--space-container), calc(100% - 32px));
   margin: 0 auto;
   padding: 8.2rem 0 5rem;
 }
@@ -818,7 +815,7 @@
 
 @media (max-width: 980px) {
   .blog-shell {
-    width: min(100% - 24px, 1080px);
+    width: min(100% - 24px, var(--space-container));
   }
 
   .blog-hero,
@@ -833,7 +830,7 @@
 
 @media (max-width: 768px) {
   .blog-shell {
-    width: min(100% - 20px, 1080px);
+    width: min(100% - 20px, var(--space-container));
     padding-top: 7rem;
   }
 
@@ -881,12 +878,8 @@
 .blog-detail-page {
   position: relative;
   min-height: 100vh;
-  background:
-    radial-gradient(circle at 15% 20%, rgba(59, 130, 246, 0.12), transparent 30%),
-    radial-gradient(circle at 85% 30%, rgba(245, 158, 11, 0.08), transparent 28%),
-    radial-gradient(circle at 50% 80%, rgba(16, 185, 129, 0.06), transparent 35%),
-    linear-gradient(180deg, rgba(2, 6, 23, 0.98) 0%, rgba(15, 23, 42, 1) 100%);
-  color: #e2e8f0;
+  background: transparent;
+  color: var(--color-text);
 }
 
 /* 鏂囩珷涓诲崱鐗?*/

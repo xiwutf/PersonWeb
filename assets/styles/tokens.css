@@ -40,6 +40,19 @@
     radial-gradient(circle at top right, rgba(59,130,246,.22), transparent 34%),
     radial-gradient(circle at bottom left, rgba(139,92,246,.16), transparent 38%),
     #070b14;
+
+  /* 首页与前台 default 布局共用的深空科技风页面底（与首页 hero 氛围一致） */
+  --site-shell-bg-top: #081631;
+  --site-shell-bg-mid: #0d2148;
+  --site-shell-bg-bottom: #071326;
+  --site-shell-border-soft: rgba(174, 199, 255, 0.2);
+  --site-shell-border-strong: rgba(180, 203, 255, 0.44);
+  --site-shell-header-glass: rgba(8, 21, 49, 0.68);
+  --site-shell-footer-bg: rgba(7, 19, 44, 0.66);
+  --site-shell-gradient:
+    radial-gradient(circle at 50% -8%, rgba(99, 139, 255, 0.27), transparent 40rem),
+    radial-gradient(circle at 12% 24%, rgba(34, 211, 238, 0.09), transparent 28rem),
+    linear-gradient(180deg, var(--site-shell-bg-top) 0%, var(--site-shell-bg-mid) 48%, var(--site-shell-bg-bottom) 100%);
 }
 
 /* ── Layer 5: Status Colors ── */
@@ -60,7 +73,8 @@
 
   --space-section:    112px;
   --space-section-sm: 72px;
-  --space-container:  1200px;
+  /* 前台主栏最大宽度（页脚、站点容器、博客/项目等 shell 共用） */
+  --space-container:  1600px;
   --space-card:       28px;
   --space-card-sm:    20px;
 

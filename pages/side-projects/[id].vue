@@ -268,7 +268,7 @@ onMounted(() => {
   min-height: 100vh;
   background: var(--color-bg-body);
   padding: var(--spacing-xl) var(--spacing-lg);
-  max-width: 1200px;
+  max-width: var(--space-container);
   margin: 0 auto;
 }
 

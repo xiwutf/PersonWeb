@@ -1,0 +1,5 @@
+/* 首页 (layout:false) 与 home / default 布局共用的深空底图，依赖 tokens.css 变量 */
+.public-site-shell {
+  background: var(--site-shell-gradient);
+  background-color: var(--site-shell-bg-bottom);
+}

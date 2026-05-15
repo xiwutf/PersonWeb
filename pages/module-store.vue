@@ -119,8 +119,6 @@ const {
   isLoading,
   error,
   getModules,
-  searchModules,
-  getPopularModules
 } = useModuleStore()
 
 const { installModule, installMultipleModules } = useModuleManager()
@@ -130,38 +128,37 @@ const modules = ref([])
 
 // 数据
 const filteredModules = computed(() => {
-  let result = modules.value
+  let result = [...modules.value]
+  const q = searchQuery.value.trim().toLowerCase()
 
-// 状态
-  if (searchQuery.value) {
-    result = searchModules(searchQuery.value, {
-      category: selectedCategory.value,
-      sortBy: sortBy.value,
-      page: currentPage.value,
-      pageSize: pageSize.value
-    }).modules
-  } else {
-// 数据
-    if (selectedCategory.value) {
-      result = result.filter(m => m.category === selectedCategory.value)
-    }
-
-// 数据
-    result.sort((a, b) => {
-      switch (sortBy.value) {
-        case 'popular':
-          return b.downloads - a.downloads
-        case 'newest':
-          return new Date(b.version) - new Date(a.version)
-        case 'price-low':
-          return (a.price || 0) - (b.price || 0)
-        case 'price-high':
-          return (b.price || 0) - (a.price || 0)
-        default:
-          return 0
-      }
-    })
+  if (q) {
+    result = result.filter(
+      (m) =>
+        m.name.toLowerCase().includes(q) ||
+        m.description.toLowerCase().includes(q) ||
+        m.key.toLowerCase().includes(q) ||
+        (m.tags && m.tags.some((t) => String(t).toLowerCase().includes(q))),
+    )
   }
+
+  if (selectedCategory.value) {
+    result = result.filter((m) => m.category === selectedCategory.value)
+  }
+
+  result.sort((a, b) => {
+    switch (sortBy.value) {
+      case 'popular':
+        return b.downloads - a.downloads
+      case 'newest':
+        return String(b.version).localeCompare(String(a.version))
+      case 'price-low':
+        return (a.price || 0) - (b.price || 0)
+      case 'price-high':
+        return (b.price || 0) - (a.price || 0)
+      default:
+        return 0
+    }
+  })
 
   return result
 })
@@ -173,8 +170,7 @@ const totalPages = computed(() => {
     // 排序
 async function loadModules() {
   try {
-    await getModules()
-    modules.value = await getPopularModules()
+    modules.value = await getModules(true)
   } catch (e) {
     console.error('Failed to load modules:', e)
   }
@@ -191,9 +187,9 @@ async function handleInstall(moduleKey: string) {
     } else {
       alert('模块安装成功！')
     }
-  } catch (e) {
+  } catch (e: unknown) {
     console.error('Failed to install module:', e)
-    alert('安装失败：' + e.message)
+    alert('安装失败：' + (e instanceof Error ? e.message : String(e)))
   }
 }
 
@@ -210,7 +206,7 @@ onMounted(() => {
 
 <style scoped>
 .module-store {
-  max-width: 1200px;
+  max-width: var(--space-container);
   margin: 0 auto;
   padding: 2rem;
 }

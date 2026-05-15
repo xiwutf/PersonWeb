@@ -271,7 +271,7 @@ const handleProjectClick = (project: FeaturedProject) => {
 .ai-solutions-container {
   position: relative;
   z-index: 1;
-  max-width: 1200px;
+  max-width: var(--space-container);
   margin: 0 auto;
   padding: 0 24px;
 }
@@ -352,7 +352,7 @@ const handleProjectClick = (project: FeaturedProject) => {
   line-height: 1.5;
   color: var(--text-main);
   margin: 0 auto 32px auto;
-  max-width: 900px;
+  max-width: min(64rem, 100%);
   text-align: center;
 }
 
@@ -373,7 +373,7 @@ const handleProjectClick = (project: FeaturedProject) => {
   font-size: 20px;
   line-height: 1.9;
   color: var(--text-secondary);
-  max-width: 900px;
+  max-width: min(64rem, 100%);
   margin: 0 auto 100px auto;
   padding: 32px;
   background: linear-gradient(135deg, rgba(6, 182, 212, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
@@ -465,7 +465,7 @@ const handleProjectClick = (project: FeaturedProject) => {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 32px;
-  max-width: 1000px;
+  max-width: var(--space-container);
   margin: 0 auto;
 }
 
@@ -834,7 +834,7 @@ const handleProjectClick = (project: FeaturedProject) => {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 32px;
-  max-width: 1000px;
+  max-width: var(--space-container);
   margin: 0 auto;
 }
 

@@ -123,7 +123,7 @@ useHead({
 }
 
 .download-page-container {
-  max-width: 56rem;
+  max-width: var(--space-container);
   margin: 0 auto;
   padding: 0 var(--spacing-lg);
 }

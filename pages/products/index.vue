@@ -72,7 +72,7 @@ useHead({
   min-height: 100vh;
   padding: clamp(5.5rem, 12vw, 7rem) 0 clamp(4rem, 10vw, 6rem);
   color: var(--color-text);
-  background: var(--color-bg);
+  background: transparent;
 }
 
 .products-hub-bg {
@@ -107,7 +107,7 @@ useHead({
 .products-hub-shell {
   position: relative;
   z-index: 1;
-  width: min(100% - 2rem, 900px);
+  width: min(100% - 2rem, var(--space-container));
   margin-inline: auto;
 }
 
@@ -134,7 +134,7 @@ useHead({
 
 .products-hub-lead {
   margin: 0;
-  max-width: 36rem;
+  max-width: min(52rem, 100%);
   font-size: 1.05rem;
   line-height: 1.65;
   color: var(--color-text-muted);

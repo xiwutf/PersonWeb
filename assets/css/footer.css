@@ -1,15 +1,15 @@
 /* Footer — Ming Studio minimal brand */
 
 .footer-container {
-  background: var(--color-bg-soft);
-  border-top: 1px solid var(--color-border);
+  background: var(--site-shell-footer-bg, var(--color-bg-soft));
+  border-top: 1px solid var(--site-shell-border-soft, var(--color-border));
   color: var(--color-text-muted);
 }
 
 .footer-inner {
   max-width: var(--space-container);
   margin: 0 auto;
-  padding: 64px clamp(16px, 4vw, 48px) 32px;
+  padding: 64px clamp(12px, 2.5vw, 28px) 32px;
 }
 
 /* ── Main Grid ── */

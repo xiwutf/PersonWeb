@@ -5,8 +5,8 @@
 
 .cognition-page {
   min-height: 100vh;
-  background-color: var(--bg, #0f172a);
-  color: var(--text-main, #f8fafc);
+  background: transparent;
+  color: var(--color-text);
   position: relative;
   overflow: hidden;
   font-family: inherit;
@@ -76,7 +76,7 @@
   position: relative;
   z-index: 10;
   width: 100%;
-  max-width: 56rem;
+  max-width: var(--space-container);
   margin: 0 auto;
   padding: 2rem 1rem 4rem;
 }
@@ -89,7 +89,7 @@
 
 @media (min-width: 1024px) {
   .cognition-content {
-    max-width: 64rem;
+    max-width: var(--space-container);
     padding: 2.5rem 2rem 4rem;
   }
 }

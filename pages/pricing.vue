@@ -130,7 +130,7 @@ useHead({
 }
 
 .pricing-page-container {
-  max-width: 64rem;
+  max-width: var(--space-container);
   margin: 0 auto;
   padding: 0 var(--spacing-lg);
 }

@@ -204,7 +204,7 @@ const handleProjectCardClick = (project: any) => {
 .ai-capability-container {
   position: relative;
   z-index: 1;
-  max-width: 1280px;
+  max-width: var(--space-container);
   margin: 0 auto;
   padding: 0 var(--spacing-lg);
 }

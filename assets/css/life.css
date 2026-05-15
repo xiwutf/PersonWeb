@@ -4,8 +4,8 @@
 
 .life-page {
   min-height: 100vh;
-  background-color: var(--bg);
-  color: var(--text-main);
+  background: transparent;
+  color: var(--color-text);
   position: relative;
   overflow: hidden;
   font-family: inherit;
@@ -57,7 +57,7 @@
 .life-content {
   position: relative;
   z-index: 10;
-  max-width: 64rem;
+  max-width: var(--space-container);
   margin: 0 auto;
   padding: 3rem 1rem;
 }

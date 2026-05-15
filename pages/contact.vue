@@ -125,7 +125,7 @@ const submitConsultation = async () => {
 }
 
 .contact-shell {
-  width: min(1180px, calc(100% - 2.2rem));
+  width: min(var(--space-container), calc(100% - 2.2rem));
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr 1.1fr;

@@ -756,7 +756,7 @@ onMounted(() => {
 /* ==================== 页面容器 ==================== */
 .search-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--color-bg-page) 0%, var(--color-bg-elevated) 100%);
+  background: transparent;
 }
 
 /* ==================== 页面头部 ==================== */
@@ -767,7 +767,7 @@ onMounted(() => {
 }
 
 .search-header-container {
-  max-width: 72rem;
+  max-width: var(--space-container);
   margin: 0 auto;
   padding: 0 var(--spacing-md);
   text-align: center;
@@ -814,7 +814,7 @@ onMounted(() => {
 }
 
 .search-content-container {
-  max-width: 72rem;
+  max-width: var(--space-container);
   margin: 0 auto;
   padding: 0 var(--spacing-md);
 }
@@ -1640,7 +1640,7 @@ onMounted(() => {
 }
 
 .search-box-wrapper {
-  max-width: 64rem;
+  max-width: var(--space-container);
   margin: 0 auto 2.2rem;
 }
 
@@ -1755,7 +1755,7 @@ onMounted(() => {
 .search-results-section,
 .search-empty,
 .search-welcome {
-  max-width: 64rem;
+  max-width: var(--space-container);
   margin-left: auto;
   margin-right: auto;
 }

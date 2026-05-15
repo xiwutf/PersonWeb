@@ -1,5 +1,5 @@
 <template>
-  <div class="home-page">
+  <div class="home-page public-site-shell">
     <header class="home-header">
       <div class="home-header-inner">
         <NuxtLink to="/" class="home-brand" aria-label="溪午听风首页">
@@ -168,16 +168,13 @@ useHead({
 <style scoped>
 .home-page {
   --home-bg: var(--color-bg);
-  --home-page-bg-top: #081631;
-  --home-page-bg-mid: #0d2148;
-  --home-page-bg-bottom: #071326;
   --home-hero-bg: #07152f;
   --home-hero-frame-top: rgba(12, 31, 72, 0.94);
   --home-hero-frame-bottom: rgba(7, 18, 45, 0.96);
   --home-card: rgba(93, 126, 215, 0.12);
   --home-card-hover: rgba(111, 145, 235, 0.17);
-  --home-border: rgba(174, 199, 255, 0.2);
-  --home-border-strong: rgba(180, 203, 255, 0.44);
+  --home-border: var(--site-shell-border-soft);
+  --home-border-strong: var(--site-shell-border-strong);
   --home-text-main: var(--color-text);
   --home-text-muted: rgba(227, 235, 255, 0.76);
   --home-text-soft: rgba(227, 235, 255, 0.58);
@@ -188,10 +185,6 @@ useHead({
   --home-shadow-glow: var(--shadow-glow);
   min-height: 100vh;
   color: var(--home-text-main);
-  background:
-    radial-gradient(circle at 50% -8%, rgba(99, 139, 255, 0.27), transparent 40rem),
-    radial-gradient(circle at 12% 24%, rgba(34, 211, 238, 0.09), transparent 28rem),
-    linear-gradient(180deg, var(--home-page-bg-top) 0%, var(--home-page-bg-mid) 48%, var(--home-page-bg-bottom) 100%);
   overflow: hidden;
 }
 
@@ -201,7 +194,7 @@ useHead({
 }
 
 .home-page :deep(.home-shell) {
-  width: min(100% - 2rem, 1180px);
+  width: min(100% - 2rem, var(--space-container));
   margin-inline: auto;
 }
 
@@ -554,7 +547,7 @@ useHead({
   }
 
   .home-header-inner {
-    width: min(100% - 1rem, 1180px);
+    width: min(100% - 1rem, var(--space-container));
     height: 72px;
     gap: 0.75rem;
     padding: 0 0.75rem;

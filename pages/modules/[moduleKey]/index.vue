@@ -570,7 +570,7 @@ const submitReview = async () => {
 <style scoped>
 .module-marketplace {
   padding: 2rem;
-  max-width: 1200px;
+  max-width: var(--space-container);
   margin: 0 auto;
 }
 

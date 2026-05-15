@@ -1,16 +1,62 @@
 /**
  * 模块商店 Composable
- * 提供模块的浏览、搜索、下载等功能
+ * 数据来自 Nuxt Nitro `server/api/modules`（MySQL），不再请求 .NET 上不存在的 ModuleStore 控制器。
  */
 
-import type {
-  ModuleDefinition,
-  ModuleManifest,
-  ModuleMarketItem,
-  ModuleCategory
-} from '~/types/module'
+import type { ModuleCategory, ModuleManifest, ModuleMarketItem } from '~/types/module'
 
-// 模块商店缓存
+const STORE_CACHE_TTL_MS = 5 * 60 * 1000
+
+type ModulesListResponse = {
+  success?: boolean
+  data?: unknown[]
+  pagination?: { page: number; pageSize: number; total: number; totalPages: number }
+}
+
+type ModuleDetailResponse = {
+  success?: boolean
+  data?: Record<string, unknown>
+}
+
+function isRecord(v: unknown): v is Record<string, unknown> {
+  return typeof v === 'object' && v !== null
+}
+
+/** 将 /api/modules 列表项转为商店卡片所需结构 */
+export function mapApiModuleToMarketItem(m: Record<string, unknown>): ModuleMarketItem {
+  const depsRaw = m.dependencies
+  const dependencies: string[] = Array.isArray(depsRaw)
+    ? depsRaw
+        .map((d) => {
+          if (typeof d === 'string') return d
+          if (isRecord(d) && typeof d.key === 'string') return d.key
+          if (isRecord(d) && typeof d.name === 'string') return d.name
+          return ''
+        })
+        .filter(Boolean)
+    : []
+
+  const key = String(m.moduleKey ?? m.key ?? '')
+  const name = String(m.moduleName ?? m.name ?? key)
+  const version = String(m.moduleVersion ?? m.version ?? '1.0.0')
+
+  return {
+    key,
+    name,
+    version,
+    description: String(m.description ?? ''),
+    author: String(m.author ?? ''),
+    category: String(m.category ?? 'content'),
+    price: typeof m.price === 'number' ? m.price : undefined,
+    downloads: typeof m.downloads === 'number' ? m.downloads : Number(m.sort ?? 0) || 0,
+    rating: typeof m.rating === 'number' ? m.rating : 4.5,
+    screenshots: Array.isArray(m.screenshots) ? (m.screenshots as string[]) : undefined,
+    tags: Array.isArray(m.tags) ? (m.tags as string[]) : [String(m.category ?? 'module')],
+    dependencies,
+    icon: typeof m.icon === 'string' ? m.icon : '📦',
+  }
+}
+
 const storeCache = ref<{
   modules: ModuleMarketItem[]
   categories: string[]
@@ -18,25 +64,25 @@ const storeCache = ref<{
 }>({
   modules: [],
   categories: [],
-  lastUpdate: 0
+  lastUpdate: 0,
 })
 
 const isLoading = ref(false)
 const error = ref<string | null>(null)
 
-/**
- * 模块商店
- */
+function unwrapModulesResponse(res: unknown): { list: ModuleMarketItem[]; pagination?: ModulesListResponse['pagination'] } {
+  const r = res as ModulesListResponse
+  if (r?.success && Array.isArray(r.data)) {
+    return { list: r.data.map((row) => mapApiModuleToMarketItem(row as Record<string, unknown>)), pagination: r.pagination }
+  }
+  throw new Error('获取模块列表失败')
+}
+
 export const useModuleStore = () => {
   const api = useApi()
 
-  /**
-   * 获取模块列表
-   */
   const getModules = async (forceRefresh = false): Promise<ModuleMarketItem[]> => {
-    // 如果缓存有效且不需要强制刷新，返回缓存
-    const CACHE_TTL = 5 * 60 * 1000 // 5分钟
-    if (!forceRefresh && Date.now() - storeCache.value.lastUpdate < CACHE_TTL) {
+    if (!forceRefresh && Date.now() - storeCache.value.lastUpdate < STORE_CACHE_TTL_MS && storeCache.value.modules.length > 0) {
       return storeCache.value.modules
     }
 
@@ -44,66 +90,47 @@ export const useModuleStore = () => {
       isLoading.value = true
       error.value = null
 
-      // 调用后端API获取模块列表
-      const response = await api.get('/ModuleStore/modules')
+      const res = await api.get<ModulesListResponse>('/api/modules', {
+        params: { page: 1, pageSize: 500 },
+      })
 
-      if (response.success) {
-        storeCache.value.modules = response.data.modules
-        storeCache.value.lastUpdate = Date.now()
-        return response.data.modules
-      } else {
-        throw new Error(response.message || 'Failed to fetch modules')
-      }
+      const { list } = unwrapModulesResponse(res)
+      storeCache.value.modules = list
+      storeCache.value.lastUpdate = Date.now()
+
+      const cats = [...new Set(list.map((x) => x.category).filter(Boolean))]
+      storeCache.value.categories = cats
+
+      return list
     } catch (e) {
       error.value = e instanceof Error ? e.message : 'Unknown error'
       console.error('Failed to fetch modules:', e)
-
-      // 返回缓存的旧数据
       return storeCache.value.modules
     } finally {
       isLoading.value = false
     }
   }
 
-  /**
-   * 获取分类列表
-   */
   const getCategories = async (forceRefresh = false): Promise<string[]> => {
-    // 如果缓存有效且不需要强制刷新，返回缓存
-    const CACHE_TTL = 5 * 60 * 1000 // 5分钟
-    if (!forceRefresh && Date.now() - storeCache.value.lastUpdate < CACHE_TTL) {
+    if (!forceRefresh && storeCache.value.categories.length > 0 && Date.now() - storeCache.value.lastUpdate < STORE_CACHE_TTL_MS) {
       return storeCache.value.categories
     }
-
-    try {
-      const response = await api.get('/ModuleStore/categories')
-
-      if (response.success) {
-        storeCache.value.categories = response.data.categories
-        return response.data.categories
-      } else {
-        throw new Error(response.message || 'Failed to fetch categories')
-      }
-    } catch (e) {
-      console.error('Failed to fetch categories:', e)
-
-      // 返回缓存的旧数据
-      return storeCache.value.categories
-    }
+    await getModules(true)
+    return storeCache.value.categories
   }
 
-  /**
-   * 搜索模块
-   */
-  const searchModules = async (query: string, options?: {
-    category?: ModuleCategory
-    author?: string
-    tags?: string[]
-    sortBy?: 'popular' | 'newest' | 'price'
-    sortOrder?: 'asc' | 'desc'
-    page?: number
-    pageSize?: number
-  }): Promise<{
+  const searchModules = async (
+    query: string,
+    options?: {
+      category?: ModuleCategory
+      author?: string
+      tags?: string[]
+      sortBy?: 'popular' | 'newest' | 'price'
+      sortOrder?: 'asc' | 'desc'
+      page?: number
+      pageSize?: number
+    },
+  ): Promise<{
     modules: ModuleMarketItem[]
     total: number
     page: number
@@ -113,313 +140,133 @@ export const useModuleStore = () => {
       isLoading.value = true
       error.value = null
 
-      const params = {
-        query,
-        category: options?.category,
-        author: options?.author,
-        tags: options?.tags?.join(','),
-        sortBy: options?.sortBy || 'popular',
-        sortOrder: options?.sortOrder || 'desc',
-        page: options?.page || 1,
-        pageSize: options?.pageSize || 20
-      }
+      const page = options?.page || 1
+      const pageSize = options?.pageSize || 20
 
-      // 过滤掉undefined的参数
-      const filteredParams = Object.fromEntries(
-        Object.entries(params).filter(([_, value]) => value !== undefined)
-      )
-
-      const response = await api.get('/ModuleStore/search', {
-        params: filteredParams
+      const res = await api.get<ModulesListResponse>('/api/modules', {
+        params: {
+          search: query || undefined,
+          category: options?.category || undefined,
+          page,
+          pageSize,
+        },
       })
 
-      if (response.success) {
-        return {
-          modules: response.data.modules,
-          total: response.data.total,
-          page: response.data.page,
-          pageSize: response.data.pageSize
+      const { list, pagination } = unwrapModulesResponse(res)
+      let modules = [...list]
+
+      const sortBy = options?.sortBy || 'popular'
+      const order = options?.sortOrder === 'asc' ? 1 : -1
+      modules.sort((a, b) => {
+        switch (sortBy) {
+          case 'newest':
+            return order * String(a.version).localeCompare(String(b.version))
+          case 'price':
+            return order * ((a.price || 0) - (b.price || 0))
+          case 'popular':
+          default:
+            return order * (a.downloads - b.downloads)
         }
-      } else {
-        throw new Error(response.message || 'Search failed')
+      })
+
+      return {
+        modules,
+        total: pagination?.total ?? modules.length,
+        page: pagination?.page ?? page,
+        pageSize: pagination?.pageSize ?? pageSize,
       }
     } catch (e) {
       error.value = e instanceof Error ? e.message : 'Unknown error'
       console.error('Search failed:', e)
-
-      // 返回空结果
-      return {
-        modules: [],
-        total: 0,
-        page: 1,
-        pageSize: 20
-      }
+      return { modules: [], total: 0, page: 1, pageSize: 20 }
     } finally {
       isLoading.value = false
     }
   }
 
-  /**
-   * 获取模块详情
-   */
-  const getModuleDetail = async (moduleKey: string, version?: string): Promise<ModuleMarketItem | null> => {
+  const getModuleDetail = async (moduleKey: string, _version?: string): Promise<ModuleMarketItem | null> => {
     try {
-      const params = version ? { version } : {}
-      const response = await api.get(`/ModuleStore/${moduleKey}`, {
-        params
-      })
-
-      if (response.success) {
-        return response.data
-      } else {
-        throw new Error(response.message || 'Failed to fetch module detail')
+      const res = (await api.get<ModuleDetailResponse>(`/api/modules/${moduleKey}`)) as ModuleDetailResponse
+      if (res?.success && res.data && isRecord(res.data)) {
+        return mapApiModuleToMarketItem(res.data)
       }
+      return null
     } catch (e) {
       console.error('Failed to fetch module detail:', e)
       return null
     }
   }
 
-  /**
-   * 下载模块
-   */
-  const downloadModule = async (moduleKey: string, version?: string): Promise<{
+  const downloadModule = async (moduleKey: string, _version?: string): Promise<{
     downloadUrl: string
     manifest: ModuleManifest
   }> => {
-    try {
-      const params = version ? { version } : {}
-      const response = await api.post(`/ModuleStore/${moduleKey}/download`, {
-        params
-      })
+    const res = (await api.get<{ success?: boolean; data?: { downloadUrl: string; manifest: ModuleManifest } }>(
+      `/api/modules/${moduleKey}/manifest`,
+    )) as { success?: boolean; data?: { downloadUrl: string; manifest: ModuleManifest } }
 
-      if (response.success) {
-        return {
-          downloadUrl: response.data.downloadUrl,
-          manifest: response.data.manifest
-        }
-      } else {
-        throw new Error(response.message || 'Download failed')
+    if (res?.success && res.data?.manifest) {
+      return {
+        downloadUrl: res.data.downloadUrl || '',
+        manifest: res.data.manifest,
       }
-    } catch (e) {
-      console.error('Download failed:', e)
-      throw e
     }
+    throw new Error('无法加载模块清单')
   }
 
-  /**
-   * 获取推荐模块
-   */
   const getRecommendedModules = async (count = 6): Promise<ModuleMarketItem[]> => {
-    try {
-      const response = await api.get('/ModuleStore/recommended', {
-        params: { count }
-      })
-
-      if (response.success) {
-        return response.data.modules
-      } else {
-        throw new Error(response.message || 'Failed to fetch recommended modules')
-      }
-    } catch (e) {
-      console.error('Failed to fetch recommended modules:', e)
-      return []
-    }
+    const all = await getModules(false)
+    return [...all].sort((a, b) => b.rating - a.rating).slice(0, count)
   }
 
-  /**
-   * 获取热门模块
-   */
-  const getPopularModules = async (category?: ModuleCategory, count = 10): Promise<ModuleMarketItem[]> => {
-    try {
-      const response = await api.get('/ModuleStore/popular', {
-        params: { category, count }
-      })
-
-      if (response.success) {
-        return response.data.modules
-      } else {
-        throw new Error(response.message || 'Failed to fetch popular modules')
-      }
-    } catch (e) {
-      console.error('Failed to fetch popular modules:', e)
-      return []
-    }
+  const getPopularModules = async (_category?: ModuleCategory, count = 10): Promise<ModuleMarketItem[]> => {
+    const all = await getModules(false)
+    return [...all].sort((a, b) => b.downloads - a.downloads).slice(0, count)
   }
 
-  /**
-   * 获取模块评论
-   */
-  const getModuleReviews = async (moduleKey: string): Promise<Array<{
-    id: string
-    author: string
-    rating: number
-    content: string
-    createdAt: string
-  }>> => {
-    try {
-      const response = await api.get(`/ModuleStore/${moduleKey}/reviews`)
+  const getModuleReviews = async (_moduleKey: string) => []
 
-      if (response.success) {
-        return response.data.reviews
-      } else {
-        throw new Error(response.message || 'Failed to fetch reviews')
-      }
-    } catch (e) {
-      console.error('Failed to fetch reviews:', e)
-      return []
-    }
-  }
+  const submitModuleReview = async (_moduleKey: string, _rating: number, _content: string) => false
 
-  /**
-   * 提交模块评论
-   */
-  const submitModuleReview = async (moduleKey: string, rating: number, content: string): Promise<boolean> => {
-    try {
-      const response = await api.post(`/ModuleStore/${moduleKey}/reviews`, {
-        rating,
-        content
-      })
+  const checkModulePurchase = async (_moduleKey: string) => ({ purchased: false as const })
 
-      return response.success
-    } catch (e) {
-      console.error('Failed to submit review:', e)
-      return false
-    }
-  }
+  const purchaseModule = async (_moduleKey: string) => ({
+    success: false as const,
+    error: '模块商店购买流程未接入',
+  })
 
-  /**
-   * 检查模块是否已购买
-   */
-  const checkModulePurchase = async (moduleKey: string): Promise<{
-    purchased: boolean
-    licenseKey?: string
-    expiresAt?: string
-  }> => {
-    try {
-      const response = await api.get(`/ModuleStore/${moduleKey}/purchase`)
+  const getPurchases = async () => []
 
-      return {
-        purchased: response.data.purchased,
-        licenseKey: response.data.licenseKey,
-        expiresAt: response.data.expiresAt
-      }
-    } catch (e) {
-      console.error('Failed to check purchase status:', e)
-      return { purchased: false }
-    }
-  }
-
-  /**
-   * 购买模块
-   */
-  const purchaseModule = async (moduleKey: string): Promise<{
-    success: boolean
-    order?: {
-      id: string
-      amount: number
-      paymentUrl: string
-    }
-    error?: string
-  }> => {
-    try {
-      const response = await api.post(`/ModuleStore/${moduleKey}/purchase`)
-
-      if (response.success) {
-        return {
-          success: true,
-          order: response.data.order
-        }
-      } else {
-        return {
-          success: false,
-          error: response.message
-        }
-      }
-    } catch (e) {
-      return {
-        success: false,
-        error: e instanceof Error ? e.message : 'Unknown error'
-      }
-    }
-  }
-
-  /**
-   * 获取我的购买记录
-   */
-  const getPurchases = async (): Promise<Array<{
-    id: string
-    module: ModuleMarketItem
-    price: number
-    purchasedAt: string
-    expiresAt?: string
-    status: 'active' | 'expired' | 'refunded'
-  }>> => {
-    try {
-      const response = await api.get('/ModuleStore/purchases')
-
-      if (response.success) {
-        return response.data.purchases
-      } else {
-        throw new Error(response.message || 'Failed to fetch purchases')
-      }
-    } catch (e) {
-      console.error('Failed to fetch purchases:', e)
-      return []
-    }
-  }
-
-  /**
-   * 清除缓存
-   */
   const clearCache = () => {
-    storeCache.value = {
-      modules: [],
-      categories: [],
-      lastUpdate: 0
-    }
+    storeCache.value = { modules: [], categories: [], lastUpdate: 0 }
   }
 
-  /**
-   * 监听模块更新
-   */
-  const onModuleUpdate = (callback: (module: ModuleMarketItem) => void): () => void => {
-    // 这里应该使用WebSocket或Server-Sent Events
-    // 模拟实现
+  const onModuleUpdate = (callback: (module: ModuleMarketItem) => void): (() => void) => {
     const interval = setInterval(async () => {
       const modules = await getModules(true)
-      // 检查是否有更新
-      // ...
-    }, 30000) // 30秒检查一次
-
+      if (modules.length) {
+        callback(modules[0])
+      }
+    }, 30000)
     return () => clearInterval(interval)
   }
 
   return {
-    // 状态
     isLoading: readonly(isLoading),
     error: readonly(error),
-
-    // 数据获取
     getModules,
     getCategories,
     getModuleDetail,
     getRecommendedModules,
     getPopularModules,
-
-    // 搜索
     searchModules,
     getModuleReviews,
     submitModuleReview,
-
-    // 下载和购买
     downloadModule,
     checkModulePurchase,
     purchaseModule,
     getPurchases,
-
-    // 工具
     clearCache,
-    onModuleUpdate
+    onModuleUpdate,
   }
 }

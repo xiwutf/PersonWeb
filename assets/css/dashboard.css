@@ -2,11 +2,8 @@
   position: relative;
   min-height: 100vh;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 12% 8%, rgba(59, 130, 246, 0.14), transparent 28%),
-    radial-gradient(circle at 88% 18%, rgba(168, 85, 247, 0.14), transparent 24%),
-    linear-gradient(180deg, rgba(2, 6, 23, 0.98) 0%, rgba(15, 23, 42, 1) 100%);
-  color: #e2e8f0;
+  background: transparent;
+  color: var(--color-text);
 }
 
 .dashboard-background {
@@ -54,7 +51,7 @@
 .dashboard-shell {
   position: relative;
   z-index: 1;
-  width: min(1180px, calc(100% - 32px));
+  width: min(var(--space-container), calc(100% - 32px));
   margin: 0 auto;
   padding: 8.25rem 0 5rem;
 }
@@ -363,7 +360,7 @@
 
 @media (max-width: 900px) {
   .dashboard-shell {
-    width: min(100% - 24px, 980px);
+    width: min(100% - 24px, var(--space-container));
     padding-top: 7.4rem;
   }
 
@@ -374,7 +371,7 @@
 
 @media (max-width: 768px) {
   .dashboard-shell {
-    width: min(100% - 20px, 980px);
+    width: min(100% - 20px, var(--space-container));
     padding-top: 7rem;
     padding-bottom: 4rem;
   }

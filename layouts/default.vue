@@ -9,14 +9,15 @@
   <!-- mode="theme": 前台轻量模式，仅提供主题配置，不含 Message/Dialog/Notification -->
   <AppNaiveConfig mode="theme">
     <!-- 最外层容器：使用主题背景色和文字颜色 -->
-    <div class="default-layout-shell min-h-screen flex flex-col relative"
-      style="background-color: var(--color-bg); color: var(--color-text);">
+    <div class="default-layout-shell public-site-shell min-h-screen flex flex-col relative"
+      style="color: var(--color-text);">
     <div class="default-layout-backdrop">
       <div class="default-layout-backdrop-orb default-layout-backdrop-orb--primary"></div>
       <div class="default-layout-backdrop-orb default-layout-backdrop-orb--secondary"></div>
       <div class="default-layout-backdrop-grid"></div>
       <div class="default-layout-backdrop-noise"></div>
     </div>
+    <ParticleBackground v-if="showParticleLayer" />
     <!-- 动态背景效果（根据主题切换） -->
     <!-- 🔴 已禁用：可能导致滚动条闪烁（requestAnimationFrame 持续动画） -->
     <!-- <BackgroundEffects :effect="currentBackground" :config="backgroundConfig" /> -->
@@ -75,6 +76,7 @@ import AppNaiveConfig from '~/components/layout/AppNaiveConfig.vue'
 import Footer from '~/components/layout/Footer.vue'
 import SecretAdminAccess from '~/components/admin/SecretAdminAccess.vue'
 
+const ParticleBackground = defineAsyncComponent(() => import('~/components/effects/ParticleBackground.vue'))
 const MouseTrail = defineAsyncComponent(() => import('~/components/effects/MouseTrail.vue'))
 const ThemeSwitcher = defineAsyncComponent(() => import('~/components/layout/ThemeSwitcher.vue'))
 const AIAssistant = defineAsyncComponent(() => import('~/components/ai/AIAssistant.vue'))
@@ -92,6 +94,7 @@ const isCompactFloatingMode = ref(false)
 const showDeferredWidgets = computed(() => shouldMountDeferredUi.value && !isLowPowerMode.value)
 const isFocusRoute = computed(() => route.path.startsWith('/search'))
 const showDesktopEnhancements = computed(() => showDeferredWidgets.value && !isFocusRoute.value)
+const showParticleLayer = computed(() => showDeferredWidgets.value)
 const showUtilityWidgets = computed(() => shouldMountUtilityUi.value && !isFocusRoute.value)
 const showFloatingAssistants = computed(() => showDeferredWidgets.value && !isFocusRoute.value)
 const showPrimaryFloatingAssistant = computed(() => showFloatingAssistants.value)
