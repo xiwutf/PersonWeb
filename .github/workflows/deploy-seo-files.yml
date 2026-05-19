@@ -1,0 +1,46 @@
+# 仅上传 robots.txt + sitemap.xml 到 OSS（不重新构建整站）
+# 使用：GitHub → Actions → Deploy SEO files to OSS → Run workflow
+name: Deploy SEO files to OSS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  upload-seo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate sitemap.xml
+        run: node scripts/generate-sitemap.js
+
+      - name: Install ossutil
+        run: |
+          wget -q https://gosspublic.alicdn.com/ossutil/1.7.16/ossutil64
+          chmod 755 ossutil64
+          mv ossutil64 /usr/local/bin/ossutil
+
+      - name: Upload robots.txt and sitemap.xml
+        env:
+          OSS_ENDPOINT: ${{ secrets.OSS_ENDPOINT }}
+          OSS_ACCESS_KEY_ID: ${{ secrets.OSS_AK }}
+          OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_SK }}
+          OSS_BUCKET: ${{ secrets.OSS_BUCKET }}
+        run: |
+          if [ -z "$OSS_BUCKET" ]; then
+            echo "Error: GitHub Secrets 未配置 OSS_BUCKET / OSS_ENDPOINT / OSS_AK / OSS_SK"
+            exit 1
+          fi
+          mkdir -p ~/.ossutil
+          {
+            echo "[Credentials]"
+            echo "language=CH"
+            echo "endpoint=$OSS_ENDPOINT"
+            echo "accessKeyID=$OSS_ACCESS_KEY_ID"
+            echo "accessKeySecret=$OSS_ACCESS_KEY_SECRET"
+          } > ~/.ossutilconfig
+
+          ossutil cp public/robots.txt "oss://${OSS_BUCKET}/robots.txt" -f
+          ossutil cp public/sitemap.xml "oss://${OSS_BUCKET}/sitemap.xml" -f
+          echo "Done: robots.txt + sitemap.xml"

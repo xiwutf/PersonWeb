@@ -1,0 +1,8 @@
+# https://xifg.com.cn
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /secret-login
+Disallow: /dashboard/
+
+Sitemap: https://xifg.com.cn/sitemap.xml

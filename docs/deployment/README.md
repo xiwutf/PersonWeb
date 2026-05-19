@@ -26,6 +26,12 @@
   - 后端服务启动方法
   - 常见问题排查
 
+### 🔍 SEO / Google 收录
+- **[SEO：OSS + Nginx 修复（首页 403）](./SEO_OSS_NGINX_FIX.md)** ⭐ **Google 搜不到站点时先看**
+  - 根路径 `/` 403 修复
+  - robots.txt / sitemap 部署
+  - Search Console 提交步骤
+
 ## 🎯 使用建议
 
 ### 第一次配置开发环境

@@ -27,6 +27,9 @@ echo -e "${YELLOW}使用生产环境配置构建...${NC}"
 export NODE_ENV=production
 export NUXT_PUBLIC_API_BASE=https://api.xifg.com.cn/api
 
+# SEO：sitemap（robots.txt 在 public/，随构建产物上传 OSS）
+node scripts/generate-sitemap.js
+
 # 构建应用
 npm run build
 
@@ -57,4 +60,6 @@ echo "下一步操作："
 echo "  1. 将 .output 目录部署到服务器"
 echo "  2. 配置 Nginx 或其他 Web 服务器"
 echo "  3. 确保 API 服务 https://api.xifg.com.cn/api 可访问"
+echo "  4. 上传 OSS 后按 docs/deployment/SEO_OSS_NGINX_FIX.md 修复 Nginx 根路径 / → index.html"
+echo "  5. 验证: curl -sI https://xifg.com.cn/ 应为 200（不是 403）"
 
