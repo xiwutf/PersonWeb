@@ -429,24 +429,19 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* 只保留布局相关的样式，不写颜色 */
+/* 布局由 layouts/admin.vue 的 .admin-page-shell 统一留白 */
 .admin-dashboard-page {
-  padding: var(--spacing-lg);
-}
-
-@media (min-width: 768px) {
-  .admin-dashboard-page {
-    padding: var(--spacing-xl);
-  }
+  padding: 0;
 }
 
 /* Section Title */
 .section-title {
-  font-size: 14px;
+  font-size: var(--font-size-sm);
   font-weight: 600;
-  margin-bottom: 12px;
-  opacity: 0.8;
+  margin-bottom: var(--spacing-sm);
+  letter-spacing: 0.02em;
   color: var(--color-text-main);
+  opacity: 0.88;
 }
 
 /* KPI 卡片 */

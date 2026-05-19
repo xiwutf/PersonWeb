@@ -5,10 +5,7 @@
     使用场景：所有 /admin/* 路径下的页面
     注意：此布局不包含前台 Header 组件，这是正确的设计，因为后台管理系统有自己的导航体系
   -->
-  <div 
-    class="min-h-screen flex admin-layout"
-    :style="layoutStyle"
-  >
+  <div class="min-h-screen flex admin-layout admin-layout--surface">
     <!-- 移动端遮罩层 -->
     <div 
       v-if="!isEmbedded && isMobileMenuOpen"
@@ -28,8 +25,9 @@
       }"
       :style="sidebarStyle"
     >
-      <div class="p-6 text-xl font-bold border-b flex items-center gap-2 admin-sidebar-header">
-        <span>管理后台</span>
+      <div class="admin-sidebar-brand border-b admin-sidebar-header">
+        <div class="admin-sidebar-brand-title">管理后台</div>
+        <div class="admin-sidebar-brand-sub">溪午听风 · 控制台</div>
       </div>
       <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
         <!-- 动态菜单：基于配置文件生成 -->
@@ -37,15 +35,23 @@
           <!-- 菜单组 -->
           <div class="menu-group">
             <button 
+              type="button"
               @click="toggleMenu(groupIndex)"
               class="menu-group-header"
               :class="{ 'menu-group-active': isGroupActive(group) }"
             >
               <i 
-                class="fas fa-chevron-right transition-transform duration-200 mr-2 text-xs" 
+                class="fas fa-chevron-right menu-group-chevron" 
                 :class="{ 'rotate-90': expandedMenus[groupIndex] }"
+                aria-hidden="true"
               ></i>
-              <span class="text-xs uppercase font-semibold tracking-wider menu-group-title">{{ group.label }}</span>
+              <i
+                v-if="group.icon"
+                :class="group.icon"
+                class="menu-group-icon"
+                aria-hidden="true"
+              ></i>
+              <span class="menu-group-title">{{ group.label }}</span>
             </button>
             <div v-show="expandedMenus[groupIndex]" class="menu-group-items">
               <template v-for="item in group.children" :key="item.path">
@@ -68,7 +74,7 @@
       
       <!-- 退出登录区域：使用主题边框颜色，替换写死的 border-slate-700 -->
       <div class="p-4 border-t border-border-subtle">
-        <button @click="logout" class="w-full flex items-center px-4 py-2 text-left rounded transition-colors admin-sidebar-link">
+        <button type="button" @click="logout" class="w-full flex items-center px-4 py-2 text-left rounded transition-colors admin-sidebar-link">
           <i class="fas fa-sign-out-alt w-5 text-center mr-3"></i>
           <span class="text-sm font-medium">退出登录</span>
         </button>
@@ -83,17 +89,33 @@
     >
       <!-- 顶部栏（包含移动端菜单按钮和铃铛入口） -->
       <ClientOnly>
-        <div class="admin-topbar border-b border-border-subtle bg-bg-elevated px-4 md:px-6 py-4 flex items-center justify-between md:justify-end gap-4">
-          <!-- 移动端菜单按钮 -->
-          <button
-            v-if="!isEmbedded"
-            @click="isMobileMenuOpen = !isMobileMenuOpen"
-            class="md:hidden p-2 rounded-md hover:bg-bg-elevated transition-colors"
-            aria-label="切换菜单"
-          >
-            <i class="fas fa-bars text-lg" :class="isMobileMenuOpen ? 'fa-times' : 'fa-bars'"></i>
-          </button>
-          <div class="flex items-center gap-4 ml-auto md:ml-0">
+        <div class="admin-topbar border-b border-border-subtle bg-bg-elevated px-4 md:px-6 py-3 md:py-4 flex items-center justify-between gap-4">
+          <div class="flex items-center gap-3 min-w-0 flex-1">
+            <button
+              v-if="!isEmbedded"
+              type="button"
+              @click="isMobileMenuOpen = !isMobileMenuOpen"
+              class="md:hidden p-2 rounded-md hover:bg-bg-elevated transition-colors shrink-0"
+              aria-label="切换菜单"
+            >
+              <i class="fas text-lg" :class="isMobileMenuOpen ? 'fa-times' : 'fa-bars'" aria-hidden="true"></i>
+            </button>
+            <div class="admin-breadcrumb min-w-0 hidden sm:flex flex-col sm:flex-row sm:items-baseline sm:gap-2">
+              <span class="admin-breadcrumb-root">控制台</span>
+              <template v-if="currentNav.group">
+                <span class="admin-breadcrumb-sep" aria-hidden="true">/</span>
+                <span class="admin-breadcrumb-group">{{ currentNav.group }}</span>
+              </template>
+              <template v-if="currentNav.page">
+                <span class="admin-breadcrumb-sep" aria-hidden="true">/</span>
+                <span class="admin-breadcrumb-page truncate">{{ currentNav.page }}</span>
+              </template>
+            </div>
+            <div class="admin-breadcrumb-mobile sm:hidden truncate text-sm font-medium text-text-main">
+              {{ currentNav.page || '管理后台' }}
+            </div>
+          </div>
+          <div class="flex items-center gap-4 shrink-0">
             <NotificationBell />
           </div>
         </div>
@@ -101,14 +123,15 @@
 
       <!-- 使用统一的 AppNaiveConfig，确保前台和后台共用同一套主题配置 -->
       <!-- 使用 ClientOnly 避免 SSR 时的闪烁 -->
-      <div class="flex-1 overflow-auto">
+      <div class="flex-1 overflow-auto admin-main-scroll">
         <ClientOnly>
           <AppNaiveConfig>
-            <slot />
+            <div class="admin-page-shell">
+              <slot />
+            </div>
           </AppNaiveConfig>
           <template #fallback>
-            <!-- SSR 时的占位内容，使用与主题一致的背景色 -->
-            <div class="admin-main-fallback">
+            <div class="admin-main-fallback admin-page-shell">
               <slot />
             </div>
           </template>
@@ -148,7 +171,7 @@ import { useAdminGlobalStyle } from '~/composables/useAdminStyle'
 import AppNaiveConfig from '~/components/layout/AppNaiveConfig.vue'
 import MouseTrail from '~/components/effects/MouseTrail.vue'
 import ThemeSwitcher from '~/components/layout/ThemeSwitcher.vue'
-import { adminMenu, type AdminMenuItem } from '~/constants/admin/menu'
+import { adminMenu, type AdminMenuGroup } from '~/constants/admin/menu'
 
 const router = useRouter()
 const route = useRoute()
@@ -156,9 +179,6 @@ const route = useRoute()
 // 检测是否在 iframe 中嵌入（通过 URL 参数或 window 检测）
 const isEmbedded = ref(false)
 const { globalStyle, styleConfig, cssVariables, inlineStyle, fetchGlobalStyle } = useAdminGlobalStyle()
-
-// 使用全局主题系统（前台和后台共用）
-const { currentTheme } = useTheme()
 
 // 获取所有路由路径（用于过滤不存在的路由）
 const routePaths = computed(() => {
@@ -191,7 +211,7 @@ const safeMenu = computed(() => {
   const paths = routePaths.value
   return adminMenu.map(group => ({
     ...group,
-    children: group.children?.filter(item => {
+    children: (group.children ?? []).filter(item => {
       if (!item.path) return false
       // 检查精确路径匹配
       if (paths.has(item.path)) return true
@@ -241,15 +261,39 @@ const isItemActive = (path?: string): boolean => {
 }
 
 // 检查菜单组是否激活（组内任意子项激活）
-const isGroupActive = (group: AdminMenuItem): boolean => {
-  if (!group.children) return false
-  return group.children.some(item => item.path && isItemActive(item.path))
+const isGroupActive = (group: AdminMenuGroup): boolean => {
+  return group.children.some(item => isItemActive(item.path))
 }
+
+// 顶栏：当前所在分组与页面（取长路径前缀匹配）
+const currentNav = computed(() => {
+  const p = route.path
+  let bestLen = 0
+  let group = ''
+  let page = ''
+  for (const g of safeMenu.value) {
+    for (const item of g.children) {
+      const path = item.path
+      if (p === path || p.startsWith(path + '/')) {
+        if (path.length >= bestLen) {
+          bestLen = path.length
+          group = g.label
+          page = item.label
+        }
+      }
+    }
+  }
+  if (!page && p.startsWith('/admin')) {
+    page = '管理后台'
+  }
+  return { group, page }
+})
 
 // 获取菜单项图标
 const getMenuItemIcon = (label: string): string => {
   const iconMap: Record<string, string> = {
-    '后台首页': 'fas fa-chart-line',
+    '仪表盘': 'fas fa-chart-line',
+    '内容中枢': 'fas fa-sitemap',
     '文章管理': 'fas fa-file-alt',
     '项目管理': 'fas fa-project-diagram',
     '工具管理': 'fas fa-tools',
@@ -259,8 +303,14 @@ const getMenuItemIcon = (label: string): string => {
     '数据分析': 'fas fa-chart-bar',
     '投资管理': 'fas fa-chart-line',
     '订单管理': 'fas fa-shopping-cart',
-    'AI 管理': 'fas fa-magic',
+    'AI 管理': 'fas fa-robot',
     'AI 内容': 'fas fa-brain',
+    'AI 日志': 'fas fa-scroll',
+    '情报首页': 'fas fa-home',
+    '内容列表': 'fas fa-list-ul',
+    '每日简报': 'fas fa-newspaper',
+    '来源管理': 'fas fa-rss',
+    '错误日志': 'fas fa-bug',
     '关系管理': 'fas fa-heart',
     '副业项目': 'fas fa-briefcase',
     '技能树': 'fas fa-sitemap',
@@ -275,13 +325,21 @@ const getMenuItemIcon = (label: string): string => {
   return iconMap[label] || 'fas fa-circle'
 }
 
-// 根据当前路由自动展开对应的菜单组
+// 根据当前路由自动展开对应的菜单组；宽屏下未手动折叠过的分组默认展开
 const autoExpandMenu = () => {
   safeMenu.value.forEach((group, index) => {
     if (isGroupActive(group)) {
       expandedMenus.value[index] = true
     }
   })
+  if (!process.client || typeof window === 'undefined') return
+  if (window.innerWidth >= 768) {
+    safeMenu.value.forEach((_, index) => {
+      if (expandedMenus.value[index] === undefined) {
+        expandedMenus.value[index] = true
+      }
+    })
+  }
 }
 
 // 监听路由变化，自动展开对应菜单
@@ -311,16 +369,6 @@ const sidebarStyle = computed(() => {
   }
 })
 
-// 布局样式（使用侧边栏背景色）
-const layoutStyle = computed(() => {
-  const vars = cssVariables.value
-  const bg = vars['--admin-sidebar-bg'] || '#1e293b'
-  return {
-    backgroundColor: bg,
-    minHeight: '100vh'
-  }
-})
-
 // 主内容区样式（Vision Pro 风格 - 深色模式下使用渐变）
 const mainContentStyle = computed(() => {
   // 如果在 iframe 中，减少 padding
@@ -329,11 +377,6 @@ const mainContentStyle = computed(() => {
       padding: '0'
     }
   }
-  const vars = cssVariables.value
-  const isDark = currentTheme.value === 'dark'
-  
-  // 深色模式下使用渐变背景（通过 themeOverrides.Layout.color 控制）
-  // 浅色模式使用纯色背景
   return {
     minHeight: '100vh',
     position: 'relative',
@@ -415,6 +458,112 @@ const logout = () => {
 </script>
 
 <style scoped>
+/* 整页背景与主内容区宽度 */
+.admin-layout--surface {
+  background-color: var(--color-bg-body);
+}
+
+.admin-page-shell {
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: var(--spacing-md);
+  min-height: 100%;
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .admin-page-shell {
+    padding: var(--spacing-lg) var(--spacing-xl);
+  }
+}
+
+.admin-sidebar-brand {
+  padding: var(--spacing-lg) var(--spacing-md);
+}
+
+.admin-sidebar-brand-title {
+  font-size: var(--font-size-h4, 1.125rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--color-text-main) !important;
+}
+
+.admin-sidebar-brand-sub {
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted) !important;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.admin-breadcrumb {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  line-height: 1.35;
+}
+
+.admin-breadcrumb-root {
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+.admin-breadcrumb-sep {
+  opacity: 0.45;
+  font-weight: 400;
+}
+
+.admin-breadcrumb-group {
+  font-weight: 600;
+  color: var(--color-text-main);
+}
+
+.admin-breadcrumb-page {
+  font-weight: 500;
+  color: var(--color-text-main);
+}
+
+.admin-breadcrumb-mobile {
+  color: var(--color-text-main);
+}
+
+.menu-group-icon {
+  width: 1rem;
+  text-align: center;
+  margin-right: 0.375rem;
+  font-size: 0.8125rem;
+  opacity: 0.88;
+  color: var(--color-text-muted) !important;
+  flex-shrink: 0;
+}
+
+.menu-group-header:hover .menu-group-icon {
+  opacity: 1;
+  color: var(--color-primary) !important;
+}
+
+.menu-group-chevron {
+  font-size: 0.625rem;
+  width: 0.875rem;
+  margin-right: 0.375rem;
+  transition: transform 0.2s ease;
+  opacity: 0.65;
+  color: var(--color-text-muted) !important;
+  flex-shrink: 0;
+}
+
+.menu-group-header:hover .menu-group-chevron {
+  opacity: 0.95;
+  color: var(--color-text-main) !important;
+}
+
+.menu-group-active .menu-group-chevron {
+  opacity: 1;
+  color: var(--color-text-main) !important;
+}
+
 /* 侧边栏基础样式 */
 .admin-sidebar {
   background-color: var(--color-bg-card) !important;
@@ -501,23 +650,14 @@ const logout = () => {
 }
 
 /* 菜单组标题样式 */
+/* 菜单组标题（分组名） */
 .menu-group-title {
   color: var(--color-text-muted) !important;
   font-weight: 600;
-  font-size: 0.75rem;
-  opacity: 0.8;
-}
-
-.menu-group-header {
-  color: var(--color-text-main) !important;
-  padding: 0.5rem 1rem;
-  margin-top: 0.5rem;
-  border-radius: var(--radius-sm);
-  transition: background-color 0.2s;
-}
-
-.menu-group-header:hover {
-  background-color: var(--color-bg-elevated);
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.06em;
+  flex: 1;
+  text-align: left;
 }
 
 .menu-group-header:hover .menu-group-title {
@@ -610,7 +750,7 @@ const logout = () => {
 @media (max-width: 768px) {
   .admin-main {
     margin-left: 0 !important;
-    padding: 1rem !important;
+    padding: 0 !important;
   }
 
   /* 移动端侧边栏宽度调整 */
@@ -1332,30 +1472,8 @@ const logout = () => {
   background-color: var(--color-bg-elevated) !important;
 }
 
-.menu-group-header .fa-chevron-right {
-  font-size: 0.625rem;
-  width: 0.875rem;
-  transition: transform 0.2s ease;
-  opacity: 0.6;
-  color: var(--color-text-muted) !important;
-}
-
-.menu-group-header:hover .fa-chevron-right {
-  opacity: 0.8;
-  color: var(--color-text-main) !important;
-}
-
-.menu-group-header .fa-chevron-right.rotate-90 {
-  transform: rotate(90deg);
-}
-
 .menu-group-active {
   background-color: var(--color-bg-elevated) !important;
-}
-
-.menu-group-active .fa-chevron-right {
-  opacity: 1;
-  color: var(--color-text-main) !important;
 }
 
 .menu-group-items {

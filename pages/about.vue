@@ -58,10 +58,11 @@
             </p>
             <p class="about-profile-summary">热爱技术，喜欢产品，持续构建中...</p>
             <div class="about-profile-tags">
-              <span>软件开发</span>
               <span>AI 应用研发</span>
+              <span>独立产品探索者</span>
+              <span>Chrome 扩展开发者</span>
               <span>产品化实践</span>
-              <span>个人品牌建设者</span>
+              <span>系统构建者</span>
             </div>
             <div class="about-stats">
               <div v-for="stat in stats" :key="stat.label" class="about-stat">
@@ -238,7 +239,7 @@ const focusAreas = [
     title: '产品化探索',
     icon: 'fas fa-puzzle-piece',
     color: 'emerald',
-    points: ['个人网站 & 品牌', '桌面宠物产品', '联谊 / 本地生活平台', '企业工具模块']
+    points: ['个人品牌平台', 'Chrome Web Store 扩展', 'AI 应用小产品', '桌面宠物产品']
   },
   {
     title: '长期内容积累',

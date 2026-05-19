@@ -14,7 +14,7 @@ INSERT INTO `site_config` (`config_key`, `config_value`, `description`) VALUES
 ('home_slogan_alt_3', 'Every Line of Code Builds My Future', '首页 Slogan 备选3'),
 
 -- 身份标签
-('home_tags', 'AI 工程师 · 系统构建者 · 技术创业者', '首页身份标签'),
+('home_tags', 'AI 应用探索者 · 独立产品探索者 · Chrome 扩展开发者 · 产品化实践', '首页身份标签'),
 
 -- 个人简介（Hero 文案）
 ('home_hero_title', '构建 AI 与软件系统的长期主义者', '首页主标题'),

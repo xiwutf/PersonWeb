@@ -178,7 +178,7 @@ const platformDesc = computed(() => {
 })
 
 const personalTags = computed(() => {
-  const tagsStr = siteConfig.value.home_tags || 'AI 工程师 · 系统构建者 · 技术创业者'
+  const tagsStr = siteConfig.value.home_tags || 'AI 应用探索者 · 独立产品探索者 · Chrome 扩展开发者 · 产品化实践'
   return tagsStr.split(' · ').filter(t => t.trim())
 })
 
@@ -198,7 +198,7 @@ const fetchSiteConfig = async () => {
 }
 
 // 角色轮播
-const roles = ['全栈开发者', 'AI 应用探索者', 'Revit 插件实践者', '终身学习者']
+const roles = ['AI 应用探索者', '独立产品探索者', 'Chrome 扩展开发者', '产品化实践']
 const currentRoleIndex = ref(0)
 let roleInterval: NodeJS.Timeout | null = null
 

@@ -1,6 +1,22 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+const isProd = process.env.NODE_ENV === 'production'
+const isDev = !isProd
+
 export default defineNuxtConfig({
-  devtools: { enabled: process.env.NODE_ENV !== 'production' },
+  // 日常开发默认关闭 DevTools，需要时：NUXT_DEVTOOLS=true npm run dev
+  devtools: { enabled: process.env.NUXT_DEVTOOLS === 'true' && isDev },
+  // 不参与 Nuxt 扫描的目录（减少 pages/components 索引，加快 dev 冷启动）
+  ignore: [
+    '**/backend/**',
+    '**/ai-service/**',
+    '**/database/**',
+    '**/docs/**',
+    '**/examples/**',
+    '**/scripts/**',
+    '**/test/**',
+    '**/test-documents/**',
+    '**/server/tests/**',
+  ],
   debug: {
     hooks: false
   },
@@ -13,6 +29,11 @@ export default defineNuxtConfig({
     '@nuxt/content',
     '@nuxtjs/tailwindcss'
   ],
+
+  tailwindcss: {
+    viewer: false,
+    exposeConfig: false,
+  },
 
   // 构建配置
   build: {
@@ -43,11 +64,14 @@ export default defineNuxtConfig({
         toc: { depth: 3, searchDepth: 3 },
         highlight: {
           theme: { default: 'dracula', dark: 'dracula' },
-          langs: [
-            'javascript', 'typescript', 'vue', 'html', 'css', 'scss',
-            'json', 'yaml', 'sql', 'bash', 'shell', 'markdown',
-            'python', 'csharp'
-          ]
+          // 开发环境少注册语言包，减轻 @nuxt/content 首次处理成本
+          langs: isDev
+            ? ['javascript', 'typescript', 'vue', 'html', 'css', 'json', 'bash', 'markdown']
+            : [
+                'javascript', 'typescript', 'vue', 'html', 'css', 'scss',
+                'json', 'yaml', 'sql', 'bash', 'shell', 'markdown',
+                'python', 'csharp'
+              ]
         }
       }
     }

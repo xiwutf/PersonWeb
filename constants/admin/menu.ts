@@ -1,19 +1,28 @@
 // constants/admin/menu.ts
-// 后台菜单配置：只负责"分组/顺序/名字/路由"，不掺业务逻辑
+// 后台菜单：分组顺序、命名、路由；侧栏分组可带图标（layouts/admin.vue 渲染）
 
-export type AdminMenuItem = {
+export type AdminMenuLeaf = {
   label: string
-  path?: string
-  children?: AdminMenuItem[]
+  path: string
 }
 
-export const adminMenu: AdminMenuItem[] = [
+export type AdminMenuGroup = {
+  /** 侧栏分组标题 */
+  label: string
+  /** Font Awesome 分组图标，可选 */
+  icon?: string
+  children: AdminMenuLeaf[]
+}
+
+export const adminMenu: AdminMenuGroup[] = [
   {
-    label: '仪表盘',
-    children: [{ label: '后台首页', path: '/admin' }],
+    label: '总览',
+    icon: 'fas fa-tachometer-alt',
+    children: [{ label: '仪表盘', path: '/admin' }],
   },
   {
-    label: '内容中心',
+    label: '内容与站点',
+    icon: 'fas fa-layer-group',
     children: [
       { label: '内容中枢', path: '/admin/content-hub' },
       { label: '文章管理', path: '/admin/articles' },
@@ -25,26 +34,34 @@ export const adminMenu: AdminMenuItem[] = [
     ],
   },
   {
-    label: '数据中心',
+    label: '访问与洞察',
+    icon: 'fas fa-chart-pie',
     children: [
       { label: '访客数据', path: '/admin/visitors' },
       { label: '访客留言', path: '/admin/visitor-messages' },
       { label: '数据分析', path: '/admin/analytics' },
+    ],
+  },
+  {
+    label: '商业与订单',
+    icon: 'fas fa-coins',
+    children: [
       { label: '投资管理', path: '/admin/investment' },
       { label: '订单管理', path: '/admin/orders' },
     ],
   },
   {
-    label: 'AI & 自动化',
+    label: 'AI 与自动化',
+    icon: 'fas fa-magic',
     children: [
       { label: 'AI 管理', path: '/admin/ai' },
       { label: 'AI 内容', path: '/admin/ai/content' },
-      // 如果 /admin/ai/logs 真实存在，再打开
-      // { label: 'AI 日志', path: '/admin/ai/logs' },
+      { label: 'AI 日志', path: '/admin/ai/logs' },
     ],
   },
   {
     label: '情报中心',
+    icon: 'fas fa-broadcast-tower',
     children: [
       { label: '情报首页', path: '/admin/intelligence' },
       { label: '内容列表', path: '/admin/intelligence/content' },
@@ -53,7 +70,8 @@ export const adminMenu: AdminMenuItem[] = [
     ],
   },
   {
-    label: '个人系统',
+    label: '个人工作台',
+    icon: 'fas fa-briefcase',
     children: [
       { label: '关系管理', path: '/admin/relations' },
       { label: '副业项目', path: '/admin/side-projects' },
@@ -62,7 +80,8 @@ export const adminMenu: AdminMenuItem[] = [
     ],
   },
   {
-    label: '系统设置',
+    label: '系统与安全',
+    icon: 'fas fa-shield-alt',
     children: [
       { label: '系统设置', path: '/admin/settings' },
       { label: '主题设置', path: '/admin/settings/themes' },

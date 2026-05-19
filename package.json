@@ -25,6 +25,7 @@
   },
   "scripts": {
     "dev": "node node_modules/cross-env/dist/bin/cross-env.js SASS_SILENCE_DEPRECATIONS=legacy-js-api node node_modules/nuxt/bin/nuxt.mjs dev",
+    "dev:fast": "node node_modules/cross-env/dist/bin/cross-env.js SASS_SILENCE_DEPRECATIONS=legacy-js-api NUXT_DEVTOOLS=false node node_modules/nuxt/bin/nuxt.mjs dev",
     "dev:mobile": "node node_modules/cross-env/dist/bin/cross-env.js SASS_SILENCE_DEPRECATIONS=legacy-js-api node node_modules/nuxt/bin/nuxt.mjs dev --host 0.0.0.0",
     "dev:prod": "node node_modules/cross-env/dist/bin/cross-env.js SASS_SILENCE_DEPRECATIONS=legacy-js-api NODE_ENV=production node node_modules/nuxt/bin/nuxt.mjs dev",
     "build": "node node_modules/cross-env/dist/bin/cross-env.js SASS_SILENCE_DEPRECATIONS=legacy-js-api NODE_ENV=production NODE_OPTIONS=--no-deprecation node node_modules/nuxt/bin/nuxt.mjs build",
