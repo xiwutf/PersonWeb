@@ -23,8 +23,11 @@
                 查看我的项目
                 <i class="fas fa-arrow-right"></i>
               </NuxtLink>
+              <NuxtLink to="/products/mindtrace" class="about-button about-button--ghost">
+                MindTrace 扩展
+              </NuxtLink>
               <NuxtLink to="/products/desktop-pet" class="about-button about-button--ghost">
-                了解产品模块
+                桌宠产品
               </NuxtLink>
               <a href="mailto:linxiwanting@gmail.com" class="about-button about-button--ghost">
                 联系合作

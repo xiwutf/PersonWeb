@@ -53,7 +53,7 @@
 
     <!-- 任务列表 -->
     <div class="task-list-container">
-      <div v-if="loading" class="p-8 text-center task-list-loading">加载中..</div>
+      <div v-if="loading" class="p-8 text-center task-list-loading">加载中...</div>
       <div v-else-if="tasks.length === 0" class="p-8 text-center task-list-empty">暂无任务</div>
       <div v-else class="task-list-divider">
         <div v-for="task in tasks" :key="task.id" class="task-list-item">

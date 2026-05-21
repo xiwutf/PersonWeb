@@ -57,10 +57,10 @@ const featuredItems = [
     badgeBg: 'bg-blue-500/20 text-blue-400 border-blue-400/40'
   },
   {
-    type: 'Featured Tool',
-    title: '在线工具示例',
-    description: '一个实用的在线小工具，帮助提升工作效率。',
-    path: '/tools',
+    type: 'Chrome 扩展',
+    title: 'MindTrace',
+    description: '浏览网页时快速记录灵感，自动保留思考上下文，串联你的思考轨迹。',
+    path: '/products/mindtrace',
     gradientBg: 'bg-gradient-to-br from-cyan-500/10 to-teal-500/10',
     badgeBg: 'bg-cyan-500/20 text-cyan-400 border-cyan-400/40'
   },

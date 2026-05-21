@@ -18,7 +18,7 @@
 
     <!-- 提醒列表 -->
     <div class="alert-list">
-      <div v-if="loading" class="loading">加载中..<</div>
+      <div v-if="loading" class="loading">加载中...</div>
       <div v-else-if="!alerts || alerts.length === 0" class="empty-state">
         <p>暂无价格提醒</p>
         <button @click="handleAddClick" class="btn-primary">创建第一个提醒</button>

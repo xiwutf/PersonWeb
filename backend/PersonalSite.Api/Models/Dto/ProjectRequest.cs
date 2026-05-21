@@ -28,6 +28,8 @@ public class ProjectRequest
 
     public string? TechStack { get; set; } // JSON array or comma separated
 
-    public string? Content { get; set; } // Markdown content
+    public string? Content { get; set; } // 源稿（Markdown，可选）
+
+    public string? ContentHtml { get; set; } // 发布态 HTML（推荐 AI 直接写入）
 }
 

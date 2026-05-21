@@ -21,7 +21,7 @@
         </button>
       </div>
 
-      <div v-if="loading" class="loading">加载�?..</div>
+      <div v-if="loading" class="loading">加载中...</div>
       <div v-else-if="globalStyles.length === 0" class="empty-state">暂无全局风格</div>
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div
@@ -81,7 +81,7 @@
         </button>
       </div>
 
-      <div v-if="loading" class="loading">加载�?..</div>
+      <div v-if="loading" class="loading">加载中...</div>
       <div v-else-if="moduleStyles.length === 0" class="empty-state">暂无模块风格</div>
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div

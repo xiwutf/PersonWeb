@@ -39,7 +39,7 @@
         />
         <div v-else-if="loading" class="table-loading">
           <n-spin size="large" />
-          <p>加载中..</p>
+          <p>加载中...</p>
         </div>
         <div v-else class="table-empty">
           <n-empty description="暂无思维记录，点击「新建记录」开始" />

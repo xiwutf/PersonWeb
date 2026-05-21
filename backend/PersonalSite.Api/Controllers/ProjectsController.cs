@@ -84,6 +84,7 @@ public class ProjectsController : ControllerBase
             Status = request.Status,
             TechStack = request.TechStack,
             Content = request.Content,
+            ContentHtml = request.ContentHtml,
             ViewCount = 0,
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now
@@ -113,6 +114,7 @@ public class ProjectsController : ControllerBase
         existing.Status = request.Status;
         existing.TechStack = request.TechStack;
         existing.Content = request.Content;
+        existing.ContentHtml = request.ContentHtml;
         existing.UpdatedAt = DateTime.Now;
 
         await _context.SaveChangesAsync();

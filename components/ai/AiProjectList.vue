@@ -82,7 +82,8 @@ interface AiProject {
   tags: string[]
   stack: string[]
   status: string
-  path?: string  // 可选：项目路径，用于跳转
+  path?: string
+  externalUrl?: string
 }
 
 // Props
@@ -92,6 +93,15 @@ const props = defineProps<{
 
 // 默认项目数据（占位数据）
 const defaultProjects: AiProject[] = [
+  {
+    id: 'mindtrace',
+    title: 'MindTrace',
+    summary: '浏览网页时快速记录灵感，并自动保留思考上下文，帮助你沉淀「思考轨迹」。',
+    tags: ['插件工具', 'Chrome 扩展'],
+    stack: ['TypeScript', 'Chrome Extension API'],
+    status: '已上线',
+    path: '/products/mindtrace'
+  },
   {
     id: 'name-tool',
     title: '智能取名助手',
@@ -183,13 +193,15 @@ const getStatusClass = (status: string) => {
 const router = useRouter()
 const isSafeInternalPath = (path?: string) => Boolean(path && path.startsWith('/') && !path.startsWith('/api/'))
 const handleProjectClick = (project: AiProject) => {
-  // 如果有 path，跳转到对应页面；否则显示详情
+  if (project.externalUrl) {
+    window.open(project.externalUrl, '_blank', 'noopener,noreferrer')
+    return
+  }
   if (isSafeInternalPath(project.path)) {
     router.push(project.path)
-  } else {
-    // 可以跳转到项目详情页或打开弹窗
-    console.log('点击项目:', project)
+    return
   }
+  console.log('点击项目:', project)
 }
 </script>
 

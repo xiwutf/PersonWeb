@@ -28,7 +28,7 @@
           <h2 class="card-title">基础样式配置</h2>
           <button @click="saveStyleConfig" class="btn-primary" :disabled="saving">
             <i class="fas fa-save mr-2"></i>
-            {{ saving ? '保存�?..' : '保存配置' }}
+            {{ saving ? '保存中...' : '保存配置' }}
           </button>
         </div>
 

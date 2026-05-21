@@ -53,6 +53,12 @@ const cards = [
     title: '桌宠产品',
     description: '桌面宠物与相关能力展示。',
   },
+  {
+    to: '/products/mindtrace',
+    icon: '🧠',
+    title: 'MindTrace',
+    description: 'Chrome 扩展：浏览时记录灵感，自动保留思考上下文。',
+  },
 ]
 
 useHead({
@@ -60,7 +66,7 @@ useHead({
   meta: [
     {
       name: 'description',
-      content: '溪午听风的产品与工具入口：插件工具、模块商店与独立产品。',
+      content: '溪午听风的产品与工具入口：MindTrace 扩展、桌宠、插件工具与模块商店。',
     },
   ],
 })

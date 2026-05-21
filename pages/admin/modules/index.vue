@@ -134,7 +134,7 @@
 
     <!-- 加载状态 -->
     <div v-if="loading" class="loading">
-      加载中..
+      加载中...
     </div>
 
     <!-- 空状态 -->

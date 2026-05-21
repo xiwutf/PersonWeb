@@ -54,7 +54,7 @@
     <!-- 胶囊列表 -->
     <div class="table-container">
       <div v-if="loading" class="table-loading">
-        加载中..
+        加载中...
       </div>
       <div v-else-if="capsules.length === 0" class="table-empty">
         暂无时间胶囊

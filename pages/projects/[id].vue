@@ -82,7 +82,7 @@
             </div>
           </header>
 
-          <article v-if="markdownContent" class="projects-detail-content-card">
+          <article v-if="projectBodyHtml" class="projects-detail-content-card">
             <div class="projects-detail-section-head">
               <div>
                 <p class="projects-detail-section-kicker">Project Notes</p>
@@ -91,7 +91,7 @@
             </div>
             <div
               class="projects-detail-content prose prose-lg max-w-none"
-              v-html="markdownContent"
+              v-html="projectBodyHtml"
             ></div>
           </article>
 
@@ -169,7 +169,7 @@
 
 <script setup lang="ts">
 import type { Project } from '~/types/api'
-import { useMarkdown } from '~/composables/useMarkdown'
+import { resolveProjectBodyHtml } from '~/composables/useProjectContent'
 import '~/assets/css/projects.css'
 
 definePageMeta({
@@ -182,7 +182,7 @@ usePageStyle('projects')
 
 const project = ref<Project | null>(null)
 const loading = ref(true)
-const markdownContent = ref('')
+const projectBodyHtml = ref('')
 
 const cleanTechTag = (value: string) => value
   .replace(/^[\[\(\{'"`\s]+/, '')
@@ -321,18 +321,16 @@ const fetchProject = async () => {
     const response = await api.get<Project>(`/Projects/${projectId}`)
     project.value = response
 
-    if (response.content) {
-      const { parse } = useMarkdown()
-      markdownContent.value = parse(response.content)
-    } else {
-      markdownContent.value = ''
-    }
+    projectBodyHtml.value = resolveProjectBodyHtml({
+      contentHtml: response.contentHtml,
+      content: response.content
+    })
   } catch (error) {
     if (process.env.NODE_ENV === 'development') {
       console.error('Failed to fetch project:', error)
     }
     project.value = null
-    markdownContent.value = ''
+    projectBodyHtml.value = ''
   } finally {
     loading.value = false
   }

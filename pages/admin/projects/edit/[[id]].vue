@@ -58,8 +58,39 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">详细介绍 (Markdown)</label>
-          <textarea v-model="form.contentMd" class="form-textarea h-64 font-mono" placeholder="# Project Details..."></textarea>
+          <label class="form-label">详细介绍 (HTML)</label>
+          <p class="text-xs text-gray-500 mb-2">
+            由 AI 生成后直接粘贴即可。请使用语义标签（h2、h3、p、ul、blockquote 等），不要写内联 style。
+          </p>
+          <div class="flex gap-2 mb-2">
+            <button
+              type="button"
+              class="btn-secondary text-sm"
+              :class="{ 'opacity-60': contentEditorTab !== 'edit' }"
+              @click="contentEditorTab = 'edit'"
+            >
+              编辑
+            </button>
+            <button
+              type="button"
+              class="btn-secondary text-sm"
+              :class="{ 'opacity-60': contentEditorTab !== 'preview' }"
+              @click="contentEditorTab = 'preview'"
+            >
+              预览
+            </button>
+          </div>
+          <textarea
+            v-if="contentEditorTab === 'edit'"
+            v-model="form.contentHtml"
+            class="form-textarea h-64 font-mono"
+            placeholder="<h2>项目背景</h2><p>...</p>"
+          ></textarea>
+          <div
+            v-else
+            class="form-textarea h-64 overflow-y-auto prose max-w-none admin-project-html-preview"
+            v-html="contentPreviewHtml"
+          ></div>
         </div>
 
         <div class="flex justify-end gap-4">
@@ -76,6 +107,7 @@
 import type { Project, ProjectRequest } from '~/types/api'
 import { useNotification } from '~/composables/useToast'
 import { useErrorHandler } from '~/composables/useErrorHandler'
+import { resolveProjectBodyHtml } from '~/composables/useProjectContent'
 
 definePageMeta({
   layout: 'admin',
@@ -90,6 +122,7 @@ const loading = ref(false)
 const saving = ref(false)
 const fileInput = ref<HTMLInputElement | null>(null)
 const techStackInput = ref('')
+const contentEditorTab = ref<'edit' | 'preview'>('edit')
 
 const form = ref({
   id: '',
@@ -100,11 +133,18 @@ const form = ref({
   demoUrl: '',
   status: 'Active',
   techStack: [] as string[],
-  contentMd: '',
+  contentHtml: '',
   date: ''
 })
 
 const isEdit = computed(() => !!route.params.id)
+
+const contentPreviewHtml = computed(() =>
+  resolveProjectBodyHtml({
+    contentHtml: form.value.contentHtml,
+    content: ''
+  })
+)
 
 // 加载详情
 const fetchProject = async (id: string) => {
@@ -116,7 +156,7 @@ const fetchProject = async (id: string) => {
     const res = await api.get<Project>(`/Projects/${id}`)
     form.value = {
       ...res,
-      contentMd: res.content || '' // Map Content to contentMd
+      contentHtml: res.contentHtml || res.content || ''
     }
     // Handle TechStack string from API
     techStackInput.value = typeof res.techStack === 'string' ? res.techStack : (Array.isArray(res.techStack) ? res.techStack.join(',') : '')
@@ -181,7 +221,8 @@ const handleSave = async () => {
       githubUrl: form.value.githubUrl?.trim() || undefined,
       status: form.value.status,
       techStack: techStackString,
-      content: form.value.contentMd?.trim() || undefined
+      contentHtml: form.value.contentHtml?.trim() || undefined,
+      content: undefined
     }
     
     if (isEdit.value && form.value.id) {

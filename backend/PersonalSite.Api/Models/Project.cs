@@ -27,7 +27,9 @@ public class Project
 
     public string? TechStack { get; set; } // JSON array or comma separated
 
-    public string? Content { get; set; } // Markdown content
+    public string? Content { get; set; } // 源稿：Markdown 或历史正文
+
+    public string? ContentHtml { get; set; } // 发布态 HTML（前台优先）
 
     public int ViewCount { get; set; } = 0; // 访问量统计
 

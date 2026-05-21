@@ -5,7 +5,7 @@
     </div>
 
     <div v-if="loading" class="loading-container">
-      加载�?..
+      加载中...
     </div>
 
     <div v-else-if="!hasData" class="empty-container">

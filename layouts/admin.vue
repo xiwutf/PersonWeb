@@ -464,9 +464,10 @@ const logout = () => {
 }
 
 .admin-page-shell {
-  max-width: 1400px;
-  margin-left: auto;
-  margin-right: auto;
+  width: 100%;
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
   padding: var(--spacing-md);
   min-height: 100%;
   position: relative;

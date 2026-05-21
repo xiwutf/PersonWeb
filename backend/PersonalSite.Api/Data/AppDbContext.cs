@@ -207,6 +207,7 @@ public class AppDbContext : DbContext
             entity.Property(p => p.Status).HasColumnName("Status");
             entity.Property(p => p.TechStack).HasColumnName("TechStack");
             entity.Property(p => p.Content).HasColumnName("Content");
+            entity.Property(p => p.ContentHtml).HasColumnName("ContentHtml");
             entity.Property(p => p.ViewCount).HasColumnName("view_count");
             
             // 配置 AI 相关字段的列名（下划线命名）

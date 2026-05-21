@@ -64,6 +64,7 @@ export interface Project {
   status: string
   techStack?: string | string[]
   content?: string
+  contentHtml?: string
   viewCount?: number
   createdAt: string
   updatedAt: string
@@ -78,6 +79,7 @@ export interface ProjectRequest {
   status: string
   techStack?: string | string[]
   content?: string
+  contentHtml?: string
 }
 
 // ==================== 时间胶囊相关 ====================

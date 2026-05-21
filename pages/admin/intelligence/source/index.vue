@@ -12,7 +12,7 @@
         </n-button>
       </div>
 
-      <!-- 加载状�?-->
+      <!-- 加载状态 -->
       <div v-if="loading" class="loading-container">
         <n-spin size="large" />
       </div>

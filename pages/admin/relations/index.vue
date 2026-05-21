@@ -923,7 +923,7 @@ const handleModalSuccess = () => {
   loadPersons()
 }
 
-// 加载观察期提�
+// 加载观察期提醒
 const loadObservationReminders = async () => {
   try {
     const reminders = await relationsApi.getObservationReminders()

@@ -107,14 +107,14 @@
             </div>
           </template>
 
-          <n-spin :show="loading">
+          <n-spin :show="loading" description="加载中...">
             <div v-if="recentContent.length > 0" class="space-y-3">
               <div v-for="item in recentContent" :key="item.id" class="content-item">
                 <div class="flex items-start justify-between">
                   <div class="flex-1">
                     <div class="flex items-center gap-2 mb-1">
                       <n-tag :type="item.type === 'article' ? 'default' : 'success'" size="small">
-                        {{ item.TypeName || item.type === 'article' ? '文章' : '项目' }}
+                        {{ item.TypeName || (item.type === 'article' ? '文章' : '项目') }}
                       </n-tag>
                       <n-tag v-if="item.SourceTypeName" type="warning" size="small">
                         {{ item.SourceTypeName }}
@@ -134,7 +134,7 @@
                 </div>
               </div>
             </div>
-            <div v-else class="text-center text-gray-500 py-8">
+            <div v-else-if="!loading" class="text-center text-gray-500 py-8">
               暂无内容
             </div>
           </n-spin>
@@ -208,6 +208,7 @@
 
 <script setup lang="ts">
 import { NCard, NSpin, NTag, NButton, NDivider } from 'naive-ui'
+import { useSafeMessage } from '~/composables/useNaiveUI'
 
 definePageMeta({
   layout: 'admin',
@@ -216,23 +217,26 @@ definePageMeta({
 })
 
 const api = useApi()
-const message = useMessage()
+const message = useSafeMessage()
 const loading = ref(false)
 const stats = ref<any>(null)
 const recentContent = ref<any[]>([])
 
-// 获取总览数据
+interface ContentHubOverview {
+  Articles?: Record<string, number>
+  RecentArticles?: Array<Record<string, unknown>>
+  Projects?: Record<string, number>
+  Tools?: Record<string, number>
+  Documents?: Record<string, number>
+}
+
+// 获取总览数据（走 .NET：/Articles/overview，勿用 /api/ 前缀以免命中 Nitro）
 const fetchOverview = async () => {
   loading.value = true
   try {
-    const res = await api.get('/api/articles/overview')
-    if (res.success) {
-      stats.value = res.data
-      // 处理最近更新内容，只展示文章（因为 P0 先只聚合 Article）
-      recentContent.value = res.data.RecentArticles || []
-    } else {
-      message.error('获取数据失败')
-    }
+    const data = await api.get<ContentHubOverview>('/Articles/overview')
+    stats.value = data
+    recentContent.value = data.RecentArticles || []
   } catch (e) {
     console.error('获取总览数据失败:', e)
     message.error('获取数据失败')
@@ -274,9 +278,7 @@ onMounted(() => {
 
 <style scoped>
 .admin-content-hub-page {
-  padding: 24px;
-  max-width: 1400px;
-  margin: 0 auto;
+  padding: 0;
 }
 
 .page-header {

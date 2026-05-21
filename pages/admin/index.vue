@@ -429,7 +429,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* 布局由 layouts/admin.vue 的 .admin-page-shell 统一留白 */
+/* 布局由 layouts/admin.vue 的 .admin-page-shell 统一内边距（全宽，不居中限宽） */
 .admin-dashboard-page {
   padding: 0;
 }
