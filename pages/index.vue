@@ -30,11 +30,6 @@
               <path d="M10.8 4.2a6.6 6.6 0 1 0 4.12 11.76l3.55 3.55a1 1 0 0 0 1.42-1.42l-3.55-3.55A6.6 6.6 0 0 0 10.8 4.2Zm0 2a4.6 4.6 0 1 1 0 9.2 4.6 4.6 0 0 1 0-9.2Z" />
             </svg>
           </NuxtLink>
-          <button type="button" class="home-icon-button" aria-label="切换主题" @click="toggleDark">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm0-2.25a1 1 0 0 0 1-1V2a1 1 0 1 0-2 0v1.75a1 1 0 0 0 1 1ZM12 22a1 1 0 0 0 1-1v-1.75a1 1 0 1 0-2 0V21a1 1 0 0 0 1 1ZM21 11h-1.75a1 1 0 1 0 0 2H21a1 1 0 1 0 0-2ZM4.75 12a1 1 0 0 0-1-1H2a1 1 0 1 0 0 2h1.75a1 1 0 0 0 1-1Zm13.55-5.9 1.23-1.23a1 1 0 0 0-1.42-1.42L16.9 4.7a1 1 0 0 0 1.41 1.41ZM5.7 17.9l-1.23 1.23a1 1 0 0 0 1.42 1.42l1.22-1.24A1 1 0 0 0 5.7 17.9Z" />
-            </svg>
-          </button>
           <NuxtLink to="/contact" class="home-platform-button">
             联系合作
             <span aria-hidden="true">→</span>
@@ -100,7 +95,6 @@ definePageMeta({
 })
 
 const { overview, loading } = useHomeOverview()
-const { toggleDark } = useTheme()
 
 const activeNav = ref('home')
 

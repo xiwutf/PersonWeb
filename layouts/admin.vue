@@ -144,11 +144,6 @@
       <MouseTrail />
     </ClientOnly>
     
-    <!-- 风格切换面板 -->
-    <ClientOnly>
-      <ThemeSwitcher />
-    </ClientOnly>
-    
     <!-- AI 智能助手 -->
     <ClientOnly>
       <!-- 后台管理中隐藏 AI 助手 -->
@@ -170,7 +165,6 @@ import { onMounted, computed, watch, ref } from 'vue'
 import { useAdminGlobalStyle } from '~/composables/useAdminStyle'
 import AppNaiveConfig from '~/components/layout/AppNaiveConfig.vue'
 import MouseTrail from '~/components/effects/MouseTrail.vue'
-import ThemeSwitcher from '~/components/layout/ThemeSwitcher.vue'
 import { adminMenu, type AdminMenuGroup } from '~/constants/admin/menu'
 
 const router = useRouter()

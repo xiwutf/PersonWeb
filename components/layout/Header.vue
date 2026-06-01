@@ -46,11 +46,6 @@
           </svg>
         </NuxtLink>
 
-        <!-- Theme Toggle (placeholder, future multi-theme) -->
-        <div class="header-action-btn">
-          <ThemeToggle />
-        </div>
-
         <NuxtLink to="/ai" class="header-secondary-cta">
           进入平台
         </NuxtLink>
@@ -123,7 +118,6 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
-import ThemeToggle from '~/components/layout/ThemeToggle.vue'
 import NavMoreMenu from '~/components/layout/NavMoreMenu.vue'
 import { moreNavItems, moreNavPaths } from '~/constants/site-more-nav'
 

@@ -22,10 +22,6 @@
     
     <!-- 鼠标轨迹特效 -->
     <MouseTrail v-if="showDesktopEnhancements" />
-    
-    <!-- 风格切换面板 -->
-    <ThemeSwitcher v-if="showUtilityWidgets" />
-    
     <!-- AI 智能助手 -->
     <AIAssistant v-if="showPrimaryFloatingAssistant" />
     
@@ -51,7 +47,6 @@ import AppNaiveConfig from '~/components/layout/AppNaiveConfig.vue'
 import Footer from '~/components/layout/Footer.vue'
 
 const MouseTrail = defineAsyncComponent(() => import('~/components/effects/MouseTrail.vue'))
-const ThemeSwitcher = defineAsyncComponent(() => import('~/components/layout/ThemeSwitcher.vue'))
 const AIAssistant = defineAsyncComponent(() => import('~/components/ai/AIAssistant.vue'))
 const VisitorInteractionPanel = defineAsyncComponent(() => import('~/components/VisitorInteractionPanel.vue'))
 const VisitorBehaviorListener = defineAsyncComponent(() => import('~/components/VisitorBehaviorListener.vue'))
@@ -59,18 +54,15 @@ const VisitorSidebarDrawer = defineAsyncComponent(() => import('~/components/Vis
 const SupportChat = defineAsyncComponent(() => import('~/components/ai/SupportChat.vue'))
 
 const shouldMountDeferredUi = ref(false)
-const shouldMountUtilityUi = ref(false)
 const isLowPowerMode = ref(false)
 const isCompactFloatingMode = ref(false)
 
 const showDeferredWidgets = computed(() => shouldMountDeferredUi.value && !isLowPowerMode.value)
 const showDesktopEnhancements = computed(() => showDeferredWidgets.value)
-const showUtilityWidgets = computed(() => shouldMountUtilityUi.value)
 const showPrimaryFloatingAssistant = computed(() => showDeferredWidgets.value)
 const showSecondaryFloatingTools = computed(() => showDeferredWidgets.value && !isCompactFloatingMode.value)
 
 let deferredMountTimer: number | null = null
-let utilityMountTimer: number | null = null
 
 const detectLowPowerMode = () => {
   const coarsePointer = window.matchMedia('(pointer: coarse)').matches
@@ -89,18 +81,6 @@ const detectLowPowerMode = () => {
 }
 
 const scheduleDeferredWidgets = () => {
-  const mountUtilityWidgets = () => {
-    shouldMountUtilityUi.value = true
-  }
-
-  if ('requestIdleCallback' in window) {
-    ;(window as Window & {
-      requestIdleCallback: (callback: IdleRequestCallback, options?: IdleRequestOptions) => number
-    }).requestIdleCallback(() => mountUtilityWidgets(), { timeout: 1200 })
-  } else {
-    utilityMountTimer = window.setTimeout(mountUtilityWidgets, 500)
-  }
-
   if (isLowPowerMode.value) {
     shouldMountDeferredUi.value = false
     return
@@ -128,9 +108,6 @@ onMounted(() => {
 onUnmounted(() => {
   if (deferredMountTimer) {
     window.clearTimeout(deferredMountTimer)
-  }
-  if (utilityMountTimer) {
-    window.clearTimeout(utilityMountTimer)
   }
 })
 </script>
