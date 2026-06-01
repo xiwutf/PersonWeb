@@ -1,24 +1,18 @@
 <template>
-  <div ref="trailRef" class="mouse-trail-layer" aria-hidden="true">
-    <div
-      v-for="dot in trailDots"
-      :key="dot.id"
-      class="mouse-trail-dot"
+  <div class="mouse-trail-layer" aria-hidden="true">
+    <span
+      v-for="particle in particles"
+      :key="particle.id"
+      class="mouse-trail-particle"
       :style="{
-        left: `${dot.x}px`,
-        top: `${dot.y}px`,
-        opacity: dot.opacity,
-        transform: `translate(-50%, -50%) scale(${dot.scale})`
-      }"
-    />
-
-    <div
-      v-for="ripple in ripples"
-      :key="ripple.id"
-      class="mouse-trail-ripple"
-      :style="{
-        left: `${ripple.x}px`,
-        top: `${ripple.y}px`
+        left: `${particle.x}px`,
+        top: `${particle.y}px`,
+        width: `${particle.size}px`,
+        height: `${particle.size}px`,
+        background: particle.color,
+        boxShadow: `0 0 ${particle.size * 3}px ${particle.color}`,
+        transform: `translate(-50%, -50%) scale(${particle.scale})`,
+        opacity: particle.opacity,
       }"
     />
   </div>
@@ -27,41 +21,30 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
 
-interface TrailDot {
+interface StardustParticle {
   id: number
   x: number
   y: number
-  scale: number
+  size: number
+  color: string
   opacity: number
+  scale: number
 }
 
-interface Ripple {
-  id: number
-  x: number
-  y: number
-}
+/** 星尘拖尾 / Cursor Stardust — 蓝紫青三色轻量粒子 */
+const STARDUST_COLORS = ['#60a5fa', '#8b5cf6', '#22d3ee'] as const
+const MAX_PARTICLES = 80
+const SPAWN_MIN = 3
+const SPAWN_MAX = 6
+const MOVE_THROTTLE_MS = 20
 
-const trailRef = ref<HTMLDivElement | null>(null)
-const trailDots = ref<TrailDot[]>([])
-const ripples = ref<Ripple[]>([])
+const particles = ref<StardustParticle[]>([])
 
+let nextParticleId = 0
 let moveThrottleTimer: number | null = null
-let fadeTimer: number | null = null
-let nextRippleId = 0
+let animationFrameId: number | null = null
 let isConstrainedDevice = false
 let visibilityHandler: (() => void) | null = null
-
-const DOT_COUNT = 6
-
-const buildInitialDots = () => {
-  trailDots.value = Array.from({ length: DOT_COUNT }, (_, index) => ({
-    id: index,
-    x: -100,
-    y: -100,
-    scale: 1 - index * 0.1,
-    opacity: 0
-  }))
-}
 
 const detectConstrainedDevice = () => {
   const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
@@ -72,36 +55,42 @@ const detectConstrainedDevice = () => {
   isConstrainedDevice = Boolean(reducedMotion || coarsePointer || saveData || lowMemory)
 }
 
-const fadeTrail = () => {
-  trailDots.value = trailDots.value.map((dot, index) => ({
-    ...dot,
-    opacity: Math.max(0, 0.28 - index * 0.04)
-  }))
+const spawnStardust = (clientX: number, clientY: number) => {
+  const count = Math.floor(Math.random() * (SPAWN_MAX - SPAWN_MIN + 1)) + SPAWN_MIN
+  const batch: StardustParticle[] = []
+
+  for (let index = 0; index < count; index += 1) {
+    batch.push({
+      id: nextParticleId++,
+      x: clientX + (Math.random() - 0.5) * 12,
+      y: clientY + (Math.random() - 0.5) * 12,
+      size: Math.random() * 4 + 2,
+      color: STARDUST_COLORS[Math.floor(Math.random() * STARDUST_COLORS.length)],
+      opacity: Math.random() * 0.15 + 0.7,
+      scale: 1,
+    })
+  }
+
+  particles.value = [...particles.value, ...batch]
+
+  if (particles.value.length > MAX_PARTICLES) {
+    particles.value = particles.value.slice(-MAX_PARTICLES)
+  }
 }
 
-const updateTrail = (x: number, y: number) => {
-  const previous = trailDots.value.map(dot => ({ ...dot }))
+const animateStardust = () => {
+  if (particles.value.length > 0) {
+    particles.value = particles.value
+      .map(particle => ({
+        ...particle,
+        opacity: particle.opacity - 0.025,
+        scale: particle.scale * 0.96,
+        y: particle.y - 0.2,
+      }))
+      .filter(particle => particle.opacity > 0)
+  }
 
-  trailDots.value = trailDots.value.map((dot, index) => {
-    if (index === 0) {
-      return {
-        ...dot,
-        x,
-        y,
-        scale: 1,
-        opacity: 0.6
-      }
-    }
-
-    const leader = previous[index - 1]
-    return {
-      ...dot,
-      x: leader.x,
-      y: leader.y,
-      scale: 1 - index * 0.1,
-      opacity: Math.max(0.14, 0.45 - index * 0.06)
-    }
-  })
+  animationFrameId = window.requestAnimationFrame(animateStardust)
 }
 
 const handleMouseMove = (event: MouseEvent) => {
@@ -110,32 +99,8 @@ const handleMouseMove = (event: MouseEvent) => {
 
   moveThrottleTimer = window.setTimeout(() => {
     moveThrottleTimer = null
-    updateTrail(event.clientX, event.clientY)
-
-    if (fadeTimer) {
-      window.clearTimeout(fadeTimer)
-    }
-
-    fadeTimer = window.setTimeout(() => {
-      fadeTrail()
-    }, 120)
-  }, 24)
-}
-
-const handleClick = (event: MouseEvent) => {
-  if (isConstrainedDevice || document.hidden) return
-
-  const ripple: Ripple = {
-    id: nextRippleId++,
-    x: event.clientX,
-    y: event.clientY
-  }
-
-  ripples.value = [...ripples.value, ripple]
-
-  window.setTimeout(() => {
-    ripples.value = ripples.value.filter(item => item.id !== ripple.id)
-  }, 520)
+    spawnStardust(event.clientX, event.clientY)
+  }, MOVE_THROTTLE_MS)
 }
 
 onMounted(() => {
@@ -144,22 +109,19 @@ onMounted(() => {
   detectConstrainedDevice()
   if (isConstrainedDevice) return
 
-  buildInitialDots()
-
   visibilityHandler = () => {
     if (document.hidden) {
-      trailDots.value = trailDots.value.map(dot => ({ ...dot, opacity: 0 }))
+      particles.value = []
     }
   }
 
   document.addEventListener('visibilitychange', visibilityHandler)
   window.addEventListener('mousemove', handleMouseMove, { passive: true })
-  window.addEventListener('click', handleClick, { passive: true })
+  animationFrameId = window.requestAnimationFrame(animateStardust)
 })
 
 onUnmounted(() => {
   window.removeEventListener('mousemove', handleMouseMove)
-  window.removeEventListener('click', handleClick)
 
   if (visibilityHandler) {
     document.removeEventListener('visibilitychange', visibilityHandler)
@@ -169,8 +131,8 @@ onUnmounted(() => {
     window.clearTimeout(moveThrottleTimer)
   }
 
-  if (fadeTimer) {
-    window.clearTimeout(fadeTimer)
+  if (animationFrameId) {
+    window.cancelAnimationFrame(animationFrameId)
   }
 })
 </script>
@@ -179,46 +141,15 @@ onUnmounted(() => {
 .mouse-trail-layer {
   position: fixed;
   inset: 0;
+  overflow: hidden;
   pointer-events: none;
   z-index: 40;
 }
 
-.mouse-trail-dot {
-  position: fixed;
-  width: 10px;
-  height: 10px;
+.mouse-trail-particle {
+  position: absolute;
   border-radius: 999px;
-  background: radial-gradient(circle, rgba(96, 165, 250, 0.9), rgba(59, 130, 246, 0.1));
-  box-shadow: 0 0 16px rgba(96, 165, 250, 0.35);
-  transition:
-    left 0.12s linear,
-    top 0.12s linear,
-    opacity 0.22s ease,
-    transform 0.22s ease;
+  filter: blur(1px);
   will-change: transform, opacity;
-}
-
-.mouse-trail-ripple {
-  position: fixed;
-  width: 18px;
-  height: 18px;
-  border-radius: 999px;
-  border: 1px solid rgba(96, 165, 250, 0.45);
-  transform: translate(-50%, -50%);
-  animation: mouse-trail-ripple 0.52s ease-out forwards;
-}
-
-@keyframes mouse-trail-ripple {
-  0% {
-    width: 18px;
-    height: 18px;
-    opacity: 0.45;
-  }
-
-  100% {
-    width: 68px;
-    height: 68px;
-    opacity: 0;
-  }
 }
 </style>
