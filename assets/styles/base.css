@@ -25,8 +25,9 @@ body {
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-base);
   line-height: var(--line-height-base);
-  background-color: var(--color-bg-body);
-  color: var(--color-text-main);
+  /* 使用 Ming Studio 新 token，避免 useTheme 写入 legacy 变量后冲掉公共页深色样式 */
+  background-color: var(--color-bg);
+  color: var(--color-text);
   text-shadow: none !important; /* 移除荧光效果，使用 !important 确保优先级 */
   transition: background-color 0.3s ease, color 0.3s ease, font-family 0.3s ease, font-size 0.3s ease;
   -webkit-font-smoothing: antialiased;
@@ -89,7 +90,7 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0;
   font-weight: 600;
   line-height: 1.2;
-  color: var(--color-text-main);
+  color: var(--color-text);
   text-shadow: none !important; /* 移除荧光效果，使用 !important 确保优先级 */
 }
 
@@ -113,7 +114,7 @@ h4 {
 p {
   margin: 0;
   line-height: 1.6;
-  color: var(--color-text-main);
+  color: var(--color-text);
   text-shadow: none !important; /* 移除荧光效果 */
 }
 
@@ -165,6 +166,6 @@ pre {
 /* ==================== 选择文本样式 ==================== */
 ::selection {
   background-color: var(--color-primary-soft);
-  color: var(--color-text-main);
+  color: var(--color-text);
 }
 

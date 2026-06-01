@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" fill="none" role="img" aria-label="MindTrace">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="800" y2="480">
+      <stop stop-color="#12082A"/>
+      <stop offset="0.55" stop-color="#241454"/>
+      <stop offset="1" stop-color="#0B1738"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="520" y1="90" x2="690" y2="260">
+      <stop stop-color="#60A5FA"/>
+      <stop offset="0.33" stop-color="#34D399"/>
+      <stop offset="0.66" stop-color="#FBBF24"/>
+      <stop offset="1" stop-color="#F87171"/>
+    </linearGradient>
+    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse">
+      <path d="M28 0H0V28" stroke="#94A3B8" stroke-opacity="0.08"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="480" fill="url(#bg)"/>
+  <rect width="800" height="480" fill="url(#grid)" opacity="0.55"/>
+  <circle cx="650" cy="70" r="120" fill="#7C3AED" opacity="0.22"/>
+  <circle cx="110" cy="390" r="130" fill="#2563EB" opacity="0.16"/>
+  <rect x="72" y="108" width="340" height="250" rx="24" fill="#0F172A" fill-opacity="0.76" stroke="#BFDBFE" stroke-opacity="0.22"/>
+  <rect x="96" y="136" width="292" height="16" rx="8" fill="#FFFFFF" fill-opacity="0.1"/>
+  <rect x="96" y="172" width="220" height="10" rx="5" fill="#FFFFFF" fill-opacity="0.08"/>
+  <rect x="96" y="194" width="252" height="10" rx="5" fill="#FFFFFF" fill-opacity="0.07"/>
+  <rect x="96" y="216" width="188" height="10" rx="5" fill="#FFFFFF" fill-opacity="0.06"/>
+  <path d="M116 292H320" stroke="#93C5FD" stroke-opacity="0.45" stroke-width="2" stroke-dasharray="6 8"/>
+  <circle cx="116" cy="292" r="8" fill="#38BDF8"/>
+  <circle cx="204" cy="292" r="8" fill="#A78BFA"/>
+  <circle cx="276" cy="292" r="8" fill="#34D399"/>
+  <circle cx="320" cy="292" r="8" fill="#FBBF24"/>
+  <rect x="500" y="118" width="118" height="118" rx="28" fill="url(#accent)"/>
+  <path d="M534 176H584" stroke="#FFFFFF" stroke-opacity="0.9" stroke-width="8" stroke-linecap="round"/>
+  <path d="M559 151V201" stroke="#FFFFFF" stroke-opacity="0.9" stroke-width="8" stroke-linecap="round"/>
+  <rect x="48" y="44" width="210" height="34" rx="17" fill="#0F172A" fill-opacity="0.55" stroke="#818CF8" stroke-opacity="0.25"/>
+  <text x="64" y="67" fill="#E2E8F0" font-family="Segoe UI,sans-serif" font-size="15" font-weight="700" letter-spacing="0.16em">CHROME EXTENSION</text>
+  <text x="48" y="408" fill="#F8FAFC" font-family="Segoe UI,sans-serif" font-size="40" font-weight="800">MindTrace</text>
+  <text x="48" y="442" fill="#94A3B8" font-family="Segoe UI,sans-serif" font-size="18">???? � ?????</text>
+</svg>

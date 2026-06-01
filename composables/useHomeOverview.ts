@@ -38,10 +38,9 @@ const FALLBACK: HomeOverview = {
 }
 
 export const useHomeOverview = () => {
-  const { data, pending, error } = useLazyAsyncData(
+  const { data, pending, error } = useAsyncData(
     'home-overview',
     () => $fetch<HomeOverview>('/api/home/overview'),
-    { server: false }
   )
 
   const overview = computed<HomeOverview>(() => data.value ?? FALLBACK)

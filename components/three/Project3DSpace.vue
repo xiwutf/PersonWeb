@@ -147,6 +147,11 @@ let animationFrameId = 0
 const clock = new THREE.Clock()
 
 function getProjectDetailLink(project: Project): string {
+  const withPath = project as Project & { detailPath?: string }
+  if (withPath.detailPath) {
+    return withPath.detailPath
+  }
+
   const id = project.id
   if (id == null || id === '') return '/projects'
   if (typeof id === 'number') return `/projects/${id}`

@@ -146,7 +146,7 @@
           <NuxtLink
             v-for="project in projects"
             :key="project.id"
-            :to="`/projects/${project.id}`"
+            :to="getProjectDetailPath(project)"
             class="projects-card"
           >
             <div
@@ -154,16 +154,14 @@
               :class="getProjectToneClass(project)"
             >
               <img
-                v-if="project.coverUrl"
                 :src="project.coverUrl"
-                :alt="project.title"
+                :alt="`${project.title} 封面`"
                 class="projects-card-cover-image"
+                :class="{ 'projects-card-cover-image--designed': isDesignedCover(project.coverUrl) }"
+                loading="lazy"
+                decoding="async"
+                @error="handleCoverError($event, project)"
               />
-
-              <div class="projects-card-cover-fallback">
-                <span class="projects-card-cover-kicker">{{ getPrimaryTech(project) }}</span>
-                <span class="projects-card-cover-mark">{{ getProjectMark(project) }}</span>
-              </div>
 
               <div class="projects-card-cover-overlay">
                 <div class="projects-card-status" :class="getStatusClass(project.status)">
@@ -267,6 +265,12 @@ definePageMeta({
 })
 
 import type { Project } from '~/types/api'
+import {
+  getProjectDetailPath,
+  mergeShowcaseProjects,
+  type ShowcaseProject,
+} from '~/constants/projects/showcaseExtras'
+import { applyProjectCover, isDesignedProjectCover, resolveProjectCoverUrl } from '~/constants/projects/covers'
 
 interface GithubChartDataset {
   label: string
@@ -280,7 +284,7 @@ interface GithubChartData {
   datasets: GithubChartDataset[]
 }
 
-interface ProjectCard extends Project {
+interface ProjectCard extends ShowcaseProject {
   techStack: string[]
   chartData?: GithubChartData
 }
@@ -464,12 +468,12 @@ const fetchProjects = async () => {
       return
     }
 
-    const processedProjects: ProjectCard[] = response.map(project => ({
+    const processedProjects: ProjectCard[] = response.map(project => applyProjectCover({
       ...project,
-      techStack: normalizeTechStack(project.techStack)
+      techStack: normalizeTechStack(project.techStack),
     }))
 
-    projects.value = dedupeProjects(processedProjects)
+    projects.value = dedupeProjects(mergeShowcaseProjects(processedProjects)).map(project => applyProjectCover(project))
   } catch (fetchError: unknown) {
     const message = fetchError instanceof Error ? fetchError.message : 'Failed to load projects'
     error.value = message
@@ -502,6 +506,9 @@ const getTechTagClass = (tech: string) => {
   }
   if (value.includes('小程序') || value.includes('wechat') || value.includes('miniprogram')) {
     return 'projects-tech-tag--miniprogram'
+  }
+  if (value.includes('chrome') || value.includes('extension') || value.includes('manifest')) {
+    return 'projects-tech-tag--js'
   }
   if (value.includes('ai') || value.includes('ml') || value.includes('langchain') || value.includes('openai')) {
     return 'projects-tech-tag--ai'
@@ -561,7 +568,14 @@ const getPrimaryTech = (project: ProjectCard) => project.techStack[0] || 'Projec
 const getProjectToneClass = (project: ProjectCard) => {
   const tech = project.techStack.join(' ').toLowerCase()
   const title = (project.title || '').toLowerCase()
+  const id = String(project.id).toLowerCase()
 
+  if (id === 'mindtrace' || tech.includes('chrome') || tech.includes('extension')) {
+    return 'projects-card-cover--extension'
+  }
+  if (tech.includes('three') || tech.includes('webgl') || title.includes('实验室') || title.includes('lab')) {
+    return 'projects-card-cover--lab'
+  }
   if (tech.includes('ai') || title.includes('ai')) return 'projects-card-cover--ai'
   if (tech.includes('vue') || tech.includes('react') || tech.includes('nuxt')) return 'projects-card-cover--web'
   if (tech.includes('.net') || tech.includes('mysql') || tech.includes('redis')) return 'projects-card-cover--data'
@@ -569,21 +583,25 @@ const getProjectToneClass = (project: ProjectCard) => {
   return 'projects-card-cover--default'
 }
 
-const getProjectMark = (project: ProjectCard) => {
-  const title = project.title || 'PR'
-  return title
-    .split('')
-    .filter(char => /[A-Za-z0-9\u4e00-\u9fa5]/.test(char))
-    .slice(0, 2)
-    .join('')
-    .toUpperCase()
-}
-
 const getProjectEyebrow = (project: ProjectCard) => {
   const parts = [getStatusText(project.status)]
   if (project.githubUrl) parts.push('开源')
   if (project.demoUrl) parts.push('可体验')
   return parts.join(' · ')
+}
+
+const isDesignedCover = (coverUrl?: string) => isDesignedProjectCover(coverUrl)
+
+const handleCoverError = (event: Event, project: ProjectCard) => {
+  const target = event.target as HTMLImageElement | null
+  if (!target || target.dataset.fallbackApplied === 'true') {
+    return
+  }
+  target.dataset.fallbackApplied = 'true'
+  target.src = resolveProjectCoverUrl({
+    ...project,
+    coverUrl: undefined,
+  })
 }
 
 const githubStatsCache = useState<Record<string, { total: number; week: number }[]>>(

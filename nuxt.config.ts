@@ -80,6 +80,10 @@ export default defineNuxtConfig({
   // 应用配置
   app: {
     head: {
+      htmlAttrs: {
+        'data-theme': 'dark',
+        class: 'dark',
+      },
       title: '溪午听风 - 个人开发者网站',
       meta: [
         { charset: 'utf-8' },
@@ -106,7 +110,15 @@ export default defineNuxtConfig({
         // Android Chrome 图标
         { rel: 'icon', type: 'image/png', sizes: '192x192', href: '/favicon.png' },
         { rel: 'icon', type: 'image/png', sizes: '512x512', href: '/favicon.png' },
-      ]
+      ],
+      script: [
+        {
+          key: 'theme-bootstrap',
+          tagPriority: 0,
+          type: 'text/javascript',
+          innerHTML: `(function(){try{var k='site-theme',t=localStorage.getItem(k),d=document.documentElement,n=t==='light'?'light':'dark';d.dataset.theme=n;d.classList.toggle('dark',n==='dark')}catch(e){document.documentElement.dataset.theme='dark';document.documentElement.classList.add('dark')}})();`,
+        },
+      ],
     }
   },
 

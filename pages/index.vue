@@ -48,16 +48,16 @@
         :stats="overview.stats"
         :loading="loading"
       />
-      <LazyHomeProducts
+      <HomeProducts
         :projects="overview.featuredProjects"
         :loading="loading"
       />
-      <LazyHomeTimeline
+      <HomeTimeline
         :featured-article="overview.featuredArticle"
         :articles="overview.latestArticles"
         :loading="loading"
       />
-      <LazyHomeAbout
+      <HomeAbout
         :journey="overview.journey"
         :loading="loading"
       />
@@ -93,7 +93,6 @@
 </template>
 
 <script setup lang="ts">
-import '~/assets/css/home.css'
 import NavMoreMenu from '~/components/layout/NavMoreMenu.vue'
 
 definePageMeta({

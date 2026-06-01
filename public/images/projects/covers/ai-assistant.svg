@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" fill="none" role="img" aria-label="AI ????">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="800" y2="480">
+      <stop stop-color="#1E1033"/>
+      <stop offset="0.55" stop-color="#312E81"/>
+      <stop offset="1" stop-color="#0F172A"/>
+    </linearGradient>
+    <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
+      <path d="M30 0H0V30" stroke="#94A3B8" stroke-opacity="0.07"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="480" fill="url(#bg)"/>
+  <rect width="800" height="480" fill="url(#grid)" opacity="0.55"/>
+  <circle cx="660" cy="100" r="110" fill="#C084FC" opacity="0.2"/>
+  <circle cx="120" cy="360" r="120" fill="#6366F1" opacity="0.16"/>
+  <rect x="420" y="118" width="280" height="88" rx="24" fill="#312E81" fill-opacity="0.72" stroke="#C4B5FD" stroke-opacity="0.24"/>
+  <rect x="452" y="150" width="180" height="12" rx="6" fill="#FFFFFF" fill-opacity="0.16"/>
+  <rect x="420" y="228" width="220" height="88" rx="24" fill="#0F172A" fill-opacity="0.72" stroke="#818CF8" stroke-opacity="0.22"/>
+  <rect x="452" y="260" width="140" height="12" rx="6" fill="#FFFFFF" fill-opacity="0.12"/>
+  <path d="M520 206L560 228L520 250" stroke="#A78BFA" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="180" cy="190" r="36" fill="#A855F7" fill-opacity="0.85"/>
+  <path d="M166 190H194M180 174V206" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"/>
+  <rect x="48" y="44" width="180" height="34" rx="17" fill="#0F172A" fill-opacity="0.55" stroke="#C084FC" stroke-opacity="0.25"/>
+  <text x="64" y="67" fill="#E2E8F0" font-family="Segoe UI,sans-serif" font-size="15" font-weight="700" letter-spacing="0.16em">AI ASSISTANT</text>
+  <text x="48" y="408" fill="#F8FAFC" font-family="Segoe UI,sans-serif" font-size="36" font-weight="800">AI ????</text>
+  <text x="48" y="442" fill="#94A3B8" font-family="Segoe UI,sans-serif" font-size="18">?? ? ?? ? ???</text>
+</svg>

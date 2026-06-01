@@ -142,7 +142,7 @@ export const themeVariables: Record<ThemeName, Record<string, string>> = {
 /**
  * 默认主题名称
  */
-export const DEFAULT_THEME: ThemeName = 'light'
+export const DEFAULT_THEME: ThemeName = 'dark'
 
 // ==================== 本地存储键名 ====================
 /**

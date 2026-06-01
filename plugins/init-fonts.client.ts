@@ -34,19 +34,15 @@ export default defineNuxtPlugin(() => {
       
       if (settings.fontFamily) {
         root.style.setProperty('--font-family-base', settings.fontFamily)
-        document.body.style.fontFamily = settings.fontFamily
       }
       if (settings.baseFontSize) {
         root.style.setProperty('--font-size-base', `${settings.baseFontSize}px`)
-        document.body.style.fontSize = `${settings.baseFontSize}px`
       }
       if (settings.defaultFontWeight) {
         root.style.setProperty('--font-weight-base', settings.defaultFontWeight)
-        document.body.style.fontWeight = settings.defaultFontWeight
       }
       if (settings.defaultLineHeight) {
         root.style.setProperty('--line-height-base', String(settings.defaultLineHeight))
-        document.body.style.lineHeight = String(settings.defaultLineHeight)
       }
       if (settings.h1FontSize) {
         root.style.setProperty('--font-size-h1', `${settings.h1FontSize}px`)
@@ -61,8 +57,7 @@ export default defineNuxtPlugin(() => {
         root.style.setProperty('--font-size-h4', `${settings.h4FontSize}px`)
       }
       if (settings.textMainColor) {
-        root.style.setProperty('--color-text-main', settings.textMainColor)
-        document.body.style.color = settings.textMainColor
+        root.style.setProperty('--color-text', settings.textMainColor)
       }
       if (settings.textMutedColor) {
         root.style.setProperty('--color-text-muted', settings.textMutedColor)
