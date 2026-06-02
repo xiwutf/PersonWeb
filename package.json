@@ -36,6 +36,7 @@
     "lint:colors": "node scripts/lint-colors.js",
     "build:css": "node scripts/build-css.js",
     "optimize:images": "node scripts/optimize-images.js",
+    "optimize:covers": "node scripts/optimize-project-covers.js",
     "optimize:all": "node scripts/optimize-all.js",
     "clean:modules": "node scripts/clean-node-modules.js",
     "clean:nuxt": "node node_modules/nuxt/bin/nuxt.mjs cleanup",

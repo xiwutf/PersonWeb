@@ -23,22 +23,22 @@ export type ProjectCoverKey =
 
 export const PROJECT_COVER_BASE = '/images/projects/covers'
 
-/** 素材目录 PNG 已复制到 public/images/projects/covers/ */
+/** 素材目录 WebP 封面位于 public/images/projects/covers/ */
 export const PROJECT_COVER_PATHS: Record<ProjectCoverKey, string> = {
-  mindtrace: `${PROJECT_COVER_BASE}/mindtrace.png`,
-  personweb: `${PROJECT_COVER_BASE}/personweb.png`,
-  'personweb-system': `${PROJECT_COVER_BASE}/personweb-system.png`,
-  'ai-service': `${PROJECT_COVER_BASE}/ai-service.png`,
+  mindtrace: `${PROJECT_COVER_BASE}/mindtrace.webp`,
+  personweb: `${PROJECT_COVER_BASE}/personweb.webp`,
+  'personweb-system': `${PROJECT_COVER_BASE}/personweb-system.webp`,
+  'ai-service': `${PROJECT_COVER_BASE}/ai-service.webp`,
   analytics: `${PROJECT_COVER_BASE}/analytics.svg`,
-  tools: `${PROJECT_COVER_BASE}/tools.png`,
-  labs: `${PROJECT_COVER_BASE}/labs.png`,
-  'ai-assistant': `${PROJECT_COVER_BASE}/ai-assistant.png`,
-  'tool-market': `${PROJECT_COVER_BASE}/tool-market.png`,
-  'theme-store': `${PROJECT_COVER_BASE}/theme-store.png`,
-  'love-cube': `${PROJECT_COVER_BASE}/love-cube.png`,
-  'investment-system': `${PROJECT_COVER_BASE}/investment-system.png`,
-  'iot-control': `${PROJECT_COVER_BASE}/iot-control.png`,
-  'finance-assistant': `${PROJECT_COVER_BASE}/finance-assistant.png`,
+  tools: `${PROJECT_COVER_BASE}/tools.webp`,
+  labs: `${PROJECT_COVER_BASE}/labs.webp`,
+  'ai-assistant': `${PROJECT_COVER_BASE}/ai-assistant.webp`,
+  'tool-market': `${PROJECT_COVER_BASE}/tool-market.webp`,
+  'theme-store': `${PROJECT_COVER_BASE}/theme-store.webp`,
+  'love-cube': `${PROJECT_COVER_BASE}/love-cube.webp`,
+  'investment-system': `${PROJECT_COVER_BASE}/investment-system.webp`,
+  'iot-control': `${PROJECT_COVER_BASE}/iot-control.webp`,
+  'finance-assistant': `${PROJECT_COVER_BASE}/finance-assistant.webp`,
   'variant-a': `${PROJECT_COVER_BASE}/variant-a.svg`,
   'variant-b': `${PROJECT_COVER_BASE}/variant-b.svg`,
   'variant-c': `${PROJECT_COVER_BASE}/variant-c.svg`,
@@ -89,7 +89,7 @@ function hashTitle(title: string): number {
   return hash
 }
 
-/** 本地 SVG 占位封面，应被素材 PNG 或标题映射覆盖 */
+/** 本地 SVG 占位封面，应被素材 WebP 或标题映射覆盖 */
 function isPlaceholderCoverUrl(coverUrl: string | undefined): boolean {
   if (!coverUrl?.trim()) {
     return true
