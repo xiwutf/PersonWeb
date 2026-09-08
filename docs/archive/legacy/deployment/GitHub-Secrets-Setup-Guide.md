@@ -10,7 +10,7 @@
 ### 2. 设置 GitHub Secrets
 
 1. **进入 GitHub 仓库**
-   - 打开 [https://github.com/Lijing327/PersonWeb](https://github.com/Lijing327/PersonWeb)
+   - 打开 [https://github.com/xiwutf/PersonWeb](https://github.com/xiwutf/PersonWeb)
    - 点击仓库名称
 
 2. **进入 Settings**
@@ -54,7 +54,7 @@
 - **Name**: `NUXT_PUBLIC_API_BASE`
 - **Secret**: 你的 API 基础 URL
   - 生产环境：`https://your-domain.com/api`
-  - 如果没有域名，可以使用：`https://github.com/Lijing327/PersonWeb/releases/latest/download` 等
+  - 如果没有域名，可以使用：`https://github.com/xiwutf/PersonWeb/releases/latest/download` 等
 
 ### 3. 验证设置
 
@@ -85,14 +85,14 @@
 ### 2. 运行设置脚本
 ```bash
 # 克隆项目到本地
-git clone https://github.com/Lijing327/PersonWeb.git
+git clone https://github.com/xiwutf/PersonWeb.git
 cd PersonWeb
 
 # 设置 token
 export GITHUB_TOKEN=你的token
 
 # 运行脚本（替换为你的用户名和仓库名）
-./setup-github-secrets.sh Lijing327 PersonWeb
+./setup-github-secrets.sh xiwutf PersonWeb
 ```
 
 ### 3. 修改脚本中的值
@@ -158,7 +158,7 @@ A: Bucket 名称必须全局唯一，尝试添加时间戳或随机字符。
 ### 3. 生产环境 API 地址建议
 
 如果还没有域名，可以考虑：
-- 使用 GitHub Pages：`https://Lijing327.github.io/PersonWeb/api`
+- 使用 GitHub Pages：`https://xiwutf.github.io/PersonWeb/api`
 - 使用 Vercel：`https://your-app-name.vercel.app/api`
 - 使用自建域名：`https://your-domain.com/api`
 

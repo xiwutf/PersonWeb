@@ -37,7 +37,7 @@ git config --global --unset https.proxy
 git remote -v
 
 # 将 HTTPS 改为 SSH
-git remote set-url origin git@github.com:Lijing327/PersonWeb.git
+git remote set-url origin git@github.com:xiwutf/PersonWeb.git
 
 # 验证
 git remote -v
@@ -83,7 +83,7 @@ git config --global http.sslCAInfo "C:/Program Files/Git/mingw64/ssl/certs/ca-bu
 
 # 使用 gh 进行 Git 操作
 gh auth login
-gh repo clone Lijing327/PersonWeb
+gh repo clone xiwutf/PersonWeb
 ```
 
 ## 快速修复脚本
@@ -97,7 +97,7 @@ git config --global http.proxy $proxy
 git config --global https.proxy $proxy
 
 # 方案 B: 切换到 SSH（推荐）
-git remote set-url origin git@github.com:Lijing327/PersonWeb.git
+git remote set-url origin git@github.com:xiwutf/PersonWeb.git
 
 # 方案 C: 临时禁用 SSL 验证（仅用于测试）
 git config http.sslVerify false

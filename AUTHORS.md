@@ -3,8 +3,8 @@
 ## 创建者和维护者
 
 **谢峰 (Xie Feng) - 溪午听风**
-- GitHub: [@yourusername](https://github.com/yourusername)
-- GitHub: [https://github.com/yourusername](https://github.com/yourusername)
+- GitHub: [@xiwutf](https://github.com/xiwutf)
+- GitHub: [https://github.com/xiwutf](https://github.com/xiwutf)
 - 欢迎所有贡献者！
 
 ## 贡献者

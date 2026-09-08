@@ -4,13 +4,13 @@
   "description": "溪午听风 - 一个现代化、响应式的个人开发者网站，基于 Nuxt 3 构建",
   "author": "Xie Feng <your-email@example.com>",
   "license": "MIT",
-  "homepage": "https://github.com/yourusername/personal-site",
+  "homepage": "https://github.com/xiwutf/PersonWeb",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/personal-site.git"
+    "url": "https://github.com/xiwutf/PersonWeb.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/personal-site/issues"
+    "url": "https://github.com/xiwutf/PersonWeb/issues"
   },
   "keywords": [
     "personal-site",

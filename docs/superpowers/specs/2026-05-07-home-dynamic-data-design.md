@@ -226,9 +226,9 @@ export const CONTACT_METHODS = [
   },
   {
     title: 'GitHub',
-    value: 'Lijing327',
+    value: 'xiwutf',
     note: '查看开源项目与代码',
-    href: 'https://github.com/Lijing327',
+    href: 'https://github.com/xiwutf',
     action: '访问主页',
     icon: 'contact-icon-github'
   },

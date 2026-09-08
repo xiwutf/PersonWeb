@@ -8,7 +8,7 @@ REPO_NAME=$2
 
 if [ -z "$USERNAME" ] || [ -z "$REPO_NAME" ]; then
     echo "Usage: ./setup-github-secrets.sh <username> <repo-name>"
-    echo "Example: ./setup-github-secrets.sh Lijing327 PersonWeb"
+    echo "Example: ./setup-github-secrets.sh xiwutf PersonWeb"
     exit 1
 fi
 

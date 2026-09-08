@@ -398,7 +398,7 @@ AI Agent 开发是一个充满挑战和机遇的领域，希望本文能帮助�
 
 - [LangChain 官方文档](https://python.langchain.com/)
 - [OpenAI API 文档](https://platform.openai.com/docs)
-- [项目源码](https://github.com/Lijing327/SmartAssistantAgent)
+- [项目源码](https://github.com/xiwutf/SmartAssistantAgent)
 
 ---
 

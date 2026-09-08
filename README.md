@@ -307,8 +307,8 @@ npm run preview
 
 1. **Fork 本仓库**
    ```bash
-   git clone https://github.com/yourusername/personal-site.git
-   cd personal-site
+   git clone https://github.com/xiwutf/PersonWeb.git
+   cd PersonWeb
    ```
 
 2. **创建特性分支**
@@ -342,7 +342,7 @@ npm run preview
 ### 报告 Bug
 
 如果你发现了 Bug，请：
-1. 检查 [GitHub Issues](https://github.com/yourusername/personal-site/issues) 确保尚未报告
+1. 检查 [GitHub Issues](https://github.com/xiwutf/PersonWeb/issues) 确保尚未报告
 2. 创建新的 Issue，包含：
    - Bug 的详细描述
    - 复现步骤
@@ -353,7 +353,7 @@ npm run preview
 ### 功能请求
 
 如果你有功能建议，请：
-1. 在 [GitHub Discussions](https://github.com/yourusername/personal-site/discussions) 中讨论
+1. 在 [GitHub Discussions](https://github.com/xiwutf/PersonWeb/discussions) 中讨论
 2. 或创建 Feature Request Issue，包含：
    - 功能的清晰描述
    - 该功能解决的问题
@@ -383,7 +383,7 @@ npm run preview
 
 **Xie Feng (谢峰) - 溪午听风**
 
-- GitHub: [@yourusername](https://github.com/yourusername)
+- GitHub: [@xiwutf](https://github.com/xiwutf)
 - Website: [https://xifg.com.cn](https://xifg.com.cn)
 - Email: your-email@example.com
 
@@ -401,9 +401,9 @@ npm run preview
 ## 📞 支持与反馈
 
 - 📧 **Email**: your-email@example.com
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/yourusername/personal-site/discussions)
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/yourusername/personal-site/issues)
-- 💡 **Feature Requests**: [GitHub Discussions](https://github.com/yourusername/personal-site/discussions)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/xiwutf/PersonWeb/discussions)
+- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/xiwutf/PersonWeb/issues)
+- 💡 **Feature Requests**: [GitHub Discussions](https://github.com/xiwutf/PersonWeb/discussions)
 
 ## 📋 更新日志
 
@@ -417,7 +417,7 @@ npm run preview
 
 <div align="center">
 
-Made with ❤️ by [Xie Feng](https://github.com/yourusername)
+Made with ❤️ by [Xie Feng](https://github.com/xiwutf)
 
 [MIT License](./LICENSE) © 2026
 
