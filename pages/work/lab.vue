@@ -63,6 +63,21 @@
       </div>
     </section>
 
+    <section id="arena" class="arena-section">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="arena-heading">
+          <div><span class="arena-eyebrow">PLAYABLE EXPERIMENT / 001</span><h2>霓虹防线 <span class="text-text-muted">NEON ARENA</span></h2><p>一人，一座竞技场。选择你的进化路线，守住最后 3 分钟。</p></div>
+          <span class="arena-badge">● 可直接试玩 · 无需下载</span>
+        </div>
+        <ClientOnly>
+          <ArenaGame v-if="arenaLoaded" />
+        </ClientOnly>
+        <div v-if="!arenaLoaded" class="arena-launch">
+          <div><div class="arena-emblem" aria-hidden="true">◈</div><h3>进入防线</h3><p>WASD 移动 · 鼠标瞄准 · 按住左键射击<br />击破敌人获得经验，升级时三选一强化。</p><AppButton size="lg" @click="arenaLoaded = true">开始游戏 ↗</AppButton><p class="arena-mobile-note">请使用带键盘和鼠标的电脑试玩。</p></div>
+        </div>
+      </div>
+    </section>
+
     <section class="py-16">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="mb-8 max-w-2xl">
@@ -138,6 +153,10 @@
 <script setup lang="ts">
 import { defineAsyncComponent, onMounted, ref } from 'vue'
 import AppCard from '~/components/ui/AppCard.vue'
+import AppButton from '~/components/ui/AppButton.vue'
+import '~/assets/css/arena.css'
+const arenaLoaded = ref(false)
+const ArenaGame = defineAsyncComponent(() => import('~/components/lab/ArenaGame.vue'))
 
 const Scene3D = defineAsyncComponent(() => import('~/components/three/Scene3D.vue'))
 
