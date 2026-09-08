@@ -2,7 +2,7 @@
   <!-- 
     AI 实验室布局（ai.vue）
     用途：AI 相关页面的专用布局，包含顶部导航栏
-    使用场景：AI 实验室首页 (/ai)、AI 相关详情页 (/ai/[type]/[slug])
+    使用场景：AI 方案页 (/work/ai)、AI 相关详情页 (/work/ai/[type]/[slug])
     特点：主内容区域使用 pt-24（顶部内边距）
   -->
   <AppNaiveConfig mode="theme">

@@ -50,10 +50,10 @@
 | 层 | 路径 |
 | --- | --- |
 | **PRIMARY** | `content/work/{home.yml,about.md,ai.yml,capabilities.yml}` |
-| **API** | Nitro `/api/content/work/*`（复用 `content-files.ts`） |
-| **Frontend** | `/work`、`/about`、`/ai`、WorkAssistantHub / AIAssistant |
+| **API** | Nitro `/api/content/work/*`（复用 `content-files.ts`）；登录后可 `PATCH /api/content/work/home` 字段级写入 |
+| **Frontend** | `/work`、`/work/about`、`/work/ai`、WorkAssistantHub / AIAssistant；`/work` 支持登录态 InlineEditableText |
 | **LEGACY** | About 假 KPI / 硬编码项目列表；`.NET AIController.BuildSystemPrompt` 人设未读文件 |
-| **Admin** | **不可编** About/AI/Home 展示文案（无 CMS 写路径） |
+| **Admin** | 前台 inline edit（需 `admin_token`）→ Nitro PATCH → YAML；无独立 CMS 表 |
 
 ### Projects
 
@@ -61,13 +61,13 @@
 | --- | --- |
 | **PRIMARY** | MySQL `projects` → `.NET /Projects` |
 | **Admin** | `/admin/projects` → `.NET /Projects` |
-| **Frontend LIST** | `pages/projects/index.vue` → `/Projects` |
-| **Frontend DETAIL** | `pages/projects/[id].vue` → `/Projects/{id}` → `ProjectShowcasePage` |
+| **Frontend LIST** | `pages/work/projects/index.vue` → `/Projects` |
+| **Frontend DETAIL** | `pages/work/projects/[id].vue` → `/Projects/{id}` → `ProjectShowcasePage` |
 | **Case Study JSON** | 目标：`projects.Content` 内 `ProjectShowcaseJson`（见 `types/projectShowcaseJson.ts`） |
 | **LEGACY fill** | `constants/projects/showcasePresets.ts`（`ENABLE_LEGACY_SHOWCASE_PRESETS`） |
 | **PRESENTATION** | `constants/projects/covers.ts` 封面映射 |
 | **DERIVED list inject** | `showcaseExtras.ts`（MindTrace → Product 视图） |
-| **COMPAT route** | `/projects/detail-{slug}` → slug 映射 → `/projects/{id}`（失败则 `/projects`） |
+| **COMPAT route** | `/work/projects/detail-{slug}` → slug 映射 → `/work/projects/{id}`（失败则 `/work/projects`） |
 | **ORPHAN** | `content/projects`、`/api/content/projects*`（已删）；Nitro `server/api/admin/projects.ts` / `server/api/projects.ts`（Phase 1 已删） |
 
 Showcase 合并优先级：
@@ -84,7 +84,7 @@ Showcase 合并优先级：
 | **PRIMARY（内容事实）** | `content/articles/{slug}.md` → Nitro `/api/content/articles` |
 | **PRIMARY（运营）** | MySQL `content_ops`（view_count / featured / takedown） |
 | **Feature flag** | `CONTENT_ARTICLES_SOT=git`（默认）；`mysql` = **LEGACY_ROLLBACK_ONLY** |
-| **Frontend** | `/blog`、`/blog/[slug]` via `useArticlesRepository`；numeric id → 301 slug |
+| **Frontend** | `/work/blog`、`/work/blog/[slug]` via `useArticlesRepository`；numeric id → 301 slug |
 | **Home / Sitemap / Search** | Git 聚合（Phase 4B-3） |
 | **Admin** | `/admin/articles` 运营观察；版本页 = Legacy DB History（不可 restore） |
 | **LEGACY_READONLY** | MySQL `article.content_md/html/status/...` 保留核对，禁止新写入 |
@@ -96,9 +96,9 @@ Showcase 合并优先级：
 | --- | --- |
 | **PRIMARY** | MySQL `Tools` → `.NET /Toolbox` |
 | **Admin** | `/admin/tools`、`/admin/toolbox` → `.NET /Toolbox` |
-| **Frontend LIST** | `/tools` → `/Toolbox/marketplace` |
-| **Frontend DETAIL** | `/tools/:slug` → `/Toolbox/by-slug/{slug}`（COMPAT：marketplace exact match） |
-| **COMPAT** | `/tools/detail-{slug}` → 301 `/tools/{slug}` |
+| **Frontend LIST** | `/work/tools` → `/Toolbox/marketplace` |
+| **Frontend DETAIL** | `/work/tools/:slug` → `/Toolbox/by-slug/{slug}`（COMPAT：marketplace exact match） |
+| **COMPAT** | `/work/tools/detail-{slug}` → 301 `/work/tools/{slug}` |
 | **ORPHAN** | `content/tools`（已删）；Nitro `server/api/admin/tools.ts`、`MockDataController`（Phase 1 已删） |
 
 Slug 责任：**Toolbox.Slug**（DB）是唯一规范 slug。
@@ -108,7 +108,7 @@ Slug 责任：**Toolbox.Slug**（DB）是唯一规范 slug。
 | 层 | 路径 |
 | --- | --- |
 | **PRIMARY（当前）** | 前端 constants + 页面硬编码卡片（无 DB） |
-| **Views** | `/products`、`/products/mindtrace`、`/products/desktop-pet` |
+| **Views** | `/work/products`、`/work/products/mindtrace`、`/work/products/desktop-pet` |
 | **Entity mapping** | 同一实体可有 Product / Project / Tool 多视图，但 name/description/logo/url/status 不应复制三份（未来归一） |
 
 语义：
@@ -148,8 +148,8 @@ Slug 责任：**Toolbox.Slug**（DB）是唯一规范 slug。
 | 层 | 路径 |
 | --- | --- |
 | **PRIMARY** | `content/life` YAML / Markdown |
-| **API** | Nitro `/api/content/life*` |
-| **Frontend** | `/life/**` |
+| **API** | Nitro `/api/content/life*`；登录后可 `PATCH /api/content/life/home` |
+| **Frontend** | `/life/**`；`/life` 支持登录态 InlineEditableText |
 
 Work 运营内容不要写入 Life 目录。
 
@@ -178,7 +178,7 @@ Project (DB)
 | `showcasePresets.ts` | COMPAT（LEGACY content fill） |
 | `covers.ts` | PRESENTATION_ONLY / ACTIVE |
 | `showcaseExtras.ts` | DERIVED / COMPAT |
-| `/projects/detail-*`、`/tools/detail-*` | COMPAT redirect |
+| `/work/projects/detail-*`、`/work/tools/detail-*` | COMPAT redirect |
 | `content/projects|blog|tools` | **DELETED (Phase 6)** — 空目录且无消费者 |
 | `server/api/admin/{articles,projects,tools,stats,config,metrics,categories}.ts` | **DELETED (Phase 1 orphan cleanup)** |
 | `server/api/projects.ts`、`server/api/views/*`、`server/data/{visit-logs,views,stats,personal_metrics}.json` | **DELETED (Phase 1)** |

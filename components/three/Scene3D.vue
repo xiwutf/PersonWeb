@@ -110,8 +110,8 @@ const initScene = () => {
       // 根据类型跳转到不同页面
       const type = props.type || 'earth'
       const routes: Record<string, string> = {
-        earth: '/blog?from=lab',
-        spaceship: '/projects?from=lab',
+        earth: '/work/blog?from=lab',
+        spaceship: '/work/projects?from=lab',
         datasphere: '/dashboard?from=lab'
       }
       router.push(routes[type] || '/')

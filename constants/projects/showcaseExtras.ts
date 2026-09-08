@@ -23,7 +23,7 @@ export const SHOWCASE_PROJECT_EXTRAS: ShowcaseProject[] = [
     viewCount: 0,
     createdAt: '2025-01-01T00:00:00',
     updatedAt: new Date().toISOString(),
-    detailPath: '/products/mindtrace',
+    detailPath: '/work/products/mindtrace',
   },
 ]
 
@@ -51,5 +51,5 @@ export function getProjectDetailPath(project: ShowcaseProject): string {
   if (project.detailPath) {
     return project.detailPath
   }
-  return `/projects/${project.id}`
+  return `/work/projects/${project.id}`
 }

@@ -23,7 +23,7 @@ const readSrc = (relativePath: string) =>
 
 describe('Articles public visibility guards (Phase 4B-preflight)', () => {
   it('blog index uses repository with published status filter', () => {
-    const src = readSrc('pages/blog/index.vue')
+    const src = readSrc('pages/work/blog/index.vue')
     expect(src).toMatch(/useArticlesRepository/)
     expect(src).toMatch(/status:\s*1/)
     expect(readSrc('composables/useArticlesRepository.ts')).toMatch(/\/Articles/)
@@ -104,7 +104,7 @@ describe('Articles search index skeleton', () => {
       slug: 'published-post',
       status: 'published',
       legacyId: 1,
-      path: '/blog/published-post',
+      path: '/work/blog/published-post',
       content: 'Nuxt and TypeScript guide',
       summary: 'A guide',
       category: 'tech',
@@ -115,7 +115,7 @@ describe('Articles search index skeleton', () => {
       slug: 'draft-post',
       status: 'draft',
       legacyId: 2,
-      path: '/blog/draft-post',
+      path: '/work/blog/draft-post',
       content: 'secret draft',
     },
   ]

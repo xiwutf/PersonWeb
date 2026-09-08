@@ -17,36 +17,41 @@ describe('sitemap builder', () => {
       '/admin/login',
       '/api/Articles',
       '/dashboard',
-      '/blog/real-post',
+      '/work/blog/real-post',
     ])
 
     expect(paths.some((p) => p.startsWith('/admin'))).toBe(false)
     expect(paths.some((p) => p.startsWith('/api'))).toBe(false)
-    expect(paths).toContain('/blog/real-post')
+    expect(paths).toContain('/work/blog/real-post')
     expect(paths).toContain('/work')
   })
 
   it('canonicalizes legacy tools detail routes', () => {
-    expect(canonicalizePath('/tools/detail-foo')).toBe('/tools/foo')
-    expect(canonicalizePath('/projects/detail-old')).toBe('/projects')
+    expect(canonicalizePath('/tools/detail-foo')).toBe('/work/tools/foo')
+    expect(canonicalizePath('/projects/detail-old')).toBe('/work/projects')
+    expect(canonicalizePath('/blog/hello')).toBe('/work/blog/hello')
+    expect(canonicalizePath('/about')).toBe('/work/about')
+    expect(canonicalizePath('/ai')).toBe('/work/ai')
+    expect(canonicalizePath('/ai/chat-bot')).toBe('/work/ai/chat-bot')
+    expect(canonicalizePath('/lab')).toBe('/work/lab')
   })
 
   it('deduplicates URLs', () => {
     const { paths } = buildSitemapXml('https://xifg.com.cn', [
-      '/blog/a',
-      '/blog/a/',
-      '/blog/a',
+      '/work/blog/a',
+      '/work/blog/a/',
+      '/work/blog/a',
     ])
-    expect(paths.filter((p) => p.startsWith('/blog/a')).length).toBe(1)
+    expect(paths.filter((p) => p.startsWith('/work/blog/a')).length).toBe(1)
   })
 
   it('includes at least one dynamic URL when provided', () => {
     const { xml, paths } = buildSitemapXml('https://xifg.com.cn', [
       ...STATIC_PATHS,
-      '/projects/11111111-1111-1111-1111-111111111111',
+      '/work/projects/11111111-1111-1111-1111-111111111111',
     ])
-    expect(paths).toContain('/projects/11111111-1111-1111-1111-111111111111')
-    expect(xml).toContain('https://xifg.com.cn/projects/11111111-1111-1111-1111-111111111111')
+    expect(paths).toContain('/work/projects/11111111-1111-1111-1111-111111111111')
+    expect(xml).toContain('https://xifg.com.cn/work/projects/11111111-1111-1111-1111-111111111111')
     expect(xml).not.toContain('/admin/')
     expect(xml).not.toContain('/api/')
   })
@@ -58,7 +63,7 @@ describe('sitemap builder', () => {
 
   it('can collect Git article paths and diff against API set', () => {
     const gitPaths = collectArticlePathsFromGit(resolve(__dirname, '../../content/articles'))
-    expect(gitPaths.every((p: string) => p.startsWith('/blog/'))).toBe(true)
+    expect(gitPaths.every((p: string) => p.startsWith('/work/blog/'))).toBe(true)
     const diff = diffArticleSitemapPaths(gitPaths, gitPaths)
     expect(diff.equal).toBe(true)
   })

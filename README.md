@@ -479,7 +479,7 @@ Made with ❤️ by [Xie Feng](https://github.com/yourusername)
 
 - **邮箱**：linxiwanting@gmail.com
 - **微信**：LinXi-5152
-- **GitHub**：https://github.com/Lijing327
+- **GitHub**：https://github.com/xiwutf
 
 ## 📄 许可证
 

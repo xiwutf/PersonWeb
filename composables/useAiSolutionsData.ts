@@ -15,6 +15,7 @@ export interface Capability {
   id: string
   title: string
   icon: string
+  description?: string
   features?: string[]
 }
 
@@ -91,6 +92,7 @@ export interface AiSolutionsPageConfig {
     scenariosNote: string
     capabilities: string
     capabilitiesIcon: string
+    capabilitiesNote: string
     projects: string
     projectsIcon: string
     projectsNote: string

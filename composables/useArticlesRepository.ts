@@ -152,7 +152,7 @@ export function useArticlesRepository() {
         if (!slug) {
           throw createError({ statusCode: 404, statusMessage: 'Not Found' })
         }
-        await navigateTo(`/blog/${slug}`, {
+        await navigateTo(`/work/blog/${slug}`, {
           redirectCode: import.meta.server ? 301 : undefined,
           replace: true,
         })

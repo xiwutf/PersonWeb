@@ -39,7 +39,7 @@
       <div v-if="prevArticle || nextArticle" class="article-nav">
         <a
           v-if="prevArticle"
-          :href="`/blog/${prevArticle.slug}`"
+          :href="`/work/blog/${prevArticle.slug}`"
           class="nav-link nav-link-prev"
         >
           <i class="fas fa-arrow-left"></i>
@@ -47,7 +47,7 @@
         </a>
         <a
           v-if="nextArticle"
-          :href="`/blog/${nextArticle.slug}`"
+          :href="`/work/blog/${nextArticle.slug}`"
           class="nav-link nav-link-next"
         >
           <span>{{ nextArticle.title }}</span>

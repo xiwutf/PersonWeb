@@ -21,7 +21,7 @@ describe('Work IA navigation', () => {
     const paths = collectNavPaths(WORK_PRIMARY_NAV)
     expect(paths.length).toBeLessThanOrEqual(WORK_PRIMARY_NAV_MAX)
     expect(new Set(paths).size).toBe(paths.length)
-    expect(paths).toEqual(['/work', '/projects', '/products', '/blog', '/about'])
+    expect(paths).toEqual(['/work', '/work/projects', '/work/products', '/work/blog', '/work/about'])
   })
 
   it('does not duplicate primary paths in More or CTA', () => {
@@ -33,13 +33,13 @@ describe('Work IA navigation', () => {
 
   it('More excludes contact, dashboard, game, side-projects', () => {
     const paths = collectNavPaths(WORK_MORE_NAV)
-    expect(paths).not.toContain('/contact')
+    expect(paths).not.toContain('/work/contact')
     expect(paths).not.toContain('/dashboard')
-    expect(paths).not.toContain('/game')
-    expect(paths).not.toContain('/side-projects')
-    expect(paths).toContain('/tools')
-    expect(paths).toContain('/ai')
-    expect(paths).toContain('/lab')
+    expect(paths).not.toContain('/work/game')
+    expect(paths).not.toContain('/work/side-projects')
+    expect(paths).toContain('/work/tools')
+    expect(paths).toContain('/work/ai')
+    expect(paths).toContain('/work/lab')
   })
 
   it('Footer has no duplicate paths within a section and includes world links', () => {
@@ -57,7 +57,7 @@ describe('Work IA navigation', () => {
 
   it('defines MindTrace product ↔ project relationship', () => {
     const mind = WORK_ENTITY_CROSS_VIEWS.find((item) => item.id === 'mindtrace')
-    expect(mind?.productPath).toBe('/products/mindtrace')
+    expect(mind?.productPath).toBe('/work/products/mindtrace')
     expect(mind?.projectListBridge).toBe(true)
   })
 })
@@ -66,10 +66,16 @@ describe('Work route governance', () => {
   it('redirects legacy showcase and ai-intro in source', () => {
     const showcase = readFileSync(resolve(__dirname, '../../pages/showcase.vue'), 'utf8')
     const aiIntro = readFileSync(resolve(__dirname, '../../pages/ai-intro.vue'), 'utf8')
+    const aiRoot = readFileSync(resolve(__dirname, '../../pages/ai/index.vue'), 'utf8')
+    const labRoot = readFileSync(resolve(__dirname, '../../pages/lab.vue'), 'utf8')
     expect(showcase).toMatch(/redirectCode:\s*301/)
     expect(showcase).toMatch(/\/work/)
     expect(aiIntro).toMatch(/redirectCode:\s*301/)
-    expect(aiIntro).toMatch(/\/ai/)
+    expect(aiIntro).toMatch(/\/work\/ai/)
+    expect(aiRoot).toMatch(/redirectCode:\s*301/)
+    expect(aiRoot).toMatch(/\/work\/ai/)
+    expect(labRoot).toMatch(/redirectCode:\s*301/)
+    expect(labRoot).toMatch(/\/work\/lab/)
   })
 
   it('marks dashboard private/noindex', () => {
@@ -84,12 +90,16 @@ describe('Work route governance', () => {
     expect(STATIC_PATHS).not.toContain('/showcase')
     expect(STATIC_PATHS).not.toContain('/ai-intro')
     expect(STATIC_PATHS).toContain('/work')
-    expect(STATIC_PATHS).toContain('/products/mindtrace')
+    expect(STATIC_PATHS).toContain('/work/ai')
+    expect(STATIC_PATHS).toContain('/work/lab')
+    expect(STATIC_PATHS).not.toContain('/ai')
+    expect(STATIC_PATHS).not.toContain('/lab')
+    expect(STATIC_PATHS).toContain('/work/products/mindtrace')
   })
 
   it('Header and work page consume shared primary nav', () => {
     const header = readFileSync(resolve(__dirname, '../../components/layout/Header.vue'), 'utf8')
-    const work = readFileSync(resolve(__dirname, '../../pages/work.vue'), 'utf8')
+    const work = readFileSync(resolve(__dirname, '../../pages/work/index.vue'), 'utf8')
     expect(header).toMatch(/WORK_PRIMARY_NAV/)
     expect(work).toMatch(/WORK_PRIMARY_NAV/)
     expect(header).not.toMatch(/header-secondary-cta/)

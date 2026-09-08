@@ -20,12 +20,12 @@ describe('page SEO helpers', () => {
     const seo = resolvePageSeo(site, {
       title: '博客 - 溪午听风',
       description: '技术文章',
-      path: '/blog',
+      path: '/work/blog',
       world: 'work',
     })
 
-    expect(seo.canonical).toBe('https://xifg.com.cn/blog')
-    expect(seo.ogUrl).toBe('https://xifg.com.cn/blog')
+    expect(seo.canonical).toBe('https://xifg.com.cn/work/blog')
+    expect(seo.ogUrl).toBe('https://xifg.com.cn/work/blog')
     expect(seo.image).toBe(`https://xifg.com.cn${SITE.defaultOgImage}`)
     expect(seo.robots).toBe('index,follow')
   })
@@ -62,7 +62,7 @@ describe('page SEO helpers', () => {
   })
 
   it('toAbsoluteUrl joins path correctly', () => {
-    expect(toAbsoluteUrlWithSite(site, '/projects/abc')).toBe('https://xifg.com.cn/projects/abc')
+    expect(toAbsoluteUrlWithSite(site, '/work/projects/abc')).toBe('https://xifg.com.cn/work/projects/abc')
     expect(toAbsoluteUrlWithSite(site, 'https://xifg.com.cn/x')).toBe('https://xifg.com.cn/x')
   })
 
@@ -71,7 +71,7 @@ describe('page SEO helpers', () => {
     expect(isPublicIndexablePath('/admin/login')).toBe(false)
     expect(isPublicIndexablePath('/api/Articles')).toBe(false)
     expect(isPublicIndexablePath('/dashboard')).toBe(false)
-    expect(isPublicIndexablePath('/blog/hello')).toBe(true)
+    expect(isPublicIndexablePath('/work/blog/hello')).toBe(true)
   })
 })
 
@@ -79,7 +79,7 @@ describe('error world routing', () => {
   it('maps paths to portal/work/life/admin', () => {
     expect(resolveErrorWorld('/')).toBe('portal')
     expect(resolveErrorWorld('/work')).toBe('work')
-    expect(resolveErrorWorld('/blog/x')).toBe('work')
+    expect(resolveErrorWorld('/work/blog/x')).toBe('work')
     expect(resolveErrorWorld('/life')).toBe('life')
     expect(resolveErrorWorld('/life/notes')).toBe('life')
     expect(resolveErrorWorld('/admin')).toBe('admin')

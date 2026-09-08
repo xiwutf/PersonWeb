@@ -22,27 +22,27 @@ const STATIC_PATHS = [
   '/life/about',
   '/life/notes',
   '/work',
-  '/about',
-  '/blog',
-  '/projects',
-  '/tools',
-  '/contact',
-  '/products',
-  '/lab',
-  '/cognition',
+  '/work/about',
+  '/work/blog',
+  '/work/projects',
+  '/work/tools',
+  '/work/contact',
+  '/work/products',
+  '/work/lab',
+  '/work/cognition',
   '/search',
-  '/links',
-  '/changelog',
-  '/pricing',
-  '/download',
-  '/side-projects',
-  '/skills',
-  '/english',
-  '/knowledge',
-  '/products/desktop-pet',
-  '/products/mindtrace',
-  '/ai',
-  '/game',
+  '/work/links',
+  '/work/changelog',
+  '/work/pricing',
+  '/work/download',
+  '/work/side-projects',
+  '/work/skills',
+  '/work/english',
+  '/work/knowledge',
+  '/work/products/desktop-pet',
+  '/work/products/mindtrace',
+  '/work/ai',
+  '/work/game',
 ]
 
 function stripTrailingSlash(url) {
@@ -64,10 +64,19 @@ function canonicalizePath(p) {
   out = out.replace(/\/+/g, '/')
   if (out.length > 1 && out.endsWith('/')) out = out.slice(0, -1)
   // Legacy detail routes → canonical
-  const projectLegacy = out.match(/^\/projects\/detail-(.+)$/)
-  if (projectLegacy) return '/projects'
-  const toolLegacy = out.match(/^\/tools\/detail-(.+)$/)
-  if (toolLegacy) return `/tools/${toolLegacy[1]}`
+  const projectLegacy = out.match(/^\/(?:work\/)?projects\/detail-(.+)$/)
+  if (projectLegacy) return '/work/projects'
+  const toolLegacy = out.match(/^\/(?:work\/)?tools\/detail-(.+)$/)
+  if (toolLegacy) return `/work/tools/${toolLegacy[1]}`
+  if (out === '/work' || out.startsWith('/work/')) return out
+  const first = out.split('/').filter(Boolean)[0]
+  const nest = new Set([
+    'projects', 'products', 'blog', 'about', 'contact', 'tools',
+    'skills', 'knowledge', 'cognition', 'module-store', 'side-projects',
+    'game', 'links', 'changelog', 'pricing', 'download', 'english',
+    'ai', 'lab', 'modules', 'my-licenses',
+  ])
+  if (first && nest.has(first)) return `/work${out}`
   return out
 }
 
@@ -170,7 +179,7 @@ async function collectDynamicFromApi(apiBase) {
     const list = Array.isArray(data) ? data : (data?.List || data?.list || [])
     for (const project of list) {
       const id = project.Id || project.id
-      if (id) paths.push(`/projects/${id}`)
+      if (id) paths.push(`/work/projects/${id}`)
     }
     sources.projects = true
   } catch (e) {
@@ -189,7 +198,7 @@ async function collectDynamicFromApi(apiBase) {
       total = Number(data?.total ?? data?.Total ?? list.length)
       for (const tool of list) {
         const slug = tool.slug || tool.Slug
-        if (slug) paths.push(`/tools/${slug}`)
+        if (slug) paths.push(`/work/tools/${slug}`)
       }
       if (!list.length) break
       page += 1
@@ -211,7 +220,7 @@ async function collectDynamicFromApi(apiBase) {
       total = Number(data?.Total ?? data?.total ?? list.length)
       for (const doc of list) {
         const slug = doc.Slug || doc.slug
-        if (slug) paths.push(`/cognition/${slug}`)
+        if (slug) paths.push(`/work/cognition/${slug}`)
       }
       if (!list.length) break
       page += 1
@@ -242,7 +251,7 @@ function collectArticlePathsFromGit(contentArticlesDir, takedownSlugs = new Set(
       if (status !== 'published') continue
       const fmSlug = String(data.slug || slug).trim()
       if (fmSlug !== slug) continue
-      paths.push(`/blog/${slug}`)
+      paths.push(`/work/blog/${slug}`)
     } catch {
       // skip broken files
     }
@@ -255,8 +264,8 @@ function collectArticlePathsFromGit(contentArticlesDir, takedownSlugs = new Set(
  * Does not switch production sitemap — Phase 4B-2 readiness only.
  */
 function diffArticleSitemapPaths(apiPaths, gitPaths) {
-  const apiSet = new Set(apiPaths.filter((p) => p.startsWith('/blog/')))
-  const gitSet = new Set(gitPaths.filter((p) => p.startsWith('/blog/')))
+  const apiSet = new Set(apiPaths.filter((p) => p.startsWith('/work/blog/')))
+  const gitSet = new Set(gitPaths.filter((p) => p.startsWith('/work/blog/')))
   const onlyInApi = [...apiSet].filter((p) => !gitSet.has(p)).sort()
   const onlyInGit = [...gitSet].filter((p) => !apiSet.has(p)).sort()
   const shared = [...apiSet].filter((p) => gitSet.has(p)).sort()

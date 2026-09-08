@@ -281,12 +281,12 @@ export const useModuleSystem = () => {
    */
   const isRouteEnabled = (path: string): boolean => {
     // 核心路由始终启用
-    if (path === '/' || path === '/about') {
+    if (path === '/' || path === '/work/about') {
       return true
     }
 
     // /tools 路由始终启用，不依赖模块系统
-    if (path === '/tools' || path.startsWith('/tools/')) {
+    if (path === '/work/tools' || path.startsWith('/work/tools/')) {
       return true
     }
 

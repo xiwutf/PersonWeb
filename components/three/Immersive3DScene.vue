@@ -159,11 +159,11 @@ const createObjects = () => {
 
   // 创建多个3D对象，代表不同模块
   const positions = [
-    { x: -8, y: 0, z: 0, color: 0x3b82f6, path: '/blog', icon: '🌍' },
-    { x: -4, y: 3, z: -2, color: 0x8b5cf6, path: '/projects', icon: '🚀' },
+    { x: -8, y: 0, z: 0, color: 0x3b82f6, path: '/work/blog', icon: '🌍' },
+    { x: -4, y: 3, z: -2, color: 0x8b5cf6, path: '/work/projects', icon: '🚀' },
     { x: 0, y: 0, z: 0, color: 0x10b981, path: '/', icon: '💎' },
-    { x: 4, y: -3, z: -2, color: 0xf59e0b, path: '/knowledge', icon: '📚' },
-    { x: 8, y: 0, z: 0, color: 0xec4899, path: '/tools', icon: '💻' }
+    { x: 4, y: -3, z: -2, color: 0xf59e0b, path: '/work/knowledge', icon: '📚' },
+    { x: 8, y: 0, z: 0, color: 0xec4899, path: '/work/tools', icon: '💻' }
   ]
 
   positions.forEach((pos, index) => {

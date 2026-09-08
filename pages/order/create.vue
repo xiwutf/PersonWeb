@@ -129,7 +129,7 @@
       <!-- 无数据状态 -->
       <div v-else class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 text-center">
         <p class="text-gray-600">商品不存在或已下架</p>
-        <NuxtLink to="/tools" class="mt-4 inline-block text-orange-600 hover:text-orange-700">
+        <NuxtLink to="/work/tools" class="mt-4 inline-block text-orange-600 hover:text-orange-700">
           返回工具列表
         </NuxtLink>
       </div>

@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
     data: {
       legacyId: Number(id),
       slug,
-      canonicalUrl: `/blog/${slug}`,
+      canonicalUrl: `/work/blog/${slug}`,
     },
   }
 })

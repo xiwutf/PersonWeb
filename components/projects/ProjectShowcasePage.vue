@@ -6,7 +6,7 @@
     </div>
 
     <div class="ps-showcase-shell">
-      <NuxtLink to="/projects" class="ps-showcase-back">
+      <NuxtLink to="/work/projects" class="ps-showcase-back">
         <i class="fas fa-arrow-left"></i>
         返回项目展示
       </NuxtLink>
@@ -65,7 +65,7 @@
                   <i class="fab fa-github"></i>
                   源码
                 </a>
-                <NuxtLink to="/projects" class="ps-showcase-btn ps-showcase-btn--ghost">
+                <NuxtLink to="/work/projects" class="ps-showcase-btn ps-showcase-btn--ghost">
                   更多案例
                 </NuxtLink>
               </div>

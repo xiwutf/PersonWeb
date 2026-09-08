@@ -69,9 +69,9 @@ describe('Phase 4B-3 Articles Git SoT cutover guards', () => {
   })
 
   it('blog pages go through repository only', () => {
-    expect(readSrc('pages/blog/index.vue')).toMatch(/useArticlesRepository/)
-    expect(readSrc('pages/blog/[id].vue')).toMatch(/useArticlesRepository/)
-    expect(readSrc('pages/blog/index.vue')).not.toMatch(/\/Articles/)
+    expect(readSrc('pages/work/blog/index.vue')).toMatch(/useArticlesRepository/)
+    expect(readSrc('pages/work/blog/[id].vue')).toMatch(/useArticlesRepository/)
+    expect(readSrc('pages/work/blog/index.vue')).not.toMatch(/\/Articles/)
   })
 
   it('effectivePublished rules remain strict', () => {
@@ -83,7 +83,7 @@ describe('Phase 4B-3 Articles Git SoT cutover guards', () => {
   it('sitemap Git paths are slug-only published (~50)', () => {
     const paths = collectArticlePathsFromGit(resolve(root, 'content/articles'))
     expect(paths.length).toBe(50)
-    expect(paths.every((p: string) => /^\/blog\/[a-z0-9-]+$/i.test(p))).toBe(true)
+    expect(paths.every((p: string) => /^\/work\/blog\/[a-z0-9-]+$/i.test(p))).toBe(true)
     expect(paths.every((p: string) => !/\/blog\/\d+$/.test(p))).toBe(true)
     const diff = diffArticleSitemapPaths(paths, paths)
     expect(diff.equal).toBe(true)

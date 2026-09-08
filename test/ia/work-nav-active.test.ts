@@ -23,27 +23,30 @@ describe('Work nav active matcher', () => {
   })
 
   it('marks only 案例 on /projects and /projects/:id', () => {
-    expect(activesOn('/projects')).toEqual(['/projects'])
-    expect(activesOn('/projects/123')).toEqual(['/projects'])
-    expect(isWorkNavActive('/projects/123', '/work')).toBe(false)
+    expect(activesOn('/work/projects')).toEqual(['/work/projects'])
+    expect(activesOn('/work/projects/123')).toEqual(['/work/projects'])
+    expect(isWorkNavActive('/work/projects/123', '/work')).toBe(false)
   })
 
   it('marks only 产品 on product detail', () => {
-    expect(activesOn('/products/mindtrace')).toEqual(['/products'])
+    expect(activesOn('/work/products/mindtrace')).toEqual(['/work/products'])
   })
 
   it('marks only 文章 on blog detail', () => {
-    expect(activesOn('/blog/test')).toEqual(['/blog'])
+    expect(activesOn('/work/blog/test')).toEqual(['/work/blog'])
   })
 
   it('marks only 关于 on /about, not Life about', () => {
-    expect(activesOn('/about')).toEqual(['/about'])
-    expect(isWorkNavActive('/life/about', '/about')).toBe(false)
+    expect(activesOn('/work/about')).toEqual(['/work/about'])
+    expect(isWorkNavActive('/life/about', '/work/about')).toBe(false)
     expect(activesOn('/life/about')).toEqual([])
   })
 
   it('never activates home via startsWith("/work") for nested paths', () => {
     expect(isWorkNavActive('/work/extra', '/work')).toBe(false)
+    expect(isWorkNavActive('/work/ai', '/work')).toBe(false)
+    expect(isWorkNavActive('/work/lab', '/work')).toBe(false)
+    expect(activesOn('/work/ai')).toEqual([])
   })
 
   it('Header source uses shared matcher for desktop and mobile', () => {

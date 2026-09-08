@@ -54,7 +54,7 @@
       </div>
 
       <div class="pricing-compare-actions">
-        <NuxtLink to="/download" class="pricing-compare-btn-free">
+        <NuxtLink to="/work/download" class="pricing-compare-btn-free">
           <i class="fas fa-download"></i>
           免费开始使用
         </NuxtLink>

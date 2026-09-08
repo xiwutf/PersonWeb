@@ -7,7 +7,7 @@
           <h2 class="changelog-preview-title">持续迭代中的真实产品</h2>
           <p class="changelog-preview-subtitle">这不是一次性 demo，产品正在持续开发与更新中。</p>
         </div>
-        <NuxtLink to="/changelog" class="changelog-preview-more-link">
+        <NuxtLink to="/work/changelog" class="changelog-preview-more-link">
           查看完整日志
           <i class="fas fa-arrow-right"></i>
         </NuxtLink>

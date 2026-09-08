@@ -33,7 +33,7 @@ describe('project legacy slug mapping', () => {
       id: '11111111-1111-1111-1111-111111111111',
     })
     expect(legacyRedirectToPath(result)).toBe(
-      '/projects/11111111-1111-1111-1111-111111111111',
+      '/work/projects/11111111-1111-1111-1111-111111111111',
     )
   })
 
@@ -48,7 +48,7 @@ describe('project legacy slug mapping', () => {
   it('maps mindtrace to product path', () => {
     expect(resolveLegacyProjectRedirect('mindtrace', projects)).toEqual({
       kind: 'path',
-      path: '/products/mindtrace',
+      path: '/work/products/mindtrace',
     })
   })
 
@@ -56,15 +56,15 @@ describe('project legacy slug mapping', () => {
     expect(resolveLegacyProjectRedirect('no-such-project-zzz', projects)).toEqual({
       kind: 'list',
     })
-    expect(legacyRedirectToPath({ kind: 'list' })).toBe('/projects')
+    expect(legacyRedirectToPath({ kind: 'list' })).toBe('/work/projects')
   })
 })
 
 describe('tool canonical resolution', () => {
   it('rewrites legacy detail paths', () => {
-    expect(canonicalizeToolPath('/tools/detail-foo')).toBe('/tools/foo')
-    expect(canonicalizeToolPath('detail-bar')).toBe('/tools/bar')
-    expect(extractToolSlug('/tools/detail-foo')).toBe('foo')
+    expect(canonicalizeToolPath('/work/tools/detail-foo')).toBe('/work/tools/foo')
+    expect(canonicalizeToolPath('detail-bar')).toBe('/work/tools/bar')
+    expect(extractToolSlug('/work/tools/detail-foo')).toBe('foo')
   })
 })
 

@@ -12,10 +12,10 @@ export type WorkNavItem = {
 /** Desktop / Mobile 一级导航（目标 4–6 项，不含 CTA / More） */
 export const WORK_PRIMARY_NAV: WorkNavItem[] = [
   { title: '首页', path: '/work', key: 'home' },
-  { title: '案例', path: '/projects', key: 'projects' },
-  { title: '产品', path: '/products', key: 'products' },
-  { title: '文章', path: '/blog', key: 'blog' },
-  { title: '关于', path: '/about', key: 'about' },
+  { title: '案例', path: '/work/projects', key: 'projects' },
+  { title: '产品', path: '/work/products', key: 'products' },
+  { title: '文章', path: '/work/blog', key: 'blog' },
+  { title: '关于', path: '/work/about', key: 'about' },
 ]
 
 /**
@@ -23,17 +23,17 @@ export const WORK_PRIMARY_NAV: WorkNavItem[] = [
  * 禁止重复 Primary / CTA；禁止塞 Dashboard 等私人页。
  */
 export const WORK_MORE_NAV: WorkNavItem[] = [
-  { title: '工具', path: '/tools' },
-  { title: 'AI 方案', path: '/ai' },
-  { title: '实验室', path: '/lab' },
-  { title: '技能', path: '/skills' },
-  { title: '知识笔记', path: '/knowledge' },
+  { title: '工具', path: '/work/tools' },
+  { title: 'AI 方案', path: '/work/ai' },
+  { title: '实验室', path: '/work/lab' },
+  { title: '技能', path: '/work/skills' },
+  { title: '知识笔记', path: '/work/knowledge' },
 ]
 
 /** 顶栏唯一主 CTA（联系）；AI 放在 More，避免双 CTA 抢注意力 */
 export const WORK_HEADER_CTA: WorkNavItem = {
   title: '联系合作',
-  path: '/contact',
+  path: '/work/contact',
 }
 
 export const WORK_WORLD_LINKS = {
@@ -52,18 +52,18 @@ export const WORK_FOOTER_SECTIONS: FooterSection[] = [
     title: '探索',
     items: [
       { title: 'Work 首页', path: '/work' },
-      { title: '案例', path: '/projects' },
-      { title: '产品', path: '/products' },
-      { title: '文章', path: '/blog' },
+      { title: '案例', path: '/work/projects' },
+      { title: '产品', path: '/work/products' },
+      { title: '文章', path: '/work/blog' },
     ],
   },
   {
     title: '更多',
     items: [
-      { title: '工具', path: '/tools' },
-      { title: 'AI 方案', path: '/ai' },
-      { title: '实验室', path: '/lab' },
-      { title: '模块商店', path: '/module-store' },
+      { title: '工具', path: '/work/tools' },
+      { title: 'AI 方案', path: '/work/ai' },
+      { title: '实验室', path: '/work/lab' },
+      { title: '模块商店', path: '/work/module-store' },
     ],
   },
   {
@@ -71,8 +71,8 @@ export const WORK_FOOTER_SECTIONS: FooterSection[] = [
     items: [
       { title: 'Portal', path: '/' },
       { title: 'Life', path: '/life' },
-      { title: '关于', path: '/about' },
-      { title: '联系', path: '/contact' },
+      { title: '关于', path: '/work/about' },
+      { title: '联系', path: '/work/contact' },
     ],
   },
 ]
@@ -82,7 +82,7 @@ export const WORK_ENTITY_CROSS_VIEWS = [
   {
     id: 'mindtrace',
     name: 'MindTrace',
-    productPath: '/products/mindtrace',
+    productPath: '/work/products/mindtrace',
     /** 尚无独立 Case Study 详情 ID；案例墙卡片桥接到产品页 */
     projectPath: null as string | null,
     projectListBridge: true,
@@ -108,29 +108,48 @@ export type RouteGovernanceRule = {
 
 export const WORK_ROUTE_GOVERNANCE: RouteGovernanceRule[] = [
   { path: '/work', action: 'KEEP', note: 'PRIMARY Work hub' },
-  { path: '/projects', action: 'KEEP', note: 'PRIMARY cases' },
-  { path: '/products', action: 'KEEP', note: 'PRIMARY products' },
-  { path: '/blog', action: 'KEEP', note: 'PRIMARY writing' },
-  { path: '/about', action: 'KEEP', note: 'PRIMARY identity' },
-  { path: '/contact', action: 'KEEP', note: 'PRIMARY CTA' },
-  { path: '/tools', action: 'HIDE_NAV', note: 'SECONDARY — More only' },
-  { path: '/ai', action: 'HIDE_NAV', note: 'SECONDARY commercial AI — More only' },
-  { path: '/lab', action: 'HIDE_NAV', note: 'EXPERIMENT — More only' },
-  { path: '/knowledge', action: 'HIDE_NAV', note: 'SECONDARY notes — More only' },
-  { path: '/skills', action: 'HIDE_NAV', note: 'SECONDARY — More only' },
-  { path: '/cognition', action: 'HIDE_NAV', note: 'SECONDARY methodology — about 内链' },
-  { path: '/module-store', action: 'HIDE_NAV', note: 'Developer modules — Footer 更多' },
-  { path: '/side-projects', action: 'HIDE_NAV', note: '与 /projects 重叠，退出导航' },
-  { path: '/game', action: 'HIDE_NAV', note: 'EXPERIMENT' },
-  { path: '/english', action: 'HIDE_NAV', note: 'EXPERIMENT / 偏 Life' },
+  { path: '/work/projects', action: 'KEEP', note: 'PRIMARY cases' },
+  { path: '/work/products', action: 'KEEP', note: 'PRIMARY products' },
+  { path: '/work/blog', action: 'KEEP', note: 'PRIMARY writing' },
+  { path: '/work/about', action: 'KEEP', note: 'PRIMARY identity' },
+  { path: '/work/contact', action: 'KEEP', note: 'PRIMARY CTA' },
+  { path: '/work/tools', action: 'HIDE_NAV', note: 'SECONDARY — More only' },
+  { path: '/work/ai', action: 'HIDE_NAV', note: 'SECONDARY commercial AI — More only' },
+  { path: '/work/lab', action: 'HIDE_NAV', note: 'EXPERIMENT — More only' },
+  { path: '/ai', action: 'REDIRECT', to: '/work/ai', note: 'LEGACY root AI' },
+  { path: '/lab', action: 'REDIRECT', to: '/work/lab', note: 'LEGACY root lab' },
+  { path: '/projects', action: 'REDIRECT', to: '/work/projects', note: 'LEGACY root cases' },
+  { path: '/products', action: 'REDIRECT', to: '/work/products', note: 'LEGACY root products' },
+  { path: '/blog', action: 'REDIRECT', to: '/work/blog', note: 'LEGACY root writing' },
+  { path: '/about', action: 'REDIRECT', to: '/work/about', note: 'LEGACY root identity' },
+  { path: '/contact', action: 'REDIRECT', to: '/work/contact', note: 'LEGACY root CTA' },
+  { path: '/tools', action: 'REDIRECT', to: '/work/tools', note: 'LEGACY root tools' },
+  { path: '/knowledge', action: 'REDIRECT', to: '/work/knowledge', note: 'LEGACY root notes' },
+  { path: '/skills', action: 'REDIRECT', to: '/work/skills', note: 'LEGACY root skills' },
+  { path: '/cognition', action: 'REDIRECT', to: '/work/cognition', note: 'LEGACY root methodology' },
+  { path: '/module-store', action: 'REDIRECT', to: '/work/module-store', note: 'LEGACY root modules' },
+  { path: '/side-projects', action: 'REDIRECT', to: '/work/side-projects', note: 'LEGACY root side-projects' },
+  { path: '/game', action: 'REDIRECT', to: '/work/game', note: 'LEGACY root experiment' },
+  { path: '/english', action: 'REDIRECT', to: '/work/english', note: 'LEGACY root english' },
+  { path: '/links', action: 'REDIRECT', to: '/work/links', note: 'LEGACY root links' },
+  { path: '/changelog', action: 'REDIRECT', to: '/work/changelog', note: 'LEGACY root changelog' },
+  { path: '/pricing', action: 'REDIRECT', to: '/work/pricing', note: 'LEGACY root pricing' },
+  { path: '/download', action: 'REDIRECT', to: '/work/download', note: 'LEGACY root download' },
+  { path: '/work/knowledge', action: 'HIDE_NAV', note: 'SECONDARY notes — More only' },
+  { path: '/work/skills', action: 'HIDE_NAV', note: 'SECONDARY — More only' },
+  { path: '/work/cognition', action: 'HIDE_NAV', note: 'SECONDARY methodology — about 内链' },
+  { path: '/work/module-store', action: 'HIDE_NAV', note: 'Developer modules — Footer 更多' },
+  { path: '/work/side-projects', action: 'HIDE_NAV', note: '与 /projects 重叠，退出导航' },
+  { path: '/work/game', action: 'HIDE_NAV', note: 'EXPERIMENT' },
+  { path: '/work/english', action: 'HIDE_NAV', note: 'EXPERIMENT / 偏 Life' },
   { path: '/dashboard', action: 'PRIVATE', note: '数字分身 → 未来 Life；noindex + 退出导航' },
   { path: '/showcase', action: 'REDIRECT', to: '/work', note: 'LEGACY demo wall' },
-  { path: '/ai-intro', action: 'REDIRECT', to: '/ai', note: 'LEGACY AI character intro' },
+  { path: '/ai-intro', action: 'REDIRECT', to: '/work/ai', note: 'LEGACY AI character intro' },
   { path: '/search', action: 'KEEP', note: 'UTILITY' },
-  { path: '/links', action: 'HIDE_NAV', note: 'UTILITY' },
-  { path: '/changelog', action: 'HIDE_NAV', note: '桌宠附属 UTILITY' },
-  { path: '/pricing', action: 'HIDE_NAV', note: '桌宠附属' },
-  { path: '/download', action: 'HIDE_NAV', note: '桌宠附属' },
+  { path: '/work/links', action: 'HIDE_NAV', note: 'UTILITY' },
+  { path: '/work/changelog', action: 'HIDE_NAV', note: '桌宠附属 UTILITY' },
+  { path: '/work/pricing', action: 'HIDE_NAV', note: '桌宠附属' },
+  { path: '/work/download', action: 'HIDE_NAV', note: '桌宠附属' },
 ]
 
 export const WORK_PRIMARY_NAV_MAX = 6

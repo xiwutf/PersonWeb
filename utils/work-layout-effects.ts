@@ -6,20 +6,22 @@
 export function isWorkContentFocusRoute(path: string): boolean {
   const p = path || '/'
   if (p === '/search' || p.startsWith('/search/')) return true
-  if (p.startsWith('/blog/')) return true
-  if (p.startsWith('/cognition/') && p !== '/cognition') return true
-  if (p.startsWith('/knowledge/')) return true
-  if (/^\/projects\/[^/]+$/.test(p)) return true
-  if (/^\/tools\/[^/]+$/.test(p) && !p.startsWith('/tools/detail-')) return true
+  if (p.startsWith('/work/blog/') || p.startsWith('/blog/')) return true
+  if ((p.startsWith('/work/cognition/') && p !== '/work/cognition') || (p.startsWith('/cognition/') && p !== '/cognition')) return true
+  if (p.startsWith('/work/knowledge/') || p.startsWith('/knowledge/')) return true
+  if (/^\/(?:work\/)?projects\/[^/]+$/.test(p)) return true
+  if (/^\/(?:work\/)?tools\/[^/]+$/.test(p) && !p.includes('/tools/detail-')) return true
   return false
 }
 
 export function isWorkAmbientRoute(path: string): boolean {
   const p = path || '/'
   return p === '/work'
-    || p === '/lab'
-    || p === '/products'
-    || p.startsWith('/ai')
+    || p === '/work/lab' || p === '/lab'
+    || p === '/work/products' || p.startsWith('/work/products/')
+    || p === '/products' || p.startsWith('/products/')
+    || p === '/work/ai' || p.startsWith('/work/ai/')
+    || p === '/ai' || p.startsWith('/ai/')
 }
 
 export function shouldShowWorkParticleLayer(

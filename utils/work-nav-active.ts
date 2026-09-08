@@ -4,7 +4,7 @@
  * 规则：
  * - `/work`（首页）必须精确匹配，禁止 startsWith('/work')
  * - 其他一级栏目允许详情页保持父级 active（prefix）
- * - `/life/about` 不得激活 Work `/about`
+ * - `/life/about` 不得激活 Work `/work/about`
  */
 
 export function isWorkNavActive(currentPath: string, itemPath: string): boolean {

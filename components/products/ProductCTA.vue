@@ -5,7 +5,7 @@
         <h2 class="product-cta-title">让你的桌面，多一个懂你的搭子</h2>
         <p class="product-cta-desc">现在开始体验一款真正能每天开着用的桌面陪伴助手。</p>
         <div class="product-cta-actions">
-          <NuxtLink to="/download" class="product-cta-btn-primary">
+          <NuxtLink to="/work/download" class="product-cta-btn-primary">
             <i class="fas fa-download"></i>
             立即下载体验
           </NuxtLink>

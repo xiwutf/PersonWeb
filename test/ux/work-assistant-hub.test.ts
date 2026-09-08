@@ -35,7 +35,7 @@ describe('WorkAssistantHub IA guards', () => {
   })
 
   it('work home also mounts the unified hub', () => {
-    const work = readFileSync(resolve(root, 'pages/work.vue'), 'utf8')
+    const work = readFileSync(resolve(root, 'pages/work/index.vue'), 'utf8')
     expect(work).toMatch(/WorkAssistantHub/)
   })
 

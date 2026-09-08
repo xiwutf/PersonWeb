@@ -11,14 +11,14 @@
         <p class="product-hero-desc">{{ data.description }}</p>
 
         <div class="product-hero-actions">
-          <NuxtLink to="/download" class="product-hero-btn-primary">
+          <NuxtLink to="/work/download" class="product-hero-btn-primary">
             <i class="fas fa-download"></i>
             立即下载体验
           </NuxtLink>
           <NuxtLink to="#features" class="product-hero-btn-secondary">
             查看功能介绍
           </NuxtLink>
-          <NuxtLink to="/pricing" class="product-hero-btn-ghost">
+          <NuxtLink to="/work/pricing" class="product-hero-btn-ghost">
             Pro 内测申请
           </NuxtLink>
         </div>

@@ -137,6 +137,7 @@ export default defineNuxtConfig({
     '~/assets/styles/index.css',
     '~/assets/css/header.css',
     '~/assets/css/footer.css',
+    '~/assets/css/inline-edit.css',
   ],
 
   // Nitro 配置（用于静态生成优化）
@@ -152,14 +153,16 @@ export default defineNuxtConfig({
         '/life/about',
         '/life/notes',
         '/work',
-        '/about',
+        '/work/about',
         '/200.html',
         '/404.html'
       ],
       // 排除动态内容与全部后台页
       ignore: [
         '/blog/**',
+        '/work/blog/**',
         '/projects/**',
+        '/work/projects/**',
         '/admin/**',
       ],
       // 忽略预渲染错误

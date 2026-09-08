@@ -22,7 +22,7 @@ export function adaptArticlesToHomeCards(articles: BlogArticleDto[]): {
       publishTime: a.publishTime ?? a.createdAt ?? null,
       viewCount: Number(a.viewCount ?? 0),
       categoryName: a.categoryName ?? a.category?.name ?? null,
-      path: `/blog/${slug ?? id}`,
+      path: `/work/blog/${slug ?? id}`,
     }
   })
 

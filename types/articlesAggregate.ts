@@ -105,7 +105,7 @@ export function toAggregatedArticle(
     sortOrder: ops?.sortOrder ?? null,
     takedown,
     effectivePublished: isEffectivePublished(status, takedown),
-    canonicalUrl: `/blog/${content.slug}`,
+    canonicalUrl: `/work/blog/${content.slug}`,
   }
 }
 

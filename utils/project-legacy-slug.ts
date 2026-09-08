@@ -11,8 +11,8 @@ export type LegacyProjectRedirect =
  * not the Projects table.
  */
 export const LEGACY_SLUG_PRODUCT_PATHS: Record<string, string> = {
-  mindtrace: '/products/mindtrace',
-  'desktop-pet': '/products/desktop-pet',
+  mindtrace: '/work/products/mindtrace',
+  'desktop-pet': '/work/products/desktop-pet',
 }
 
 /**
@@ -38,7 +38,7 @@ function normalizeSlug(slug: string): string {
 }
 
 /**
- * Resolve `/projects/detail-{slug}` to a canonical destination.
+ * Resolve `/work/projects/detail-{slug}` to a canonical destination.
  * Does not invent project IDs — only matches against provided live projects.
  */
 export function resolveLegacyProjectRedirect(
@@ -77,7 +77,7 @@ export function resolveLegacyProjectRedirect(
 }
 
 export function legacyRedirectToPath(result: LegacyProjectRedirect): string {
-  if (result.kind === 'project') return `/projects/${result.id}`
+  if (result.kind === 'project') return `/work/projects/${result.id}`
   if (result.kind === 'path') return result.path
-  return '/projects'
+  return '/work/projects'
 }

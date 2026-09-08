@@ -28,7 +28,7 @@ const sampleContent = (overrides: Partial<ArticleContentItem> = {}): ArticleCont
   slug: 'hello',
   status: 'published',
   legacyId: 3,
-  path: '/blog/hello',
+  path: '/work/blog/hello',
   content: '# Hello\n\nBody',
   summary: 'Sum',
   category: 'tech',
@@ -65,17 +65,17 @@ describe('Phase 4B-2 effectivePublished guards', () => {
     expect(agg.body).toContain('Body')
     const dto = toBlogArticleDto(agg)
     expect(dto.contentMd).toBe(agg.body)
-    expect(dto.canonicalUrl).toBe('/blog/hello')
+    expect(dto.canonicalUrl).toBe('/work/blog/hello')
     expect(dto.categoryName).toBe('技术博客')
   })
 })
 
 describe('Phase 4B-2 Blog cutover wiring', () => {
   it('blog pages use useArticlesRepository (central SoT)', () => {
-    expect(readSrc('pages/blog/index.vue')).toMatch(/useArticlesRepository/)
-    expect(readSrc('pages/blog/[id].vue')).toMatch(/useArticlesRepository/)
-    expect(readSrc('pages/blog/[id].vue')).toMatch(/recordArticleView/)
-    expect(readSrc('pages/blog/index.vue')).not.toMatch(/api\.get.*\/Articles/)
+    expect(readSrc('pages/work/blog/index.vue')).toMatch(/useArticlesRepository/)
+    expect(readSrc('pages/work/blog/[id].vue')).toMatch(/useArticlesRepository/)
+    expect(readSrc('pages/work/blog/[id].vue')).toMatch(/recordArticleView/)
+    expect(readSrc('pages/work/blog/index.vue')).not.toMatch(/api\.get.*\/Articles/)
   })
 
   it('feature flag lives in nuxt runtimeConfig + repository', () => {
@@ -130,7 +130,7 @@ describe('Phase 4B-2 home adapter (not cut over)', () => {
         publishTime: '2026-01-01', createdAt: '2026-01-01', updatedAt: '2026-01-01',
         viewCount: 1, authorId: null, sourceType: null, featured: false,
         sortOrder: null, takedown: false, effectivePublished: true,
-        canonicalUrl: '/blog/a', seoTitle: null, seoDescription: null,
+        canonicalUrl: '/work/blog/a', seoTitle: null, seoDescription: null,
       },
       {
         id: 2, title: 'B', slug: 'b', summary: null, description: null,
@@ -139,7 +139,7 @@ describe('Phase 4B-2 home adapter (not cut over)', () => {
         publishTime: '2026-01-02', createdAt: '2026-01-02', updatedAt: '2026-01-02',
         viewCount: 99, authorId: null, sourceType: null, featured: false,
         sortOrder: null, takedown: false, effectivePublished: true,
-        canonicalUrl: '/blog/b', seoTitle: null, seoDescription: null,
+        canonicalUrl: '/work/blog/b', seoTitle: null, seoDescription: null,
       },
     ]
     const { featuredArticle, latestArticles } = adaptArticlesToHomeCards(list)
@@ -152,15 +152,15 @@ describe('Phase 4B-2 sitemap Git capability', () => {
   it('collects only published slug paths from content/articles', () => {
     const paths = collectArticlePathsFromGit(resolve(root, 'content/articles'))
     expect(paths.length).toBeGreaterThan(0)
-    expect(paths.every((p: string) => p.startsWith('/blog/'))).toBe(true)
+    expect(paths.every((p: string) => p.startsWith('/work/blog/'))).toBe(true)
     expect(paths.every((p: string) => !/\/blog\/\d+$/.test(p))).toBe(true)
   })
 
   it('diff explains api vs git sets', () => {
     const git = collectArticlePathsFromGit(resolve(root, 'content/articles'))
-    const api = [...git.slice(0, 3), '/blog/99']
+    const api = [...git.slice(0, 3), '/work/blog/99']
     const diff = diffArticleSitemapPaths(api, git)
-    expect(diff.onlyInApi).toContain('/blog/99')
+    expect(diff.onlyInApi).toContain('/work/blog/99')
     expect(diff.gitCount).toBe(git.length)
   })
 })

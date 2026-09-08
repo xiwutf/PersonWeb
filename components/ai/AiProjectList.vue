@@ -100,7 +100,7 @@ const defaultProjects: AiProject[] = [
     tags: ['插件工具', 'Chrome 扩展'],
     stack: ['TypeScript', 'Chrome Extension API'],
     status: '已上线',
-    path: '/products/mindtrace'
+    path: '/work/products/mindtrace'
   },
   {
     id: 'name-tool',
@@ -109,7 +109,7 @@ const defaultProjects: AiProject[] = [
     tags: ['AI工具', '文本生成'],
     stack: ['Python', 'FastAPI', 'OpenAI API', 'Vue3'],
     status: '已上线',
-    path: '/tools/name'
+    path: '/work/tools/name'
   },
   {
     id: '1',

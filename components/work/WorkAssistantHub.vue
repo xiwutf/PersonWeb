@@ -139,7 +139,7 @@ const onAskClick = () => {
 
 const goContact = () => {
   closeMenu()
-  router.push('/contact')
+  router.push('/work/contact')
 }
 
 const openMessage = () => {

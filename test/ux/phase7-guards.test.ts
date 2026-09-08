@@ -14,7 +14,7 @@ const root = resolve(__dirname, '../..')
 describe('Phase 7 UX / performance guards', () => {
   it('contact uses default layout; home layout is removed', () => {
     expect(existsSync(resolve(root, 'layouts/home.vue'))).toBe(false)
-    const contact = readFileSync(resolve(root, 'pages/contact.vue'), 'utf8')
+    const contact = readFileSync(resolve(root, 'pages/work/contact.vue'), 'utf8')
     expect(contact).toMatch(/layout:\s*['"]default['"]/)
     expect(contact).not.toMatch(/layout:\s*['"]home['"]/)
   })
@@ -61,31 +61,31 @@ describe('Phase 7 UX / performance guards', () => {
   })
 
   it('ACTIVE pages prefer webp for avatar / life hero', () => {
-    const about = readFileSync(resolve(root, 'pages/about.vue'), 'utf8')
+    const about = readFileSync(resolve(root, 'pages/work/about.vue'), 'utf8')
     const lifeHome = readFileSync(resolve(root, 'pages/life/index.vue'), 'utf8')
     expect(about).toMatch(/avatar\.webp/)
     expect(lifeHome).toMatch(/hero-desk\.webp/)
   })
 
   it('Work heavy effects are route-gated', () => {
-    expect(isWorkContentFocusRoute('/blog/hello')).toBe(true)
-    expect(isWorkContentFocusRoute('/projects/finance-assistant')).toBe(true)
-    expect(isWorkContentFocusRoute('/tools/foo')).toBe(true)
+    expect(isWorkContentFocusRoute('/work/blog/hello')).toBe(true)
+    expect(isWorkContentFocusRoute('/work/projects/finance-assistant')).toBe(true)
+    expect(isWorkContentFocusRoute('/work/tools/foo')).toBe(true)
     expect(isWorkContentFocusRoute('/work')).toBe(false)
     expect(isWorkAmbientRoute('/work')).toBe(true)
-    expect(isWorkAmbientRoute('/blog')).toBe(false)
+    expect(isWorkAmbientRoute('/work/blog')).toBe(false)
 
     const opts = { deferred: true, lowPower: false }
     expect(shouldShowWorkParticleLayer('/work', opts)).toBe(true)
-    expect(shouldShowWorkParticleLayer('/blog/x', opts)).toBe(false)
-    expect(shouldShowWorkParticleLayer('/projects', opts)).toBe(false)
-    expect(shouldShowWorkDeferredChrome('/blog/x', opts)).toBe(false)
-    expect(shouldShowWorkDeferredChrome('/projects', opts)).toBe(true)
+    expect(shouldShowWorkParticleLayer('/work/blog/x', opts)).toBe(false)
+    expect(shouldShowWorkParticleLayer('/work/projects', opts)).toBe(false)
+    expect(shouldShowWorkDeferredChrome('/work/blog/x', opts)).toBe(false)
+    expect(shouldShowWorkDeferredChrome('/work/projects', opts)).toBe(true)
     expect(shouldShowVisitorDanmaku('/work', opts)).toBe(false)
     expect(shouldShowVisitorDanmaku('/', opts)).toBe(false)
-    expect(shouldShowVisitorDanmaku('/blog', opts)).toBe(false)
-    expect(shouldShowVisitorDanmaku('/blog/hello', opts)).toBe(false)
-    expect(shouldShowVisitorDanmaku('/ai', opts)).toBe(false)
+    expect(shouldShowVisitorDanmaku('/work/blog', opts)).toBe(false)
+    expect(shouldShowVisitorDanmaku('/work/blog/hello', opts)).toBe(false)
+    expect(shouldShowVisitorDanmaku('/work/ai', opts)).toBe(false)
   })
 
   it('breakpoint tokens are documented in tokens.css', () => {

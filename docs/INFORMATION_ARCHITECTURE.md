@@ -1,7 +1,7 @@
 # PersonWeb Information Architecture
 
 > Phase 5 — Work IA 与路由治理  
-> 最后更新：2026-08-31
+> 最后更新：2026-09-08
 
 ## 总览
 
@@ -13,6 +13,19 @@ PersonWeb
 ```
 
 配置源：`constants/work-ia.ts`（Primary / More / Footer / 路由治理 / 实体映射）
+
+## URL 前缀
+
+Work 世界公开页统一挂在 `/work/...` 下，与 Life 的 `/life/...` 对齐。
+
+| 世界 | 规范前缀 | 例外 |
+| --- | --- | --- |
+| Portal | `/` | 仅入口 |
+| Work | `/work` | 站点搜索仍为 `/search`；Dashboard 仍为 `/dashboard`（私人） |
+| Life | `/life` | — |
+| Admin | `/admin` | — |
+
+根路径旧地址（`/blog`、`/projects`、`/ai` 等）**301** 到对应 `/work/...`。
 
 ---
 
@@ -34,17 +47,17 @@ PersonWeb
 | 入口 | Path | Purpose |
 | --- | --- | --- |
 | 首页 | `/work` | 职业名片总览 |
-| 案例 | `/projects` | 我做过什么（能力证明） |
-| 产品 | `/products` | 可直接使用的东西 |
-| 文章 | `/blog` | 我写了什么 |
-| 关于 | `/about` | 我是谁 / 我能做什么 |
-| CTA | `/contact` | 如何联系我（顶栏按钮，不进 Primary 列表） |
+| 案例 | `/work/projects` | 我做过什么（能力证明） |
+| 产品 | `/work/products` | 可直接使用的东西 |
+| 文章 | `/work/blog` | 我写了什么 |
+| 关于 | `/work/about` | 我是谁 / 我能做什么 |
+| CTA | `/work/contact` | 如何联系我（顶栏按钮，不进 Primary 列表） |
 
 **不含：** Lab、AI、Tools、Dashboard、Contact 重复项。
 
 ### More
 
-工具 `/tools` · AI 方案 `/ai` · 实验室 `/lab` · 技能 `/skills` · 知识笔记 `/knowledge` · Life ↗
+工具 `/work/tools` · AI 方案 `/work/ai` · 实验室 `/work/lab` · 技能 `/work/skills` · 知识笔记 `/work/knowledge` · Life ↗
 
 ### Footer
 
@@ -58,7 +71,7 @@ PersonWeb
 
 - **Purpose：** 证明能力——背景、角色、方案、结果  
 - **Audience：** 潜在合作方、招聘/评审访客  
-- **URL：** `/projects`  
+- **URL：** `/work/projects`  
 - **CTA：** 浏览案例 / 联系  
 - **Indexable：** 是  
 - **SoT：** MySQL `projects`  
@@ -67,7 +80,7 @@ PersonWeb
 
 - **Purpose：** 可持续使用的成品入口  
 - **Audience：** 终端用户  
-- **URL：** `/products`  
+- **URL：** `/work/products`  
 - **CTA：** 安装 / 下载 / 获取  
 - **Indexable：** 是  
 - **SoT：** 前端 constants（当前）  
@@ -76,7 +89,7 @@ PersonWeb
 
 - **Purpose：** 轻量、单功能、可获取的插件/脚本  
 - **Audience：** 有具体效率需求的用户  
-- **URL：** `/tools`（More，非顶级）  
+- **URL：** `/work/tools`（More，非顶级）  
 - **CTA：** 获取工具  
 - **SoT：** MySQL Toolbox  
 
@@ -84,7 +97,7 @@ PersonWeb
 
 - **Purpose：** 站点/开发者生态模块  
 - **Audience：** 开发者 / 站内安装  
-- **URL：** `/module-store`（Footer 更多）  
+- **URL：** `/work/module-store`（Footer 更多）  
 - **SoT：** MySQL `module`  
 
 ---
@@ -105,9 +118,11 @@ PersonWeb
 
 | 栏目 | 语义 | 导航 |
 | --- | --- | --- |
-| `/ai` | 商业 AI 能力 / 解决方案 | More |
-| `/lab` | 实验性 Demo 场 | More |
-| `/ai-intro` | LEGACY → **301 `/ai`** | — |
+| `/work/ai` | 商业 AI 能力 / 解决方案 | More |
+| `/work/lab` | 实验性 Demo 场 | More |
+| `/ai`、`/ai/**` | LEGACY → **301 `/work/ai`** | — |
+| `/lab` | LEGACY → **301 `/work/lab`** | — |
+| `/ai-intro` | LEGACY → **301 `/work/ai`** | — |
 
 ---
 
@@ -125,8 +140,8 @@ PersonWeb
 
 | 视图 | URL | 回答 |
 | --- | --- | --- |
-| Product | `/products/mindtrace` | 是什么、怎么用、怎么装 |
-| Project bridge | `/projects` 列表卡片 → 产品页 | 案例墙入口；尚无独立 Case Study ID |
+| Product | `/work/products/mindtrace` | 是什么、怎么用、怎么装 |
+| Project bridge | `/work/projects` 列表卡片 → 产品页 | 案例墙入口；尚无独立 Case Study ID |
 
 ---
 

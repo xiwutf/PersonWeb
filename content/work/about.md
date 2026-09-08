@@ -13,13 +13,13 @@ tags:
   - 系统构建者
 actions:
   - label: 查看我的项目
-    to: /projects
+    to: /work/projects
     variant: primary
   - label: MindTrace 扩展
-    to: /products/mindtrace
+    to: /work/products/mindtrace
     variant: ghost
   - label: 桌宠产品
-    to: /products/desktop-pet
+    to: /work/products/desktop-pet
     variant: ghost
   - label: 联系合作
     href: "mailto:"
@@ -108,10 +108,10 @@ cta:
   description: 期待与你交流想法，探索合作可能性，一起创造更多价值
   actions:
     - label: 查看项目
-      to: /projects
+      to: /work/projects
       variant: light
     - label: 阅读文章
-      to: /blog
+      to: /work/blog
       variant: light
     - label: 联系我
       href: "mailto:"

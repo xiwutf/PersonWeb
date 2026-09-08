@@ -153,11 +153,11 @@ function getProjectDetailLink(project: Project): string {
   }
 
   const id = project.id
-  if (id == null || id === '') return '/projects'
-  if (typeof id === 'number') return `/projects/${id}`
+  if (id == null || id === '') return '/work/projects'
+  if (typeof id === 'number') return `/work/projects/${id}`
   const value = String(id)
-  if (value.startsWith('/') || /\.(png|jpg|jpeg|gif|webp|svg)(\?|$)/i.test(value)) return '/projects'
-  return `/projects/${id}`
+  if (value.startsWith('/') || /\.(png|jpg|jpeg|gif|webp|svg)(\?|$)/i.test(value)) return '/work/projects'
+  return `/work/projects/${id}`
 }
 
 const cleanTechTag = (value: string) => value

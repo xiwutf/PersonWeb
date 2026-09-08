@@ -25,7 +25,7 @@ function toSearchItem(entry: {
     summary: entry.summary || '',
     content: entry.body.slice(0, 500),
     type: 'article',
-    url: `/blog/${entry.slug}`,
+    url: `/work/blog/${entry.slug}`,
     createdAt: null as string | null,
     category: label || null,
     _score: scoreBoost,

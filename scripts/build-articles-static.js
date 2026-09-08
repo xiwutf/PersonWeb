@@ -95,7 +95,7 @@ function toDto(article, labels) {
     sortOrder: null,
     takedown: false,
     effectivePublished: article.status === 'published',
-    canonicalUrl: `/blog/${article.slug}`,
+    canonicalUrl: `/work/blog/${article.slug}`,
     seoTitle: article.seoTitle,
     seoDescription: article.seoDescription,
   }

@@ -285,7 +285,7 @@ const closeAssistant = () => {
 
 const goContact = () => {
   closeAssistant()
-  navigateTo('/contact')
+  navigateTo('/work/contact')
 }
 
 const leaveMessage = () => {

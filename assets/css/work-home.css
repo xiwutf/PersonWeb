@@ -1,4 +1,4 @@
-/* Work 首页主内容：由 pages/work.vue 引入，配色继承 .home-page 的 --home-* 变量 */
+/* Work 首页主内容：由 pages/work/index.vue 引入，配色继承 .home-page 的 --home-* 变量 */
 
 .home-page .work-main {
   --work-container: 1360px;
@@ -628,7 +628,20 @@
   transition: background 0.2s ease;
 }
 
-.home-page .work-contact-row:last-of-type {
+.home-page button.work-contact-row {
+  width: 100%;
+  appearance: none;
+  background: transparent;
+  border-width: 0;
+  border-bottom: 1px solid var(--home-border);
+  border-radius: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.home-page .work-contact-row:has(+ .work-contact-note) {
   border-bottom: none;
 }
 

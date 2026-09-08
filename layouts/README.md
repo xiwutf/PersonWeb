@@ -20,13 +20,13 @@
 - `<SecretAdminAccess />` - 隐秘的后台入口
 
 **使用场景**：
-- 博客页面 (`/blog`)
-- 工具页面 (`/tools`)
-- 项目展示页面 (`/projects`)
-- 关于页面 (`/about`)
-- 游戏页面 (`/game`)
+- 博客页面 (`/work/blog`)
+- 工具页面 (`/work/tools`)
+- 项目展示页面 (`/work/projects`)
+- 关于页面 (`/work/about`)
+- 游戏页面 (`/work/game`)
 - 展示页面 (`/showcase`)
-- 实验室页面 (`/lab`)
+- 实验室页面 (`/work/lab`)
 - 以及其他所有未指定布局的普通页面
 
 **注意**：如果页面没有使用 `definePageMeta` 指定布局，Nuxt 3 会自动使用此默认布局。
@@ -71,8 +71,8 @@
 - `<VisitorSidebarDrawer />` - 访客侧边栏抽屉
 
 **使用场景**：
-- AI 实验室首页 (`/ai`)
-- AI 相关详情页 (`/ai/[type]/[slug]`)
+- AI 方案页 (`/work/ai`)
+- AI 相关详情页 (`/work/ai/[type]/[slug]`)
 
 **特点**：
 - 主内容区域使用 `pt-24`（顶部内边距）

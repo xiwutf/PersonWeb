@@ -37,13 +37,16 @@ describe('Work content readers', () => {
     expect(home.panel.focus.length).toBeGreaterThan(0)
     expect(home.sections.featured.title).toBeTruthy()
     expect(home.contact.rows.some(row => row.label === 'Email')).toBe(true)
+    expect(home.contact.rows.some(row => row.label === '微信' && row.action === 'wechat-qr' && !row.to)).toBe(true)
+    expect(home.contact.wechatQrImage).toContain('wechat-qr')
     expect(home.hero.links.some(link => link.label === 'GitHub')).toBe(true)
   })
 
   it('reads contact.yml as Work contact SoT', () => {
     const contact = readWorkContact()
     expect(contact.email).toBe('linxiwanting@gmail.com')
-    expect(contact.github.url).toContain('github.com')
+    expect(contact.github.url).toBe('https://github.com/xiwutf')
+    expect(contact.github.display).toBe('github.com/xiwutf')
     expect(contact.cooperationTitle).toBe('联系合作')
     expect(contact.cooperationChips.length).toBeGreaterThan(0)
     expect(contact.rows.length).toBeGreaterThanOrEqual(2)
@@ -70,10 +73,16 @@ describe('Work content readers', () => {
     const ai = readWorkAi()
     expect(ai.title.length).toBeGreaterThan(0)
     expect(ai.scenarios.length).toBeGreaterThan(0)
+    expect(ai.capabilities.length).toBeGreaterThan(0)
+    expect(ai.capabilities.every((item) => item.description.length > 0)).toBe(true)
+    expect(ai.sectionTitles.capabilitiesNote.length).toBeGreaterThan(0)
     expect(ai.assistant.chat.name).toBeTruthy()
     expect(ai.assistant.chat.quickActions.length).toBeGreaterThan(0)
     expect(ai.assistant.hub.items.length).toBeGreaterThan(0)
     expect(ai.assistant.chat.systemAbout.length).toBeGreaterThan(0)
+    expect(ai.assistant.chat.systemAbout).toContain('/work/contact')
+    expect(ai.assistant.chat.systemAbout).toContain('/work/projects')
+    expect(ai.assistant.chat.systemAbout).not.toContain('前往 /projects')
   })
 })
 
@@ -90,13 +99,15 @@ describe('Work content boundary guards', () => {
   })
 
   it('work page no longer hardcodes hero value proposition', () => {
-    const src = readSrc('pages/work.vue')
+    const src = readSrc('pages/work/index.vue')
     expect(src).toMatch(/\/api\/content\/work\/home/)
     expect(src).not.toMatch(/专业工作名片：我是谁、能做什么、做过什么/)
+    expect(src).toMatch(/显示微信二维码/)
+    expect(src).not.toMatch(/NuxtLink to="\/work\/contact">微信/)
   })
 
   it('about page reads Work about API and drops legacy blocks', () => {
-    const src = readSrc('pages/about.vue')
+    const src = readSrc('pages/work/about.vue')
     expect(src).toMatch(/\/api\/content\/work\/about/)
     expect(src).not.toMatch(/legacyStats/)
     expect(src).not.toMatch(/legacyProjects/)
@@ -108,6 +119,7 @@ describe('Work content boundary guards', () => {
     const src = readSrc('content/work/home.yml')
     expect(src).not.toMatch(/linxiwanting@gmail.com/)
     expect(src).not.toMatch(/github\.com\/Lijing327/)
+    expect(src).not.toMatch(/github\.com\/xiwutf/)
   })
 
   it('AIController uses WorkContentService instead of hardcoded identity', () => {
@@ -120,7 +132,7 @@ describe('Work content boundary guards', () => {
 
   it('Work contact consumers read contact API or merged reader', () => {
     const footer = readSrc('components/layout/Footer.vue')
-    const contactPage = readSrc('pages/contact.vue')
+    const contactPage = readSrc('pages/work/contact.vue')
     expect(footer).toMatch(/\/api\/content\/work\/contact/)
     expect(footer).not.toMatch(/linxiwanting@gmail.com/)
     expect(contactPage).toMatch(/\/api\/content\/work\/contact/)

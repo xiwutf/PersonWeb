@@ -98,7 +98,7 @@
 
       <!-- 底部按钮 -->
       <div class="ai-capability-footer">
-        <NuxtLink to="/ai" class="ai-capability-button">
+        <NuxtLink to="/work/ai" class="ai-capability-button">
           <span>了解我的 AI 能力</span>
           <i class="fas fa-arrow-right"></i>
         </NuxtLink>
@@ -156,7 +156,7 @@ const projectTypes = ref([
 // 处理项目卡片点击
 const handleProjectCardClick = (project: any) => {
   // 可以跳转到 AI 实验室页面，并高亮相关项目
-  navigateTo('/ai')
+  navigateTo('/work/ai')
 }
 </script>
 

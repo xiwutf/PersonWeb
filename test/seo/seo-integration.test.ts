@@ -16,24 +16,24 @@ describe('admin noindex source', () => {
 
 describe('duplicate detail route canonical strategy', () => {
   it('projects detail-[slug] permanently redirects', () => {
-    const src = readFileSync(resolve(__dirname, '../../pages/projects/detail-[slug].vue'), 'utf8')
+    const src = readFileSync(resolve(__dirname, '../../pages/work/projects/detail-[slug].vue'), 'utf8')
     expect(src).toMatch(/redirectCode:\s*301/)
     expect(src).toMatch(/\/projects/)
   })
 
   it('tools detail-[slug] permanently redirects to /tools/:slug', () => {
-    const src = readFileSync(resolve(__dirname, '../../pages/tools/detail-[slug].vue'), 'utf8')
+    const src = readFileSync(resolve(__dirname, '../../pages/work/tools/detail-[slug].vue'), 'utf8')
     expect(src).toMatch(/redirectCode:\s*301/)
-    expect(src).toMatch(/`\/tools\/\$\{slug\}`/)
+    expect(src).toMatch(/`\/work\/tools\/\$\{slug\}`/)
   })
 })
 
 describe('dynamic detail SSR + hard 404', () => {
   const pages = [
-    'pages/blog/[id].vue',
-    'pages/projects/[id].vue',
-    'pages/tools/[slug].vue',
-    'pages/cognition/[slug].vue',
+    'pages/work/blog/[id].vue',
+    'pages/work/projects/[id].vue',
+    'pages/work/tools/[slug].vue',
+    'pages/work/cognition/[slug].vue',
   ]
 
   it.each(pages)('%s uses useAsyncData and createError 404', (file) => {

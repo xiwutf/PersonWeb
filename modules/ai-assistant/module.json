@@ -21,7 +21,7 @@
   },
   "routes": [
     {
-      "path": "/ai",
+      "path": "/work/ai",
       "name": "ai-assistant",
       "meta": {
         "title": "AI 助手",
@@ -31,7 +31,7 @@
       }
     },
     {
-      "path": "/ai/settings",
+      "path": "/work/ai/settings",
       "name": "ai-assistant-settings",
       "meta": {
         "title": "AI 设置",

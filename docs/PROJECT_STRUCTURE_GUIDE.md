@@ -77,16 +77,16 @@ PersonWeb/
 | 功能 | 路径 | 说明 |
 |------|------|------|
 | **首页** | `pages/index.vue` | 网站首页 |
-| **关于我** | `pages/about.vue` | 个人介绍页面 |
-| **博客列表** | `pages/blog/index.vue` | 博客文章列表 |
-| **博客详情** | `pages/blog/[id].vue` | 博客文章详情 |
-| **项目列表** | `pages/projects/index.vue` | 项目展示列表 |
-| **项目详情** | `pages/projects/[id].vue` | 项目详情页 |
-| **工具列表** | `pages/tools/index.vue` | 工具展示列表 |
-| **工具详情** | `pages/tools/[slug].vue` | 工具详情页 |
+| **关于我** | `pages/work/about.vue` | 个人介绍页面 |
+| **博客列表** | `pages/work/blog/index.vue` | 博客文章列表 |
+| **博客详情** | `pages/work/blog/[id].vue` | 博客文章详情 |
+| **项目列表** | `pages/work/projects/index.vue` | 项目展示列表 |
+| **项目详情** | `pages/work/projects/[id].vue` | 项目详情页 |
+| **工具列表** | `pages/work/tools/index.vue` | 工具展示列表 |
+| **工具详情** | `pages/work/tools/[slug].vue` | 工具详情页 |
 | **生活随笔** | `pages/life/index.vue` | 生活随笔列表 |
 | **生活随笔详情** | `pages/life/[...slug].vue` | 生活随笔详情 |
-| **AI 助手** | `pages/ai/index.vue` | AI 聊天助手 |
+| **AI 方案** | `pages/work/ai/index.vue` | Work 世界 AI 解决方案 |
 | **知识库** | `pages/knowledge/index.vue` | 知识库页面 |
 | **技能树** | `pages/skills/index.vue` | 技能展示 |
 | **侧边项目** | `pages/side-projects/index.vue` | 副业项目列表 |
@@ -174,12 +174,13 @@ PersonWeb/
 
 | 内容类型 | 路径 | 说明 |
 |----------|------|------|
-| **Life 首页文案** | `content/life/home.yml` | `/life` 固定话术 |
+| **Life 首页文案** | `content/life/home.yml` | `/life` 固定话术；登录后也可在页面上点改 |
 | **Life About** | `content/life/profile.md` | `/life/about` 自我介绍 |
 | **Life Now** | `content/life/now.yml` | `/life`「最近在」 |
 | **Life Moments** | `content/life/moments.yml` | `/life`「最近」时间线 |
 | **生活随笔** | `content/life/*.md` | 随笔正文（不要用 `profile.md` 这个文件名） |
 | **认知说明书** | `content/cognition/*.md` | 个人认知使用说明书 |
+| **Work 首页文案** | `content/work/home.yml` | `/work`；登录后可在页面上点改 |
 
 > ⚠️ **注意**：大部分内容已迁移到数据库，通过后台管理系统编辑。只有部分内容仍使用 Markdown 文件。
 
@@ -269,6 +270,7 @@ PersonWeb/
 
 | 我想... | 去哪里找 |
 |---------|----------|
+| **前台改 Life/Work 文案** | 先 `/admin/login`，再打开 `/life` 或 `/work`，点击文字保存 |
 | **编辑文章** | `/admin/articles` → 点击"编辑" |
 | **添加新文章** | `/admin/articles` → 点击"新增文章" |
 | **编辑项目** | `/admin/projects` → 点击"编辑" |

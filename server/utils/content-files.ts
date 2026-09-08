@@ -1,6 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { parse as parseYaml } from 'yaml'
+import { parse as parseYaml, stringify as stringifyYaml } from 'yaml'
 import { isLifeNoteSlug, isSafeContentSlug } from '../../constants/life-content'
 import { isArticleContentSlug, ARTICLES_TAXONOMY_FILE } from '../../constants/articles-content'
 import type {
@@ -196,6 +196,36 @@ export const readYamlFile = (...segments: string[]) => {
   return parseYamlSafe(raw)
 }
 
+export const readYamlFileRawObject = (...segments: string[]): Record<string, unknown> => {
+  const parsed = readYamlFile(...segments)
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+    return {}
+  }
+  return parsed as Record<string, unknown>
+}
+
+/**
+ * Write YAML under content/. Refuses paths outside the resolved content root.
+ * Requires a writable Node runtime (not static generate hosting).
+ */
+export const writeYamlFile = (segments: string[], data: unknown) => {
+  if (segments.length === 0 || segments.some(seg => !seg || seg.includes('..') || seg.includes('/') || seg.includes('\\'))) {
+    throw new Error('Invalid content path segments')
+  }
+
+  const fullPath = path.join(contentRoot, ...segments)
+  const resolved = path.resolve(fullPath)
+  const rootResolved = path.resolve(contentRoot)
+  const rootPrefix = rootResolved.endsWith(path.sep) ? rootResolved : `${rootResolved}${path.sep}`
+
+  if (resolved !== rootResolved && !resolved.startsWith(rootPrefix)) {
+    throw new Error('Refusing to write outside content root')
+  }
+
+  const body = stringifyYaml(data, { lineWidth: 0 })
+  fs.writeFileSync(resolved, body.endsWith('\n') ? body : `${body}\n`, 'utf-8')
+}
+
 export type LifeHomeContent = {
   hero: {
     kicker: string
@@ -384,6 +414,7 @@ const asLinkList = (value: unknown) => {
         value: asString(row.value) || undefined,
         icon: asString(row.icon) || undefined,
         name: asString(row.name) || undefined,
+        action: asString(row.action) || undefined,
       }
     })
     .filter((item): item is NonNullable<typeof item> => item !== null)
@@ -406,7 +437,17 @@ export const readWorkContact = () => {
     githubUrl
       ? { label: 'GitHub', value: githubDisplay, href: githubUrl, external: true as const, to: undefined, variant: undefined, icon: undefined, name: undefined }
       : null,
-    { label: '微信', value: asString(wechat.note) || '扫码添加', to: '/contact', href: undefined, external: false as const, variant: undefined, icon: undefined, name: undefined },
+    {
+      label: '微信',
+      value: asString(wechat.note) || '扫码添加',
+      action: 'wechat-qr',
+      to: undefined,
+      href: undefined,
+      external: false as const,
+      variant: undefined,
+      icon: undefined,
+      name: undefined,
+    },
   ].filter((item): item is NonNullable<typeof item> => item !== null)
 
   const heroLinks = [
@@ -512,6 +553,7 @@ export const readWorkHome = () => {
     contact: {
       rows: contactSoT.rows,
       note: contactSoT.responseNote || asString(contactBlock.note),
+      wechatQrImage: contactSoT.wechat.qrImage,
     },
     footer: {
       name: asString(footer.name) || '溪午听风',
@@ -727,6 +769,7 @@ export const readWorkAi = () => {
       scenariosNote: asString(sectionTitles.scenarios_note),
       capabilities: asString(sectionTitles.capabilities),
       capabilitiesIcon: asString(sectionTitles.capabilities_icon),
+      capabilitiesNote: asString(sectionTitles.capabilities_note),
       projects: asString(sectionTitles.projects),
       projectsIcon: asString(sectionTitles.projects_icon),
       projectsNote: asString(sectionTitles.projects_note),
@@ -829,7 +872,7 @@ const normalizeArticleFrontmatter = (
     seoTitle: asString(data.seoTitle) || asString(data.seo_title) || undefined,
     seoDescription: asString(data.seoDescription) || asString(data.seo_description) || undefined,
     legacyId,
-    path: `/blog/${fmSlug}`,
+    path: `/work/blog/${fmSlug}`,
     content: body,
   }
 }

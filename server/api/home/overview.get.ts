@@ -117,7 +117,7 @@ export default defineEventHandler(async (event) => {
         publishTime: a.PublishTime ?? a.publishTime ?? a.CreatedAt ?? a.createdAt ?? null,
         viewCount: Number(a.ViewCount ?? a.viewCount ?? 0),
         categoryName: a.CategoryName ?? a.categoryName ?? null,
-        path: `/blog/${slug ?? id}`,
+        path: `/work/blog/${slug ?? id}`,
       }
     })
     featuredArticle = allArticles[0] ?? null
