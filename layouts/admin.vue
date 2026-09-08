@@ -158,6 +158,7 @@ import { useAdminGlobalStyle } from '~/composables/useAdminStyle'
 import AppNaiveConfig from '~/components/layout/AppNaiveConfig.vue'
 import MouseTrail from '~/components/effects/MouseTrail.vue'
 import { adminMenu, type AdminMenuGroup } from '~/constants/admin/menu'
+import { usesNitroAdminAuth } from '~/utils/admin-runtime-auth'
 
 useHead({
   meta: [
@@ -432,16 +433,19 @@ const logout = async () => {
     return
   }
 
-  try {
-    await $fetch('/api/auth/logout', {
-      method: 'POST',
-      credentials: 'include',
-    })
-  } catch {
-    // ignore network errors — still clear client state
+  if (usesNitroAdminAuth()) {
+    try {
+      await $fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+      })
+    }
+    catch {
+      // ignore network errors — still clear client state
+    }
   }
 
-  if (process.client) {
+  if (import.meta.client) {
     localStorage.removeItem('admin_token')
     localStorage.removeItem('admin_user')
     clearBackendToken()

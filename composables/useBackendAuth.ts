@@ -1,3 +1,8 @@
+import {
+  resolveDotNetApiBase,
+  usesNitroAdminAuth,
+} from '~/utils/admin-runtime-auth'
+
 const BACKEND_AUTH_KEY = 'backend_auth_token'
 
 export function useBackendAuth() {
@@ -28,6 +33,11 @@ export function useBackendAuth() {
       return existing
     }
 
+    if (!usesNitroAdminAuth()) {
+      // Production static site: no Nitro session/cookie bridge.
+      return null
+    }
+
     try {
       const session = await $fetch<{ authenticated: boolean }>('/api/auth/session', {
         credentials: 'include',
@@ -43,11 +53,36 @@ export function useBackendAuth() {
         setBackendToken(result.backendToken)
         return result.backendToken
       }
-    } catch {
+    }
+    catch {
       return null
     }
 
     return null
+  }
+
+  /** Optional probe: confirm JWT still accepted by .NET. */
+  async function probeDotNetSession(): Promise<boolean> {
+    const token = getBackendToken()
+    if (!token) {
+      return false
+    }
+
+    try {
+      const config = useRuntimeConfig()
+      const apiBase = resolveDotNetApiBase(
+        undefined,
+        typeof config.public.apiBase === 'string' ? config.public.apiBase : undefined,
+      )
+      await $fetch(`${apiBase}/Auth/profile`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      return true
+    }
+    catch {
+      clearBackendToken()
+      return false
+    }
   }
 
   return {
@@ -55,5 +90,6 @@ export function useBackendAuth() {
     setBackendToken,
     clearBackendToken,
     ensureBackendToken,
+    probeDotNetSession,
   }
 }

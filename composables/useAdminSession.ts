@@ -1,7 +1,9 @@
 /**
- * Client-only admin session probe for public-page inline editing.
- * Frontend gating is UX only; Nitro checkAuth remains the security boundary.
+ * Client-only admin session probe for public-page inline editing / admin UX.
+ * Frontend gating is UX only; API authorization remains the security boundary.
  */
+import { usesNitroAdminAuth } from '~/utils/admin-runtime-auth'
+
 export function useAdminSession() {
   const isAdmin = useState('admin-session-is-admin', () => false)
   const pending = useState('admin-session-pending', () => true)
@@ -15,13 +17,26 @@ export function useAdminSession() {
 
     pending.value = true
     try {
-      const session = await $fetch<{ authenticated: boolean }>('/api/auth/session', {
-        credentials: 'include',
-      })
-      isAdmin.value = Boolean(session?.authenticated)
-    } catch {
+      if (usesNitroAdminAuth()) {
+        const session = await $fetch<{ authenticated: boolean }>('/api/auth/session', {
+          credentials: 'include',
+        })
+        isAdmin.value = Boolean(session?.authenticated)
+      }
+      else {
+        const { getBackendToken, probeDotNetSession } = useBackendAuth()
+        if (!getBackendToken()) {
+          isAdmin.value = false
+        }
+        else {
+          isAdmin.value = await probeDotNetSession()
+        }
+      }
+    }
+    catch {
       isAdmin.value = false
-    } finally {
+    }
+    finally {
       pending.value = false
       loaded.value = true
     }

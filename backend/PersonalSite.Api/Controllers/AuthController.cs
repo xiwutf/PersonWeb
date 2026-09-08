@@ -62,6 +62,32 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
+    /// 会话探测（兼容前台 /api/auth/session）。
+    /// 无 Bearer 或 Token 无效时返回 authenticated=false，避免静态站误打 Nitro 路径时出现 404。
+    /// </summary>
+    [HttpGet("session")]
+    [AllowAnonymous]
+    public ActionResult<object> GetSession()
+    {
+        bool authenticated = User?.Identity?.IsAuthenticated == true;
+        string? username = authenticated
+            ? (User.Identity?.Name
+               ?? User.FindFirst(ClaimTypes.Name)?.Value
+               ?? User.FindFirst(JwtRegisteredClaimNames.UniqueName)?.Value)
+            : null;
+        string? role = authenticated
+            ? User.FindFirst(ClaimTypes.Role)?.Value
+            : null;
+
+        return Ok(new
+        {
+            authenticated,
+            username,
+            role,
+        });
+    }
+
+    /// <summary>
     /// 获取当前用户信息
     /// </summary>
     /// <returns></returns>

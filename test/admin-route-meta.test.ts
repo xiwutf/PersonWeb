@@ -48,6 +48,13 @@ describe('admin route meta', () => {
     expect(loginSource.includes("middleware: 'admin-auth'")).toBe(false)
     expect(loginSource.includes('middleware: "admin-auth"')).toBe(false)
   })
+
+  it('login page switches production to .NET Auth/login', () => {
+    const loginSource = readFileSync(path.join(ADMIN_PAGES_ROOT, 'login.vue'), 'utf-8')
+    expect(loginSource).toMatch(/usesNitroAdminAuth/)
+    expect(loginSource).toMatch(/loginAgainstDotNet/)
+    expect(loginSource).not.toMatch(/仅校验密码，需与项目根目录/)
+  })
 })
 
 describe('admin API server auth coverage', () => {
