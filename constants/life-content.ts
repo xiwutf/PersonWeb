@@ -22,3 +22,19 @@ export const isLifeReservedMarkdownSlug = (slug: string) =>
 
 export const isLifeNoteSlug = (slug: unknown): slug is string =>
   isSafeContentSlug(slug) && !isLifeReservedMarkdownSlug(slug)
+
+export const LIFE_NOW_ICONS = [
+  'leaf',
+  'branch',
+  'sneaker',
+  'cards',
+  'bike',
+  'bubble',
+  'pencil',
+  'vase',
+] as const
+
+export type LifeNowIconName = (typeof LIFE_NOW_ICONS)[number]
+
+export const isLifeNowIcon = (value: unknown): value is LifeNowIconName =>
+  typeof value === 'string' && (LIFE_NOW_ICONS as readonly string[]).includes(value)

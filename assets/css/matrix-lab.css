@@ -1,0 +1,38 @@
+.matrix-section { padding-block: var(--space-section-sm); scroll-margin-top: 100px; }
+.matrix-heading { margin-bottom: var(--spacing-lg); }
+.matrix-heading > span { font-size: .7rem; letter-spacing: .18em; color: var(--color-cyan); }
+.matrix-heading h2 { font-size: clamp(1.6rem,3vw,2.4rem); font-weight: 700; margin-block: var(--spacing-sm); }
+.matrix-heading p,.matrix-hint { color: var(--color-text-muted); line-height: 1.8; }
+.matrix-layout { display: grid; grid-template-columns: 300px minmax(0,1fr); border: 1px solid var(--color-border-strong); border-radius: var(--radius-lg); overflow: hidden; background: var(--color-bg-card); }
+.matrix-controls { padding: var(--space-card); border-right: 1px solid var(--color-border); }
+.matrix-controls h3 { font-weight: 650; }
+.matrix-equation { display: flex; align-items: center; justify-content: center; gap: var(--spacing-lg); margin-block: var(--spacing-lg); }
+.matrix-values { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-sm) var(--spacing-lg); border-inline: 2px solid var(--color-text-muted); padding: var(--spacing-sm) var(--spacing-md); font-variant-numeric: tabular-nums; }
+.matrix-slider { display: block; margin-bottom: var(--spacing-md); font-size: .8rem; }
+.matrix-slider > span { display: flex; justify-content: space-between; }
+.matrix-slider output { color: var(--color-cyan); font-variant-numeric: tabular-nums; }
+.matrix-slider input { width: 100%; accent-color: var(--color-cyan); cursor: ew-resize; min-height: 28px; }
+.matrix-presets { display: flex; gap: var(--spacing-sm); flex-wrap: wrap; margin-top: var(--spacing-lg); }
+.matrix-hint { margin-top: var(--spacing-md); font-size: .8rem; }
+.matrix-visual { min-width: 0; padding: var(--spacing-md); }
+.matrix-visual svg { display: block; width: 100%; max-height: 520px; }
+.matrix-legend,.matrix-vector-labels { display: flex; justify-content: center; flex-wrap: wrap; gap: var(--spacing-md); font-size: .75rem; color: var(--color-text-muted); }
+.matrix-result-key,.matrix-vector-labels span:first-child { color: var(--color-cyan); }
+.matrix-vector-labels span:last-child { color: var(--color-violet); }
+.matrix-grid { stroke: var(--color-border); fill: none; }
+.matrix-axis { stroke: var(--color-text-subtle); fill: none; }
+.matrix-ticks { fill: var(--color-text-muted); font-size: 11px; }
+.matrix-original { stroke: var(--color-text-muted); stroke-width: 1.5; stroke-dasharray: 5 5; fill: none; }
+.matrix-shape { fill: color-mix(in srgb,var(--color-cyan) 15%,transparent); stroke: var(--color-cyan); stroke-width: 2; }
+.matrix-circle { fill: none; stroke: var(--color-cyan); stroke-width: 2.5; }
+.matrix-vector-first { stroke: var(--color-cyan); stroke-width: 3; }
+.matrix-vector-second { stroke: var(--color-violet); stroke-width: 3; }
+.matrix-first-fill { fill: var(--color-cyan); }
+.matrix-second-fill { fill: var(--color-violet); }
+.matrix-explanation { display: grid; grid-template-columns: repeat(3,auto) minmax(0,1fr); gap: var(--spacing-lg); padding: var(--space-card); margin-top: var(--spacing-md); background: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+.matrix-explanation small { display: block; color: var(--color-text-muted); font-size: .7rem; }
+.matrix-explanation strong { display: block; font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+.matrix-explanation strong span { font-size: .8rem; color: var(--color-cyan); }
+.matrix-explanation p { font-size: .85rem; line-height: 1.7; }
+.matrix-explanation p span { color: var(--color-text-muted); }
+@media(max-width:800px) { .matrix-layout { grid-template-columns: 1fr; } .matrix-controls { border-right: none; border-bottom: 1px solid var(--color-border); } .matrix-explanation { grid-template-columns: repeat(3,1fr); gap: var(--spacing-sm); } .matrix-explanation p { grid-column: 1/-1; } .matrix-explanation strong { font-size: 1.2rem; } }

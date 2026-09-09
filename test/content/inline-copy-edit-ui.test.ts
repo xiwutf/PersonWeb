@@ -10,6 +10,8 @@ describe('inline copy edit UI guards', () => {
     const work = readFileSync(resolve(root, 'pages/work/index.vue'), 'utf8')
     expect(life).toContain('AdminEditBanner')
     expect(life).toContain('InlineEditableText')
+    expect(life).toContain('LifeAdminAddButton')
+    expect(life).toContain('LifeComposer')
     expect(work).toContain('AdminEditBanner')
     expect(work).toContain('InlineEditableText')
   })
@@ -17,7 +19,7 @@ describe('inline copy edit UI guards', () => {
   it('banner only renders when isAdmin', () => {
     const src = readFileSync(resolve(root, 'components/content/AdminEditBanner.vue'), 'utf8')
     expect(src).toContain('v-if="isAdmin"')
-    expect(src).toContain('已登录 · 点击文案可编辑')
+    expect(src).toContain('已登录 · 点击文案可编辑 · 列表可新增 / 删除')
   })
 
   it('editable chrome class only applied for admin session', () => {

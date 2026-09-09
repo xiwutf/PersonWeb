@@ -517,7 +517,117 @@ html[data-life-world='true'] body {
 }
 
 .life-row--now .life-row-body h2 {
+  margin-bottom: 0;
+}
+
+.life-row-heading {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem 1rem;
   margin-bottom: 1.25rem;
+}
+
+.life-hero-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+}
+
+.life-hero-line .life-intro-lead {
+  flex: 1 1 auto;
+}
+
+.life-now-item-link {
+  display: grid;
+  gap: 0.42rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.life-admin-add {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  padding: 0.12rem 0.55rem;
+  color: var(--life-ink-soft);
+  background: transparent;
+  border: 1px dotted var(--life-line-strong);
+  border-radius: 0.28rem;
+  font: inherit;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.life-admin-add--primary {
+  color: var(--life-ink);
+  border-style: solid;
+}
+
+.life-admin-icon-btn {
+  flex: 0 0 auto;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-top: 0.15rem;
+  padding: 0;
+  color: var(--life-ink-soft);
+  background: transparent;
+  border: 1px dotted var(--life-line-strong);
+  border-radius: 0.28rem;
+  cursor: pointer;
+}
+
+.life-admin-icon-pick select,
+.life-composer input,
+.life-composer textarea,
+.life-composer select {
+  width: 100%;
+  margin-top: 0.2rem;
+  padding: 0.35rem 0.5rem;
+  color: var(--life-ink);
+  background: var(--life-paper);
+  border: 1px solid var(--life-line-strong);
+  border-radius: 0.28rem;
+  font: inherit;
+}
+
+.life-composer {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding: 1rem 0 0;
+  border-top: 1px dotted var(--life-line);
+}
+
+.life-composer-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.life-composer label {
+  display: grid;
+  gap: 0.15rem;
+  color: var(--life-ink-soft);
+  font-size: 0.82rem;
+}
+
+.life-composer-actions {
+  display: flex;
+  gap: 0.55rem;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .life-now-grid {
@@ -596,6 +706,7 @@ html[data-life-world='true'] body {
 }
 
 a.life-now-item:hover strong,
+a.life-now-item-link:hover strong,
 a.life-lately-text:hover,
 .life-recent-item:hover strong,
 .life-end-link:hover {

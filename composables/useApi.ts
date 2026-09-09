@@ -25,8 +25,8 @@ export const useApi = () => {
                 return 'http://localhost:5234/api'
             }
 
-            // 生产环境（xifg.com.cn 域名）
-            if (hostname.includes('xifg.com.cn')) {
+            // 生产环境（xifg 主站；xlfg 为同站别名）
+            if (hostname.includes('xifg.com.cn') || hostname.includes('xlfg.com.cn')) {
                 return 'https://api.xifg.com.cn/api'
             }
 

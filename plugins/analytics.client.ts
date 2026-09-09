@@ -57,7 +57,7 @@ export default defineNuxtPlugin((nuxtApp) => {
           if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '0.0.0.0') {
             return 'http://localhost:5234/api'
           }
-          if (hostname.includes('xifg.com.cn')) {
+          if (hostname.includes('xifg.com.cn') || hostname.includes('xlfg.com.cn')) {
             return 'https://api.xifg.com.cn/api'
           }
           return 'http://localhost:5234/api' // 默认

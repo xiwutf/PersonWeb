@@ -33,7 +33,8 @@ export function resolveDotNetApiBase(
     return 'http://localhost:5234/api'
   }
 
-  if (host.includes('xifg.com.cn')) {
+  // xifg 主站；xlfg 为同站别名（历史拼写），共用同一套 API
+  if (host.includes('xifg.com.cn') || host.includes('xlfg.com.cn')) {
     return 'https://api.xifg.com.cn/api'
   }
 

@@ -17,6 +17,11 @@ describe('admin-runtime-auth', () => {
     expect(resolveDotNetApiBase('www.xifg.com.cn')).toBe('https://api.xifg.com.cn/api')
   })
 
+  it('resolves xlfg alias to the same production API', () => {
+    expect(resolveDotNetApiBase('xlfg.com.cn')).toBe('https://api.xifg.com.cn/api')
+    expect(resolveDotNetApiBase('www.xlfg.com.cn')).toBe('https://api.xifg.com.cn/api')
+  })
+
   it('usesNitroAdminAuth is true on Vite/Vitest server context', () => {
     // Vitest runs in Node; import.meta.server is typically true under Nuxt vitest env
     // or undefined — function falls through safely for local host checks when window absent.

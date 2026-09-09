@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { readLifeHome, readWorkHome } from '../../server/utils/content-files'
-import { patchLifeHomeField, patchWorkHomeField } from '../../server/utils/content-home-patch'
+import { patchLifeHomeField, patchWorkHomeField, replaceLifeHomeLines } from '../../server/utils/content-home-patch'
 
 const lifeHome = resolve(__dirname, '../../content/life/home.yml')
 const workHome = resolve(__dirname, '../../content/work/home.yml')
@@ -25,6 +25,11 @@ describe('content home patch helpers', () => {
     const result = patchLifeHomeField('hero.name', '测试名')
     expect(result.hero.name).toBe('测试名')
     expect(readLifeHome().hero.name).toBe('测试名')
+  })
+
+  it('replaces hero.lines as a whole list', () => {
+    const result = replaceLifeHomeLines(['第一句', '第二句'])
+    expect(result.hero.lines).toEqual(['第一句', '第二句'])
   })
 
   it('rejects illegal life path', () => {
@@ -53,6 +58,26 @@ describe('content home patch helpers', () => {
       'utf8',
     )
     expect(lifeSrc).toContain('checkAuth(event)')
+    const lifeLinesSrc = readFileSync(
+      resolve(__dirname, '../../server/api/content/life/home/lines.put.ts'),
+      'utf8',
+    )
+    const lifeNowSrc = readFileSync(
+      resolve(__dirname, '../../server/api/content/life/now.put.ts'),
+      'utf8',
+    )
+    const lifeMomentsSrc = readFileSync(
+      resolve(__dirname, '../../server/api/content/life/moments.put.ts'),
+      'utf8',
+    )
+    const lifeNotesSrc = readFileSync(
+      resolve(__dirname, '../../server/api/content/life/notes.post.ts'),
+      'utf8',
+    )
+    expect(lifeLinesSrc).toContain('checkAuth(event)')
+    expect(lifeNowSrc).toContain('checkAuth(event)')
+    expect(lifeMomentsSrc).toContain('checkAuth(event)')
+    expect(lifeNotesSrc).toContain('checkAuth(event)')
     expect(workSrc).toContain('checkAuth(event)')
   })
 })

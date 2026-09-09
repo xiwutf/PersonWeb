@@ -11,8 +11,6 @@ const pool = mysql.createPool({
     queueLimit: 0,
     // 连接超时设置（毫秒）
     connectTimeout: 10000,
-    // 获取连接的超时时间（毫秒）
-    acquireTimeout: 60000,
     // 字符集
     charset: 'utf8mb4',
     // 时区

@@ -1,15 +1,20 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, beforeEach, afterEach } from 'vitest'
+import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import {
   isLifeNoteSlug,
   isSafeContentSlug,
   LIFE_RESERVED_MARKDOWN_SLUGS,
 } from '../constants/life-content'
 import {
+  createLifeNote,
   parseYamlSafe,
   readLifeHome,
   readLifeMoments,
   readLifeNow,
   readMarkdownCollection,
+  writeLifeMoments,
+  writeLifeNow,
 } from '../server/utils/content-files'
 
 describe('Life content slug safety', () => {
@@ -67,5 +72,68 @@ describe('Life YAML parsing', () => {
     const dates = moments.map(item => item.date)
     const sorted = [...dates].sort((left, right) => new Date(right).getTime() - new Date(left).getTime())
     expect(dates).toEqual(sorted)
+  })
+})
+
+const root = resolve(__dirname, '..')
+const nowFile = resolve(root, 'content/life/now.yml')
+const momentsFile = resolve(root, 'content/life/moments.yml')
+
+describe('Life list content writes', () => {
+  let nowBackup = ''
+  let momentsBackup = ''
+  const createdNotes: string[] = []
+
+  beforeEach(() => {
+    nowBackup = readFileSync(nowFile, 'utf8')
+    momentsBackup = readFileSync(momentsFile, 'utf8')
+  })
+
+  afterEach(() => {
+    writeFileSync(nowFile, nowBackup, 'utf8')
+    writeFileSync(momentsFile, momentsBackup, 'utf8')
+    for (const file of createdNotes.splice(0)) {
+      if (existsSync(file)) unlinkSync(file)
+    }
+  })
+
+  it('replaces now items and keeps title/description', () => {
+    const saved = writeLifeNow([
+      { category: '阅读', title: '阅读', description: '最近在看一本闲书。', icon: 'leaf' },
+    ])
+    expect(saved.items).toHaveLength(1)
+    expect(saved.items[0].title).toBe('阅读')
+    expect(readLifeNow().items[0].description).toContain('闲书')
+  })
+
+  it('drops now items missing description', () => {
+    const saved = writeLifeNow([
+      { category: '空', title: '空', description: '' },
+      { category: '游泳', title: '游泳', description: '去游几圈。', icon: 'sneaker' },
+    ])
+    expect(saved.items.map(item => item.title)).toEqual(['游泳'])
+  })
+
+  it('writes moments sorted by date descending', () => {
+    const saved = writeLifeMoments([
+      { date: '2026-01-01', content: '较早的一条' },
+      { date: '2026-09-09', content: '较新的一条' },
+    ])
+    expect(saved.map(item => item.content)).toEqual(['较新的一条', '较早的一条'])
+    expect(readLifeMoments()[0].date).toBe('2026-09-09')
+  })
+
+  it('creates a life note markdown file', () => {
+    const note = createLifeNote({
+      title: '测试随笔',
+      description: '摘要',
+      content: '这是正文。',
+      date: '2026-09-09',
+    })
+    expect(note?.title).toBe('测试随笔')
+    expect(note?.slug).toBeTruthy()
+    createdNotes.push(resolve(root, 'content/life', `${note!.slug}.md`))
+    expect(existsSync(createdNotes[0])).toBe(true)
+    expect(readFileSync(createdNotes[0], 'utf8')).toContain('这是正文。')
   })
 })

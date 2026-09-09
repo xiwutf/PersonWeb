@@ -78,6 +78,8 @@
       </div>
     </section>
 
+    <MatrixTransform />
+
     <section class="py-16">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="mb-8 max-w-2xl">
@@ -153,6 +155,7 @@
 <script setup lang="ts">
 import { defineAsyncComponent, onMounted, ref } from 'vue'
 import AppCard from '~/components/ui/AppCard.vue'
+import MatrixTransform from '~/components/lab/MatrixTransform.vue'
 import AppButton from '~/components/ui/AppButton.vue'
 import '~/assets/css/arena.css'
 const arenaLoaded = ref(false)

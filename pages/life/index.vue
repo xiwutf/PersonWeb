@@ -51,16 +51,30 @@
               <LifeIcon name="leaf" />
             </span>
           </div>
-          <InlineEditableText
+          <div
             v-for="(_line, index) in home.hero.lines"
             :key="`hero-line-${index}`"
-            v-model="home.hero.lines[index]"
-            :field-path="`hero.lines.${index}`"
-            as="p"
-            display-class="life-intro-lead"
-            :save="saveLifeField"
-            @saved="onLifeSaved"
-          />
+            class="life-hero-line"
+          >
+            <InlineEditableText
+              v-model="home.hero.lines[index]"
+              :field-path="`hero.lines.${index}`"
+              as="p"
+              display-class="life-intro-lead"
+              :save="saveLifeField"
+              @saved="onLifeSaved"
+            />
+            <button
+              v-if="isAdmin && home.hero.lines.length > 1"
+              type="button"
+              class="life-admin-icon-btn"
+              aria-label="删除这句"
+              @click="removeHeroLine(index)"
+            >
+              ×
+            </button>
+          </div>
+          <LifeAdminAddButton label="加一句" @click="addHeroLine" />
         </div>
       </div>
 
@@ -90,41 +104,99 @@
       <section class="life-row life-row--now" aria-labelledby="life-now-title">
         <span class="life-num">{{ home.sections.now.number }}</span>
         <div class="life-row-body">
-          <InlineEditableText
-            id="life-now-title"
-            v-model="home.sections.now.title"
-            field-path="sections.now.title"
-            as="h2"
-            :save="saveLifeField"
-            @saved="onLifeSaved"
-          />
+          <div class="life-row-heading">
+            <InlineEditableText
+              id="life-now-title"
+              v-model="home.sections.now.title"
+              field-path="sections.now.title"
+              as="h2"
+              :save="saveLifeField"
+              @saved="onLifeSaved"
+            />
+            <LifeAdminAddButton label="新增一项" @click="openNowComposer" />
+          </div>
           <div class="life-now-grid">
-            <template v-for="item in lifeNow" :key="item.title">
+            <article
+              v-for="(item, index) in nowItems"
+              :key="`now-${index}-${item.title}`"
+              class="life-now-item"
+            >
+              <LifeIcon :name="nowIconOf(item)" />
+              <template v-if="isAdmin">
+                <label class="life-admin-icon-pick">
+                  <span class="sr-only">图标</span>
+                  <select
+                    :value="item.icon || nowIconOf(item)"
+                    @change="onNowIconChange(index, $event)"
+                  >
+                    <option v-for="icon in nowIconOptions" :key="icon" :value="icon">
+                      {{ nowIconLabel[icon] || icon }}
+                    </option>
+                  </select>
+                </label>
+                <InlineEditableText
+                  v-model="nowItems[index].title"
+                  :field-path="`items.${index}.title`"
+                  as="strong"
+                  :save="saveNowField"
+                />
+                <InlineEditableText
+                  v-model="nowItems[index].description"
+                  :field-path="`items.${index}.description`"
+                  as="p"
+                  :save="saveNowField"
+                />
+                <button
+                  type="button"
+                  class="life-admin-add"
+                  @click="removeNowItem(index)"
+                >
+                  删除
+                </button>
+              </template>
               <NuxtLink
-                v-if="item.href"
+                v-else-if="item.href"
                 :to="item.href"
-                class="life-now-item"
+                class="life-now-item-link"
               >
-                <LifeIcon :name="nowIconOf(item)" />
                 <strong>{{ item.title }}</strong>
                 <p>{{ item.description }}</p>
               </NuxtLink>
-              <article
-                v-else
-                class="life-now-item"
-              >
-                <LifeIcon :name="nowIconOf(item)" />
+              <template v-else>
                 <strong>{{ item.title }}</strong>
                 <p>{{ item.description }}</p>
-              </article>
-            </template>
+              </template>
+            </article>
           </div>
+          <LifeComposer
+            :open="nowComposer.open"
+            title="新增「最近在」"
+            @submit="submitNowItem"
+            @cancel="nowComposer.open = false"
+          >
+            <label>
+              标题
+              <input v-model="nowComposer.title" type="text" maxlength="40" required>
+            </label>
+            <label>
+              说明
+              <textarea v-model="nowComposer.description" maxlength="240" rows="3" required />
+            </label>
+            <label>
+              图标
+              <select v-model="nowComposer.icon">
+                <option v-for="icon in nowIconOptions" :key="icon" :value="icon">
+                  {{ nowIconLabel[icon] || icon }}
+                </option>
+              </select>
+            </label>
+          </LifeComposer>
         </div>
       </section>
 
       <section
         class="life-row"
-        :class="{ 'life-row--empty': latelyMoments.length === 0 }"
+        :class="{ 'life-row--empty': momentItems.length === 0 }"
         aria-labelledby="life-lately-title"
       >
         <span class="life-num">{{ home.sections.moments.number }}</span>
@@ -139,8 +211,9 @@
               :save="saveLifeField"
               @saved="onLifeSaved"
             />
+            <LifeAdminAddButton label="记一条" @click="openMomentComposer" />
             <InlineEditableText
-              v-if="latelyMoments.length === 0"
+              v-if="momentItems.length === 0"
               v-model="home.empty.moments"
               field-path="empty.moments"
               as="p"
@@ -150,16 +223,33 @@
             />
           </div>
 
-          <div v-if="latelyMoments.length" class="life-lately-list">
+          <div v-if="momentItems.length" class="life-lately-list">
             <article
-              v-for="item in latelyMoments"
-              :key="`${item.date}-${item.content}`"
+              v-for="(item, index) in latelyMoments"
+              :key="`${item.date}-${index}`"
               class="life-lately-item"
             >
               <time :datetime="item.date">{{ formatShortDate(item.date) }}</time>
               <div class="life-lately-body">
+                <template v-if="isAdmin">
+                  <InlineEditableText
+                    v-model="momentItems[index].content"
+                    :field-path="`items.${index}.content`"
+                    as="p"
+                    display-class="life-lately-text"
+                    multiline
+                    :save="saveMomentField"
+                  />
+                  <button
+                    type="button"
+                    class="life-admin-add"
+                    @click="removeMoment(index)"
+                  >
+                    删除
+                  </button>
+                </template>
                 <NuxtLink
-                  v-if="item.note"
+                  v-else-if="item.note"
                   :to="item.note"
                   class="life-lately-text"
                 >
@@ -175,6 +265,21 @@
               </div>
             </article>
           </div>
+          <LifeComposer
+            :open="momentComposer.open"
+            title="新增一条最近"
+            @submit="submitMoment"
+            @cancel="momentComposer.open = false"
+          >
+            <label>
+              日期
+              <input v-model="momentComposer.date" type="date" required>
+            </label>
+            <label>
+              内容
+              <textarea v-model="momentComposer.content" maxlength="800" rows="3" required />
+            </label>
+          </LifeComposer>
         </div>
       </section>
 
@@ -195,6 +300,7 @@
               :save="saveLifeField"
               @saved="onLifeSaved"
             />
+            <LifeAdminAddButton label="写一篇" @click="openNoteComposer" />
             <InlineEditableText
               v-if="!latestNotes.length"
               v-model="home.empty.notes"
@@ -220,6 +326,25 @@
               </span>
             </NuxtLink>
           </div>
+          <LifeComposer
+            :open="noteComposer.open"
+            title="写一篇随笔"
+            @submit="submitNote"
+            @cancel="noteComposer.open = false"
+          >
+            <label>
+              标题
+              <input v-model="noteComposer.title" type="text" maxlength="80" required>
+            </label>
+            <label>
+              摘要
+              <input v-model="noteComposer.description" type="text" maxlength="240">
+            </label>
+            <label>
+              正文
+              <textarea v-model="noteComposer.content" maxlength="20000" rows="8" required />
+            </label>
+          </LifeComposer>
         </div>
       </section>
 
@@ -277,6 +402,8 @@
 </template>
 
 <script setup lang="ts">
+import { LIFE_NOW_ICONS } from '~/constants/life-content'
+
 definePageMeta({
   layout: 'life'
 })
@@ -335,6 +462,18 @@ const LATEST_MOMENT_LIMIT = 6
 
 const { isAdmin } = useAdminSession()
 const { saveField } = useInlineCopySave('/api/content/life/home')
+const { saveNowItems, saveMoments, createNote, saveHeroLines } = useLifeListSave()
+const nowIconOptions = LIFE_NOW_ICONS
+const nowIconLabel: Record<string, string> = {
+  leaf: '叶子',
+  branch: '树枝',
+  sneaker: '运动鞋',
+  cards: '扑克',
+  bike: '自行车',
+  bubble: '气泡',
+  pencil: '铅笔',
+  vase: '花瓶',
+}
 
 const [{ data: homeData }, { data: now }, { data: moments }, { data: posts }] = await Promise.all([
   useAsyncData('life-home', () => $fetch<LifeHomeContent>('/api/content/life/home')),
@@ -348,6 +487,40 @@ if (!homeData.value) {
 }
 
 const home = ref<LifeHomeContent>(structuredClone(toRaw(homeData.value)))
+const nowItems = ref<LifeNowItem[]>(structuredClone(toRaw(now.value?.items || [])))
+const momentItems = ref<LifeMoment[]>(structuredClone(toRaw(moments.value || [])))
+
+const nowComposer = reactive({
+  open: false,
+  title: '',
+  description: '',
+  icon: 'leaf',
+})
+
+const momentComposer = reactive({
+  open: false,
+  date: '',
+  content: '',
+})
+
+const noteComposer = reactive({
+  open: false,
+  title: '',
+  description: '',
+  content: '',
+})
+
+function todayIso() {
+  const current = new Date()
+  const month = String(current.getMonth() + 1).padStart(2, '0')
+  const day = String(current.getDate()).padStart(2, '0')
+  return `${current.getFullYear()}-${month}-${day}`
+}
+
+async function notifySaveError() {
+  const { useNotification } = await import('~/composables/useToast')
+  useNotification().error('无法写入内容文件')
+}
 
 async function saveLifeField(path: string, value: string) {
   return await saveField(path, value)
@@ -366,8 +539,7 @@ function onAboutLinkClick(event: MouseEvent) {
   }
 }
 
-const lifeNow = computed(() => now.value?.items || [])
-const latelyMoments = computed(() => (moments.value || []).slice(0, LATEST_MOMENT_LIMIT))
+const latelyMoments = computed(() => momentItems.value.slice(0, LATEST_MOMENT_LIMIT))
 const latestNotes = computed(() => (posts.value || []).slice(0, 5))
 
 const nowIconOf = (item: LifeNowItem) => {
@@ -378,6 +550,149 @@ const nowIconOf = (item: LifeNowItem) => {
   if (title.includes('三国') || title.includes('茶')) return 'cards'
   if (title.includes('骑')) return 'bike'
   return 'leaf'
+}
+
+async function persistNow(next: LifeNowItem[]) {
+  const saved = await saveNowItems(next)
+  nowItems.value = saved.items || next
+  now.value = saved
+}
+
+async function persistMoments(next: LifeMoment[]) {
+  const saved = await saveMoments(next)
+  momentItems.value = saved
+  moments.value = saved
+}
+
+async function saveNowField(path: string, value: string) {
+  const match = path.match(/^items\.(\d+)\.(title|description|icon)$/)
+  if (!match) throw new Error('invalid path')
+  const index = Number(match[1])
+  const field = match[2] as 'title' | 'description' | 'icon'
+  const next = structuredClone(nowItems.value)
+  next[index] = { ...next[index], [field]: value }
+  await persistNow(next)
+}
+
+async function onNowIconChange(index: number, event: Event) {
+  const target = event.target as HTMLSelectElement
+  try {
+    await saveNowField(`items.${index}.icon`, target.value)
+  } catch {
+    await notifySaveError()
+  }
+}
+
+function openNowComposer() {
+  nowComposer.title = ''
+  nowComposer.description = ''
+  nowComposer.icon = 'leaf'
+  nowComposer.open = true
+}
+
+async function submitNowItem() {
+  try {
+    await persistNow([
+      ...nowItems.value,
+      {
+        title: nowComposer.title,
+        description: nowComposer.description,
+        icon: nowComposer.icon,
+      },
+    ])
+    nowComposer.open = false
+  } catch {
+    await notifySaveError()
+  }
+}
+
+async function removeNowItem(index: number) {
+  try {
+    const next = nowItems.value.filter((_, itemIndex) => itemIndex !== index)
+    await persistNow(next)
+  } catch {
+    await notifySaveError()
+  }
+}
+
+async function saveMomentField(path: string, value: string) {
+  const match = path.match(/^items\.(\d+)\.content$/)
+  if (!match) throw new Error('invalid path')
+  const index = Number(match[1])
+  const next = structuredClone(momentItems.value)
+  next[index] = { ...next[index], content: value }
+  await persistMoments(next)
+}
+
+function openMomentComposer() {
+  momentComposer.date = todayIso()
+  momentComposer.content = ''
+  momentComposer.open = true
+}
+
+async function submitMoment() {
+  try {
+    await persistMoments([
+      {
+        date: momentComposer.date,
+        content: momentComposer.content,
+      },
+      ...momentItems.value,
+    ])
+    momentComposer.open = false
+  } catch {
+    await notifySaveError()
+  }
+}
+
+async function removeMoment(index: number) {
+  try {
+    const next = momentItems.value.filter((_, itemIndex) => itemIndex !== index)
+    await persistMoments(next)
+  } catch {
+    await notifySaveError()
+  }
+}
+
+function openNoteComposer() {
+  noteComposer.title = ''
+  noteComposer.description = ''
+  noteComposer.content = ''
+  noteComposer.open = true
+}
+
+async function submitNote() {
+  try {
+    await createNote({
+      title: noteComposer.title,
+      description: noteComposer.description,
+      content: noteComposer.content,
+      date: todayIso(),
+    })
+    await refreshNuxtData('life-posts')
+    noteComposer.open = false
+  } catch {
+    await notifySaveError()
+  }
+}
+
+async function addHeroLine() {
+  try {
+    const payload = await saveHeroLines([...home.value.hero.lines, '新的一句，点这里改'])
+    onLifeSaved(payload)
+  } catch {
+    await notifySaveError()
+  }
+}
+
+async function removeHeroLine(index: number) {
+  try {
+    const next = home.value.hero.lines.filter((_, lineIndex) => lineIndex !== index)
+    const payload = await saveHeroLines(next)
+    onLifeSaved(payload)
+  } catch {
+    await notifySaveError()
+  }
 }
 
 const lifeHomeStamp = (() => {

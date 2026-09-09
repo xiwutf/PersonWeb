@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { parse as parseYaml, stringify as stringifyYaml } from 'yaml'
-import { isLifeNoteSlug, isSafeContentSlug } from '../../constants/life-content'
+import { isLifeNoteSlug, isLifeNowIcon, isSafeContentSlug } from '../../constants/life-content'
 import { isArticleContentSlug, ARTICLES_TAXONOMY_FILE } from '../../constants/articles-content'
 import type {
   ArticleContentItem,
@@ -226,6 +226,28 @@ export const writeYamlFile = (segments: string[], data: unknown) => {
   fs.writeFileSync(resolved, body.endsWith('\n') ? body : `${body}\n`, 'utf-8')
 }
 
+const assertInsideContentRoot = (fullPath: string) => {
+  const resolved = path.resolve(fullPath)
+  const rootResolved = path.resolve(contentRoot)
+  const rootPrefix = rootResolved.endsWith(path.sep) ? rootResolved : `${rootResolved}${path.sep}`
+  if (resolved !== rootResolved && !resolved.startsWith(rootPrefix)) {
+    throw new Error('Refusing to write outside content root')
+  }
+  return resolved
+}
+
+export const writeTextFile = (segments: string[], fileName: string, contents: string) => {
+  if (segments.length === 0 || segments.some(seg => !seg || seg.includes('..') || seg.includes('/') || seg.includes('\\'))) {
+    throw new Error('Invalid content path segments')
+  }
+  if (!fileName || fileName.includes('..') || fileName.includes('/') || fileName.includes('\\')) {
+    throw new Error('Invalid content file name')
+  }
+
+  const resolved = assertInsideContentRoot(path.join(contentRoot, ...segments, fileName))
+  fs.writeFileSync(resolved, contents.endsWith('\n') ? contents : `${contents}\n`, 'utf-8')
+}
+
 export type LifeHomeContent = {
   hero: {
     kicker: string
@@ -352,6 +374,154 @@ export const readLifeMoments = (): LifeMoment[] => {
     })
     .filter((item): item is LifeMoment => item !== null)
     .sort((left, right) => new Date(right.date).getTime() - new Date(left.date).getTime())
+}
+
+const MAX_NOW_ITEMS = 8
+const MAX_MOMENT_ITEMS = 40
+const MAX_SHORT = 80
+const MAX_DESC = 240
+const MAX_MOMENT = 800
+const MAX_NOTE_BODY = 20000
+
+const clip = (value: string, max: number) => value.trim().slice(0, max)
+
+const isIsoDate = (value: string) => /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(new Date(`${value}T00:00:00`).getTime())
+
+const isRelativeHref = (value: string) => value.startsWith('/') && !value.includes('..') && value.length < 180
+
+export const writeLifeNow = (items: LifeNowItem[]): LifeNowContent => {
+  const current = readLifeNow()
+  const nextItems = items
+    .slice(0, MAX_NOW_ITEMS)
+    .map((item) => {
+      const title = clip(item.title || item.category || '', MAX_SHORT)
+      const description = clip(item.description || '', MAX_DESC)
+      if (!title || !description) return null
+      const href = item.href && isRelativeHref(item.href) ? item.href : undefined
+      const icon = isLifeNowIcon(item.icon) ? item.icon : undefined
+      return {
+        category: title,
+        title,
+        description,
+        href,
+        icon,
+      }
+    })
+    .filter((item): item is LifeNowItem => item !== null)
+
+  writeYamlFile(['life', 'now.yml'], {
+    ...(current.habits ? { habits: current.habits } : {}),
+    items: nextItems.map((item) => {
+      const row: Record<string, string> = {
+        title: item.title || item.category,
+        description: item.description,
+      }
+      if (item.icon) row.icon = item.icon
+      if (item.href) row.href = item.href
+      return row
+    }),
+  })
+  return readLifeNow()
+}
+
+export const writeLifeMoments = (items: LifeMoment[]): LifeMoment[] => {
+  const nextItems = items
+    .slice(0, MAX_MOMENT_ITEMS)
+    .map((item) => {
+      const date = clip(item.date || '', 10)
+      const content = clip(item.content || '', MAX_MOMENT)
+      if (!isIsoDate(date) || !content) return null
+      const image = item.image && (item.image.startsWith('/') || item.image.startsWith('https://'))
+        ? clip(item.image, 240)
+        : undefined
+      const note = item.note && isRelativeHref(item.note) ? item.note : undefined
+      const type = item.type === 'daily' || item.type === 'thought' || item.type === 'activity'
+        ? item.type
+        : undefined
+      return { date, content, type, image, note }
+    })
+    .filter((item): item is LifeMoment => item !== null)
+    .sort((left, right) => new Date(right.date).getTime() - new Date(left.date).getTime())
+
+  writeYamlFile(['life', 'moments.yml'], {
+    items: nextItems.map((item) => {
+      const row: Record<string, string> = {
+        date: item.date,
+        content: item.content,
+      }
+      if (item.type) row.type = item.type
+      if (item.image) row.image = item.image
+      if (item.note) row.note = item.note
+      return row
+    }),
+  })
+  return readLifeMoments()
+}
+
+const yamlQuote = (value: string) => JSON.stringify(value)
+
+const slugFromTitle = (title: string, date: string) => {
+  const stem = title
+    .trim()
+    .toLowerCase()
+    .replace(/[^\w\u4e00-\u9fff]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 40)
+  const base = stem ? `${date}-${stem}` : `${date}-note`
+  return base
+}
+
+export type LifeNoteDraft = {
+  title: string
+  description?: string
+  content: string
+  date?: string
+}
+
+export const createLifeNote = (draft: LifeNoteDraft) => {
+  const title = clip(draft.title || '', MAX_SHORT)
+  const description = clip(draft.description || '', MAX_DESC)
+  const content = clip(draft.content || '', MAX_NOTE_BODY)
+  const date = draft.date && isIsoDate(draft.date)
+    ? draft.date
+    : new Date().toISOString().slice(0, 10)
+
+  if (!title || !content) {
+    throw new Error('title and content required')
+  }
+
+  let slug = slugFromTitle(title, date)
+  if (!isLifeNoteSlug(slug)) {
+    slug = `${date}-note`
+  }
+
+  let fileName = `${slug}.md`
+  let attempt = 2
+  while (fs.existsSync(path.join(contentRoot, 'life', fileName))) {
+    slug = `${slugFromTitle(title, date)}-${attempt}`
+    if (!isLifeNoteSlug(slug)) {
+      slug = `${date}-note-${attempt}`
+    }
+    fileName = `${slug}.md`
+    attempt += 1
+    if (attempt > 20) {
+      throw new Error('Unable to allocate note slug')
+    }
+  }
+
+  const frontmatter = [
+    '---',
+    `title: ${yamlQuote(title)}`,
+    `date: ${date}`,
+    description ? `description: ${yamlQuote(description)}` : null,
+    '---',
+    '',
+    content,
+    '',
+  ].filter(line => line !== null).join('\n')
+
+  writeTextFile(['life'], fileName, frontmatter)
+  return readMarkdownDocument(['life'], slug)
 }
 
 export const readLifeProfile = (): LifeProfile | null => {
