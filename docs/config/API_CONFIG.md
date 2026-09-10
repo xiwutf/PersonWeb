@@ -1,5 +1,24 @@
 # API 配置说明
 
+## 手写纸张识别
+
+摘句页管理员可拍照或选择纸张图片。`.NET` 后端负责鉴权和转发，Python AI 服务调用视觉模型提取句子。默认跟随项目的 `LLM_PROVIDER=deepseek`，直接复用现有 DeepSeek Key；模型密钥只配置在 `ai-service/.env`：
+
+```env
+LLM_PROVIDER=deepseek
+DEEPSEEK_API_KEY=your_deepseek_api_key
+DEEPSEEK_RESPONSES_BASE_URL=https://api.deepseek.com
+DEEPSEEK_VISION_MODEL=deepseek-v4-flash-vision-exp
+```
+
+如聊天模型仍使用其他提供商，也可以通过 `VISION_PROVIDER=deepseek` 单独指定图片识别提供商。DeepSeek 图片输入必须使用视觉模型，普通的 `deepseek-chat` 不能识别图片。
+
+- 接口：`POST /api/Handwriting/extract`
+- 鉴权：管理员 Bearer Token
+- 文件：JPG、PNG、WebP，最大 10MB
+- 确认收入摘句时，原图通过现有媒体接口保存，并与本次提取的句子共同保存、共同展示
+- 已配置阿里云 OSS 时上传 OSS；本地开发未配置 OSS 时自动保存到后端 `wwwroot/upload/`，由静态文件地址访问
+
 ## 🔍 问题说明
 
 如果您在开发模式下看到 API 请求指向 `http://localhost:5234/api`，这是因为：

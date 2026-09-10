@@ -10,6 +10,7 @@ import {
   createLifeNote,
   parseYamlSafe,
   readLifeHome,
+  readLifeMargin,
   readLifeMoments,
   readLifeNow,
   readMarkdownCollection,
@@ -50,13 +51,24 @@ describe('Life home content', () => {
     expect(home.hero.name).toBe('溪午听风')
     expect(home.hero.lines.length).toBeGreaterThan(0)
     expect(home.sections.now.number).toBe('02')
-    expect(home.sections.about.number).toBe('05')
+    expect(home.sections.margin.number).toBe('05')
+    expect(home.sections.about.number).toBe('06')
     expect(home.sections.about.title).toBe('关于我')
+    expect(home.sections.margin.title).toBe('摘句')
     expect(home.closing).toBeTruthy()
 
     const now = readLifeNow()
     expect(now.items.length).toBeGreaterThanOrEqual(3)
     expect(now.items.every(item => item.title && item.description)).toBe(true)
+  })
+
+  it('loads margin quotes with optional notes', () => {
+    const items = readLifeMargin()
+    expect(items.length).toBeGreaterThan(10)
+    expect(items.every(item => item.text)).toBe(true)
+    expect(items.some(item => item.featured)).toBe(true)
+    expect(items.some(item => item.note)).toBe(true)
+    expect(items.some(item => item.group === '日常')).toBe(true)
   })
 })
 

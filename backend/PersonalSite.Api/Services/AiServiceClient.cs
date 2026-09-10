@@ -148,6 +148,17 @@ public class CodeExplainResponseDto
     public string Explanation { get; set; } = "";
 }
 
+public record HandwritingExtractResult(List<string> Sentences);
+
+internal class HandwritingExtractRequestDto
+{
+    [System.Text.Json.Serialization.JsonPropertyName("content_type")]
+    public string ContentType { get; set; } = "";
+
+    [System.Text.Json.Serialization.JsonPropertyName("image_base64")]
+    public string ImageBase64 { get; set; } = "";
+}
+
 /// <summary>
 /// AI 服务客户端
 /// 用于调用 Python AI Service 的 HTTP 客户端
@@ -170,6 +181,37 @@ public class AiServiceClient
         // 配置 HttpClient
         _httpClient.BaseAddress = new Uri(_options.BaseUrl);
         _httpClient.Timeout = TimeSpan.FromSeconds(_options.TimeoutSeconds);
+    }
+
+    public async Task<HandwritingExtractResult> ExtractHandwritingAsync(
+        string contentType,
+        string imageBase64,
+        CancellationToken cancellationToken = default)
+    {
+        var baseAddress = _httpClient.BaseAddress?.ToString().TrimEnd('/') ?? _options.BaseUrl.TrimEnd('/');
+        var requestUri = $"{baseAddress}/handwriting/extract";
+        using var request = new HttpRequestMessage(HttpMethod.Post, requestUri)
+        {
+            Content = JsonContent.Create(new HandwritingExtractRequestDto
+            {
+                ContentType = contentType,
+                ImageBase64 = imageBase64,
+            })
+        };
+        request.Headers.Add("X-Internal-Token", _options.InternalToken ?? "default-internal-token-change-in-production");
+
+        using var response = await _httpClient.SendAsync(request, cancellationToken);
+        var result = await response.Content.ReadFromJsonAsync<AiServiceResponse<HandwritingExtractResult>>(
+            cancellationToken: cancellationToken);
+
+        if (!response.IsSuccessStatusCode || result is null || !result.Success || result.Data is null)
+        {
+            var message = result?.Message;
+            if (string.IsNullOrWhiteSpace(message)) message = "纸张识别暂时失败，请稍后再试";
+            throw new InvalidOperationException(message);
+        }
+
+        return result.Data;
     }
 
     /// <summary>

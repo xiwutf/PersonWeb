@@ -10,7 +10,7 @@ from contextlib import asynccontextmanager
 
 from app.core.config import settings
 from app.core.app_logging import setup_logging, logger
-from app.api import health, chat, tools, rag, document, name, relation, intelligence
+from app.api import health, chat, tools, rag, document, name, relation, intelligence, handwriting
 
 
 @asynccontextmanager
@@ -103,6 +103,7 @@ app.include_router(document.router, prefix="/api/ai", tags=["文档知识管家"
 app.include_router(name.router, prefix="/api/ai", tags=["智能取名助手"])
 app.include_router(relation.router, prefix="/api/ai", tags=["关系跟进助理"])
 app.include_router(intelligence.router, prefix="/api/ai", tags=["情报中心"])
+app.include_router(handwriting.router, prefix="/api/ai", tags=["手写识别"])
 
 
 @app.get("/")

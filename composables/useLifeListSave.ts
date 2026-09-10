@@ -12,6 +12,17 @@ type LifeMoment = {
   note?: string
 }
 
+type LifeMarginItem = {
+  text: string
+  note?: string
+  group?: string
+  featured?: boolean
+  archived?: boolean
+  tone?: 'plain' | 'strong' | 'quiet' | 'curious' | 'passing'
+  sourceImage?: string
+  scanBatch?: string
+}
+
 export function useLifeListSave() {
   async function saveNowItems(items: LifeNowItem[]) {
     return await $fetch('/api/content/life/now', {
@@ -23,6 +34,14 @@ export function useLifeListSave() {
 
   async function saveMoments(items: LifeMoment[]) {
     return await $fetch('/api/content/life/moments', {
+      method: 'PUT',
+      credentials: 'include',
+      body: { items },
+    })
+  }
+
+  async function saveMargin(items: LifeMarginItem[]) {
+    return await $fetch('/api/content/life/margin', {
       method: 'PUT',
       credentials: 'include',
       body: { items },
@@ -50,5 +69,5 @@ export function useLifeListSave() {
     })
   }
 
-  return { saveNowItems, saveMoments, createNote, saveHeroLines }
+  return { saveNowItems, saveMoments, saveMargin, createNote, saveHeroLines }
 }

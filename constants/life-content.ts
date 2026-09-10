@@ -6,6 +6,7 @@ export const LIFE_RESERVED_MARKDOWN_SLUGS = [
   'home',
   'now',
   'moments',
+  'margin',
 ] as const
 
 export const isSafeContentSlug = (slug: unknown): slug is string => {

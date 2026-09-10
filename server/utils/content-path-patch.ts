@@ -11,11 +11,15 @@ const LIFE_HOME_PATHS = new Set([
   'closing',
   'empty.moments',
   'empty.notes',
+  'empty.margin',
   'about.description',
   'about.linkText',
+  'margin.description',
+  'margin.linkText',
   'sections.now.title',
   'sections.moments.title',
   'sections.notes.title',
+  'sections.margin.title',
   'sections.about.title',
 ])
 

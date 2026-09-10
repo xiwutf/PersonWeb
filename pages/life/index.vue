@@ -348,6 +348,65 @@
         </div>
       </section>
 
+      <section
+        class="life-row"
+        :class="{ 'life-row--empty': !featuredMargin.length }"
+        aria-labelledby="life-margin-title"
+      >
+        <span class="life-num">{{ home.sections.margin.number }}</span>
+        <div class="life-row-body">
+          <div class="life-row-line">
+            <LifeIcon name="bubble" />
+            <InlineEditableText
+              id="life-margin-title"
+              v-model="home.sections.margin.title"
+              field-path="sections.margin.title"
+              as="h2"
+              :save="saveLifeField"
+              @saved="onLifeSaved"
+            />
+            <InlineEditableText
+              v-if="!featuredMargin.length"
+              v-model="home.empty.margin"
+              field-path="empty.margin"
+              as="p"
+              display-class="life-row-desc"
+              :save="saveLifeField"
+              @saved="onLifeSaved"
+            />
+            <InlineEditableText
+              v-else
+              v-model="home.margin.description"
+              field-path="margin.description"
+              as="p"
+              display-class="life-row-desc"
+              :save="saveLifeField"
+              @saved="onLifeSaved"
+            />
+          </div>
+
+          <div v-if="featuredMargin.length" class="life-margin-preview">
+            <blockquote
+              v-for="(item, index) in featuredMargin"
+              :key="`margin-preview-${index}`"
+              class="life-margin-card"
+            >
+              <p class="life-margin-text">{{ item.text }}</p>
+            </blockquote>
+          </div>
+
+          <NuxtLink to="/life/margin" class="life-end-link">
+            <InlineEditableText
+              v-model="home.margin.linkText"
+              field-path="margin.linkText"
+              as="span"
+              :save="saveLifeField"
+              @saved="onLifeSaved"
+            />
+          </NuxtLink>
+        </div>
+      </section>
+
       <section class="life-row life-row--about" aria-labelledby="life-about-title">
         <span class="life-num">{{ home.sections.about.number }}</span>
         <div class="life-row-body">
@@ -420,17 +479,30 @@ type LifeHomeContent = {
     now: { number: string, title: string }
     moments: { number: string, title: string }
     notes: { number: string, title: string }
+    margin: { number: string, title: string }
     about: { number: string, title: string }
   }
   empty: {
     moments: string
     notes: string
+    margin: string
   }
   about: {
     description: string
     linkText: string
   }
+  margin: {
+    description: string
+    linkText: string
+  }
   closing: string
+}
+
+type LifeMarginItem = {
+  text: string
+  note?: string
+  group?: string
+  featured?: boolean
 }
 
 type LifeNowItem = {
@@ -459,6 +531,7 @@ type LifeNote = {
 }
 
 const LATEST_MOMENT_LIMIT = 6
+const MARGIN_PREVIEW_LIMIT = 5
 
 const { isAdmin } = useAdminSession()
 const { saveField } = useInlineCopySave('/api/content/life/home')
@@ -475,11 +548,12 @@ const nowIconLabel: Record<string, string> = {
   vase: '花瓶',
 }
 
-const [{ data: homeData }, { data: now }, { data: moments }, { data: posts }] = await Promise.all([
+const [{ data: homeData }, { data: now }, { data: moments }, { data: posts }, { data: margin }] = await Promise.all([
   useAsyncData('life-home', () => $fetch<LifeHomeContent>('/api/content/life/home')),
   useAsyncData('life-now', () => $fetch<LifeNowContent>('/api/content/life/now')),
   useAsyncData('life-moments', () => $fetch<LifeMoment[]>('/api/content/life/moments')),
-  useAsyncData('life-posts', () => $fetch<LifeNote[]>('/api/content/life'))
+  useAsyncData('life-posts', () => $fetch<LifeNote[]>('/api/content/life')),
+  useAsyncData('life-margin', () => $fetch<LifeMarginItem[]>('/api/content/life/margin')),
 ])
 
 if (!homeData.value) {
@@ -517,8 +591,17 @@ function todayIso() {
   return `${current.getFullYear()}-${month}-${day}`
 }
 
-async function notifySaveError() {
+async function notifySaveError(error?: unknown) {
   const { useNotification } = await import('~/composables/useToast')
+  const status = typeof error === 'object' && error !== null
+    ? Number((error as { statusCode?: number, status?: number }).statusCode
+      ?? (error as { statusCode?: number, status?: number }).status
+      ?? 0)
+    : 0
+  if (status === 401) {
+    useNotification().error('登录已失效，请重新双击印章登录')
+    return
+  }
   useNotification().error('无法写入内容文件')
 }
 
@@ -541,6 +624,12 @@ function onAboutLinkClick(event: MouseEvent) {
 
 const latelyMoments = computed(() => momentItems.value.slice(0, LATEST_MOMENT_LIMIT))
 const latestNotes = computed(() => (posts.value || []).slice(0, 5))
+const featuredMargin = computed(() => {
+  const items = margin.value || []
+  const featured = items.filter(item => item.featured)
+  const pool = featured.length ? featured : items
+  return pool.slice(0, MARGIN_PREVIEW_LIMIT)
+})
 
 const nowIconOf = (item: LifeNowItem) => {
   if (item.icon) return item.icon
@@ -569,17 +658,19 @@ async function saveNowField(path: string, value: string) {
   if (!match) throw new Error('invalid path')
   const index = Number(match[1])
   const field = match[2] as 'title' | 'description' | 'icon'
-  const next = structuredClone(nowItems.value)
+  const next = structuredClone(toRaw(nowItems.value))
   next[index] = { ...next[index], [field]: value }
   await persistNow(next)
 }
 
 async function onNowIconChange(index: number, event: Event) {
   const target = event.target as HTMLSelectElement
+  const current = nowItems.value[index]?.icon || nowIconOf(nowItems.value[index] || { title: '', description: '' })
+  if (target.value === current) return
   try {
     await saveNowField(`items.${index}.icon`, target.value)
-  } catch {
-    await notifySaveError()
+  } catch (error) {
+    await notifySaveError(error)
   }
 }
 
@@ -593,7 +684,7 @@ function openNowComposer() {
 async function submitNowItem() {
   try {
     await persistNow([
-      ...nowItems.value,
+      ...toRaw(nowItems.value),
       {
         title: nowComposer.title,
         description: nowComposer.description,
@@ -601,17 +692,17 @@ async function submitNowItem() {
       },
     ])
     nowComposer.open = false
-  } catch {
-    await notifySaveError()
+  } catch (error) {
+    await notifySaveError(error)
   }
 }
 
 async function removeNowItem(index: number) {
   try {
-    const next = nowItems.value.filter((_, itemIndex) => itemIndex !== index)
+    const next = toRaw(nowItems.value).filter((_, itemIndex) => itemIndex !== index)
     await persistNow(next)
-  } catch {
-    await notifySaveError()
+  } catch (error) {
+    await notifySaveError(error)
   }
 }
 
@@ -619,7 +710,7 @@ async function saveMomentField(path: string, value: string) {
   const match = path.match(/^items\.(\d+)\.content$/)
   if (!match) throw new Error('invalid path')
   const index = Number(match[1])
-  const next = structuredClone(momentItems.value)
+  const next = structuredClone(toRaw(momentItems.value))
   next[index] = { ...next[index], content: value }
   await persistMoments(next)
 }
@@ -637,20 +728,20 @@ async function submitMoment() {
         date: momentComposer.date,
         content: momentComposer.content,
       },
-      ...momentItems.value,
+      ...toRaw(momentItems.value),
     ])
     momentComposer.open = false
-  } catch {
-    await notifySaveError()
+  } catch (error) {
+    await notifySaveError(error)
   }
 }
 
 async function removeMoment(index: number) {
   try {
-    const next = momentItems.value.filter((_, itemIndex) => itemIndex !== index)
+    const next = toRaw(momentItems.value).filter((_, itemIndex) => itemIndex !== index)
     await persistMoments(next)
-  } catch {
-    await notifySaveError()
+  } catch (error) {
+    await notifySaveError(error)
   }
 }
 
@@ -671,27 +762,27 @@ async function submitNote() {
     })
     await refreshNuxtData('life-posts')
     noteComposer.open = false
-  } catch {
-    await notifySaveError()
+  } catch (error) {
+    await notifySaveError(error)
   }
 }
 
 async function addHeroLine() {
   try {
-    const payload = await saveHeroLines([...home.value.hero.lines, '新的一句，点这里改'])
+    const payload = await saveHeroLines([...toRaw(home.value.hero.lines), '新的一句，点这里改'])
     onLifeSaved(payload)
-  } catch {
-    await notifySaveError()
+  } catch (error) {
+    await notifySaveError(error)
   }
 }
 
 async function removeHeroLine(index: number) {
   try {
-    const next = home.value.hero.lines.filter((_, lineIndex) => lineIndex !== index)
+    const next = toRaw(home.value.hero.lines).filter((_, lineIndex) => lineIndex !== index)
     const payload = await saveHeroLines(next)
     onLifeSaved(payload)
-  } catch {
-    await notifySaveError()
+  } catch (error) {
+    await notifySaveError(error)
   }
 }
 

@@ -77,6 +77,18 @@ const rootClass = computed(() => {
   return classes.filter(Boolean).join(' ')
 })
 
+watch(isAdmin, (admin) => {
+  if (!admin && editing.value) {
+    cancel()
+  }
+})
+
+onBeforeUnmount(() => {
+  if (editing.value) {
+    cancel()
+  }
+})
+
 watch(
   () => props.modelValue,
   (value) => {
@@ -106,8 +118,17 @@ function cancel() {
   editing.value = false
 }
 
-async function notifySaveError() {
+async function notifySaveError(error?: unknown) {
   const { useNotification } = await import('~/composables/useToast')
+  const status = typeof error === 'object' && error !== null
+    ? Number((error as { statusCode?: number, status?: number }).statusCode
+      ?? (error as { statusCode?: number, status?: number }).status
+      ?? 0)
+    : 0
+  if (status === 401) {
+    useNotification().error('登录已失效，请重新双击印章登录')
+    return
+  }
   useNotification().error('无法写入内容文件')
 }
 
@@ -126,8 +147,8 @@ async function commit() {
     emit('update:modelValue', next)
     emit('saved', payload)
     editing.value = false
-  } catch {
-    await notifySaveError()
+  } catch (error) {
+    await notifySaveError(error)
     draft.value = props.modelValue
     editing.value = false
   } finally {

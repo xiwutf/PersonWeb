@@ -17,16 +17,24 @@ sections:
   notes:
     number: "04"
     title: "随笔"
-  about:
+  margin:
     number: "05"
+    title: "摘句"
+  about:
+    number: "06"
     title: "关于我"
 
 empty:
   moments: "还没写过这种短记录。"
   notes: "还没有更长的一篇。有了会放在这里。"
+  margin: "还没有摘句。想到一句再记。"
 
 about:
   description: "如果还想多认识一点，关于我里还有些零零碎碎的东西。"
   linkText: "去看看 →"
+
+margin:
+  description: "读到的句子、突发的感想，顺手记在页边。"
+  linkText: "看全部 →"
 
 closing: "生活碎片，慢慢拼成喜欢的样子。"

@@ -63,6 +63,12 @@
         <path d="M13.4 26.2h5.2" />
       </template>
 
+      <template v-else-if="name === 'seal'">
+        <circle cx="16" cy="16" r="9.5" />
+        <circle cx="16" cy="16" r="6.2" />
+        <path d="M13.2 18.2c2.2-1 3.6-3.2 4-5.8-2.4.3-4.2 1.8-4.8 4.4Z" />
+      </template>
+
       <template v-else>
         <path d="M8 24c8-2 12-8 14-16-8 1-14 6-16 14Z" />
         <path d="M10 22c4-4 8-8 12-14" />

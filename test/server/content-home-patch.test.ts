@@ -70,6 +70,10 @@ describe('content home patch helpers', () => {
       resolve(__dirname, '../../server/api/content/life/moments.put.ts'),
       'utf8',
     )
+    const lifeMarginSrc = readFileSync(
+      resolve(__dirname, '../../server/api/content/life/margin.put.ts'),
+      'utf8',
+    )
     const lifeNotesSrc = readFileSync(
       resolve(__dirname, '../../server/api/content/life/notes.post.ts'),
       'utf8',
@@ -77,6 +81,7 @@ describe('content home patch helpers', () => {
     expect(lifeLinesSrc).toContain('checkAuth(event)')
     expect(lifeNowSrc).toContain('checkAuth(event)')
     expect(lifeMomentsSrc).toContain('checkAuth(event)')
+    expect(lifeMarginSrc).toContain('checkAuth(event)')
     expect(lifeNotesSrc).toContain('checkAuth(event)')
     expect(workSrc).toContain('checkAuth(event)')
   })

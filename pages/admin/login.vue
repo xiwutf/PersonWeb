@@ -1,55 +1,68 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-100">
-    <div class="max-w-md w-full bg-white rounded-lg shadow-md p-8">
-      <h2 class="text-2xl font-bold text-center text-gray-800 mb-8">后台管理系统登录</h2>
-      <p class="text-sm text-gray-500 text-center -mt-4 mb-6">
-        {{ loginHint }}
-      </p>
+  <div class="admin-login">
+    <aside class="admin-login-brand" aria-hidden="true">
+      <p class="admin-login-brand-kicker">PersonWeb</p>
+      <p class="admin-login-brand-title">溪午听风</p>
+      <p class="admin-login-brand-sub">管理入口</p>
+    </aside>
 
-      <form @submit.prevent="handleLogin" class="space-y-6">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">用户名</label>
-          <input
-            v-model="username"
-            type="text"
-            class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="admin"
-          />
-        </div>
+    <main class="admin-login-main">
+      <div class="admin-login-panel">
+        <header class="admin-login-head">
+          <h1>登录</h1>
+        </header>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">密码</label>
-          <input
-            v-model="password"
-            type="password"
-            class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="密码"
-          />
-        </div>
+        <form class="admin-login-form" @submit.prevent="handleLogin">
+          <div class="admin-login-field">
+            <label for="admin-login-username">用户名</label>
+            <input
+              id="admin-login-username"
+              v-model="username"
+              type="text"
+              autocomplete="username"
+              placeholder="admin"
+            >
+          </div>
 
-        <div v-if="error" class="text-red-500 text-sm text-center">
-          {{ error }}
-        </div>
+          <div class="admin-login-field">
+            <label for="admin-login-password">密码</label>
+            <input
+              id="admin-login-password"
+              v-model="password"
+              type="password"
+              autocomplete="current-password"
+              placeholder="输入密码"
+            >
+          </div>
 
-        <button
-          type="submit"
-          class="w-full bg-blue-600 text-var(--color-bg-light, white) py-2 rounded-md hover:bg-blue-700 transition"
-          :disabled="loading"
-        >
-          {{ loading ? '登录中...' : '登录' }}
-        </button>
-      </form>
-    </div>
+          <p v-if="error" class="admin-login-error" role="alert">{{ error }}</p>
+
+          <button
+            type="submit"
+            class="admin-login-submit"
+            :disabled="loading"
+          >
+            {{ loading ? '登录中…' : '进入后台' }}
+          </button>
+        </form>
+
+        <nav class="admin-login-links" aria-label="返回站点">
+          <NuxtLink to="/life">Life</NuxtLink>
+          <NuxtLink to="/work">Work</NuxtLink>
+          <NuxtLink to="/">入口</NuxtLink>
+        </nav>
+      </div>
+    </main>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
 import {
   loginAgainstDotNet,
   resolveDotNetApiBase,
   usesNitroAdminAuth,
 } from '~/utils/admin-runtime-auth'
+import '~/assets/css/admin-login.css'
 
 definePageMeta({
   layout: false,
@@ -65,16 +78,22 @@ const username = ref('admin')
 const password = ref('')
 const error = ref('')
 const loading = ref(false)
+const route = useRoute()
 const router = useRouter()
 const config = useRuntimeConfig()
 const { setBackendToken, clearBackendToken } = useBackendAuth()
+const { refresh } = useAdminSession()
 
 const nitroMode = computed(() => usesNitroAdminAuth())
-const loginHint = computed(() =>
-  nitroMode.value
-    ? '本地开发：校验项目根目录 .env 中的 ADMIN_PASSWORD'
-    : '生产环境：使用数据库管理员账号（MySQL user 表），不是本地 .env',
-)
+
+function resolveRedirectTarget() {
+  const raw = route.query.redirect
+  const value = Array.isArray(raw) ? raw[0] : raw
+  if (typeof value !== 'string') return '/admin'
+  if (!value.startsWith('/') || value.startsWith('//')) return '/admin'
+  if (value.startsWith('/admin/login')) return '/admin'
+  return value
+}
 
 const handleLogin = async () => {
   if (!username.value || !password.value) {
@@ -122,7 +141,8 @@ const handleLogin = async () => {
       }
     }
 
-    await router.push('/admin')
+    await refresh()
+    await router.push(resolveRedirectTarget())
   }
   catch (e: any) {
     const status = e?.statusCode ?? e?.response?.status ?? e?.data?.statusCode

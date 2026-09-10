@@ -158,6 +158,17 @@ export type LifeMoment = {
   note?: string
 }
 
+export type LifeMarginItem = {
+  text: string
+  note?: string
+  group?: string
+  featured?: boolean
+  archived?: boolean
+  tone?: 'plain' | 'strong' | 'quiet' | 'curious' | 'passing'
+  sourceImage?: string
+  scanBatch?: string
+}
+
 export type LifeProfileAside = {
   label: string
   text: string
@@ -260,13 +271,19 @@ export type LifeHomeContent = {
     now: { number: string, title: string }
     moments: { number: string, title: string }
     notes: { number: string, title: string }
+    margin: { number: string, title: string }
     about: { number: string, title: string }
   }
   empty: {
     moments: string
     notes: string
+    margin: string
   }
   about: {
+    description: string
+    linkText: string
+  }
+  margin: {
     description: string
     linkText: string
   }
@@ -293,10 +310,12 @@ export const readLifeHome = (): LifeHomeContent => {
   const sections = source.sections && typeof source.sections === 'object' ? source.sections as Record<string, unknown> : {}
   const empty = source.empty && typeof source.empty === 'object' ? source.empty as Record<string, unknown> : {}
   const about = source.about && typeof source.about === 'object' ? source.about as Record<string, unknown> : {}
+  const marginMeta = source.margin && typeof source.margin === 'object' ? source.margin as Record<string, unknown> : {}
   const nowSection = asSection(sections.now, { number: '02', title: '最近在' })
   const momentsSection = asSection(sections.moments, { number: '03', title: '最近' })
   const notesSection = asSection(sections.notes, { number: '04', title: '随笔' })
-  const aboutSection = asSection(sections.about, { number: '05', title: '关于我' })
+  const marginSection = asSection(sections.margin, { number: '05', title: '摘句' })
+  const aboutSection = asSection(sections.about, { number: '06', title: '关于我' })
 
   return {
     hero: {
@@ -310,15 +329,21 @@ export const readLifeHome = (): LifeHomeContent => {
       now: nowSection,
       moments: momentsSection,
       notes: notesSection,
+      margin: marginSection,
       about: aboutSection
     },
     empty: {
       moments: asString(empty.moments),
-      notes: asString(empty.notes)
+      notes: asString(empty.notes),
+      margin: asString(empty.margin) || '还没有摘句。想到一句再记。'
     },
     about: {
       description: asString(about.description),
       linkText: asString(about.linkText)
+    },
+    margin: {
+      description: asString(marginMeta.description) || '读到的句子、突发的感想，顺手记在页边。',
+      linkText: asString(marginMeta.linkText) || '看全部 →'
     },
     closing: asString(source.closing)
   }
@@ -378,10 +403,17 @@ export const readLifeMoments = (): LifeMoment[] => {
 
 const MAX_NOW_ITEMS = 8
 const MAX_MOMENT_ITEMS = 40
+const MAX_MARGIN_ITEMS = 120
 const MAX_SHORT = 80
 const MAX_DESC = 240
 const MAX_MOMENT = 800
+const MAX_MARGIN_TEXT = 400
+const MAX_MARGIN_NOTE = 240
+const MAX_MARGIN_GROUP = 24
 const MAX_NOTE_BODY = 20000
+
+const isLifeMarginTone = (value: unknown): value is NonNullable<LifeMarginItem['tone']> =>
+  value === 'plain' || value === 'strong' || value === 'quiet' || value === 'curious' || value === 'passing'
 
 const clip = (value: string, max: number) => value.trim().slice(0, max)
 
@@ -456,6 +488,76 @@ export const writeLifeMoments = (items: LifeMoment[]): LifeMoment[] => {
     }),
   })
   return readLifeMoments()
+}
+
+export const readLifeMargin = (): LifeMarginItem[] => {
+  const parsed = readYamlFile('life', 'margin.yml')
+  const wrapped = parsed && typeof parsed === 'object' && !Array.isArray(parsed)
+    ? (parsed as Record<string, unknown>).items
+    : parsed
+  const items = Array.isArray(wrapped) ? wrapped : []
+
+  return items
+    .map((item) => {
+      if (!item || typeof item !== 'object') return null
+      const row = item as Record<string, unknown>
+      const text = asString(row.text)
+      if (!text) return null
+      return {
+        text,
+        note: asString(row.note) || undefined,
+        group: asString(row.group) || undefined,
+        featured: row.featured === true,
+        archived: row.archived === true,
+        tone: isLifeMarginTone(row.tone) ? row.tone : undefined,
+        sourceImage: asString(row.sourceImage) || undefined,
+        scanBatch: asString(row.scanBatch) || undefined,
+      }
+    })
+    .filter((item): item is LifeMarginItem => item !== null)
+}
+
+export const writeLifeMargin = (items: LifeMarginItem[]): LifeMarginItem[] => {
+  const nextItems = items
+    .slice(0, MAX_MARGIN_ITEMS)
+    .map((item) => {
+      const text = clip(item.text || '', MAX_MARGIN_TEXT)
+      if (!text) return null
+      const note = clip(item.note || '', MAX_MARGIN_NOTE) || undefined
+      const group = clip(item.group || '', MAX_MARGIN_GROUP) || undefined
+      const featured = item.featured === true ? true : undefined
+      const archived = item.archived === true ? true : undefined
+      const tone = isLifeMarginTone(item.tone) && item.tone !== 'plain' ? item.tone : undefined
+      const isAllowedSourceImage = item.sourceImage && (
+        item.sourceImage.startsWith('/')
+        || item.sourceImage.startsWith('https://')
+        || item.sourceImage.startsWith('http://localhost:')
+        || item.sourceImage.startsWith('http://127.0.0.1:')
+      )
+      const sourceImage = isAllowedSourceImage
+        ? clip(item.sourceImage, 500)
+        : undefined
+      const scanBatch = clip(item.scanBatch || '', 80) || undefined
+      return { text, note, group, featured, archived, tone, sourceImage, scanBatch }
+    })
+    .filter((item): item is LifeMarginItem => item !== null)
+
+  writeYamlFile(['life', 'margin.yml'], {
+    items: nextItems.map((item) => {
+      const row: Record<string, string | boolean> = {
+        text: item.text,
+      }
+      if (item.note) row.note = item.note
+      if (item.group) row.group = item.group
+      if (item.featured) row.featured = true
+      if (item.archived) row.archived = true
+      if (item.tone && item.tone !== 'plain') row.tone = item.tone
+      if (item.sourceImage) row.sourceImage = item.sourceImage
+      if (item.scanBatch) row.scanBatch = item.scanBatch
+      return row
+    }),
+  })
+  return readLifeMargin()
 }
 
 const yamlQuote = (value: string) => JSON.stringify(value)
@@ -1093,4 +1195,3 @@ export const readArticleBySlug = (slug: unknown): ArticleContentItem | null => {
   if (!isArticleContentSlug(slug)) return null
   return listArticles().find((item) => item.slug === slug) || null
 }
-

@@ -152,6 +152,7 @@ export default defineNuxtConfig({
         '/life',
         '/life/about',
         '/life/notes',
+        '/life/margin',
         '/work',
         '/work/about',
         '/200.html',

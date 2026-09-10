@@ -18,13 +18,23 @@ describe('inline copy edit UI guards', () => {
 
   it('banner only renders when isAdmin', () => {
     const src = readFileSync(resolve(root, 'components/content/AdminEditBanner.vue'), 'utf8')
-    expect(src).toContain('v-if="isAdmin"')
+    expect(src).toContain('v-if="authenticated"')
     expect(src).toContain('已登录 · 点击文案可编辑 · 列表可新增 / 删除')
+    expect(src).toContain('访客预览')
+    expect(src).toContain('退出登录')
+    expect(src).toContain('togglePreviewAsGuest')
   })
 
   it('editable chrome class only applied for admin session', () => {
     const src = readFileSync(resolve(root, 'components/content/InlineEditableText.vue'), 'utf8')
     expect(src).toContain("if (isAdmin.value) classes.push('inline-edit--editable')")
     expect(src).toContain('useAdminSession')
+  })
+
+  it('admin session supports guest preview without dropping auth', () => {
+    const src = readFileSync(resolve(root, 'composables/useAdminSession.ts'), 'utf8')
+    expect(src).toContain('previewAsGuest')
+    expect(src).toContain('authenticated.value && !previewAsGuest.value')
+    expect(src).toContain('async function logout')
   })
 })

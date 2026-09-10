@@ -2,6 +2,24 @@
 
 html[data-life-world='true'],
 html[data-life-world='true'] body {
+  /* 盖住全局深色主题：近白字 + 深色 elevated 底，避免奶油页上看不见 */
+  --color-text: #2c241c;
+  --color-text-main: #2c241c;
+  --color-text-muted: #4f453c;
+  --color-text-subtle: #6a5e52;
+  --color-text-sec: #4f453c;
+  --color-text-sub: #6a5e52;
+  --text-primary: #2c241c;
+  --text-secondary: #4f453c;
+  --text-tertiary: #6a5e52;
+  --color-bg: #f6f2ea;
+  --color-bg-body: #f6f2ea;
+  --color-bg-page: #f6f2ea;
+  --color-bg-card: #fbf8f2;
+  --color-bg-elevated: #fbf8f2;
+  --color-border-subtle: rgba(70, 55, 40, 0.12);
+  --color-border-default: rgba(70, 55, 40, 0.2);
+  --color-primary-soft: rgba(192, 92, 66, 0.12);
   background: #f6f2ea;
   color: #2c241c;
   color-scheme: light;
@@ -11,7 +29,7 @@ html[data-life-world='true'] body {
   --life-bg: #f6f2ea;
   --life-paper: #fbf8f2;
   --life-ink: #2c241c;
-  --life-ink-soft: #6a5e52;
+  --life-ink-soft: #4f453c;
   --life-accent: #c05c42;
   --life-sage: #74856a;
   --life-tape: rgba(210, 190, 150, 0.62);
@@ -22,6 +40,16 @@ html[data-life-world='true'] body {
   --life-font-body: "Source Han Serif SC", "Noto Serif SC", "Songti SC", "STSong", "SimSun", "Iowan Old Style", Georgia, "Times New Roman", serif;
   --life-font-sans: "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
   --life-font-note: "Segoe Script", "Bradley Hand ITC", "KaiTi", "STKaiti", cursive;
+  /* 同步覆盖壳内可能引用的全局文字 / 背景 token */
+  --color-text: var(--life-ink);
+  --color-text-main: var(--life-ink);
+  --color-text-muted: var(--life-ink-soft);
+  --color-text-subtle: #6a5e52;
+  --color-bg-elevated: var(--life-paper);
+  --color-bg-card: var(--life-paper);
+  --color-border-subtle: var(--life-line);
+  --color-border-default: var(--life-line-strong);
+  --color-primary-soft: rgba(192, 92, 66, 0.12);
   position: relative;
   min-height: 100svh;
   display: flex;
@@ -62,6 +90,13 @@ html[data-life-world='true'] body {
 .life-shell h6 {
   color: var(--life-ink);
   font-family: inherit;
+}
+
+/* 压过 base.css 的 p { color: var(--color-text) }（深色主题近白字） */
+.life-shell p,
+.life-shell li,
+.life-shell blockquote {
+  color: var(--life-ink);
 }
 
 .life-icon {
@@ -142,6 +177,37 @@ html[data-life-world='true'] body {
   font-weight: 400;
   color: var(--life-ink-soft);
   opacity: 0.72;
+}
+
+.life-header-auth {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.55rem;
+  height: 1.55rem;
+  margin: 0;
+  padding: 0;
+  color: var(--life-sage);
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  cursor: default;
+  opacity: 0.38;
+  transition: opacity 0.15s ease, color 0.15s ease;
+}
+
+.life-header-auth:hover {
+  opacity: 0.62;
+}
+
+.life-header-auth.is-on {
+  color: var(--life-accent);
+  opacity: 0.72;
+}
+
+.life-header-auth-icon {
+  width: 1.05rem;
+  height: 1.05rem;
 }
 
 .life-header-nav a:hover,
@@ -673,6 +739,17 @@ html[data-life-world='true'] body {
   line-height: 1.35;
 }
 
+.life-shell .life-now-item p,
+.life-shell .life-row-desc,
+.life-shell .life-end p,
+.life-shell .life-margin-note,
+.life-shell .life-margin-lead,
+.life-shell .life-empty,
+.life-shell .life-notes-lead {
+  margin: 0;
+  color: var(--life-ink-soft);
+}
+
 .life-now-item p,
 .life-row-desc,
 .life-end p {
@@ -712,6 +789,756 @@ a.life-lately-text:hover,
 .life-end-link:hover {
   text-decoration: underline;
   text-underline-offset: 0.18em;
+}
+
+.life-margin-preview {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem 2rem;
+  margin-top: 1.05rem;
+}
+
+.life-margin-card {
+  margin: 0;
+  padding: 0.1rem 0 0.1rem 0.85rem;
+  border-left: 2px solid var(--life-tape);
+}
+
+.life-margin-text {
+  margin: 0;
+  color: var(--life-ink);
+  font-size: 1.02rem;
+  line-height: 1.75;
+}
+
+.life-margin-note {
+  margin: 0.55rem 0 0;
+  color: var(--life-ink-soft);
+  font-family: var(--life-font-sans);
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+
+.life-margin {
+  display: grid;
+  gap: 3.5rem;
+  width: min(100%, 68rem);
+}
+
+.life-margin-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.life-margin-head-copy {
+  display: grid;
+  gap: 0.55rem;
+  max-width: 34rem;
+}
+
+.life-margin-kicker {
+  margin: 0;
+  color: var(--life-accent);
+  font-family: var(--life-font-sans);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+}
+
+.life-margin h1 {
+  margin: 0;
+  font-size: clamp(1.7rem, 3vw, 2.1rem);
+  font-weight: 650;
+}
+
+.life-margin-lead {
+  margin: 0;
+  color: var(--life-ink-soft);
+  font-size: 0.98rem;
+  line-height: 1.75;
+}
+
+.life-margin-groups {
+  display: grid;
+  gap: 4.8rem;
+}
+
+.life-margin-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.life-margin-papers {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.life-margin-paper-record {
+  display: grid;
+  grid-template-columns: minmax(15rem, 0.82fr) minmax(0, 1.18fr);
+  gap: clamp(1.25rem, 4vw, 3rem);
+  padding: clamp(1rem, 3vw, 2rem);
+  background: color-mix(in srgb, var(--life-paper) 92%, transparent);
+  border: 1px solid var(--life-line);
+}
+
+.life-margin-paper-record figure {
+  margin: 0;
+}
+
+.life-margin-paper-record img {
+  display: block;
+  width: 100%;
+  max-height: 42rem;
+  object-fit: contain;
+  background: var(--life-paper-deep);
+  border: 1px solid var(--life-line);
+}
+
+.life-margin-paper-record figcaption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  color: var(--life-ink-soft);
+  font-family: var(--life-font-sans);
+  font-size: 0.75rem;
+}
+
+.life-margin-paper-record ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--life-line);
+}
+
+.life-margin-paper-record li {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 0.75rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--life-line);
+}
+
+.life-margin-paper-record li > span {
+  padding-top: 0.2rem;
+  color: var(--life-accent);
+  font-family: var(--life-font-sans);
+  font-size: 0.72rem;
+}
+
+.life-margin-paper-record .life-margin-text {
+  margin: 0;
+  white-space: pre-line;
+}
+
+.life-margin-paper-entry {
+  min-width: 0;
+}
+
+.life-margin-paper-aside {
+  margin-top: 0.55rem;
+  padding-top: 0.5rem;
+  border-top: 1px dotted var(--life-line);
+}
+
+.life-margin-paper-note {
+  margin: 0;
+}
+
+.life-margin-paper-note.inline-edit--editable:empty::before {
+  content: '＋ 写批注';
+  color: var(--life-accent);
+  opacity: 0.72;
+}
+
+.life-margin-paper-item-actions {
+  display: grid;
+  justify-items: end;
+  gap: 0.4rem;
+}
+
+.life-margin-scanner {
+  display: grid;
+  gap: 1.25rem;
+  padding: clamp(1rem, 3vw, 1.75rem);
+  background: color-mix(in srgb, var(--life-paper) 88%, transparent);
+  border: 1px solid var(--life-line);
+  border-radius: 0.45rem;
+}
+
+.life-margin-scanner-head,
+.life-margin-scan-result > header,
+.life-margin-scan-confirm {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.life-margin-scanner-head h2,
+.life-margin-scan-result h3,
+.life-margin-scanner-head p,
+.life-margin-scan-result header span,
+.life-margin-scan-confirm p {
+  margin: 0;
+}
+
+.life-margin-scanner-head h2 {
+  font-size: 1.25rem;
+}
+
+.life-margin-scan-pick {
+  display: grid;
+  place-items: center;
+  gap: 1rem;
+  min-height: 11rem;
+  padding: 2rem;
+  color: var(--life-ink-soft);
+  text-align: center;
+  border: 1px dashed var(--life-line-strong);
+}
+
+.life-margin-scan-pick p {
+  margin: 0;
+}
+
+.life-margin-scan-button,
+.life-margin-scan-replace {
+  color: var(--life-ink);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.life-margin-scan-button input,
+.life-margin-scan-replace input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.life-margin-paper-preview {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.life-margin-paper-preview img {
+  display: block;
+  width: 100%;
+  max-height: 33rem;
+  object-fit: contain;
+  background: var(--life-paper-deep);
+  border: 1px solid var(--life-line);
+}
+
+.life-margin-paper-preview figcaption {
+  display: flex;
+  justify-content: space-between;
+  color: var(--life-ink-soft);
+  font-family: var(--life-font-sans);
+  font-size: 0.8125rem;
+}
+
+.life-margin-scan-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.life-margin-scan-actions button:disabled {
+  cursor: wait;
+  opacity: 0.58;
+}
+
+.life-margin-scan-error {
+  margin: 0;
+  color: var(--life-accent);
+  font-size: 0.875rem;
+}
+
+.life-margin-scan-submit {
+  display: grid;
+  justify-items: end;
+  gap: 0.45rem;
+}
+
+.life-margin-scan-submit button:disabled {
+  cursor: wait;
+  opacity: 0.58;
+}
+
+.life-margin-scan-result {
+  display: grid;
+  gap: 1rem;
+  padding-top: 1.25rem;
+  border-top: 1px dotted var(--life-line-strong);
+}
+
+.life-margin-scan-result h3 {
+  font-size: 1rem;
+}
+
+.life-margin-scan-result header span,
+.life-margin-scan-confirm p {
+  color: var(--life-ink-soft);
+  font-family: var(--life-font-sans);
+  font-size: 0.8125rem;
+}
+
+.life-margin-scan-result ol {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--life-line);
+}
+
+.life-margin-scan-result li {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr) 2rem;
+  align-items: start;
+  gap: 0.75rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--life-line);
+}
+
+.life-margin-scan-result li > span {
+  padding-top: 0.55rem;
+  color: var(--life-accent);
+  font-family: var(--life-font-sans);
+  font-size: 0.72rem;
+}
+
+.life-margin-scan-result textarea {
+  width: 100%;
+  min-height: 3.3rem;
+  padding: 0.45rem 0.6rem;
+  color: var(--life-ink);
+  background: transparent;
+  border: 0;
+  border-left: 1px solid var(--life-line);
+  border-radius: 0;
+  font: inherit;
+  font-size: 1rem;
+  line-height: 1.75;
+  resize: vertical;
+}
+
+.life-margin-scan-result li > button {
+  padding: 0.35rem;
+  color: var(--life-ink-soft);
+  background: transparent;
+  border: 0;
+  font-size: 1.15rem;
+  cursor: pointer;
+}
+
+@media (max-width: 640px) {
+  .life-margin-paper-record {
+    grid-template-columns: 1fr;
+  }
+
+  .life-margin-scanner-head,
+  .life-margin-scan-confirm {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .life-margin-scan-confirm button {
+    align-self: stretch;
+    justify-content: center;
+  }
+}
+
+.life-margin-collection {
+  display: grid;
+  gap: 5rem;
+}
+
+.life-margin-focus {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.life-margin-focus-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.life-margin-focus-head h2,
+.life-margin-focus-head p {
+  margin: 0;
+}
+
+.life-margin-focus-head h2 {
+  font-size: clamp(1.45rem, 3vw, 2rem);
+  font-weight: 600;
+}
+
+.life-margin-focus-head > p {
+  color: var(--life-ink-soft);
+  font-size: 0.9rem;
+}
+
+.life-margin-focus-kicker {
+  color: var(--life-accent) !important;
+  font-family: var(--life-font-sans);
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.18em;
+}
+
+.life-margin-focus-stage {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 1.25rem;
+  padding: 1rem 0 1.5rem;
+}
+
+.life-margin-focus-card {
+  position: relative;
+  grid-column: span 5;
+  align-self: start;
+  min-height: 10rem;
+  padding: 1.65rem 1.75rem 1.45rem;
+  background: var(--life-paper);
+  box-shadow: var(--life-shadow);
+  transform: rotate(-0.7deg);
+}
+
+.life-margin-focus-card.is-card-1,
+.life-margin-focus-card.is-card-3 {
+  grid-column: span 7;
+  margin-top: 2.4rem;
+  transform: rotate(0.55deg);
+}
+
+.life-margin-focus-card .life-margin-text {
+  font-size: clamp(1.12rem, 2vw, 1.35rem);
+  line-height: 1.8;
+}
+
+.life-margin-focus-card .life-tape--scrap {
+  left: 1.6rem;
+  top: -0.22rem;
+}
+
+.life-margin-group-head {
+  display: flex;
+  align-items: end;
+  gap: 1.25rem;
+  margin-bottom: 1.8rem;
+}
+
+.life-margin-group-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.65rem;
+  flex: 0 0 auto;
+}
+
+.life-margin-group-index {
+  color: var(--life-accent);
+  font-family: var(--life-font-sans);
+  font-size: 0.75rem;
+  font-weight: 650;
+  letter-spacing: 0.12em;
+}
+
+.life-margin-group h2 {
+  margin: 0;
+  flex: 0 0 auto;
+  color: var(--life-ink);
+  font-family: var(--life-font-sans);
+  font-size: 1.1rem;
+  font-weight: 650;
+  letter-spacing: 0.12em;
+}
+
+.life-margin-group-count {
+  color: var(--life-ink-soft);
+  font-family: var(--life-font-sans);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  opacity: 0.72;
+}
+
+.life-margin-group-rule {
+  flex: 1 1 auto;
+  height: 1px;
+  background: linear-gradient(90deg, var(--life-line-strong), transparent 92%);
+}
+
+/* 编辑式摘句墙：精选形成视觉入口，短句留出呼吸感。 */
+.life-margin-wall {
+  columns: 2 19rem;
+  column-gap: 3.5rem;
+}
+
+.life-margin-group.is-catchall .life-margin-group-index {
+  font-family: var(--life-font-note);
+  font-size: 1rem;
+  letter-spacing: 0;
+}
+
+.life-margin-group.is-catchall .life-margin-group-index::after {
+  content: '✦';
+}
+
+.life-margin-group.is-catchall .life-margin-group-index {
+  font-size: 0;
+}
+
+.life-margin-scrap {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  margin: 0 0 1.1rem;
+  padding: 1.25rem 2.8rem 1.45rem 0.2rem;
+  break-inside: avoid;
+  border-bottom: 1px solid var(--life-line);
+}
+
+.life-margin-scrap:nth-child(3n) {
+  transform: none;
+}
+
+.life-margin-scrap:nth-child(4n) {
+  transform: none;
+}
+
+.life-margin-scrap.is-featured {
+  width: 100%;
+}
+
+.life-margin-scrap.is-featured .life-margin-text {
+  font-size: 1.22rem;
+  line-height: 1.75;
+  font-weight: 500;
+}
+
+.life-margin-scrap .life-tape--scrap {
+  left: 2.1rem;
+  top: -0.22rem;
+}
+
+.life-margin-scrap.is-featured .life-margin-quote {
+  max-width: 40rem;
+}
+
+.life-margin-quote {
+  min-width: 0;
+}
+
+.life-margin-scrap .life-margin-text {
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
+.life-margin-scrap.is-short:not(.is-featured) .life-margin-text {
+  font-size: 1.18rem;
+  line-height: 1.65;
+}
+
+.life-margin-entry-index {
+  position: absolute;
+  top: 1.15rem;
+  right: 1.35rem;
+  color: var(--life-accent);
+  font-family: var(--life-font-sans);
+  font-size: 0.75rem;
+  font-weight: 650;
+  letter-spacing: 0.12em;
+  opacity: 0.62;
+}
+
+.life-margin-archive {
+  border-top: 1px solid var(--life-line-strong);
+  border-bottom: 1px solid var(--life-line-strong);
+}
+
+.life-margin-archive summary {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.2rem 0;
+  cursor: pointer;
+  list-style: none;
+}
+
+.life-margin-archive summary::-webkit-details-marker {
+  display: none;
+}
+
+.life-margin-archive summary span {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.life-margin-archive summary small {
+  color: var(--life-ink-soft);
+  font-family: var(--life-font-sans);
+  font-size: 0.78rem;
+}
+
+.life-margin-archive-list {
+  columns: 2 18rem;
+  column-gap: 3rem;
+  padding: 0.4rem 0 1.4rem;
+}
+
+.life-margin-archive-item {
+  break-inside: avoid;
+  padding: 0.8rem 0;
+  border-bottom: 1px dotted var(--life-line);
+  opacity: 0.72;
+}
+
+.life-margin-archive-item p {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.75;
+}
+
+/* 笔触不是标签：通过字形、力度和留白保留落笔时的情绪。 */
+.is-tone-strong .life-margin-text,
+.life-margin-archive-item.is-tone-strong p {
+  font-size: clamp(1.25rem, 2.35vw, 1.65rem);
+  font-weight: 700;
+  line-height: 1.6;
+  letter-spacing: 0.015em;
+}
+
+.is-tone-strong {
+  border-bottom-color: var(--life-accent);
+}
+
+.is-tone-quiet .life-margin-text,
+.life-margin-archive-item.is-tone-quiet p {
+  max-width: 27rem;
+  color: var(--life-ink-soft);
+  font-size: 0.98rem;
+  font-weight: 400;
+  line-height: 2;
+  letter-spacing: 0.04em;
+}
+
+.is-tone-curious .life-margin-text,
+.life-margin-archive-item.is-tone-curious p {
+  font-family: var(--life-font-note);
+  font-size: clamp(1.18rem, 2.1vw, 1.48rem);
+  line-height: 1.75;
+  letter-spacing: 0.035em;
+}
+
+.life-margin-focus-card.is-tone-curious {
+  transform: rotate(1.2deg);
+}
+
+.is-tone-passing .life-margin-text,
+.life-margin-archive-item.is-tone-passing p {
+  color: var(--life-ink-soft);
+  font-size: 0.9rem;
+  line-height: 1.7;
+  opacity: 0.68;
+}
+
+.life-margin-scrap.is-tone-passing {
+  padding-top: 0.75rem;
+  padding-bottom: 0.8rem;
+}
+
+.life-shell .life-margin-scrap .life-margin-note {
+  margin: 0.7rem 0 0;
+  padding-top: 0.55rem;
+  border-top: 1px dotted var(--life-line);
+  color: var(--life-ink-soft);
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+
+.life-margin-scrap.is-admin .life-margin-note:empty {
+  min-height: 1.2rem;
+  border-top-color: transparent;
+  padding-top: 0.2rem;
+}
+
+.life-margin-scrap.is-admin .life-margin-note:empty::before {
+  content: '页边批注…';
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.life-margin-scrap.is-admin:hover .life-margin-note:empty::before,
+.life-margin-scrap.is-admin:focus-within .life-margin-note:empty::before {
+  opacity: 0.5;
+}
+
+.life-margin-scrap.is-admin:hover .life-margin-note:empty,
+.life-margin-scrap.is-admin:focus-within .life-margin-note:empty {
+  border-top-color: var(--life-line);
+  padding-top: 0.55rem;
+}
+
+.life-margin-admin {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem 0.7rem;
+  margin-top: 0.75rem;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.life-margin-scrap.is-admin:hover .life-margin-admin,
+.life-margin-scrap.is-admin:focus-within .life-margin-admin {
+  opacity: 1;
+}
+
+.life-margin-featured {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--life-ink-soft);
+  font-family: var(--life-font-sans);
+  font-size: 0.75rem;
+}
+
+.life-margin-admin input[type='text'] {
+  width: 5.5rem;
+  margin: 0;
+  padding: 0.22rem 0.4rem;
+  color: var(--life-ink);
+  background: transparent;
+  border: 1px dotted var(--life-line-strong);
+  border-radius: 0.28rem;
+  font: inherit;
+  font-size: 0.75rem;
+}
+
+.life-margin-admin select {
+  padding: 0.22rem 0.4rem;
+  color: var(--life-ink);
+  background: transparent;
+  border: 1px dotted var(--life-line-strong);
+  border-radius: 0.28rem;
+  font: inherit;
+  font-size: 0.75rem;
 }
 
 .life-lately-list,
@@ -1145,6 +1972,76 @@ a.life-lately-text:hover,
     gap: 1.15rem;
   }
 
+  .life-margin-preview {
+    grid-template-columns: 1fr;
+  }
+
+  .life-margin-wall {
+    columns: 1;
+  }
+
+  .life-margin-focus-head {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .life-margin-focus-stage {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .life-margin-focus-card,
+  .life-margin-focus-card.is-card-1,
+  .life-margin-focus-card.is-card-3 {
+    grid-column: auto;
+    min-height: 0;
+    margin-top: 0;
+    transform: none;
+  }
+
+  .life-margin-archive-list {
+    columns: 1;
+  }
+
+  .life-margin-scrap.is-featured {
+    grid-column: auto;
+    min-height: 11rem;
+    padding: 1.65rem 1.5rem 1.5rem;
+  }
+
+  .life-margin-scrap.is-featured .life-margin-text,
+  .life-margin-scrap.is-short:not(.is-featured) .life-margin-text {
+    font-size: 1.12rem;
+  }
+
+  .life-margin-group-head {
+    align-items: center;
+  }
+
+  .life-margin-group-count {
+    display: none;
+  }
+
+  .life-margin-scrap,
+  .life-margin-scrap:nth-child(3n),
+  .life-margin-scrap:nth-child(4n),
+  .life-margin-scrap.is-featured {
+    transform: none;
+  }
+
+  .life-margin-admin {
+    opacity: 1;
+  }
+
+  .life-margin-scrap.is-admin .life-margin-note:empty::before {
+    opacity: 0.5;
+  }
+
+  .life-margin-scrap.is-admin .life-margin-note:empty {
+    border-top-color: var(--life-line);
+    padding-top: 0.55rem;
+  }
+
   .life-now-item,
   .life-now-item:first-child,
   .life-now-item:last-child {
@@ -1197,5 +2094,12 @@ a.life-lately-text:hover,
 @media (prefers-reduced-motion: reduce) {
   .life-footer-top {
     scroll-behavior: auto;
+  }
+
+  .life-margin-scrap,
+  .life-margin-scrap:nth-child(3n),
+  .life-margin-scrap:nth-child(4n),
+  .life-margin-scrap.is-featured {
+    transform: none;
   }
 }
