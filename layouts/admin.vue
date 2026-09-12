@@ -157,7 +157,8 @@ import { onMounted, computed, watch, ref } from 'vue'
 import { useAdminGlobalStyle } from '~/composables/useAdminStyle'
 import AppNaiveConfig from '~/components/layout/AppNaiveConfig.vue'
 import MouseTrail from '~/components/effects/MouseTrail.vue'
-import { adminMenu, type AdminMenuGroup } from '~/constants/admin/menu'
+import { adminMenu, adminMenuPaths, type AdminMenuGroup } from '~/constants/admin/menu'
+import { isAdminNavActive } from '~/utils/admin-nav-active'
 import { usesNitroAdminAuth } from '~/utils/admin-runtime-auth'
 
 useHead({
@@ -241,17 +242,10 @@ const toggleMenu = (groupIndex: number) => {
   expandedMenus.value[groupIndex] = !expandedMenus.value[groupIndex]
 }
 
-// 检查菜单项是否激活
+// 检查菜单项是否激活（/admin 仅精确匹配；其余最长前缀唯一高亮）
 const isItemActive = (path?: string): boolean => {
   if (!path) return false
-  const currentPath = route.path
-  // 精确匹配
-  if (currentPath === path) return true
-  // 路径前缀匹配（确保是子路径，不是部分匹配）
-  if (currentPath.startsWith(path + '/')) return true
-  // 特殊处理：/admin 路径
-  if (path === '/admin' && currentPath === '/admin') return true
-  return false
+  return isAdminNavActive(route.path, path, adminMenuPaths)
 }
 
 // 检查菜单组是否激活（组内任意子项激活）
@@ -267,13 +261,11 @@ const currentNav = computed(() => {
   let page = ''
   for (const g of safeMenu.value) {
     for (const item of g.children) {
-      const path = item.path
-      if (p === path || p.startsWith(path + '/')) {
-        if (path.length >= bestLen) {
-          bestLen = path.length
-          group = g.label
-          page = item.label
-        }
+      if (!isAdminNavActive(p, item.path, adminMenuPaths)) continue
+      if (item.path.length >= bestLen) {
+        bestLen = item.path.length
+        group = g.label
+        page = item.label
       }
     }
   }

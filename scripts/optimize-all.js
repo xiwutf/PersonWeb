@@ -41,9 +41,8 @@ console.log('   - CSS 文件合并：从 25 个减少到 1 个');
 console.log('   - 代码分割：大型库按需加载');
 console.log('   - 图片优化：WebP 格式，减少 30-50% 体积');
 console.log('   - 懒加载：提升首屏加载速度 40-60%');
-console.log('\n📚 更多信息请查看：docs/improvements/PERFORMANCE_OPTIMIZATION_SUMMARY.md');
+console.log('\n📚 更多信息请查看：docs/development/DEVELOPMENT_GUIDELINES.md');
 
 console.log('\n💡 提示：');
 console.log('   - 开发时运行: npm run dev');
 console.log('   - 生产构建: npm run build');
-console.log('   - 监控性能: 在页面中使用 PerformanceMonitor 组件');

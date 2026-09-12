@@ -199,7 +199,7 @@
   - `assets/css/visitor-interaction.css` - 访客互动统一样式
   - `assets/css/header.css` - Header 组件统一样式
   - `assets/css/footer.css` - Footer 组件统一样式
-  - `assets/css/home.css` - 首页组件统一样式
+  - `assets/css/work-home.css` - Work 首页样式
 
 #### 7. 动态样式（`:style` 绑定）
 
@@ -448,7 +448,7 @@ setTheme('hybrid-super')
 │       ├── themes.css   # 主题样式（兼容性）
 │       ├── header.css  # Header 组件统一样式
 │       ├── footer.css  # Footer 组件统一样式
-│       ├── home.css     # 首页组件统一样式
+│       ├── work-home.css # Work 首页样式
 │       └── visitor-interaction.css  # 功能模块统一样式
 ├── components/          # Vue 组件
 │   ├── layout/          # 布局组件

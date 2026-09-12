@@ -429,24 +429,16 @@ Made with ❤️ by [Xie Feng](https://github.com/xiwutf)
 
 - **[项目概览文档](./docs/PROJECT_OVERVIEW.md)** ⭐ **必读** - 项目整体架构、技术栈和目录结构
 - **[开发规范文档](./docs/development/DEVELOPMENT_GUIDELINES.md)** ⭐ **必读** - 项目开发规范和要求，包括样式管理、代码组织、命名规范等
-- **[设计系统 v1](./docs/DESIGN_SYSTEM_V1.md)** ⭐ **必读** - 完整的设计系统文档（主题、色彩、组件规范）
-- **[UI 编码规范](./docs/CODING_STYLE_UI.md)** ⭐ **必读** - UI 开发编码规范和最佳实践
-- **[代码规范检查报告](./docs/quality/CODE_STANDARDS_CHECK.md)** - 代码规范符合度检查结果和改进建议
+- **[设计系统](./docs/design-system/README.md)** ⭐ **必读** - 主题、色彩、组件规范
 - [模块系统文档](./docs/architecture/README_MODULES.md) - 模块化系统说明
 - [Naive UI 使用指南](./docs/config/README_NAIVE_UI.md) - UI 组件库使用说明
 
 ### 📖 其他文档
 
-项目文档已分类整理到 `docs/` 目录，包括：
-
-- 📋 [功能开发文档](./docs/features/) - 功能状态、开发日志、优化计划
-- 🔧 [改进与优化文档](./docs/improvements/) - 改进计划、升级记录
 - ⚙️ [配置文档](./docs/config/) - API 配置、环境配置
 - 🏗️ [架构文档](./docs/architecture/) - 系统架构说明
 - 🚀 [部署文档](./docs/deployment/) - 部署指南、启动说明
-- 🐛 [故障排除文档](./docs/troubleshooting/) - 问题排查、Bug 修复
-- 📊 [代码质量文档](./docs/quality/) - 代码质量报告、规范检查
-- 📝 [迁移文档](./docs/migration/) - 数据迁移指南
+- 🎨 [设计系统](./docs/design-system/) - Token 与 Pattern
 
 ### 📚 文档
 
@@ -459,8 +451,6 @@ Made with ❤️ by [Xie Feng](https://github.com/xiwutf)
 - [模块开发指南](./docs/development/MODULE_DEVELOPMENT_GUIDE.md) - 模块系统入门必读
 - [模块开发最佳实践](./docs/development/MODULE_BEST_PRACTICES.md) - 模块开发进阶指南
 - [模块系统 API 参考](./docs/api/MODULE_SYSTEM_API.md) - 完整 API 接口文档
-- [Hello World 示例](./examples/modules/hello-world/) - 简单示例模块
-- [E-Commerce 示例](./examples/modules/ecommerce/) - 复杂业务模块示例
 
 #### 完整文档索引
 详细文档索引请查看 [文档目录](./docs/README.md)
@@ -473,7 +463,7 @@ Made with ❤️ by [Xie Feng](https://github.com/xiwutf)
 2. **运行一键配置脚本**：
    - Windows: `.\scripts\setup-dev-env.ps1`
    - Linux/macOS: `./scripts/setup-dev-env.sh`
-3. **按照检查清单验证**：[ENVIRONMENT_CHECKLIST.md](./docs/deployment/ENVIRONMENT_CHECKLIST.md)
+3. **按照检查清单验证**：[快速开始指南](./docs/deployment/QUICK_START.md)
 
 ## 📧 联系方式
 

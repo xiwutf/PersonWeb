@@ -46,11 +46,6 @@
       "name": "AIAssistant",
       "path": "~/components/ai/AIAssistant.vue",
       "global": true
-    },
-    {
-      "name": "AICharacter",
-      "path": "~/components/ai/AICharacter.vue",
-      "global": false
     }
   ],
   "configs": [

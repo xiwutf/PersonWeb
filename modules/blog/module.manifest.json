@@ -19,18 +19,7 @@
       "component": "pages/blog/[id].vue"
     }
   ],
-  "components": [
-    {
-      "name": "MarkdownEditor",
-      "path": "components/MarkdownEditor.vue",
-      "global": false
-    },
-    {
-      "name": "GiscusComments",
-      "path": "components/GiscusComments.vue",
-      "global": false
-    }
-  ],
+  "components": [],
   "permissions": {
     "read": "public",
     "write": "admin"

@@ -33,49 +33,24 @@
 
 ---
 
-### 2. `home.vue` - 首页布局
-**用途**：首页专用布局，包含顶部导航栏，但主内容区域无顶部内边距（用于沉浸式 Hero 效果）。
+### 2. `life.vue` - Life 世界布局
+**用途**：Life 世界专用布局，独立页眉页脚，不使用前台 Header。
 
 **包含组件**：
-- `<Header />` - 顶部导航栏（必须）
-- `<Footer />` - 页脚
-- `<ParticleBackground />` - 动态粒子背景
-- `<MouseTrail />` - 鼠标轨迹特效
-- `<ThemeSwitcher />` - 风格切换面板
-- `<AIAssistant />` - AI 智能助手
-- `<VisitorInteractionPanel />` - 访客互动功能
-- `<VisitorBehaviorListener />` - 访客行为监听
-- `<VisitorSidebarDrawer />` - 访客侧边栏抽屉
-- `<SecretAdminAccess />` - 隐秘的后台入口
+- `<LifeHeader />`
+- `<LifeFooter />`
 
 **使用场景**：
-- 首页 (`/`)
-
-**特点**：
-- 主内容区域使用 `pt-0`（无顶部内边距），允许 Hero 区域延伸到顶部
-- 包含粒子背景特效
+- `/life` 及相关页面
 
 ---
 
-### 3. `ai.vue` - AI 实验室布局
-**用途**：AI 相关页面的专用布局，包含顶部导航栏。
-
-**包含组件**：
-- `<Header />` - 顶部导航栏（必须）
-- `<Footer />` - 页脚
-- `<MouseTrail />` - 鼠标轨迹特效
-- `<ThemeSwitcher />` - 风格切换面板
-- `<AIAssistant />` - AI 智能助手
-- `<VisitorInteractionPanel />` - 访客互动功能
-- `<VisitorBehaviorListener />` - 访客行为监听
-- `<VisitorSidebarDrawer />` - 访客侧边栏抽屉
+### 3. `ai.vue` - AI 布局
+**用途**：AI 相关页面的专用布局。
 
 **使用场景**：
 - AI 方案页 (`/work/ai`)
 - AI 相关详情页 (`/work/ai/[type]/[slug]`)
-
-**特点**：
-- 主内容区域使用 `pt-24`（顶部内边距）
 
 ---
 
@@ -99,11 +74,11 @@
 - ✅ 所有普通内容页面（博客、工具、项目等）
 - ✅ 如果页面没有指定 `definePageMeta({ layout: 'xxx' })`，会自动使用 `default` 布局
 
-### 应该使用 `home` 布局的页面：
-- ✅ 首页 (`/`)
+### 应该使用 `life` 布局的页面：
+- ✅ Life 世界页面
 
 ### 应该使用 `ai` 布局的页面：
-- ✅ AI 实验室相关页面
+- ✅ AI 相关页面
 
 ### 应该使用 `admin` 布局的页面：
 - ✅ 所有后台管理页面

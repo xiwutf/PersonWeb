@@ -173,6 +173,66 @@ public class AdminOrdersController : ControllerBase
             return StatusCode(500, ApiResponse.Error($"更新订单状态失败: {ex.Message}", 500));
         }
     }
+
+    /// <summary>
+    /// 删除单条订单
+    /// </summary>
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<ApiResponse>> DeleteOrder(long id)
+    {
+        try
+        {
+            Order? order = await _context.Orders.FindAsync(id);
+            if (order == null)
+            {
+                return NotFound(ApiResponse.Error("订单不存在", 404));
+            }
+
+            _context.Orders.Remove(order);
+            await _context.SaveChangesAsync();
+
+            return Ok(ApiResponse.Success(null, "删除成功"));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "删除订单失败: {Id}", id);
+            return StatusCode(500, ApiResponse.Error($"删除订单失败: {ex.Message}", 500));
+        }
+    }
+
+    /// <summary>
+    /// 批量删除订单
+    /// </summary>
+    [HttpPost("batch-delete")]
+    public async Task<ActionResult<ApiResponse<object>>> BatchDelete([FromBody] BatchDeleteOrdersRequest request)
+    {
+        try
+        {
+            if (request.Ids == null || request.Ids.Count == 0)
+            {
+                return BadRequest(ApiResponse.Error("请选择要删除的记录", 400));
+            }
+
+            List<Order> orders = await _context.Orders
+                .Where(o => request.Ids.Contains(o.Id))
+                .ToListAsync();
+
+            if (orders.Count == 0)
+            {
+                return NotFound(ApiResponse.Error("未找到可删除的记录", 404));
+            }
+
+            _context.Orders.RemoveRange(orders);
+            await _context.SaveChangesAsync();
+
+            return Ok(ApiResponse.Success(new { deleted = orders.Count }, $"已删除 {orders.Count} 条记录"));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "批量删除订单失败");
+            return StatusCode(500, ApiResponse.Error($"批量删除订单失败: {ex.Message}", 500));
+        }
+    }
 }
 
 /// <summary>
@@ -189,5 +249,16 @@ public class UpdateOrderStatusRequest
     /// 内部备注
     /// </summary>
     public string? InternalNote { get; set; }
+}
+
+/// <summary>
+/// 批量删除订单请求 DTO
+/// </summary>
+public class BatchDeleteOrdersRequest
+{
+    /// <summary>
+    /// 要删除的订单 ID 列表
+    /// </summary>
+    public List<long> Ids { get; set; } = new();
 }
 

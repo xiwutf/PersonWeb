@@ -38,7 +38,6 @@ AI 在本项目执行任务时，只需要先看这一页，再按类型读取�
 | 模块功能 | `docs/architecture/README_MODULES.md`、`docs/development/MODULE_DEVELOPMENT_GUIDE.md`、`docs/modules/` |
 | API、联调、配置 | `docs/config/API_CONFIG.md`、`docs/api/MODULE_SYSTEM_API.md` |
 | 部署、启动、环境 | `docs/deployment/README.md`、`docs/deployment/QUICK_START.md` |
-| 低频历史资料 | `docs/archive/` |
 
 ## 允许直接修改的前提
 
@@ -62,7 +61,7 @@ AI 在本项目执行任务时，只需要先看这一页，再按类型读取�
 新增文档时：
 
 - 优先放到已有核心分类目录
-- 一次性阶段记录优先放 `docs/archive/`
+- 一次性阶段记录不要写入核心手册，任务完成后即可删除
 - 不要再创建新的文档索引体系
 
 文档更新触发条件（满足任一才更新）：
@@ -79,7 +78,7 @@ AI 在本项目执行任务时，只需要先看这一页，再按类型读取�
 2. `docs/PROJECT_OVERVIEW.md` 与 `docs/PROJECT_STRUCTURE_GUIDE.md`
 3. 少量核心专题手册
 
-其余低频、阶段性、历史性材料统一放在 `docs/archive/legacy/`
+不再保留历史归档目录。一次性阶段记录完成后直接删除，不要再写入 `docs/archive/`。
 
 ## 一句话原则
 

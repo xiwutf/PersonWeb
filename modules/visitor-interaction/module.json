@@ -68,11 +68,6 @@
       "global": false
     },
     {
-      "name": "VisitorBubble",
-      "path": "~/components/VisitorBubble.vue",
-      "global": false
-    },
-    {
       "name": "VisitorLevelDisplay",
       "path": "~/components/VisitorLevelDisplay.vue",
       "global": false

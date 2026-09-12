@@ -17,7 +17,6 @@
 - `design-system/`
 - `development/`
 - `modules/`
-- `archive/`
 
 ## 当前保留的核心手册
 
@@ -33,9 +32,4 @@
 - [部署说明](./deployment/README.md)
 - [快速开始](./deployment/QUICK_START.md)
 
-## 历史材料
-
-低频、阶段性、历史性资料统一放在：
-
-- [archive/](./archive/)
-- [archive/legacy/](./archive/legacy/)
+一次性阶段记录不要写入核心手册，完成后直接删除。

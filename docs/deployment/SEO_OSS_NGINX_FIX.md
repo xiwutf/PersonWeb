@@ -123,4 +123,3 @@ npm run generate           # 或你现有的构建/上传流程
 |------|------|
 | `public/robots.txt` | 爬虫规则 |
 | `scripts/generate-sitemap.js` | 生成 sitemap |
-| `docs/archive/legacy/deployment/NGINX_CONFIG_FIX.md` | 历史 Nginx 参考 |

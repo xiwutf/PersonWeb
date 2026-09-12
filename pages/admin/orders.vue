@@ -27,6 +27,14 @@
       />
       <n-button type="primary" @click="handleSearch">搜索</n-button>
       <n-button quaternary @click="handleReset">重置</n-button>
+      <n-button
+        v-if="orders.length > 0"
+        type="error"
+        secondary
+        @click="handleClearAll"
+      >
+        清空当前列表
+      </n-button>
     </div>
 
     <!-- 数据表格 -->
@@ -71,6 +79,7 @@
               <div class="action-buttons">
                 <button @click="handleViewDetail(order)" class="btn-link btn-link-blue">查看</button>
                 <button @click="handleEditStatus(order)" class="btn-link btn-link-green">编辑状态</button>
+                <button @click="handleDelete(order)" class="btn-link btn-link-red">删除</button>
               </div>
             </td>
           </tr>
@@ -270,6 +279,55 @@ const handleEditStatus = (order: any) => {
   handleViewDetail(order)
 }
 
+const handleDelete = async (order: any) => {
+  if (!confirm(`确定删除订单 ${order.orderNo}？此操作不可恢复。`)) {
+    return
+  }
+
+  try {
+    await api.delete(`/admin/orders/${order.id}`)
+    message.success('已删除')
+    fetchOrders()
+  } catch (e: any) {
+    message.error(e?.message || '删除失败')
+  }
+}
+
+/** 清空当前筛选条件下拉到的订单（测试假数据清理） */
+const handleClearAll = async () => {
+  if (!confirm('确定清空当前筛选条件下的全部订单？此操作不可恢复。')) {
+    return
+  }
+
+  try {
+    const res = await api.get<any>('/admin/orders', {
+      params: {
+        status: filterStatus.value ?? undefined,
+        keyword: searchKeyword.value || undefined,
+        page: 1,
+        pageSize: 1000,
+      },
+    })
+
+    const list = res?.list || res?.List || []
+    const ids = list.map((item: { id: number }) => item.id)
+    if (ids.length === 0) {
+      message.warning('没有可删除的记录')
+      return
+    }
+
+    if (!confirm(`将删除 ${ids.length} 条记录，确认继续？`)) {
+      return
+    }
+
+    await api.post('/admin/orders/batch-delete', { ids })
+    message.success(`已删除 ${ids.length} 条记录`)
+    fetchOrders()
+  } catch (e: any) {
+    message.error(e?.message || '清空失败')
+  }
+}
+
 // 保存状态
 const handleSaveStatus = async () => {
   if (!currentOrder.value) return
@@ -434,6 +492,14 @@ useHead({
 .btn-link-green:hover {
   background: var(--color-success);
   opacity: 0.1;
+}
+
+.btn-link-red {
+  color: var(--color-error, #ef4444);
+}
+
+.btn-link-red:hover {
+  background: var(--color-bg-elevated);
 }
 
 .tag {

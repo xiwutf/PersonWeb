@@ -131,7 +131,7 @@ module-name/
 ### 3.1 命名规范
 
 - **模块名**：小写，使用连字符连接（如 `3d-display`）
-- **组件名**：PascalCase（如 `Immersive3DScene`）
+- **组件名**：PascalCase（如 `Scene3D`）
 - **组合式函数**：以 `use` 开头（如 `useModuleData`）
 - **文件名**：kebab-case（如 `module-utils.ts`）
 - **路由名**：kebab-case（如 `/module-page`）
@@ -500,24 +500,16 @@ chore: 构建工具
 3. 提交更改
 4. 创建 PR 并描述变更
 
-## 12. 示例项目
-
-参见 `examples/` 目录下的示例模块：
-- `hello-world`: 简单的示例模块
-- `ecommerce`: 电商模块示例
-- `analytics`: 数据分析模块示例
-
-## 13. API 参考
+## 12. API 参考
 
 详见 `docs/api/` 目录下的 API 文档。
 
-## 14. 更新日志
+## 13. 更新日志
 
 ### 2024.03.13
 
 - 初始版本发布
 - 添加基础开发指南
-- 示例模块
 
 ---
 

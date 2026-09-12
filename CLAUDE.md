@@ -59,12 +59,6 @@ cp .env.example .env   # 然后设置 AI_INTERNAL_TOKEN 和模型密钥
 uvicorn app.main:app --reload
 ```
 
-### 内容导入（Markdown → 数据库）
-```bash
-node scripts/import-blog-to-db.js         # 将博客文章导入 MySQL
-node scripts/import-all-content-to-db.js  # 导入所有内容类型
-```
-
 ## 环境变量
 
 在项目根目录创建 `.env` 文件，Nuxt 服务端路由（Nitro）本地运行时必须配置：
@@ -117,20 +111,18 @@ Nuxt 自带的服务端路由（Nitro），与 .NET 后端完全独立。关键�
 
 ### 前端页面（`pages/`）
 基于文件的路由，关键目录：
-- `pages/index.vue` — 首页
+- `pages/index.vue` — 入口页
 - `pages/admin/` — 管理后台（由 `middleware/admin-auth.ts` 保护）
-- `pages/blog/` — 博客列表与文章详情
-- `pages/projects/` — 项目作品集
-- `pages/tools/` — 插件工具展示
-- `pages/ai/` — AI 功能区
-- `pages/side-projects/` — 副业项目
+- `pages/work/` — Work 世界（博客、项目、工具、AI 等）
+- `pages/life/` — Life 世界
+- 根路径下的 `pages/blog/`、`pages/projects/` 等为旧 URL 301 跳转
 
 ### 布局（`layouts/`）
 - `default.vue` — 通用站点布局
-- `home.vue` — 首页布局
 - `admin.vue` — 带侧边栏的完整管理后台布局
 - `admin-content-only.vue` — 无侧边栏的管理布局
 - `ai.vue` — AI 区域布局
+- `life.vue` — Life 世界布局
 
 ### 组合式函数（`composables/`）
 - `useApi.ts` — 基础 API 客户端，自动环境检测
@@ -157,7 +149,7 @@ Nuxt 自带的服务端路由（Nitro），与 .NET 后端完全独立。关键�
 2. **`assets/styles/base.css`** — HTML/body 重置与基础排版
 3. **`assets/styles/ui-patch-naive.css`** — Naive UI 组件的视觉补丁
 4. **`components/layout/AppNaiveConfig.vue`** — Naive UI `themeOverrides`，包裹所有布局
-5. **`assets/css/*.css`** — 功能级共享样式（如 `header.css`、`home.css`、`admin-*.css`）
+5. **`assets/css/*.css`** — 功能级共享样式（如 `header.css`、`work-home.css`、`admin-*.css`）
 6. **`<style scoped>`** — 组件级私有样式
 
 ### 规则
@@ -184,9 +176,10 @@ Nuxt 自带的服务端路由（Nitro），与 .NET 后端完全独立。关键�
 ## 内容管理
 
 通过创建带 frontmatter 的 Markdown 文件来新增内容：
-- **博客**：`content/blog/*.md`（字段：`title`、`date`、`tags`、`description`、`author`、`category`）
-- **项目**：`content/projects/*.md`（字段：`title`、`tech`、`description`、`demo_link`、`source_link`、`slug`、`date`、`status`、`category`）
-- **工具**：`content/tools/*.md`（字段：`title`、`description`、`price`、`tags`、`buy_link`、`slug`、`date`）
+- **文章**：`content/articles/*.md`（Git 为正文 SoT；运营字段在 MySQL `content_ops`）
+- **Life**：`content/life/` YAML / Markdown
+- **Work 文案**：`content/work/` YAML / Markdown
+- **项目 / 工具**：后台写入 MySQL，不再使用 `content/projects`、`content/tools`
 
 ## 关键配置文件
 

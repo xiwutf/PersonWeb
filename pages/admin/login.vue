@@ -12,7 +12,7 @@
           <h1>登录</h1>
         </header>
 
-        <form class="admin-login-form" @submit.prevent="handleLogin">
+        <form class="admin-login-form" @submit.prevent="submitToAdmin">
           <div class="admin-login-field">
             <label for="admin-login-username">用户名</label>
             <input
@@ -42,7 +42,17 @@
             class="admin-login-submit"
             :disabled="loading"
           >
-            {{ loading ? '登录中…' : '进入后台' }}
+            {{ loading && pendingTarget === '/admin' ? '登录中…' : '进入后台' }}
+          </button>
+
+          <button
+            v-if="returnPath"
+            type="button"
+            class="admin-login-secondary"
+            :disabled="loading"
+            @click="submitToReturn"
+          >
+            {{ loading && pendingTarget === returnPath ? '登录中…' : returnLabel }}
           </button>
         </form>
 
@@ -69,8 +79,32 @@ definePageMeta({
 })
 
 useHead({
+  htmlAttrs: {
+    'data-theme': 'light',
+    style: 'color-scheme: light; background: #f7f9fc;',
+  },
+  bodyAttrs: {
+    class: 'admin-login-body',
+    style: 'margin:0;background:#f7f9fc;color:#142033;',
+  },
   meta: [
     { key: 'robots', name: 'robots', content: 'noindex,nofollow' },
+    { key: 'color-scheme', name: 'color-scheme', content: 'light' },
+  ],
+  style: [
+    {
+      key: 'admin-login-critical',
+      children: `
+        html,body{margin:0;min-height:100%;background:#f7f9fc;color:#142033;color-scheme:light}
+        .admin-login{min-height:100svh;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(20rem,.95fr);font-family:"PingFang SC","Microsoft YaHei",sans-serif}
+        .admin-login-brand{display:grid;align-content:end;min-height:100svh;padding:3.5rem 3.2rem 3.2rem;color:#edf3fa;background:linear-gradient(210deg,#0b1c31 0%,#163556 48%,#1d4a73 100%)}
+        .admin-login-brand-kicker{margin:0;opacity:.62;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase}
+        .admin-login-brand-title{margin:0;font-size:clamp(2.4rem,4.5vw,3.4rem);font-weight:650;letter-spacing:.08em}
+        .admin-login-brand-sub{margin:.35rem 0 0;opacity:.72;letter-spacing:.12em}
+        .admin-login-main{display:grid;place-items:center;padding:2.5rem 2rem}
+        @media (max-width:860px){.admin-login{grid-template-columns:1fr}.admin-login-brand{min-height:0;padding:1.6rem 1.4rem}}
+      `,
+    },
   ],
 })
 
@@ -78,6 +112,7 @@ const username = ref('admin')
 const password = ref('')
 const error = ref('')
 const loading = ref(false)
+const pendingTarget = ref('')
 const route = useRoute()
 const router = useRouter()
 const config = useRuntimeConfig()
@@ -86,22 +121,39 @@ const { refresh } = useAdminSession()
 
 const nitroMode = computed(() => usesNitroAdminAuth())
 
-function resolveRedirectTarget() {
+/** Life 等页带来的回跳；主按钮「进入后台」始终进 /admin，不跟这个走。 */
+const returnPath = computed(() => {
   const raw = route.query.redirect
   const value = Array.isArray(raw) ? raw[0] : raw
-  if (typeof value !== 'string') return '/admin'
-  if (!value.startsWith('/') || value.startsWith('//')) return '/admin'
-  if (value.startsWith('/admin/login')) return '/admin'
+  if (typeof value !== 'string') return ''
+  if (!value.startsWith('/') || value.startsWith('//')) return ''
+  if (value === '/admin' || value.startsWith('/admin/login')) return ''
   return value
+})
+
+const returnLabel = computed(() => {
+  if (returnPath.value.startsWith('/life')) return '登录并返回 Life'
+  if (returnPath.value.startsWith('/work')) return '登录并返回 Work'
+  return '登录并返回原页'
+})
+
+async function submitToAdmin() {
+  await handleLogin('/admin')
 }
 
-const handleLogin = async () => {
+async function submitToReturn() {
+  if (!returnPath.value) return
+  await handleLogin(returnPath.value)
+}
+
+async function handleLogin(target: string) {
   if (!username.value || !password.value) {
     error.value = '请输入用户名和密码'
     return
   }
 
   loading.value = true
+  pendingTarget.value = target
   error.value = ''
 
   const trimmedUsername = username.value.trim() || 'admin'
@@ -142,7 +194,7 @@ const handleLogin = async () => {
     }
 
     await refresh()
-    await router.push(resolveRedirectTarget())
+    await router.push(target)
   }
   catch (e: any) {
     const status = e?.statusCode ?? e?.response?.status ?? e?.data?.statusCode
@@ -161,6 +213,7 @@ const handleLogin = async () => {
   }
   finally {
     loading.value = false
+    pendingTarget.value = ''
   }
 }
 </script>

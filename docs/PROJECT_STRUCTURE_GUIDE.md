@@ -52,11 +52,7 @@ PersonWeb/
 │           └── Data/          # 数据访问层（EF Core）
 │
 ├── 🤖 AI 服务
-│   └── python-ai/
-│       └── app/
-│           ├── api/           # API 路由
-│           ├── services/      # 服务层
-│           └── schemas/       # Pydantic 模型
+│   └── ai-service/        # Python FastAPI
 │
 ├── 🗄️ 数据库
 │   └── database/              # SQL 脚本和迁移文件
@@ -148,7 +144,6 @@ PersonWeb/
 | **错误处理** | `composables/useErrorHandler.ts` | 统一错误处理 |
 | **Toast 提示** | `composables/useToast.ts` | 消息提示 |
 | **设备检测** | `composables/useDevice.ts` | 设备类型检测 |
-| **字体样式** | `composables/useFontStyle.ts` | 字体管理 |
 | **页面样式** | `composables/usePageStyle.ts` | 页面样式管理 |
 
 ---

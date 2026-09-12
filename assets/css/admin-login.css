@@ -150,6 +150,31 @@
   cursor: wait;
 }
 
+.admin-login-secondary {
+  width: 100%;
+  margin: 0.15rem 0 0;
+  padding: 0.75rem 1rem;
+  color: var(--login-primary);
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--login-primary) 35%, var(--login-line));
+  border-radius: 0.2rem;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+}
+
+.admin-login-secondary:hover:not(:disabled) {
+  border-color: var(--login-primary);
+}
+
+.admin-login-secondary:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
 .admin-login-links {
   display: flex;
   gap: 1.25rem;

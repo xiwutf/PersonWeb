@@ -59,4 +59,36 @@ describe('legacy / dead-code guards (Phase 6)', () => {
   it('does not resurrect deleted home layout after Contact migration', () => {
     expect(existsSync(resolve(root, 'layouts/home.vue'))).toBe(false)
   })
+
+  it('does not resurrect unused scripts, composables, or example modules', () => {
+    const gone = [
+      'scripts/fast-start.ps1',
+      'scripts/fast-start.sh',
+      'scripts/import-blog-to-db.js',
+      'scripts/import-all-content-to-db.js',
+      'scripts/benchmark.js',
+      'composables/useModuleInstaller.ts',
+      'composables/useModuleConfig.ts',
+      'composables/useFontStyle.ts',
+      'composables/useStyle.ts',
+      'composables/usePerformance.ts',
+      'composables/usePerformanceComparison.ts',
+      'composables/useWebVitals.ts',
+      'composables/useVirtualScroll.ts',
+      'composables/useImageOptimization.ts',
+      'composables/useMotionOneDom.ts',
+      'components/PerformanceMonitor.vue',
+      'components/ConsultationDialog.vue',
+      'components/VisitorBubble.vue',
+      'components/ai/AICharacter.vue',
+      'components/three/Immersive3DScene.vue',
+      'examples/modules/hello-world',
+      'examples/modules/ecommerce',
+      'docs/archive/legacy',
+      'docs/superpowers',
+    ]
+    for (const rel of gone) {
+      expect(existsSync(resolve(root, rel)), rel).toBe(false)
+    }
+  })
 })

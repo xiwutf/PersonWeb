@@ -215,7 +215,7 @@ const naiveThemeOverrides = computed(() => ({
 **示例文件**：
 - `assets/css/header.css` - Header 组件统一样式
 - `assets/css/footer.css` - Footer 组件统一样式
-- `assets/css/home.css` - 首页组件统一样式
+- `assets/css/work-home.css` - Work 首页样式
 - `assets/css/visitor-interaction.css` - 访客互动统一样式
 
 #### 第 6 层：组件级样式（`<style scoped>`）

@@ -88,7 +88,7 @@ Showcase 合并优先级：
 | **Home / Sitemap / Search** | Git 聚合（Phase 4B-3） |
 | **Admin** | `/admin/articles` 运营观察；版本页 = Legacy DB History（不可 restore） |
 | **LEGACY_READONLY** | MySQL `article.content_md/html/status/...` 保留核对，禁止新写入 |
-| **ORPHAN** | `content/blog`（已删）；`import-blog-to-db.js` DEPRECATED |
+| **ORPHAN** | `content/blog`（已删） |
 
 ### Tools
 

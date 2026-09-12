@@ -125,7 +125,8 @@ export default defineNuxtConfig({
           key: 'theme-bootstrap',
           tagPriority: 0,
           type: 'text/javascript',
-          innerHTML: `(function(){try{var k='site-theme',t=localStorage.getItem(k),d=document.documentElement,n=t==='light'?'light':'dark';d.dataset.theme=n;d.classList.toggle('dark',n==='dark')}catch(e){document.documentElement.dataset.theme='dark';document.documentElement.classList.add('dark')}})();`,
+          // 登录页强制浅底，避免全局深色主题首屏黑屏；其余页按 localStorage
+          innerHTML: `(function(){try{var d=document.documentElement,p=location.pathname;if(p==="/admin/login")){d.dataset.theme="light";d.classList.remove("dark");d.style.background="#f7f9fc";d.style.colorScheme="light";return}var k="site-theme",t=localStorage.getItem(k),n=t==="light"?"light":"dark";d.dataset.theme=n;d.classList.toggle("dark",n==="dark")}catch(e){document.documentElement.dataset.theme="dark";document.documentElement.classList.add("dark")}})();`,
         },
       ],
     }
@@ -145,8 +146,7 @@ export default defineNuxtConfig({
     prerender: {
       // 关闭自动爬取链接，避免内存溢出
       crawlLinks: false,
-      // 只预渲染公开页。/admin/* 有登录守卫，预渲染会生成「跳转登录」空壳 HTML，
-      // 上传 OSS 后直链/目录索引会打到空壳，主内容区空白；后台一律走 SPA 200.html。
+      // 只预渲染公开页。后台除登录页外不预渲染（有登录守卫，预渲染会生成空壳）。
       routes: [
         '/',
         '/life',
@@ -155,16 +155,16 @@ export default defineNuxtConfig({
         '/life/margin',
         '/work',
         '/work/about',
+        '/admin/login',
         '/200.html',
         '/404.html'
       ],
-      // 排除动态内容与全部后台页
+      // 排除动态内容；后台其余页不在 routes 里，不必再 ignore /admin/**
       ignore: [
         '/blog/**',
         '/work/blog/**',
         '/projects/**',
         '/work/projects/**',
-        '/admin/**',
       ],
       // 忽略预渲染错误
       failOnError: false
