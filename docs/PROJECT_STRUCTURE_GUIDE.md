@@ -85,35 +85,21 @@ PersonWeb/
 | **AI 方案** | `pages/work/ai/index.vue` | Work 世界 AI 解决方案 |
 | **知识库** | `pages/knowledge/index.vue` | 知识库页面 |
 | **技能树** | `pages/skills/index.vue` | 技能展示 |
-| **侧边项目** | `pages/side-projects/index.vue` | 副业项目列表 |
-| **认知使用说明书** | `pages/cognition/index.vue` | 个人认知系统说明 |
+| **认知说明书** | `pages/life/cognition/index.vue` | Life 世界个人认知说明书 |
+| **生活想法** | `pages/life/thoughts/index.vue`、`[category].vue` | 精选页 + 分类归档 |
 
 ### 2. 后台管理页面（`pages/admin/`）
 
 | 功能 | 路径 | 说明 |
 |------|------|------|
-| **后台首页** | `pages/admin/index.vue` | 管理后台首页 |
-| **文章管理** | `pages/admin/articles/index.vue` | 文章列表 |
-| **文章编辑** | `pages/admin/articles/edit/[id].vue` | 编辑文章 |
-| **项目管理** | `pages/admin/projects/index.vue` | 项目列表 |
-| **项目编辑** | `pages/admin/projects/edit/[[id]].vue` | 编辑项目 |
-| **工具管理** | `pages/admin/tools.vue` | 工具管理 |
-| **分类管理** | `pages/admin/categories.vue` | 分类管理 |
-| **访客管理** | `pages/admin/visitors.vue` | 访客数据 |
-| **访客留言** | `pages/admin/visitor-messages.vue` | 留言管理 |
-| **数据分析** | `pages/admin/analytics.vue` | 数据分析 |
-| **系统设置** | `pages/admin/settings/index.vue` | 系统设置 |
-| **主题设置** | `pages/admin/settings/themes.vue` | 主题配置 |
-| **模块管理** | `pages/admin/settings/modules.vue` | 功能模块开关 |
-| **AI 管理** | `pages/admin/ai/index.vue` | AI 服务管理 |
-| **AI 内容** | `pages/admin/ai/content.vue` | AI 内容管理 |
-| **关系管理** | `pages/admin/relations/index.vue` | 人际关系管理 |
-| **副业项目** | `pages/admin/side-projects/index.vue` | 副业项目管理 |
-| **技能树** | `pages/admin/skill-tree/index.vue` | 技能树管理 |
-| **工具箱** | `pages/admin/toolbox/index.vue` | 工具箱管理 |
-| **投资管理** | `pages/admin/investment.vue` | 投资数据 |
-| **订单管理** | `pages/admin/orders.vue` | 订单管理 |
-| **用户管理** | `pages/admin/users/index.vue` | 用户管理 |
+| **后台首页** | `pages/admin/index.vue` | 数据概览 |
+| **数据分析** | `pages/admin/analytics.vue` | 访问分析 |
+| **AI 中心** | `pages/admin/ai/index.vue` | AI 服务与工具入口 |
+| **访客留言** | `pages/admin/visitor-messages.vue` | 互动收件箱 |
+| **咨询管理** | `pages/admin/consultations.vue` | 咨询线索 |
+| **访客明细** | `pages/admin/visitors.vue` | 深链，不在侧栏 |
+| **订单** | `pages/admin/orders.vue` | 深链，不在侧栏 |
+| **认知说明书** | `pages/admin/cognition/index.vue` | 深链；公开页在 Life |
 
 ### 3. 组件位置（`components/`）
 
@@ -131,7 +117,6 @@ PersonWeb/
 | **时间组件** | `components/time/` | 时间胶囊、时间轴等 |
 | **英语组件** | `components/english/` | 英语学习组件 |
 | **关系组件** | `components/relations/` | 人际关系管理组件 |
-| **副业组件** | `components/side-projects/` | 副业项目组件 |
 
 ### 4. 组合式函数（`composables/`）
 
@@ -156,12 +141,10 @@ PersonWeb/
 
 | 内容类型 | 编辑位置 | 说明 |
 |----------|----------|------|
-| **文章** | `/admin/articles` | 创建、编辑、删除文章 |
-| **项目** | `/admin/projects` | 管理项目展示 |
-| **工具** | `/admin/tools` | 管理工具展示 |
-| **分类** | `/admin/categories` | 管理文章分类 |
-| **系统配置** | `/admin/settings` | 系统设置 |
-| **模块开关** | `/admin/settings/modules` | 启用/禁用功能模块 |
+| **Life / Work 文案** | 前台登录后点改，或 `content/` / Cursor | 后台不做 CMS |
+| **工具 / 友链** | MySQL / 代码直接维护 | 已移除 `/admin/content` 等 CRUD |
+| **互动收件** | `/admin/visitor-messages`、`/admin/consultations` | 留言与咨询 |
+| **数据看盘** | `/admin`、`/admin/analytics` | 概览与分析 |
 
 ### 2. 通过 Markdown 文件编辑（部分功能）
 
@@ -174,7 +157,8 @@ PersonWeb/
 | **Life Now** | `content/life/now.yml` | `/life`「最近在」 |
 | **Life Moments** | `content/life/moments.yml` | `/life`「最近」时间线 |
 | **生活随笔** | `content/life/*.md` | 随笔正文（不要用 `profile.md` 这个文件名） |
-| **认知说明书** | `content/cognition/*.md` | 个人认知使用说明书 |
+| **认知说明书** | `/life/cognition`（`content/life/cognition.yml` + Nitro） | Life 世界当前页内联编辑；`/admin/cognition` 为遗留深链 |
+| **生活想法** | `/life/thoughts`（`content/life/thoughts/*` + Nitro） | 精选卡片首页；`/life/thoughts/:category` 全量归档；`/life/margin` 301 |
 | **Work 首页文案** | `content/work/home.yml` | `/work`；登录后可在页面上点改 |
 
 > ⚠️ **注意**：大部分内容已迁移到数据库，通过后台管理系统编辑。只有部分内容仍使用 Markdown 文件。
@@ -198,19 +182,15 @@ PersonWeb/
 
 ### 主要管理功能
 
-#### 内容管理
-- **文章管理**：`/admin/articles`
-- **项目管理**：`/admin/projects`
-- **工具管理**：`/admin/tools`
-- **分类管理**：`/admin/categories`
-
-#### 数据管理
-- **访客数据**：`/admin/visitors`
-- **访客留言**：`/admin/visitor-messages`
+#### 数据与互动（侧栏）
+- **网站概览**：`/admin`
 - **数据分析**：`/admin/analytics`
-- **关系管理**：`/admin/relations`
-- **副业项目**：`/admin/side-projects`
-- **投资数据**：`/admin/investment`
+- **AI 中心**：`/admin/ai`
+- **访客留言**：`/admin/visitor-messages`
+- **咨询管理**：`/admin/consultations`
+
+#### 内容
+- 站点正文与工具/友链：**不用后台 CMS**；改 `content/`、前台点改，或直接改库/代码
 
 #### 系统管理
 - **系统设置**：`/admin/settings`
@@ -245,12 +225,11 @@ PersonWeb/
 |------|------|----------|
 | `article` | 文章表 | `/admin/articles` |
 | `projects` | 项目表 | `/admin/projects` |
-| `tool` | 工具表 | `/admin/tools` |
+| `tool` | 工具表 | 前台 `/work/tools`；无后台 CRUD 页 |
 | `category` | 分类表 | `/admin/categories` |
 | `user` | 用户表 | `/admin/users` |
 | `visitor` | 访客表 | `/admin/visitors` |
 | `relation_person` | 关系人表 | `/admin/relations` |
-| `side_project` | 副业项目表 | `/admin/side-projects` |
 
 ### 数据库连接配置
 
@@ -269,7 +248,7 @@ PersonWeb/
 | **编辑文章** | `/admin/articles` → 点击"编辑" |
 | **添加新文章** | `/admin/articles` → 点击"新增文章" |
 | **编辑项目** | `/admin/projects` → 点击"编辑" |
-| **管理工具** | `/admin/tools` |
+| **管理工具数据** | 改 MySQL `Tools` / `.NET`，或 Cursor；无 `/admin/tools` |
 | **修改首页内容** | `pages/index.vue` |
 | **修改关于我** | `pages/about.vue` |
 | **修改网站标题** | `/admin/settings` 或 `nuxt.config.ts` |

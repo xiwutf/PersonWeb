@@ -2,12 +2,20 @@
   <ClientOnly>
     <div class="cognition-admin-page">
       <div class="page-header">
-        <h1 class="page-title">认知说明书管理</h1>
+        <div>
+          <h1 class="page-title">认知说明书管理</h1>
+          <p class="page-subtitle">
+            遗留深链：公开阅读与编辑已迁到
+            <a href="/life/cognition" target="_blank" rel="noopener">/life/cognition</a>
+            （YAML + 当前页内联编辑）。本页仅保留旧 MySQL 文档管理。
+          </p>
+        </div>
         <n-button type="primary" @click="handleNew">
           <template #icon>
             <i class="fas fa-plus"></i>
           </template>
-          新建说明�?        </n-button>
+          新建说明书
+        </n-button>
       </div>
 
       <!-- 筛选栏 -->
@@ -141,7 +149,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, h, onMounted, computed } from 'vue'
+import { ref, h, onMounted, computed, watch } from 'vue'
 import {
   NButton,
   NInput,
@@ -169,6 +177,7 @@ definePageMeta({
 })
 
 const api = useApi()
+const route = useRoute()
 const { success, error } = useNotification()
 const { handleError } = useErrorHandler()
 const { parse: parseMarkdown } = useMarkdown()
@@ -385,8 +394,8 @@ const handleNew = () => {
 }
 
 // 编辑
-const handleEdit = async (row: any) => {
-  editingId.value = row.id
+const handleEdit = async (row: { id: number | string }) => {
+  editingId.value = Number(row.id)
   try {
     const res = await api.get(`/CognitionDocs/${row.id}`)
     if (res) {
@@ -403,6 +412,46 @@ const handleEdit = async (row: any) => {
     handleError(e, '获取详情失败')
   }
 }
+
+const openFromQuery = async () => {
+  const rawId = route.query.id
+  const rawSlug = route.query.slug
+  const id = Array.isArray(rawId) ? rawId[0] : rawId
+  const slug = Array.isArray(rawSlug) ? rawSlug[0] : rawSlug
+
+  if (id && /^\d+$/.test(String(id))) {
+    await handleEdit({ id: Number(id) })
+    return
+  }
+
+  if (typeof slug === 'string' && slug.trim()) {
+    try {
+      const res = await api.get(`/CognitionDocs/by-slug/${encodeURIComponent(slug.trim())}`)
+      const docId = res?.Id ?? res?.id
+      if (docId != null) {
+        await handleEdit({ id: docId })
+      } else {
+        error('未找到对应说明书')
+      }
+    } catch (e) {
+      handleError(e, '未找到对应说明书')
+    }
+  }
+}
+
+onMounted(async () => {
+  await fetchList()
+  await openFromQuery()
+})
+
+watch(
+  () => [route.query.slug, route.query.id] as const,
+  async () => {
+    if (!showModal.value) {
+      await openFromQuery()
+    }
+  },
+)
 
 // 保存
 const handleSave = async () => {
@@ -474,10 +523,6 @@ const handleDelete = async (id: number) => {
     handleError(e, '删除失败')
   }
 }
-
-onMounted(() => {
-  fetchList()
-})
 </script>
 
 <style scoped>
@@ -495,6 +540,21 @@ onMounted(() => {
 .page-title {
   font-size: 1.5rem;
   font-weight: 600;
+}
+
+.page-subtitle {
+  margin: 0.35rem 0 0;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.page-subtitle a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.page-subtitle a:hover {
+  text-decoration: underline;
 }
 
 .filter-bar {

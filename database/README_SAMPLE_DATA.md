@@ -15,7 +15,7 @@
 
 ### 3. 项目表 (Projects)
 - 插入 3 个示例项目
-- 包含个人网站系统、AI 智能助手、投资管理系统
+- 包含个人网站系统、AI 智能助手
 
 ### 4. 知识库表 (knowledge_base)
 - 插入 3 条知识记录
@@ -25,23 +25,19 @@
 - 插入 4 个时间线事件
 - 涵盖 2022-2024 年的重要事件
 
-### 6. 投资记录表 (investment)
-- 插入 3 条投资记录
-- 包含股票和基金示例数据
-
-### 7. 时间胶囊表 (time_capsule)
+### 6. 时间胶囊表 (time_capsule)
 - 插入 4 条时间胶囊
 - 包含已审核和待审核的示例
 
-### 8. 友情链接表 (friend_links)
+### 7. 友情链接表 (friend_links)
 - 插入 4 个友情链接
 - 包含 Vue.js、Nuxt.js、MDN、GitHub 等
 
-### 9. 用户行为记录表 (user_behavior)
+### 8. 用户行为记录表 (user_behavior)
 - 插入 3 条用户行为记录
 - 用于 AI 推荐功能
 
-### 10. 站点配置表 (site_config)
+### 9. 站点配置表 (site_config)
 - 插入/更新站点配置
 - 包含网站标题、副标题、关键词等
 
@@ -107,8 +103,6 @@ SELECT 'knowledge_base', COUNT(*) FROM knowledge_base
 UNION ALL
 SELECT 'timeline_event', COUNT(*) FROM timeline_event
 UNION ALL
-SELECT 'investment', COUNT(*) FROM investment
-UNION ALL
 SELECT 'time_capsule', COUNT(*) FROM time_capsule
 UNION ALL
 SELECT 'friend_links', COUNT(*) FROM friend_links
@@ -135,7 +129,6 @@ SELECT 'site_config', COUNT(*) FROM site_config;
 DELETE FROM user_behavior;
 DELETE FROM time_capsule;
 DELETE FROM friend_links;
-DELETE FROM investment;
 DELETE FROM timeline_event;
 DELETE FROM knowledge_base;
 DELETE FROM Projects;

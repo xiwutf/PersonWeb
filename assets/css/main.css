@@ -168,7 +168,6 @@
   html:not(.app-shell-ready) .hero-background-grid-pattern,
   html:not(.app-shell-ready) .footer-grid-bg,
   html:not(.app-shell-ready) .game-grid,
-  html:not(.app-shell-ready) .side-projects-grid,
   html:not(.app-shell-ready) .dashboard-grid {
     opacity: 0 !important;
     animation: none !important;
@@ -185,7 +184,6 @@
   html.is-touch-device .hero-background-grid-pattern,
   html.is-touch-device .footer-grid-bg,
   html.is-touch-device .game-grid,
-  html.is-touch-device .side-projects-grid,
   html.is-touch-device .dashboard-grid {
     display: none !important;
   }

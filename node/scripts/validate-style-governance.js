@@ -414,7 +414,6 @@ function main() {
       console.log('扫描公共层（components）...\n')
       // 只扫描公共组件
       const publicComponents = [
-        'components/NotificationBell.vue',
         'components/ModuleCard.vue',
         'components/VisitorLevelDisplay.vue',
         'components/ai/AIAssistant.vue',

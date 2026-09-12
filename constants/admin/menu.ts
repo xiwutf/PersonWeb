@@ -1,5 +1,6 @@
 // constants/admin/menu.ts
-// Phase 3：运营控制台信息架构 — 非 CMS；内容正文在 content/ + Git 维护
+// 后台定位：数据统计 / 汇总 / 分析 + 互动线索
+// 正文内容改前台页面或 Cursor；工具/友链后台页保留直链，不进侧栏
 
 export type AdminMenuLeaf = {
   label: string
@@ -14,55 +15,20 @@ export type AdminMenuGroup = {
 
 export const adminMenu: AdminMenuGroup[] = [
   {
-    label: '控制台',
-    icon: 'fas fa-tachometer-alt',
-    children: [
-      { label: '网站概览', path: '/admin' },
-      { label: '站点内容', path: '/admin/content' },
-    ],
-  },
-  {
-    label: '数据统计',
+    label: '数据',
     icon: 'fas fa-chart-pie',
     children: [
+      { label: '网站概览', path: '/admin' },
       { label: '数据分析', path: '/admin/analytics' },
-      { label: '访客数据', path: '/admin/visitors' },
-      { label: '项目访问统计', path: '/admin/projects/stats' },
+      { label: 'AI 中心', path: '/admin/ai' },
     ],
   },
   {
-    label: '互动管理',
+    label: '互动',
     icon: 'fas fa-comments',
     children: [
       { label: '访客互动', path: '/admin/visitor-messages' },
       { label: '咨询管理', path: '/admin/consultations' },
-    ],
-  },
-  {
-    label: 'AI 管理',
-    icon: 'fas fa-robot',
-    children: [
-      { label: 'AI 中心', path: '/admin/ai' },
-      { label: 'AI 日志', path: '/admin/ai/logs' },
-      { label: '客服配置', path: '/admin/ai/support-config' },
-    ],
-  },
-  {
-    label: '商业管理',
-    icon: 'fas fa-coins',
-    children: [
-      { label: '订单管理', path: '/admin/orders' },
-      { label: '资产管理', path: '/admin/asset-management' },
-    ],
-  },
-  {
-    label: '个人工作台',
-    icon: 'fas fa-briefcase',
-    children: [
-      { label: '情报中心', path: '/admin/intelligence' },
-      { label: '副业项目', path: '/admin/side-projects' },
-      { label: '认知说明书', path: '/admin/cognition' },
-      { label: '思维记录', path: '/admin/thoughts' },
     ],
   },
 ]
@@ -71,3 +37,16 @@ export const adminMenu: AdminMenuGroup[] = [
 export const adminMenuPaths = adminMenu.flatMap(group =>
   group.children.map(item => item.path),
 )
+
+/**
+ * 已从侧栏拿掉、但仍保留直链的运营页。
+ */
+export const adminHiddenDirectPaths = [
+  '/admin/visitors',
+  '/admin/projects/stats',
+  '/admin/ai/logs',
+  '/admin/ai/support-config',
+  '/admin/cognition',
+  '/admin/orders',
+  '/admin/thoughts',
+] as const

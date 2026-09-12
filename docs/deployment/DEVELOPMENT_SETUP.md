@@ -143,10 +143,7 @@ mysql -u root -p personal_site < database/skill_tree_tables.sql
 # 8. 时间胶囊表
 mysql -u root -p personal_site < database/time_capsule_table.sql
 
-# 9. 投资表（可选）
-mysql -u root -p personal_site < database/investment_tables.sql
-
-# 10. 全文索引（可选，提升搜索性能）
+# 9. 全文索引（可选，提升搜索性能）
 mysql -u root -p personal_site < database/fulltext_index.sql
 ```
 

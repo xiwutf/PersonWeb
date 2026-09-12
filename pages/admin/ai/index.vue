@@ -96,8 +96,8 @@
             </div>
           </div>
           <template #action>
-            <n-button type="primary" block @click="navigateTo('/admin/content')">
-              管理站点内容
+            <n-button type="primary" block @click="navigateTo('/work/tools')">
+              查看前台工具
             </n-button>
           </template>
         </n-card>

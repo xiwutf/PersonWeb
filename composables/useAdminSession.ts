@@ -14,6 +14,8 @@ export function useAdminSession() {
   const loaded = useState('admin-session-loaded', () => false)
 
   const isAdmin = computed(() => authenticated.value && !previewAsGuest.value)
+  /** Life/Work 文案写入依赖 Nitro；生产 OSS 无此能力，避免出现可点但 404 */
+  const canEditContent = computed(() => isAdmin.value && usesNitroAdminAuth())
 
   async function refresh() {
     if (!import.meta.client) {
@@ -101,6 +103,7 @@ export function useAdminSession() {
 
   return {
     isAdmin,
+    canEditContent,
     authenticated,
     previewAsGuest,
     pending,

@@ -95,7 +95,7 @@ Showcase 合并优先级：
 | 层 | 路径 |
 | --- | --- |
 | **PRIMARY** | MySQL `Tools` → `.NET /Toolbox` |
-| **Admin** | `/admin/tools`、`/admin/toolbox` → `.NET /Toolbox` |
+| **Admin** | （已移除后台 CRUD；数据改代码/库直接维护） |
 | **Frontend LIST** | `/work/tools` → `/Toolbox/marketplace` |
 | **Frontend DETAIL** | `/work/tools/:slug` → `/Toolbox/by-slug/{slug}`（COMPAT：marketplace exact match） |
 | **COMPAT** | `/work/tools/detail-{slug}` → 301 `/work/tools/{slug}` |
@@ -121,10 +121,10 @@ Slug 责任：**Toolbox.Slug**（DB）是唯一规范 slug。
 
 | 层 | 路径 |
 | --- | --- |
-| **PRIMARY** | MySQL `CognitionDocs` → `.NET /CognitionDocs` |
-| **Admin** | `/admin/cognition` |
-| **LEGACY** | `content/cognition/changelog.md`（changelog 页仍读 MD） |
-| vs Knowledge / Blog | **DATA DIFFERENT**（独立表/类型；IA 合并留给 Phase 5） |
+| **PRIMARY** | `content/life/cognition.yml` → Nitro `/api/content/life/cognition` |
+| **Public / Edit** | `/life/cognition`（当前页内联编辑，需本地 Nitro 可写） |
+| **LEGACY** | MySQL `CognitionDocs` / `/admin/cognition`；`content/cognition/changelog.md` |
+| vs Knowledge / Blog | **DATA DIFFERENT**（独立 SoT；IA 合并留给 Phase 5） |
 
 ### Modules
 
@@ -148,8 +148,9 @@ Slug 责任：**Toolbox.Slug**（DB）是唯一规范 slug。
 | 层 | 路径 |
 | --- | --- |
 | **PRIMARY** | `content/life` YAML / Markdown |
+| **想法精选** | `content/life/thoughts/*` → Nitro `/api/content/life/thoughts`；页 `/life/thoughts`、`/life/thoughts/:category` |
 | **API** | Nitro `/api/content/life*`；登录后可 `PATCH /api/content/life/home` |
-| **Frontend** | `/life/**`；`/life` 支持登录态 InlineEditableText |
+| **Frontend** | `/life/**`；`/life` 支持登录态 InlineEditableText；`/life/margin` → `/life/thoughts` |
 
 Work 运营内容不要写入 Life 目录。
 
@@ -174,7 +175,8 @@ Project (DB)
 
 | Asset | Class |
 | --- | --- |
-| `.NET Projects/Articles/Toolbox/CognitionDocs` | ACTIVE / PRIMARY |
+| `.NET Projects/Articles/Toolbox` | ACTIVE / PRIMARY |
+| `.NET CognitionDocs` | LEGACY（公开读已迁 `content/life/cognition.yml`） |
 | `showcasePresets.ts` | COMPAT（LEGACY content fill） |
 | `covers.ts` | PRESENTATION_ONLY / ACTIVE |
 | `showcaseExtras.ts` | DERIVED / COMPAT |

@@ -1,25 +1,6 @@
 items:
-  - text: 被套话就说：你为什么这么问
-    sourceImage: http://localhost:5234/upload/20260910/ee6228bd-d9a0-4d18-a81b-a2d80f83cde4.png
-    scanBatch: paper-1789032098378-eevsnn
-  - text: 被步步逼问就说：你缓缓再说
-    sourceImage: http://localhost:5234/upload/20260910/ee6228bd-d9a0-4d18-a81b-a2d80f83cde4.png
-    scanBatch: paper-1789032098378-eevsnn
-  - text: 被逼表态就说：我有自己的原则
-    sourceImage: http://localhost:5234/upload/20260910/ee6228bd-d9a0-4d18-a81b-a2d80f83cde4.png
-    scanBatch: paper-1789032098378-eevsnn
-  - text: 被拉下水就说：这事我不方便
-    sourceImage: http://localhost:5234/upload/20260910/ee6228bd-d9a0-4d18-a81b-a2d80f83cde4.png
-    scanBatch: paper-1789032098378-eevsnn
-  - text: 被试探态度就说：你要表达什么
-    sourceImage: http://localhost:5234/upload/20260910/ee6228bd-d9a0-4d18-a81b-a2d80f83cde4.png
-    scanBatch: paper-1789032098378-eevsnn
-  - text: 被带偏节奏就说：我们换个话题吧
-    sourceImage: http://localhost:5234/upload/20260910/ee6228bd-d9a0-4d18-a81b-a2d80f83cde4.png
-    scanBatch: paper-1789032098378-eevsnn
-  - text: 被假意理解就说：我们的看法不同而已
-    sourceImage: http://localhost:5234/upload/20260910/ee6228bd-d9a0-4d18-a81b-a2d80f83cde4.png
-    scanBatch: paper-1789032098378-eevsnn
+  - text: 要是想赢一局游戏，就想想，如果开挂的话，你会开什么挂，你就知道这个游戏需要什么能力了，这样游戏能力就会突飞猛进
+    note: 这也可以联想到其他任何的事，如果你想做成一件事的话，要自己想想需要开什么挂，才能把事情办好，为了开这个挂，又需要什么能力，或者什么条件
   - text: 每天就几件事：健身、学习、睡够、吃够优质蛋白、拥有好心情。其他的一律不能影响这些。
     group: 日常
     featured: true

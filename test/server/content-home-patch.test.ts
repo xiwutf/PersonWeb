@@ -78,11 +78,16 @@ describe('content home patch helpers', () => {
       resolve(__dirname, '../../server/api/content/life/notes.post.ts'),
       'utf8',
     )
+    const lifeCognitionSrc = readFileSync(
+      resolve(__dirname, '../../server/api/content/life/cognition.put.ts'),
+      'utf8',
+    )
     expect(lifeLinesSrc).toContain('checkAuth(event)')
     expect(lifeNowSrc).toContain('checkAuth(event)')
     expect(lifeMomentsSrc).toContain('checkAuth(event)')
     expect(lifeMarginSrc).toContain('checkAuth(event)')
     expect(lifeNotesSrc).toContain('checkAuth(event)')
+    expect(lifeCognitionSrc).toContain('checkAuth(event)')
     expect(workSrc).toContain('checkAuth(event)')
   })
 })

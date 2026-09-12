@@ -58,12 +58,7 @@ mysql -u root -p personal_site < database/skill_tree_tables.sql
 mysql -u root -p personal_site < database/time_capsule_table.sql
 ```
 
-### 9. 投资表（可选）
-```bash
-mysql -u root -p personal_site < database/investment_tables.sql
-```
-
-### 10. 全文索引（可选，提升搜索性能）
+### 9. 全文索引（可选，提升搜索性能）
 ```bash
 mysql -u root -p personal_site < database/fulltext_index.sql
 ```
@@ -97,7 +92,15 @@ for file in database/*.sql; do
 done
 ```
 
-## ✅ 验证
+## 🧹 已下线模块清表
+
+若库中仍残留情报中心 / 副业项目 / 资产投资相关表，执行：
+
+```bash
+mysql -u root -p personal_site < database/drop_removed_modules.sql
+```
+
+该脚本**不会**删除 `tool*`、`friend_links`、`user_behavior`。
 
 执行以下 SQL 验证表是否创建成功：
 

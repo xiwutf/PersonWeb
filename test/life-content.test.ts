@@ -11,6 +11,9 @@ import {
   parseYamlSafe,
   readLifeHome,
   readLifeMargin,
+  readLifeCognition,
+  readLifeThoughtIndex,
+  readLifeThoughtCategoryPage,
   readLifeMoments,
   readLifeNow,
   readMarkdownCollection,
@@ -69,6 +72,25 @@ describe('Life home content', () => {
     expect(items.some(item => item.featured)).toBe(true)
     expect(items.some(item => item.note)).toBe(true)
     expect(items.some(item => item.group === '日常')).toBe(true)
+  })
+
+  it('loads cognition manual chapters from YAML', () => {
+    const doc = readLifeCognition()
+    expect(doc.title).toContain('认知')
+    expect(doc.chapters.length).toBeGreaterThanOrEqual(5)
+    expect(doc.chapters.every(chapter => chapter.title && typeof chapter.body === 'string')).toBe(true)
+  })
+
+  it('loads thoughts featured index with capped recommendations', () => {
+    const sections = readLifeThoughtIndex()
+    expect(sections.length).toBeGreaterThanOrEqual(5)
+    for (const section of sections) {
+      expect(section.featured?.text).toBeTruthy()
+      expect(section.recommendations.length).toBeLessThanOrEqual(2)
+      expect(section.total).toBeGreaterThan(0)
+    }
+    const daily = readLifeThoughtCategoryPage('daily')
+    expect(daily?.items.length).toBeGreaterThan(3)
   })
 })
 

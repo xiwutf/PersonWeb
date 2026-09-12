@@ -65,7 +65,7 @@
               @saved="onLifeSaved"
             />
             <button
-              v-if="isAdmin && home.hero.lines.length > 1"
+              v-if="canEditContent && home.hero.lines.length > 1"
               type="button"
               class="life-admin-icon-btn"
               aria-label="删除这句"
@@ -122,7 +122,7 @@
               class="life-now-item"
             >
               <LifeIcon :name="nowIconOf(item)" />
-              <template v-if="isAdmin">
+              <template v-if="canEditContent">
                 <label class="life-admin-icon-pick">
                   <span class="sr-only">图标</span>
                   <select
@@ -231,7 +231,7 @@
             >
               <time :datetime="item.date">{{ formatShortDate(item.date) }}</time>
               <div class="life-lately-body">
-                <template v-if="isAdmin">
+                <template v-if="canEditContent">
                   <InlineEditableText
                     v-model="momentItems[index].content"
                     :field-path="`items.${index}.content`"
@@ -395,7 +395,7 @@
             </blockquote>
           </div>
 
-          <NuxtLink to="/life/margin" class="life-end-link">
+          <NuxtLink to="/life/thoughts" class="life-end-link">
             <InlineEditableText
               v-model="home.margin.linkText"
               field-path="margin.linkText"
@@ -432,7 +432,7 @@
           <NuxtLink
             to="/life/about"
             class="life-end-link"
-            :class="{ 'is-admin-edit': isAdmin }"
+            :class="{ 'is-admin-edit': canEditContent }"
             @click="onAboutLinkClick"
           >
             <InlineEditableText
@@ -533,7 +533,7 @@ type LifeNote = {
 const LATEST_MOMENT_LIMIT = 6
 const MARGIN_PREVIEW_LIMIT = 5
 
-const { isAdmin } = useAdminSession()
+const { canEditContent } = useAdminSession()
 const { saveField } = useInlineCopySave('/api/content/life/home')
 const { saveNowItems, saveMoments, createNote, saveHeroLines } = useLifeListSave()
 const nowIconOptions = LIFE_NOW_ICONS
@@ -617,7 +617,7 @@ function onLifeSaved(payload: unknown) {
 }
 
 function onAboutLinkClick(event: MouseEvent) {
-  if (isAdmin.value) {
+  if (canEditContent.value) {
     event.preventDefault()
   }
 }

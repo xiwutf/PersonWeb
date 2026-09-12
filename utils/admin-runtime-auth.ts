@@ -5,7 +5,14 @@
  */
 
 export function isLocalDevHostname(hostname: string): boolean {
-  return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '0.0.0.0'
+  if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '0.0.0.0') {
+    return true
+  }
+  // npm run dev:mobile 用局域网 IP 打开时，仍应走 Nitro cookie 鉴权与 /api/content 写入
+  if (/^192\.168\.\d{1,3}\.\d{1,3}$/.test(hostname)) return true
+  if (/^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(hostname)) return true
+  if (/^172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}$/.test(hostname)) return true
+  return false
 }
 
 /** True when Nitro auth routes (/api/auth/session 等) are expected to exist. */

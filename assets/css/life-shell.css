@@ -37,9 +37,9 @@ html[data-life-world='true'] body {
   --life-line-strong: rgba(70, 55, 40, 0.18);
   --life-shadow: 0 16px 42px rgba(55, 38, 22, 0.045);
   --life-content-max: 76rem;
-  --life-font-body: "Source Han Serif SC", "Noto Serif SC", "Songti SC", "STSong", "SimSun", "Iowan Old Style", Georgia, "Times New Roman", serif;
-  --life-font-sans: "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
-  --life-font-note: "Segoe Script", "Bradley Hand ITC", "KaiTi", "STKaiti", cursive;
+  --life-font-body: "Microsoft YaHei", "Microsoft YaHei UI", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
+  --life-font-sans: "Microsoft YaHei", "Microsoft YaHei UI", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
+  --life-font-note: "Microsoft YaHei", "Microsoft YaHei UI", "KaiTi", "STKaiti", sans-serif;
   /* 同步覆盖壳内可能引用的全局文字 / 背景 token */
   --color-text: var(--life-ink);
   --color-text-main: var(--life-ink);
@@ -644,10 +644,7 @@ html[data-life-world='true'] body {
   cursor: pointer;
 }
 
-.life-admin-icon-pick select,
-.life-composer input,
-.life-composer textarea,
-.life-composer select {
+.life-admin-icon-pick select {
   width: 100%;
   margin-top: 0.2rem;
   padding: 0.35rem 0.5rem;
@@ -658,17 +655,34 @@ html[data-life-world='true'] body {
   font: inherit;
 }
 
+.life-composer input,
+.life-composer textarea,
+.life-composer select {
+  width: 100%;
+  margin-top: 0.35rem;
+  padding: 0.65rem 0.75rem;
+  color: var(--life-ink);
+  background: var(--life-paper);
+  border: 1px solid var(--life-line-strong);
+  border-radius: 0.28rem;
+  font-family: var(--life-font-sans);
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
 .life-composer {
   display: grid;
   gap: 0.75rem;
   margin-top: 1rem;
   padding: 1rem 0 0;
   border-top: 1px dotted var(--life-line);
+  font-family: var(--life-font-sans);
 }
 
 .life-composer-title {
   margin: 0;
-  font-size: 0.95rem;
+  font-family: var(--life-font-sans);
+  font-size: 1.05rem;
   font-weight: 600;
 }
 
@@ -676,7 +690,8 @@ html[data-life-world='true'] body {
   display: grid;
   gap: 0.15rem;
   color: var(--life-ink-soft);
-  font-size: 0.82rem;
+  font-family: var(--life-font-sans);
+  font-size: 0.9rem;
 }
 
 .life-composer-actions {
@@ -742,7 +757,6 @@ html[data-life-world='true'] body {
 .life-shell .life-now-item p,
 .life-shell .life-row-desc,
 .life-shell .life-end p,
-.life-shell .life-margin-note,
 .life-shell .life-margin-lead,
 .life-shell .life-empty,
 .life-shell .life-notes-lead {
@@ -811,12 +825,30 @@ a.life-lately-text:hover,
   line-height: 1.75;
 }
 
-.life-margin-note {
-  margin: 0.55rem 0 0;
-  color: var(--life-ink-soft);
+.life-margin-aside {
+  margin-top: 0.85rem;
+  padding: 0.15rem 0 0.1rem 0.9rem;
+  border-left: 2px solid color-mix(in srgb, var(--life-accent) 42%, var(--life-line));
+}
+
+.life-margin-aside::before {
+  content: '批注';
+  display: block;
+  margin-bottom: 0.28rem;
+  color: var(--life-accent);
   font-family: var(--life-font-sans);
-  font-size: 0.84rem;
-  line-height: 1.55;
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.14em;
+}
+
+.life-margin-note {
+  margin: 0;
+  color: var(--life-sage);
+  font-family: var(--life-font-sans);
+  font-size: 0.92rem;
+  line-height: 1.7;
+  font-weight: 400;
 }
 
 .life-margin {
@@ -943,9 +975,21 @@ a.life-lately-text:hover,
 }
 
 .life-margin-paper-aside {
-  margin-top: 0.55rem;
-  padding-top: 0.5rem;
-  border-top: 1px dotted var(--life-line);
+  margin-top: 0.65rem;
+  padding: 0.15rem 0 0.1rem 0.85rem;
+  border-top: none;
+  border-left: 2px solid color-mix(in srgb, var(--life-accent) 42%, var(--life-line));
+}
+
+.life-margin-paper-aside::before {
+  content: '批注';
+  display: block;
+  margin-bottom: 0.28rem;
+  color: var(--life-accent);
+  font-family: var(--life-font-sans);
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.14em;
 }
 
 .life-margin-paper-note {
@@ -1464,18 +1508,25 @@ a.life-lately-text:hover,
 }
 
 .life-shell .life-margin-scrap .life-margin-note {
-  margin: 0.7rem 0 0;
-  padding-top: 0.55rem;
-  border-top: 1px dotted var(--life-line);
-  color: var(--life-ink-soft);
-  font-size: 0.84rem;
-  line-height: 1.55;
+  margin: 0;
+  padding-top: 0;
+  border-top: none;
+  color: var(--life-sage);
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+
+.life-margin-scrap.is-admin .life-margin-aside:has(.life-margin-note:empty) {
+  border-left-color: transparent;
+  padding-left: 0.2rem;
+}
+
+.life-margin-scrap.is-admin .life-margin-aside:has(.life-margin-note:empty)::before {
+  opacity: 0;
 }
 
 .life-margin-scrap.is-admin .life-margin-note:empty {
   min-height: 1.2rem;
-  border-top-color: transparent;
-  padding-top: 0.2rem;
 }
 
 .life-margin-scrap.is-admin .life-margin-note:empty::before {
@@ -1489,10 +1540,15 @@ a.life-lately-text:hover,
   opacity: 0.5;
 }
 
-.life-margin-scrap.is-admin:hover .life-margin-note:empty,
-.life-margin-scrap.is-admin:focus-within .life-margin-note:empty {
-  border-top-color: var(--life-line);
-  padding-top: 0.55rem;
+.life-margin-scrap.is-admin:hover .life-margin-aside:has(.life-margin-note:empty),
+.life-margin-scrap.is-admin:focus-within .life-margin-aside:has(.life-margin-note:empty) {
+  border-left-color: color-mix(in srgb, var(--life-accent) 42%, var(--life-line));
+  padding-left: 0.9rem;
+}
+
+.life-margin-scrap.is-admin:hover .life-margin-aside:has(.life-margin-note:empty)::before,
+.life-margin-scrap.is-admin:focus-within .life-margin-aside:has(.life-margin-note:empty)::before {
+  opacity: 1;
 }
 
 .life-margin-admin {
@@ -2037,9 +2093,17 @@ a.life-lately-text:hover,
     opacity: 0.5;
   }
 
+  .life-margin-scrap.is-admin .life-margin-aside:has(.life-margin-note:empty) {
+    border-left-color: color-mix(in srgb, var(--life-accent) 42%, var(--life-line));
+    padding-left: 0.9rem;
+  }
+
+  .life-margin-scrap.is-admin .life-margin-aside:has(.life-margin-note:empty)::before {
+    opacity: 1;
+  }
+
   .life-margin-scrap.is-admin .life-margin-note:empty {
-    border-top-color: var(--life-line);
-    padding-top: 0.55rem;
+    min-height: 1.2rem;
   }
 
   .life-now-item,
@@ -2101,5 +2165,964 @@ a.life-lately-text:hover,
   .life-margin-scrap:nth-child(4n),
   .life-margin-scrap.is-featured {
     transform: none;
+  }
+
+  .life-manual-chapter {
+    animation: none;
+  }
+}
+
+/* Cognition manual — field-guide layout */
+
+.life-cognition,
+.life-cognition-article {
+  width: min(100%, 52rem);
+  margin-inline: auto;
+}
+
+.life-cognition-article {
+  display: grid;
+  gap: 2rem;
+}
+
+.life-cognition-masthead {
+  display: grid;
+  gap: 1.1rem;
+  padding: 0.2rem 0 1.6rem;
+  border-bottom: 1px solid var(--life-line-strong);
+}
+
+.life-cognition-masthead-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.life-cognition-kicker {
+  margin: 0 0 0.45rem;
+  color: var(--life-accent);
+  font-family: var(--life-font-sans);
+  font-size: 0.78rem;
+  font-weight: 650;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.life-cognition-article h1,
+.life-cognition-masthead h1 {
+  margin: 0;
+  max-width: 18em;
+  color: var(--life-ink);
+  font-family: var(--life-font-body);
+  font-size: clamp(1.85rem, 4vw, 2.55rem);
+  font-weight: 650;
+  line-height: 1.22;
+  letter-spacing: 0.01em;
+}
+
+.life-cognition-lead {
+  margin: 0.85rem 0 0;
+  max-width: 38rem;
+  color: var(--life-ink-soft);
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+
+.life-cognition-meta {
+  margin: 0.55rem 0 0;
+  color: var(--life-sage);
+  font-family: var(--life-font-sans);
+  font-size: 0.84rem;
+  letter-spacing: 0.04em;
+}
+
+.life-cognition-admin {
+  margin-top: 1rem;
+}
+
+.life-cognition-admin a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.life-cognition-chapter-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.life-cognition-body-edit {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.life-manual-chapter .inline-edit__textarea.life-cognition-body-edit,
+.life-manual-chapter textarea.inline-edit__textarea {
+  width: 100%;
+  min-height: 14rem;
+  padding: 0.9rem 1rem;
+  font-size: 1.02rem;
+  line-height: 1.75;
+  font-family: var(--life-font-sans);
+}
+
+.life-cognition-masthead .inline-edit__textarea {
+  width: 100%;
+  max-width: 42rem;
+  min-height: 5.5rem;
+  padding: 0.7rem 0.85rem;
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.life-manual-body {
+  display: grid;
+  gap: 1.35rem;
+}
+
+.life-manual-intro {
+  padding: 0.35rem 0 0.5rem;
+}
+
+.life-manual-chapter {
+  position: relative;
+  padding: 1.35rem 1.35rem 1.45rem 1.45rem;
+  background:
+    linear-gradient(180deg, rgba(251, 248, 242, 0.92), rgba(246, 242, 234, 0.55));
+  border: 1px solid var(--life-line);
+  border-left: 3px solid color-mix(in srgb, var(--life-accent) 72%, #8a6048);
+  border-radius: 0.2rem 0.75rem 0.75rem 0.2rem;
+  box-shadow: var(--life-shadow);
+  animation: life-manual-rise 0.55s ease both;
+  animation-delay: calc(var(--chapter-i, 0) * 40ms);
+}
+
+@keyframes life-manual-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.45rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.life-manual-prose,
+.life-manual-chapter {
+  color: var(--life-ink);
+  font-size: 1.02rem;
+  line-height: 1.85;
+}
+
+.life-manual-prose > *:first-child,
+.life-manual-chapter > *:first-child {
+  margin-top: 0;
+}
+
+.life-manual-prose > *:last-child,
+.life-manual-chapter > *:last-child {
+  margin-bottom: 0;
+}
+
+.life-manual-body h2 {
+  margin: 0 0 1rem;
+  padding-bottom: 0.7rem;
+  color: var(--life-ink);
+  font-family: var(--life-font-body);
+  font-size: clamp(1.2rem, 2.4vw, 1.42rem);
+  font-weight: 650;
+  line-height: 1.4;
+  border-bottom: 1px dotted var(--life-line-strong);
+}
+
+.life-manual-body h3 {
+  margin: 1.45rem 0 0.55rem;
+  color: var(--life-ink);
+  font-size: 1.08rem;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+.life-manual-body h4 {
+  margin: 1.15rem 0 0.4rem;
+  color: var(--life-ink-soft);
+  font-family: var(--life-font-sans);
+  font-size: 0.92rem;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+}
+
+.life-manual-body p {
+  margin: 0 0 0.95em;
+}
+
+.life-manual-body p + p {
+  margin-top: 0.85em;
+}
+
+.life-manual-body ul,
+.life-manual-body ol {
+  margin: 0.35rem 0 1.1rem;
+  padding-left: 1.25rem;
+}
+
+.life-manual-body li {
+  margin: 0.35rem 0;
+  padding-left: 0.2rem;
+}
+
+.life-manual-body li::marker {
+  color: var(--life-accent);
+}
+
+.life-manual-body strong {
+  color: var(--life-ink);
+  font-weight: 650;
+}
+
+.life-manual-body blockquote {
+  margin: 1.1rem 0;
+  padding: 0.75rem 0 0.75rem 1rem;
+  color: var(--life-ink-soft);
+  font-family: var(--life-font-note);
+  border-left: 2px solid var(--life-tape);
+  background: transparent;
+}
+
+.life-manual-body hr {
+  margin: 1.4rem 0;
+  border: 0;
+  border-top: 1px dashed var(--life-line-strong);
+}
+
+.life-manual-body a {
+  color: var(--life-accent);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.life-manual-body code {
+  padding: 0.08em 0.35em;
+  color: var(--life-ink);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  background: rgba(192, 92, 66, 0.08);
+  border-radius: 0.28rem;
+}
+
+@media (max-width: 720px) {
+  .life-manual-chapter {
+    padding: 1.1rem 1rem 1.2rem;
+  }
+
+  .life-cognition-masthead-row {
+    flex-direction: column;
+  }
+}
+/* ========== Life Margin: ordered asymmetric (A/B/C only) ========== */
+.life-margin--editorial {
+  --ed-gap-section: clamp(5.5rem, 9vw, 7.5rem);
+  --ed-gap-head: clamp(2.4rem, 4vw, 3.2rem);
+  --ed-gap-stack: 1.75rem;
+  --ed-gap-inner: 0.8rem;
+  --ed-col-gap: clamp(1.25rem, 2.2vw, 1.75rem);
+  gap: 0;
+  width: min(100%, 70rem);
+}
+
+.life-margin-intro {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding-bottom: 2.2rem;
+  margin-bottom: 0.25rem;
+  border-bottom: 1px solid var(--life-line);
+}
+
+.life-margin-intro-copy {
+  display: grid;
+  gap: 0.65rem;
+  max-width: 36rem;
+}
+
+.life-margin-toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.85rem;
+  margin-top: 0.45rem;
+}
+
+.life-margin-toc a {
+  color: var(--life-ink-soft);
+  font-family: var(--life-font-sans);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+
+.life-margin-toc a span {
+  margin-right: 0.22rem;
+  color: var(--life-accent);
+  font-weight: 650;
+  opacity: 0.75;
+}
+
+.life-margin-toc a:hover {
+  color: var(--life-ink);
+  border-bottom-color: color-mix(in srgb, var(--life-accent) 40%, transparent);
+}
+
+.life-margin-collection {
+  display: grid;
+}
+
+.life-margin-ed {
+  padding: var(--ed-gap-section) 0;
+  border-bottom: 1px solid var(--life-line);
+}
+
+.life-margin-ed:last-of-type {
+  border-bottom: 0;
+}
+
+.life-margin-ed-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1.25rem;
+  margin-bottom: var(--ed-gap-head);
+}
+
+.life-margin-ed-meta {
+  display: flex;
+  align-items: start;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.life-margin-ed-index {
+  flex: 0 0 auto;
+  color: var(--life-accent);
+  font-family: var(--life-font-sans);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1.35;
+  padding-top: 0.2rem;
+}
+
+.life-margin-ed-titles {
+  display: grid;
+  gap: 0.28rem;
+  min-width: 0;
+}
+
+.life-margin-ed-titles h2 {
+  margin: 0;
+  font-size: clamp(1.4rem, 2.4vw, 1.75rem);
+  font-weight: 600;
+}
+
+.life-margin-ed-lede {
+  margin: 0;
+  max-width: 28rem;
+  color: var(--life-ink-soft);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.life-margin-ed-count {
+  flex: 0 0 auto;
+  color: var(--life-ink-soft);
+  font-family: var(--life-font-sans);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  opacity: 0.72;
+  padding-bottom: 0.35rem;
+}
+
+/*
+  Body grid anchors:
+  Main  = columns 3 / 8
+  Side  = columns 8 / 13
+*/
+.life-margin-ed-body {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--ed-col-gap);
+  row-gap: var(--ed-gap-stack);
+  align-items: start;
+}
+
+.life-margin-ed-lead,
+.life-margin-ed-media,
+.life-margin-ed-thoughts,
+.life-margin-ed-notes,
+.life-margin-ed-main,
+.life-margin-ed-side {
+  min-width: 0;
+}
+
+.life-margin-ed-thoughts,
+.life-margin-ed-notes,
+.life-margin-ed-main,
+.life-margin-ed-side {
+  display: grid;
+  gap: var(--ed-gap-stack);
+}
+
+/* ---- Layout A: text only ----
+   Main: lead
+   Side: thoughts + notes
+*/
+.life-margin-ed.is-layout-a .life-margin-ed-lead,
+.life-margin-ed.is-layout-a .life-margin-ed-main {
+  grid-column: 3 / 8;
+  grid-row: 1;
+}
+
+.life-margin-ed.is-layout-a .life-margin-ed-thoughts {
+  grid-column: 8 / 13;
+}
+
+.life-margin-ed.is-layout-a .life-margin-ed-notes {
+  grid-column: 8 / 13;
+}
+
+.life-margin-ed.is-layout-a .life-margin-ed-side {
+  grid-column: 8 / 13;
+}
+
+.life-margin-ed.is-layout-a .life-margin-ed-media {
+  display: none;
+}
+
+/* ---- Layout B: large image left ----
+   Main: image
+   Side: lead + thoughts + notes
+*/
+.life-margin-ed.is-layout-b .life-margin-ed-media {
+  grid-column: 3 / 8;
+  grid-row: 1;
+}
+
+.life-margin-ed.is-layout-b .life-margin-ed-lead {
+  grid-column: 8 / 13;
+  grid-row: 1;
+}
+
+.life-margin-ed.is-layout-b .life-margin-ed-thoughts {
+  grid-column: 8 / 13;
+}
+
+.life-margin-ed.is-layout-b .life-margin-ed-notes {
+  grid-column: 8 / 13;
+}
+
+/* ---- Layout C: text left, small image right ----
+   Main: lead + thoughts
+   Side: image + notes
+*/
+.life-margin-ed.is-layout-c .life-margin-ed-lead {
+  grid-column: 3 / 8;
+  grid-row: 1;
+}
+
+.life-margin-ed.is-layout-c .life-margin-ed-thoughts {
+  grid-column: 3 / 8;
+  grid-row: 2;
+}
+
+.life-margin-ed.is-layout-c .life-margin-ed-media {
+  grid-column: 8 / 13;
+  grid-row: 1;
+}
+
+.life-margin-ed.is-layout-c .life-margin-ed-notes {
+  grid-column: 8 / 13;
+  grid-row: 2;
+}
+
+.life-margin-ed-media {
+  margin: 0;
+  overflow: hidden;
+  border-radius: 0.28rem;
+  background: color-mix(in srgb, var(--life-paper) 70%, #e8dfd2);
+}
+
+.life-margin-ed-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.life-margin-ed-media.is-large {
+  aspect-ratio: 4 / 3;
+  max-height: 22rem;
+}
+
+.life-margin-ed-media.is-small {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  max-width: 14rem;
+}
+
+.life-margin-unit {
+  position: relative;
+  min-width: 0;
+}
+
+.life-margin-unit-body {
+  display: grid;
+  gap: var(--ed-gap-inner);
+  max-width: 26rem;
+}
+
+.life-margin-unit.is-lead .life-margin-unit-body {
+  max-width: 24rem;
+}
+
+.life-margin-unit-mark {
+  display: block;
+  margin-bottom: 0.1rem;
+  color: var(--life-accent);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.75rem;
+  line-height: 0.75;
+  opacity: 0.5;
+}
+
+.life-margin-unit-num {
+  position: absolute;
+  top: 0.2rem;
+  left: -1.65rem;
+  color: var(--life-accent);
+  font-family: var(--life-font-sans);
+  font-size: 0.68rem;
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  opacity: 0.5;
+}
+
+.life-margin-text--lead {
+  margin: 0;
+  font-size: clamp(1.5rem, 2.1vw, 2rem);
+  font-weight: 550;
+  line-height: 1.45;
+}
+
+.life-margin-text--thought {
+  margin: 0;
+  font-size: 1.02rem;
+  line-height: 1.75;
+}
+
+.life-margin-text--note {
+  margin: 0;
+  color: var(--life-ink-soft);
+  font-size: 0.94rem;
+  line-height: 1.65;
+}
+
+.life-margin-unit-note {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.life-margin-unit-note .life-margin-note,
+.life-margin-unit .life-margin-note {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: var(--life-sage);
+  font-family: var(--life-font-sans);
+  font-size: 0.86rem;
+  line-height: 1.6;
+}
+
+.life-margin-unit .life-margin-admin {
+  margin-top: 0.3rem;
+}
+
+.life-margin-closing {
+  display: grid;
+  gap: 0.75rem;
+  padding: var(--ed-gap-section) 0 1.5rem;
+  margin-top: 0.25rem;
+  border-top: 1px solid var(--life-line);
+  max-width: 28rem;
+}
+
+.life-margin-closing-kicker {
+  margin: 0;
+  color: var(--life-accent);
+  font-family: var(--life-font-sans);
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.16em;
+}
+
+.life-margin-closing-line {
+  margin: 0;
+  color: var(--life-ink-soft);
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+
+@media (max-width: 900px) {
+  .life-margin-ed-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .life-margin-ed.is-layout-a .life-margin-ed-lead,
+  .life-margin-ed.is-layout-a .life-margin-ed-main,
+  .life-margin-ed.is-layout-a .life-margin-ed-thoughts,
+  .life-margin-ed.is-layout-a .life-margin-ed-notes,
+  .life-margin-ed.is-layout-a .life-margin-ed-side,
+  .life-margin-ed.is-layout-b .life-margin-ed-media,
+  .life-margin-ed.is-layout-b .life-margin-ed-lead,
+  .life-margin-ed.is-layout-b .life-margin-ed-thoughts,
+  .life-margin-ed.is-layout-b .life-margin-ed-notes,
+  .life-margin-ed.is-layout-c .life-margin-ed-lead,
+  .life-margin-ed.is-layout-c .life-margin-ed-thoughts,
+  .life-margin-ed.is-layout-c .life-margin-ed-media,
+  .life-margin-ed.is-layout-c .life-margin-ed-notes {
+    grid-column: auto;
+    grid-row: auto;
+    width: 100%;
+  }
+
+  .life-margin-ed.is-layout-a .life-margin-ed-media {
+    display: none;
+  }
+
+  .life-margin-unit-num {
+    position: static;
+    display: inline-block;
+    margin-bottom: 0.25rem;
+  }
+
+  .life-margin-ed-media.is-large,
+  .life-margin-ed-media.is-small {
+    max-width: 20rem;
+    max-height: none;
+    aspect-ratio: 4 / 3;
+  }
+
+  .life-margin-unit-body,
+  .life-margin-unit.is-lead .life-margin-unit-body {
+    max-width: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .life-margin--editorial {
+    --ed-gap-section: 3.5rem;
+    --ed-gap-head: 1.75rem;
+  }
+
+  .life-margin-intro {
+    align-items: start;
+  }
+
+  .life-margin-ed-head {
+    align-items: start;
+    flex-wrap: wrap;
+  }
+}
+
+/* ========== Life Thoughts: featured index + category archive ========== */
+.life-thoughts,
+.life-thoughts-detail {
+  display: grid;
+  gap: 2.5rem;
+  width: min(100%, 70rem);
+}
+
+.life-thoughts-hero {
+  display: grid;
+  gap: 0.65rem;
+  max-width: 34rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--life-line);
+}
+
+.life-thoughts-kicker {
+  margin: 0;
+  color: var(--life-accent);
+  font-family: var(--life-font-sans);
+  font-size: 0.78rem;
+  font-weight: 650;
+  letter-spacing: 0.14em;
+}
+
+.life-thoughts-hero h1,
+.life-thoughts-detail-head h1 {
+  margin: 0;
+  font-size: clamp(1.7rem, 3vw, 2.15rem);
+  font-weight: 650;
+}
+
+.life-thoughts-lead,
+.life-thoughts-detail-desc {
+  margin: 0;
+  color: var(--life-ink-soft);
+  font-size: 1.02rem;
+  line-height: 1.75;
+}
+
+.life-thoughts-sections {
+  display: grid;
+  gap: 1.75rem;
+}
+
+.life-thought-card {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 1.35rem 1.5rem;
+  padding: 1.45rem 1.4rem 1.5rem;
+  background: color-mix(in srgb, var(--life-paper) 88%, #fff);
+  border: 1px solid var(--life-line);
+  border-radius: 0.85rem;
+  box-shadow: 0 10px 28px rgba(55, 38, 22, 0.035);
+}
+
+.life-thought-card-meta {
+  grid-column: 1 / 4;
+  display: grid;
+  gap: 0.45rem;
+  align-content: start;
+}
+
+.life-thought-card-index {
+  margin: 0;
+  color: var(--life-accent);
+  font-family: var(--life-font-sans);
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.life-thought-card-title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+
+.life-thought-card-desc {
+  margin: 0;
+  color: var(--life-ink-soft);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.life-thought-card-count {
+  margin: 0.15rem 0 0;
+  color: var(--life-ink-soft);
+  font-family: var(--life-font-sans);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  opacity: 0.75;
+}
+
+.life-thought-card-visual {
+  margin: 0.55rem 0 0;
+  overflow: hidden;
+  border-radius: 0.55rem;
+  background: color-mix(in srgb, var(--life-paper) 70%, #e8dfd2);
+}
+
+.life-thought-card-visual.is-photo {
+  aspect-ratio: 4 / 3;
+  max-width: 12.5rem;
+}
+
+.life-thought-card-visual.is-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.life-thought-card-visual.is-illustration {
+  display: grid;
+  place-items: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  color: var(--life-accent);
+  font-size: 1.35rem;
+  font-weight: 650;
+  background:
+    linear-gradient(145deg, rgba(192, 92, 66, 0.12), transparent 60%),
+    linear-gradient(180deg, #f4ebe1, #ebe2d4);
+}
+
+.life-thought-card-featured {
+  grid-column: 4 / 9;
+  min-width: 0;
+}
+
+.life-thought-card-quote {
+  margin: 0;
+  max-width: 28rem;
+  font-size: clamp(1.35rem, 2vw, 1.85rem);
+  font-weight: 550;
+  line-height: 1.55;
+}
+
+.life-thought-card-note {
+  margin: 0.7rem 0 0;
+  color: var(--life-sage);
+  font-family: var(--life-font-sans);
+  font-size: 0.86rem;
+  line-height: 1.6;
+}
+
+.life-thought-card-empty {
+  margin: 0;
+  color: var(--life-ink-soft);
+}
+
+.life-thought-card-side {
+  grid-column: 9 / 13;
+  display: grid;
+  gap: 1rem;
+  align-content: space-between;
+  min-width: 0;
+}
+
+.life-thought-card-recs {
+  display: grid;
+  gap: 0.85rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.life-thought-card-recs li {
+  position: relative;
+  padding-left: 0.9rem;
+}
+
+.life-thought-card-recs li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 0.32rem;
+  height: 0.32rem;
+  border-radius: 50%;
+  background: var(--life-accent);
+  opacity: 0.7;
+}
+
+.life-thought-card-recs p {
+  margin: 0;
+  max-width: 18rem;
+  color: var(--life-ink-soft);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+.life-thought-card-more {
+  color: var(--life-accent);
+  font-family: var(--life-font-sans);
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  justify-self: start;
+}
+
+.life-thought-card-more:hover {
+  border-bottom-color: color-mix(in srgb, var(--life-accent) 55%, transparent);
+}
+
+.life-thoughts-detail-head {
+  display: grid;
+  gap: 0.55rem;
+  max-width: 36rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--life-line);
+}
+
+.life-thoughts-detail-count {
+  margin: 0;
+  color: var(--life-ink-soft);
+  font-family: var(--life-font-sans);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+}
+
+.life-thoughts-detail-list {
+  display: grid;
+  gap: 0;
+  max-width: 42rem;
+}
+
+.life-thought-list-item {
+  padding: 1.15rem 0;
+  border-bottom: 1px solid var(--life-line);
+}
+
+.life-thought-list-text {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+
+.life-thought-list-note,
+.life-thought-list-source,
+.life-thought-list-date {
+  margin: 0.55rem 0 0;
+  color: var(--life-sage);
+  font-family: var(--life-font-sans);
+  font-size: 0.86rem;
+  line-height: 1.6;
+}
+
+.life-thought-list-source,
+.life-thought-list-date {
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .life-thought-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+    padding: 1.2rem 1.1rem 1.3rem;
+  }
+
+  .life-thought-card-meta,
+  .life-thought-card-featured,
+  .life-thought-card-side {
+    grid-column: auto;
+    width: 100%;
+  }
+
+  .life-thought-card-visual.is-photo {
+    max-width: 16rem;
+  }
+
+  .life-thought-card-quote,
+  .life-thought-card-recs p {
+    max-width: none;
+  }
+
+  .life-thought-card-side {
+    gap: 1.15rem;
   }
 }

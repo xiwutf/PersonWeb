@@ -7,7 +7,8 @@
   >
     <span class="admin-edit-banner__text">
       <template v-if="previewAsGuest">访客预览中 · 编辑已隐藏</template>
-      <template v-else>已登录 · 点击文案可编辑 · 列表可新增 / 删除</template>
+      <template v-else-if="!canEditContent">已登录 · 线上不能改站点文案，请用本地 npm run dev</template>
+      <template v-else>已登录 · 说明书点「后台编辑」</template>
     </span>
     <span class="admin-edit-banner__actions">
       <button
@@ -34,6 +35,7 @@
 const {
   authenticated,
   previewAsGuest,
+  canEditContent,
   togglePreviewAsGuest,
   logout,
 } = useAdminSession()

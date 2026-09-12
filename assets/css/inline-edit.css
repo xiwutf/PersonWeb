@@ -40,8 +40,10 @@
 
 .inline-edit__textarea {
   display: block;
-  min-height: 4.5rem;
+  box-sizing: border-box;
+  min-height: 6rem;
   resize: vertical;
+  field-sizing: content;
 }
 
 .inline-edit__input:focus,

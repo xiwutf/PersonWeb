@@ -182,52 +182,7 @@ INSERT INTO `timeline_event` (`year`, `title`, `description`, `icon`, `color`, `
 ON DUPLICATE KEY UPDATE `title`=`title`;
 
 -- ============================================
--- 6. 投资记录表 (investment) - 插入示例投资数据
--- ============================================
-INSERT INTO `investment` (`code`, `name`, `type`, `quantity`, `cost_price`, `current_price`, `total_cost`, `market_value`, `profit_loss`, `profit_rate`, `notes`) VALUES 
-(
-    '000001',
-    '平安银行',
-    'stock',
-    1000.0000,
-    12.5000,
-    13.2000,
-    12500.0000,
-    13200.0000,
-    700.0000,
-    5.6000,
-    '银行股，长期持有'
-),
-(
-    '510300',
-    '沪深300ETF',
-    'fund',
-    500.0000,
-    4.2000,
-    4.3500,
-    2100.0000,
-    2175.0000,
-    75.0000,
-    3.5714,
-    '指数基金，定投策略'
-),
-(
-    '600519',
-    '贵州茅台',
-    'stock',
-    100.0000,
-    1800.0000,
-    1750.0000,
-    180000.0000,
-    175000.0000,
-    -5000.0000,
-    -2.7778,
-    '白酒龙头，短期回调'
-)
-ON DUPLICATE KEY UPDATE `name`=`name`;
-
--- ============================================
--- 7. 时间胶囊表 (time_capsule) - 插入示例胶囊
+-- 6. 时间胶囊表 (time_capsule) - 插入示例胶囊
 -- ============================================
 INSERT INTO `time_capsule` (`content`, `visitor_id`, `visitor_name`, `status`) VALUES 
 (

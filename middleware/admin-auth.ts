@@ -22,7 +22,10 @@ export default defineNuxtRouteMiddleware(async (to) => {
         credentials: 'include',
       })
       if (!session?.authenticated) {
-        return navigateTo('/admin/login')
+        return navigateTo({
+          path: '/admin/login',
+          query: { redirect: to.fullPath },
+        })
       }
       return
     }
@@ -30,10 +33,16 @@ export default defineNuxtRouteMiddleware(async (to) => {
     const { getBackendToken, ensureBackendToken } = useBackendAuth()
     const token = getBackendToken() || await ensureBackendToken()
     if (!token) {
-      return navigateTo('/admin/login')
+      return navigateTo({
+        path: '/admin/login',
+        query: { redirect: to.fullPath },
+      })
     }
   }
   catch {
-    return navigateTo('/admin/login')
+    return navigateTo({
+      path: '/admin/login',
+      query: { redirect: to.fullPath },
+    })
   }
 })

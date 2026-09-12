@@ -72,8 +72,32 @@
 
       </nav>
       
-      <!-- 退出登录区域：使用主题边框颜色，替换写死的 border-slate-700 -->
-      <div class="p-4 border-t border-border-subtle">
+      <!-- 站点出口 + 退出登录 -->
+      <div class="p-4 border-t border-border-subtle space-y-1">
+        <NuxtLink
+          to="/"
+          class="w-full flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
+          @click="isMobileMenuOpen = false"
+        >
+          <i class="fas fa-door-open w-5 text-center mr-3" aria-hidden="true"></i>
+          <span class="text-sm font-medium">入口</span>
+        </NuxtLink>
+        <NuxtLink
+          to="/life"
+          class="w-full flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
+          @click="isMobileMenuOpen = false"
+        >
+          <i class="fas fa-leaf w-5 text-center mr-3" aria-hidden="true"></i>
+          <span class="text-sm font-medium">Life</span>
+        </NuxtLink>
+        <NuxtLink
+          to="/work"
+          class="w-full flex items-center px-4 py-2 rounded transition-colors admin-sidebar-link"
+          @click="isMobileMenuOpen = false"
+        >
+          <i class="fas fa-briefcase w-5 text-center mr-3" aria-hidden="true"></i>
+          <span class="text-sm font-medium">Work</span>
+        </NuxtLink>
         <button type="button" @click="logout" class="w-full flex items-center px-4 py-2 text-left rounded transition-colors admin-sidebar-link">
           <i class="fas fa-sign-out-alt w-5 text-center mr-3"></i>
           <span class="text-sm font-medium">退出登录</span>
@@ -115,8 +139,14 @@
               {{ currentNav.page || '管理后台' }}
             </div>
           </div>
-          <div class="flex items-center gap-4 shrink-0">
-            <NotificationBell />
+          <div class="flex items-center gap-2 shrink-0">
+            <NuxtLink
+              to="/"
+              class="admin-topbar-site-link hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm text-text-muted hover:text-text-main hover:bg-bg-elevated transition-colors"
+            >
+              <i class="fas fa-door-open text-xs" aria-hidden="true"></i>
+              入口
+            </NuxtLink>
           </div>
         </div>
       </ClientOnly>
@@ -280,20 +310,9 @@ const getMenuItemIcon = (label: string): string => {
   const iconMap: Record<string, string> = {
     '网站概览': 'fas fa-chart-line',
     '数据分析': 'fas fa-chart-bar',
-    '访客数据': 'fas fa-users',
-    '项目访问统计': 'fas fa-chart-area',
+    'AI 中心': 'fas fa-robot',
     '访客互动': 'fas fa-comments',
     '咨询管理': 'fas fa-handshake',
-    'AI 中心': 'fas fa-robot',
-    'AI 日志': 'fas fa-scroll',
-    '客服配置': 'fas fa-headset',
-    '站点内容': 'fas fa-store',
-    '订单管理': 'fas fa-shopping-cart',
-    '资产管理': 'fas fa-wallet',
-    '情报中心': 'fas fa-broadcast-tower',
-    '副业项目': 'fas fa-briefcase',
-    '认知说明书': 'fas fa-book-open',
-    '思维记录': 'fas fa-pen-fancy',
   }
   return iconMap[label] || 'fas fa-circle'
 }

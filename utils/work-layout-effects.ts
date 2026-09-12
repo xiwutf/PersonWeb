@@ -7,7 +7,6 @@ export function isWorkContentFocusRoute(path: string): boolean {
   const p = path || '/'
   if (p === '/search' || p.startsWith('/search/')) return true
   if (p.startsWith('/work/blog/') || p.startsWith('/blog/')) return true
-  if ((p.startsWith('/work/cognition/') && p !== '/work/cognition') || (p.startsWith('/cognition/') && p !== '/cognition')) return true
   if (p.startsWith('/work/knowledge/') || p.startsWith('/knowledge/')) return true
   if (/^\/(?:work\/)?projects\/[^/]+$/.test(p)) return true
   if (/^\/(?:work\/)?tools\/[^/]+$/.test(p) && !p.includes('/tools/detail-')) return true

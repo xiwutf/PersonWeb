@@ -1,6 +1,7 @@
 <template>
   <form
     v-if="open"
+    :id="id"
     class="life-composer"
     @submit.prevent="$emit('submit')"
   >
@@ -17,6 +18,7 @@
 defineProps<{
   open: boolean
   title: string
+  id?: string
 }>()
 
 defineEmits<{

@@ -33,7 +33,6 @@ describe('dynamic detail SSR + hard 404', () => {
     'pages/work/blog/[id].vue',
     'pages/work/projects/[id].vue',
     'pages/work/tools/[slug].vue',
-    'pages/work/cognition/[slug].vue',
   ]
 
   it.each(pages)('%s uses useAsyncData and createError 404', (file) => {
@@ -41,6 +40,12 @@ describe('dynamic detail SSR + hard 404', () => {
     expect(src).toMatch(/useAsyncData/)
     expect(src).toMatch(/createError\(\{\s*statusCode:\s*404/)
     expect(src).not.toMatch(/onMounted\(\s*async\s*\(\)\s*=>\s*\{[\s\S]*fetchBackendApi/)
+  })
+
+  it('life cognition slug permanently redirects to /life/cognition', () => {
+    const src = readFileSync(resolve(__dirname, '../../pages/life/cognition/[slug].vue'), 'utf8')
+    expect(src).toMatch(/redirectCode:\s*301/)
+    expect(src).toMatch(/\/life\/cognition/)
   })
 })
 

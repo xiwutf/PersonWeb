@@ -17,14 +17,14 @@ describe('Admin nav active matcher', () => {
 
   it('does not keep 网站概览 active on nested admin routes', () => {
     expect(isAdminNavActive('/admin/visitors', '/admin', adminMenuPaths)).toBe(false)
-    expect(activesOn('/admin/visitors')).toEqual(['/admin/visitors'])
-    expect(activesOn('/admin/content')).toEqual(['/admin/content'])
+    expect(activesOn('/admin/visitors')).toEqual([])
     expect(activesOn('/admin/analytics')).toEqual(['/admin/analytics'])
+    expect(activesOn('/admin/consultations')).toEqual(['/admin/consultations'])
   })
 
-  it('prefers the longest matching menu path', () => {
-    expect(activesOn('/admin/ai/logs')).toEqual(['/admin/ai/logs'])
-    expect(isAdminNavActive('/admin/ai/logs', '/admin/ai', adminMenuPaths)).toBe(false)
+  it('keeps AI 中心 active for nested AI tools pages', () => {
+    expect(activesOn('/admin/ai/logs')).toEqual(['/admin/ai'])
+    expect(activesOn('/admin/ai/support-config')).toEqual(['/admin/ai'])
     expect(activesOn('/admin/ai')).toEqual(['/admin/ai'])
   })
 })

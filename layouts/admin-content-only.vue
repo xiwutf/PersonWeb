@@ -1,8 +1,7 @@
 <template>
   <!-- 
     后台管理内容布局（admin-content-only.vue）
-    用途：后台管理系统的内容布局，不包含侧边栏，用于在 iframe 中嵌入
-    使用场景：在资产管理模块中嵌入其他管理页面时使用
+    用途：无侧边栏的轻量后台壳，适合 iframe 嵌入或独立内容页
   -->
   <div 
     class="min-h-screen admin-content-only-layout"

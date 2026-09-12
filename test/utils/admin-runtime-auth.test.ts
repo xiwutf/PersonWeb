@@ -9,6 +9,9 @@ describe('admin-runtime-auth', () => {
   it('treats localhost as local Nitro auth host', () => {
     expect(isLocalDevHostname('localhost')).toBe(true)
     expect(isLocalDevHostname('127.0.0.1')).toBe(true)
+    expect(isLocalDevHostname('192.168.1.8')).toBe(true)
+    expect(isLocalDevHostname('10.0.0.2')).toBe(true)
+    expect(isLocalDevHostname('172.16.0.5')).toBe(true)
     expect(isLocalDevHostname('xifg.com.cn')).toBe(false)
   })
 

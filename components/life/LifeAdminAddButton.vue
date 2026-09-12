@@ -1,6 +1,6 @@
 <template>
   <button
-    v-if="isAdmin"
+    v-if="canEditContent"
     type="button"
     class="life-admin-add"
     @click="$emit('click')"
@@ -20,5 +20,5 @@ defineEmits<{
   click: []
 }>()
 
-const { isAdmin } = useAdminSession()
+const { canEditContent } = useAdminSession()
 </script>

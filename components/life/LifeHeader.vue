@@ -10,7 +10,8 @@
         <NuxtLink to="/life" :class="{ 'is-active': isHome }">首页</NuxtLink>
         <NuxtLink to="/life/about" :class="{ 'is-active': isAbout }">关于</NuxtLink>
         <NuxtLink to="/life/notes" :class="{ 'is-active': isNotes }">随笔</NuxtLink>
-        <NuxtLink to="/life/margin" :class="{ 'is-active': isMargin }">摘句</NuxtLink>
+        <NuxtLink to="/life/thoughts" :class="{ 'is-active': isThoughts }">摘句</NuxtLink>
+        <NuxtLink to="/life/cognition" :class="{ 'is-active': isCognition }">说明书</NuxtLink>
       </nav>
 
       <nav class="life-header-switch" aria-label="切换站点">
@@ -43,14 +44,21 @@ const {
 
 const isHome = computed(() => route.path === '/life')
 const isAbout = computed(() => route.path === '/life/about' || route.path.startsWith('/life/about/'))
-const isMargin = computed(() => route.path === '/life/margin' || route.path.startsWith('/life/margin/'))
+const isThoughts = computed(() =>
+  route.path === '/life/thoughts'
+  || route.path.startsWith('/life/thoughts/')
+  || route.path === '/life/margin'
+  || route.path.startsWith('/life/margin/'),
+)
+const isCognition = computed(() => route.path === '/life/cognition' || route.path.startsWith('/life/cognition/'))
 const isNotes = computed(() => {
   const path = route.path
   if (
     path === '/life'
     || path === '/life/about'
     || path.startsWith('/life/about/')
-    || isMargin.value
+    || isThoughts.value
+    || isCognition.value
   ) {
     return false
   }

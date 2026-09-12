@@ -6,15 +6,15 @@
         <div class="flex-1">
           <h2 class="text-2xl font-semibold mb-1">欢迎回来，Admin</h2>
           <p class="text-sm subtitle-text">
-            今天是 {{ currentDate }}，共 {{ stats.articleCount }} 篇文章 / {{ stats.toolCount }} 个项目 / {{ stats.pendingConsultations }} 条咨询
+            今天是 {{ currentDate }} · 今日访问 {{ stats.todayVisits }} · 待处理咨询 {{ stats.pendingConsultations }} · 内容 {{ stats.articleCount }} 篇 / {{ stats.toolCount }} 个项目
           </p>
         </div>
         <div class="flex flex-wrap gap-2">
           <AppButton variant="primary" @click="navigateTo('/admin/analytics')">
-            查看分析
+            数据分析
           </AppButton>
-          <AppButton variant="secondary" @click="navigateTo('/admin/content')">
-            站点内容
+          <AppButton variant="secondary" @click="navigateTo('/admin/visitors')">
+            实时巡检
           </AppButton>
           <AppButton variant="secondary" @click="navigateTo('/admin/consultations')">
             待处理咨询
@@ -54,14 +54,11 @@
         </div>
       </div>
 
-      <!-- 站点内容预览 -->
-      <div class="mt-8">
-        <AdminDashboardSiteContentCard />
-      </div>
+      <!-- 站点内容预览已下线：内容改前台/Cursor，后台聚焦数据 -->
 
-      <!-- 内容分析区域 -->
+      <!-- 访问分析区域 -->
       <div class="mt-10">
-        <div class="section-title">内容分析</div>
+        <div class="section-title">访问分析</div>
         <div class="grid gap-4 md:grid-cols-2">
           <AppCard class="dashboard-card">
             <template #header>
@@ -166,9 +163,6 @@
 import { ref, computed, onMounted, defineAsyncComponent, onUnmounted } from 'vue'
 
 // 异步加载图表组件，减少初始包大小
-const AdminDashboardSiteContentCard = defineAsyncComponent(() =>
-  import('~/components/admin/dashboard/SiteContentCard.vue')
-)
 const AdminDashboardTrendAndSource = defineAsyncComponent(() => 
   import('~/components/admin/dashboard/TrendAndSource.vue')
 )
@@ -274,34 +268,34 @@ const timelineItems = computed(() => {
   
   return [
     {
-      path: '/admin/content',
-      icon: '🔧',
-      title: '站点内容',
-      desc: '管理工具与友情链接',
+      path: '/admin/analytics',
+      icon: '📊',
+      title: '数据分析',
+      desc: '趋势、热门页与访客结构',
       color: 'blue' as const,
+      date: formatDate(now)
+    },
+    {
+      path: '/admin/visitors',
+      icon: '👀',
+      title: '实时巡检',
+      desc: '今日热度与最近访问',
+      color: 'purple' as const,
       date: formatDate(now)
     },
     {
       path: '/admin/visitor-messages',
       icon: '💬',
       title: '访客互动',
-      desc: '审核留言与旧时间胶囊',
-      color: 'purple' as const,
-      date: formatDate(now)
-    },
-    {
-      path: '/admin/orders',
-      icon: '🛒',
-      title: '订单管理',
-      desc: stats.value.pendingOrders > 0 ? `${stats.value.pendingOrders} 个待处理` : '管理所有订单',
+      desc: '审核留言与互动内容',
       color: 'yellow' as const,
       date: formatDate(now)
     },
     {
       path: '/admin/consultations',
-      icon: '💬',
+      icon: '🤝',
       title: '咨询管理',
-      desc: stats.value.pendingConsultations > 0 ? `${stats.value.pendingConsultations} 条新咨询` : '管理客户咨询',
+      desc: stats.value.pendingConsultations > 0 ? `${stats.value.pendingConsultations} 条新咨询` : '合作线索收件箱',
       color: 'teal' as const,
       date: formatDate(now)
     }

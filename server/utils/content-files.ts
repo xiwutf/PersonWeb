@@ -169,6 +169,18 @@ export type LifeMarginItem = {
   scanBatch?: string
 }
 
+export type LifeCognitionChapter = {
+  title: string
+  body: string
+}
+
+export type LifeCognitionContent = {
+  title: string
+  summary: string
+  updatedAt: string
+  chapters: LifeCognitionChapter[]
+}
+
 export type LifeProfileAside = {
   label: string
   text: string
@@ -234,7 +246,25 @@ export const writeYamlFile = (segments: string[], data: unknown) => {
   }
 
   const body = stringifyYaml(data, { lineWidth: 0 })
-  fs.writeFileSync(resolved, body.endsWith('\n') ? body : `${body}\n`, 'utf-8')
+  const payload = body.endsWith('\n') ? body : `${body}\n`
+  const tempPath = `${resolved}.${process.pid}.${Date.now()}.tmp`
+
+  try {
+    fs.writeFileSync(tempPath, payload, 'utf-8')
+    fs.renameSync(tempPath, resolved)
+  } catch (error) {
+    try {
+      if (fs.existsSync(tempPath)) fs.unlinkSync(tempPath)
+    } catch {
+      // ignore cleanup failure
+    }
+    // Windows 下偶发 EPERM/EBUSY：直接覆盖再试一次
+    try {
+      fs.writeFileSync(resolved, payload, 'utf-8')
+    } catch {
+      throw error
+    }
+  }
 }
 
 const assertInsideContentRoot = (fullPath: string) => {
@@ -558,6 +588,215 @@ export const writeLifeMargin = (items: LifeMarginItem[]): LifeMarginItem[] => {
     }),
   })
   return readLifeMargin()
+}
+
+export type LifeThoughtVisualType = 'photo' | 'illustration' | 'text-only'
+
+export type LifeThoughtCategory = {
+  slug: string
+  index: string
+  title: string
+  description: string
+  cover?: string
+  visualType: LifeThoughtVisualType
+}
+
+export type LifeThoughtItem = {
+  id: string
+  category: string
+  text: string
+  featured: boolean
+  priority: number
+  note?: string
+  source?: string
+  createdAt?: string
+}
+
+export type LifeThoughtSectionCard = LifeThoughtCategory & {
+  total: number
+  featured: LifeThoughtItem | null
+  recommendations: LifeThoughtItem[]
+}
+
+const isThoughtVisualType = (value: unknown): value is LifeThoughtVisualType =>
+  value === 'photo' || value === 'illustration' || value === 'text-only'
+
+const isSafeThoughtSlug = (slug: string) =>
+  /^[a-z][a-z0-9-]{0,40}$/.test(slug)
+
+export const readLifeThoughtCategories = (): LifeThoughtCategory[] => {
+  const parsed = readYamlFile('life', 'thoughts', 'categories.yml')
+  const source = parsed && typeof parsed === 'object' && !Array.isArray(parsed)
+    ? parsed as Record<string, unknown>
+    : {}
+  const rows = Array.isArray(source.categories) ? source.categories : []
+
+  return rows
+    .map((item) => {
+      if (!item || typeof item !== 'object') return null
+      const row = item as Record<string, unknown>
+      const slug = asString(row.slug)
+      const title = asString(row.title)
+      if (!slug || !isSafeThoughtSlug(slug) || !title) return null
+      const cover = asString(row.cover) || undefined
+      return {
+        slug,
+        index: asString(row.index) || '00',
+        title,
+        description: asString(row.description),
+        cover,
+        visualType: isThoughtVisualType(row.visualType)
+          ? row.visualType
+          : (cover ? 'photo' : 'text-only'),
+      }
+    })
+    .filter((item): item is LifeThoughtCategory => item !== null)
+}
+
+export const readLifeThoughtItems = (slug: string): LifeThoughtItem[] => {
+  if (!isSafeThoughtSlug(slug)) return []
+  const parsed = readYamlFile('life', 'thoughts', `${slug}.yml`)
+  const source = parsed && typeof parsed === 'object' && !Array.isArray(parsed)
+    ? parsed as Record<string, unknown>
+    : {}
+  const rows = Array.isArray(source.items) ? source.items : []
+
+  return rows
+    .map((item, index) => {
+      if (!item || typeof item !== 'object') return null
+      const row = item as Record<string, unknown>
+      const text = asString(row.text)
+      if (!text) return null
+      const id = asString(row.id) || `${slug}-${String(index + 1).padStart(3, '0')}`
+      const priorityRaw = Number(row.priority)
+      return {
+        id,
+        category: asString(row.category) || slug,
+        text,
+        featured: row.featured === true,
+        priority: Number.isFinite(priorityRaw) ? priorityRaw : 0,
+        note: asString(row.note) || undefined,
+        source: asString(row.source) || undefined,
+        createdAt: asString(row.createdAt) || undefined,
+      }
+    })
+    .filter((item): item is LifeThoughtItem => item !== null)
+}
+
+export const pickThoughtSectionCard = (
+  category: LifeThoughtCategory,
+  items: LifeThoughtItem[],
+): LifeThoughtSectionCard => {
+  const featured = items.find(item => item.featured)
+    || [...items].sort((a, b) => b.priority - a.priority)[0]
+    || null
+
+  const recommendations = items
+    .filter(item => !featured || item.id !== featured.id)
+    .sort((a, b) => b.priority - a.priority)
+    .slice(0, 2)
+
+  return {
+    ...category,
+    total: items.length,
+    featured,
+    recommendations,
+  }
+}
+
+export const readLifeThoughtIndex = (): LifeThoughtSectionCard[] => {
+  return readLifeThoughtCategories()
+    .map((category) => {
+      const items = readLifeThoughtItems(category.slug)
+      if (!items.length) return null
+      return pickThoughtSectionCard(category, items)
+    })
+    .filter((item): item is LifeThoughtSectionCard => item !== null)
+}
+
+export const readLifeThoughtCategoryPage = (slug: string): {
+  category: LifeThoughtCategory
+  items: LifeThoughtItem[]
+} | null => {
+  const category = readLifeThoughtCategories().find(item => item.slug === slug)
+  if (!category) return null
+  const items = readLifeThoughtItems(slug)
+    .slice()
+    .sort((a, b) => {
+      if (a.featured !== b.featured) return a.featured ? -1 : 1
+      return b.priority - a.priority
+    })
+  return { category, items }
+}
+
+const MAX_COGNITION_CHAPTERS = 40
+const MAX_COGNITION_TITLE = 120
+const MAX_COGNITION_SUMMARY = 800
+const MAX_COGNITION_CHAPTER_TITLE = 160
+const MAX_COGNITION_BODY = 20000
+
+const todayIsoDate = () => {
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const day = String(now.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+export const readLifeCognition = (): LifeCognitionContent => {
+  const parsed = readYamlFile('life', 'cognition.yml')
+  const source = parsed && typeof parsed === 'object' && !Array.isArray(parsed)
+    ? parsed as Record<string, unknown>
+    : {}
+  const chaptersRaw = Array.isArray(source.chapters) ? source.chapters : []
+
+  const chapters = chaptersRaw
+    .map((item) => {
+      if (!item || typeof item !== 'object') return null
+      const row = item as Record<string, unknown>
+      const title = asString(row.title)
+      const body = asString(row.body)
+      if (!title) return null
+      return { title, body }
+    })
+    .filter((item): item is LifeCognitionChapter => item !== null)
+
+  return {
+    title: asString(source.title) || '个人认知使用说明书',
+    summary: asString(source.summary),
+    updatedAt: asString(source.updatedAt) || todayIsoDate(),
+    chapters,
+  }
+}
+
+export const writeLifeCognition = (input: {
+  title?: string
+  summary?: string
+  chapters?: LifeCognitionChapter[]
+}): LifeCognitionContent => {
+  const current = readLifeCognition()
+  const title = clip(input.title ?? current.title, MAX_COGNITION_TITLE) || '个人认知使用说明书'
+  const summary = clip(input.summary ?? current.summary, MAX_COGNITION_SUMMARY)
+  const sourceChapters = Array.isArray(input.chapters) ? input.chapters : current.chapters
+  const chapters = sourceChapters
+    .slice(0, MAX_COGNITION_CHAPTERS)
+    .map((item) => {
+      const chapterTitle = clip(item?.title || '', MAX_COGNITION_CHAPTER_TITLE)
+      if (!chapterTitle) return null
+      return {
+        title: chapterTitle,
+        body: clip(item?.body || '', MAX_COGNITION_BODY),
+      }
+    })
+    .filter((item): item is LifeCognitionChapter => item !== null)
+
+  writeYamlFile(['life', 'cognition.yml'], {
+    title,
+    summary,
+    updatedAt: todayIsoDate(),
+    chapters,
+  })
+  return readLifeCognition()
 }
 
 const yamlQuote = (value: string) => JSON.stringify(value)

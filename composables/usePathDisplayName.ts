@@ -20,9 +20,8 @@ const ROUTE_LABELS: Record<string, string> = {
   'english': '英语学习',
   'dashboard': '仪表盘',
   'cognition': '认知说明书',
-  'side-projects': '副业项目',
+  'side-projects': '案例',
   'admin': '管理后台',
-  'investment': '投资记录',
   'game': '小游戏'
 }
 
@@ -39,7 +38,6 @@ const WORK_CHILD_LABELS: Record<string, string> = {
   knowledge: '知识笔记',
   cognition: '认知说明书',
   'module-store': '模块商店',
-  'side-projects': '副业项目',
   game: '小游戏',
   links: '友情链接',
   changelog: '更新日志',

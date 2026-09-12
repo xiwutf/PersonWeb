@@ -29,13 +29,13 @@ const STATIC_PATHS = [
   '/work/contact',
   '/work/products',
   '/work/lab',
-  '/work/cognition',
+  '/life/cognition',
+  '/life/thoughts',
   '/search',
   '/work/links',
   '/work/changelog',
   '/work/pricing',
   '/work/download',
-  '/work/side-projects',
   '/work/skills',
   '/work/english',
   '/work/knowledge',
@@ -72,7 +72,7 @@ function canonicalizePath(p) {
   const first = out.split('/').filter(Boolean)[0]
   const nest = new Set([
     'projects', 'products', 'blog', 'about', 'contact', 'tools',
-    'skills', 'knowledge', 'cognition', 'module-store', 'side-projects',
+    'skills', 'knowledge', 'cognition', 'module-store',
     'game', 'links', 'changelog', 'pricing', 'download', 'english',
     'ai', 'lab', 'modules', 'my-licenses',
   ])
@@ -208,27 +208,8 @@ async function collectDynamicFromApi(apiBase) {
     errors.push(`tools: ${e.message || e}`)
   }
 
-  try {
-    let page = 1
-    const pageSize = 100
-    let total = Infinity
-    while ((page - 1) * pageSize < total && page <= 50) {
-      const data = await fetchJson(
-        `${base}/CognitionDocs?status=published&page=${page}&pageSize=${pageSize}`,
-      )
-      const list = data?.List || data?.list || []
-      total = Number(data?.Total ?? data?.total ?? list.length)
-      for (const doc of list) {
-        const slug = doc.Slug || doc.slug
-        if (slug) paths.push(`/work/cognition/${slug}`)
-      }
-      if (!list.length) break
-      page += 1
-    }
-    sources.cognition = true
-  } catch (e) {
-    errors.push(`cognition: ${e.message || e}`)
-  }
+  // Cognition 已迁到 content/life/cognition.yml，仅收录静态页
+  sources.cognition = true
 
   return { paths, sources, errors }
 }

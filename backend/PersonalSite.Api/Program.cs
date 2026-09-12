@@ -160,26 +160,11 @@ builder.Services.AddScoped<PersonalSite.Api.Services.Payment.AlipayPaymentServic
 builder.Services.AddScoped<PersonalSite.Api.Services.Payment.StripePaymentService>();
 builder.Services.AddScoped<PersonalSite.Api.Services.Payment.PaymentServiceFactory>();
 
-// 注册副业项目服务
-builder.Services.AddScoped<PersonalSite.Api.Services.SideProjectService>();
-
-// 注册通知服务
-builder.Services.AddScoped<PersonalSite.Api.Services.NotificationService>();
-
-// 注册数据分析服务
-builder.Services.AddScoped<PersonalSite.Api.Services.SideProjectAnalyticsService>();
-
 // 注册观察期服务
 builder.Services.AddScoped<PersonalSite.Api.Services.ObservationPeriodService>();
 
 // 注册思维记录服务
 builder.Services.AddScoped<PersonalSite.Api.Services.IThoughtService, PersonalSite.Api.Services.ThoughtService>();
-
-// 注册情报中心服务
-builder.Services.AddScoped<PersonalSite.Api.Services.IIntelligenceSourceService, PersonalSite.Api.Services.IntelligenceSourceService>();
-builder.Services.AddScoped<PersonalSite.Api.Services.IIntelligenceContentService, PersonalSite.Api.Services.IntelligenceContentService>();
-builder.Services.AddScoped<PersonalSite.Api.Services.IIntelligenceReportService, PersonalSite.Api.Services.IntelligenceReportService>();
-builder.Services.AddScoped<PersonalSite.Api.Services.IIntelligenceTaskService, PersonalSite.Api.Services.IntelligenceTaskService>();
 
 // 4. 配置 Swagger
 builder.Services.AddSwaggerGen(c =>

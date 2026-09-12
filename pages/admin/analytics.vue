@@ -7,6 +7,12 @@
     >
       <template #actions>
         <n-space align="center" :size="12" wrap>
+          <n-button quaternary tag="a" href="/admin/visitors">
+            实时巡检
+          </n-button>
+          <n-button quaternary tag="a" href="/admin/projects/stats">
+            项目访问
+          </n-button>
           <n-select
             v-model:value="selectedRange"
             class="analytics-range-select"

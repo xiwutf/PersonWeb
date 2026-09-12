@@ -17,10 +17,13 @@ export default defineEventHandler(async (event) => {
     const data = writeLifeMargin(items)
     setHeader(event, 'Cache-Control', 'no-store')
     return data
-  } catch {
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : 'Unable to write content file'
+    console.error('[life/margin.put] write failed:', detail)
     throw createError({
       statusCode: 503,
-      statusMessage: 'Unable to write content file',
+      statusMessage: detail,
+      message: detail,
     })
   }
 })
