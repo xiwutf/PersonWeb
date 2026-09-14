@@ -1,7 +1,19 @@
 <template>
+  <div
+    v-if="markdown && (!canEditContent || !editing)"
+    :id="id"
+    :class="rootClass"
+    :role="canEditContent ? 'button' : undefined"
+    :tabindex="canEditContent ? 0 : undefined"
+    :aria-label="canEditContent ? `编辑：${fieldPath}` : undefined"
+    v-html="renderedHtml"
+    @click="canEditContent ? startEdit() : undefined"
+    @keydown.enter.prevent="canEditContent ? startEdit() : undefined"
+  />
+
   <component
     :is="tag"
-    v-if="!canEditContent || !editing"
+    v-else-if="!markdown && (!canEditContent || !editing)"
     :id="id"
     :class="rootClass"
     :role="canEditContent ? 'button' : undefined"
@@ -44,6 +56,8 @@ const props = withDefaults(defineProps<{
   fieldPath: string
   as?: 'p' | 'h1' | 'h2' | 'h3' | 'span' | 'small' | 'strong'
   multiline?: boolean
+  /** 展示时按 Markdown 渲染；编辑时仍改源码 */
+  markdown?: boolean
   rows?: number
   displayClass?: string
   id?: string
@@ -51,6 +65,7 @@ const props = withDefaults(defineProps<{
 }>(), {
   as: 'span',
   multiline: false,
+  markdown: false,
   rows: undefined,
   displayClass: '',
   id: undefined,
@@ -62,6 +77,7 @@ const emit = defineEmits<{
 }>()
 
 const { canEditContent } = useAdminSession()
+const { parse } = useMarkdown()
 
 const editing = ref(false)
 const saving = ref(false)
@@ -70,8 +86,13 @@ const inputRef = ref<HTMLInputElement | HTMLTextAreaElement | null>(null)
 
 const tag = computed(() => props.as)
 const isBlock = computed(() =>
-  props.multiline || ['p', 'h1', 'h2', 'h3'].includes(props.as),
+  props.multiline || props.markdown || ['p', 'h1', 'h2', 'h3'].includes(props.as),
 )
+
+const renderedHtml = computed(() => {
+  if (!props.markdown) return ''
+  return parse(props.modelValue || '')
+})
 
 const resolvedRows = computed(() => {
   if (typeof props.rows === 'number' && props.rows > 0) return props.rows
@@ -84,6 +105,7 @@ const rootClass = computed(() => {
   const classes = ['inline-edit', props.displayClass]
   if (isBlock.value) classes.push('inline-edit--block')
   if (canEditContent.value) classes.push('inline-edit--editable')
+  if (props.markdown) classes.push('inline-edit--markdown')
   return classes.filter(Boolean).join(' ')
 })
 

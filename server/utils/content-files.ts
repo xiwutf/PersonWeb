@@ -729,6 +729,70 @@ export const readLifeThoughtCategoryPage = (slug: string): {
   return { category, items }
 }
 
+const MAX_THOUGHT_ITEMS = 200
+const MAX_THOUGHT_TEXT = 800
+const MAX_THOUGHT_NOTE = 800
+const MAX_THOUGHT_SOURCE = 120
+const THOUGHT_ID_RE = /^[a-z0-9][a-z0-9-]{0,60}$/
+
+export const writeLifeThoughtItems = (slug: string, items: LifeThoughtItem[]): LifeThoughtItem[] => {
+  if (!isSafeThoughtSlug(slug)) {
+    throw new Error('Invalid thought category')
+  }
+  const category = readLifeThoughtCategories().find(item => item.slug === slug)
+  if (!category) {
+    throw new Error('Thought category not found')
+  }
+
+  const usedIds = new Set<string>()
+  const nextItems = items
+    .slice(0, MAX_THOUGHT_ITEMS)
+    .map((item, index) => {
+      const text = clip(item?.text || '', MAX_THOUGHT_TEXT)
+      if (!text) return null
+
+      let id = asString(item.id)
+      if (!id || !THOUGHT_ID_RE.test(id) || usedIds.has(id)) {
+        id = `${slug}-${String(index + 1).padStart(3, '0')}`
+      }
+      usedIds.add(id)
+
+      const priorityRaw = Number(item.priority)
+      const createdAt = asString(item.createdAt)
+      const createdAtSafe = /^\d{4}-\d{2}-\d{2}$/.test(createdAt) ? createdAt : undefined
+
+      return {
+        id,
+        category: slug,
+        text,
+        featured: item.featured === true,
+        priority: Number.isFinite(priorityRaw) ? priorityRaw : 0,
+        note: clip(item.note || '', MAX_THOUGHT_NOTE) || undefined,
+        source: clip(item.source || '', MAX_THOUGHT_SOURCE) || undefined,
+        createdAt: createdAtSafe,
+      }
+    })
+    .filter((item): item is LifeThoughtItem => item !== null)
+
+  writeYamlFile(['life', 'thoughts', `${slug}.yml`], {
+    items: nextItems.map((item) => {
+      const row: Record<string, string | boolean | number> = {
+        id: item.id,
+        category: slug,
+        text: item.text,
+      }
+      if (item.featured) row.featured = true
+      if (item.priority) row.priority = item.priority
+      if (item.note) row.note = item.note
+      if (item.source) row.source = item.source
+      if (item.createdAt) row.createdAt = item.createdAt
+      return row
+    }),
+  })
+
+  return readLifeThoughtItems(slug)
+}
+
 const MAX_COGNITION_CHAPTERS = 40
 const MAX_COGNITION_TITLE = 120
 const MAX_COGNITION_SUMMARY = 800

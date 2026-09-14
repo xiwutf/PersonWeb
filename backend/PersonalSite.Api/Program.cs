@@ -166,6 +166,11 @@ builder.Services.AddScoped<PersonalSite.Api.Services.ObservationPeriodService>()
 // 注册思维记录服务
 builder.Services.AddScoped<PersonalSite.Api.Services.IThoughtService, PersonalSite.Api.Services.ThoughtService>();
 
+// 阅读 Inbox（MindTrace 外部发布）
+builder.Services.Configure<PersonalSite.Api.Models.Dto.MindtraceIngestOptions>(
+    builder.Configuration.GetSection(PersonalSite.Api.Models.Dto.MindtraceIngestOptions.SectionName));
+builder.Services.AddScoped<PersonalSite.Api.Services.IReadingService, PersonalSite.Api.Services.ReadingService>();
+
 // 4. 配置 Swagger
 builder.Services.AddSwaggerGen(c =>
 {

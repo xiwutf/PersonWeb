@@ -29,6 +29,7 @@ export const adminMenu: AdminMenuGroup[] = [
     children: [
       { label: '访客互动', path: '/admin/visitor-messages' },
       { label: '咨询管理', path: '/admin/consultations' },
+      { label: '阅读 Inbox', path: '/admin/reading' },
     ],
   },
 ]

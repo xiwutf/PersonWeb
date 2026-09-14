@@ -18,10 +18,15 @@
         <p class="portal-eyebrow">访客留声</p>
         <h1 id="portal-title">路过的人，留下过这些话。</h1>
         <p>选一边进入生活或工作；留言审核通过后会出现在这里。</p>
-        <div class="portal-danmaku-stage" aria-hidden="true">
-          <ClientOnly>
-            <VisitorDanmakuWall variant="embedded" />
-          </ClientOnly>
+        <div
+          class="portal-danmaku-stage"
+          :class="{ 'is-loading': danmakuPending && !danmakuMessages?.length }"
+          aria-hidden="true"
+        >
+          <div v-if="danmakuPending && !danmakuMessages?.length" class="portal-danmaku-skeleton">
+            <span v-for="n in 9" :key="n" class="portal-danmaku-skeleton-chip" />
+          </div>
+          <VisitorDanmakuWall variant="embedded" :messages="danmakuMessages" />
         </div>
         <ClientOnly>
           <PortalVisitorMessage />
@@ -75,13 +80,18 @@
 import { defineAsyncComponent } from 'vue'
 import '~/assets/css/portal.css'
 import SiteBrandLogo from '~/components/layout/SiteBrandLogo.vue'
+import VisitorDanmakuWall from '~/components/VisitorDanmakuWall.vue'
 import { usePageSeo, useJsonLd, toAbsoluteUrl } from '~/composables/usePageSeo'
+import { usePortalDanmaku } from '~/composables/usePortalDanmaku'
 
 definePageMeta({ layout: false })
 
-const VisitorDanmakuWall = defineAsyncComponent(() => import('~/components/VisitorDanmakuWall.vue'))
+// 留言表单非首屏关键路径，保留异步拆包
 const PortalVisitorMessage = defineAsyncComponent(() => import('~/components/PortalVisitorMessage.vue'))
 const currentYear = new Date().getFullYear()
+
+// 页面 setup 即拉弹幕，避免 ClientOnly + 异步组件挂载后再请求的瀑布流
+const { data: danmakuMessages, pending: danmakuPending } = usePortalDanmaku()
 
 usePageSeo({
   title: '溪午听风 - 生活与工作',

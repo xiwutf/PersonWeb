@@ -86,6 +86,7 @@ public class ApiKeyAuthMiddleware
             path.StartsWith("/swagger") ||
             path.StartsWith("/api/docs") ||
             path.StartsWith("/api/auth") ||
+            path.StartsWith("/api/integrations/") ||
             path.StartsWith("/api/toolbox/marketplace") ||
             path.StartsWith("/api/toolbox/categories"))
         {

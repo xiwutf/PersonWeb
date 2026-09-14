@@ -63,6 +63,11 @@ mysql -u root -p personal_site < database/time_capsule_table.sql
 mysql -u root -p personal_site < database/fulltext_index.sql
 ```
 
+### 10. 阅读 Inbox（MindTrace 外部发布）
+```bash
+mysql -u root -p personal_site < database/reading_entries_table.sql
+```
+
 ## 🔄 一键执行（推荐）
 
 ### Windows PowerShell

@@ -37,14 +37,9 @@
 /**
  * 入口页局部弹幕：多轨连续跑马灯。
  * 滚动期间不增删 DOM，避免 Vue 重绘导致卡顿。
+ * 数据由页面层预取后传入，组件内不再二次请求。
  */
-interface DanmakuSource {
-  id: number
-  content: string
-  emoji?: string
-  color?: string
-  messageType?: string
-}
+import type { PortalDanmakuItem } from '~/composables/usePortalDanmaku'
 
 interface TrackItem {
   content: string
@@ -58,15 +53,16 @@ interface Track {
   durationSec: number
 }
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   maxCount?: number
   variant?: 'fullscreen' | 'embedded'
+  messages?: PortalDanmakuItem[] | null
 }>(), {
   maxCount: 6,
   variant: 'embedded',
+  messages: null,
 })
 
-const api = useApi()
 const isDanmakuEnabled = ref(true)
 const isPaused = ref(false)
 const tracks = ref<Track[]>([])
@@ -74,7 +70,7 @@ const tracks = ref<Track[]>([])
 let visibilityHandler: (() => void) | null = null
 let newDanmakuHandler: EventListener | null = null
 let rebuildTimer: ReturnType<typeof setTimeout> | null = null
-let pool: DanmakuSource[] = []
+let pool: PortalDanmakuItem[] = []
 
 const PALETTE: Record<string, string[]> = {
   message: ['#a78bfa', '#34d399', '#fbbf24', '#60a5fa'],
@@ -82,13 +78,13 @@ const PALETTE: Record<string, string[]> = {
   blessing: ['#fbbf24', '#f59e0b', '#eab308'],
 }
 
-const pickColor = (source: DanmakuSource): string => {
+const pickColor = (source: PortalDanmakuItem): string => {
   if (source.color) return source.color
   const list = PALETTE[source.messageType || 'message'] || PALETTE.message
   return list[Math.abs(source.id) % list.length]
 }
 
-const buildTracks = (sources: DanmakuSource[]) => {
+const buildTracks = (sources: PortalDanmakuItem[]) => {
   const cleaned = sources
     .filter((item) => Boolean(item?.content?.trim()))
     .slice(0, 36)
@@ -104,7 +100,7 @@ const buildTracks = (sources: DanmakuSource[]) => {
   cleaned.forEach((source, index) => {
     rows[index % rowCount].push({
       content: source.content.trim(),
-      emoji: source.emoji,
+      emoji: source.emoji || undefined,
       color: pickColor(source),
     })
   })
@@ -117,7 +113,7 @@ const buildTracks = (sources: DanmakuSource[]) => {
       const source = cleaned[i % cleaned.length]
       filled.push({
         content: source.content.trim(),
-        emoji: source.emoji,
+        emoji: source.emoji || undefined,
         color: pickColor(source),
       })
       i += 1
@@ -138,17 +134,15 @@ const scheduleRebuild = () => {
   }, 800)
 }
 
-const fetchDanmakus = async () => {
-  try {
-    const res = await api.get<DanmakuSource[]>('/VisitorInteraction/messages/approved?limit=100')
-    if (res && Array.isArray(res) && res.length > 0) {
-      pool = res
-      buildTracks(pool)
-    }
-  } catch (e) {
-    console.error('获取弹幕失败', e)
-  }
-}
+watch(
+  () => props.messages,
+  (next) => {
+    if (!Array.isArray(next) || next.length === 0) return
+    pool = next
+    buildTracks(pool)
+  },
+  { immediate: true },
+)
 
 onMounted(() => {
   const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
@@ -157,15 +151,13 @@ onMounted(() => {
     return
   }
 
-  fetchDanmakus()
-
   visibilityHandler = () => {
     isPaused.value = document.hidden
   }
   document.addEventListener('visibilitychange', visibilityHandler)
 
   newDanmakuHandler = ((e: Event) => {
-    const detail = (e as CustomEvent).detail as DanmakuSource | undefined
+    const detail = (e as CustomEvent).detail as PortalDanmakuItem | undefined
     if (!detail?.content) return
     pool = [detail, ...pool]
     scheduleRebuild()

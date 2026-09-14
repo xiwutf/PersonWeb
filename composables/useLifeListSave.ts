@@ -109,5 +109,32 @@ export function useLifeListSave() {
     return await putLifeContent('/api/content/life/cognition', payload)
   }
 
-  return { saveNowItems, saveMoments, saveMargin, createNote, saveHeroLines, saveCognition }
+  async function saveThoughtItems(
+    slug: string,
+    items: Array<{
+      id: string
+      category?: string
+      text: string
+      featured?: boolean
+      priority?: number
+      note?: string
+      source?: string
+      createdAt?: string
+    }>,
+  ) {
+    return await putLifeContent<{ items: typeof items }>(
+      `/api/content/life/thoughts/${encodeURIComponent(slug)}`,
+      { items },
+    )
+  }
+
+  return {
+    saveNowItems,
+    saveMoments,
+    saveMargin,
+    createNote,
+    saveHeroLines,
+    saveCognition,
+    saveThoughtItems,
+  }
 }

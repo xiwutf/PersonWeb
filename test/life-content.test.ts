@@ -19,6 +19,7 @@ import {
   readMarkdownCollection,
   writeLifeMoments,
   writeLifeNow,
+  writeLifeThoughtItems,
 } from '../server/utils/content-files'
 
 describe('Life content slug safety', () => {
@@ -112,20 +113,24 @@ describe('Life YAML parsing', () => {
 const root = resolve(__dirname, '..')
 const nowFile = resolve(root, 'content/life/now.yml')
 const momentsFile = resolve(root, 'content/life/moments.yml')
+const notesThoughtsFile = resolve(root, 'content/life/thoughts/notes.yml')
 
 describe('Life list content writes', () => {
   let nowBackup = ''
   let momentsBackup = ''
+  let notesThoughtsBackup = ''
   const createdNotes: string[] = []
 
   beforeEach(() => {
     nowBackup = readFileSync(nowFile, 'utf8')
     momentsBackup = readFileSync(momentsFile, 'utf8')
+    notesThoughtsBackup = readFileSync(notesThoughtsFile, 'utf8')
   })
 
   afterEach(() => {
     writeFileSync(nowFile, nowBackup, 'utf8')
     writeFileSync(momentsFile, momentsBackup, 'utf8')
+    writeFileSync(notesThoughtsFile, notesThoughtsBackup, 'utf8')
     for (const file of createdNotes.splice(0)) {
       if (existsSync(file)) unlinkSync(file)
     }

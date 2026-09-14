@@ -154,6 +154,19 @@ Slug 责任：**Toolbox.Slug**（DB）是唯一规范 slug。
 
 Work 运营内容不要写入 Life 目录。
 
+### Reading Inbox（MindTrace 外部发布）
+
+| 层 | 路径 |
+| --- | --- |
+| **PRIMARY** | MySQL `reading_entries` → `.NET` |
+| **Ingest** | `POST /api/integrations/mindtrace`（Bearer `MindTrace:IngestToken`） |
+| **Admin API** | `GET/PATCH/DELETE /api/admin/reading`（管理员 JWT） |
+| **Admin UI** | `/admin/reading` |
+| **默认** | `status=inbox`，`visibility=private`；公开站暂不展示 |
+| **SQL** | `database/reading_entries_table.sql` |
+
+不要把 MindTrace 摘录写入 `content/life`；不要再使用 Nuxt `server/data/reading-entries.json`。
+
 ---
 
 ## Case Study 模型（最小可维护）

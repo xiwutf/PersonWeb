@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PersonalSite.Api.Data;
 using PersonalSite.Api.Models;
+using PersonalSite.Api.Services.Cache;
 
 namespace PersonalSite.Api.Controllers;
 
@@ -10,13 +11,21 @@ namespace PersonalSite.Api.Controllers;
 [Route("api/[controller]")]
 public class VisitorInteractionController : ControllerBase
 {
+    private const string ApprovedDanmakuCacheKey = "visitor:danmaku:approved:v1";
+    private static readonly TimeSpan ApprovedDanmakuCacheTtl = TimeSpan.FromSeconds(45);
+
     private readonly AppDbContext _context;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ICacheService _cache;
 
-    public VisitorInteractionController(AppDbContext context, IHttpContextAccessor httpContextAccessor)
+    public VisitorInteractionController(
+        AppDbContext context,
+        IHttpContextAccessor httpContextAccessor,
+        ICacheService cache)
     {
         _context = context;
         _httpContextAccessor = httpContextAccessor;
+        _cache = cache;
     }
 
     /// <summary>
@@ -32,9 +41,9 @@ public class VisitorInteractionController : ControllerBase
                 return BadRequest(ApiResponse.Error("访客ID和内容不能为空", 400));
             }
 
-            var ip = _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
-            
-            var message = new VisitorMessage
+            string? ip = _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
+
+            VisitorMessage message = new VisitorMessage
             {
                 VisitorId = dto.VisitorId,
                 VisitorName = string.IsNullOrWhiteSpace(dto.VisitorName) ? null : dto.VisitorName.Trim(),
@@ -63,43 +72,66 @@ public class VisitorInteractionController : ControllerBase
     /// 获取已审核的弹幕（用于显示）
     /// </summary>
     [HttpGet("messages/approved")]
-    public async Task<ActionResult<ApiResponse<List<VisitorMessage>>>> GetApprovedMessages([FromQuery] int limit = 50)
+    public async Task<ActionResult<ApiResponse<List<VisitorDanmakuItemDto>>>> GetApprovedMessages([FromQuery] int limit = 36)
     {
         try
         {
-            var messages = await _context.VisitorMessages
+            // 首页弹幕最多展示 36 条，超出部分无意义且拖慢载荷
+            int safeLimit = Math.Clamp(limit, 1, 36);
+
+            List<VisitorDanmakuItemDto>? cached = await _cache.GetAsync<List<VisitorDanmakuItemDto>>(ApprovedDanmakuCacheKey);
+            if (cached != null)
+            {
+                List<VisitorDanmakuItemDto> cachedSlice = cached.Take(safeLimit).ToList();
+                return Ok(ApiResponse<List<VisitorDanmakuItemDto>>.Success(cachedSlice));
+            }
+
+            // 只投影弹幕展示字段，避免整行实体与敏感字段出站
+            List<VisitorDanmakuItemDto> messages = await _context.VisitorMessages
+                .AsNoTracking()
                 .Where(m => m.Status == "approved")
                 .OrderByDescending(m => m.ApprovedAt ?? m.CreatedAt)
-                .Take(limit)
+                .Take(36)
+                .Select(m => new VisitorDanmakuItemDto
+                {
+                    Id = m.Id,
+                    Content = m.Content,
+                    Emoji = m.Emoji,
+                    Color = m.Color,
+                    MessageType = m.MessageType,
+                })
                 .ToListAsync();
 
             // 兼容旧「时间胶囊」已展示内容，统一进入弹幕流
-            var legacyCapsules = await _context.TimeCapsules
-                .Where(t => t.Status == 1)
-                .OrderByDescending(t => t.CreatedAt)
-                .Take(Math.Max(0, limit - messages.Count))
-                .ToListAsync();
-
-            foreach (var capsule in legacyCapsules)
+            int remain = Math.Max(0, 36 - messages.Count);
+            if (remain > 0)
             {
-                messages.Add(new VisitorMessage
-                {
-                    Id = 1_000_000_000 + capsule.Id,
-                    VisitorId = capsule.VisitorId ?? "legacy-capsule",
-                    VisitorName = capsule.VisitorName,
-                    MessageType = "message",
-                    Content = capsule.Content,
-                    Status = "approved",
-                    CreatedAt = capsule.CreatedAt,
-                    ApprovedAt = capsule.CreatedAt,
-                });
+                List<VisitorDanmakuItemDto> legacyCapsules = await _context.TimeCapsules
+                    .AsNoTracking()
+                    .Where(t => t.Status == 1)
+                    .OrderByDescending(t => t.CreatedAt)
+                    .Take(remain)
+                    .Select(t => new VisitorDanmakuItemDto
+                    {
+                        Id = 1_000_000_000L + t.Id,
+                        Content = t.Content,
+                        Emoji = null,
+                        Color = null,
+                        MessageType = "message",
+                    })
+                    .ToListAsync();
+
+                messages.AddRange(legacyCapsules);
             }
 
-            return Ok(ApiResponse<List<VisitorMessage>>.Success(messages));
+            await _cache.SetAsync(ApprovedDanmakuCacheKey, messages, ApprovedDanmakuCacheTtl);
+
+            List<VisitorDanmakuItemDto> result = messages.Take(safeLimit).ToList();
+            return Ok(ApiResponse<List<VisitorDanmakuItemDto>>.Success(result));
         }
         catch (Exception ex)
         {
-            return StatusCode(500, ApiResponse<List<VisitorMessage>>.Error($"获取失败: {ex.Message}", 500));
+            return StatusCode(500, ApiResponse<List<VisitorDanmakuItemDto>>.Error($"获取失败: {ex.Message}", 500));
         }
     }
 
@@ -112,7 +144,7 @@ public class VisitorInteractionController : ControllerBase
     {
         try
         {
-            var message = await _context.VisitorMessages.FindAsync(id);
+            VisitorMessage? message = await _context.VisitorMessages.FindAsync(id);
             if (message == null)
             {
                 return NotFound(ApiResponse.Error("留言不存在", 404));
@@ -123,6 +155,7 @@ public class VisitorInteractionController : ControllerBase
             message.UpdatedAt = DateTime.Now;
 
             await _context.SaveChangesAsync();
+            await InvalidateApprovedDanmakuCacheAsync();
 
             return Ok(ApiResponse.Success(null, "审核通过"));
         }
@@ -141,7 +174,7 @@ public class VisitorInteractionController : ControllerBase
     {
         try
         {
-            var message = await _context.VisitorMessages.FindAsync(id);
+            VisitorMessage? message = await _context.VisitorMessages.FindAsync(id);
             if (message == null)
             {
                 return NotFound(ApiResponse.Error("留言不存在", 404));
@@ -151,6 +184,7 @@ public class VisitorInteractionController : ControllerBase
             message.UpdatedAt = DateTime.Now;
 
             await _context.SaveChangesAsync();
+            await InvalidateApprovedDanmakuCacheAsync();
 
             return Ok(ApiResponse.Success(null, "已拒绝"));
         }
@@ -173,9 +207,9 @@ public class VisitorInteractionController : ControllerBase
                 return BadRequest(ApiResponse.Error("访客ID和表情不能为空", 400));
             }
 
-            var ip = _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
+            string? ip = _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
 
-            var footprint = new VisitorFootprint
+            VisitorFootprint footprint = new VisitorFootprint
             {
                 VisitorId = dto.VisitorId,
                 Emoji = dto.Emoji,
@@ -207,7 +241,7 @@ public class VisitorInteractionController : ControllerBase
     {
         try
         {
-            var footprints = await _context.VisitorFootprints
+            List<VisitorFootprint> footprints = await _context.VisitorFootprints
                 .OrderByDescending(f => f.CreatedAt)
                 .ToListAsync();
 
@@ -232,7 +266,7 @@ public class VisitorInteractionController : ControllerBase
                 return BadRequest(ApiResponse.Error("访客ID不能为空", 400));
             }
 
-            var bubble = new VisitorBubble
+            VisitorBubble bubble = new VisitorBubble
             {
                 VisitorId = dto.VisitorId,
                 AvatarUrl = dto.AvatarUrl,
@@ -261,7 +295,7 @@ public class VisitorInteractionController : ControllerBase
     {
         try
         {
-            var messages = await _context.VisitorMessages
+            List<VisitorMessage> messages = await _context.VisitorMessages
                 .Where(m => m.Status == "pending")
                 .OrderByDescending(m => m.CreatedAt)
                 .ToListAsync();
@@ -283,7 +317,7 @@ public class VisitorInteractionController : ControllerBase
     {
         try
         {
-            var query = _context.VisitorMessages.AsQueryable();
+            IQueryable<VisitorMessage> query = _context.VisitorMessages.AsQueryable();
 
             // 根据状态筛选
             if (!string.IsNullOrEmpty(status))
@@ -297,7 +331,7 @@ public class VisitorInteractionController : ControllerBase
                 query = query.Where(m => m.MessageType == messageType);
             }
 
-            var messages = await query
+            List<VisitorMessage> messages = await query
                 .OrderByDescending(m => m.CreatedAt)
                 .ToListAsync();
 
@@ -308,6 +342,26 @@ public class VisitorInteractionController : ControllerBase
             return StatusCode(500, ApiResponse<List<VisitorMessage>>.Error($"获取失败: {ex.Message}", 500));
         }
     }
+
+    /// <summary>
+    /// 审核状态变更后清除弹幕缓存
+    /// </summary>
+    private Task InvalidateApprovedDanmakuCacheAsync()
+    {
+        return _cache.RemoveAsync(ApprovedDanmakuCacheKey);
+    }
+}
+
+/// <summary>
+/// 入口页弹幕精简载荷（不含访客敏感字段）
+/// </summary>
+public class VisitorDanmakuItemDto
+{
+    public long Id { get; set; }
+    public string Content { get; set; } = string.Empty;
+    public string? Emoji { get; set; }
+    public string? Color { get; set; }
+    public string? MessageType { get; set; }
 }
 
 // DTOs
@@ -340,4 +394,3 @@ public class VisitorBubbleDto
     public string? Location { get; set; }
     public string? DisplayText { get; set; }
 }
-

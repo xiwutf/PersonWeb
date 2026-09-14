@@ -74,6 +74,7 @@
             as="p"
             display-class="life-manual-prose life-cognition-body-edit"
             multiline
+            markdown
             :rows="14"
             :save="saveCognitionField"
           />

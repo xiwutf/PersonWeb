@@ -117,6 +117,9 @@ public class AppDbContext : DbContext
     /// <summary>思维记录（随手写 + AI 批注）</summary>
     public DbSet<ThoughtRecord> ThoughtRecords { get; set; }
 
+    /// <summary>阅读 Inbox（MindTrace 外部发布）</summary>
+    public DbSet<ReadingEntry> ReadingEntries { get; set; }
+
     // 前端页面样式配置相关表
     public DbSet<FrontendPageStyle> FrontendPageStyles { get; set; }
     public DbSet<FrontendStyleVariable> FrontendStyleVariables { get; set; }
@@ -156,6 +159,11 @@ public class AppDbContext : DbContext
         // 配置 CognitionDoc 的索引
         modelBuilder.Entity<CognitionDoc>()
             .HasIndex(d => d.Slug)
+            .IsUnique();
+
+        // 阅读 Inbox：SourceType + ExternalId 唯一
+        modelBuilder.Entity<ReadingEntry>()
+            .HasIndex(e => new { e.SourceType, e.ExternalId })
             .IsUnique();
             
         // 配置 Module 和 ModuleConfig 的关系

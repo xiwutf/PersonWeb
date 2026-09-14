@@ -2255,8 +2255,52 @@ a.life-lately-text:hover,
 }
 
 .life-cognition-body-edit {
-  white-space: pre-wrap;
   word-break: break-word;
+}
+
+.life-cognition-body-edit.inline-edit__textarea,
+.life-manual-chapter .inline-edit__textarea.life-cognition-body-edit {
+  white-space: pre-wrap;
+}
+
+.life-manual-prose.inline-edit--markdown,
+.life-manual-prose {
+  /* Markdown 预览态不要 pre-wrap，否则表格会看起来像源码 */
+  white-space: normal;
+}
+
+.life-manual-body table,
+.life-manual-prose table {
+  width: 100%;
+  margin: 1rem 0 1.25rem;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  overflow: hidden;
+  border: 1px solid var(--life-line-strong, color-mix(in srgb, var(--life-ink) 14%, transparent));
+  border-radius: var(--radius-md, 0.5rem);
+}
+
+.life-manual-body th,
+.life-manual-body td,
+.life-manual-prose th,
+.life-manual-prose td {
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--life-line, color-mix(in srgb, var(--life-ink) 10%, transparent));
+  text-align: left;
+  vertical-align: top;
+}
+
+.life-manual-body th,
+.life-manual-prose th {
+  background: color-mix(in srgb, var(--life-accent, #c45c26) 10%, transparent);
+  color: var(--life-ink);
+  font-weight: 650;
+}
+
+.life-manual-body tr:nth-child(even) td,
+.life-manual-prose tr:nth-child(even) td {
+  background: color-mix(in srgb, var(--life-ink) 3%, transparent);
 }
 
 .life-manual-chapter .inline-edit__textarea.life-cognition-body-edit,
@@ -3053,9 +3097,26 @@ a.life-lately-text:hover,
 .life-thoughts-detail-head {
   display: grid;
   gap: 0.55rem;
-  max-width: 36rem;
+  max-width: 42rem;
   padding-bottom: 0.35rem;
   border-bottom: 1px solid var(--life-line);
+}
+
+.life-thoughts-detail-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.life-thought-list-actions {
+  margin-top: 0.7rem;
+}
+
+.life-thought-list-note.inline-edit--editable:empty::before {
+  content: '点这里加备注';
+  color: var(--life-sage);
+  opacity: 0.7;
 }
 
 .life-thoughts-detail-count {
