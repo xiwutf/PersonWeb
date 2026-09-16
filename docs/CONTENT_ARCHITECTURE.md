@@ -161,8 +161,10 @@ Work 运营内容不要写入 Life 目录。
 | **PRIMARY** | MySQL `reading_entries` → `.NET` |
 | **Ingest** | `POST /api/integrations/mindtrace`（Bearer `MindTrace:IngestToken`） |
 | **Admin API** | `GET/PATCH/DELETE /api/admin/reading`（管理员 JWT） |
+| **Public API** | `GET /api/reading`（`.NET`，仅 `published` + `public`）；Nitro 代理 `GET /api/reading` |
 | **Admin UI** | `/admin/reading` |
-| **默认** | `status=inbox`，`visibility=private`；公开站暂不展示 |
+| **Public UI** | `/life/thoughts` 卡片「来自网页」→ `/life/thoughts/reading`（保留 slug，勿写入 YAML） |
+| **默认** | `status=inbox`，`visibility=private`；Admin「发布」后出现在公开摘句入口 |
 | **SQL** | `database/reading_entries_table.sql` |
 
 不要把 MindTrace 摘录写入 `content/life`；不要再使用 Nuxt `server/data/reading-entries.json`。

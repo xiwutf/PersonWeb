@@ -47,14 +47,55 @@ type ThoughtsIndexResponse = {
   sections: ThoughtSection[]
 }
 
+type PublicReadingItem = {
+  id: string
+  text: string
+  note?: string
+}
+
 const defaultDescription = '把一些反复想起的话，\n按主题慢慢收起来。'
 
-const { data, pending } = await useAsyncData('life-thoughts-index', () =>
+const { data, pending: thoughtsPending } = await useAsyncData('life-thoughts-index', () =>
   $fetch<ThoughtsIndexResponse>('/api/content/life/thoughts'),
 )
 
+const { data: readingData, pending: readingPending } = await useAsyncData(
+  'life-thoughts-reading-preview',
+  () => $fetch<{ items: PublicReadingItem[] }>('/api/reading'),
+)
+
 const page = computed(() => data.value)
-const sections = computed(() => data.value?.sections || [])
+const pending = computed(() => thoughtsPending.value || readingPending.value)
+
+const webSection = computed((): ThoughtSection | null => {
+  const items = readingData.value?.items || []
+  const featured = items[0]
+    ? { id: items[0].id, text: items[0].text, note: items[0].note }
+    : null
+  const recommendations = items.slice(1, 3).map(item => ({
+    id: item.id,
+    text: item.text,
+  }))
+
+  return {
+    slug: 'reading',
+    index: '08',
+    title: '来自网页',
+    description: 'MindTrace 发布并公开的网页摘录。',
+    visualType: 'text-only',
+    total: items.length,
+    featured,
+    recommendations,
+  }
+})
+
+const sections = computed(() => {
+  const base = data.value?.sections || []
+  if (!webSection.value) {
+    return base
+  }
+  return [...base, webSection.value]
+})
 
 usePageSeo(() => ({
   title: `${page.value?.title || '生活里的想法'} - 溪午听风 · Life`,

@@ -112,6 +112,20 @@ public class ReadingService : IReadingService
     }
 
     /// <inheritdoc />
+    public async Task<List<ReadingEntryDto>> ListPublicAsync(
+        CancellationToken cancellationToken = default)
+    {
+        List<ReadingEntry> rows = await _context.ReadingEntries
+            .AsNoTracking()
+            .Where(e => e.Status == "published" && e.Visibility == "public")
+            .OrderByDescending(e => e.UpdatedAt)
+            .ThenByDescending(e => e.Id)
+            .ToListAsync(cancellationToken);
+
+        return rows.Select(ToDto).ToList();
+    }
+
+    /// <inheritdoc />
     public async Task<ReadingEntryDto?> ApplyActionAsync(
         long id,
         string action,

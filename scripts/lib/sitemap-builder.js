@@ -31,6 +31,7 @@ const STATIC_PATHS = [
   '/work/lab',
   '/life/cognition',
   '/life/thoughts',
+  '/life/thoughts/reading',
   '/search',
   '/work/links',
   '/work/changelog',

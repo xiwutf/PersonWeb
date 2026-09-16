@@ -15,10 +15,14 @@ namespace PersonalSite.Api.Controllers;
 public class AdminReadingController : ControllerBase
 {
     private readonly IReadingService _readingService;
+    private readonly ILogger<AdminReadingController> _logger;
 
-    public AdminReadingController(IReadingService readingService)
+    public AdminReadingController(
+        IReadingService readingService,
+        ILogger<AdminReadingController> logger)
     {
         _readingService = readingService;
+        _logger = logger;
     }
 
     /// <summary>列表</summary>
@@ -27,8 +31,18 @@ public class AdminReadingController : ControllerBase
         [FromQuery] string? status = null,
         CancellationToken cancellationToken = default)
     {
-        List<ReadingEntryDto> items = await _readingService.ListAsync(status, cancellationToken);
-        return Ok(ApiResponse.Success(new { Items = items }));
+        try
+        {
+            List<ReadingEntryDto> items = await _readingService.ListAsync(status, cancellationToken);
+            return Ok(ApiResponse.Success(new { Items = items }));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to list reading entries");
+            return StatusCode(500, ApiResponse.Error(
+                "Failed to load reading inbox. Ensure reading_entries table exists.",
+                500));
+        }
     }
 
     /// <summary>发布 / 归档</summary>

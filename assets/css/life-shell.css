@@ -3159,6 +3159,16 @@ a.life-lately-text:hover,
   opacity: 0.8;
 }
 
+.life-thought-list-source a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.life-thought-list-source a:hover {
+  opacity: 1;
+}
+
 @media (max-width: 768px) {
   .life-thought-card {
     display: flex;

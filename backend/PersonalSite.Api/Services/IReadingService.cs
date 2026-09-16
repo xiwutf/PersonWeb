@@ -15,6 +15,10 @@ public interface IReadingService
         string? status = null,
         CancellationToken cancellationToken = default);
 
+    /// <summary>公开站：仅 published + public</summary>
+    Task<List<ReadingEntryDto>> ListPublicAsync(
+        CancellationToken cancellationToken = default);
+
     Task<ReadingEntryDto?> ApplyActionAsync(
         long id,
         string action,

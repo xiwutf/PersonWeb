@@ -24,7 +24,12 @@
     />
     <p v-else-if="item.note" class="life-thought-list-note">{{ item.note }}</p>
 
-    <p v-if="item.source" class="life-thought-list-source">{{ item.source }}</p>
+    <p v-if="item.sourceUrl" class="life-thought-list-source">
+      <a :href="item.sourceUrl" target="_blank" rel="noopener noreferrer">
+        {{ item.source || item.sourceUrl }}
+      </a>
+    </p>
+    <p v-else-if="item.source" class="life-thought-list-source">{{ item.source }}</p>
     <p v-if="item.createdAt" class="life-thought-list-date">{{ item.createdAt }}</p>
 
     <div v-if="canEdit" class="life-thought-list-actions">
@@ -39,6 +44,7 @@ type ThoughtItem = {
   text: string
   note?: string
   source?: string
+  sourceUrl?: string
   createdAt?: string
   featured?: boolean
 }

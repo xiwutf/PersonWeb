@@ -142,4 +142,22 @@ public class ReadingServiceTests
         await Assert.ThrowsAsync<ArgumentException>(() =>
             service.ApplyActionAsync(entry.Id, "share"));
     }
+
+    [Fact]
+    public async Task ListPublic_OnlyPublishedPublic()
+    {
+        await using AppDbContext db = CreateDb();
+        var service = new ReadingService(db);
+        (_, ReadingEntryDto inbox) = await service.IngestMindtraceAsync(SamplePayload("inbox"));
+        (_, ReadingEntryDto published) = await service.IngestMindtraceAsync(SamplePayload("pub"));
+        await service.ApplyActionAsync(published.Id, "publish");
+        await service.ApplyActionAsync(inbox.Id, "archive");
+
+        List<ReadingEntryDto> publicItems = await service.ListPublicAsync();
+
+        Assert.Single(publicItems);
+        Assert.Equal(published.Id, publicItems[0].Id);
+        Assert.Equal("published", publicItems[0].Status);
+        Assert.Equal("public", publicItems[0].Visibility);
+    }
 }
