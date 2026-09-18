@@ -57,6 +57,7 @@ Thumbs.db
 # Build Artifacts
 # ============================================
 # Local agent/tool scratch (Blender/MPFB logs, preview HTML, character drafts)
+.superpowers/
 output/
 *.zip
 *.tar.gz
