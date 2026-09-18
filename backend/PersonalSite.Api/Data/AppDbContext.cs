@@ -120,6 +120,12 @@ public class AppDbContext : DbContext
     /// <summary>阅读 Inbox（MindTrace 外部发布）</summary>
     public DbSet<ReadingEntry> ReadingEntries { get; set; }
 
+    /// <summary>通用内容评论</summary>
+    public DbSet<ContentComment> ContentComments { get; set; }
+
+    /// <summary>内容点赞记录</summary>
+    public DbSet<ContentLike> ContentLikes { get; set; }
+
     // 前端页面样式配置相关表
     public DbSet<FrontendPageStyle> FrontendPageStyles { get; set; }
     public DbSet<FrontendStyleVariable> FrontendStyleVariables { get; set; }
@@ -239,5 +245,16 @@ public class AppDbContext : DbContext
         // 思维记录：按创建时间倒序查询索引
         modelBuilder.Entity<ThoughtRecord>()
             .HasIndex(t => t.CreatedAt);
+
+        // 内容互动：点赞唯一约束 + 评论目标索引
+        modelBuilder.Entity<ContentLike>()
+            .HasIndex(l => new { l.TargetType, l.TargetId, l.VisitorKey })
+            .IsUnique();
+
+        modelBuilder.Entity<ContentComment>()
+            .HasIndex(c => new { c.TargetType, c.TargetId });
+
+        modelBuilder.Entity<ContentComment>()
+            .HasIndex(c => c.Status);
     }
 }

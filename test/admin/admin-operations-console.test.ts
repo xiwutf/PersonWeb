@@ -142,7 +142,9 @@ describe('Admin menu structure', () => {
       '/admin/analytics',
       '/admin/ai',
       '/admin/visitor-messages',
+      '/admin/comments',
       '/admin/consultations',
+      '/admin/reading',
     ])
     expect(adminMenuPaths).not.toContain('/admin/content')
   })

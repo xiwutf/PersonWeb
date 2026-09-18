@@ -1,0 +1,201 @@
+/* 内容互动：点赞 + 回应（克制、留白，跟随站点 token） */
+
+.ci-reaction {
+  margin: 2rem 0 0.5rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.ci-reaction-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0.35rem 0;
+  color: var(--color-text-muted);
+  font: inherit;
+  font-size: 0.95rem;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.ci-reaction-btn:hover:not(:disabled),
+.ci-reaction-btn.is-liked {
+  color: var(--color-text-main);
+}
+
+.ci-reaction-btn:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+
+.ci-reaction-heart {
+  font-size: 1.05rem;
+  line-height: 1;
+  color: var(--color-primary);
+}
+
+.ci-comments {
+  margin: 1.6rem 0 0.4rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.ci-comments-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.ci-comments-head h2 {
+  margin: 0;
+  color: var(--color-text-main);
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.ci-comments-count {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.ci-form {
+  display: grid;
+  gap: 0.95rem;
+  margin-bottom: 1.8rem;
+}
+
+.ci-field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.ci-field > span {
+  color: var(--color-text-main);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.ci-field em {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-style: normal;
+}
+
+.ci-field input,
+.ci-field textarea {
+  width: 100%;
+  padding: 0.65rem 0.8rem;
+  color: var(--color-text-main);
+  font: inherit;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.ci-field input:focus,
+.ci-field textarea:focus {
+  border-color: var(--color-primary);
+}
+
+.ci-field textarea {
+  resize: vertical;
+  min-height: 6.5rem;
+}
+
+.ci-submit {
+  justify-self: start;
+  margin: 0.15rem 0 0;
+  padding: 0.55rem 1.15rem;
+  color: var(--color-text-main);
+  font: inherit;
+  font-size: 0.9rem;
+  background: transparent;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.ci-submit:hover:not(:disabled) {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.ci-submit:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.ci-form-error {
+  margin: 0;
+  color: #b42318;
+  font-size: 0.875rem;
+}
+
+.ci-form-success {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+.ci-empty {
+  margin: 0;
+  padding: 0.4rem 0 0.8rem;
+  color: var(--color-text-muted);
+  font-size: 0.92rem;
+}
+
+.ci-list {
+  display: grid;
+  gap: 1.15rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ci-item {
+  padding-bottom: 1.1rem;
+  border-bottom: 1px dashed var(--color-border-subtle);
+}
+
+.ci-item:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.ci-item-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 0.4rem;
+}
+
+.ci-item-meta strong {
+  color: var(--color-text-main);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.ci-item-meta time {
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+}
+
+.ci-item-body {
+  margin: 0;
+  color: var(--color-text-main);
+  font-size: 0.98rem;
+  line-height: 1.75;
+  white-space: pre-wrap;
+  word-break: break-word;
+}

@@ -99,3 +99,10 @@ DELETE FROM `Projects` WHERE `Id` = 'your-guid-here';
 3. **时区**：`CreatedAt` 和 `UpdatedAt` 使用服务器时区
 4. **自动更新**：`UpdatedAt` 字段会在记录更新时自动更新为当前时间
 
+## 内容互动（评论 / 点赞）V1
+
+脚本：`content_interaction_tables.sql`（`comments` / `content_likes`）。
+
+**.NET 后端启动时会自动执行等价的 `CREATE TABLE IF NOT EXISTS`**，一般无需再手动跑。
+若启动日志出现建表失败，再手动执行该脚本兜底。
+

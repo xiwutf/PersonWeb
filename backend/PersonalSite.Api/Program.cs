@@ -171,6 +171,9 @@ builder.Services.Configure<PersonalSite.Api.Models.Dto.MindtraceIngestOptions>(
     builder.Configuration.GetSection(PersonalSite.Api.Models.Dto.MindtraceIngestOptions.SectionName));
 builder.Services.AddScoped<PersonalSite.Api.Services.IReadingService, PersonalSite.Api.Services.ReadingService>();
 
+// 内容互动（点赞 / 评论）
+builder.Services.AddScoped<PersonalSite.Api.Services.IContentInteractionService, PersonalSite.Api.Services.ContentInteractionService>();
+
 // 4. 配置 Swagger
 builder.Services.AddSwaggerGen(c =>
 {
@@ -207,6 +210,15 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
+
+// 启动时幂等补齐内容互动表（CREATE TABLE IF NOT EXISTS）
+using (var scope = app.Services.CreateScope())
+{
+    ILogger bootstrapLogger = scope.ServiceProvider
+        .GetRequiredService<ILoggerFactory>()
+        .CreateLogger("ContentInteractionSchema");
+    await ContentInteractionSchemaBootstrap.EnsureAsync(app.Services, bootstrapLogger);
+}
 
 // 配置 HTTP 请求管道
 if (app.Environment.IsDevelopment())

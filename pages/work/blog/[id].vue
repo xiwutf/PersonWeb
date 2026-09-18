@@ -46,6 +46,20 @@
           </div>
 
           <article class="blog-detail-content prose dark:prose-invert max-w-none" v-html="renderedContent"></article>
+
+          <ClientOnly>
+            <div v-if="interactionTargetId" class="blog-detail-interaction">
+              <ContentReaction
+                target-type="article"
+                :target-id="interactionTargetId"
+              />
+              <CommentSection
+                target-type="article"
+                :target-id="interactionTargetId"
+                title="回应这篇内容"
+              />
+            </div>
+          </ClientOnly>
         </div>
 
         <aside class="hidden lg:block w-80">
@@ -87,7 +101,10 @@
 import MarkdownIt from 'markdown-it'
 import { isNotFoundError } from '~/composables/useBackendFetch'
 import { usePageSeo, useJsonLd, toAbsoluteUrl } from '~/composables/usePageSeo'
+import ContentReaction from '~/components/interaction/ContentReaction.vue'
+import CommentSection from '~/components/interaction/CommentSection.vue'
 import '~/assets/css/blog.css'
+import '~/assets/css/content-interaction.css'
 
 definePageMeta({
   layout: 'default',
@@ -197,6 +214,9 @@ const rendered = computed(() => {
 
 const renderedContent = computed(() => rendered.value.html)
 const toc = computed(() => rendered.value.toc)
+
+/** 互动模块用 slug 作为稳定 targetId（Git SoT） */
+const interactionTargetId = computed(() => String(article.value?.slug || '').trim())
 
 const formatDate = (dateStr: string) => {
   if (!dateStr) return ''

@@ -28,6 +28,7 @@ export const adminMenu: AdminMenuGroup[] = [
     icon: 'fas fa-comments',
     children: [
       { label: '访客互动', path: '/admin/visitor-messages' },
+      { label: '内容回应', path: '/admin/comments' },
       { label: '咨询管理', path: '/admin/consultations' },
       { label: '阅读 Inbox', path: '/admin/reading' },
     ],

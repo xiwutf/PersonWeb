@@ -312,7 +312,9 @@ const getMenuItemIcon = (label: string): string => {
     '数据分析': 'fas fa-chart-bar',
     'AI 中心': 'fas fa-robot',
     '访客互动': 'fas fa-comments',
+    '内容回应': 'fas fa-comment-dots',
     '咨询管理': 'fas fa-handshake',
+    '阅读 Inbox': 'fas fa-book-open',
   }
   return iconMap[label] || 'fas fa-circle'
 }
