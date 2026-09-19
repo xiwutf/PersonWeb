@@ -1,5 +1,15 @@
 <template>
-  <article class="life-note-article">
+  <article v-if="isEssay" class="life-essay">
+    <NuxtLink to="/life/notes" class="life-essay-back">← 返回随笔</NuxtLink>
+    <p class="life-essay-kicker">{{ essayKicker }}</p>
+    <h1>
+      <span v-for="(line, index) in essayHeadline" :key="index">{{ line }}</span>
+    </h1>
+    <p v-if="essayLede" class="life-essay-lede">{{ essayLede }}</p>
+    <div class="life-essay-body" v-html="renderedContent"></div>
+  </article>
+
+  <article v-else class="life-note-article">
     <NuxtLink to="/life/notes" class="life-note-back">← 返回随笔</NuxtLink>
 
     <header class="life-note-masthead">
@@ -37,6 +47,7 @@
 <script setup lang="ts">
 import { isLifeNoteSlug } from '~/constants/life-content'
 import { usePageSeo, useJsonLd } from '~/composables/usePageSeo'
+import '~/assets/css/life-essay.css'
 
 definePageMeta({
   layout: 'life'
@@ -100,7 +111,22 @@ const enhanceLifeNoteHtml = (html: string) => {
   return result + enhanced.slice(cursor)
 }
 
-const renderedContent = computed(() => enhanceLifeNoteHtml(parse(post.value?.content || '')))
+const isEssay = computed(() => String(post.value?.skin || '') === 'essay')
+const essayKicker = computed(() => String(post.value?.kicker || '工作能力 · 八层'))
+const essayLede = computed(() => String(post.value?.lede || post.value?.description || ''))
+const essayHeadline = computed(() => {
+  const raw = String(post.value?.headline || post.value?.title || '')
+  if (raw.includes('，')) {
+    const [first, ...rest] = raw.split('，')
+    return [`${first}，`, rest.join('，')].filter(Boolean)
+  }
+  return [raw]
+})
+
+const renderedContent = computed(() => {
+  const html = parse(post.value?.content || '')
+  return isEssay.value ? html : enhanceLifeNoteHtml(html)
+})
 
 if (!post.value) {
   throw createError({ statusCode: 404, statusMessage: 'Not Found' })
@@ -116,11 +142,39 @@ const formatDate = (dateString?: string) => {
   })
 }
 
+useHead(() => {
+  if (!isEssay.value) {
+    return {
+      htmlAttrs: {
+        'data-life-essay': undefined,
+      },
+    }
+  }
+
+  return {
+    htmlAttrs: {
+      'data-life-essay': 'true',
+    },
+    link: [
+      { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+      { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' },
+      {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&family=ZCOOL+XiaoWei&display=swap',
+      },
+      {
+        rel: 'stylesheet',
+        href: 'https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css',
+      },
+    ],
+  }
+})
+
 usePageSeo(() => ({
   title: `${post.value.title} - 溪午听风 · Life`,
   description: post.value.description || '溪午听风的一篇生活随笔。',
   path: `/life/${slugString}`,
-  image: post.value.cover || null,
+  image: post.value.cover || (isEssay.value ? '/images/life/work-capability/01-skill-vs-done.png' : null),
   type: 'article',
   world: 'life',
 }))
@@ -133,7 +187,7 @@ useJsonLd(() => {
     headline: post.value.title,
     description: post.value.description || undefined,
     datePublished: post.value.date || undefined,
-    image: post.value.cover || undefined,
+    image: post.value.cover || (isEssay.value ? '/images/life/work-capability/01-skill-vs-done.png' : undefined),
     author: { '@type': 'Person', name: '溪午听风' },
   }
 })

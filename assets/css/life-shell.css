@@ -2209,6 +2209,34 @@ a.life-lately-text:hover,
   text-underline-offset: 0.18em;
 }
 
+.life-note-figure {
+  margin: 1.35rem 0 1.15rem;
+}
+
+.life-note-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #fff;
+  border: 1px solid var(--life-line);
+  border-radius: 0.2rem;
+}
+
+.life-note-figure figcaption {
+  margin-top: 0.7rem;
+  color: var(--life-ink-soft);
+  font-family: var(--life-font-note);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.life-note-figure figcaption em {
+  font-style: normal;
+  color: var(--life-accent);
+  margin-right: 0.45rem;
+}
+
 .life-note-tags {
   display: flex;
   flex-wrap: wrap;
