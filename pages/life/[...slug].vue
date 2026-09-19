@@ -174,7 +174,7 @@ usePageSeo(() => ({
   title: `${post.value.title} - 溪午听风 · Life`,
   description: post.value.description || '溪午听风的一篇生活随笔。',
   path: `/life/${slugString}`,
-  image: post.value.cover || (isEssay.value ? '/images/life/work-capability/01-skill-vs-done.png' : null),
+  image: post.value.cover || (isEssay.value ? '/images/life/work-capability/01-skill-vs-done.webp' : null),
   type: 'article',
   world: 'life',
 }))
@@ -187,7 +187,7 @@ useJsonLd(() => {
     headline: post.value.title,
     description: post.value.description || undefined,
     datePublished: post.value.date || undefined,
-    image: post.value.cover || (isEssay.value ? '/images/life/work-capability/01-skill-vs-done.png' : undefined),
+    image: post.value.cover || (isEssay.value ? '/images/life/work-capability/01-skill-vs-done.webp' : undefined),
     author: { '@type': 'Person', name: '溪午听风' },
   }
 })
