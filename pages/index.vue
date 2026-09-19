@@ -1,97 +1,89 @@
 <template>
-  <main class="portal-page">
-    <div class="portal-atmosphere" aria-hidden="true">
-      <span class="portal-atmosphere-orb portal-atmosphere-orb--life"></span>
-      <span class="portal-atmosphere-orb portal-atmosphere-orb--work"></span>
-      <span class="portal-atmosphere-grid"></span>
+  <main class="portal-foyer">
+    <div class="portal-worlds">
+      <NuxtLink to="/life" class="portal-world portal-world--life">
+        <span class="portal-identity">溪午听风</span>
+
+        <div class="portal-world-main">
+          <strong class="portal-world-name">生活</strong>
+          <p v-if="lifeLine" class="portal-life-line">{{ lifeLine }}</p>
+
+          <img
+            class="portal-life-scene"
+            src="/images/life/hero-desk.webp"
+            alt=""
+            width="960"
+            height="720"
+            decoding="async"
+          >
+
+          <dl v-if="lifeNow.length" class="portal-life-now">
+            <div v-for="item in lifeNow" :key="item.title">
+              <dt>{{ item.title }}</dt>
+              <dd>{{ item.description }}</dd>
+            </div>
+          </dl>
+
+          <p v-if="lifeNote" class="portal-life-note">
+            <span>随笔</span>
+            {{ lifeNote.title }}
+          </p>
+        </div>
+      </NuxtLink>
+
+      <NuxtLink to="/work" class="portal-world portal-world--work">
+        <div class="portal-world-main">
+          <strong class="portal-world-name">工作</strong>
+          <p v-if="workRole" class="portal-work-role">{{ workRole }}</p>
+          <ul v-if="workFocus.length" class="portal-work-focus">
+            <li v-for="item in workFocus" :key="item">{{ item }}</li>
+          </ul>
+        </div>
+      </NuxtLink>
     </div>
 
-    <header class="portal-header">
-      <NuxtLink to="/" class="portal-brand" aria-label="溪午听风入口首页">
-        <SiteBrandLogo variant="full" />
-      </NuxtLink>
-      <p class="portal-header-note">SELECT A WORLD</p>
-    </header>
-
-    <section class="portal-content" aria-labelledby="portal-title">
-      <div class="portal-intro">
-        <p class="portal-eyebrow">访客留声</p>
-        <h1 id="portal-title">路过的人，留下过这些话。</h1>
-        <p>选一边进入生活或工作；留言审核通过后会出现在这里。</p>
-        <div
-          class="portal-danmaku-stage"
-          :class="{ 'is-loading': danmakuPending && !danmakuMessages?.length }"
-          aria-hidden="true"
-        >
-          <div v-if="danmakuPending && !danmakuMessages?.length" class="portal-danmaku-skeleton">
-            <span v-for="n in 9" :key="n" class="portal-danmaku-skeleton-chip" />
-          </div>
-          <VisitorDanmakuWall variant="embedded" :messages="danmakuMessages" />
-        </div>
+    <div class="portal-sill">
+      <div class="portal-sill-life">
         <ClientOnly>
           <PortalVisitorMessage />
         </ClientOnly>
       </div>
-
-      <div class="portal-choices">
-        <NuxtLink to="/life" class="portal-choice portal-choice--life">
-          <span class="portal-choice-glow" aria-hidden="true"></span>
-          <span class="portal-choice-topline"><span>01</span><span>LIFE</span></span>
-          <span class="portal-choice-icon" aria-hidden="true">
-            <svg viewBox="0 0 48 48">
-              <path d="M24 7v5M24 36v5M7 24h5M36 24h5M12 12l3.6 3.6M32.4 32.4 36 36M36 12l-3.6 3.6M15.6 32.4 12 36" />
-              <circle cx="24" cy="24" r="8" />
-            </svg>
-          </span>
-          <span class="portal-choice-copy">
-            <strong>进入生活</strong>
-            <small>日常、感受、阅读与远方</small>
-          </span>
-          <span class="portal-choice-action">去生活里看看<span aria-hidden="true">↗</span></span>
-        </NuxtLink>
-
-        <NuxtLink to="/work" class="portal-choice portal-choice--work">
-          <span class="portal-choice-glow" aria-hidden="true"></span>
-          <span class="portal-choice-topline"><span>02</span><span>WORK</span></span>
-          <span class="portal-choice-icon" aria-hidden="true">
-            <svg viewBox="0 0 48 48">
-              <rect x="8" y="11" width="32" height="26" rx="4" />
-              <path d="M17 18l6 6-6 6M27 30h7" />
-            </svg>
-          </span>
-          <span class="portal-choice-copy">
-            <strong>进入工作</strong>
-            <small>AI 产品、项目与持续创造</small>
-          </span>
-          <span class="portal-choice-action">查看正在创造的事<span aria-hidden="true">↗</span></span>
-        </NuxtLink>
-      </div>
-    </section>
-
-    <footer class="portal-footer">
-      <span>© {{ currentYear }} 溪午听风</span>
-      <span class="portal-footer-divider" aria-hidden="true"></span>
-      <span>认真生活，持续创造</span>
-    </footer>
+      <p class="portal-sign">认真生活，持续创造</p>
+    </div>
   </main>
 </template>
 
 <script setup lang="ts">
-import { defineAsyncComponent } from 'vue'
+import { computed, defineAsyncComponent } from 'vue'
 import '~/assets/css/portal.css'
-import SiteBrandLogo from '~/components/layout/SiteBrandLogo.vue'
-import VisitorDanmakuWall from '~/components/VisitorDanmakuWall.vue'
 import { usePageSeo, useJsonLd, toAbsoluteUrl } from '~/composables/usePageSeo'
-import { usePortalDanmaku } from '~/composables/usePortalDanmaku'
 
 definePageMeta({ layout: false })
 
-// 留言表单非首屏关键路径，保留异步拆包
 const PortalVisitorMessage = defineAsyncComponent(() => import('~/components/PortalVisitorMessage.vue'))
-const currentYear = new Date().getFullYear()
 
-// 页面 setup 即拉弹幕，避免 ClientOnly + 异步组件挂载后再请求的瀑布流
-const { data: danmakuMessages, pending: danmakuPending } = usePortalDanmaku()
+type PortalGlimpse = {
+  life: {
+    line: string
+    now: Array<{ title: string, description: string }>
+    note: { title: string, description: string } | null
+  }
+  work: {
+    role: string
+    focus: string[]
+  }
+}
+
+const { data: glimpse } = await useAsyncData(
+  'portal-glimpse',
+  () => $fetch<PortalGlimpse>('/api/content/portal-glimpse'),
+)
+
+const lifeLine = computed(() => glimpse.value?.life.line || '')
+const lifeNow = computed(() => glimpse.value?.life.now || [])
+const lifeNote = computed(() => glimpse.value?.life.note)
+const workRole = computed(() => glimpse.value?.work.role || '')
+const workFocus = computed(() => glimpse.value?.work.focus || [])
 
 usePageSeo({
   title: '溪午听风 - 生活与工作',

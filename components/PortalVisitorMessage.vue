@@ -1,38 +1,37 @@
 <template>
-  <form class="portal-message" @submit.prevent="submit">
-    <label class="portal-message-label" for="portal-message-input">留下一句话</label>
-    <div class="portal-message-row">
+  <form class="portal-note" @submit.prevent="submit">
+    <p class="portal-note-prompt">路过？留一句。</p>
+    <div class="portal-note-fields">
       <input
-        id="portal-message-name"
+        id="portal-note-name"
         v-model="visitorName"
         type="text"
-        class="portal-message-name"
-        placeholder="你的称呼"
+        class="portal-note-name"
+        placeholder="称呼"
         maxlength="20"
         autocomplete="nickname"
         required
+        aria-label="称呼"
       />
-      <textarea
-        id="portal-message-input"
+      <input
+        id="portal-note-text"
         v-model="content"
-        class="portal-message-input"
-        placeholder="想说的话会在审核后出现在上方…"
-        rows="2"
+        type="text"
+        class="portal-note-text"
+        placeholder=""
         maxlength="100"
         required
+        aria-label="一句话"
       />
-    </div>
-    <div class="portal-message-actions">
-      <span class="portal-message-count">{{ content.length }}/100</span>
       <button
         type="submit"
-        class="portal-message-submit"
+        class="portal-note-submit"
         :disabled="!visitorName.trim() || !content.trim() || submitting"
       >
-        {{ submitting ? '发送中…' : '发送留言' }}
+        {{ submitting ? '…' : '留' }}
       </button>
     </div>
-    <p v-if="feedback" class="portal-message-feedback" :data-type="feedbackType" role="status">
+    <p v-if="feedback" class="portal-note-feedback" :data-type="feedbackType" role="status">
       {{ feedback }}
     </p>
   </form>
@@ -80,10 +79,10 @@ const submit = async () => {
     localStorage.setItem(VISITOR_NAME_KEY, name)
 
     content.value = ''
-    showFeedback('已提交，审核通过后会出现在上方弹幕区。', 'success')
+    showFeedback('记下了，审核后会出现。', 'success')
   } catch (error) {
     console.error('Portal visitor message failed', error)
-    showFeedback('发送失败，请稍后再试。', 'error')
+    showFeedback('没发出去，稍后再试。', 'error')
   } finally {
     submitting.value = false
   }

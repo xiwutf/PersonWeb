@@ -1,8 +1,8 @@
 <template>
   <div
     v-if="isDanmakuEnabled && tracks.length"
-    class="danmaku-container danmaku-container--embedded"
-    :class="{ 'is-paused': isPaused }"
+    class="danmaku-container"
+    :class="[`danmaku-container--${variant}`, { 'is-paused': isPaused }]"
   >
     <div
       v-for="track in tracks"
@@ -21,10 +21,10 @@
           <span
             v-for="(item, idx) in track.items"
             :key="`${track.id}-${copy}-${idx}`"
-            class="danmaku-chip"
-            :style="{ color: item.color }"
+            :class="variant === 'whisper' ? 'danmaku-slip' : 'danmaku-chip'"
+            :style="variant === 'whisper' ? undefined : { color: item.color }"
           >
-            <span v-if="item.emoji" class="danmaku-emoji">{{ item.emoji }}</span>
+            <span v-if="item.emoji && variant !== 'whisper'" class="danmaku-emoji">{{ item.emoji }}</span>
             <span class="danmaku-content">{{ item.content }}</span>
           </span>
         </div>
@@ -55,7 +55,7 @@ interface Track {
 
 const props = withDefaults(defineProps<{
   maxCount?: number
-  variant?: 'fullscreen' | 'embedded'
+  variant?: 'fullscreen' | 'embedded' | 'whisper'
   messages?: PortalDanmakuItem[] | null
 }>(), {
   maxCount: 6,
@@ -94,7 +94,7 @@ const buildTracks = (sources: PortalDanmakuItem[]) => {
     return
   }
 
-  const rowCount = 3
+  const rowCount = props.variant === 'whisper' ? 1 : 3
   const rows: TrackItem[][] = Array.from({ length: rowCount }, () => [])
 
   cleaned.forEach((source, index) => {
@@ -122,7 +122,7 @@ const buildTracks = (sources: PortalDanmakuItem[]) => {
     return {
       id: `track-${rowIndex}`,
       items: filled,
-      durationSec: 28 + rowIndex * 6,
+      durationSec: (props.variant === 'whisper' ? 42 : 28) + rowIndex * 8,
     }
   })
 }
@@ -173,7 +173,8 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.danmaku-container--embedded {
+.danmaku-container--embedded,
+.danmaku-container--whisper {
   position: absolute;
   inset: 0;
   z-index: 0;
@@ -183,9 +184,13 @@ onUnmounted(() => {
   gap: 0.35rem;
   padding: 0.65rem 0;
   overflow: hidden;
-  border-radius: inherit;
   pointer-events: none;
   contain: layout paint;
+}
+
+.danmaku-container--whisper {
+  gap: 1.1rem;
+  padding: 0;
 }
 
 .danmaku-track {
@@ -205,7 +210,8 @@ onUnmounted(() => {
   backface-visibility: hidden;
 }
 
-.danmaku-container--embedded.is-paused .danmaku-track-rail {
+.danmaku-container--embedded.is-paused .danmaku-track-rail,
+.danmaku-container--whisper.is-paused .danmaku-track-rail {
   animation-play-state: paused;
 }
 
@@ -230,6 +236,43 @@ onUnmounted(() => {
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
+}
+
+.danmaku-slip {
+  display: inline-flex;
+  max-width: 16rem;
+  padding: 0 0.35rem;
+  font-family: "KaiTi", "STKaiti", "Songti SC", "Microsoft YaHei", serif;
+  font-size: 0.92rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.danmaku-slip .danmaku-content {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background-image: linear-gradient(
+    90deg,
+    rgba(44, 36, 28, 0.2) 0 58%,
+    rgba(232, 238, 248, 0.18) 58% 100%
+  );
+  background-size: 100vw 100%;
+  background-attachment: fixed;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@media (max-width: 860px) {
+  .danmaku-slip .danmaku-content {
+    background-image: linear-gradient(
+      180deg,
+      rgba(44, 36, 28, 0.36) 0 50%,
+      rgba(232, 238, 248, 0.32) 50% 100%
+    );
+  }
 }
 
 .danmaku-emoji {
