@@ -15,7 +15,7 @@ categories:
   index: '03'
   title: 时间
   description: 时间不听话，就先管住自己。
-  cover: /images/life/margin-window.jpg
+  cover: /images/life/margin-window.webp
   visualType: photo
 - slug: growth
   index: '04'

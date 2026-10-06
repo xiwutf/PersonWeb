@@ -7,7 +7,7 @@ summary: 为什么会有风？海陆风、山谷风、城市风是怎么形成�
 date: 2025-11-25
 publishAt: 2025-11-25T16:00:00.000Z
 category: 科普知识
-cover: /images/blog/thermal-circulation.png
+cover: /images/blog/thermal-circulation.webp
 source: manual
 ---
 # 地理科普：一文读懂热力环流与风的成因

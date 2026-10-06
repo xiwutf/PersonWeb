@@ -48,16 +48,18 @@ describe('Phase 7 UX / performance guards', () => {
     expect(footer).toMatch(/rel="noopener noreferrer"/)
   })
 
-  it('optimized content images exist and are smaller than legacy sources', () => {
+  it('optimized content images exist as webp without oversized originals', () => {
     const thermalWebp = resolve(root, 'public/images/blog/thermal-circulation.webp')
-    const thermalPng = resolve(root, 'public/images/blog/thermal-circulation.png')
     const avatarWebp = resolve(root, 'public/images/avatar.webp')
     const heroWebp = resolve(root, 'public/images/life/hero-desk.webp')
     expect(existsSync(thermalWebp)).toBe(true)
     expect(existsSync(avatarWebp)).toBe(true)
     expect(existsSync(heroWebp)).toBe(true)
+    expect(existsSync(resolve(root, 'public/images/blog/thermal-circulation.png'))).toBe(false)
+    expect(existsSync(resolve(root, 'public/images/avatar.jpg'))).toBe(false)
+    expect(existsSync(resolve(root, 'public/images/life/hero-desk.jpg'))).toBe(false)
     expect(statSync(thermalWebp).size).toBeLessThan(80 * 1024)
-    expect(statSync(thermalWebp).size).toBeLessThan(statSync(thermalPng).size)
+    expect(statSync(heroWebp).size).toBeLessThan(80 * 1024)
   })
 
   it('ACTIVE pages prefer webp for avatar / life hero', () => {

@@ -29,9 +29,7 @@ const imageConfig = {
 
 // 图片需要压缩的文件列表
 const imagesToOptimize = [
-  'avatar.jpg',
-  'wechat-qr.png',
-  'blog/thermal-circulation.png'
+  'wechat-qr.png'
 ];
 
 async function optimizeImages() {
