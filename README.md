@@ -1,480 +1,176 @@
-# 溪午听风 Personal Site 🌐
+# 溪午听风 Personal Site
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Nuxt 3](https://img.shields.io/badge/Nuxt-3-00DC82.svg)](https://nuxt.com)
-[![Vue 3](https://img.shields.io/badge/Vue-3-4FC08D.svg)](https://vuejs.org)
+[![.NET 8](https://img.shields.io/badge/.NET-8-512BD4.svg)](https://dotnet.microsoft.com/)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-339933.svg)](https://nodejs.org)
 
-一个现代化、响应式的个人开发者网站，基于 Nuxt 3 + Vue 3 + Tailwind CSS 构建。
-提供内容管理系统、项目展示、技术博客、插件工具展示等完整功能。
+全栈个人站。首页是入口，分成 **生活**（`/life`）和 **工作**（`/work`）两个世界；后台负责数据与互动，业务数据走 .NET API。
 
-[English](#english) | [中文](#中文)
+线上站点：[https://xifg.com.cn](https://xifg.com.cn)
 
-> **声明**: 本项目代码采用 MIT 开源许可证发布。
-> 本项目内的内容（文章、作品等）版权归原作者所有。
-> **Disclaimer**: The code in this project is released under the MIT open source license.
-> The copyright of the content (articles, works, etc.) in this project belongs to the original author.
+> 代码采用 [MIT](./LICENSE) 发布。文章、作品等内容版权归原作者所有。
 
-## ✨ 特性
+## 站点结构
 
-### 🎨 现代化设计
-- **统一品牌风格**：一致的颜色搭配和视觉元素
-- **设计系统 v1**：完整的设计系统，统一管理主题、色彩、组件规范
-- **响应式布局**：完美适配桌面端、平板和移动设备
-- **流畅动画**：页面淡入、悬停效果、浮动动画
-- **渐变背景**：每个页面都有独特的渐变背景色
-- **深色/浅色模式**：支持主题切换，所有组件自动适配
+| 区域 | 路径 | 做什么 |
+| --- | --- | --- |
+| 入口 | `/` | 生活 / 工作两个世界的入口 |
+| 生活 | `/life` | 随笔、最近在做的事、认知说明书、生活想法 |
+| 工作 | `/work` | 项目、工具、文章、关于与联系 |
+| 后台 | `/admin` | 概览、访问分析、AI 中心、留言与咨询 |
+| 旧地址 | `/blog`、`/projects` 等 | 301 到对应的 Work / Life 路径 |
 
-### 🏗️ 技术架构
-- **Nuxt 3**：Vue.js 的全栈框架
-- **Tailwind CSS**：原子化CSS框架
-- **@nuxt/content**：基于Markdown的内容管理
-- **TypeScript**：类型安全的JavaScript
+## 技术栈
 
-### 📱 页面结构
-- **首页**：个人介绍、快速导航、最新内容展示
-- **插件工具**：Revit插件展示和销售
-- **项目展示**：个人项目作品集
-- **技术博客**：技术文章和经验分享
-- **关于我**：个人信息和联系方式
+| 层 | 技术 |
+| --- | --- |
+| 前端 | Nuxt 3、Vue 3、TypeScript、Naive UI、Tailwind CSS |
+| 前端服务端 | Nitro（`server/api/`），Life / Work 文案与文章正文 |
+| 后端 | .NET 8 WebAPI（`backend/PersonalSite.Api/`，默认 `http://localhost:5234`） |
+| AI 服务 | Python FastAPI（`ai-service/`，可选） |
+| 数据库 | MySQL（库名 `personal_site`，脚本在 `database/all_tables.sql`） |
+| 样式 | `assets/styles/tokens.css` 为颜色、圆角、阴影的唯一来源 |
 
-### 🎯 核心功能
+本地请求大致是：浏览器访问 `localhost:3000`；页面里的 API 在本机会打到 `http://localhost:5234/api`。生产环境由 Nginx 提供前端静态文件，并把 `/api` 转到 .NET。
 
-#### 内容管理系统
-- **Markdown驱动**：所有内容通过Markdown文件管理
-- **自动化更新**：添加新的Markdown文件即可自动生成页面
-- **SEO优化**：自动生成页面标题、描述和关键词
+## 快速开始
 
-#### 插件工具模块
-- 工具展示卡片
-- 价格和购买链接
-- 标签分类
-- 统计信息展示
+环境：Node.js 18+、.NET SDK 8、MySQL 8（或 5.7）、Git。
 
-#### 项目展示模块
-- 项目分类筛选
-- 技术栈展示
-- 在线演示和源码链接
-- 项目状态标识
+一键配置：
 
-#### 博客系统
-- 文章分类和标签
-- 时间归档
-- 作者信息
-- 阅读链接
-
-## 🚀 快速开始
-
-### 环境要求
-- **Node.js** 18+ 
-- **.NET SDK** 8.0+
-- **MySQL** 5.7+ 或 8.0+
-- **Git**
-
-### 一键配置（推荐）
-
-**Windows:**
 ```powershell
+# Windows
 .\scripts\setup-dev-env.ps1
 ```
 
-**Linux/macOS:**
 ```bash
+# Linux / macOS
 chmod +x scripts/setup-dev-env.sh
 ./scripts/setup-dev-env.sh
 ```
 
-### 手动配置
-
-1. **安装依赖**
-   ```bash
-   # 前端
-   npm install
-   
-   # 后端
-   cd backend/PersonalSite.Api
-   dotnet restore
-   ```
-
-2. **配置环境变量**
-   ```bash
-   # 复制模板文件
-   cp .env.example .env
-   # 编辑 .env 文件，设置 API 地址
-   ```
-
-3. **配置数据库**
-   - 编辑 `backend/PersonalSite.Api/appsettings.Development.json`
-   - 设置数据库连接字符串
-
-4. **创建数据库并执行脚本**
-   ```sql
-   CREATE DATABASE personal_site CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-   ```
-   ```bash
-   mysql -u root -p personal_site < database/all_tables.sql
-   ```
-
-5. **启动服务**
-   ```bash
-   # 终端1 - 后端
-   cd backend/PersonalSite.Api
-   dotnet run
-   
-   # 终端2 - 前端
-   npm run dev
-   ```
-
-6. **访问应用**
-   - 前端：http://localhost:3000
-   - API 文档：http://localhost:5234/swagger
-
-### 📱 移动端访问
-
-如果想在手机上测试：
+手动启动：
 
 ```bash
-# 启动移动端开发服务器
-npm run dev:mobile
-
-# 或使用脚本（会自动显示 IP 地址）
-.\scripts\dev-mobile.ps1  # Windows
-./scripts/dev-mobile.sh   # Linux/macOS
+npm install
+cp .env.example .env
 ```
 
-然后在手机浏览器访问：`http://你的电脑IP:3000`
+编辑 `.env`，至少设置 `NUXT_PUBLIC_API_BASE` 和 `ADMIN_PASSWORD`。数据库连接写在 `backend/PersonalSite.Api/appsettings.Development.json`，库名为 `personal_site`。建库后执行：
 
-详细说明请查看 [移动端访问指南](./docs/deployment/MOBILE_ACCESS.md)
-
-### 📚 详细文档
-
-- [快速开始指南](./docs/deployment/QUICK_START.md)
-- [开发环境配置指南](./docs/deployment/DEVELOPMENT_SETUP.md)
-- [后端启动指南](./docs/deployment/START_BACKEND.md)
-
-### 构建生产版本
 ```bash
-npm run build
+mysql -u root -p personal_site < database/all_tables.sql
 ```
 
-### 预览生产版本
+两个终端分别启动：
+
 ```bash
-npm run preview
+cd backend/PersonalSite.Api && dotnet run
 ```
 
-## 📝 内容管理
-
-### 添加新工具
-在 `content/tools/` 目录下创建新的 `.md` 文件：
-
-```markdown
----
-title: "工具名称"
-description: "工具描述"
-price: 19.9
-tags: ["Revit", "插件"]
-buy_link: "https://example.com"
-slug: "tool-name"
-date: "2024-01-01"
----
-
-# 工具详细介绍
-
-这里是工具的详细说明...
-```
-
-### 添加新项目
-在 `content/projects/` 目录下创建新的 `.md` 文件：
-
-```markdown
----
-title: "项目名称"
-tech: ["Vue.js", "Nuxt 3"]
-description: "项目描述"
-demo_link: "https://demo.com"
-source_link: "https://github.com/..."
-slug: "project-name"
-date: "2024-01-01"
-status: "已上线"
-category: "Web应用"
----
-
-# 项目详细介绍
-
-这里是项目的详细说明...
-```
-
-### 添加新博客文章
-在 `content/blog/` 目录下创建新的 `.md` 文件：
-
-```markdown
----
-title: "文章标题"
-date: "2024-01-01"
-tags: ["Vue.js", "教程"]
-description: "文章描述"
-author: "溪午听风"
-category: "技术文章"
----
-
-# 文章内容
-
-这里是文章的正文内容...
-```
-
-## 🎨 自定义样式
-
-### 主题色彩
-网站使用了以下主题色彩：
-- **首页**：蓝色到紫色渐变
-- **工具页**：橙色到红色渐变  
-- **项目页**：紫色到粉色渐变
-- **博客页**：绿色到蓝色渐变
-
-### 自定义组件
-主要组件位于 `components/` 目录：
-- `Header.vue`：头部导航栏
-- `Footer.vue`：页脚信息
-
-### 全局样式
-全局样式定义在 `assets/css/main.css`，包含：
-- 基础样式重置
-- 组件样式类
-- 动画效果
-- 响应式工具类
-
-## 📱 响应式设计
-
-网站在以下设备上完美显示：
-- **桌面端**：1024px+（完整功能，3D 效果）
-- **平板**：768px - 1024px（响应式布局，简化 3D）
-- **手机**：320px - 768px（移动优化，禁用 3D，触摸友好）
-
-### 📱 移动端优化
-- ✅ 响应式导航菜单
-- ✅ 触摸友好的按钮（最小 44x44px）
-- ✅ 移动端自动禁用 3D 场景（性能优化）
-- ✅ 自适应字体大小
-- ✅ 优化的滚动性能
-- 详细优化说明请查看 [移动端优化指南](./docs/features/MOBILE_OPTIMIZATION.md)
-
-## 🔧 配置文件
-
-### Nuxt 配置 (`nuxt.config.ts`)
-```typescript
-export default defineNuxtConfig({
-  modules: [
-    '@nuxt/content',
-    '@nuxtjs/tailwindcss'
-  ],
-  content: {
-    highlight: {
-      theme: 'github-light'
-    }
-  }
-})
-```
-
-## 📊 性能优化
-
-- **代码分割**：自动按页面分割代码
-- **图片优化**：自动优化图片大小和格式
-- **CSS优化**：自动移除未使用的CSS
-- **预渲染**：静态生成提升首屏加载速度
-
-## 🚀 部署
-
-### Vercel 部署
-1. 连接GitHub仓库
-2. 自动检测Nuxt项目
-3. 一键部署
-
-### Netlify 部署
-1. 构建命令：`npm run build`
-2. 发布目录：`.output/public`
-
-### 服务器部署
 ```bash
-npm run build
-npm run preview
+npm run dev
 ```
 
-## 🤝 贡献指南
+- 前端：http://localhost:3000
+- Swagger：http://localhost:5234/swagger
+- 后台：http://localhost:3000/admin/login
 
-我们欢迎任何形式的贡献！无论是修复 Bug、添加新功能还是改进文档。
+手机调试用 `npm run dev:mobile`，或 `.\scripts\dev-mobile.ps1` / `./scripts/dev-mobile.sh`，然后访问 `http://<电脑 IP>:3000`。
 
-### 如何贡献
+更细的步骤见 [快速开始](./docs/deployment/QUICK_START.md)、[开发环境](./docs/deployment/DEVELOPMENT_SETUP.md)、[后端启动](./docs/deployment/START_BACKEND.md)。
 
-1. **Fork 本仓库**
-   ```bash
-   git clone https://github.com/xiwutf/PersonWeb.git
-   cd PersonWeb
-   ```
+### 常用命令
 
-2. **创建特性分支**
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
+| 命令 | 作用 |
+| --- | --- |
+| `npm run dev` | 开发服务器 |
+| `npm run dev:fresh` | 清缓存后启动 |
+| `npm run build` | 生产构建 |
+| `npm run generate` | 静态站点生成 |
+| `npm run preview` | 预览构建结果 |
+| `npm run test:run` | 跑一遍测试 |
+| `npm run lint:colors` | 检查颜色 token |
 
-3. **提交更改**
-   ```bash
-   git add .
-   git commit -m "feat: add your feature description"
-   ```
+AI 服务不是本地必启项。需要时见 [ai-service/README.md](./ai-service/README.md)。
 
-4. **推送到分支**
-   ```bash
-   git push origin feature/your-feature-name
-   ```
+## 内容放在哪
 
-5. **提交 Pull Request**
-   - 描述你的更改
-   - 链接相关的问题（如有）
-   - 确保通过所有测试
+| 内容 | 位置 | 说明 |
+| --- | --- | --- |
+| 文章正文 | `content/articles/*.md` | Git 是正文来源；运营字段在 MySQL `content_ops` |
+| 生活文案 | `content/life/` | 首页话术、随笔、认知说明书、想法 |
+| 工作文案 | `content/work/` | `/work` 首页、关于、联系等 |
+| 项目 / 工具 | MySQL | 由后台写入，不再使用 `content/projects`、`content/tools` |
 
-### 代码风格
+登录后，部分 Life / Work 文案可以在前台页面上直接改。文章示例见 `content/articles/` 里现有 frontmatter（`title`、`slug`、`status`、`summary`、`date`、`category`）。
 
-- 使用 TypeScript 获得类型安全
-- 遵循 ESLint 配置
-- 使用 Prettier 格式化代码
-- 在提交前运行 `npm run lint`
+## 目录
 
-### 报告 Bug
+```
+PersonWeb/
+├── pages/          # 路由：index、life、work、admin
+├── components/     # Vue 组件
+├── composables/    # useApi、主题、模块系统
+├── server/api/     # Nitro 路由（内容、登录等）
+├── content/        # 文章、Life、Work 文案
+├── assets/styles/  # tokens.css、base.css
+├── backend/        # .NET 8 WebAPI
+├── ai-service/     # Python FastAPI
+├── database/       # MySQL 脚本
+└── docs/           # 开发与部署手册
+```
 
-如果你发现了 Bug，请：
-1. 检查 [GitHub Issues](https://github.com/xiwutf/PersonWeb/issues) 确保尚未报告
-2. 创建新的 Issue，包含：
-   - Bug 的详细描述
-   - 复现步骤
-   - 期望行为 vs 实际行为
-   - 环境信息（OS、Node 版本等）
-   - 截图或日志（如有）
+样式改动先看 [样式架构](./docs/development/STYLE_ARCHITECTURE.md)。颜色、圆角、阴影用 `tokens.css` 里的变量，不要在页面里硬编码。
 
-### 功能请求
+## 文档
 
-如果你有功能建议，请：
-1. 在 [GitHub Discussions](https://github.com/xiwutf/PersonWeb/discussions) 中讨论
-2. 或创建 Feature Request Issue，包含：
-   - 功能的清晰描述
-   - 该功能解决的问题
-   - 可能的实现方案
-   - 示例和用例
+接手开发先读：
 
-## 📄 许可证
+1. [AGENTS.md](./AGENTS.md) — 任务入口
+2. [项目概览](./docs/PROJECT_OVERVIEW.md)
+3. [项目结构](./docs/PROJECT_STRUCTURE_GUIDE.md)
+4. [开发规范](./docs/development/DEVELOPMENT_GUIDELINES.md)
 
-本项目采用 **MIT License** 开源许可证发布。详见 [LICENSE](./LICENSE) 文件。
+专题：
 
-### 许可证说明
+- [设计系统](./docs/design-system/README.md)
+- [模块系统](./docs/architecture/README_MODULES.md)
+- [模块开发指南](./docs/development/MODULE_DEVELOPMENT_GUIDE.md)
+- [API 配置](./docs/config/API_CONFIG.md)
+- [部署说明](./docs/deployment/README.md)
+- [文档目录](./docs/README.md)
 
-- ✅ **可以**：商业使用、修改、分发、私人使用
-- ✅ **条件**：提供许可证和版权声明
-- ❌ **禁止**：责任免除
-- ⚠️ **免责**：本软件按"现状"提供，没有任何保证
+## 部署
 
-### 内容版权
+生产环境是 Nginx 提供前端静态文件，`/api` 反向代理到 .NET。构建：
 
-- **代码**：MIT License（开源）
-- **文章与作品**：版权归原作者所有
-- **第三方资源**：遵守相应的许可证
+```bash
+npm run generate
+```
 
-如果你在项目中使用了第三方代码或资源，请确保遵守相应的许可证。
+后端以 .NET 应用运行。SEO 与 Nginx 相关问题见 [SEO：OSS + Nginx](./docs/deployment/SEO_OSS_NGINX_FIX.md)。
 
-## 👤 关于作者
+## 贡献
 
-**Xie Feng (谢峰) - 溪午听风**
+1. Fork 后从 `master` 拉出分支：`git checkout -b feature/your-feature-name`
+2. 提交信息用约定式提交，例如 `feat: ...`、`fix: ...`
+3. 推送分支并开 Pull Request
 
-- GitHub: [@xiwutf](https://github.com/xiwutf)
-- Website: [https://xifg.com.cn](https://xifg.com.cn)
-- Email: your-email@example.com
+问题与想法： [Issues](https://github.com/xiwutf/PersonWeb/issues)
 
-## 🙏 致谢
+## 作者
 
-感谢以下项目和社区的支持：
+**谢峰（溪午听风）**
 
-- [Nuxt](https://nuxt.com) - Vue.js 全栈框架
-- [Vue.js](https://vuejs.org) - 渐进式 JavaScript 框架
-- [Tailwind CSS](https://tailwindcss.com) - 功能优先的 CSS 框架
-- [Naive UI](https://www.naiveui.com) - Vue 3 UI 组件库
-- [ECharts](https://echarts.apache.org) - 数据可视化库
-- 所有为本项目做出贡献的开发者
+- 站点：https://xifg.com.cn
+- GitHub：https://github.com/xiwutf
+- 邮箱：linxiwanting@gmail.com
 
-## 📞 支持与反馈
-
-- 📧 **Email**: your-email@example.com
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/xiwutf/PersonWeb/discussions)
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/xiwutf/PersonWeb/issues)
-- 💡 **Feature Requests**: [GitHub Discussions](https://github.com/xiwutf/PersonWeb/discussions)
-
-## 📋 更新日志
-
-详见 [CHANGELOG.md](./CHANGELOG.md)
-
-## 🌟 如果这个项目对你有帮助
-
-请考虑给个 Star ⭐ 来支持它的发展！
-
----
-
-<div align="center">
-
-Made with ❤️ by [Xie Feng](https://github.com/xiwutf)
+## 许可证
 
 [MIT License](./LICENSE) © 2026
 
-## 📚 项目文档
-
-### ⭐ 必读文档
-
-**在开始开发前，请务必阅读以下文档：**
-
-- **[项目概览文档](./docs/PROJECT_OVERVIEW.md)** ⭐ **必读** - 项目整体架构、技术栈和目录结构
-- **[开发规范文档](./docs/development/DEVELOPMENT_GUIDELINES.md)** ⭐ **必读** - 项目开发规范和要求，包括样式管理、代码组织、命名规范等
-- **[设计系统](./docs/design-system/README.md)** ⭐ **必读** - 主题、色彩、组件规范
-- [模块系统文档](./docs/architecture/README_MODULES.md) - 模块化系统说明
-- [Naive UI 使用指南](./docs/config/README_NAIVE_UI.md) - UI 组件库使用说明
-
-### 📖 其他文档
-
-- ⚙️ [配置文档](./docs/config/) - API 配置、环境配置
-- 🏗️ [架构文档](./docs/architecture/) - 系统架构说明
-- 🚀 [部署文档](./docs/deployment/) - 部署指南、启动说明
-- 🎨 [设计系统](./docs/design-system/) - Token 与 Pattern
-
-### 📚 文档
-
-#### 必读文档
-- [项目概览](./docs/PROJECT_OVERVIEW.md) - 项目整体架构和技术栈
-- [快速开始指南](./docs/deployment/QUICK_START.md) - 快速启动项目
-- [开发规范](./docs/development/DEVELOPMENT_GUIDELINES.md) - 开发规范和要求
-
-#### 模块化专题
-- [模块开发指南](./docs/development/MODULE_DEVELOPMENT_GUIDE.md) - 模块系统入门必读
-- [模块开发最佳实践](./docs/development/MODULE_BEST_PRACTICES.md) - 模块开发进阶指南
-- [模块系统 API 参考](./docs/api/MODULE_SYSTEM_API.md) - 完整 API 接口文档
-
-#### 完整文档索引
-详细文档索引请查看 [文档目录](./docs/README.md)
-
-## 🆕 新电脑快速配置
-
-如果你在新电脑上配置开发环境，请按以下步骤：
-
-1. **查看快速开始指南**：[快速开始指南](./docs/deployment/QUICK_START.md)
-2. **运行一键配置脚本**：
-   - Windows: `.\scripts\setup-dev-env.ps1`
-   - Linux/macOS: `./scripts/setup-dev-env.sh`
-3. **按照检查清单验证**：[快速开始指南](./docs/deployment/QUICK_START.md)
-
-## 📧 联系方式
-
-- **邮箱**：linxiwanting@gmail.com
-- **微信**：LinXi-5152
-- **GitHub**：https://github.com/xiwutf
-
-## 📄 许可证
-
-MIT License - 详见 [LICENSE](LICENSE) 文件
-
----
-
-**让代码改变世界，让技术创造价值！** 🚀 
+变更记录见 [CHANGELOG.md](./CHANGELOG.md)。
