@@ -1,15 +1,8 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-01T02:28:59.728Z",
-  "count": 50,
+  "generatedAt": "2026-10-09T06:53:48.902Z",
+  "count": 48,
   "articles": [
-    {
-      "slug": "article-1768017589287",
-      "title": "构建高效数字体验：全栈开发者的技术哲学与实践",
-      "category": "tech",
-      "publishAt": "2026-01-10T03:59:49.000Z",
-      "legacyId": 76
-    },
     {
       "slug": "welcome-to-my-site",
       "title": "欢迎来到我的个人网站",
@@ -128,13 +121,6 @@
       "category": "运维部署",
       "publishAt": "2025-11-25T16:00:00.000Z",
       "legacyId": 24
-    },
-    {
-      "slug": "sample-post",
-      "title": "这里的风景独好",
-      "category": "life",
-      "publishAt": "2025-11-25T16:00:00.000Z",
-      "legacyId": 32
     },
     {
       "slug": "scp-file-transfer",
