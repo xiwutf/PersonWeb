@@ -5,6 +5,24 @@ items:
   featured: true
   priority: 112
   source: ''
+- id: growth-013
+  category: growth
+  text: 先弄清楚应该别做什么事情，然后才会考虑接下来要采取的行动。
+  featured: false
+  priority: 21
+  note: 《穷查理宝典》
+- id: growth-014
+  category: growth
+  text: 我只想知道我将来会死在什么地方，这样我就可以永远不去那里啦。
+  featured: false
+  priority: 20
+  note: 《穷查理宝典》· 查理很喜欢的一句妙语
+- id: growth-015
+  category: growth
+  text: 如果每天都是人生的第一天，那我会怎么样——是不是就会疯狂地汲取这个世界的知识与信息？
+  featured: false
+  priority: 19
+  note: 读《财富自由之路》：「把每天都当作自己人生的第一天，无论好坏，过去的就过去了。」
 - id: growth-002
   category: growth
   text: 成长的方法只有一个：学习。学习、进步、成长，统称为进化。
