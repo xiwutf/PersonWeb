@@ -16,7 +16,7 @@
     <NAlert v-if="notice" type="success" class="library-shelf-notice" role="status" closable @close="notice = ''">{{ notice }}</NAlert>
     <NAlert v-if="uploading && converting" type="info" class="library-shelf-notice" role="status">正在上传并转换 MOBI，完成后自动加入书架。请稍候。</NAlert>
     <section v-if="recent" class="library-continue" aria-label="最近阅读">
-      <div><span>最近阅读</span><h2>{{ recent.book.title }}</h2><p>已读 {{ Math.round(recent.progress.progression * 100) }}% · {{ readTime(recent.progress.lastReadAt) }}</p></div>
+      <div class="library-continue-info"><span class="library-continue-label">最近阅读</span><h2 :title="recent.book.title">{{ recent.book.title }}</h2><span class="library-continue-progress">{{ Math.round(recent.progress.progression * 100) }}%<span class="library-continue-date"> · {{ readTime(recent.progress.lastReadAt) }}</span></span></div>
       <NuxtLink :to="`/library/read/${recent.book.id}`">继续阅读</NuxtLink>
     </section>
     <div class="library-shelf-section"><h2>书架<span v-if="!loading">{{ total }} 本</span></h2><span>点击封面阅读；可标记已读或删除</span></div>
@@ -28,13 +28,15 @@
           <div class="library-book-art"><LibraryBookCover :book="book" /><span class="library-book-read"><NIcon :component="BookOutline" />打开阅读</span></div>
         </NuxtLink>
         <div class="library-book-caption">
-          <h2 :title="book.title">{{ book.title }}</h2>
-          <p :title="book.author">{{ book.author || '作者未标注' }}</p>
-          <span v-if="isFinished(book)" class="library-book-progress library-book-progress-done">已读完<template v-if="book.lastReadAt"> · {{ readTime(book.lastReadAt) }}</template></span>
-          <span v-else-if="book.progression !== null" class="library-book-progress">已读 {{ Math.round(book.progression * 100) }}%<template v-if="book.lastReadAt"> · {{ readTime(book.lastReadAt) }}</template></span>
-          <div class="library-book-actions">
-            <NButton v-if="!isFinished(book)" size="tiny" quaternary :loading="busyId === book.id" :disabled="busyId !== null && busyId !== book.id" @click="markRead(book)">标为已读</NButton>
-            <NButton size="tiny" quaternary type="error" :loading="busyId === book.id" :disabled="busyId !== null && busyId !== book.id" @click="removeBook(book)">删除</NButton>
+          <div class="library-book-title-row"><h2 :title="book.title">{{ book.title }}</h2>
+            <NDropdown trigger="click" :to="false" :options="bookMenu(book)" @select="key => selectBookAction(key, book)">
+              <NButton size="tiny" quaternary :loading="busyId === book.id" :disabled="busyId !== null" :aria-label="`管理 ${book.title}`"><NIcon :component="EllipsisHorizontal" /></NButton>
+            </NDropdown>
+          </div>
+          <div class="library-book-meta">
+            <p :title="book.author">{{ book.author && book.author !== 'Unknown' ? book.author : '作者未标注' }}</p>
+            <span v-if="isFinished(book)" class="library-book-progress library-book-progress-done">已读完</span>
+            <span v-else-if="book.progression !== null" class="library-book-progress">{{ Math.round(book.progression * 100) }}%</span>
           </div>
         </div>
       </article>
@@ -45,8 +47,8 @@
 </template>
 
 <script setup lang="ts">
-import { NAlert, NButton, NIcon, NInput, NPagination, NSpin } from 'naive-ui'
-import { AddOutline, BookOutline, LockClosedOutline, LogOutOutline, SearchOutline } from '@vicons/ionicons5'
+import { NAlert, NButton, NDropdown, NIcon, NInput, NPagination, NSpin } from 'naive-ui'
+import { AddOutline, BookOutline, EllipsisHorizontal, LockClosedOutline, LogOutOutline, SearchOutline } from '@vicons/ionicons5'
 import { libraryError, type LibraryBook, type LibraryResponse } from '~/utils/library-reader'
 import type { ReadingProgress } from '~/utils/library-progress'
 definePageMeta({ layout: 'library' })
@@ -60,6 +62,14 @@ const fileInput = ref<HTMLInputElement>()
 const recent = ref<{ book: LibraryBook; progress: ReadingProgress } | null>(null)
 function readTime(value: string) { return new Date(value.endsWith('Z') ? value : `${value}Z`).toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' }) }
 function isFinished(book: LibraryBook) { return book.progression != null && book.progression >= 0.999 }
+function bookMenu(book: LibraryBook) {
+  return [ ...(!isFinished(book) ? [{ label: '标为已读', key: 'read', disabled: busyId.value !== null }] : []),
+    { label: '删除书籍', key: 'delete', disabled: busyId.value !== null } ]
+}
+function selectBookAction(key: string | number, book: LibraryBook) {
+  if (key === 'read') void markRead(book)
+  else if (key === 'delete') void removeBook(book)
+}
 let sequence = 0
 const abort = new AbortController()
 async function load(nextPage = 1) {
