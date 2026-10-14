@@ -82,7 +82,16 @@ builder.Services.AddCors(options =>
         });
 });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(o => o.Filters.AddService<PersonalSite.Api.Services.Reading.ReadingOwnerFilter>());
+builder.Services.Configure<PersonalSite.Api.Services.Reading.ReadingLibraryOptions>(
+    builder.Configuration.GetSection(PersonalSite.Api.Services.Reading.ReadingLibraryOptions.SectionName));
+builder.Services.AddScoped<PersonalSite.Api.Services.Reading.ReadingOwnerFilter>();
+builder.Services.AddSingleton<PersonalSite.Api.Services.Reading.PrivateBookStorage>();
+builder.Services.AddSingleton<PersonalSite.Api.Services.Reading.CalibreBookConverter>();
+builder.Services.AddSingleton<PersonalSite.Api.Services.Reading.EpubImportValidator>();
+builder.Services.AddScoped<PersonalSite.Api.Services.Reading.ReadingLibraryService>();
+builder.Services.AddScoped<PersonalSite.Api.Services.Reading.ReadingCompanionAiService>();
+PersonalSite.Api.Services.Reading.ReadingSecurityRegistration.AddReadingSecurity(builder.Services, builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpClient(); // 添加 HttpClient 支持
 builder.Services.AddHttpContextAccessor(); // 添加 HttpContextAccessor 支持
@@ -233,6 +242,13 @@ if (app.Environment.IsDevelopment())
 app.UseForwardedHeaders();
 
 app.UseCors("AllowAll");
+// Includes authorization failures: never let private reading responses enter shared caches.
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path.StartsWithSegments("/api/library"))
+        context.Response.Headers.CacheControl = "private, no-store";
+    await next();
+});
 var localMediaRoot = Path.Combine(app.Environment.ContentRootPath, "wwwroot");
 Directory.CreateDirectory(localMediaRoot);
 app.UseStaticFiles(new StaticFileOptions
@@ -244,6 +260,7 @@ app.UseStaticFiles(new StaticFileOptions
 app.UseMiddleware<PersonalSite.Api.Middleware.ApiKeyAuthMiddleware>(); // API Key 验证
 app.UseMiddleware<PersonalSite.Api.Middleware.RateLimitMiddleware>(); // 限流
 
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 

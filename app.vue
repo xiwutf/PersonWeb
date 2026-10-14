@@ -25,6 +25,9 @@ const route = useRoute()
 // 不显示导航栏的页面：登录页、所有后台管理页面等特殊页面
 const shouldShowHeader = computed(() => {
   const path = route.path
+  if (path === '/library' || path.startsWith('/library/')) {
+    return false
+  }
   // 双入口页、工作首页、生活站都使用各自的独立 Header
   if (path === '/' || path === '/work' || path === '/life' || path.startsWith('/life/')) {
     return false

@@ -1,0 +1,11 @@
+.library-layout {
+  min-height: 100vh;
+  padding: var(--spacing-lg);
+  background: var(--color-bg-page);
+  color: var(--color-text-main);
+}
+.library-access {
+  width: 100%;
+  max-width: 32rem;
+  margin: var(--spacing-xl) auto;
+}

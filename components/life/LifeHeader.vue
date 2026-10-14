@@ -10,6 +10,7 @@
         <NuxtLink to="/life" :class="{ 'is-active': isHome }">首页</NuxtLink>
         <NuxtLink to="/life/about" :class="{ 'is-active': isAbout }">关于</NuxtLink>
         <NuxtLink to="/life/notes" :class="{ 'is-active': isNotes }">随笔</NuxtLink>
+        <NuxtLink to="/life/books" :class="{ 'is-active': isBooks }">读书</NuxtLink>
         <NuxtLink to="/life/thoughts" :class="{ 'is-active': isThoughts }">摘句</NuxtLink>
         <NuxtLink to="/life/cognition" :class="{ 'is-active': isCognition }">说明书</NuxtLink>
       </nav>
@@ -44,6 +45,7 @@ const {
 
 const isHome = computed(() => route.path === '/life')
 const isAbout = computed(() => route.path === '/life/about' || route.path.startsWith('/life/about/'))
+const isBooks = computed(() => route.path === '/life/books' || route.path.startsWith('/life/books/'))
 const isThoughts = computed(() =>
   route.path === '/life/thoughts'
   || route.path.startsWith('/life/thoughts/')
@@ -57,6 +59,7 @@ const isNotes = computed(() => {
     path === '/life'
     || path === '/life/about'
     || path.startsWith('/life/about/')
+    || isBooks.value
     || isThoughts.value
     || isCognition.value
   ) {

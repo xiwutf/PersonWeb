@@ -120,6 +120,12 @@ public class AppDbContext : DbContext
     /// <summary>阅读 Inbox（MindTrace 外部发布）</summary>
     public DbSet<ReadingEntry> ReadingEntries { get; set; }
 
+    public DbSet<ReadingSession> ReadingSessions { get; set; }
+    public DbSet<ReadingBook> ReadingBooks { get; set; }
+    public DbSet<ReadingProgress> ReadingProgress { get; set; }
+    public DbSet<ReadingAnnotation> ReadingAnnotations { get; set; }
+    public DbSet<ReadingPreference> ReadingPreferences { get; set; }
+
     /// <summary>通用内容评论</summary>
     public DbSet<ContentComment> ContentComments { get; set; }
 
@@ -134,6 +140,8 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        ReadingCenterModelConfiguration.Configure(modelBuilder);
 
         // 配置多对多关系 article_tag
         modelBuilder.Entity<Article>()

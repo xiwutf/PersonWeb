@@ -163,6 +163,8 @@ scripts/sensitive-replacements.txt
 
 # Local machine/runtime caches
 .dotnet/
+# Private reading runtime files are never source/public assets.
+backend/PersonalSite.Api/App_Data/
 .claude/settings.local.json
 
 # Performance test reports (temporary)
