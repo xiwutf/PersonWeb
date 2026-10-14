@@ -229,6 +229,20 @@ using (var scope = app.Services.CreateScope())
     await ContentInteractionSchemaBootstrap.EnsureAsync(app.Services, bootstrapLogger);
 }
 
+// 私人书架文件目录：生产请把 ReadingLibrary:StorageRoot 指到发版目录外的持久路径。
+try
+{
+    PersonalSite.Api.Services.Reading.PrivateBookStorage readingStorage =
+        app.Services.GetRequiredService<PersonalSite.Api.Services.Reading.PrivateBookStorage>();
+    readingStorage.EnsureReady();
+    app.Logger.LogInformation("ReadingLibrary private storage ready at {StorageRoot}", readingStorage.RootPath);
+}
+catch (Exception ex)
+{
+    app.Logger.LogWarning(ex,
+        "ReadingLibrary private storage is not ready; configure StorageRoot outside the deploy folder and restart.");
+}
+
 // 配置 HTTP 请求管道
 if (app.Environment.IsDevelopment())
 {

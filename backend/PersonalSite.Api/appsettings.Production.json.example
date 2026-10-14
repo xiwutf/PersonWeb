@@ -11,5 +11,13 @@
     "BaseUrl": "http://localhost:8001/api/ai",
     "InternalToken": "生产环境请使用强随机Token，需与ai-service的AI_INTERNAL_TOKEN一致",
     "TimeoutSeconds": 300
+  },
+  "ReadingLibrary": {
+    "OwnerKey": "用 scripts/New-ReadingAccessConfig.ps1 生成并永久固定（与本地一致才能共用同一书架）",
+    "AccessPasswordHash": "同一脚本生成的 Identity 密码哈希",
+    "SessionDays": 30,
+    "AbsoluteSessionDays": 90,
+    "AllowedOrigins": [ "https://xifg.com.cn" ],
+    "StorageRoot": "/var/lib/personweb/reading-private"
   }
 }

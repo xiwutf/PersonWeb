@@ -50,6 +50,14 @@ describe('reading cookie access', () => {
     expect(access.error.value).toBe('')
   })
 
+  it('surfaces missing reading configuration on session probe', async () => {
+    fetchMock.mockRejectedValueOnce({ response: { status: 503 }, data: { error: 'reading_not_configured' } })
+    const access = useLibraryAccess()
+    await access.check()
+    expect(access.error.value).toContain('OwnerKey')
+    expect(access.error.value).toContain('AllowedOrigins')
+  })
+
   it('confirms browser cookie acceptance after password login', async () => {
     fetchMock.mockResolvedValueOnce(session()).mockResolvedValueOnce(session())
     const access = useLibraryAccess()

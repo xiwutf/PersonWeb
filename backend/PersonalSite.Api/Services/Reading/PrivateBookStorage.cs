@@ -25,6 +25,18 @@ public sealed class PrivateBookStorage
         EnsureNoLinks(_root);
     }
 
+    /// <summary>Resolved absolute private root (never expose over HTTP).</summary>
+    public string RootPath => _root;
+
+    /// <summary>Create the private directory if missing; call once at process start for production StorageRoot.</summary>
+    public void EnsureReady()
+    {
+        EnsureNoLinks(_root);
+        if (OperatingSystem.IsWindows()) Directory.CreateDirectory(_root);
+        else Directory.CreateDirectory(_root, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
+        EnsureNoLinks(_root);
+    }
+
     private static bool ContainsPath(string parent, string child)
     {
         var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;

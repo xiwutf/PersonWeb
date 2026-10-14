@@ -35,12 +35,31 @@ export function useLibraryAccess() {
     return (cause as { response?: { status?: number }; statusCode?: number })?.response?.status
       ?? (cause as { statusCode?: number })?.statusCode
   }
+  function errorCode(cause: unknown) {
+    const data = (cause as { data?: { error?: string }; response?: { _data?: { error?: string } } })?.data
+      ?? (cause as { response?: { _data?: { error?: string } } })?.response?._data
+    return typeof data?.error === 'string' ? data.error : ''
+  }
   function message(cause: unknown) {
     const status = statusOf(cause)
-    return status === 401 ? '阅读密码不正确或会话已过期。'
-      : status === 429 ? '尝试次数过多，请一分钟后再试。'
-        : status === 403 ? '请求未通过安全校验，请刷新后重试。'
-          : '阅读服务暂不可用，请检查服务配置、数据库迁移和 HTTPS 连接。'
+    const code = errorCode(cause)
+    if (status === 401) return '阅读密码不正确或会话已过期。'
+    if (status === 429) return '尝试次数过多，请一分钟后再试。'
+    if (status === 403) {
+      return code === 'origin_rejected'
+        ? '当前站点不在 AllowedOrigins 中。请把线上前端完整 Origin（如 https://xifg.com.cn）写入 API 配置后重启。'
+        : '请求未通过安全校验，请刷新后重试。'
+    }
+    if (code === 'reading_not_configured') {
+      return '阅读中心未配置完成：请设置 OwnerKey、AccessPasswordHash，以及线上 HTTPS AllowedOrigins，然后重启 API。'
+    }
+    if (status === 503 || code === 'reading_unavailable') {
+      return '阅读服务暂不可用。请确认已执行 reading 表迁移、API 已发布，且数据库可写 reading_sessions。'
+    }
+    if (!status) {
+      return '无法连接阅读 API。请确认前端走 https://api.xifg.com.cn，CORS AllowedOrigins 含当前站点，且全程 HTTPS。'
+    }
+    return '阅读服务暂不可用，请检查服务配置、数据库迁移和 HTTPS 连接。'
   }
   async function request<T>(path: string, method: 'GET' | 'POST' | 'PUT' = 'GET', body?: unknown,
     options: { responseType?: 'json' | 'blob' | 'arrayBuffer'; signal?: AbortSignal; keepalive?: boolean; timeout?: number } = {}) {

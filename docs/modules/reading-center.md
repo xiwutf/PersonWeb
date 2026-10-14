@@ -86,6 +86,33 @@ ReadingLibrary__AllowedOrigins__0（更多域名按序编号）、ReadingLibrary
 ReadingLibrary__AbsoluteSessionDays。OwnerKey 不因密码/域名变更而变化，缺失或配置不安全返回503。
 访问密码未设置示例值，也不复用博客 ADMIN_PASSWORD。
 
+### 线上首次启用清单（门禁出现「服务暂不可用」时按此核对）
+
+1. **发布含 `/api/library` 的 API 构建**，并确认 Nginx 把 `api.xifg.com.cn/api/library` 转到 .NET（不是静态站或 Nitro）。
+2. **数据库**：空库先 `SOURCE 20261013_reading_center_v01.sql`，再按备份确认流程执行
+   `20261013_reading_ownerkey_sessions_v01.sql`（或 `_preflight` + `_manual`），直到存在
+   `reading_sessions` 且四张书/进度表为 `owner_key`。
+3. **服务器配置**（`appsettings.Production.json` 或环境变量，勿提交仓库）：
+
+```json
+{
+  "ReadingLibrary": {
+    "OwnerKey": "<用 New-ReadingAccessConfig.ps1 生成并永久固定>",
+    "AccessPasswordHash": "<同一脚本生成的 Identity 哈希>",
+    "SessionDays": 30,
+    "AbsoluteSessionDays": 90,
+    "AllowedOrigins": ["https://xifg.com.cn"],
+    "StorageRoot": "/var/lib/personweb/reading-private"
+  }
+}
+```
+
+`AllowedOrigins` 必须与浏览器地址栏 Origin **完全一致**（含 `https://`，无尾斜线；若用 `www` 或 `xlfg` 别名要各加一条）。
+4. **HTTPS**：前端与 `https://api.xifg.com.cn` 全程 HTTPS；Cookie 名 `__Secure-personweb_reading`，跨 HTTP 不可用。
+5. 本机生成哈希：`pwsh -File scripts/New-ReadingAccessConfig.ps1`，把输出写入服务器后 **重启 API**。
+6. 浏览器开发者工具看 `GET /api/library/auth/session`：`reading_not_configured`=缺配置；
+   CORS/网络失败=Origin 未放行；DB 异常多表现为 503 `reading_unavailable`。
+
 会话 Cookie 为 __Secure-personweb_reading，HttpOnly、Secure、SameSite=Strict、host-only，
 Path=/api/library，Expires 默认为30天。随机标识为256位，数据库仅存SHA-256哈希、归属、
 创建/有效/绝对到期时间和撤销时间。每次请求检查会话；密码哈希或 OwnerKey 变化后旧会话失效。
@@ -157,9 +184,14 @@ MySQL DDL不可整体回滚，必须停写并逐项检查；命名锁只防止�
 目录及文件不允许符号链接/junction；部署账户需要独占写权限，避免其他本机用户替换路径。
 Linux 新目录以 0700 创建；Windows 和已有目录需要由部署人员设置仅服务账户可读写的 ACL。
 
-生产建议配置持久卷中的绝对路径，例如 `/var/lib/personweb/reading-private`。
+生产建议配置持久卷中的绝对路径，例如 `/var/lib/personweb/reading-private`
+（见 `backend/PersonalSite.Api/appsettings.Production.json.example`）。
 部署替换应用目录时不要删除阅读存储；备份必须同时包含数据库和私有文件。
 本期不接入 OSS；后续如需要，应使用私有 Bucket 和同样的授权 API，不能复用公共媒体 URL。
+
+**任意电脑都能看**：在**线上站点**（如 `https://xifg.com.cn/library`）上传即可——文件写入服务器
+`StorageRoot`，库里只记 `storage_key`。不要用本机 `localhost:5234` 上传再指望线上能打开
+（库可共用，磁盘不共用）。已有本机文件可一次性拷到服务器同名 `storage_key`，或在线上重传。
 
 上传流先写随机临时文件，校验通过后转为随机 `.epub` 文件，保存数据库；明确失败/取消会清理文件。
 同一用户、同一 SHA-256 重复上传返回已有书籍。正常异常会清理；进程崩溃或磁盘权限异常仍可能
