@@ -19,16 +19,25 @@
       <div><span>最近阅读</span><h2>{{ recent.book.title }}</h2><p>已读 {{ Math.round(recent.progress.progression * 100) }}% · {{ readTime(recent.progress.lastReadAt) }}</p></div>
       <NuxtLink :to="`/library/read/${recent.book.id}`">继续阅读</NuxtLink>
     </section>
-    <div class="library-shelf-section"><h2>书架<span v-if="!loading">{{ total }} 本</span></h2><span>点击封面，直接阅读</span></div>
+    <div class="library-shelf-section"><h2>书架<span v-if="!loading">{{ total }} 本</span></h2><span>点击封面阅读；可标记已读或删除</span></div>
     <div v-if="loading" class="library-shelf-loading"><NSpin description="正在加载书架…" /></div>
     <div v-else-if="!books.length" class="library-empty"><div class="library-empty-symbol" aria-hidden="true"><NIcon :component="BookOutline" /></div><h2>{{ query ? '没有找到这本书' : '书架还是空的' }}</h2><p>{{ query ? '试试其他书名或作者。' : '上传 EPUB 或 MOBI，从第一章开始。' }}</p><NButton v-if="!query" type="primary" size="large" :disabled="uploading" @click="fileInput?.click()">选择书籍</NButton></div>
     <div v-else class="library-book-grid">
-      <NuxtLink v-for="book in books" :key="book.id" :to="`/library/read/${book.id}`" class="library-book" :aria-label="`阅读 ${book.title}`">
-        <div class="library-book-art"><LibraryBookCover :book="book" /><span class="library-book-read"><NIcon :component="BookOutline" />打开阅读</span></div>
-        <div class="library-book-caption"><h2 :title="book.title">{{ book.title }}</h2><p :title="book.author">{{ book.author || '作者未标注' }}</p>
-          <span v-if="book.progression !== null" class="library-book-progress">已读 {{ Math.round(book.progression * 100) }}%<template v-if="book.lastReadAt"> · {{ readTime(book.lastReadAt) }}</template></span>
+      <article v-for="book in books" :key="book.id" class="library-book">
+        <NuxtLink :to="`/library/read/${book.id}`" class="library-book-link" :aria-label="`阅读 ${book.title}`">
+          <div class="library-book-art"><LibraryBookCover :book="book" /><span class="library-book-read"><NIcon :component="BookOutline" />打开阅读</span></div>
+        </NuxtLink>
+        <div class="library-book-caption">
+          <h2 :title="book.title">{{ book.title }}</h2>
+          <p :title="book.author">{{ book.author || '作者未标注' }}</p>
+          <span v-if="isFinished(book)" class="library-book-progress library-book-progress-done">已读完<template v-if="book.lastReadAt"> · {{ readTime(book.lastReadAt) }}</template></span>
+          <span v-else-if="book.progression !== null" class="library-book-progress">已读 {{ Math.round(book.progression * 100) }}%<template v-if="book.lastReadAt"> · {{ readTime(book.lastReadAt) }}</template></span>
+          <div class="library-book-actions">
+            <NButton v-if="!isFinished(book)" size="tiny" quaternary :loading="busyId === book.id" :disabled="busyId !== null && busyId !== book.id" @click="markRead(book)">标为已读</NButton>
+            <NButton size="tiny" quaternary type="error" :loading="busyId === book.id" :disabled="busyId !== null && busyId !== book.id" @click="removeBook(book)">删除</NButton>
+          </div>
         </div>
-      </NuxtLink>
+      </article>
     </div>
     <NPagination v-if="total > 24" :page="page" :page-size="24" :item-count="total" @update:page="load" />
     <footer class="library-shelf-footer"><span>你的书，只属于你。</span><span>支持 EPUB / MOBI · 单本不超过 100 MiB</span></footer>
@@ -46,9 +55,11 @@ const { request, logout } = useLibraryAccess()
 const books = ref<LibraryBook[]>([]), total = ref(0), page = ref(1), query = ref('')
 const loading = ref(true), uploading = ref(false), error = ref(''), notice = ref('')
 const converting = ref(false)
+const busyId = ref<number | null>(null)
 const fileInput = ref<HTMLInputElement>()
 const recent = ref<{ book: LibraryBook; progress: ReadingProgress } | null>(null)
 function readTime(value: string) { return new Date(value.endsWith('Z') ? value : `${value}Z`).toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' }) }
+function isFinished(book: LibraryBook) { return book.progression != null && book.progression >= 0.999 }
 let sequence = 0
 const abort = new AbortController()
 async function load(nextPage = 1) {
@@ -80,6 +91,27 @@ async function upload(event: Event) {
     query.value = ''; await load(1); notice.value = '书籍已加入书架。'
   } catch (cause) { if (!abort.signal.aborted) error.value = libraryError(cause, converting.value ? 'mobi' : 'epub') }
   finally { uploading.value = false; converting.value = false }
+}
+async function markRead(book: LibraryBook) {
+  if (busyId.value !== null) return
+  busyId.value = book.id; error.value = ''; notice.value = ''
+  try {
+    await request(`/books/${book.id}/mark-read`, 'POST')
+    await load(page.value)
+    notice.value = `「${book.title}」已标记为已读。`
+  } catch (cause) { if (!abort.signal.aborted) error.value = libraryError(cause) }
+  finally { busyId.value = null }
+}
+async function removeBook(book: LibraryBook) {
+  if (busyId.value !== null) return
+  if (!window.confirm(`确定从书架删除「${book.title}」？文件与进度将一并移除，且不可恢复。`)) return
+  busyId.value = book.id; error.value = ''; notice.value = ''
+  try {
+    await request(`/books/${book.id}`, 'DELETE')
+    await load(page.value)
+    notice.value = `「${book.title}」已删除。`
+  } catch (cause) { if (!abort.signal.aborted) error.value = libraryError(cause) }
+  finally { busyId.value = null }
 }
 onMounted(() => { void load() })
 onBeforeUnmount(() => { abort.abort(); sequence++ })

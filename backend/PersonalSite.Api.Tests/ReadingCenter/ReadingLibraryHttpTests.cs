@@ -130,6 +130,28 @@ public class ReadingLibraryHttpTests
         Assert.Equal(1, JsonDocument.Parse(await feed.Content.ReadAsStringAsync()).RootElement.GetProperty("data").GetArrayLength());
     }
 
+    [Fact]
+    public async Task DeleteAndMarkRead_WorkOverHttp()
+    {
+        await using var host = await Host.Create();
+        await host.Login();
+        using var uploaded = await host.Upload(EpubTestFiles.Create());
+        long id = JsonDocument.Parse(await uploaded.Content.ReadAsStringAsync()).RootElement.GetProperty("data").GetProperty("id").GetInt64();
+        using HttpResponseMessage marked = await host.Client.PostAsync($"/api/library/books/{id}/mark-read", null);
+        Assert.Equal(HttpStatusCode.OK, marked.StatusCode);
+        Assert.Equal(1, JsonDocument.Parse(await marked.Content.ReadAsStringAsync()).RootElement.GetProperty("data").GetProperty("progression").GetDouble());
+        using HttpResponseMessage list = await host.Client.GetAsync("/api/library/books");
+        Assert.Equal(1, JsonDocument.Parse(await list.Content.ReadAsStringAsync()).RootElement.GetProperty("data").GetProperty("items")[0].GetProperty("progression").GetDouble());
+        using HttpResponseMessage again = await host.Client.PostAsync($"/api/library/books/{id}/mark-read", null);
+        Assert.Equal(HttpStatusCode.OK, again.StatusCode);
+        using HttpResponseMessage deleted = await host.Client.DeleteAsync($"/api/library/books/{id}");
+        Assert.Equal(HttpStatusCode.NoContent, deleted.StatusCode);
+        using HttpResponseMessage gone = await host.Client.GetAsync($"/api/library/books/{id}");
+        Assert.Equal(HttpStatusCode.NotFound, gone.StatusCode);
+        using HttpResponseMessage empty = await host.Client.GetAsync("/api/library/books");
+        Assert.Equal(0, JsonDocument.Parse(await empty.Content.ReadAsStringAsync()).RootElement.GetProperty("data").GetProperty("total").GetInt32());
+    }
+
     private static object ProgressInput(long revision = 0, string cfi = "epubcfi(/6/2!/4/2/1:8)", double fraction = .6, int version = 1, string? key = null) =>
         new { contentVersion = version, cfi, chapterHref = "chapter.xhtml", progression = fraction, expectedRevision = revision, sessionId = key ?? Guid.NewGuid().ToString() };
 

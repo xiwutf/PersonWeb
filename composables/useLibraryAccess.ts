@@ -61,7 +61,7 @@ export function useLibraryAccess() {
     }
     return '阅读服务暂不可用，请检查服务配置、数据库迁移和 HTTPS 连接。'
   }
-  async function request<T>(path: string, method: 'GET' | 'POST' | 'PUT' = 'GET', body?: unknown,
+  async function request<T>(path: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET', body?: unknown,
     options: { responseType?: 'json' | 'blob' | 'arrayBuffer'; signal?: AbortSignal; keepalive?: boolean; timeout?: number } = {}) {
     try {
       const result = await $fetch(`${apiBase()}${path}`, {

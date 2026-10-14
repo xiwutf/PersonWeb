@@ -182,6 +182,49 @@ public sealed class ReadingLibraryService(AppDbContext db, PrivateBookStorage st
         await db.ReadingBooks.AsNoTracking().FirstOrDefaultAsync(b => b.OwnerKey == ownerKey && b.Id == id, ct)
         ?? throw new ReadingLibraryException(404, "book_not_found", "Book not found.");
 
+    public async Task DeleteAsync(string ownerKey, long id, CancellationToken ct)
+    {
+        var book = await db.ReadingBooks.FirstOrDefaultAsync(b => b.OwnerKey == ownerKey && b.Id == id, ct)
+            ?? throw new ReadingLibraryException(404, "book_not_found", "Book not found.");
+        string storageKey = book.StorageKey;
+        db.ReadingBooks.Remove(book);
+        await db.SaveChangesAsync(ct);
+        Cleanup(storageKey);
+    }
+
+    /// <summary>书架「标记已读」：进度设为 1，保留已有 CFI；从未打开过则写入占位 CFI。</summary>
+    public async Task<ReadingProgressDto> MarkReadAsync(string ownerKey, long id, CancellationToken ct)
+    {
+        var book = await OwnedBook(ownerKey, id, ct);
+        var row = await db.ReadingProgress.FirstOrDefaultAsync(p => p.OwnerKey == ownerKey && p.BookId == id, ct);
+        if (row != null && row.ContentVersion == book.ContentVersion && row.Progression >= 1)
+            return ProgressDto(row);
+        if (row == null)
+        {
+            row = new ReadingProgress
+            {
+                OwnerKey = ownerKey,
+                BookId = id,
+                Cfi = MarkReadPlaceholderCfi,
+                ChapterHref = "",
+                Revision = 0,
+            };
+            db.ReadingProgress.Add(row);
+        }
+        row.ContentVersion = book.ContentVersion;
+        if (string.IsNullOrEmpty(row.Cfi)) row.Cfi = MarkReadPlaceholderCfi;
+        row.Progression = 1;
+        row.Revision += 1;
+        row.LastSessionId = MarkReadSessionId;
+        DateTime now = DateTime.UtcNow;
+        row.LastReadAt = row.UpdatedAt = new DateTime(now.Ticks - now.Ticks % 10, DateTimeKind.Utc);
+        await db.SaveChangesAsync(ct);
+        return ProgressDto(row);
+    }
+
+    private const string MarkReadPlaceholderCfi = "epubcfi(/6/2!/4)";
+    private const string MarkReadSessionId = "00000000-0000-4000-8000-000000000001";
+
     public async Task<ReadingProgressDto?> ProgressAsync(string ownerKey, long id, CancellationToken ct)
     {
         await OwnedBook(ownerKey, id, ct);

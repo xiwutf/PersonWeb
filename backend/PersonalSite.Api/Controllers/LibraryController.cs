@@ -36,6 +36,13 @@ public sealed class LibraryController(
     public Task<IActionResult> Get(long id, CancellationToken ct) => Execute(async () =>
         Ok(ApiResponse.Success(await library.GetAsync(OwnerKey, id, ct))));
 
+    [HttpDelete("books/{id:long}")]
+    public Task<IActionResult> Delete(long id, CancellationToken ct) => Execute(async () =>
+    {
+        await library.DeleteAsync(OwnerKey, id, ct);
+        return NoContent();
+    });
+
     [HttpGet("books/{id:long}/progress")]
     public Task<IActionResult> Progress(long id, CancellationToken ct) => Execute(async () =>
         Ok(ApiResponse.Success(await library.ProgressAsync(OwnerKey, id, ct))));
@@ -43,6 +50,10 @@ public sealed class LibraryController(
     [HttpPut("books/{id:long}/progress")]
     public Task<IActionResult> SaveProgress(long id, [FromBody] SaveReadingProgressRequest input, CancellationToken ct) => Execute(async () =>
         Ok(ApiResponse.Success(await library.SaveProgressAsync(OwnerKey, id, input, ct))));
+
+    [HttpPost("books/{id:long}/mark-read")]
+    public Task<IActionResult> MarkRead(long id, CancellationToken ct) => Execute(async () =>
+        Ok(ApiResponse.Success(await library.MarkReadAsync(OwnerKey, id, ct))));
 
     [HttpGet("annotations")]
     public Task<IActionResult> ListAnnotationFeed(CancellationToken ct) => Execute(async () =>

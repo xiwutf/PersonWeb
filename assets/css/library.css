@@ -12,18 +12,18 @@
   --color-surface-elevated: #ffffff;
   --color-surface-strong: #e9ede5;
   --shadow-lg: 0 12px 24px rgb(41 53 47 / 12%);
-  padding: clamp(24px, 5vw, 72px) clamp(20px, 5vw, 64px);
+  padding: clamp(24px, 4vw, 48px) clamp(20px, 5vw, 64px);
   background: var(--color-bg); color: var(--color-text); color-scheme: light;
 }
 .library-shelf { max-width: 76rem; min-height: calc(100dvh - 9rem); margin: 0 auto; }
-.library-shelf-header { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-lg); padding-bottom: 36px; }
+.library-shelf-header { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-lg); padding-bottom: 18px; }
 .library-shelf-heading { display: flex; align-items: center; gap: 18px; }
 .library-shelf-symbol { display: grid; place-items: center; width: 56px; height: 56px; font-size: 29px; color: var(--color-primary-hover); background: transparent; }
-.library-shelf-heading h1 { margin: 0; font-family: 'Songti SC', 'SimSun', serif; font-size: clamp(28px, 3vw, 38px); font-weight: 600; letter-spacing: .04em; line-height: 1.25; }
+.library-shelf-heading h1 { margin: 0; font-family: 'Songti SC', 'SimSun', serif; font-size: clamp(26px, 3vw, 32px); font-weight: 600; letter-spacing: .04em; line-height: 1.25; }
 .library-shelf-heading p { margin: 8px 0 0; font-size: 14px; color: var(--color-text-muted); }
 .library-shelf-actions { display: flex; align-items: center; gap: var(--spacing-sm); }
 .library-file-input { display: none; }
-.library-shelf-toolbar { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-lg); padding: 22px 0; border-bottom: 1px solid var(--color-border); }
+.library-shelf-toolbar { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-lg); padding: 12px 0 18px; border-bottom: 1px solid var(--color-border); }
 .library-search { display: flex; gap: var(--spacing-sm); width: min(100%, 30rem); }
 .library-private-label { display: flex; align-items: center; gap: 7px; font-size: 13px; white-space: nowrap; color: var(--color-text-muted); }
 .library-shelf-section { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-md); padding: 34px 0 24px; }
@@ -31,13 +31,19 @@
 .library-shelf-section h2 span { font-size: 13px; color: var(--color-text-muted); font-weight: 400; }
 .library-shelf-section > span { font-size: 13px; color: var(--color-text-muted); }
 .library-shelf-notice { margin-top: var(--spacing-lg); }
-.library-continue { display: flex; justify-content: space-between; align-items: center; gap: var(--spacing-lg); margin-top: var(--spacing-lg); padding: var(--spacing-lg); background: var(--color-bg-soft); border-radius: var(--radius-md); }
+.library-continue { display: flex; justify-content: space-between; align-items: center; gap: var(--spacing-lg); margin-top: var(--spacing-lg); padding: 16px 20px; background: var(--color-bg-soft); border-radius: var(--radius-md); }
 .library-continue > div { min-width: 0; }
-.library-continue h2 { font-size: 20px; margin: 8px 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.library-continue-heading { display: flex; align-items: baseline; gap: var(--spacing-md); }
+.library-continue-heading > span { flex: none; }
+.library-continue h2 { font-size: 18px; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.library-continue p { margin: 6px 0 0; }
 .library-continue span, .library-continue p { font-size: 13px; color: var(--color-text-muted); }
-.library-continue a { color: var(--color-primary); white-space: nowrap; }
+.library-continue a { color: var(--color-surface-elevated); background: var(--color-primary); padding: 10px 16px; border-radius: var(--radius-sm); text-decoration: none; white-space: nowrap; font-size: 14px; }
+.library-continue a:hover { background: var(--color-primary-hover); }
+.library-continue a:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; }
 .library-book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); gap: 40px 30px; margin: 0 0 56px; }
-.library-book { color: inherit; text-decoration: none; min-width: 0; display: block; border-radius: var(--radius-sm); }
+.library-book { color: inherit; min-width: 0; display: block; border-radius: var(--radius-sm); }
+.library-book-link { color: inherit; text-decoration: none; display: block; border-radius: var(--radius-sm); }
 .library-book-art { position: relative; padding: 8px 18px 18px; aspect-ratio: 4 / 5; background: transparent; display: flex; justify-content: center; align-items: center; overflow: hidden; }
 .library-cover { height: 100%; max-width: 100%; aspect-ratio: 3 / 4; position: relative; overflow: hidden; box-shadow: var(--shadow-lg); border-radius: 3px 6px 6px 3px; transition: transform .18s ease; }
 .library-cover img { display: block; width: 100%; height: 100%; object-fit: contain; }
@@ -45,13 +51,15 @@
 .library-cover-placeholder span { font-family: 'Songti SC', 'STSong', serif; font-size: 22px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
 .library-cover-placeholder small { color: var(--color-text-muted); font-size: 11px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .library-book-read { position: absolute; inset: auto 0 0; padding: 12px; display: flex; justify-content: center; align-items: center; gap: 8px; font-size: 13px; background: var(--color-surface-strong); color: var(--color-text); opacity: 0; transform: translateY(100%); transition: opacity .18s ease, transform .18s ease; pointer-events: none; }
-.library-book:hover .library-cover { transform: translateY(-5px); }
-.library-book:hover .library-book-read, .library-book:focus-visible .library-book-read { opacity: 1; transform: translateY(0); }
-.library-book:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 6px; }
+.library-book-link:hover .library-cover { transform: translateY(-5px); }
+.library-book-link:hover .library-book-read, .library-book-link:focus-visible .library-book-read { opacity: 1; transform: translateY(0); }
+.library-book-link:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 6px; }
 .library-book-caption { padding: 15px 2px 0; }
 .library-book-caption h2 { margin: 0; font-size: 15px; font-weight: 500; line-height: 1.65; min-height: 3.3em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
 .library-book-caption p { font-size: 12px; line-height: 1.6; margin: 7px 0 0; color: var(--color-text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .library-book-progress { display: block; margin-top: 8px; font-size: 12px; color: var(--color-primary-hover); }
+.library-book-progress-done { color: var(--color-text-muted); }
+.library-book-actions { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; min-height: 28px; }
 .library-shelf-footer { display: flex; justify-content: space-between; gap: var(--spacing-md); padding: 24px 0 0; border-top: 1px solid var(--color-border); font-size: 12px; color: var(--color-text-muted); }
 .library-empty, .library-shelf-loading { min-height: 22rem; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 48px var(--spacing-md); }
 .library-empty-symbol { display: grid; place-items: center; width: 72px; height: 72px; border-radius: var(--radius-lg); background: var(--color-bg-soft); color: var(--color-primary-hover); font-size: 36px; margin-bottom: 20px; }
@@ -67,6 +75,10 @@
   .library-shelf-toolbar { padding: 20px 0; }
   .library-private-label { display: none; }
   .library-search { width: 100%; }
+  .library-continue { padding: 14px; gap: var(--spacing-sm); }
+  .library-continue-heading { flex-direction: column; gap: 4px; align-items: stretch; }
+  .library-continue h2 { font-size: 16px; }
+  .library-continue a { padding: 9px 12px; }
   .library-shelf-section { padding: 26px 0 20px; }
   .library-shelf-section > span { font-size: 12px; }
   .library-book-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 18px; margin-bottom: 36px; }
