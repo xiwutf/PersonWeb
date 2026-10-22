@@ -2,51 +2,106 @@
   <aside ref="panelRoot" class="library-companion" :data-panel-theme="readerTheme" aria-label="AI 阅读助手">
     <NConfigProvider :theme="readerTheme === 'dark' ? darkTheme : null" :theme-overrides="panelTheme" class="library-companion-config">
     <header class="library-companion-header">
-      <div class="library-companion-heading"><div><h2>阅读伴读</h2><p>理解原文，留下自己的想法</p></div><NButton quaternary circle aria-label="关闭助手" title="关闭助手" @click="emit('close')"><span class="library-companion-close" aria-hidden="true">×</span></NButton></div>
+      <div class="library-companion-heading">
+        <h2>阅读伴读</h2>
+        <NButton quaternary circle aria-label="关闭助手" title="关闭助手" @click="emit('close')">
+          <span class="library-companion-close" aria-hidden="true">×</span>
+        </NButton>
+      </div>
       <div class="library-companion-tabs">
         <NButton quaternary :class="{ 'is-active': tab === 'ai' }" @click="tab = 'ai'">问 AI</NButton>
         <NButton quaternary :class="{ 'is-active': tab === 'notes' }" @click="openNotes">我的笔记</NButton>
       </div>
     </header>
 
-    <section v-if="tab === 'ai'" class="library-companion-body">
-      <div class="library-companion-block">
-        <h3>原文摘录</h3>
-        <p class="library-companion-quote">{{ quote || '请先在正文中选中一段文字。' }}</p>
-        <p v-if="quote && context && context !== quote" class="library-companion-context">
+    <section v-if="tab === 'ai'" class="library-companion-body library-companion-body--chat">
+      <div class="library-companion-source">
+        <button
+          type="button"
+          class="library-companion-chip"
+          :class="{ 'is-open': sourceOpen }"
+          :disabled="!quote"
+          :aria-expanded="sourceOpen"
+          @click="sourceOpen = !sourceOpen"
+        >
+          <span class="library-companion-chip-label">原文</span>
+          <span class="library-companion-chip-text">{{ quote || '请先在正文中选中一段文字' }}</span>
+          <span v-if="quote" class="library-companion-chip-toggle" aria-hidden="true">{{ sourceOpen ? '收起' : '展开' }}</span>
+        </button>
+        <p v-if="sourceOpen && quote && context && context !== quote" class="library-companion-context">
           <span>参考上下文</span>{{ context }}
         </p>
       </div>
-      <div class="library-companion-block">
-        <div class="library-companion-block-head">
-          <h3>AI 解释</h3>
-          <NButton v-if="latestAssistant" size="tiny" :disabled="!latestAssistant" @click="copyAssistant">复制回答</NButton>
+
+      <div class="library-companion-chat">
+        <div class="library-companion-block-head library-companion-chat-head">
+          <h3>对话</h3>
+          <NButton v-if="latestAssistant" size="tiny" @click="copyAssistant">复制回答</NButton>
         </div>
-        <NSpin v-if="asking" size="small" description="正在解释…" />
-        <NAlert v-else-if="askError" type="warning">{{ askError }}</NAlert>
-        <ul v-else-if="turns.length" class="library-companion-turns">
-          <li v-for="(turn, index) in turns" :key="index" :data-role="turn.role">
-            <span>{{ turn.role === 'user' ? '你' : 'AI' }}</span>
-            <p>{{ turn.content }}</p>
-          </li>
-        </ul>
-        <p v-else class="library-companion-muted">选中文字后点「问 AI」，解释只保留在本面板，不会写入笔记。</p>
+        <div class="library-companion-turns-scroll">
+          <NSpin v-if="asking && !turns.length" size="small" description="正在解释…" />
+          <NAlert v-else-if="askError && !turns.length" type="warning">{{ askError }}</NAlert>
+          <ul v-else-if="turns.length" class="library-companion-turns">
+            <li v-for="(turn, index) in turns" :key="index" :data-role="turn.role">
+              <span>{{ turn.role === 'user' ? '你' : 'AI' }}</span>
+              <p>{{ turn.content }}</p>
+            </li>
+            <li v-if="asking" class="library-companion-pending" data-role="assistant">
+              <span>AI</span>
+              <p>正在思考…</p>
+            </li>
+          </ul>
+          <p v-else class="library-companion-muted">选中文字后点「问 AI」，解释只保留在本面板，不会写入笔记。</p>
+          <NAlert v-if="askError && turns.length" type="warning" class="library-companion-alert">{{ askError }}</NAlert>
+          <div ref="turnsEnd" class="library-companion-turns-end" aria-hidden="true" />
+        </div>
       </div>
+
       <form class="library-companion-ask" @submit.prevent="followUp">
-        <NInput v-model:value="question" type="textarea" :rows="2" :disabled="!quote || asking" placeholder="继续追问…" maxlength="2000" show-count />
-        <NButton attr-type="submit" type="primary" class="library-companion-send" :disabled="!quote || !question.trim() || asking" :loading="asking">发送追问</NButton>
+        <NInput
+          v-model:value="question"
+          type="textarea"
+          :rows="2"
+          :disabled="!quote || asking"
+          placeholder="继续追问…"
+          maxlength="2000"
+          show-count
+        />
+        <div class="library-companion-ask-actions">
+          <NButton quaternary size="small" :disabled="!quote" @click="goWriteNote">写笔记</NButton>
+          <NButton
+            attr-type="submit"
+            type="primary"
+            class="library-companion-send"
+            :disabled="!quote || !question.trim() || asking"
+            :loading="asking"
+          >
+            发送追问
+          </NButton>
+        </div>
       </form>
-      <div class="library-companion-block library-companion-writing">
-        <h3>写下想法</h3>
-        <p class="library-companion-muted">只保存你自己的笔记与原文位置；AI 回答不会一并入库。</p>
-        <NInput v-model:value="draftNote" type="textarea" :rows="3" :disabled="!quote" placeholder="写下你的理解或摘录备注…" maxlength="20000" show-count />
-        <NAlert v-if="saveError" type="error" class="library-companion-alert">{{ saveError }}</NAlert>
-        <NAlert v-if="saveOk" type="success" class="library-companion-alert">笔记已保存。</NAlert>
-        <NButton type="primary" :disabled="!quote || !draftNote.trim() || !cfiRange || saving" :loading="saving" @click="saveNote">保存笔记</NButton>
-      </div>
     </section>
 
-    <section v-else class="library-companion-body">
+    <section v-else class="library-companion-body library-companion-body--notes">
+      <div v-if="quote" class="library-companion-block library-companion-writing">
+        <h3>写下想法</h3>
+        <p class="library-companion-quote library-companion-quote--compact">{{ quote }}</p>
+        <p class="library-companion-muted">只保存你自己的笔记与原文位置；AI 回答不会一并入库。</p>
+        <NInput
+          v-model:value="draftNote"
+          type="textarea"
+          :rows="3"
+          placeholder="写下你的理解或摘录备注…"
+          maxlength="20000"
+          show-count
+        />
+        <NAlert v-if="saveError" type="error" class="library-companion-alert">{{ saveError }}</NAlert>
+        <NAlert v-if="saveOk" type="success" class="library-companion-alert">笔记已保存。</NAlert>
+        <NButton type="primary" :disabled="!draftNote.trim() || !cfiRange || saving" :loading="saving" @click="saveNote">
+          保存笔记
+        </NButton>
+      </div>
+
       <NSpin v-if="notesLoading" size="small" description="加载笔记…" />
       <NAlert v-else-if="notesError" type="error">{{ notesError }}</NAlert>
       <p v-else-if="!notes.length" class="library-companion-muted">还没有笔记。选中原文、写完自己的想法后即可保存。</p>
@@ -62,7 +117,13 @@
         </div>
         <ul class="library-companion-notes">
           <li v-for="item in notes" :key="item.id">
-            <button type="button" class="library-companion-note" :class="{ 'is-focused': focusedNoteId === item.id }" :data-note-id="item.id" @click="selectNote(item)">
+            <button
+              type="button"
+              class="library-companion-note"
+              :class="{ 'is-focused': focusedNoteId === item.id }"
+              :data-note-id="item.id"
+              @click="selectNote(item)"
+            >
               <strong>{{ notePreview(item.note) }}</strong>
               <span>{{ notePreview(item.quote, 64) }}</span>
               <small>{{ formatTime(item.createdAt) }}</small>
@@ -98,6 +159,7 @@ const props = defineProps<{
   readerTheme?: 'light' | 'dark'
 }>()
 const panelRoot = ref<HTMLElement>()
+const turnsEnd = ref<HTMLElement>()
 const panelTheme = ref<GlobalThemeOverrides>({})
 async function updatePanelTheme() {
   await nextTick()
@@ -119,6 +181,7 @@ const emit = defineEmits<{ close: []; jump: [ReadingNote]; saved: [] }>()
 const { request } = useLibraryAccess()
 
 const tab = ref<'ai' | 'notes'>('ai')
+const sourceOpen = ref(false)
 const turns = ref<CompanionTurn[]>([])
 const question = ref('')
 const draftNote = ref('')
@@ -148,7 +211,13 @@ watch(() => [props.quote, props.cfiRange, props.context] as const, () => {
   askError.value = ''
   saveError.value = ''
   saveOk.value = false
+  sourceOpen.value = false
   askGeneration++
+})
+
+watch([turns, asking], async () => {
+  await nextTick()
+  turnsEnd.value?.scrollIntoView({ block: 'end', behavior: 'smooth' })
 })
 
 async function ask(initial = false, followUpText = '') {
@@ -185,6 +254,11 @@ function followUp() {
   void ask(false, text)
 }
 
+function goWriteNote() {
+  tab.value = 'notes'
+  void loadNotes()
+}
+
 async function copyAssistant() {
   if (!latestAssistant.value || !navigator.clipboard?.writeText) return
   try { await navigator.clipboard.writeText(latestAssistant.value) }
@@ -210,6 +284,7 @@ async function saveNote() {
     saveOk.value = true
     draftNote.value = ''
     emit('saved')
+    await loadNotes()
   } catch (cause) {
     saveError.value = companionError(cause)
   } finally {
