@@ -13,6 +13,9 @@
       <div class="library-companion-block">
         <h3>原文摘录</h3>
         <p class="library-companion-quote">{{ quote || '请先在正文中选中一段文字。' }}</p>
+        <p v-if="quote && context && context !== quote" class="library-companion-context">
+          <span>参考上下文</span>{{ context }}
+        </p>
       </div>
       <div class="library-companion-block">
         <div class="library-companion-block-head">
@@ -47,15 +50,26 @@
       <NSpin v-if="notesLoading" size="small" description="加载笔记…" />
       <NAlert v-else-if="notesError" type="error">{{ notesError }}</NAlert>
       <p v-else-if="!notes.length" class="library-companion-muted">还没有笔记。选中原文、写完自己的想法后即可保存。</p>
-      <ul v-else class="library-companion-notes">
-        <li v-for="item in notes" :key="item.id">
-          <button type="button" class="library-companion-note" @click="emit('jump', item)">
-            <strong>{{ notePreview(item.note) }}</strong>
-            <span>{{ notePreview(item.quote, 64) }}</span>
-            <small>{{ formatTime(item.createdAt) }}</small>
-          </button>
-        </li>
-      </ul>
+      <template v-else>
+        <div v-if="focusedNote" class="library-companion-block library-companion-focused-note">
+          <div class="library-companion-block-head">
+            <h3>这条笔记</h3>
+            <NButton size="tiny" @click="emit('jump', focusedNote)">跳转原文</NButton>
+          </div>
+          <p class="library-companion-quote">{{ focusedNote.quote }}</p>
+          <p class="library-companion-focused-body">{{ focusedNote.note }}</p>
+          <small class="library-companion-muted">{{ formatTime(focusedNote.createdAt) }}</small>
+        </div>
+        <ul class="library-companion-notes">
+          <li v-for="item in notes" :key="item.id">
+            <button type="button" class="library-companion-note" :class="{ 'is-focused': focusedNoteId === item.id }" :data-note-id="item.id" @click="selectNote(item)">
+              <strong>{{ notePreview(item.note) }}</strong>
+              <span>{{ notePreview(item.quote, 64) }}</span>
+              <small>{{ formatTime(item.createdAt) }}</small>
+            </button>
+          </li>
+        </ul>
+      </template>
       <NAlert v-if="jumpHint" type="warning" class="library-companion-alert">{{ jumpHint }}</NAlert>
     </section>
     </NConfigProvider>
@@ -77,6 +91,7 @@ const props = defineProps<{
   bookId: string
   contentVersion: number
   quote: string
+  context?: string
   cfiRange: string
   chapterHref: string
   jumpHint: string
@@ -115,6 +130,8 @@ const saveOk = ref(false)
 const notes = ref<ReadingNote[]>([])
 const notesLoading = ref(false)
 const notesError = ref('')
+const focusedNoteId = ref<number | null>(null)
+const focusedNote = computed(() => notes.value.find(item => item.id === focusedNoteId.value) || null)
 let askGeneration = 0
 
 const latestAssistant = computed(() => {
@@ -124,7 +141,7 @@ const latestAssistant = computed(() => {
   return ''
 })
 
-watch(() => [props.quote, props.cfiRange] as const, () => {
+watch(() => [props.quote, props.cfiRange, props.context] as const, () => {
   turns.value = []
   question.value = ''
   draftNote.value = ''
@@ -146,6 +163,7 @@ async function ask(initial = false, followUpText = '') {
   try {
     const response = await request<LibraryResponse<{ reply: string }>>('/ai/explain', 'POST', {
       quote: props.quote,
+      context: props.context && props.context !== props.quote ? props.context : '',
       question: text,
       history,
     })
@@ -217,10 +235,25 @@ function openNotes() {
   void loadNotes()
 }
 
+function selectNote(item: ReadingNote) {
+  focusedNoteId.value = item.id
+  emit('jump', item)
+}
+
 function formatTime(value: string) {
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return value
   return date.toLocaleString()
+}
+
+async function focusNote(noteId: number) {
+  tab.value = 'notes'
+  focusedNoteId.value = noteId
+  await loadNotes()
+  focusedNoteId.value = noteId
+  await nextTick()
+  const node = panelRoot.value?.querySelector(`[data-note-id="${noteId}"]`) as HTMLElement | null
+  node?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
 }
 
 defineExpose({
@@ -232,5 +265,6 @@ defineExpose({
     openNotes()
   },
   reloadNotes: loadNotes,
+  focusNote,
 })
 </script>

@@ -37,7 +37,7 @@
       </div>
       <footer v-show="tools" class="library-reader-footer">
         <NButton :disabled="loading || turning || !!error || atStart" @click="turn('prev')">上一页</NButton>
-        <span>{{ chapter || '阅读中' }}</span><NButton :disabled="loading || turning || !!error || atEnd" @click="turn('next')">下一页</NButton>
+        <span>{{ footerLabel }}</span><NButton :disabled="loading || turning || !!error || atEnd" @click="turn('next')">下一页</NButton>
       </footer>
     </div>
     <LibraryCompanionPanel
@@ -46,6 +46,7 @@
       :book-id="bookId"
       :content-version="contentVersion"
       :quote="selectionQuoteText"
+      :context="selectionContextText"
       :cfi-range="selectionCfi"
       :chapter-href="selectionHref"
       :jump-hint="jumpHint"
@@ -61,21 +62,31 @@ import { NAlert, NButton, NSpin } from 'naive-ui'
 import type Book from 'epubjs/types/book'
 import type Rendition from 'epubjs/types/rendition'
 import type Contents from 'epubjs/types/contents'
-import { flattenToc, swipeDirection, protectEpubDocument, libraryError, type LibraryResponse, type LibraryBook, type TocItem } from '~/utils/library-reader'
+import { flattenToc, swipeDirection, protectEpubDocument, libraryError, readerFooterLabel, type LibraryResponse, type LibraryBook, type TocItem } from '~/utils/library-reader'
 import { WARM_PAPER_PRESET, readingMargin, warmPaperStyles } from '~/utils/library-reading-preset'
 import { ReadingProgressSync, type ReadingProgress, type SyncStatus } from '~/utils/library-progress'
-import { jumpFailureMessage, selectionQuote, type ReadingNote } from '~/utils/library-companion'
+import {
+  jumpFailureMessage, selectionQuote, selectionSurroundingContext,
+  NOTE_MARK_CLASS, noteMarkCss, noteMarkStyles, type ReadingNote,
+} from '~/utils/library-companion'
 const props = defineProps<{ bookId: string }>()
 const { request } = useLibraryAccess()
 const root = ref<HTMLElement>(), viewport = ref<HTMLElement>()
-const companion = ref<{ startExplain: () => void; showNotes: () => void; reloadNotes: () => Promise<void> } | null>(null)
+const companion = ref<{
+  startExplain: () => void
+  showNotes: () => void
+  reloadNotes: () => Promise<void>
+  focusNote: (noteId: number) => Promise<void>
+} | null>(null)
 const loading = ref(true), error = ref(''), title = ref(''), chapter = ref('')
+const bookPercent = ref<number | null>(null)
+const footerLabel = computed(() => readerFooterLabel(chapter.value, bookPercent.value))
 const tools = ref(true), tocOpen = ref(false), turning = ref(false), atStart = ref(true), atEnd = ref(false)
 const fontSize = ref<number>(WARM_PAPER_PRESET.fontSize), theme = ref<'light' | 'dark'>('light'), canFullscreen = ref(false)
 const toc = ref<ReturnType<typeof flattenToc>>([])
 const tocItems = ref<TocItem[]>([])
 const companionOpen = ref(false), selectionActive = ref(false)
-const selectionQuoteText = ref(''), selectionCfi = ref(''), selectionHref = ref(''), jumpHint = ref('')
+const selectionQuoteText = ref(''), selectionContextText = ref(''), selectionCfi = ref(''), selectionHref = ref(''), jumpHint = ref('')
 const contentVersion = ref(0)
 let book: Book | undefined, rendition: Rendition | undefined, abort: AbortController | undefined
 let generation = 0, disposed = false, observer: ResizeObserver | undefined
@@ -83,9 +94,52 @@ let pendingResize = false
 let sync: ReadingProgressSync | undefined
 let navigation: 'initial' | 'style' | 'user' | 'idle' = 'initial'
 let locationsReady = false
+let bookNotes: ReadingNote[] = []
+let paintedNoteIds = new Set<number>()
 const syncStatus = ref<SyncStatus>('idle'), progressNotice = ref('')
 const syncLabel = computed(() => progressNotice.value || ({ idle: '', pending: '等待同步', saving: '同步中…', synced: '已同步', failed: '同步失败，可重试', conflict: '进度冲突', version: '书籍版本已变化，请重新打开。' })[syncStatus.value])
 const cleanups = new Map<number, () => void>()
+function clearNoteMarks() {
+  if (!rendition) { paintedNoteIds.clear(); return }
+  for (const note of bookNotes) {
+    try { rendition.annotations.remove(note.cfiRange, 'highlight') } catch { /* invalid/missing mark */ }
+  }
+  paintedNoteIds.clear()
+}
+function paintNoteMarks(notes: ReadingNote[]) {
+  if (!rendition) return
+  clearNoteMarks()
+  bookNotes = notes
+  for (const note of notes) {
+    if (note.contentVersion !== contentVersion.value || !note.cfiRange || paintedNoteIds.has(note.id)) continue
+    try {
+      rendition.annotations.highlight(
+        note.cfiRange,
+        { noteId: note.id },
+        () => { void openNoteFromMark(note.id) },
+        NOTE_MARK_CLASS,
+        noteMarkStyles(note.color),
+      )
+      paintedNoteIds.add(note.id)
+    } catch { /* CFI may no longer resolve after reflow; ignore */ }
+  }
+}
+async function loadAndPaintNotes(signal?: AbortSignal) {
+  try {
+    const response = await request<LibraryResponse<ReadingNote[]>>(
+      `/books/${props.bookId}/annotations`, 'GET', undefined, { signal })
+    if (disposed || signal?.aborted) return
+    paintNoteMarks(response.data || [])
+  } catch {
+    // Notes marks are additive UX; reading continues if the list fails.
+  }
+}
+async function openNoteFromMark(noteId: number) {
+  companionOpen.value = true
+  tools.value = true
+  await nextTick()
+  await companion.value?.focusNote(noteId)
+}
 function locationCacheKey(bookId: string, version: number) {
   return `personweb.library.locations.${bookId}.${version}`
 }
@@ -102,6 +156,9 @@ function progressionOf(publication: Book, cfi: string, href: string): number {
   const index = items.findIndex(item => (item.href || '').split('#')[0] === href.split('#')[0])
   return Math.max(0, Math.min(1, ((index < 0 ? 0 : index) + 0.5) / items.length))
 }
+function refreshBookPercent(publication: Book, cfi: string, href: string) {
+  bookPercent.value = progressionOf(publication, cfi, href)
+}
 async function ensureLocations(publication: Book, bookId: string, version: number, current: number) {
   if (disposed || current !== generation || locationsReady) return
   const key = locationCacheKey(bookId, version)
@@ -110,6 +167,9 @@ async function ensureLocations(publication: Book, bookId: string, version: numbe
     if (cached) {
       publication.locations.load(cached)
       locationsReady = true
+      const location = rendition?.currentLocation() as { start?: { cfi?: string; href?: string } } | undefined
+      if (location?.start?.cfi && location.start.href)
+        refreshBookPercent(publication, location.start.cfi, location.start.href)
       return
     }
   } catch { /* private mode / quota */ }
@@ -119,6 +179,9 @@ async function ensureLocations(publication: Book, bookId: string, version: numbe
     locationsReady = true
     try { localStorage.setItem(key, publication.locations.save()) }
     catch { /* ignore cache write failures */ }
+    const location = rendition?.currentLocation() as { start?: { cfi?: string; href?: string } } | undefined
+    if (location?.start?.cfi && location.start.href)
+      refreshBookPercent(publication, location.start.cfi, location.start.href)
   } catch {
     // Progress still saves CFI; percentage stays spine-estimated until reopen.
   }
@@ -132,6 +195,8 @@ function destroyBook() {
   sync?.stop(); sync = undefined
   pendingResize = false
   locationsReady = false
+  clearNoteMarks()
+  bookNotes = []
   abort?.abort(); observer?.disconnect(); cleanups.forEach(cleanup => cleanup()); cleanups.clear()
   rendition?.destroy(); rendition = undefined; book?.destroy(); book = undefined
   viewport.value?.replaceChildren()
@@ -224,9 +289,11 @@ function keydown(event: KeyboardEvent) {
   void turn(direction)
 }
 function onSelected(cfiRange: string, contents: Contents) {
-  const text = selectionQuote(contents.window.getSelection()?.toString() || '')
+  const selection = contents.window.getSelection()
+  const text = selectionQuote(selection?.toString() || '')
   if (!text || !cfiRange) { selectionActive.value = false; return }
   selectionQuoteText.value = text
+  selectionContextText.value = selectionSurroundingContext(selection) || text
   selectionCfi.value = cfiRange
   selectionHref.value = rendition?.location?.start?.href ?? ''
   selectionActive.value = true
@@ -234,6 +301,7 @@ function onSelected(cfiRange: string, contents: Contents) {
 }
 function clearSelection() {
   selectionActive.value = false
+  selectionContextText.value = ''
   for (const contents of (rendition?.getContents() as unknown as Contents[] | undefined) || []) {
     contents.window.getSelection()?.removeAllRanges()
   }
@@ -266,9 +334,16 @@ async function jumpNote(note: ReadingNote) {
 }
 function onNoteSaved() {
   void companion.value?.reloadNotes()
+  void loadAndPaintNotes()
 }
 function attachInteraction(contents: Contents) {
   const doc = contents.document
+  if (!doc.getElementById('library-note-mark-style')) {
+    const style = doc.createElement('style')
+    style.id = 'library-note-mark-style'
+    style.textContent = noteMarkCss()
+    doc.head.appendChild(style)
+  }
   const linkClicked = () => { if (!loading.value && !turning.value) navigation = 'user' }
   contents.on('linkClicked', linkClicked)
   let start: { x: number; y: number } | undefined, lastSwipe = 0
@@ -291,7 +366,7 @@ function attachInteraction(contents: Contents) {
 async function open() {
   await sync?.flush()
   const current = ++generation
-  destroyBook(); loading.value = true; error.value = ''; chapter.value = ''; atStart.value = true; atEnd.value = false
+  destroyBook(); loading.value = true; error.value = ''; chapter.value = ''; bookPercent.value = null; atStart.value = true; atEnd.value = false
   abort = new AbortController()
   if (!/^[1-9]\d*$/.test(props.bookId)) { loading.value = false; error.value = '书籍编号无效，请返回书架。'; return }
   try {
@@ -334,10 +409,12 @@ async function open() {
       atStart.value = location.atStart; atEnd.value = location.atEnd
       const item = toc.value.find(item => item.href.split('#')[0] === location.start.href)
       chapter.value = `${item?.label || '本章'} ${location.start.displayed.page}/${location.start.displayed.total}`
+      const progression = progressionOf(publication, location.start.cfi, location.start.href)
+      bookPercent.value = progression
       if (!loading.value && navigation === 'user' && location.start.cfi && !error.value) {
         progressNotice.value = ''
         sync?.record({ contentVersion: contentVersion.value, cfi: location.start.cfi, chapterHref: location.start.href,
-          progression: progressionOf(publication, location.start.cfi, location.start.href) })
+          progression })
         navigation = 'idle'
       }
     })
@@ -358,6 +435,8 @@ async function open() {
     observer.observe(viewport.value)
     // Build/cache character locations after first page so "正在打开正文" is not blocked.
     void ensureLocations(publication, props.bookId, contentVersion.value, current)
+    // Persist note highlights in the body so returning readers see where they wrote.
+    void loadAndPaintNotes(abort.signal)
   } catch (cause) {
     if (!disposed && current === generation) { error.value = (cause as { response?: unknown }).response ? libraryError(cause) : '正文无法打开。这本 EPUB 可能损坏或包含暂不支持的格式。'; destroyBook() }
   } finally {

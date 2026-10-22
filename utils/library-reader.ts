@@ -7,6 +7,13 @@ export function flattenToc(items: TocItem[], depth = 0): { label: string; href: 
 export function swipeDirection(dx: number, dy: number): 'next' | 'prev' | null {
   return Math.abs(dx) >= 60 && Math.abs(dx) > Math.abs(dy) * 1.5 ? (dx < 0 ? 'next' : 'prev') : null
 }
+
+/** Reader footer: chapter page + whole-book percent when known. */
+export function readerFooterLabel(chapter: string, bookPercent: number | null): string {
+  const label = chapter || '阅读中'
+  if (bookPercent == null || !Number.isFinite(bookPercent)) return label
+  return `${label} · 全书 ${Math.round(Math.max(0, Math.min(1, bookPercent)) * 100)}%`
+}
 export function libraryError(cause: unknown, kind: 'epub' | 'mobi' | 'auto' = 'auto'): string {
   const error = cause as {
     response?: { status?: number; _data?: { message?: string; error?: string } }

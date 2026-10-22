@@ -11,8 +11,10 @@ namespace PersonalSite.Api.Services.Reading;
 public sealed class ReadingCompanionAiService
 {
     private const string SystemPrompt =
-        "你是私人电子书阅读助手。根据用户给出的原文片段解释含义、难词或背景。" +
-        "回答简洁、准确，使用中文。不要编造原文没有的情节。若信息不足请直接说明。";
+        "你是私人电子书阅读助手。用户会给出「选中原文」以及可选的「周围上下文」。" +
+        "请结合上下文解释选中原文的含义、难词或背景；回答应锚定选中原文，不要把上下文整段当成选中内容复述。" +
+        "若选中过短但上下文足够，应依据上下文作答。回答简洁、准确，使用中文。" +
+        "不要编造原文与上下文都没有的情节。仅当选中与上下文都不足以回答时，才说明信息不足。";
 
     private readonly HttpClient httpClient;
     private readonly AiServiceOptions options;
@@ -30,18 +32,22 @@ public sealed class ReadingCompanionAiService
     public async Task<ReadingExplainDto> ExplainAsync(ReadingExplainRequest input, CancellationToken cancellationToken)
     {
         string quote = (input.Quote ?? "").Trim();
+        string context = (input.Context ?? "").Trim();
         string question = string.IsNullOrWhiteSpace(input.Question)
             ? "请解释这段原文的含义，并说明关键词语或难句。"
             : input.Question.Trim();
-        if (quote.Length == 0 || quote.Length > 4000 || question.Length > 2000)
+        if (quote.Length == 0 || quote.Length > 4000 || question.Length > 2000 || context.Length > 2000)
             throw new ReadingLibraryException(400, "invalid_explain", "Quote or question is invalid.");
         if (input.History is { Count: > 10 })
             throw new ReadingLibraryException(400, "invalid_explain", "Conversation history is too long.");
 
+        string passage = string.IsNullOrEmpty(context) || string.Equals(context, quote, StringComparison.Ordinal)
+            ? "选中原文：\n" + quote
+            : "选中原文：\n" + quote + "\n\n周围上下文：\n" + context;
         List<object> messages = new()
         {
             new { role = "system", content = SystemPrompt },
-            new { role = "user", content = "原文：\n" + quote }
+            new { role = "user", content = passage }
         };
         if (input.History != null)
         {

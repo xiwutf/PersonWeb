@@ -37,6 +37,21 @@ export type ReadingNotesByBook = {
   notes: ReadingNoteFeedItem[]
 }
 
+/** epub.js highlight class for persisted private notes. */
+export const NOTE_MARK_CLASS = 'library-note-mark'
+
+export function noteMarkStyles(color = 'yellow'): Record<string, string> {
+  const fill = color === 'green' ? 'rgba(134, 239, 172, 0.45)'
+    : color === 'blue' ? 'rgba(147, 197, 253, 0.45)'
+      : color === 'pink' ? 'rgba(249, 168, 212, 0.45)'
+        : 'rgba(253, 224, 71, 0.45)'
+  return { fill, 'fill-opacity': '1', 'mix-blend-mode': 'multiply' }
+}
+
+export function noteMarkCss(): string {
+  return `.${NOTE_MARK_CLASS},g.${NOTE_MARK_CLASS}{cursor:pointer}g.${NOTE_MARK_CLASS}:hover rect{opacity:.85}`
+}
+
 export function groupNotesByBook(items: ReadingNoteFeedItem[]): ReadingNotesByBook[] {
   const groups = new Map<number, ReadingNotesByBook>()
   for (const item of items) {
@@ -61,6 +76,45 @@ export function groupNotesByBook(items: ReadingNoteFeedItem[]): ReadingNotesByBo
 
 export function selectionQuote(text: string, max = 4000): string {
   return text.replace(/\s+/g, ' ').trim().slice(0, max)
+}
+
+/** Clip surrounding text around a quote for AI explain (notes still store quote only). */
+export function clipSurroundingContext(fullText: string, quote: string, max = 800): string {
+  const normalized = selectionQuote(fullText, 20000)
+  const selected = selectionQuote(quote, 4000)
+  if (!selected) return ''
+  if (!normalized) return selected.slice(0, max)
+  if (normalized.length <= max) return normalized
+  const index = normalized.indexOf(selected)
+  if (index < 0) return normalized.slice(0, max)
+  const pad = Math.max(0, Math.floor((max - selected.length) / 2))
+  const start = Math.max(0, index - pad)
+  const end = Math.min(normalized.length, index + selected.length + pad)
+  let slice = normalized.slice(start, end)
+  if (start > 0) slice = `…${slice}`
+  if (end < normalized.length) slice = `${slice}…`
+  return slice
+}
+
+/** Prefer the nearest block around the browser selection; fall back to padded window. */
+export function selectionSurroundingContext(selection: Selection | null | undefined, max = 800): string {
+  if (!selection || selection.rangeCount === 0) return ''
+  const quote = selectionQuote(selection.toString())
+  if (!quote) return ''
+  const range = selection.getRangeAt(0)
+  let node: Node | null = range.commonAncestorContainer
+  if (node.nodeType === Node.TEXT_NODE) node = node.parentElement
+  const element = node as Element | null
+  const block = element?.closest?.(
+    'p, li, blockquote, h1, h2, h3, h4, h5, h6, td, th, section, article, figcaption',
+  ) as Element | null
+  if (block?.textContent) {
+    const blockText = selectionQuote(block.textContent, Math.max(max, quote.length + 80))
+    if (blockText.includes(quote) && blockText.length > quote.length)
+      return clipSurroundingContext(blockText, quote, max)
+  }
+  const root = element?.closest?.('body') || element?.ownerDocument?.body
+  return clipSurroundingContext(root?.textContent || quote, quote, max)
 }
 
 export function companionError(cause: unknown): string {

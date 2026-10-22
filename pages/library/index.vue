@@ -10,15 +10,15 @@
     </header>
     <div class="library-shelf-toolbar">
       <form class="library-search" @submit.prevent="load(1)"><NInput v-model:value="query" size="large" placeholder="搜索书名或作者" :maxlength="100" clearable :input-props="{ 'aria-label': '搜索书架' }"><template #prefix><NIcon :component="SearchOutline" /></template></NInput><NButton attr-type="submit" size="large" secondary>搜索</NButton></form>
+    <section v-if="recent" class="library-continue" aria-label="最近阅读">
+      <div class="library-continue-info"><span class="library-continue-label">最近阅读</span><h2 :title="recent.book.title">{{ recent.book.title }}</h2><span class="library-continue-progress">{{ Math.round(recent.progress.progression * 100) }}%<span class="library-continue-date"> · {{ readTime(recent.progress.lastReadAt) }}</span></span></div>
+      <NuxtLink :to="`/library/read/${recent.book.id}`">继续阅读</NuxtLink>
+    </section>
       <span class="library-private-label"><NIcon :component="LockClosedOutline" />私人书房</span>
     </div>
     <NAlert v-if="error" type="error" role="alert">{{ error }} <NButton text @click="load(page)">重试</NButton></NAlert>
     <NAlert v-if="notice" type="success" class="library-shelf-notice" role="status" closable @close="notice = ''">{{ notice }}</NAlert>
     <NAlert v-if="uploading && converting" type="info" class="library-shelf-notice" role="status">正在上传并转换 MOBI，完成后自动加入书架。请稍候。</NAlert>
-    <section v-if="recent" class="library-continue" aria-label="最近阅读">
-      <div class="library-continue-info"><span class="library-continue-label">最近阅读</span><h2 :title="recent.book.title">{{ recent.book.title }}</h2><span class="library-continue-progress">{{ Math.round(recent.progress.progression * 100) }}%<span class="library-continue-date"> · {{ readTime(recent.progress.lastReadAt) }}</span></span></div>
-      <NuxtLink :to="`/library/read/${recent.book.id}`">继续阅读</NuxtLink>
-    </section>
     <div class="library-shelf-section"><h2>书架<span v-if="!loading">{{ total }} 本</span></h2><span>点击封面阅读；可标记已读或删除</span></div>
     <div v-if="loading" class="library-shelf-loading"><NSpin description="正在加载书架…" /></div>
     <div v-else-if="!books.length" class="library-empty"><div class="library-empty-symbol" aria-hidden="true"><NIcon :component="BookOutline" /></div><h2>{{ query ? '没有找到这本书' : '书架还是空的' }}</h2><p>{{ query ? '试试其他书名或作者。' : '上传 EPUB 或 MOBI，从第一章开始。' }}</p><NButton v-if="!query" type="primary" size="large" :disabled="uploading" @click="fileInput?.click()">选择书籍</NButton></div>

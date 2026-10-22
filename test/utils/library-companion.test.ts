@@ -5,8 +5,12 @@ import {
   displayBookTitle,
   groupNotesByBook,
   jumpFailureMessage,
+  NOTE_MARK_CLASS,
+  noteMarkCss,
+  noteMarkStyles,
   notePreview,
   selectionQuote,
+  clipSurroundingContext,
   type ReadingNoteFeedItem,
 } from '../../utils/library-companion'
 
@@ -14,6 +18,13 @@ describe('library companion helpers', () => {
   it('normalizes selected quote length', () => {
     expect(selectionQuote('  hello\n\nworld  ')).toBe('hello world')
     expect(selectionQuote('x'.repeat(5000)).length).toBe(4000)
+  })
+
+  it('clips surrounding context around a short quote for AI explain', () => {
+    const page = '前言。注意力 > 时间 > 金钱。注意力才是你所拥有的最宝贵的财富。后记。'
+    expect(clipSurroundingContext(page, '注意力', 40)).toContain('注意力')
+    expect(clipSurroundingContext(page, '注意力', 40)).toContain('时间')
+    expect(clipSurroundingContext('短文', '短文', 800)).toBe('短文')
   })
 
   it('keeps recent conversation turns for follow-up', () => {
@@ -30,6 +41,13 @@ describe('library companion helpers', () => {
     expect(companionError({ data: { error: 'invalid_annotation' } })).toContain('重新选中')
     expect(jumpFailureMessage()).toContain('无法跳转')
     expect(notePreview('一段很长的用户笔记内容用来预览截断处理', 8)).toBe('一段很长的用户笔…')
+  })
+
+  it('styles persisted note highlights for the reader body', () => {
+    expect(NOTE_MARK_CLASS).toBe('library-note-mark')
+    expect(noteMarkCss()).toContain(`.${NOTE_MARK_CLASS}`)
+    expect(noteMarkStyles('yellow').fill).toContain('253, 224, 71')
+    expect(noteMarkStyles('blue').fill).toContain('147, 197, 253')
   })
 
   it('shortens marketing-heavy book titles for list display', () => {

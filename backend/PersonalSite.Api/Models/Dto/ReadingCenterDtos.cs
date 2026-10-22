@@ -57,6 +57,8 @@ public class ReadingChatTurn
 public class ReadingExplainRequest
 {
     [Required, StringLength(4000, MinimumLength = 1)] public string Quote { get; set; } = "";
+    /// <summary>选中原文周围的上下文，仅用于 AI 解释，不入库。</summary>
+    [StringLength(2000)] public string Context { get; set; } = "";
     [StringLength(2000)] public string Question { get; set; } = "";
     [MaxLength(10)] public List<ReadingChatTurn>? History { get; set; }
 }

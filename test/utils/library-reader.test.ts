@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { flattenToc, swipeDirection, protectEpubDocument, libraryError } from '../../utils/library-reader'
+import { flattenToc, swipeDirection, protectEpubDocument, libraryError, readerFooterLabel } from '../../utils/library-reader'
 describe('reading interactions and document safety', () => {
   it('keeps nested chapter order and targets', () => {
     expect(flattenToc([{ label: ' Chapter ', href: 'a.xhtml', subitems: [{ label: 'Part', href: 'a.xhtml#p' }] }])).toEqual([
@@ -32,5 +32,10 @@ describe('reading interactions and document safety', () => {
     expect(libraryError({ data: { error: 'conversion_limit' } })).toContain('限制')
     expect(libraryError({ data: { error: 'conversion_rejected' } }, 'mobi')).toContain('MOBI 已转换')
     expect(libraryError({ response: { status: 422 } }, 'mobi')).toContain('MOBI 已转换')
+  })
+  it('shows whole-book percent beside chapter paging when known', () => {
+    expect(readerFooterLabel('本章 1/10', null)).toBe('本章 1/10')
+    expect(readerFooterLabel('本章 1/10', 0.234)).toBe('本章 1/10 · 全书 23%')
+    expect(readerFooterLabel('', 1)).toBe('阅读中 · 全书 100%')
   })
 })
