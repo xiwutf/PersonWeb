@@ -236,6 +236,12 @@ try
         app.Services.GetRequiredService<PersonalSite.Api.Services.Reading.PrivateBookStorage>();
     readingStorage.EnsureReady();
     app.Logger.LogInformation("ReadingLibrary private storage ready at {StorageRoot}", readingStorage.RootPath);
+    if (!app.Environment.IsDevelopment() && readingStorage.IsInsideContentRoot)
+    {
+        app.Logger.LogWarning(
+            "ReadingLibrary StorageRoot is inside the app publish folder ({StorageRoot}). Redeploys may delete EPUB files; set ReadingLibrary:StorageRoot to a path outside the site directory (e.g. /var/lib/personweb/reading-private).",
+            readingStorage.RootPath);
+    }
 }
 catch (Exception ex)
 {

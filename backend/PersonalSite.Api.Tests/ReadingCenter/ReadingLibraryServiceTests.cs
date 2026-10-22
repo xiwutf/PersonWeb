@@ -235,6 +235,26 @@ public class ReadingLibraryServiceTests
     }
 
     [Fact]
+    public void Storage_AllowsAbsoluteRootOutsideContentRoot()
+    {
+        using var environment = new ReadingTestEnvironment();
+        var external = Path.Combine(Path.GetTempPath(), "personweb-reading-private-" + Guid.NewGuid().ToString("N"));
+        try
+        {
+            var storage = new PrivateBookStorage(environment,
+                Options.Create(new ReadingLibraryOptions { StorageRoot = external }));
+            Assert.False(storage.IsInsideContentRoot);
+            storage.EnsureReady();
+            Assert.True(Directory.Exists(storage.RootPath));
+        }
+        finally
+        {
+            if (Directory.Exists(external))
+                Directory.Delete(external, recursive: true);
+        }
+    }
+
+    [Fact]
     public void Model_UsesOwnershipForeignKeysAndConcurrencyTokens()
     {
         using var db = Db();

@@ -7,26 +7,45 @@ namespace PersonalSite.Api.Services.Reading;
 public sealed class PrivateBookStorage
 {
     private readonly string _root;
+    private readonly string _contentRoot;
 
     public PrivateBookStorage(IWebHostEnvironment environment, IOptions<ReadingLibraryOptions> options)
     {
+        _contentRoot = Path.TrimEndingDirectorySeparator(Path.GetFullPath(environment.ContentRootPath));
         _root = Path.TrimEndingDirectorySeparator(Path.GetFullPath(options.Value.StorageRoot, environment.ContentRootPath));
-        var projectRoot = Path.GetFullPath(Path.Combine(environment.ContentRootPath, "../.."));
-        var forbiddenRoots = new[] {
-            environment.WebRootPath ?? Path.Combine(environment.ContentRootPath, "wwwroot"),
-            Path.Combine(environment.ContentRootPath, "wwwroot"),
-            Path.Combine(projectRoot, "public"), Path.Combine(projectRoot, ".output"),
-            Path.Combine(projectRoot, "content"), Path.Combine(projectRoot, ".git")
+        // ContentRoot/../.. is the monorepo root in local checkout; on a flat publish
+        // (e.g. /var/www/personal_site_api) it becomes /var — do not treat that as "project".
+        var candidateProjectRoot = Path.GetFullPath(Path.Combine(_contentRoot, "../.."));
+        var monorepoRoot = LooksLikeMonorepo(candidateProjectRoot) ? candidateProjectRoot : null;
+        var appDataRoot = Path.Combine(_contentRoot, "App_Data");
+        var forbiddenRoots = new List<string>
+        {
+            environment.WebRootPath ?? Path.Combine(_contentRoot, "wwwroot"),
+            Path.Combine(_contentRoot, "wwwroot"),
         };
+        if (monorepoRoot != null)
+        {
+            forbiddenRoots.Add(Path.Combine(monorepoRoot, "public"));
+            forbiddenRoots.Add(Path.Combine(monorepoRoot, ".output"));
+            forbiddenRoots.Add(Path.Combine(monorepoRoot, "content"));
+            forbiddenRoots.Add(Path.Combine(monorepoRoot, ".git"));
+        }
         if (forbiddenRoots.Any(p => ContainsPath(p, _root) || ContainsPath(_root, p)))
             throw new InvalidOperationException("ReadingLibrary storage must be outside public/content/build roots.");
-        if (ContainsPath(projectRoot, _root) && !ContainsPath(Path.Combine(environment.ContentRootPath, "App_Data"), _root))
+        // Under the publish/content root, only App_Data is allowed.
+        if (ContainsPath(_contentRoot, _root) && !ContainsPath(appDataRoot, _root))
+            throw new InvalidOperationException("Within the app content root, private storage must be inside App_Data.");
+        // Under a detected monorepo (local checkout), still require App_Data — not sibling folders.
+        if (monorepoRoot != null && ContainsPath(monorepoRoot, _root) && !ContainsPath(appDataRoot, _root))
             throw new InvalidOperationException("Within the project, private storage must be inside App_Data.");
         EnsureNoLinks(_root);
     }
 
     /// <summary>Resolved absolute private root (never expose over HTTP).</summary>
     public string RootPath => _root;
+
+    /// <summary>True when books live under the app publish folder (risky: redeploy can wipe them).</summary>
+    public bool IsInsideContentRoot => ContainsPath(_contentRoot, _root);
 
     /// <summary>Create the private directory if missing; call once at process start for production StorageRoot.</summary>
     public void EnsureReady()
@@ -35,6 +54,13 @@ public sealed class PrivateBookStorage
         if (OperatingSystem.IsWindows()) Directory.CreateDirectory(_root);
         else Directory.CreateDirectory(_root, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
         EnsureNoLinks(_root);
+    }
+
+    private static bool LooksLikeMonorepo(string candidateRoot)
+    {
+        return File.Exists(Path.Combine(candidateRoot, "nuxt.config.ts"))
+            || File.Exists(Path.Combine(candidateRoot, "nuxt.config.js"))
+            || Directory.Exists(Path.Combine(candidateRoot, ".git"));
     }
 
     private static bool ContainsPath(string parent, string child)
